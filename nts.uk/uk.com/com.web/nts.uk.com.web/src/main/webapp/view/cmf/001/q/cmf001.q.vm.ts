@@ -47,7 +47,6 @@ module nts.uk.com.view.cmf001.q {
             constructor() {
                 let self = this;
                 
-                let startDate = new Date().toLocaleDateString();
                 self.timeStart = new Date();
                 self.exacExeResultLog = {
                     cid: '', /* 会社ID set at server*/
@@ -73,7 +72,7 @@ module nts.uk.com.view.cmf001.q {
 
                 self.codCode = ko.observable('001');
                 self.codName = ko.observable('A社人事管理情報');
-                self.timeOver = ko.observable(self.timeStart.getTime());
+                self.timeOver = ko.observable('00:00:00');
 
                 //init
                 //self.totalRecord(self.params.totalRecord);
@@ -142,7 +141,9 @@ module nts.uk.com.view.cmf001.q {
             */
             public executionImport(): void {
                 var self = this;
-                
+                // restart time
+                self.timeStart = new Date();
+                self.timeOver('00:00:00');
                 // update mode
                 self.isCheckMode(false);
                 self.isStop(false);
@@ -193,25 +194,32 @@ module nts.uk.com.view.cmf001.q {
                                         self.executionState(getListProcessing()[2].value);
                                     }
                                     // "処理トータルカウント
-                                    if (item.key == 'NUMBER_OF_TOTAL') {
+                                    if (item.key == '処理トータルカウント') {
                                         self.totalRecord(item.valueAsNumber);
                                     }
                                     // 処理カウント
-                                    if (item.key == 'NUMBER_OF_SUCCESS') {
+                                    if (item.key == '処理カウント') {
                                         self.currentRecord(item.valueAsNumber);
                                     }
                                     //エラー件数
-                                    if (item.key == 'NUMBER_OF_ERROR') {
+                                    if (item.key == 'エラー件数') {
                                         self.numberFail(item.valueAsNumber);
                                     }
                                     // 動作状態
-                                    if (item.key == 'STATUS') {
+                                    if (item.key == '動作状態') {
                                         self.stateBehavior(item.valueAsNumber);
                                     }
                                 });
-//                                // 経過時間＝現在時刻－開始時刻
-//                                self.timeNow = new Date();
-//                                self.timeOver(self.timeNow.getTime() - self.timeStart.getTime());
+                                if (res.running) {
+                                    // 経過時間＝現在時刻－開始時刻
+                                    self.timeNow = new Date();
+                                    let over = (self.timeNow.getSeconds()+self.timeNow.getMinutes()*60+ self.timeNow.getHours()*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60);
+                                    let time = new Date(null);
+                                    time.setSeconds(over); // specify value for SECONDS here
+                                    let result = time.toISOString().substr(11, 8);
+
+                                    self.timeOver(result);
+                                }
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
