@@ -48,13 +48,13 @@ public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements E
 	@Override
 	public void generate(FileGeneratorContext generatorContext, ExecLogCSVFileData dataSource) {
 		val reportContext = this.createEmptyContext(REPORT_ID);
-		
+
 		val workbook = reportContext.getWorkbook();
 		val sheet = workbook.getWorksheets().get(0);
 		val cells = sheet.getCells();
-		
+
 		// get data
-		
+
 		List<String> condImport = dataSource.getCondImport();
 		List<String> dateTime = dataSource.getDateTime();
 		List<String> totalCount = dataSource.getTotalCount();
@@ -62,11 +62,11 @@ public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements E
 		List<String> errorCount = dataSource.getErrorCount();
 		List<String> headers = dataSource.getHeaders();
 		List<Map<String, Object>> datas = dataSource.getDatas();
-		
+
 		// information error
 		this.setCommonStyle(cells);
 		this.drawInfoError(cells, condImport, dateTime, totalCount, normalCount, errorCount);
-		
+
 		// list error
 		if (!headers.isEmpty()){
 			this.drawHeader(cells, headers);
@@ -83,7 +83,7 @@ public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements E
 			}
 		}
 		reportContext.processDesigner();
-		
+
 		reportContext.saveAsCSV(this.createNewFile(generatorContext, dataSource.getFileName()));
 	}
 	

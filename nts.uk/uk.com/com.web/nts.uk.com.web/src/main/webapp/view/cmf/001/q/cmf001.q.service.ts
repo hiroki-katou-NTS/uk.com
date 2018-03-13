@@ -7,7 +7,8 @@ module nts.uk.com.view.cmf001.q {
         
         var paths = {
             executionImportCsvData: "exio/exi/csvimport/execution",
-            addErrorLog: "ctx/exio/ws/exi/proccessLog/addErrorLog",
+            addErrorLog: "exio/exi/proccessLog/addErrorLog",
+            check: "exio/exi/csvimport/check",
         }   
     
         /**
@@ -17,6 +18,12 @@ module nts.uk.com.view.cmf001.q {
             return ajax('com', paths.executionImportCsvData, command);
         }
         
+        /**
+         * call service check import data
+         */
+        export function check(command: any): JQueryPromise<any> {
+            return ajax('com', paths.check, command);
+        }
         /**
         * add error log  
         */
