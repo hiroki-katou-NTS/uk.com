@@ -86,7 +86,7 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 		this.resourcesRepository.replaceSystemClass(
 				context.companyId,
 				context.languageId,
-				"K", resourceId, newContent);
+				"C", resourceId, newContent);
 		
 		this.resourcesRepository.refreshResource(context.companyId, context.languageId, GeneralDateTime.now());
 	}
