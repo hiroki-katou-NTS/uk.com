@@ -25,7 +25,7 @@ public class NumDataFormatSetCommand {
 	/**
 	 * コード変換コード
 	 */
-	private String cdConvertCd;
+	private String codeConvertCode;
 
 	/**
 	 * 固定値の値
@@ -35,7 +35,7 @@ public class NumDataFormatSetCommand {
 	/**
 	 * 少数桁数
 	 */
-	private Integer decimalDigitNum;
+	private Integer decimalDigitNumber;
 
 	/**
 	 * 有効桁数開始桁
@@ -50,7 +50,7 @@ public class NumDataFormatSetCommand {
 	/**
 	 * 小数点区分
 	 */
-	private Integer decimalPointCls;
+	private Integer decimalPointClassification;
 
 	/**
 	 * 小数端数
@@ -59,8 +59,8 @@ public class NumDataFormatSetCommand {
 
 	public NumDataFormatSet toDomain() {
 		return new NumDataFormatSet(ItemType.NUMERIC.value, this.fixedValue, this.decimalDivision,
-				this.effectiveDigitLength, this.cdConvertCd, this.valueOfFixedValue, this.decimalDigitNum,
-				this.startDigit, this.endDigit, this.decimalPointCls, this.decimalFraction);
+				this.effectiveDigitLength, this.codeConvertCode, this.valueOfFixedValue, this.decimalDigitNumber,
+				this.startDigit, this.endDigit, this.decimalPointClassification, this.decimalFraction);
 	}
 
 }

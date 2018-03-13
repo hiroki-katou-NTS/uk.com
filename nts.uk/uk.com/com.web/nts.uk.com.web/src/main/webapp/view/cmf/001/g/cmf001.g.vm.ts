@@ -62,9 +62,9 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             } else {
                 convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
             }
-            self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
-                numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
-                numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+            self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit, numFormat.endDigit, 
+                                                        numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification, 
+                                                        numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixedValue));
         }
         start(): JQueryPromise<any> {
             block.invisible();

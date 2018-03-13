@@ -40,32 +40,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.systemType = item;
             self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.systemType, data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine, data.conditionSetting.deleteExistDataMethod, data.conditionSetting.categoryId));
 
-            self.listCategory = ko.observableArray([
-                new model.ExternalAcceptanceCategory('1', 'Category 1'),
-                new model.ExternalAcceptanceCategory('2', 'Category 2'),
-                new model.ExternalAcceptanceCategory('3', 'Category 3')
-            ]);
+            self.listCategory = ko.observableArray([]);
             self.selectedCategory = ko.observable('');
 
-            self.listCategoryItem = ko.observableArray([
-                new model.ExternalAcceptanceCategoryItemData(1, 'Item 1'),
-                new model.ExternalAcceptanceCategoryItemData(2, 'Item 2'),
-                new model.ExternalAcceptanceCategoryItemData(3, 'Item 3'),
-                new model.ExternalAcceptanceCategoryItemData(4, 'Item 4'),
-                new model.ExternalAcceptanceCategoryItemData(5, 'Item 5'),
-                new model.ExternalAcceptanceCategoryItemData(6, 'Item 6'),
-                new model.ExternalAcceptanceCategoryItemData(7, 'Item 7'),
-                new model.ExternalAcceptanceCategoryItemData(8, 'Item 8'),
-                new model.ExternalAcceptanceCategoryItemData(9, 'Item 9'),
-                new model.ExternalAcceptanceCategoryItemData(10, 'Item 10'),
-                new model.ExternalAcceptanceCategoryItemData(11, 'Item 11'),
-                new model.ExternalAcceptanceCategoryItemData(12, 'Item 12'),
-                new model.ExternalAcceptanceCategoryItemData(13, 'Item 13')
-            ]);
+            self.listCategoryItem = ko.observableArray([]);
 
             self.selectedCategory.subscribe((data) => {
                 if (data && !self.startLoad()) {
                     self.loadCategoryItemData(data);
+                    self.listAcceptItem.removeAll();
                 }
             });
 
@@ -128,16 +111,18 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     self.selectedAcceptItem(self.listAcceptItem().length);
                 else
                     self.selectedAcceptItem.valueHasMutated();
+            } else {
+                alertError({messageId: "Msg_897"});
             }
         }
 
         btnRightClick() {
             let self = this;
-            if (self.selectedCategoryItem()) {
+            let selectedIndex = _.findIndex(self.listCategoryItem(), x => { return x.itemNo() == self.selectedCategoryItem(); });
+            if (selectedIndex >= 0) {
                 let i = self.listAcceptItem().length + 1;
                 let selectedItem = _.find(self.listCategoryItem(), x => { return x.itemNo() == self.selectedCategoryItem(); });
-                let selectedIndex = _.findIndex(self.listCategoryItem(), x => { return x.itemNo() == self.selectedCategoryItem(); });
-                let item = new model.StandardAcceptItem("", null, 0, i, selectedItem.itemName(), self.selectedStandardImportSetting().conditionSettingCode(), selectedItem.itemNo());
+                let item = new model.StandardAcceptItem(null, null, 0, i, selectedItem.itemName(), self.selectedStandardImportSetting().systemType(), self.selectedStandardImportSetting().conditionSettingCode(), selectedItem.itemNo());
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
                 self.listCategoryItem.remove(selectedItem);
@@ -145,6 +130,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 1].itemNo());
                 else
                     self.selectedCategoryItem(self.listCategoryItem()[selectedIndex] ? self.listCategoryItem()[selectedIndex].itemNo() : null);
+            } else {
+                alertError({messageId: "Msg_894"});
             }
         }
 
@@ -203,19 +190,33 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                 fs.codeConvertCode, fs.fixedValue, fs.fixedVal));
                             break;
                         case model.ITEM_TYPE.DATE:
-                            data.dateFormatSetting(new model.DateDataFormatSetting(fs.formatSelection, fs.fixedValue, fs.valueOfFixed));
+                            data.dateFormatSetting(new model.DateDataFormatSetting(fs.formatSelection, fs.fixedValue, fs.valueOfFixedValue));
                             break;
                         case model.ITEM_TYPE.INS_TIME:
                             data.instTimeFormatSetting(new model.InstantTimeDataFormatSetting(
-                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                fs.decimalSelection, fs.hourMinuteSelection, fs.delimiterSetting,
-                                                fs.roundingProcessing, fs.roundProcessingClassification, fs.fixedValue, fs.valueOfFixed));
+                                                fs.effectiveDigitLength,
+                                                fs.startDigit,
+                                                fs.endDigit,
+                                                fs.decimalSelect,
+                                                fs.hourMinSelect,
+                                                fs.delimiterSet,
+                                                fs.roundProc,
+                                                fs.roundProcCls,
+                                                fs.fixedValue,
+                                                fs.valueOfFixedValue));
                             break;
                         case model.ITEM_TYPE.TIME:
                             data.timeFormatSetting(new model.TimeDataFormatSetting(
-                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                fs.decimalSelection, fs.hourMinuteSelection, fs.delimiterSetting,
-                                                fs.roundingProcessing, fs.roundProcessingClassification, fs.fixedValue, fs.valueOfFixed));
+                                                fs.effectiveDigitLength,
+                                                fs.startDigit,
+                                                fs.endDigit,
+                                                fs.decimalSelect,
+                                                fs.hourMinSelect,
+                                                fs.delimiterSet,
+                                                fs.roundProc,
+                                                fs.roundProcCls,
+                                                fs.fixedValue,
+                                                fs.valueOfFixedValue));
                             break;
                     }
                 }
@@ -346,7 +347,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                     sc.numberConditionValue2, sc.numberConditionValue1,
                                                     rs.conditionCode, rs.acceptItemNumber);
                                     }
-                                    return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.conditionCode, rs.categoryItemNo, formatSetting, screenCondition);
+                                    return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionCode, rs.categoryItemNo, formatSetting, screenCondition);
                                 });
                                 //_rsList = _.sortBy(_rsList, ['code']);
                                 self.listAcceptItem(_rsList);
@@ -403,7 +404,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         registerData() {
             let self = this;
             block.invisible();
-            let command = ko.toJS(self.listAcceptItem);
+            let command = {conditionSetting: ko.toJS(self.selectedStandardImportSetting), listItem: ko.toJS(self.listAcceptItem)};
             service.registerData(command).done(() => {
                 info({ messageId: "Msg_15" }).then(() => {
 //                    if (self.screenMode() == model.SCREEN_MODE.UPDATE) {

@@ -61,7 +61,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * チェック完了
 	 */
-	private NotUseAtr checkCompleted;
+	private NotUseAtr checkCompleted = NotUseAtr.USE;
 
 	/**
 	 * 既存データの削除方法
@@ -98,4 +98,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
+	public void updateCheckCompleted(int check) {
+		this.checkCompleted = EnumAdaptor.valueOf(check, NotUseAtr.class);
+	}
 }

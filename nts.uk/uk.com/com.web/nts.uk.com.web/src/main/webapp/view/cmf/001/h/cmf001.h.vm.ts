@@ -69,9 +69,9 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             } else {
                 convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
             }
-            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
-                charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
-                charSet.codeConvertCode, charSet.fixedValue, charSet.valueOfFixed));
+            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit, charSet.endDigit,
+                                                charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
+                                                charSet.codeConvertCode, charSet.fixedValue, charSet.fixedVal));
         }
         start(): JQueryPromise<any> {
             block.invisible();

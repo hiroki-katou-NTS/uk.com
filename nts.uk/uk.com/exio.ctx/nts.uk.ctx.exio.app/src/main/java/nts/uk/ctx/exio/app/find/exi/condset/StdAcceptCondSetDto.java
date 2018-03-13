@@ -37,11 +37,6 @@ public class StdAcceptCondSetDto {
 	private Integer acceptMode;
 
 	/**
-	 * チェック完了
-	 */
-	private int checkCompleted;
-
-	/**
 	 * 外部受入カテゴリID
 	 */
 	private String categoryId;
@@ -65,7 +60,6 @@ public class StdAcceptCondSetDto {
 		return new StdAcceptCondSetDto(domain.getSystemType().value, domain.getConditionSetCd().v(),
 				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
 				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
-				domain.getCheckCompleted().value,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
