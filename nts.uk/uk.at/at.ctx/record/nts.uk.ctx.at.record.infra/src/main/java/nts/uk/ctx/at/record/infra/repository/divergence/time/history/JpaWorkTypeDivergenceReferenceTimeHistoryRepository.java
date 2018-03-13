@@ -111,15 +111,15 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 * @return the list
 	 */
 	private List<KrcstWorktypeDrtHist> toEntities(WorkTypeDivergenceReferenceTimeHistory domain) {
-		List<KrcstWorktypeDrtHist> comDrtHists = this.findByCompanyIdAndWorkType(domain.getCId(),
+		List<KrcstWorktypeDrtHist> worktypeDrtHists = this.findByCompanyIdAndWorkType(domain.getCId(),
 				domain.getWorkTypeCode().v());
 
 		JpaWorkTypeDivergenceReferenceTimeHistorySetMemento memento = new JpaWorkTypeDivergenceReferenceTimeHistorySetMemento(
-				comDrtHists);
+				worktypeDrtHists);
 
 		domain.saveToMemento(memento);
 
-		return comDrtHists;
+		return worktypeDrtHists;
 	}
 
 	/**
