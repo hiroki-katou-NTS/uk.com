@@ -42,6 +42,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
 
+            //ドメインモデル「受入条件設定（定型）」を取得する
+            self.loadListCondition(self.selectedSysType());
+
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
                 //画面上の条件コード/名称をクリアする
@@ -76,32 +79,32 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         /**
          * start page data    
         */
-        public startPage(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            // block ui
+        startPage(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
             block.invisible();
-
-            //Imported(共通)　「システムコード」を取得する
-
-            //「システムコード」の取得結果からシステム種類に変換する
-
-            self.listSysType = ko.observableArray(model.getSystemTypes());
-            //1件以上取得できた場合
-            if (self.listSysType().length > 0) {
-                //システム種類を画面セットする
-                self.selectedSysType(self.listSysType()[0].code);
-                //ドメインモデル「受入条件設定（定型）」を取得する
-                self.loadListCondition(self.selectedSysType());
-            }
-            //システム種類が取得できない場合
-            else {
-                //トップページに戻る
-                nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
-            }
-            dfd.resolve(self);
+            service.getSysTypes().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<model.ItemModel> = _.map(data, rs => {
+                        return new model.ItemModel(rs.type, rs.name);
+                    });
+                    _rsList = _.sortBy(_rsList, ['code']);
+                    self.listSysType(_rsList);
+                    //システム種類を画面セットする
+                    self.selectedSysType(self.listSysType()[0].code);
+                } else {
+                    //トップページに戻る
+                    nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
             return dfd.promise();
-        }
+        }        
 
         //次の画面へ遷移する
         private gotoExAccSummary(): void {
