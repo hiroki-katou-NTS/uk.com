@@ -6,9 +6,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.auth.dom.user.SearchUser;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
@@ -63,22 +66,46 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	private final String SELECT_USER_BY_IDS = "SELECT c FROM SacmtUser c WHERE c.sacmtUserPK.userID IN :listUserID";
 	@Override
 	public List<User> getByListUser(List<String> listUserID) {
-		return this.queryProxy().query(SELECT_USER_BY_IDS, SacmtUser.class)
-				.setParameter("listUserID", listUserID)
-				.getList(c -> c.toDomain());
+		List<User> datas = new ArrayList<>();
+		CollectionUtil.split(listUserID, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(SELECT_USER_BY_IDS, SacmtUser.class)
+					.setParameter("listUserID", subIdList).getList(c->c.toDomain()));
+		});
+		return datas;
 	}
 
-	private final String SELECT_BY_ID_OR_NAME = "SELECT c From SacmtUser c"
-			+ " WHERE (LOWER(c.sacmtUserPK.userID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
-			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%')))"
+	private final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.personName FROM SacmtUser c" 
+			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"
+			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
+			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
+			+ " OR LOWER(p.personName) LIKE LOWER(CONCAT('%', :userIDName, '%')))"
 			+ " AND c.expirationDate >= :date";
 	@Override
-	public List<User> searchUser(String userIDName, GeneralDate date) {
-		return this.queryProxy().query(SELECT_BY_ID_OR_NAME, SacmtUser.class)
+	public List<SearchUser> searchUser(String userIDName, GeneralDate date) {
+		List<Object[]> data = this.queryProxy()
+				.query(SELECT_BY_ID_OR_NAME, Object[].class)
 				.setParameter("userIDName", userIDName)
-				.setParameter("date", date).getList(c -> c.toDomain());
+				.setParameter("date", date).getList();
+		
+		List<SearchUser> result = new ArrayList<SearchUser>();
+		for(val object: data) {
+			String userID = object[0].toString();
+			String loginID = object[1].toString();
+			String personName = object[3] == null ? object[2].toString() : object[3].toString();
+	/*		String perSon = "";
+			if (object[3] == null){
+				perSon = object[2].toString();
+			}
+			else
+				perSon = object[3].toString();
+			result.add(new SearchUser(userID, loginID, perSon));*/
+		result.add(new SearchUser(userID, loginID, personName));
+		}
+		return result;
 	}
 
+	
+	
 	private final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c ";
 	@Override
 	public List<User> getAllUser() {
@@ -101,5 +128,16 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		});
 		return datas;
 	}
+
+	private final String SELECT_USER_BY_DEFUSER = "SELECT s FROM SacmtUser s WHERE s.sacmtUserPK.userID = :userID AND s.defaultUser = :defUser AND s.expirationDate = :expirationDate";
+	@Override
+	public Optional<User> getListUserByDefUser(String userID, int defUser, GeneralDate expirationDate) {
+		return this.queryProxy().query(SELECT_USER_BY_DEFUSER , SacmtUser.class)
+				.setParameter("userID", userID)
+				.setParameter("defUser", 0)
+				.setParameter("expirationDate", expirationDate).getSingle(c -> c.toDomain());
+	}
+
+
 
 }

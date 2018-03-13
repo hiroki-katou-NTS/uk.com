@@ -61,7 +61,7 @@ public class WorkHolidayTimeDailyPerformDto {
 		return c == null ? null : new TimeSpanForCalcDto(c.getStart().valueAsMinutes(), c.getEnd().valueAsMinutes());
 	}
 	
-	private static int getAttendanceTime(AttendanceTime time) {
+	private static Integer getAttendanceTime(AttendanceTime time) {
 		return time == null ? null : time.valueAsMinutes();
 	}
 	

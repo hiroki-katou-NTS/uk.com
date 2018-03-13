@@ -1,4 +1,4 @@
-package alarmPatternRepo;
+package nts.uk.ctx.at.function.dom.alarm;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
