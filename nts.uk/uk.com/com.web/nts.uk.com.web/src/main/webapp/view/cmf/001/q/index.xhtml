@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
 					width: 700, 
-					height: 500 
+					height: 400 
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -99,7 +99,9 @@
 	 						<tr>
 								<td width='300px'>
 									<div style="text-align: center">
+									   <com:ko-if bind="isCheckFinish() == true">
 									   <button id="BTN_IMPORT" data-bind="click : executionImport" class="x-large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button>
+									   </com:ko-if>
 									</div>
 								</td>
 								<td width='150px'>
