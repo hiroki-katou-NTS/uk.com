@@ -16,31 +16,31 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area" tabindex="-1">
+			<div id="functions-area">
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }"
 					tabindex="1">#{i18n.getText('CMF001_430')}</a>
 			</div>
-			<div id="contents-area" tabindex="-1">
+			<div id="contents-area">
 				<div id="ex_accept_wizard"
 					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
-					class="cf" tabindex="-1">
-					<div class="header" tabindex="-1">
-						<div class="image" data-icon="../resource/外部受入アイコン.jpg" tabindex="-1"></div>
-						<div class="content" tabindex="-1">#{i18n.getText('CMF001_432')}</div>
+					class="cf">
+					<div class="header">
+						<div class="image" data-icon="../resource/外部受入アイコン.jpg"></div>
+						<div class="content">#{i18n.getText('CMF001_432')}</div>
 					</div>
-					<div class="steps" tabindex="-1">
-						<div class="step-1" tabindex="-1">
+					<div class="steps">
+						<div class="step-1">
 							<span>#{i18n.getText('CMF001_433')}</span><br />
 							└#{i18n.getText('CMF001_434')}
 						</div>
-						<div class="end step-2" tabindex="-1">#{i18n.getText('CMF001_435')}</div>
+						<div class="end step-2">#{i18n.getText('CMF001_435')}</div>
 					</div>
-					<div class="contents" tabindex="-1">
-						<div class="step-1" tabindex="-1">
+					<div class="contents">
+						<div class="step-1">
 							<ui:include src="o.xhtml" />
 						</div>
-						<div class="step-2" tabindex="-1">
+						<div class="step-2">
 							<ui:include src="p.xhtml" />
 						</div>
 					</div>
