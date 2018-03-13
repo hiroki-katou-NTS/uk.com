@@ -730,8 +730,8 @@ module nts.uk.at.view.kmk003.a {
                  */
                 toListOriginalModel(newList: Array<Converted>): Array<Original> {
                     let self = this;
-                    self.optionalProcessing(newList);
-                    return _.map(newList, newVl => {
+                    let processed = self.optionalProcessing(newList);
+                    return _.map(processed, newVl => {
                         let vl = this.createOriginal();
                         vl.updateData(self.toOriginalDto(newVl));
                         return vl;
@@ -741,7 +741,9 @@ module nts.uk.at.view.kmk003.a {
                 /**
                  * Override if needed
                  */
-                optionalProcessing(list: Array<Converted>): void {}
+                optionalProcessing(list: Array<Converted>): Array<Converted> {
+                    return list;
+                }
 
                 /**
                  * From converted item to original Dto
@@ -832,54 +834,27 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class OffdayWorkTimeConverter extends FixedTableDataConverter<OtherFlowColumnSetting, HDWorkTimeSheetSettingModel> {
+            export class OffdayWorkTimeConverter extends FixedTableDataConverterNew<OtherFlowColumnSetting, HDWorkTimeSheetSettingModel> {
                 constructor() {
                     super();
                 }
 
-                toConvertedListTemp(list: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingDto> {
-                    let self = this;
-                    return _.map(list, item => self.toOriginalDto(item));
-                }
-
-                /**
-                 * To original list temp
-                 */
-                toOriginalListTemp(list: Array<HDWorkTimeSheetSettingModel>): Array<HDWorkTimeSheetSettingDto> {
-                    return _.map(list, item => {
-                        return item.toDto();
-                    });
-                }
-
-                /**
-                 * Convert to list time range
-                 */
-                toConvertedList(): Array<OtherFlowColumnSetting> {
-                    let self = this;
-                    return _.map(self.originalList(), wtz => new OtherFlowColumnSetting(wtz));
-                }
-
-                /**
-                 * Revert to original list
-                 */
-                fromConvertedList(newList: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingModel> {
-                    let self = this;
-                    self.setWorkTimeNo(newList);
-                    return _.map(newList, newVl => {
-                        let vl = new HDWorkTimeSheetSettingModel();
-                        vl.updateData(self.toOriginalDto(newVl));
-                        return vl;
-                    });
-                }
-
-                setWorkTimeNo(list: Array<OtherFlowColumnSetting>): void {
+                optionalProcessing(list: Array<OtherFlowColumnSetting>): Array<OtherFlowColumnSetting> {
                     let count = 0;
-                    _.forEach(list, item => item.workTimeNo = ++count);
+                    return _.forEach(list, item => item.workTimeNo = ++count);
+                }
+
+                createOriginal(): HDWorkTimeSheetSettingModel {
+                    return new HDWorkTimeSheetSettingModel();
+                }
+
+                createConverted(original: HDWorkTimeSheetSettingModel): OtherFlowColumnSetting {
+                    return new OtherFlowColumnSetting(original);
                 }
 
                 toOriginalDto(convertedModel: OtherFlowColumnSetting): HDWorkTimeSheetSettingDto {
                     return {
-                        workTimeNo: 0, // set workTimeNo later.
+                        workTimeNo: convertedModel.workTimeNo,
                         timezone: {
                             rounding: {
                                 rounding: convertedModel.rounding(),
