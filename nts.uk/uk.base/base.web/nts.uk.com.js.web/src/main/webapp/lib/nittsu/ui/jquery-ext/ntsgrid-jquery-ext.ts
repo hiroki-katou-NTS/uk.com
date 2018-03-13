@@ -248,11 +248,13 @@ module nts.uk.ui.jqueryExtentions {
                             let c = {
                                 id: rowId,
                                 columnKey: column.key,
-                                $element: $gridCell    
+                                $element: $gridCell,
+                                element: $gridCell[0]    
                             };
                             // Format cell
                             cellFormatter.style($self, c);
                             color.rememberDisabled($self, c);
+                            color.markIfEdit($self, c);
                         }
                     }, 0);
     
@@ -664,7 +666,11 @@ module nts.uk.ui.jqueryExtentions {
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                let origData = gridUpdate._getLatestValues(rId);
+                let origDs = $grid.data(internal.ORIG_DS);
+                let setting = $grid.data(internal.SETTINGS);
+                let idx = setting.descriptor.keyIdxes[rId];
+                if (util.isNullOrUndefined(idx)) return;
+                let origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
                     notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
@@ -709,8 +715,13 @@ module nts.uk.ui.jqueryExtentions {
                     let options = $grid.data(internal.GRID_OPTIONS);
                     if (!options || !options.getUserId || !options.userId) return;
                     
-                    let record = $grid.igGrid("findRecordByKey", rowId);
-                    let userId = options.getUserId(record[options.primaryKey]);
+                    let id; 
+                    if (util.isNullOrUndefined(id = origData[options.primaryKey])) {
+                        let record = $grid.igGrid("findRecordByKey", rowId);
+                        if (!record) return;
+                        id = record[options.primaryKey];
+                    }
+                    let userId = options.getUserId(id);
                     let $cell = internal.getCellById($grid, rowId, columnKey);
                     
                     let cols;
@@ -750,8 +761,13 @@ module nts.uk.ui.jqueryExtentions {
                 let options = $grid.data(internal.GRID_OPTIONS);
                 if (!options || !options.getUserId || !options.userId) return;
                 
-                let record = $grid.igGrid("findRecordByKey", rowId);
-                let userId = options.getUserId(record[options.primaryKey]);
+                let id;
+                if (!origData || util.isNullOrUndefined(id = origData[options.primaryKey])) {
+                    let record = $grid.igGrid("findRecordByKey", rowId);
+                    if (!record) return;
+                    id = record[options.primaryKey];
+                }
+                let userId = options.getUserId(id);
                 let $cell = internal.getCellById($grid, rowId, columnKey);
                 
                 if (userId === options.userId) {
