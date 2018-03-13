@@ -208,7 +208,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return newEntity;
 	}
 	
-	private KshstSphdClassfication convertToDbTypeClass(String companyId, String code, String sphdCode) {
+	private KshstSphdClassfication convertToDbTypeClass(String companyId, String code, int sphdCode) {
 
 		KshstSphdClassficationPK classficationPK = new KshstSphdClassficationPK(companyId,
 				sphdCode, code);
@@ -222,7 +222,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return newEntity;
 	}
 	
-	private KshstSphdEmployment convertToDbTypeEmt(String companyId, String code, String sphdCode) {
+	private KshstSphdEmployment convertToDbTypeEmt(String companyId, String code, int sphdCode) {
 		KshstSphdEmploymentPK employmentPK = new KshstSphdEmploymentPK(companyId,
 				sphdCode, code);
 		KshstSphdEmployment newEntity = new KshstSphdEmployment(employmentPK);
@@ -410,7 +410,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	 * Check Exists Special Holiday Code
 	 */
 	@Override
-	public boolean checkExists(String companyId, String specialHolidayCode) {
+	public boolean checkExists(String companyId, int specialHolidayCode) {
 		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
 				.setParameter("companyId", companyId).setParameter("specialHolidayCode", specialHolidayCode).getList();
 
@@ -456,7 +456,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	 * Delete Special Holiday
 	 */
 	@Override
-	public void delete(String companyId, String specialHolidayCode) {
+	public void delete(String companyId, int specialHolidayCode) {
 		KshstSpecialHolidayPK kshstSpecialHolidayPK = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshstSpecialHoliday.class, kshstSpecialHolidayPK);
 	}

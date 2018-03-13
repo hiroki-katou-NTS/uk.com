@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.auth.pubimp.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +18,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.service.ListCompanyService;
 
 /**
@@ -47,8 +47,7 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 		List<String> lstRoleId = new ArrayList<String>();
 		
 		// get roleIndividualGrant
-		List<RoleIndividualGrant> lstIndividualGrant = roleIndividualGrantRepository.findListByUserAndDate(userId, GeneralDate.today());
-		
+		List<RoleIndividualGrant> lstIndividualGrant = roleIndividualGrantRepository.findListByUserAndDateForCompanyAdmin(userId, GeneralDate.today(),RoleType.COMPANY_MANAGER);
 		//add list roleId
 		lstIndividualGrant.stream().forEach(item-> {
 			lstRoleId.add(item.getRoleId());

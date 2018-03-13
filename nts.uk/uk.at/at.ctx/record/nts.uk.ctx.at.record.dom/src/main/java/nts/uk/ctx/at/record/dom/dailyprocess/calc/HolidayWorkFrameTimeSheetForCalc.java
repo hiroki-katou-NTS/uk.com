@@ -180,22 +180,44 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param forceCalcTime 強制時間区分
 	 * @param autoCalcSet 
 	 */
-	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet) {
-		AttendanceTime calcTime = this.calcTotalTime();
+	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet,DeductionAtr dedAtr) {
+		
 		//区分をみて、計算設定を設定
 		//一旦、打刻から計算する場合　を入れとく
-		//if(){
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
-		//}
-		//	else {
-		//		autoCalcSet.
-		//	}
 		
-		if(!forceAtr.isApplyOrManuallyEnter()) {
-			//calcTime = new AttendanceTime(0);
+		AttendanceTime calcTime = holidayWorkTimeCalculationByAdjustTime(dedAtr);
+		
+		if(!forceAtr.isCalculateEmbossing()) {
+			calcTime = new AttendanceTime(0);
 		}
 		return calcTime;
 	}
+	
+	/**
+	 * 調整時間を考慮した時間の計算
+	 * @param autoCalcSet 時間外の自動計算区分
+	 * @return 残業時間枠時間帯クラス
+	 */
+	public AttendanceTime holidayWorkTimeCalculationByAdjustTime(DeductionAtr dedAtr) {
+		//休憩時間
+		AttendanceTime calcBreakTime = calcDedTimeByAtr(dedAtr,ConditionAtr.BREAK);
+		//組合外出時間
+		AttendanceTime calcUnionGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.UnionGoOut);
+		//私用外出時間
+		AttendanceTime calcPrivateGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.PrivateGoOut);
+		//介護
+		AttendanceTime calcCareTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Care);
+		//育児時間
+		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
+		return new AttendanceTime(this.calcrange.lengthAsMinutes()
+								 -calcBreakTime.valueAsMinutes()
+								 -calcUnionGoOutTime.valueAsMinutes()
+								 -calcPrivateGoOutTime.valueAsMinutes()
+								 -calcCareTime.valueAsMinutes()
+								 -calcChildTime.valueAsMinutes());
+	}
+	
 	
 	/**
 	 *　指定条件の控除項目だけの控除時間

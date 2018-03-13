@@ -8,7 +8,7 @@ import lombok.Value;
  */
 @Value
 public class GrantRelationshipDto {
-	String specialHolidayCode;
+	int specialHolidayCode;
 	String relationshipCode;
 	String relationshipName;
 	Integer grantRelationshipDay;

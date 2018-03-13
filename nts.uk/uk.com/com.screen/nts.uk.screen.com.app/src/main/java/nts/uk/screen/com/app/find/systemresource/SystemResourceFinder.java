@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.screen.com.app.find.systemresource;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,9 +39,34 @@ public class SystemResourceFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		List<SystemResourceData> result = this.repository.findListResource(companyId);
+		List<String> listResourceIds = Arrays.asList("Com_Person", "Com_Employment", "Com_Class", "Com_Jobtitle",
+				  "Com_Department", "Com_Workplace", "Com_Office", "Com_Company",
+				  "Com_Contract", "Com_User", "Com_Project", "Com_AdHocWork",
+				  "Com_BindingTime", "Com_AttendanceDays", "Com_AbsenceDays", "Com_PaidHoliday",
+				  "Com_FundedPaidHoliday", "Com_SubstituteWork", "Com_CompensationHoliday", "Com_ExsessHoliday",
+				  "Com_PlanedPaidHoliday","Com_SubstituteHoliday");
 		
-		List<SystemResourceDto> listDto = result.stream().map(e -> new SystemResourceDto(e.getResourceId(), e.getResourceContent())).collect(Collectors.toList());
+		ArrayList<SystemResourceData> resultFinal = new ArrayList<SystemResourceData>();
+		
+		// list data in resource cus
+		List<SystemResourceData> resultCus = this.repository.findListResourceCus(companyId);
+		
+		//list resource default
+		List<SystemResourceData> resultDefault = this.repository.findListResource();
+		
+		listResourceIds.stream().forEach(resourceId -> {
+			//find in list resourse cus
+			Optional<SystemResourceData> obj = resultCus.stream().filter(o -> o.getResourceId().equals(resourceId)).findFirst();
+			
+			// add to list result  final
+			if (obj.isPresent()) {
+				resultFinal.add(obj.get());
+			} else {
+				resultFinal.add(resultDefault.stream().filter(o -> o.getResourceId().equals(resourceId)).findFirst().get());
+			}
+		});
+		
+		List<SystemResourceDto> listDto = resultFinal.stream().map(e -> new SystemResourceDto(e.getResourceId(), e.getResourceContent())).collect(Collectors.toList());
 		
 		return listDto;
 	}

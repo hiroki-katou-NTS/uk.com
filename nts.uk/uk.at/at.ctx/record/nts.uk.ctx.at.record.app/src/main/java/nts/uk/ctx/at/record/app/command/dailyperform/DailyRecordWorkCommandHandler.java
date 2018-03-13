@@ -41,6 +41,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.DetermineErrorAlarmWorkRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -174,6 +175,9 @@ public class DailyRecordWorkCommandHandler {
 	
 	@Inject 
 	private DetermineErrorAlarmWorkRecordService determineErrorAlarmWorkRecordService;
+	
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 
 	public void handleAdd(DailyRecordWorkCommand command) {
 		handler(command, false);
@@ -194,8 +198,10 @@ public class DailyRecordWorkCommandHandler {
 				handler.handle((T) command.getCommand(c));
 			}
 		});
+		//remove data error
+		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
 		//check and insert error;
-		determineErrorAlarmWorkRecordService.insertErrorAlarm(command);
+		determineErrorAlarmWorkRecordService.insertErrorAlarm(command.getEmployeeId(), command.getWorkDate());
 	}
 	
 	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){

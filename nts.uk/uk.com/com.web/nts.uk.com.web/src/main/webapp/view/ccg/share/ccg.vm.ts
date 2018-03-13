@@ -1320,7 +1320,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return self.selectedCodeEmployee();
                 } else {
                     let employeeCodes = [];
-                    if (self.selectedCodeEmployee()) {
+                    if (!nts.uk.util.isNullOrEmpty(self.selectedCodeEmployee())) {
                         employeeCodes.push(self.selectedCodeEmployee());
                     }
                     return employeeCodes;

@@ -23,7 +23,9 @@ public class CompanyAdapterImp implements CompanyAdapter{
 	@Override
 	public CompanyDto getFirstMonth(String companyId) {
 		BeginOfMonthExport beginOfMonthExport = companyPub.getBeginOfMonth(companyId);
-		return new CompanyDto(beginOfMonthExport.getStartMonth());
+		CompanyDto companyDto = new CompanyDto();
+		companyDto.setStartMonth(beginOfMonthExport.getStartMonth());
+		return companyDto;
 	}
 
 }

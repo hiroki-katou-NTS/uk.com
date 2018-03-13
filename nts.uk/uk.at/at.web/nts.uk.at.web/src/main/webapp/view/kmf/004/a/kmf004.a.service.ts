@@ -10,7 +10,7 @@ module nts.uk.at.view.kmf004.a.service {
         findAllGrantRelationship: "at/shared/grantrelationship/findAll/"
     }
     
-    export function findAllGrantRelationship(specialHolidayCode: String): JQueryPromise<any>{
+    export function findAllGrantRelationship(specialHolidayCode: any): JQueryPromise<any>{
         return nts.uk.request.ajax(paths.findAllGrantRelationship+specialHolidayCode);    
     } 
 

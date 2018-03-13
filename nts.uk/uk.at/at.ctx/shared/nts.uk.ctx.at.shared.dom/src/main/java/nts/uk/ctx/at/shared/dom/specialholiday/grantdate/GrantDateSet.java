@@ -31,7 +31,7 @@ public class GrantDateSet {
 	/* 
 	 * Create from java type
 	 */
-	public static GrantDateSet createFromJavaType(String companyId, String specialHolidayCode, int grantDateNo,
+	public static GrantDateSet createFromJavaType(String companyId, int specialHolidayCode, int grantDateNo,
 			int grantDateMonth,
 			int grantDateYear){
 					return new GrantDateSet(companyId,
