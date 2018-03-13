@@ -60,8 +60,8 @@ public class OvertimeInputDto {
 				overTimeInput.getFrameNo(), 
 				overTimeInput.getTimeItemTypeAtr().value, 
 				"", 
-				overTimeInput.getStartTime().v(), 
-				overTimeInput.getEndTime().v(), 
+				overTimeInput.getStartTime() == null ? null : overTimeInput.getStartTime().v(), 
+				overTimeInput.getEndTime() == null? null: overTimeInput.getEndTime().v(), 
 				overTimeInput.getApplicationTime().v(),0);
 	}
 }
