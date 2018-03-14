@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class YearServiceComFinder {
 	@Inject
 	private YearServiceComRepository yearServiceComRep;
-	public YearServiceComDto finder(String specialHolidayCode){
+	public YearServiceComDto finder(int specialHolidayCode){
 		String companyId = AppContexts.user().companyId();
 		Optional<YearServiceCom> tam = this.yearServiceComRep.findAllCom(companyId, specialHolidayCode);
 		if(tam.isPresent()){

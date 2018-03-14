@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InsertGrantRelationshipCommand {
 	/**コード**/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	/**コード**/
 	private String relationshipCode;
 	/** 付与日数 **/

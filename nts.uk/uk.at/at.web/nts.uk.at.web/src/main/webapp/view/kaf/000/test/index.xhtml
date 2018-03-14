@@ -19,7 +19,10 @@
 			<label>End date</label>
 			<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
 			<button data-bind="click: openDetailScreen">Detail Screen</button>
-			
+			<div>
+				<input id="appID-input" type="text" placeholder="write appID" style="width: 400px"/>
+				<button data-bind="click: openSingle">Open Single By AppID</button>	
+			</div>
 			<div id="contents-area">
 			</div>
 			<div id="functions-area-bottom">

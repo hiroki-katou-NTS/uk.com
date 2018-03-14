@@ -21,6 +21,8 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	private static final String FIND_ERROR_CODE_BY_PERIOD;
 
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
+	
+	private static final String REMOVE_DATA;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -48,6 +50,14 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
 		builderString.append("ORDER BY a.krcdtSyainDpErListPK.processingDate ");
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :start ");
+		REMOVE_DATA = builderString.toString();
+		
 	}
 
 	@Override
@@ -127,6 +137,12 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				.setParameter("start", processingDate.start()).getList().stream().collect(Collectors.groupingBy(
 						c -> c.krcdtSyainDpErListPK.employeeId + c.krcdtSyainDpErListPK.processingDate.toString()))
 				.entrySet().stream().map(c -> toDomain(c.getValue())).collect(Collectors.toList());
+	}
+
+	@Override
+	public void removeParam(String sid, GeneralDate date) {
+		this.getEntityManager().createQuery(REMOVE_DATA, KrcdtSyainDpErList.class).setParameter("employeeId", sid)
+				.setParameter("start", date).executeUpdate();
 	}
 
 }

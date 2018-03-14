@@ -34,10 +34,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.id.subscribe(function(value) {
+                nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);
             });
             self.isAbolished.subscribe(function(value) {
+                nts.uk.ui.errors.clearAll();
                 if (value) {
                     if (!self.isFiltered) {
                         self.categoryList.removeAll();
@@ -115,6 +117,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         getDetailCategory(id: string) {
             let self = this;
             service.getDetailCtgInfo(id).done(function(data: any) {
+                nts.uk.ui.errors.clearAll();
                 if (data) {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,

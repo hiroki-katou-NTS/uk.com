@@ -22,7 +22,7 @@ public class KshstYearServiceSetPK implements Serializable{
 	public String companyId;
 	/**コード**/
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 	/** 年間サービスタイプ **/
 	@Column(name = "YEAR_SERVICE_NO")
 	public int yearServiceNo;

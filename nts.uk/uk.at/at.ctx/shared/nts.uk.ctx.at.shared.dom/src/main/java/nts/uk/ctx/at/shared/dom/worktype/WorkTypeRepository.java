@@ -203,4 +203,20 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	Optional<WorkType> findByDeprecated(String companyId, String workTypeCd);
+
+	/**
+	 * 振出用勤務種類の取得
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<WorkType> findWorkTypeForShorting(String companyId);
+
+	/**
+	 * 振休用勤務種類の取得
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<WorkType> findWorkTypeForPause(String companyId);
 }

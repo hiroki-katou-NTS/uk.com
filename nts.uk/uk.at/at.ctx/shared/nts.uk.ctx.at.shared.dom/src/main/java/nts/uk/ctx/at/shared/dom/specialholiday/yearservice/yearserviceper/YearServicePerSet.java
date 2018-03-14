@@ -14,7 +14,7 @@ public class YearServicePerSet {
 	/**会社ID**/
 	private String companyId;
 	
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	/**コード**/
 	private String yearServiceCode;
 	private int yearServiceNo;
@@ -35,7 +35,7 @@ public class YearServicePerSet {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	public static YearServicePerSet createFromJavaType(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceNo, Integer year, Integer month, Integer date){
+	public static YearServicePerSet createFromJavaType(String companyId, int specialHolidayCode, String yearServiceCode, int yearServiceNo, Integer year, Integer month, Integer date){
 		return new YearServicePerSet(companyId, specialHolidayCode, yearServiceCode, yearServiceNo, year, month, date);
 	}
 	/**

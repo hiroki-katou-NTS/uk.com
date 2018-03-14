@@ -124,15 +124,9 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 			if(CollectionUtil.isEmpty(approvers)){
 				continue;
 			}
-			Optional<ApprovalPhaseState> previousPhaseResult = approvalRootState.getListApprovalPhaseState().stream()
-					.filter(x -> x.getPhaseOrder() < approvalPhaseState.getPhaseOrder())
-					.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED))
-					.findAny();
-			Optional<ApprovalPhaseState> afterPhaseResult = approvalRootState.getListApprovalPhaseState().stream()
-					.filter(x -> x.getPhaseOrder() > approvalPhaseState.getPhaseOrder())
-					.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED))
-					.findAny();
-			if(!previousPhaseResult.isPresent()&&(!afterPhaseResult.isPresent()||approvalPhaseState.getPhaseOrder()==1)){
+			// ループ中の承認フェーズが承認中のフェーズかチェックする
+			Boolean judgmentResult = this.judgmentLoopApprovalPhase(approvalRootState, approvalPhaseState, pastPhaseFlag);
+			if(judgmentResult){
 				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
 				authorFlag = approvalStatusOutput.getApprovableFlag();
 				approvalAtr = approvalStatusOutput.getApprovalAtr();
@@ -214,6 +208,33 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	public Boolean judgmentAgentListByEmployee(String companyID, String employeeID, List<String> listApprover) {
 		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 		if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public Boolean judgmentLoopApprovalPhase(ApprovalRootState approvalRootState, ApprovalPhaseState currentPhase, Boolean pastPhaseFlg) {
+		// 過去フェーズフラグ＝trueの場合
+		if(pastPhaseFlg) {
+			return false;
+		}
+		
+		// パラメータのループ中のフェーズ番号をチェックする
+		if(currentPhase.getPhaseOrder()==1) {
+			return true;
+		}
+		
+		// ループ中のフェーズの番号-１から、降順にループする
+		for(int i = currentPhase.getPhaseOrder(); i>0; i--){
+			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(i-1);
+			List<String> approvers = this.getApproverFromPhase(approvalPhaseState);
+			if(approvers.isEmpty()){
+				continue;
+			}
+			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+				return true;
+			}
 			return false;
 		}
 		return true;

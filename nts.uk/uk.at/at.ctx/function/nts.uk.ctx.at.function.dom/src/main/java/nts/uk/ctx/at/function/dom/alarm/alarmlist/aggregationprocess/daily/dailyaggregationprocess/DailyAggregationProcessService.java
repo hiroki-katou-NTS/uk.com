@@ -97,7 +97,7 @@ public class DailyAggregationProcessService {
 					 }
 					break;
 				default :
-					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(tab2,employee.getWorkplaceId(),employee.getId(), period.getStartDate(), period.getEndDate());
+					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(employee.getWorkplaceId(),employee.getId(), period.getStartDate(), period.getEndDate());
 					if(!listCheckingData.isEmpty()) {
 						 listValueExtractAlarm.addAll(listCheckingData);
 					 }
