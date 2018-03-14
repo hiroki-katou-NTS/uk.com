@@ -454,9 +454,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // start component
                 nts.uk.ui.block.invisible(); // block ui
                 self.startComponent().done(() => {
-                    // set advanced search tab flag
-                    self.showAdvancedSearchTab = data.showAdvancedSearchTab &&
-                        (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
+                    self.setShowHideByReferenceRange();
 
                     // Initial tab panel
                     self.tabs(self.updateTabs());
@@ -491,6 +489,23 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dfd.promise();
             }
 
+            private setShowHideByReferenceRange(): void {
+                let self = this;
+                // set advanced search tab flag
+                self.showAdvancedSearchTab = self.showAdvancedSearchTab &&
+                    (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
+                // always show quick search if advanced search is hidden
+                self.showQuickSearchTab = self.showAdvancedSearchTab ? self.showQuickSearchTab : true;
+
+                self.showAllReferableEmployee = self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF
+                    && self.showAllReferableEmployee;
+                self.showSameWorkplace = self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF
+                    && self.showSameWorkplace;
+                self.showSameWorkplaceAndChild = (self.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE
+                    || self.referenceRange == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD)
+                    && self.showSameWorkplaceAndChild;
+            }
+
             /**
              * Start component
              */
@@ -501,18 +516,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.loadClosure()
                 ).done((refRange, noValue) => {
                     self.referenceRange = refRange;
-                    if (refRange == ConfigEnumReferenceRange.ONLY_MYSELF){
-                        self.showAllReferableEmployee = false;
-                        self.showSameWorkplace = false;
-                        self.showSameWorkplaceAndChild = false;
-                    }
-                    if ((refRange == ConfigEnumReferenceRange.ALL_EMPLOYEE || 
-                        refRange == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD) && 
-                        self.showSameWorkplaceAndChild){
-                        self.showSameWorkplaceAndChild = true;
-                    } else {
-                        self.showSameWorkplaceAndChild = false;
-                    }
                     dfd.resolve();
                 }).fail(err => nts.uk.ui.dialog.alertError(err));
 
@@ -563,8 +566,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Common properties */
                 self.showEmployeeSelection = options.showEmployeeSelection;
                 self.systemType = options.systemType;
-                // always show quick search if advanced search is hidden
-                self.showQuickSearchTab = options.showAdvancedSearchTab ? options.showQuickSearchTab : true;
+                self.showQuickSearchTab = options.showQuickSearchTab;
+                self.showAdvancedSearchTab = options.showAdvancedSearchTab;
                 // showBaseDate and showPeriod can not hide at the same time
                 self.showBaseDate = !options.showBaseDate && !options.showPeriod ? true : options.showBaseDate;
                 self.showClosure = options.showClosure;
