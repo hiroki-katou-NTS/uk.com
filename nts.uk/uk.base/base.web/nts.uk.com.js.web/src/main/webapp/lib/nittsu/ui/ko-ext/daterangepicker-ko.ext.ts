@@ -205,7 +205,7 @@ module nts.uk.ui.koExtentions {
                 validateProcess(newText, $target, isStart, oldValue, result);
                 var valueX = time.formatPattern(newText, dateFormat, ISOFormat);
                 if(!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date"){
-                    console.log(1);
+                    //console.log(1);
                     $target.val(valueX);
                 }
                 
