@@ -64,12 +64,30 @@ public class ChrDataFormatSet extends DataFormatSetting {
 		this.cdEditing = EnumAdaptor.valueOf(cdEditing, NotUseAtr.class);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
-		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
-		this.cdEditMethod = Optional.ofNullable(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
-		this.fixedVal = Optional.ofNullable(new DataSettingFixedValue(fixedVal));
-		this.cdEditDigit = Optional.ofNullable(new DataFormatCharacterDigit(cdEditDigit));
-		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
-		this.endDigit = Optional.of(new AcceptedDigit(endDigit));
+		if (cdConvertCd == null)
+			this.cdConvertCd = Optional.empty();
+		else
+			this.cdConvertCd = Optional.of(new CodeConvertCode(cdConvertCd));
+		if (cdEditMethod == null)
+			this.cdEditMethod = Optional.empty();
+		else
+			this.cdEditMethod = Optional.of(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
+		if (fixedVal == null)
+			this.fixedVal = Optional.empty();
+		else
+			this.fixedVal = Optional.of(new DataSettingFixedValue(fixedVal));
+		if (cdEditDigit == null)
+			this.cdEditDigit = Optional.empty();
+		else
+			this.cdEditDigit = Optional.of(new DataFormatCharacterDigit(cdEditDigit));
+		if (startDigit == null)
+			this.startDigit = Optional.empty();
+		else
+			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
+		if (endDigit == null)
+			this.endDigit = Optional.empty();
+		else
+			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
 	}
 
 }

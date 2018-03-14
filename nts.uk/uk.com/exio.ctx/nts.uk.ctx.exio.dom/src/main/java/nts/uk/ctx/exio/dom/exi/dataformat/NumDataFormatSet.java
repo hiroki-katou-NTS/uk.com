@@ -70,14 +70,34 @@ public class NumDataFormatSet extends DataFormatSetting {
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.decimalDivision = EnumAdaptor.valueOf(decimalDivision, DecimalDivision.class);
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
-
-		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
-		this.valueOfFixedValue = Optional.ofNullable(new DataSettingFixedValue(valueOfFixedValue));
-		this.decimalDigitNum = Optional.ofNullable(new DecimalDigitNumber(decimalDigitNum));
-		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
-		this.endDigit = Optional.ofNullable(new AcceptedDigit(endDigit));
-		this.decimalPointCls = Optional
-				.ofNullable(EnumAdaptor.valueOf(decimalPointCls, DecimalPointClassification.class));
-		this.decimalFraction = Optional.ofNullable(EnumAdaptor.valueOf(decimalFraction, DecimalFraction.class));
+		if (cdConvertCd == null)
+			this.cdConvertCd = Optional.empty();
+		else
+			this.cdConvertCd = Optional.of(new CodeConvertCode(cdConvertCd));
+		if (valueOfFixedValue == null)
+			this.valueOfFixedValue = Optional.empty();
+		else
+			this.valueOfFixedValue = Optional.of(new DataSettingFixedValue(valueOfFixedValue));
+		if (decimalDigitNum == null)
+			this.decimalDigitNum = Optional.empty();
+		else
+			this.decimalDigitNum = Optional.of(new DecimalDigitNumber(decimalDigitNum));
+		if (startDigit == null)
+			this.startDigit = Optional.empty();
+		else
+			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
+		if (endDigit == null)
+			this.endDigit = Optional.empty();
+		else
+			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
+		if (decimalPointCls == null)
+			this.decimalPointCls = Optional.empty();
+		else
+			this.decimalPointCls = Optional
+					.of(EnumAdaptor.valueOf(decimalPointCls, DecimalPointClassification.class));
+		if (decimalFraction == null)
+			this.decimalFraction = Optional.empty();
+		else
+			this.decimalFraction = Optional.of(EnumAdaptor.valueOf(decimalFraction, DecimalFraction.class));
 	}
 }

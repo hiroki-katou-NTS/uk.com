@@ -72,9 +72,21 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 		this.hourMinSelect = EnumAdaptor.valueOf(hourMinSelect, HourlySegment.class);
 		this.roundProc = EnumAdaptor.valueOf(roundProc, NotUseAtr.class);
 		this.decimalSelect = EnumAdaptor.valueOf(decimalSelect, DecimalSelection.class);
-		this.valueOfFixedValue = Optional.ofNullable(new DataSettingFixedValue(valueOfFixedValue));
-		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
-		this.endDigit = Optional.ofNullable(new AcceptedDigit(endDigit));
-		this.roundProcCls = Optional.ofNullable(EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
+		if (valueOfFixedValue == null)
+			this.valueOfFixedValue = Optional.empty();
+		else
+			this.valueOfFixedValue = Optional.of(new DataSettingFixedValue(valueOfFixedValue));
+		if (startDigit == null)
+			this.startDigit = Optional.empty();
+		else
+			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
+		if (endDigit == null)
+			this.endDigit = Optional.empty();
+		else
+			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
+		if (roundProcCls == null)
+			this.roundProcCls = Optional.empty();
+		else
+			this.roundProcCls = Optional.of(EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
 	}
 }
