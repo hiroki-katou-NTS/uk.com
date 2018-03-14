@@ -71,7 +71,7 @@ module nts.uk.com.view.cmf001.q {
                 }
 
                 self.codCode = ko.observable(self.params.conditionCd);
-                self.codName = ko.observable('A社人事管理情報');
+                self.codName = ko.observable(self.params.conditionName);
                 self.timeOver = ko.observable('00:00:00');
 
                 //init
