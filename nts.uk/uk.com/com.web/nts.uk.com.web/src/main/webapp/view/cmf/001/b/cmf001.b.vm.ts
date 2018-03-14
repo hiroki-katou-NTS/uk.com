@@ -86,6 +86,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             modal("/view/cmf/001/m/index.xhtml").onClosed(function() {
                 let output = getShared('CMF001mOutput');
                 if (output) {
+                    block.invisible();
                     let isOverride = output.checked;
                     let desCode = output.code;
                     let desName = output.name;
@@ -98,16 +99,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                                             override: isOverride};
                     service.copyStdData(copyParam).done(function(sourceCondSet: any){
                         //Reload grid condition setting
-                        self.getAllData(desCode).done(() => {
-                            info({ messageId: "Msg_15" }).then(() => {
-                                if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                    $("#B4_4").focus();
-                                } else {
-                                    $("#B4_3").focus();
-                                }
-                            });
-                        });
-                    });
+                        self.getAllData(desCode);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });;
                 }
             });
         }
@@ -153,8 +150,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     });
 //                    _rsList = _.sortBy(_rsList, ['code']);
                     self.listStandardImportSetting(_rsList);
-                    if (code) 
-                        self.selectedStandardImportSettingCode(code);
+                    if (code) {
+                        if (code == self.selectedStandardImportSettingCode())
+                            self.selectedStandardImportSettingCode.valueHasMutated();
+                        else
+                            self.selectedStandardImportSettingCode(code);
+                    }
                     else {
                         if (self.init() && !nts.uk.util.isNullOrUndefined(self.transitData) && !nts.uk.util.isNullOrUndefined(self.transitData.conditionCode)) {
                             self.selectedStandardImportSettingCode(self.transitData.conditionCode);

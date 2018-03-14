@@ -48,9 +48,9 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         saveData() {
             var self = this;
             $(".nts-editor").trigger("validate");
-            var dfd = $.Deferred();
-            block.invisible();
+            
             if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
                 service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
                     if(result && !self.checked()){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] }).then(() => {
@@ -62,13 +62,10 @@ module nts.uk.com.view.cmf001.m.viewmodel {
                             code: self.newCondCode(),
                             name: self.newCondName()
                         }, true);  
-                        dfd.resolve();
                         nts.uk.ui.windows.close();
                     }
                 }).fail(function(error) {
                     alertError(error);
-                    block.clear();
-                    dfd.reject();
                 }).always(() => {
                     block.clear();
                 });
