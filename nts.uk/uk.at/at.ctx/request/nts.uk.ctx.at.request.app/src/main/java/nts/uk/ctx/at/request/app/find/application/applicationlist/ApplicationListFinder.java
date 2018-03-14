@@ -100,7 +100,12 @@ public class ApplicationListFinder {
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), 
 				lstAppType, lstAgent, lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange());
 	}
-	
+	/**
+	 * find status approval
+	 * @param lstStatusApproval
+	 * @param appID
+	 * @return
+	 */
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
 		for (AppStatusApproval appStatus : lstStatusApproval) {
 			if(appStatus.getAppId().equals(appID)){
@@ -109,6 +114,12 @@ public class ApplicationListFinder {
 		}
 		return null;
 	}
+	/**
+	 * find status frame
+	 * @param lstFramStatus
+	 * @param appID
+	 * @return
+	 */
 	private boolean findStatusFrame(List<String> lstFramStatus, String appID){
 		for (String id : lstFramStatus) {
 			if(id.equals(appID)){
@@ -117,6 +128,12 @@ public class ApplicationListFinder {
 		}
 		return false;
 	}
+	/**
+	 * find status phase by appId
+	 * @param phaseState
+	 * @param appId
+	 * @return
+	 */
 	private String findStatusPhase(List<PhaseStatus> phaseState, String appId){
 		for (PhaseStatus phaseStatus : phaseState) {
 			if(phaseStatus.getAppID().equals(appId)){
@@ -125,6 +142,12 @@ public class ApplicationListFinder {
 		}
 		return null;
 	}
+	/**
+	 * find color by appId
+	 * @param lstTimeColor
+	 * @param appId
+	 * @return
+	 */
 	private int findColorAtr(List<CheckColorTime> lstTimeColor, String appId){
 		for (CheckColorTime checkColorTime : lstTimeColor) {
 			if(checkColorTime.getAppID().equals(appId)){
@@ -133,6 +156,11 @@ public class ApplicationListFinder {
 		}
 		return 0;
 	}
+	/**
+	 * find list appType
+	 * @param lstApp
+	 * @return
+	 */
 	private List<Integer> findListApp(List<ApplicationDto_New> lstApp){
 		List<Integer> lstAppType = new ArrayList<>();
 		for (ApplicationDto_New app : lstApp) {
