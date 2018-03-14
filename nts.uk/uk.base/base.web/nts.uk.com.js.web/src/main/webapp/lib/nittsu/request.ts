@@ -93,7 +93,7 @@ module nts.uk.request {
         queryString: QueryString;
 
         constructor(url: string) {
-            this.rawUrl = url;
+            this.rawUrl = url.split('?')[0];
             this.queryString = QueryString.parseUrl(url);
         }
 
@@ -107,7 +107,7 @@ module nts.uk.request {
 
         mergeRelativePath(relativePath) {
             var stack = this.rawUrl.split('/');
-            var parts = relativePath.split('/');
+            var parts = relativePath.split('?')[0].split('/');
             var queryStringToAdd = QueryString.parseUrl(relativePath);
 
             // 最後のファイル名は除外
@@ -127,8 +127,6 @@ module nts.uk.request {
                 else
                     stack.push(parts[i]);
             }
-
-            queryStringToAdd.mergeFrom(this.queryString);
 
             var queryStringParts = queryStringToAdd.hasItems()
                 ? '?' + queryStringToAdd.serialize()
@@ -546,7 +544,7 @@ module nts.uk.request {
             destination = location.current.mergeRelativePath(path);
         }
 
-        return destination.rawUrl;
+        return destination.serialize();
     }
     
     export module location {

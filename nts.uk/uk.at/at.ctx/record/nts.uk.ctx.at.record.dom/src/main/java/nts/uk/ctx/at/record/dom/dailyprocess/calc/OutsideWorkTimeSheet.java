@@ -195,7 +195,7 @@ public class OutsideWorkTimeSheet {
 	 */
 	public AttendanceTime caluclationAllOverTimeFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		if(this.overTimeWorkSheet.isPresent()) {
-			this.overTimeWorkSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+			return this.overTimeWorkSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
 		}
 		return new AttendanceTime(0);
 	}
@@ -208,7 +208,7 @@ public class OutsideWorkTimeSheet {
 	 */
 	public AttendanceTime caluclationAllHolidayFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		if(this.holidayWorkTimeSheet.isPresent()) {
-			this.holidayWorkTimeSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+			return this.holidayWorkTimeSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
 		}
 		return new AttendanceTime(0);
 	}

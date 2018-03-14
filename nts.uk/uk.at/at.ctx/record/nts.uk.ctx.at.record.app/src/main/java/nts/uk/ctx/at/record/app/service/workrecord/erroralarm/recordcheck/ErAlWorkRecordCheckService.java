@@ -91,11 +91,15 @@ public class ErAlWorkRecordCheckService {
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 
 		/** 勤務種類をチェックする */
-		if (condition.getWorkTypeCondition().isUse() && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
+		//TODO: uncomment
+//		if (condition.getWorkTypeCondition().isUse() && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
+		if (true && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 			return false;
 		}
 		/** 就業時間帯をチェックする */
-		if (condition.getWorkTimeCondition().isUse() && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
+		//TODO: uncomment
+//		if (condition.getWorkTimeCondition().isUse() && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
+			if (true && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 			return false;
 		}
 		/** 勤怠項目をチェックする */

@@ -126,7 +126,7 @@ public class OverTimeSheet {
 		AttendanceTime totalTime = new AttendanceTime(0);
 		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(OverTimeFrameTimeSheetForCalc frameTime : this.frameTimeSheets) {
-			totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}
@@ -222,7 +222,8 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
 			if(timeSheet.getMidNightTimeSheet().isPresent()) {
-				calcTime = calcTime.addMinutes(timeSheet.calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes());
+				val breakValue = timeSheet.getDedTimeSheetByAtr(DeductionAtr.Appropriate, ConditionAtr.BREAK).stream().map(tc -> tc.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+				calcTime = calcTime.addMinutes(timeSheet.calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes() - breakValue);
 			}
 		}
 		return calcTime;

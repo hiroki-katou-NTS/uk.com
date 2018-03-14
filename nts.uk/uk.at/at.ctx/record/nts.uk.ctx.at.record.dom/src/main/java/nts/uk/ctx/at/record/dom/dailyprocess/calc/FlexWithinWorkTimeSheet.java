@@ -74,7 +74,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @return
 	 */
 	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-			   										DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+			   										Optional<DeductionTimeSheet> tempDedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   										StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 			   										Optional<PersonalLaborCondition> personalCondition, LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
 			   										LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
@@ -88,7 +88,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		}
 		/*フレックス時間の計算*/
 		AttendanceTimeOfExistMinus flexTime = calcFlexTime(holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,predetermineTimeSet,
-				   										  dedTimeSheet,vacationClass,timevacationUseTimeOfDaily,statutoryDivision,siftCode,
+														  tempDedTimeSheet,vacationClass,timevacationUseTimeOfDaily,statutoryDivision,siftCode,
 				   										  personalCondition,  lateTimeSheet, leaveEarlyTimeSheet, lateTimeOfDaily,
 				   										  leaveEarlyTimeOfDaily, late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   										  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -103,7 +103,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * フレックス時間の計算
 	 */
 	public AttendanceTimeOfExistMinus calcFlexTime(HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-												   DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+												   Optional<DeductionTimeSheet> tempDedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 												   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 												   Optional<PersonalLaborCondition> personalCondition, LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
 												   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
@@ -113,7 +113,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		/*法定労働時間の算出*/
 		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet);
 		/*実働時間の算出*/
-		AttendanceTimeOfExistMinus zitudou = new AttendanceTimeOfExistMinus(calcWorkTime(PremiumAtr.RegularWork, CalculationByActualTimeAtr.CalculationByActualTime, dedTimeSheet, vacationClass, timevacationUseTimeOfDaily,
+		AttendanceTimeOfExistMinus zitudou = new AttendanceTimeOfExistMinus(calcWorkTime(PremiumAtr.RegularWork, CalculationByActualTimeAtr.CalculationByActualTime, tempDedTimeSheet, vacationClass, timevacationUseTimeOfDaily,
 				    statutoryDivision,
 				    workType,
 				    predetermineTimeSet,
@@ -131,7 +131,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				    addSettingOfRegularWork,
 				    vacationAddTimeSet).valueAsMinutes());
 		/*実働時間の算出(割増時間含む)*/
-		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(calcWorkTime(PremiumAtr.Premium, CalculationByActualTimeAtr.CalculationByActualTime,dedTimeSheet, vacationClass, timevacationUseTimeOfDaily,
+		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(calcWorkTime(PremiumAtr.Premium, CalculationByActualTimeAtr.CalculationByActualTime,tempDedTimeSheet, vacationClass, timevacationUseTimeOfDaily,
 				    statutoryDivision,
 				    workType,
 				    predetermineTimeSet,
@@ -153,11 +153,13 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
 				&& !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
 			/*フレックス時間算出*/
+			//zitudouとhouteiを入れ替える
 			flexTime = new AttendanceTimeOfExistMinus(houtei.getForActualWorkTime().v()).minusMinutes(zitudou.valueAsMinutes());
 			if(flexTime.lessThan(0)) {
 				flexTime = new AttendanceTimeOfExistMinus(houtei.getForWorkTimeIncludePremium().v()).minusMinutes(zitudouIncludePremium.valueAsMinutes());
 				flexTime = (flexTime.greaterThan(0))?new AttendanceTimeOfExistMinus(0):flexTime;
 				/*不足しているフレックス時間*/
+				//zitudouIncludとzitudouを入れ替える
 				AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
 			}
 		}
@@ -168,13 +170,14 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
 				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
 			/*不足しているフレックス時間*/
-			AttendanceTimeOfExistMinus husokuZiKasanZikan = new AttendanceTimeOfExistMinus(zitudouIncludePremium.v()).minusMinutes(zitudou.valueAsMinutes());
+			//flexTime = new AttendanceTimeOfExistMinus(houtei.getForWorkTimeIncludePremium().valueAsMinutes() - predetermineTimeSet.getAdditionSet().getPredTime().getPredetermineWorkTime());
+			flexTime = new AttendanceTimeOfExistMinus(zitudouIncludePremium.v()).minusMinutes(houtei.getForWorkTimeIncludePremium().valueAsMinutes());
 		}
 		else {
 			throw new RuntimeException("A combination that can not be selected is selected");
 		}
 		
-		if(autoCalcAtr.isCalculateEmbossing() && flexTime.greaterThan(0)) {
+		if((!autoCalcAtr.isCalculateEmbossing()) && flexTime.greaterThan(0)) {
 			flexTime = new AttendanceTimeOfExistMinus(0);
 		}
 		return flexTime;
