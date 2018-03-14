@@ -48,23 +48,26 @@ public class InsTimeDatFmSetDto {
 	/**
 	 * 有効桁数開始桁
 	 */
-	private int startDigit;
+	private Integer startDigit;
 
 	/**
 	 * 有効桁数終了桁
 	 */
-	private int endDigit;
+	private Integer endDigit;
 
 	/**
 	 * 端数処理区分
 	 */
-	private int roundProcCls;
+	private Integer roundProcCls;
 
 	public static InsTimeDatFmSetDto fromDomain(InsTimeDatFmSet domain) {
 		return new InsTimeDatFmSetDto(domain.getDelimiterSet().value, domain.getFixedValue().value,
 				domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value, domain.getRoundProc().value,
-				domain.getDecimalSelect().value, domain.getValueOfFixedValue().get().v(),
-				domain.getStartDigit().get().v(), domain.getEndDigit().get().v(), domain.getRoundProcCls().get().value);
+				domain.getDecimalSelect().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
+				domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null,
+				domain.getRoundProcCls().isPresent() ? domain.getRoundProcCls().get().value : null);
 	}
 
 }

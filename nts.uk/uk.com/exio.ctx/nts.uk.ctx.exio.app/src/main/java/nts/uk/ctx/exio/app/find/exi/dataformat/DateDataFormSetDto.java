@@ -26,7 +26,8 @@ public class DateDataFormSetDto {
 	private int formatSelection;
 
 	public static DateDataFormSetDto fromDomain(DateDataFormSet domain) {
-		return new DateDataFormSetDto(domain.getFixedValue().value, domain.getValueOfFixedValue().get().v(),
+		return new DateDataFormSetDto(domain.getFixedValue().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
 				domain.getFormatSelection().value);
 	}
 
