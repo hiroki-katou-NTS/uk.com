@@ -154,6 +154,8 @@ module nts.uk.at.view.kal001.a.model {
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
                         }));
+                    }).fail((errorTime)=>{
+                        alertError(errorTime);
                     });    
             });
         }
@@ -193,11 +195,25 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
+            if(self.currentAlarmCode()=='' ) return;
+          
+            if(listSelectedEmpployee.length==0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
+                return;
+            }
+            
             service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
+                if(dataExtractAlarm.extracting) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
+                    return;
+                }
+                if(dataExtractAlarm.nullData){
+                      nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
+                      return;
+                }
                 
-                
-                nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
+                nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
                 modal("/view/kal/001/b/index.xhtml").onClosed(() => {
                     
                 });

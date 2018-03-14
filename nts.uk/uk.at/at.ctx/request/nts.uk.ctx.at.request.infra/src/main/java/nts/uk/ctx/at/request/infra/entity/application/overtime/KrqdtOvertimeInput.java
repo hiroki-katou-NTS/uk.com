@@ -51,7 +51,7 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
     })
 	public KrqdtAppOvertime appOvertime;
     
-    public KrqdtOvertimeInput(KrqdtOvertimeInputPK pk , int startTime, int endTime, int appTime){
+    public KrqdtOvertimeInput(KrqdtOvertimeInputPK pk , Integer startTime, Integer endTime, Integer appTime){
     	this.krqdtOvertimeInputPK = pk;
     	this.startTime = startTime;
     	this.endTime = endTime;
@@ -63,8 +63,8 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
 	}
 	
 	public KrqdtOvertimeInput fromDomainValue(OverTimeInput overTimeInput){
-		this.startTime = overTimeInput.getStartTime().v();
-		this.endTime = overTimeInput.getEndTime().v();
+		this.startTime = overTimeInput.getStartTime() == null ? null : overTimeInput.getStartTime().v();
+		this.endTime = overTimeInput.getEndTime() == null ? null : overTimeInput.getEndTime().v();
 		this.applicationTime = overTimeInput.getApplicationTime().v();
 		return this;
 	}

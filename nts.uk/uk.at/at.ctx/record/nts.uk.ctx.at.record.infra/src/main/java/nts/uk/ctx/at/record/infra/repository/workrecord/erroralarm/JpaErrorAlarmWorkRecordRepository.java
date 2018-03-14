@@ -133,12 +133,17 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toConditionDomain(entity)).collect(Collectors.toList());
 	}
 
-	private final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode";
+	private final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId";
 	@Override
 	public List<ErrorAlarmWorkRecord> getListErAlByListCode(String companyId, List<String> listCode) {
-		List<ErrorAlarmWorkRecord> datas = new  ArrayList<>();
-		CollectionUtil.split(listCode,1000,subIdList->{
-			datas.addAll(this.queryProxy().query(SELECT_ERAL_BY_LIST_CODE,KwrmtErAlWorkRecord.class).setParameter("listCode", listCode).getList(c->KwrmtErAlWorkRecord.toDomain(c)));
+		List<ErrorAlarmWorkRecord> datas = new ArrayList<>();
+		if (listCode.isEmpty())
+			return new ArrayList<ErrorAlarmWorkRecord>();
+		
+		CollectionUtil.split(listCode, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(SELECT_ERAL_BY_LIST_CODE, KwrmtErAlWorkRecord.class)
+					.setParameter("listCode", subIdList).setParameter("companyId", companyId)
+					.getList(c -> KwrmtErAlWorkRecord.toDomain(c)));
 		});
 		return datas;
 	}

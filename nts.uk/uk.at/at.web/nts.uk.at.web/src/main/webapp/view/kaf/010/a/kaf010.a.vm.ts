@@ -320,11 +320,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
-            $("#inpStartTime1").trigger("validate");
-            $("#inpEndTime1").trigger("validate");
+            if(self.displayCaculationTime()){
+                $("#inpStartTime1").trigger("validate");
+                $("#inpEndTime1").trigger("validate");
+                if(!self.validate()){return;}
+            }
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   
-            if(!self.validate()){return;}
+            
             
             //block screen
             nts.uk.ui.block.invisible();

@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
@@ -35,10 +37,12 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class CheckConvertPrePost {
 	final String DATE_FORMAT = "yyyy/MM/dd";
+	final static String ZEZO_TIME = "0:00";
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
@@ -139,7 +143,7 @@ public class CheckConvertPrePost {
 		if (appOvertime.getSiftCode() != null) {
 			SiftType siftType = new SiftType();
 
-			siftType.setSiftCode(appOvertime.getSiftCode().toString());
+			siftType.setSiftCode(appOvertime.getSiftCode().toString().equals("000")? "" : appOvertime.getSiftCode().toString());
 			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
 					appOvertime.getSiftCode().toString());
 			if (workTime.isPresent()) {
@@ -147,10 +151,8 @@ public class CheckConvertPrePost {
 			}
 			preAppOvertimeDto.setSiftTypePre(siftType);
 		}
-		preAppOvertimeDto.setWorkClockFrom1Pre(appOvertime.getWorkClockFrom1());
-		preAppOvertimeDto.setWorkClockTo1Pre(appOvertime.getWorkClockTo1());
-		preAppOvertimeDto.setWorkClockFrom2Pre(appOvertime.getWorkClockFrom2());
-		preAppOvertimeDto.setWorkClockTo2Pre(appOvertime.getWorkClockTo2());
+		preAppOvertimeDto.setWorkClockFromTo1Pre(convertWorkClockFromTo(appOvertime.getWorkClockFrom1(),appOvertime.getWorkClockTo1()));
+		preAppOvertimeDto.setWorkClockFromTo2Pre(convertWorkClockFromTo(appOvertime.getWorkClockFrom2(),appOvertime.getWorkClockTo2()));
 		
 		List<OvertimeInputDto> overtimeInputDtos = new ArrayList<>();
 		List<OverTimeInput> overtimeInputs = appOvertime.getOverTimeInput();
@@ -160,8 +162,8 @@ public class CheckConvertPrePost {
 				OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceType().value);
 				overtimeInputDto.setFrameNo(overTimeInput.getFrameNo());
-				overtimeInputDto.setStartTime(overTimeInput.getStartTime().v());
-				overtimeInputDto.setEndTime(overTimeInput.getEndTime().v());
+				overtimeInputDto.setStartTime(overTimeInput.getStartTime()== null ? null : overTimeInput.getStartTime().v());
+				overtimeInputDto.setEndTime(overTimeInput.getEndTime() == null ? null : overTimeInput.getEndTime().v());
 				overtimeInputDto.setApplicationTime(overTimeInput.getApplicationTime().v());
 				overtimeInputDtos.add(overtimeInputDto);
 				frameNo.add(overTimeInput.getFrameNo());
@@ -198,6 +200,39 @@ public class CheckConvertPrePost {
 			divergenceReasonDtos.add(divergenceReasonDto);
 		}
 		result.setDivergenceReasonDtos(divergenceReasonDtos);
+	}
+	private String convertWorkClockFromTo(Integer startTime, Integer endTime){
+		String WorkClockFromTo = "";
+		if(startTime == null && endTime != null){
+			TimeWithDayAttr endTimeWithDay = new TimeWithDayAttr(endTime);
+			WorkClockFromTo = " "
+					+  "　~　"
+					+ endTimeWithDay.getDayDivision().description
+					+ convert(endTime);
+		}
+		if(startTime != null && endTime != null){
+			TimeWithDayAttr startTimeWithDay = new TimeWithDayAttr(startTime);
+			TimeWithDayAttr endTimeWithDay = new TimeWithDayAttr(endTime);
+		 WorkClockFromTo = startTimeWithDay.getDayDivision().description
+							+ convert(startTime) + "　~　"
+							+ endTimeWithDay.getDayDivision().description
+							+ convert(endTime);
+		}
+		return WorkClockFromTo;
+	}
+	private String convert(int minute) {
+		String hourminute = Strings.EMPTY;
+		if (minute == -1) {
+			return null;
+		} else if (minute == 0) {
+			hourminute = ZEZO_TIME;
+		} else {
+			int hour = Math.abs(minute) / 60;
+			int hourInDay = hour % 24;
+			int minutes =  Math.abs(minute) % 60;
+			hourminute = hourInDay + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+		}
+		return hourminute;
 	}
 	
 }
