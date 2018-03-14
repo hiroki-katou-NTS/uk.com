@@ -586,7 +586,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Quick search tab options */
                 self.showAllReferableEmployee = options.showAllReferableEmployee;
-                self.showOnlyMe = options.showOnlyMe;
+                self.showOnlyMe = true;
                 self.showSameWorkplace = options.showSameWorkplace;
                 self.showSameWorkplaceAndChild = options.showSameWorkplaceAndChild;
 
