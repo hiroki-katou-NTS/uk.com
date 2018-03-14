@@ -47,6 +47,7 @@ module nts.uk.at.view.kmk011.d {
         export class DivergenceTimeDto {
             divergenceTimeNo: number;
             divergenceTimeName: string;
+            divergenceTimeUseSet:number;
         }
         
         export class ComDivergenceTimeSettingSaveCommand {
@@ -58,18 +59,18 @@ module nts.uk.at.view.kmk011.d {
         }
         
         export class ComDivergenceTimeSettingDto {
-            divergenceTimeNo: number;
-            notUseAtr: number;
-            historyId: string;
-            alarmTime: number;
-            errorTime: number;
+            divergenceTimeNo: KnockoutObservable<number>;
+            notUseAtr: KnockoutObservable<number>;
+            historyId: KnockoutObservable<string>;
+            alarmTime: KnockoutObservable<number>;
+            errorTime: KnockoutObservable<number>;
             
             constructor(divergenceTimeNo: number, notUseAtr: number, historyId: string, alarmTime: number, errorTime: number){
-                this.divergenceTimeNo = divergenceTimeNo;
-                this.notUseAtr = notUseAtr;
-                this.historyId = historyId;
-                this.alarmTime = alarmTime;
-                this.errorTime = errorTime;
+                this.divergenceTimeNo = ko.observable(divergenceTimeNo);
+                this.notUseAtr = ko.observable(notUseAtr);
+                this.historyId = ko.observable(historyId);
+                this.alarmTime = ko.observable(alarmTime);
+                this.errorTime = ko.observable(errorTime);
             }
         }
     }

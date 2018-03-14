@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 import nts.uk.ctx.at.record.infra.repository.divergence.time.JpaCompanyDivergenceReferenceTimeSetMemento;
 
+@Stateless
 public class JpaDivergenceReasonInputMethodRepository extends JpaRepository implements DivergenceReasonInputMethodRepository{
 
 	@Override

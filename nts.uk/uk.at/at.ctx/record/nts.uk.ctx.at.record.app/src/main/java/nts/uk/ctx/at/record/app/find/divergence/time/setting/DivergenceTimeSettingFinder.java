@@ -4,13 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-public class DivergenceTimeFinder {
+@Stateless
+public class DivergenceTimeSettingFinder {
 	
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;

@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class DivergenceReasonInputMethodFinder {
 	@Inject
 	private DivergenceReasonInputMethodRepository divReasonRepo;

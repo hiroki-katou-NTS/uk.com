@@ -21,7 +21,7 @@
 				<tbody>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(1).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -29,18 +29,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(1).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(1).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_1"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(1).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -49,7 +49,7 @@
 							<input id="error_time_1"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(1).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -57,7 +57,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(2).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -65,18 +65,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(2).noUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(2).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_2"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(2).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -85,7 +85,7 @@
 							<input id="error_time_2"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(2).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -93,7 +93,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj.get(3).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -101,18 +101,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(3).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(3).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_3"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(3).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -121,7 +121,7 @@
 							<input id="error_time_3"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(3).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -129,7 +129,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(4).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -137,18 +137,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(4).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(4).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_4"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(4).divergenceTimeNo(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -157,7 +157,7 @@
 							<input id="error_time_4"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(4).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -165,7 +165,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(5).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -173,18 +173,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(5).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(5).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_5"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(5).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -193,7 +193,7 @@
 							<input id="error_time_5"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(5).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -201,7 +201,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(6).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -209,18 +209,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(6).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(6).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_6"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(6).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -229,7 +229,7 @@
 							<input id="error_time_6"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(6).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -237,7 +237,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(7).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -245,18 +245,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(7).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(7).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_7"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(7).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -265,7 +265,7 @@
 							<input id="error_time_7"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(7).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -273,7 +273,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(8).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -281,18 +281,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(8).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(8).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_8"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(8).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -301,7 +301,7 @@
 							<input id="error_time_8"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(8).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -309,7 +309,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(9).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -317,18 +317,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(9).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(9).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_9"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(9).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -337,7 +337,7 @@
 							<input id="error_time_9"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(9).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -345,7 +345,7 @@
 					</tr>
 					<tr data-bind="css: { disable_table_row: isDisableAllRow() }">
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(10).divergenceTimeNo()"></span>
 						</td>
 						<td>  
 							<div class="cf" data-bind="ntsSwitchButton: {
@@ -353,18 +353,18 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: mapObj.get(10).notUseAtr(),
 								required: required,
 								enable: enable }"></div>
 						</td>
 						<td>
-							<span data-bind="text: myMessage"></span>
+							<span data-bind="text: mapObj2.get(10).divergenceTimeName()"></span>
 						</td>
 						<td>
 							<input id="alarm_time_10"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_32]',
-											value: emailAuth,
+											value: mapObj.get(10).alarmTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
@@ -373,7 +373,7 @@
 							<input id="error_time_10"
 										data-bind="ntsTextEditor: {
 											name: '#[KMK011_33]',
-											value: emailAuth,
+											value: mapObj.get(10).errorTime(),
 											required: true,
 											option: {width: '50px'},
                                            	constraint: 'DivergenceReferenceTime'}" />
