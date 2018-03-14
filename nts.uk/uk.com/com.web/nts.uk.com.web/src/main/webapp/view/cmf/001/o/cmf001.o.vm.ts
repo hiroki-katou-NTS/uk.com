@@ -348,6 +348,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 mode: 0,
                 systemType: self.selectedSysType(),
                 conditionCd: self.selectedConditionCd(),
+                conditionName: self.selectedConditionName(),
                 fileName: self.fileName(),
                 fileId: self.fileId(),
                 totalRecord: self.totalRecord()
