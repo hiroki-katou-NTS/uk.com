@@ -12,12 +12,16 @@ module nts.uk.at.view.kal002.b.viewmodel {
             var self = this;
 
             var dfd = $.Deferred();
+            var MailSettingsDefault = ({subject : "", text : "", mailAddressCC : [], mailAddressBCC : [], mailRely : ""});
             new service.Service().getAllMailSet().done(function(data: MailAutoAndNormalDto) {
                 //console.log(data);
                 if(data){
+                    data.mailSettingNormalDto.mailSettings = data.mailSettingNormalDto.mailSettings == null? MailSettingsDefault: data.mailSettingNormalDto.mailSettings;
+                    data.mailSettingNormalDto.mailSettingAdmins = data.mailSettingNormalDto.mailSettingAdmins == null? MailSettingsDefault: data.mailSettingNormalDto.mailSettingAdmins;
+                    data.mailSettingAutomaticDto.mailSettings = data.mailSettingAutomaticDto.mailSettings == null? MailSettingsDefault: data.mailSettingAutomaticDto.mailSettings;
+                    data.mailSettingAutomaticDto.mailSettingAdmins = data.mailSettingAutomaticDto.mailSettingAdmins == null? MailSettingsDefault: data.mailSettingAutomaticDto.mailSettingAdmins;
+                        
                     self.MailAutoAndNormalDto = data;
-                }else{
-                     nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                 }
                 dfd.resolve(); 
             });
@@ -44,6 +48,10 @@ module nts.uk.at.view.kal002.b.viewmodel {
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
                 if (data != null) {
+                    if(data.mailSettingAutomaticDto == null)
+                        data.mailSettingAutomaticDto = {
+                                
+                        }
                     self.MailAutoAndNormalDto.mailSettingNormalDto.mailSettingAdmins = data;
                 }
             });
@@ -131,7 +139,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
             this.text = mailSettingsDto.text;
             this.mailAddressCC = mailSettingsDto.mailAddressCC;
             this.mailAddressBCC = mailSettingsDto.mailAddressBCC;
-            this.mailRely = mailSettingsDto.mailRely
+            this.mailRely = mailSettingsDto.mailRely;
         }
     }
     
