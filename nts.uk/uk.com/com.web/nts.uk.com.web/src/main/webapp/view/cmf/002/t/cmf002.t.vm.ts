@@ -48,8 +48,8 @@ module nts.uk.com.view.cmf002.t.viewmodel {
 //            if (!nts.uk.ui.errors.hasError()) {
 //                service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
 //                    if(result && !self.checked()){
-//                        nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] }).then(() => {
-//                            $("#M4").focus();  
+//                        nts.uk.ui.dialog.alertError({ messageId: "Msg_3", messageParams: [nts.uk.resource.getText("T3_2")] }).then(() => {
+//                            $("#T4").focus();  
 //                        });
 //                    } else {
 //                        setShared('CMF001mOutput', {

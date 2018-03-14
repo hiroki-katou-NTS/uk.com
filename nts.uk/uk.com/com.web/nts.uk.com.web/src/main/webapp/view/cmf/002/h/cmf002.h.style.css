@@ -34,16 +34,19 @@ div.label {
 
 .title_content_left{
 	float:left;
-	font-size: 21px;
 }
 
 .title_content_right{
 	width:100px;
 	float:right;
-	text-align: center;
-	padding-top: 5px;
 	
 }
+
+.nts_dataTypes {
+	margin-left: 50px;
+    width: 252px;
+}
+
 
 .clear {
 	clear: both;

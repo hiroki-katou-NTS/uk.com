@@ -1,17 +1,12 @@
-#contents-area {
-	margin: 20px;
-}
-
 div.form-label {
     display: inline-block;
     box-sizing: border-box;
-    height: 30px;
-    width: 90px;
+    height: 37px;
     border-style: solid;
     border-color: #97D155;
     border-width: 0 0 0 5px;
     padding: 0 10px 0 8px;
-    margin:10px 5px 20px 50px;
+
 }
 
 
@@ -28,55 +23,31 @@ div.label {
 	text-align: justify;
 }
 
-.title_content {
-	margin-bottom: 30px;
+#table_content {
+	margin-left: 20px;
 }
 
-.title_content_left{
-	float:left;
-	font-size: 21px;
+.title_content{
+	margin:20px;
+	font-size: 1.5em;
 }
 
-.title_content_right{
-	width:100px;
-	float:right;
-	text-align: center;
-	padding-top: 5px;
-	
-}
-
-.clear {
-	clear: both;
-}
 td{
-	margin:5px 5px 10px 10px;
-	height: 20px;
+	width: 100px;
+	height: 40px;
 }
 
-.td_center {
+
+.col_left {
+	width: 120px;
+}
+
+.col_center {
 	width: 50px;
-	text-align: center;
 }
 
-.td_center_sp {
-		width: 35px;
-}
-
-.td_right {
-	padding-left: 5px;	
-}
-
-.td_left {
-	width: 120px;	
-}
-
-tr{
-	margin-bottom: 10px;
-	width: auto;
-}
-
-.checkbox_bottom {
-	margin-left: 46px;
+input {
+	height: 20px;
 }
 
 button.x-large {
@@ -94,4 +65,17 @@ button.large {
     margin-bottom: 4px;
     height: 34px;
     box-shadow: 0 4px rgba(0, 0, 0, 0.4);
+}
+
+#tbl_devision {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.col_center_dv {
+	width: 100px;
+}
+
+.col_right_dv {
+	width: 40px;
 }
