@@ -60,9 +60,13 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             self.characterDataFormatSetting().fixedValue.subscribe(function(selectedValue: any) {
                 if (selectedValue == 0){
                     $('#H5_5').ntsError('clear');
-                    $('#H2_5').ntsError('check');
-                    $('#H2_8').ntsError('check');
-                    $('#H3_5').ntsError('check');
+                    if (self.characterDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE){
+                        $('#H2_5').ntsError('check');
+                        $('#H2_8').ntsError('check');
+                    }
+                    if (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE){
+                        $('#H3_5').ntsError('check');
+                    }
                 }else{
                     $('#H2_5').ntsError('clear');
                     $('#H2_8').ntsError('clear');

@@ -11,7 +11,7 @@
 			<com:ValidatorScript>
 	            nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
 	            nts.uk.ctx.exio.dom.exi.dataformat.CodeEditDigit
-	            nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed
+	            nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -177,7 +177,7 @@
 								data-bind="ntsTextEditor: {
 								value: fixedVal,
 								name:'#{i18n.getText('CMF001_296')}',
-								constraint: 'ValueOfFixed',
+								constraint: 'DataSettingFixedValue',
 								required: true,
 								option : {width : '200px'},
 								enable: $parent.enableFixedValue()}" />
