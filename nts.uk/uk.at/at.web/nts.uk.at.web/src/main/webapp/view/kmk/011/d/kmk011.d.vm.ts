@@ -2,6 +2,8 @@ module nts.uk.at.view.kmk011.d {
     
     import viewModelScreenE = nts.uk.at.view.kmk011.e.viewmodel;
     
+    import CompanyDivergenceReferenceTimeHistoryDto = nts.uk.at.view.kmk011.d.model.CompanyDivergenceReferenceTimeHistoryDto;
+    
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import blockUI = nts.uk.ui.block;
@@ -63,7 +65,7 @@ module nts.uk.at.view.kmk011.d {
                 if (typeStart == SideBarTabIndex.FIRST) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
-                    $.when(_self.fillData(), _self.findAllManageUseUnit()).done(function() {
+                    $.when(_self.fillListHistory(), _self.findAllManageUseUnit(), _self.fillListItemSetting()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
                     });    
@@ -81,12 +83,30 @@ module nts.uk.at.view.kmk011.d {
                 return dfd.promise();
             }
             
-            private fillData() : JQueryPromise<any> {
+            private fillListItemSetting(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
+                service.getAllItemSetting().done(() => {
+                    
+                });
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
+            private fillListHistory() : JQueryPromise<any> {
+                let _self = this;
+                var dfd = $.Deferred<any>();
+                var historyData: any = [];
+                var textDisplay = "";
                 
-                service.getAllHistory().done(() => {
-                    dfd.resolve();    
+                //fill list history
+                service.getAllHistory().done((response: any) => {
+                     response.forEach(function(item: CompanyDivergenceReferenceTimeHistoryDto){
+                              textDisplay = item.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.endDate;
+                              historyData.push(new HistModel(item.historyId, textDisplay));
+                     });
+                    _self.histList(historyData);
+                    dfd.resolve();
                 });
                 
                 return dfd.promise();
@@ -147,6 +167,16 @@ module nts.uk.at.view.kmk011.d {
         export enum SideBarTabIndex {
             FIRST = 0,
             SECOND = 1,
+        }
+        
+        export class HistModel {
+            historyId: string;
+            textDisplay: string;
+            
+            constructor(historyId: string, textDisplay: string) {
+                this.historyId = historyId;
+                this.textDisplay = textDisplay;
+            }
         }
         
     }

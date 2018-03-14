@@ -4,16 +4,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 
+@Stateless
 public class CompanyDivergenceReferenceTimeFinder {
 	@Inject
 	private CompanyDivergenceReferenceTimeRepository comDivergenceRefTimeRepository;
 	
-	public List<CompanyDivergenceReferenceTimeDto> getAllDivergenceReferenceTimeItem(String historyId){
+	public List<CompanyDivergenceReferenceTimeDto> getDivergenceReferenceTimeItemByHist(String historyId){
 		
 		List<CompanyDivergenceReferenceTime> listDomain = this.comDivergenceRefTimeRepository.findAll(historyId);
 		

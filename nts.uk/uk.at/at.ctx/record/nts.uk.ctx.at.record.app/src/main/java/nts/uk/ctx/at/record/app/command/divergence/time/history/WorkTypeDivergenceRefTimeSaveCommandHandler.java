@@ -6,10 +6,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 
 @Stateless
-public class CompanyDivergenceReferenceTimeCommandHandler extends CommandHandler<CompanyDivergenceReferenceTimeCommand>{
+public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<WorkTypeDivergenceRefTimeSaveCommand> {
 
 	@Override
-	protected void handle(CommandHandlerContext<CompanyDivergenceReferenceTimeCommand> context) {
+	protected void handle(CommandHandlerContext<WorkTypeDivergenceRefTimeSaveCommand> context) {
 		// TODO Auto-generated method stub
 		
 	}

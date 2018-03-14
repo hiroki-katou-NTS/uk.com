@@ -15,7 +15,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class CompanyDivergenceReferenceTimeHistoryCommand.
  */
 @Data
-public class CompanyDivergenceReferenceTimeHistoryCommand implements CompanyDivergenceReferenceTimeHistoryGetMemento {
+public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceReferenceTimeHistoryGetMemento {
 	
 	/** The history id. */
 	private String historyId;
@@ -29,7 +29,7 @@ public class CompanyDivergenceReferenceTimeHistoryCommand implements CompanyDive
 	/**
 	 * Instantiates a new company divergence reference time history command.
 	 */
-	public CompanyDivergenceReferenceTimeHistoryCommand() {
+	public ComDivergenceRefTimeHistSaveCommand() {
 		super();
 	}
 	

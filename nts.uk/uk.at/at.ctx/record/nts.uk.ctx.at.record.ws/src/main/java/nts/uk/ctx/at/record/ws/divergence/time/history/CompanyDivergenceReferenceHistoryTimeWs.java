@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.divergence.time.history.CompanyDivergenceReferenceTimeHistoryCommand;
-import nts.uk.ctx.at.record.app.command.divergence.time.history.CompanyDivergenceReferenceTimeHistoryCommandHandler;
+import nts.uk.ctx.at.record.app.command.divergence.time.history.ComDivergenceRefTimeHistSaveCommand;
+import nts.uk.ctx.at.record.app.command.divergence.time.history.ComDivergenceRefTimeHistSaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryFinder;
 
@@ -27,7 +27,7 @@ public class CompanyDivergenceReferenceHistoryTimeWs extends WebService{
 	
 	/** The history save handler. */
 	@Inject
-	private CompanyDivergenceReferenceTimeHistoryCommandHandler historySaveHandler;
+	private ComDivergenceRefTimeHistSaveCommandHandler historySaveHandler;
 	
 	/**
 	 * Gets the all company divergence reference time history.
@@ -59,7 +59,7 @@ public class CompanyDivergenceReferenceHistoryTimeWs extends WebService{
 	 */
 	@POST
 	@Path("save")
-	public void save(CompanyDivergenceReferenceTimeHistoryCommand command){
+	public void save(ComDivergenceRefTimeHistSaveCommand command){
 		this.historySaveHandler.handle(command);
 	}
 }

@@ -47,8 +47,8 @@ public class CompanyDivergenceReferenceTimeHistoryFinder {
 	 * @return the history
 	 */
 	public CompanyDivergenceReferenceTimeHistoryDto getHistory(String historyId) {
-		String companyId = AppContexts.user().companyId();
-		CompanyDivergenceReferenceTimeHistory domain = this.comDivergenceRefTimeHistRepoitory.findByHistId(companyId,historyId);
+//		String companyId = AppContexts.user().companyId();
+		CompanyDivergenceReferenceTimeHistory domain = this.comDivergenceRefTimeHistRepoitory.findByHistId(historyId);
 		
 		CompanyDivergenceReferenceTimeHistoryDto dto = new CompanyDivergenceReferenceTimeHistoryDto(domain.getHistoryItems().get(0).identifier(), 
 																				domain.getHistoryItems().get(0).start(), 

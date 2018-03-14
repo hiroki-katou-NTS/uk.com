@@ -8,10 +8,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CompanyDivergenceReferenceTimeHistoryCommandHandler extends CommandHandler<CompanyDivergenceReferenceTimeHistoryCommand>{
+public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<ComDivergenceRefTimeHistSaveCommand>{
 	
 	@Inject
 	private CompanyDivergenceReferenceTimeHistoryRepository historyRepo;
@@ -20,16 +19,16 @@ public class CompanyDivergenceReferenceTimeHistoryCommandHandler extends Command
 	private CompanyDivergenceReferenceTimeRepository itemRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<CompanyDivergenceReferenceTimeHistoryCommand> context) {
+	protected void handle(CommandHandlerContext<ComDivergenceRefTimeHistSaveCommand> context) {
 		
 		
-		String companyId = AppContexts.user().companyId();
+//		String companyId = AppContexts.user().companyId();
 		
-		CompanyDivergenceReferenceTimeHistoryCommand command = context.getCommand();
+		ComDivergenceRefTimeHistSaveCommand command = context.getCommand();
 		
 		CompanyDivergenceReferenceTimeHistory domain = new CompanyDivergenceReferenceTimeHistory(command);
 		
-		CompanyDivergenceReferenceTimeHistory find = this.historyRepo.findByHistId(companyId, domain.getHistoryItems().get(0).identifier());
+		CompanyDivergenceReferenceTimeHistory find = this.historyRepo.findByHistId(domain.getHistoryItems().get(0).identifier());
 		
 		if(find.getHistoryItems().isEmpty()){
 			//create history
@@ -37,7 +36,8 @@ public class CompanyDivergenceReferenceTimeHistoryCommandHandler extends Command
 			//make default data for Company DivergenceReference Time
 			this.itemRepo.addDefaultDataWhenCreateHistory(domain.getHistoryItems().get(0).identifier());
 		} else {
-			
+			//update history
+			this.historyRepo.update(domain);
 		}
 		
 	}
