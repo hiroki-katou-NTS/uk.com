@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import alarmPatternRepo.AlarmPatternSettingSimple;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSetPK;

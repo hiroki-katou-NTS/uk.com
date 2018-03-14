@@ -57,7 +57,7 @@ module nts.uk.at.view.kdw003.b {
                                 { columnKey: "employeeCode", readOnly: true },
                                 { columnKey: "employeeName", readOnly: true },
                                 { columnKey: "date", readOnly: true },
-                                { columnKey: "code", readOnly: true },
+                                { columnKey: "errorCode", readOnly: true },
                                 { columnKey: "message", readOnly: true },
                                 { columnKey: "itemName", readOnly: true }
                             ]

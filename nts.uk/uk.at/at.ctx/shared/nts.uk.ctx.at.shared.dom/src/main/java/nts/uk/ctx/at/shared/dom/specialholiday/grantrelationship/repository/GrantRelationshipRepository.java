@@ -24,7 +24,7 @@ public interface GrantRelationshipRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	List<GrantRelationship> findBySPCode(String companyId, String specialHolidayCode);
+	List<GrantRelationship> findBySPCode(String companyId, int specialHolidayCode);
 	
 	/**
 	 * update item 
@@ -42,7 +42,7 @@ public interface GrantRelationshipRepository {
 	 * delete a item
 	 * @param grantRelationship
 	 */
-	void delete(String companyId, String specialHolidayCode, String relationshipCode);
+	void delete(String companyId, int specialHolidayCode, String relationshipCode);
 	
 	/**
 	 * find a item by code
@@ -52,5 +52,5 @@ public interface GrantRelationshipRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<GrantRelationship> findByCode(String companyId, String specialHolidayCode, String relationshipCode);
+	Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode);
 }

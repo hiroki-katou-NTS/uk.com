@@ -114,7 +114,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		}
 	}
 	@Override
-	public List<YearServicePerSet> findPerSet(String companyId, String specialHolidayCode, String yearServiceCode) {
+	public List<YearServicePerSet> findPerSet(String companyId, int specialHolidayCode, String yearServiceCode) {
 		return this.queryProxy().query(SELECT_CODE_SET, KshstYearServicePerSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -130,7 +130,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 				.getList(c->toDomainPerSet(c));
 	}
 	@Override
-	public List<YearServicePer> findAllPer(String companyId, String specialHolidayCode) {
+	public List<YearServicePer> findAllPer(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ITEM_PER, KshstYearServicePer.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -157,12 +157,12 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 			this.commandProxy().insert(entity);
 	}
 	@Override
-	public Optional<YearServicePer> findPer(String companyId, String specialHolidayCode, String yearServiceCode) {
+	public Optional<YearServicePer> findPer(String companyId, int specialHolidayCode, String yearServiceCode) {
 		return this.queryProxy().find(new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode), KshstYearServicePer.class)
 				.map(c -> toDomainPer(c));
 	}
 	@Override
-	public void delete(String companyId, String specialHolidayCode, String yearServiceCode) {
+	public void delete(String companyId, int specialHolidayCode, String yearServiceCode) {
 		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode);
 		this.commandProxy().remove(KshstYearServicePer.class, kshstYearServicePerPK);
 	}
