@@ -7,8 +7,9 @@ module nts.uk.at.view.kmk004.a {
         import DeformSetParams = nts.uk.at.view.kmk004.h.viewmodel.DeformSetParams;
 
         export class ScreenModel {
+            // =============OLD===================
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
-            itemList: KnockoutObservableArray<ItemModel>;
+//            itemList: KnockoutObservableArray<ItemModel>;
 
             companyWTSetting: CompanyWTSetting;
             employmentWTSetting: EmploymentWTSetting;
@@ -36,10 +37,47 @@ module nts.uk.at.view.kmk004.a {
 
             // Start month.
             startMonth: KnockoutObservable<number>;
-            
-            // Update QuyenNT
-            aggrSelectionItemList: KnockoutObservableArray<any>;
+            //===============NEW=================================
+            // Update
+            aggrSelectionItemList: KnockoutObservableArray<any>;// FlexAggregateMethod フレックス集計方法
             selectedAggrSelection: KnockoutObservable<number>;
+            
+            companyWTDetailSetting: CompanyWTDetailSetting;
+            employeeWTDetailSetting: EmployeeWTDetailSetting;
+            employmentWTDetailSetting: EmploymentWTDetailSetting;
+            workplaceWTDetailSetting: WorkplaceWTDetailSetting;
+            
+            // =========DETAIL COMPANY SETTING (screen A)
+            // Normal Setting
+            companyNormalMonthlySet: CompanyNormalMonthlySet;
+            // Flex Setting
+            companyFlexMonthlySet: CompanyFlexMonthlySet;
+            // Deform labor Setting
+            companyDeformMonthlySet: CompanyDeformMonthlySet;
+            
+            // =========DETAIL EMPLOYEE SETTING (screen B)
+            // Normal Setting
+            employeeNormalMonthlySet: EmployeeNormalMonthlySet;
+            // Flex Setting
+            employeeFlexMonthlySet: EmployeeFlexMonthlySet;
+            // Deform labor Setting
+            employeeDeformMonthlySet: EmployeeDeformMonthlySet;
+            
+            // =========DETAIL EMPLOYMENT SETTING (screen C)
+            // Normal Setting
+            employmentNormalMonthlySet: EmploymentNormalMonthlySet;
+            // Flex Setting
+            employmentFlexMonthlySet: EmploymentFlexMonthlySet;
+            // Deform labor Setting
+            employmentDeformMonthlySet: EmploymentDeformMonthlySet;
+            
+            // =========DETAIL WORKPLACE SETTING (screen D)
+            // Normal Setting
+            workplaceNormalMonthlySet: WorkplaceNormalMonthlySet;
+            // Flex Setting
+            workplaceFlexMonthlySet: WorkplaceFlexMonthlySet;
+            // Deform labor Setting
+            workplaceDeformMonthlySet: WorkplaceDeformMonthlySet;
 
             constructor() {
                 let self = this;
@@ -58,16 +96,16 @@ module nts.uk.at.view.kmk004.a {
                     { id: 'tab-2', title: nts.uk.resource.getText("KMK004_4"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK004_5"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.itemList = ko.observableArray([
-                    new ItemModel(0, '月曜日'),
-                    new ItemModel(1, '火曜日'),
-                    new ItemModel(2, '水曜日'),
-                    new ItemModel(3, '木曜日'),
-                    new ItemModel(4, '金曜日'),
-                    new ItemModel(5, '土曜日'),
-                    new ItemModel(6, '日曜日'),
-                    new ItemModel(7, '締め開始日')
-                ]);
+//                self.itemList = ko.observableArray([
+//                    new ItemModel(0, '月曜日'),
+//                    new ItemModel(1, '火曜日'),
+//                    new ItemModel(2, '水曜日'),
+//                    new ItemModel(3, '木曜日'),
+//                    new ItemModel(4, '金曜日'),
+//                    new ItemModel(5, '土曜日'),
+//                    new ItemModel(6, '日曜日'),
+//                    new ItemModel(7, '締め開始日')
+//                ]);
                 self.baseDate = ko.observable(new Date());
 
                 // Data model.
@@ -76,31 +114,43 @@ module nts.uk.at.view.kmk004.a {
                 self.employmentWTSetting = new EmploymentWTSetting();
                 self.workplaceWTSetting = new WorkPlaceWTSetting();
 
-                // year subscribe.
-                self.companyWTSetting.year.subscribe(val => {
-                    // Validate
-                    if ($('#companyYearPicker').ntsError('hasError')) {
-                        return;
-                    } else {
-                        self.loadCompanySetting();
-                    }
-                });
-                self.employmentWTSetting.year.subscribe(val => {
-                    // Validate
-                    if ($('#employmentYearPicker').ntsError('hasError')) {
-                        return;
-                    } else {
-                        self.loadEmploymentSetting();
-                    }
-                });
-                self.workplaceWTSetting.year.subscribe(val => {
-                    // Validate
-                    if ($('#workplaceYearPicker').ntsError('hasError')) {
-                        return;
-                    } else {
-                        self.loadWorkplaceSetting();
-                    }
-                });
+                // YEAR SUBSCRIBE
+//                self.companyWTSetting.year.subscribe(val => {
+//                self.companyWTDetailSetting.year.subscribe(val => {
+//                    // Validate
+//                    if ($('#companyYearPicker').ntsError('hasError')) {
+//                        return;
+//                    } else {
+//                        self.loadCompanySetting();
+//                    }
+//                });
+////                self.employmentWTSetting.year.subscribe(val => {
+//                    self.employmentWTDetailSetting.year.subscribe(val => {
+//                        // Validate
+//                        if ($('#employmentYearPicker').ntsError('hasError')) {
+//                            return;
+//                        } else {
+//                            self.loadEmploymentSetting();
+//                        }
+//                    });
+////                self.workplaceWTSetting.year.subscribe(val => {
+//                    self.workplaceWTDetailSetting.year.subscribe(val => {
+//                        // Validate
+//                        if ($('#workplaceYearPicker').ntsError('hasError')) {
+//                            return;
+//                        } else {
+//                            self.loadWorkplaceSetting();
+//                        }
+//                    });
+                
+//                    self.employeeWTDetailSetting.year.subscribe(val => {
+//                        // Validate
+//                        if ($('#employeeYearPicker').ntsError('hasError')) {
+//                            return;
+//                        } else {
+//                            self.loadEmployeeSetting();
+//                        }
+//                    });
 
                 // Employment list component.
                 self.alreadySettingEmployments = ko.observableArray([]);
@@ -149,6 +199,38 @@ module nts.uk.at.view.kmk004.a {
                     { id: 2, name: nts.uk.resource.getText("KMK004_52")}
                 ]);
                 self.selectedAggrSelection = ko.observable(1);
+                
+                //==================UPDATE==================
+                self.companyWTDetailSetting = new CompanyWTDetailSetting();
+                self.employeeWTDetailSetting = new EmployeeWTDetailSetting();
+                self.employmentWTDetailSetting = new EmploymentWTDetailSetting();
+                self.workplaceWTDetailSetting = new WorkplaceWTDetailSetting();
+                
+                // Company Detail Setting
+                self.companyNormalMonthlySet = new CompanyNormalMonthlySet();
+                self.companyFlexMonthlySet = new CompanyFlexMonthlySet();
+                self.companyDeformMonthlySet = new CompanyDeformMonthlySet();
+                // Employee Detail Setting
+                self.employeeNormalMonthlySet = new EmployeeNormalMonthlySet();
+                self.employeeFlexMonthlySet = new EmployeeFlexMonthlySet();
+                self.employeeDeformMonthlySet = new EmployeeDeformMonthlySet();
+                // Employment Detail Setting
+                self.employmentNormalMonthlySet = new EmploymentNormalMonthlySet();
+                self.employmentFlexMonthlySet = new EmploymentFlexMonthlySet();
+                self.employmentDeformMonthlySet = new EmploymentDeformMonthlySet();
+                // Workplace Detail Setting
+                self.workplaceNormalMonthlySet = new WorkplaceNormalMonthlySet();
+                self.workplaceFlexMonthlySet = new WorkplaceFlexMonthlySet();
+                self.workplaceDeformMonthlySet = new WorkplaceDeformMonthlySet();
+                
+                self.companyWTDetailSetting.year.subscribe(val => {
+                    // Validate
+                    if ($('#companyYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadCompanySetting();
+                    }
+                });
             }
 
             /**
@@ -177,13 +259,23 @@ module nts.uk.at.view.kmk004.a {
                 $("[tabindex='22']").on('keydown', function(e) {
                     if (e.which == 9) {
                         if (self.isCompanySelected()) {
-                            self.companyWTSetting.selectedTab('tab-2');
+//                            self.companyWTSetting.selectedTab('tab-2');
+                            // Update
+                            self.companyWTDetailSetting.selectedTab('tab-2');
                         }
                         if (self.isEmploymentSelected()) {
-                            self.employmentWTSetting.selectedTab('tab-2');
+//                            self.employmentWTSetting.selectedTab('tab-2');
+                            // Update
+                            self.employmentWTDetailSetting.selectedTab('tab-2');
                         }
                         if (self.isWorkplaceSelected()) {
-                            self.workplaceWTSetting.selectedTab('tab-2');
+//                            self.workplaceWTSetting.selectedTab('tab-2');
+                            // Update
+                            self.workplaceWTDetailSetting.selectedTab('tab-2');
+                        }
+                        if (self.isEmployeeSelected()) {
+                            // Update
+                            self.employeeWTDetailSetting.selectedTab('tab-2');
                         }
                     }
                 });
@@ -191,26 +283,46 @@ module nts.uk.at.view.kmk004.a {
                 $("[tabindex='48']").on('keydown', function(e) {
                     if (e.which == 9) {
                         if (self.isCompanySelected()) {
-                            self.companyWTSetting.selectedTab('tab-3');
+//                            self.companyWTSetting.selectedTab('tab-3');
+                            // Update
+                            self.companyWTDetailSetting.selectedTab('tab-3');
                         }
                         if (self.isEmploymentSelected()) {
-                            self.employmentWTSetting.selectedTab('tab-3');
+//                            self.employmentWTSetting.selectedTab('tab-3');
+                            // Update
+                            self.employmentWTDetailSetting.selectedTab('tab-3');
                         }
                         if (self.isWorkplaceSelected()) {
-                            self.workplaceWTSetting.selectedTab('tab-3');
+//                            self.workplaceWTSetting.selectedTab('tab-3');
+                            // Update
+                            self.workplaceWTDetailSetting.selectedTab('tab-3');
+                        }
+                        if (self.isEmployeeSelected()) {
+                            // Update
+                            self.employeeWTDetailSetting.selectedTab('tab-3');
                         }
                     }
                 });
                 $("[tabindex='7']").on('keydown', function(e) {
                     if (e.which == 9 && !$(e.target).parents("[tabindex='7']")[0]) {
                         if (self.isCompanySelected()) {
-                            self.companyWTSetting.selectedTab('tab-1');
+//                            self.companyWTSetting.selectedTab('tab-1');
+                            // Update
+                            self.companyWTDetailSetting.selectedTab('tab-1');
                         }
                         if (self.isEmploymentSelected()) {
-                            self.employmentWTSetting.selectedTab('tab-1');
+//                            self.employmentWTSetting.selectedTab('tab-1');
+                            // Update
+                            self.employmentWTDetailSetting.selectedTab('tab-1');
                         }
                         if (self.isWorkplaceSelected()) {
-                            self.workplaceWTSetting.selectedTab('tab-1');
+//                            self.workplaceWTSetting.selectedTab('tab-1');
+                            // Update
+                            self.workplaceWTDetailSetting.selectedTab('tab-1');
+                        }
+                        if (self.isEmployeeSelected()) {
+                            // Update
+                            self.employeeWTDetailSetting.selectedTab('tab-1');
                         }
                     }
                 });
@@ -1110,23 +1222,61 @@ module nts.uk.at.view.kmk004.a {
             // Normal
             normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
             // Flex
-            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
-            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+//            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+//            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            flexSetting: KnockoutObservableArray<FlexMonthlyTime>;
+            
             // Deformed labor
             deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
             
+            // Selected Tab
+            selectedTab: KnockoutObservable<string>;
+            
             constructor() {
                 let self = this;
+                self.selectedTab = ko.observable('tab-1');
                 self.year = ko.observable(new Date().getFullYear());
+                self.normalStatutorySetting = ko.observableArray([]);
+//                self.flexStatutorySetting = ko.observableArray([]);
+//                self.flexSpecifiedSetting = ko.observableArray([]);
+                self.flexSetting = ko.observableArray([]);
+                self.deformStatutorySetting = ko.observableArray([]);
                 for (let i = 1; i < 13; i++) {
                     let m = new MonthlyTime();
                     m.month(i);
                     m.time(0);
+                    let mFlex = new FlexMonthlyTime();
+                    mFlex.month(i);
+                    mFlex.statutoryTime(0);
+                    mFlex.specifiedTime(0);
                     self.normalStatutorySetting.push(m);
-                    self.flexStatutorySetting.push(m);
-                    self.flexSpecifiedSetting.push(m);
+//                    self.flexStatutorySetting.push(m);
+//                    self.flexSpecifiedSetting.push(m);
+                    self.flexSetting.push(mFlex);
                     self.deformStatutorySetting.push(m);
                 }
+            }
+            
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let sortedList: Array<any> = new Array<any>();
+                let flexSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let value = self.normalStatutorySetting().filter(m => startMonth == m.month())[0];
+                    let flexValue = self.flexSetting().filter(m => startMonth == m.month())[0];
+                    sortedList.push(value);
+                    flexSortedList.push(flexValue);
+                    startMonth++;
+                }
+                self.normalStatutorySetting(sortedList);
+//                self.flexStatutorySetting(sortedList);
+//                self.flexSpecifiedSetting(sortedList);
+                self.deformStatutorySetting(sortedList);
+                self.flexSetting(flexSortedList);
             }
             
         }
@@ -1140,26 +1290,55 @@ module nts.uk.at.view.kmk004.a {
             // Normal
             normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
             // Flex
-            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
-            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            flexSetting: KnockoutObservableArray<FlexMonthlyTime>;
             // Deformed labor
             deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Selected Tab
+            selectedTab: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
+                self.selectedTab = ko.observable('tab-1');
                 self.year = ko.observable(new Date().getFullYear());
                 self.empID = ko.observable("");
+                self.normalStatutorySetting = ko.observableArray([]);
+                self.flexSetting = ko.observableArray([]);
+                self.deformStatutorySetting = ko.observableArray([]);
                 for (let i = 1; i < 13; i++) {
                     let m = new MonthlyTime();
                     m.month(i);
                     m.time(0);
+                    let mFlex = new FlexMonthlyTime();
+                    mFlex.month(i);
+                    mFlex.statutoryTime(0);
+                    mFlex.specifiedTime(0);
                     self.normalStatutorySetting.push(m);
-                    self.flexStatutorySetting.push(m);
-                    self.flexSpecifiedSetting.push(m);
+//                    self.flexStatutorySetting.push(m);
+//                    self.flexSpecifiedSetting.push(m);
+                    self.flexSetting.push(mFlex);
                     self.deformStatutorySetting.push(m);
                 }
             }
             
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let sortedList: Array<any> = new Array<any>();
+                let flexSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let value = self.normalStatutorySetting().filter(m => startMonth == m.month())[0];
+                    let flexValue = self.flexSetting().filter(m => startMonth == m.month())[0];
+                    sortedList.push(value);
+                    flexSortedList.push(flexValue);
+                    startMonth++;
+                }
+                self.normalStatutorySetting(sortedList);
+                self.deformStatutorySetting(sortedList);
+                self.flexSetting(flexSortedList);
+            }
         }
         
         /**
@@ -1171,26 +1350,54 @@ module nts.uk.at.view.kmk004.a {
             // Normal
             normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
             // Flex
-            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
-            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            flexSetting: KnockoutObservableArray<FlexMonthlyTime>;
             // Deformed labor
             deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Selected Tab
+            selectedTab: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
+                self.selectedTab = ko.observable('tab-1');
                 self.year = ko.observable(new Date().getFullYear());
                 self.wkpID = ko.observable("");
+                self.normalStatutorySetting = ko.observableArray([]);
+                self.flexSetting = ko.observableArray([]);
+                self.deformStatutorySetting = ko.observableArray([]);
                 for (let i = 1; i < 13; i++) {
                     let m = new MonthlyTime();
                     m.month(i);
                     m.time(0);
+                    let mFlex = new FlexMonthlyTime();
+                    mFlex.month(i);
+                    mFlex.statutoryTime(0);
+                    mFlex.specifiedTime(0);
                     self.normalStatutorySetting.push(m);
-                    self.flexStatutorySetting.push(m);
-                    self.flexSpecifiedSetting.push(m);
+//                    self.flexStatutorySetting.push(m);
+//                    self.flexSpecifiedSetting.push(m);
+                    self.flexSetting.push(mFlex);
                     self.deformStatutorySetting.push(m);
                 }
             }
-            
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let sortedList: Array<any> = new Array<any>();
+                let flexSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let value = self.normalStatutorySetting().filter(m => startMonth == m.month())[0];
+                    let flexValue = self.flexSetting().filter(m => startMonth == m.month())[0];
+                    sortedList.push(value);
+                    flexSortedList.push(flexValue);
+                    startMonth++;
+                }
+                self.normalStatutorySetting(sortedList);
+                self.deformStatutorySetting(sortedList);
+                self.flexSetting(flexSortedList);
+            }
         }
         
         /**
@@ -1202,26 +1409,54 @@ module nts.uk.at.view.kmk004.a {
             // Normal
             normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
             // Flex
-            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
-            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            flexSetting: KnockoutObservableArray<FlexMonthlyTime>;
             // Deformed labor
             deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Selected Tab
+            selectedTab: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
+                self.selectedTab = ko.observable('tab-1');
                 self.year = ko.observable(new Date().getFullYear());
                 self.employmentCode = ko.observable("");
+                self.normalStatutorySetting = ko.observableArray([]);
+                self.flexSetting = ko.observableArray([]);
+                self.deformStatutorySetting = ko.observableArray([]);
                 for (let i = 1; i < 13; i++) {
                     let m = new MonthlyTime();
                     m.month(i);
                     m.time(0);
+                    let mFlex = new FlexMonthlyTime();
+                    mFlex.month(i);
+                    mFlex.statutoryTime(0);
+                    mFlex.specifiedTime(0);
                     self.normalStatutorySetting.push(m);
-                    self.flexStatutorySetting.push(m);
-                    self.flexSpecifiedSetting.push(m);
+//                    self.flexStatutorySetting.push(m);
+//                    self.flexSpecifiedSetting.push(m);
+                    self.flexSetting.push(mFlex);
                     self.deformStatutorySetting.push(m);
                 }
             }
-            
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let sortedList: Array<any> = new Array<any>();
+                let flexSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let value = self.normalStatutorySetting().filter(m => startMonth == m.month())[0];
+                    let flexValue = self.flexSetting().filter(m => startMonth == m.month())[0];
+                    sortedList.push(value);
+                    flexSortedList.push(flexValue);
+                    startMonth++;
+                }
+                self.normalStatutorySetting(sortedList);
+                self.deformStatutorySetting(sortedList);
+                self.flexSetting(flexSortedList);
+            }
         }
         
         /**
@@ -1230,10 +1465,31 @@ module nts.uk.at.view.kmk004.a {
         export class MonthlyTime {
             month: KnockoutObservable<number>;
             time: KnockoutObservable<number>;
+            
+            constructor() {
+                let self = this;
+                self.month = ko.observable(new Date().getMonth());
+                self.time = ko.observable(0);
+            }
         }
+        
+        export class FlexMonthlyTime {
+            month: KnockoutObservable<number>;
+            statutoryTime: KnockoutObservable<number>;
+//            specifiedMonth: KnockoutObservable<number>;
+            specifiedTime: KnockoutObservable<number>;
+            constructor() {
+                let self = this;
+                self.month = ko.observable(new Date().getMonth());
+                self.statutoryTime = ko.observable(0);
+                self.specifiedTime = ko.observable(0);
+            }
+        }
+        
         //******************************Detail 3 cuc *****************
         /**
-         * class CompanyMonthlyNormalSet
+         * class CompanyMonthlyNormalSet 
+         * (Screen A)
          */
         // Detail Cuc 1 Company: Normal Setting
         export class CompanyNormalMonthlySet {
@@ -1286,6 +1542,84 @@ module nts.uk.at.view.kmk004.a {
         
         // Detail cuc 2 Company: Flex Setting
         export class CompanyFlexMonthlySet {
+            // 不足設定: フレックス不足設定//
+            shortageSetting: KnockoutObservable<ShortageSetting>;
+            // 残業時間を含める: するしない区分//
+            includeOT: KnockoutObservable<boolean>;
+            // 法定内集計設定: 法定内フレックス時間集計
+            legalAggrSet: KnockoutObservable<AggrregateSetting>;
+            // 集計方法: フレックス集計方法//
+            aggregateMethod: KnockoutObservable<FlexAggregateMethod>;
+            
+            constructor() {
+                let self = this;
+                self.shortageSetting = ko.observable(ShortageSetting.CURRENT_MONTH_INTEGRATION);
+                self.includeOT = ko.observable(false);
+                self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);
+                self.aggregateMethod = ko.observable(FlexAggregateMethod.PRINCIPLE);
+            }
+        }
+        
+        /**
+         * class EmployeeMonthlyNormalSet
+         */
+        //(Screen B)
+        // Detail Cuc 1 Employee: Normal Setting
+        export class EmployeeNormalMonthlySet {
+            employeeId: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            constructor() {
+                let self = this;
+                self.employeeId = ko.observable("");
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+            }
+        }
+        // Detail cuc 3 Employee: Deform Labor Setting
+        export class EmployeeDeformMonthlySet {
+            employeeId: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            isDeformedOT: KnockoutObservable<boolean>;
+            period: KnockoutObservable<number>;
+            repeatCls: KnockoutObservable<boolean>;
+            startMonth: KnockoutObservable<number>;
+            
+            constructor() {
+                let self = this;
+                self.employeeId = ko.observable("");
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+                
+                self.isDeformedOT = ko.observable(false);
+                self.period = ko.observable(1);
+                self.repeatCls = ko.observable(false);
+                self.startMonth = ko.observable(new Date().getMonth());
+            }
+        }
+        
+        // Detail cuc 2 Employee: Flex Setting
+        export class EmployeeFlexMonthlySet {
+            employeeId: KnockoutObservable<string>;
             shortageSetting: KnockoutObservable<ShortageSetting>;
             includeOT: KnockoutObservable<boolean>;
             legalAggrSet: KnockoutObservable<AggrregateSetting>;
@@ -1293,6 +1627,158 @@ module nts.uk.at.view.kmk004.a {
             
             constructor() {
                 let self = this;
+                self.employeeId = ko.observable("");
+                self.shortageSetting = ko.observable(ShortageSetting.CURRENT_MONTH_INTEGRATION);
+                self.includeOT = ko.observable(false);
+                self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);
+                self.aggregateMethod = ko.observable(FlexAggregateMethod.PRINCIPLE);
+            }
+        }
+        
+        /**
+         * class EmploymentMonthlyNormalSet
+         */
+        //(Screen C)
+        // Detail Cuc 1 Employment: Normal Setting
+        export class EmploymentNormalMonthlySet {
+            employmentCode: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            constructor() {
+                let self = this;
+                self.employmentCode = ko.observable("");
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+            }
+        }
+        // Detail cuc 3 Employment: Deform Labor Setting
+        export class EmploymentDeformMonthlySet {
+            employmentCode: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            isDeformedOT: KnockoutObservable<boolean>;
+            period: KnockoutObservable<number>;
+            repeatCls: KnockoutObservable<boolean>;
+            startMonth: KnockoutObservable<number>;
+            
+            constructor() {
+                let self = this;
+                self.employmentCode = ko.observable("");
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+                
+                self.isDeformedOT = ko.observable(false);
+                self.period = ko.observable(1);
+                self.repeatCls = ko.observable(false);
+                self.startMonth = ko.observable(new Date().getMonth());
+            }
+        }
+        
+        // Detail cuc 2 Employment: Flex Setting
+        export class EmploymentFlexMonthlySet {
+            employmentCode: KnockoutObservable<string>;
+            shortageSetting: KnockoutObservable<ShortageSetting>;
+            includeOT: KnockoutObservable<boolean>;
+            legalAggrSet: KnockoutObservable<AggrregateSetting>;
+            aggregateMethod: KnockoutObservable<FlexAggregateMethod>;
+            
+            constructor() {
+                let self = this;
+                self.employmentCode = ko.observable("");
+                self.shortageSetting = ko.observable(ShortageSetting.CURRENT_MONTH_INTEGRATION);
+                self.includeOT = ko.observable(false);
+                self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);
+                self.aggregateMethod = ko.observable(FlexAggregateMethod.PRINCIPLE);
+            }
+        }
+        
+        
+        /**
+         * class WorkplaceMonthlyNormalSet
+         */
+        //(Screen D)
+        // Detail Cuc 1 Workplace: Normal Setting
+        export class WorkplaceNormalMonthlySet {
+            wkpId: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            constructor() {
+                let self = this;
+                self.wkpId = ko.observable("");
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+            }
+        }
+        // Detail cuc 3 Workplace: Deform Labor Setting
+        export class WorkplaceDeformMonthlySet {
+            wkpId: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            isDeformedOT: KnockoutObservable<boolean>;
+            period: KnockoutObservable<number>;
+            repeatCls: KnockoutObservable<boolean>;
+            startMonth: KnockoutObservable<number>;
+            
+            constructor() {
+                let self = this;
+                self.wkpId = ko.observable("");
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+                
+                self.isDeformedOT = ko.observable(false);
+                self.period = ko.observable(1);
+                self.repeatCls = ko.observable(false);
+                self.startMonth = ko.observable(new Date().getMonth());
+            }
+        }
+        
+        // Detail cuc 2 Workplace: Flex Setting
+        export class WorkplaceFlexMonthlySet {
+            wkpId: KnockoutObservable<string>;
+            shortageSetting: KnockoutObservable<ShortageSetting>;
+            includeOT: KnockoutObservable<boolean>;
+            legalAggrSet: KnockoutObservable<AggrregateSetting>;
+            aggregateMethod: KnockoutObservable<FlexAggregateMethod>;
+            
+            constructor() {
+                let self = this;
+                self.wkpId = ko.observable("");
                 self.shortageSetting = ko.observable(ShortageSetting.CURRENT_MONTH_INTEGRATION);
                 self.includeOT = ko.observable(false);
                 self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);

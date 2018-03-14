@@ -71,8 +71,14 @@
 	margin-top: 40px;
 	margin-left: 20px;
 }
-#open-Detail-F {
+.open-Detail {
 	float: right;
 	margin-bottom: 20px;
 	margin-top: 10px;
+}
+#tab-1 {
+	height: 620px;
+}
+#radio-box-content .ntsRadioBox {
+	height: 40px;
 }
