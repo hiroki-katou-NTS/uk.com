@@ -31,6 +31,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailNormal(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", false);
+            nts.uk.ui.windows.setShared("wording", "");
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingNormalDto.mailSettings);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
@@ -44,6 +45,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailNormalAd(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", false);
+            nts.uk.ui.windows.setShared("wording", "");
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingNormalDto.mailSettingAdmins);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
@@ -60,6 +62,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailAuto(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
+            nts.uk.ui.windows.setShared("wording", "");
             nts.uk.ui.windows.setShared("senderAddress", self.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettings);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
@@ -74,6 +77,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailAutoAd(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
+            nts.uk.ui.windows.setShared("wording", "");
             nts.uk.ui.windows.setShared("senderAddress", self.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettingAdmins);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {

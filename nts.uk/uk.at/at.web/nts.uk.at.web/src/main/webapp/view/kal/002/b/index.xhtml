@@ -20,7 +20,7 @@
 			<div id="functions-area">
 				<a class="goback" tabindex="1"
 					data-bind="ntsLinkButton: {jump: '../a/index.xhtml'}">#{i18n.getText('KAL002_4')}</a>
-				<button tabindex="2" data-bind="click: Registration">#{i18n.getText('KAL002_5')}</button>
+				<button class="proceed" tabindex="2" data-bind="click: Registration">#{i18n.getText('KAL002_5')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="label">
@@ -28,7 +28,7 @@
 				</div>
 				<div class="setMail normal">
 					<div class="left">
-						<div data-bind="">#{i18n.getText('KAL002_7')}</div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_7')}</div>
 					</div>
 					<div class="right">
 						<div class="option">
@@ -44,7 +44,7 @@
 				</div>
 				<div class="setMail auto">
 					<div class="left">
-						<div data-bind="">#{i18n.getText('KAL002_8')}</div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_8')}</div>
 					</div>
 					<div class="right">
 						<div class="option">

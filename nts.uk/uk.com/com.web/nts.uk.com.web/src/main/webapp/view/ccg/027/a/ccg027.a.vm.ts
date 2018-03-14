@@ -14,6 +14,7 @@ module nts.uk.com.view.ccg027.a.viewmodel {
         subject: KnockoutObservable<string>;
         text: KnockoutObservable<string>;
         mailRely: KnockoutObservable<string>;
+        wording: KnockoutObservable<string>;
 
         senderAddress: KnockoutObservable<string>;
 
@@ -30,6 +31,7 @@ module nts.uk.com.view.ccg027.a.viewmodel {
             self.subject = ko.observable(nts.uk.ui.windows.getShared("MailSettings").subject);
             self.text = ko.observable(nts.uk.ui.windows.getShared("MailSettings").text);
             self.mailRely = ko.observable(nts.uk.ui.windows.getShared("MailSettings").mailRely);
+            self.wording = ko.observable(nts.uk.ui.windows.getShared("wording"));
 
         }
 
