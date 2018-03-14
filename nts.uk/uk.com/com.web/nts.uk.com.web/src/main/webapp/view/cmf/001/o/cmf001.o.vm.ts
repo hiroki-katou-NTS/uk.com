@@ -110,7 +110,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         }
 
         //次の画面へ遷移する
-        private gotoExAccSummary(): void {
+        private gotoP(): void {
             let self = this;
 
             //条件コードは選択されているか判別
@@ -131,7 +131,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
         }
-        private gotoAccSetSelect(): void {
+        private gotoO(): void {
             //受入設定選択に戻る
             $('#ex_accept_wizard').ntsWizard("goto", 0);
         }
@@ -340,8 +340,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             setShared("CMF001lParams", { inputMode: false, dataType: item.itemType(), formatSetting: ko.toJS(settingL) });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
+        
+        private gotoA(): void{
+            nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
+        }
 
-        private exeAccept(): void {
+        private gotoQ(): void {
             let self = this;
             //Q:「外部受入処理中ダイアログ」をチェック中で起動する 
             setShared("CMF001qParams", {
