@@ -9,6 +9,9 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 430 };</script>
+			<com:ValidatorScript>
+	            nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmf001.i.style.css" />
 			<com:scriptfile path="../share/model.js" />
@@ -34,6 +37,7 @@
 							<!--I2_2 形式選択-->
 							<div tabindex="1"
 								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_302]',
 								options: itemsFormatSelection,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -51,6 +55,7 @@
 							<!--I4_2 固定値-->
 							<div tabindex="3"
 								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_321]',
 								options: itemsFixedValue,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -58,12 +63,13 @@
 								enable: inputMode}"></div>
 						</td>
 						<!--I4_5 固定値の値-->
-						<td><input tabindex="4"
+						<td><input id="I4_5" tabindex="4"
 							data-bind="ntsTextEditor: {
+								name: '#[CMF001_324]',
 								constraint: 'DataSettingFixedValue',
 								value: setting().valueOfFixedValue,
 								enable: checkActive2() &amp;&amp; inputMode,
-								required: checkRequired1(),
+								required: checkRequired1,
 								option : {width : '200px'}}" />
 						</td>
 					</tr>

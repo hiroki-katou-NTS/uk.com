@@ -70,6 +70,20 @@ module nts.uk.com.view.cmf001.share.model {
         Duplicate_From_User_Setting_To_Standard = 3
     }
     
+    export enum HOURLY_SEGMENT {
+        //時分
+        HOUR_MINUTE = 0,
+        //分
+        MINUTE = 1
+    }
+    
+    export enum DECIMAL_SELECTION {
+        //60進数
+        HEXA_DECIMAL = 0,
+        //10進数
+        DECIMAL = 1
+    }
+    
     export function getSystemTypes(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),

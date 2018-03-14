@@ -9,6 +9,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
+	            nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmf001.j.style.css" />
 			<com:scriptfile path="../share/model.js" />
@@ -35,6 +39,7 @@
 							<!--J2_2 有効桁長-->
 							<div tabindex="1"
 								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_332]',
 								options: itemsEffectiveDigitLength,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -44,22 +49,24 @@
 						<td>
 							<div class="disp-inline">
 								<!--J2_5 開始桁-->
-								<input tabindex="2"
+								<input id="J2_5" tabindex="2"
 									data-bind="ntsNumberEditor: {
+										name: '#[CMF001_335]',
 										constraint: 'AcceptedDigit',
 										value: setting().startDigit, 
 										enable: checkActive6() &amp;&amp; checkActive1() &amp;&amp; inputMode,
-										required: checkRequired1(),
+										required: checkRequired1,
 										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
 							<div class="disp-inline">
 								<!--J2_8 終了桁-->
-								<input tabindex="3"
+								<input id="J2_8" tabindex="3"
 									data-bind="ntsNumberEditor: {
+										name: '#[CMF001_338]',
 										constraint: 'AcceptedDigit',
 										value: setting().endDigit, 
 										enable: checkActive6() &amp;&amp; checkActive1() &amp;&amp; inputMode,
-										required: checkRequired1(),
+										required: checkRequired2,
 										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_339')}</label>
 						</td>
@@ -151,7 +158,6 @@
 								options: itemsRoundProcCls,
 								optionsValue: 'code',
 								enable: checkActive6() &amp;&amp; checkActive5() &amp;&amp; checkActive2() &amp;&amp; inputMode, 
-								required: checkRequired2(),
 								visibleItemsCount: 5,
 								value: setting().roundProcCls,
 								optionsText: 'name',
@@ -179,13 +185,13 @@
 								enable: inputMode}"></div>
 						</td>
 						<!--J7_5 固定値の値-->
-						<td><input tabindex="10"
+						<td><input id="J7_5" tabindex="10"
 							data-bind="ntsTextEditor: {
 								name: '#[CMF001_365]',
 								constraint: 'DataSettingFixedValue',
 								value: setting().valueOfFixedValue,
 								enable: checkActive3() &amp;&amp; inputMode,
-								required: checkRequired3(),
+								required: checkRequired3,
 								option : {width : '200px'}}" />
 						</td>
 					</tr>

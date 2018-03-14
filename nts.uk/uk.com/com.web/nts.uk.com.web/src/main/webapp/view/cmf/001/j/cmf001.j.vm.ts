@@ -1,7 +1,6 @@
 module nts.uk.com.view.cmf001.j.viewmodel {
     import getText = nts.uk.resource.getText;
     import model = cmf001.share.model;
-    import alertError = nts.uk.ui.dialog.alertError;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -27,10 +26,14 @@ module nts.uk.com.view.cmf001.j.viewmodel {
 
         atrUse: number = model.NOT_USE_ATR.USE;
         atrNotUse: number = model.NOT_USE_ATR.NOT_USE;
-        decimal60: number = 0;
-        decimal10: number = 1;
-        timeHM: number = 0;
-        timeM: number = 1;
+        decimal60: number = model.DECIMAL_SELECTION.HEXA_DECIMAL;
+        decimal10: number = model.DECIMAL_SELECTION.DECIMAL;
+        timeHM: number = model.HOURLY_SEGMENT.HOUR_MINUTE;
+        timeM: number = model.HOURLY_SEGMENT.MINUTE;
+
+        checkRequired1: KnockoutObservable<boolean> = ko.observable(true);
+        checkRequired2: KnockoutObservable<boolean> = ko.observable(true);
+        checkRequired3: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             var self = this;
@@ -87,15 +90,37 @@ module nts.uk.com.view.cmf001.j.viewmodel {
                     params.formatSetting.valueOfFixedValue));
             }
             else {
-                self.setting(new model.InstantTimeDataFormatSetting(1, 0, 0, 1, 1, 1, 1, 0, 0, ""));
+                self.setting(new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 0, 0, ""));
             }
+
+            self.checkRequired1.subscribe(function(data: any) {
+                if (!data) {                    
+                    $('#J2_5').ntsError('clear');
+                }
+            });
+
+            self.checkRequired2.subscribe(function(data: any) {
+                if (!data) {                    
+                    $('#J2_8').ntsError('clear');
+                }
+            });
+
+            self.checkRequired3.subscribe(function(data: any) {
+                if (!data) {                   
+                    $('#J7_5').ntsError('clear');
+                }
+            });
         }
 
         private checkActive1(): boolean {
             let self = this;
             if (self.setting().effectiveDigitLength() == self.atrUse) {
+                self.checkRequired1(true);
+                self.checkRequired2(true);
                 return true;
             }
+            self.checkRequired1(false);
+            self.checkRequired2(false);
             return false;
         }
 
@@ -110,8 +135,14 @@ module nts.uk.com.view.cmf001.j.viewmodel {
         private checkActive3(): boolean {
             let self = this;
             if (self.setting().fixedValue() == self.atrUse) {
+                self.checkRequired1(false);
+                self.checkRequired2(false);
+                self.checkRequired3(true);
                 return true;
             }
+            self.checkRequired1(true);
+            self.checkRequired2(true);
+            self.checkRequired3(false);
             return false;
         }
 
@@ -139,39 +170,23 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             return true;
         }
 
-        private checkRequired1(): boolean {
-            let self = this;
-            if (self.setting().effectiveDigitLength() == self.atrUse) {
-                return true;
-            }
-            return false;
-        }
-
-        private checkRequired2(): boolean {
-            let self = this;
-            if (self.setting().roundProc() == self.atrUse) {
-                return true;
-            }
-            return false;
-        }
-
-        private checkRequired3(): boolean {
-            let self = this;
-            if (self.setting().fixedValue() == self.atrUse) {
-                return true;
-            }
-            return false;
-        }
-
         private saveSetting(): void {
             let self = this;
-            if (self.inputMode) {
+            if (!self.hasError()) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
+                nts.uk.ui.windows.close();
             }
-            nts.uk.ui.windows.close();
         }
+
         private cancelSetting(): void {
             nts.uk.ui.windows.close();
+        }
+
+        private hasError(): boolean {
+            $('#J2_5').ntsError('check');
+            $('#J2_8').ntsError('check');
+            $('#J7_5').ntsError('check');
+            return nts.uk.ui.errors.hasError()
         }
     }
 }
