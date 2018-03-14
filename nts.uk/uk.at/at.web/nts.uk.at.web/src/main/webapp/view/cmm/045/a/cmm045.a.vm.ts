@@ -152,8 +152,13 @@ module cmm045.a.viewmodel {
                             self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
                         });
                         _.each(data.lstAppHdWork, function(hdwork) {
+                            let lstFrame: Array<vmbase.OverTimeFrame> = []
+                            _.each(hdwork.lstFrame, function(frame) {
+                                lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
+                                    frame.timeItemTypeAtr, frame.applicationTime));
+                            });
                             self.lstAppHdWork.push(new vmbase.AppHolidayWorkFull(hdwork.appId, hdwork.workTypeName, hdwork.workTimeName, hdwork.startTime1, 
-                                hdwork.endTime1, hdwork.startTime2, hdwork.lstFrame));
+                                hdwork.endTime1, hdwork.startTime2, hdwork.endTime2 ,lstFrame));
                         });
                         _.each(data.lstAppWorkChange, function(wkChange) {
                             self.lstAppWorkChange.push(new vmbase.AppWorkChangeFull(wkChange.appId, wkChange.workTypeName, wkChange.workTimeName,
@@ -344,7 +349,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>'  + masterInfo.empName;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
-            let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTime(hdWork.lstFrame) + reason;
+            let appContent010: string = getText('CMM045_275') + ' ' + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTime(hdWork.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
@@ -516,6 +521,9 @@ module cmm045.a.viewmodel {
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
+        /**
+         * map data -> fill in grid list
+         */
         mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,
             lstOverTime: Array<vmbase.AppOverTimeInfoFull>, lstAppGroup: Array<vmbase.AppPrePostGroup>, lstHdWork: Array<vmbase.AppHolidayWorkFull>,
             lstWorkChange: Array<vmbase.AppWorkChangeFull>): Array<vmbase.DataModeApp> {
@@ -549,32 +557,49 @@ module cmm045.a.viewmodel {
             });
             return lstData;
         }
+        /**
+         * find application holiday work by id
+         */
         findHdWork(appId: string, lstHdWork: Array<vmbase.AppHolidayWorkFull>){
             return _.find(lstHdWork, function(hdWork) {
                 return hdWork.appId == appId;
             });
         }
+        /**
+         * find application work change by id
+         */
         findWorkChange(appId: string, lstWorkChange: Array<vmbase.AppWorkChangeFull>){
             return _.find(lstWorkChange, function(workChange) {
                 return workChange.appId == appId;
             });
         }
+        /**
+         * find application over time by id
+         */
         findOverTimeById(appID: string, lstOverTime: Array<vmbase.AppOverTimeInfoFull>) {
             return _.find(lstOverTime, function(master) {
                 return master.appID == appID;
             });
         }
+        /**
+         * find application go back by id
+         */
         findGoBack(appID: string, lstGoBack: Array<vmbase.AppGoBackInfoFull>) {
             return _.find(lstGoBack, function(master) {
                 return master.appID == appID;
             });
         }
+        /**
+         * find master info by id
+         */
         findMasterInfo(lstMaster: Array<vmbase.AppMasterInfo>, appId: string) {
             return _.find(lstMaster, function(master) {
                 return master.appID == appId;
             });
         }
-
+        /**
+         * convert status from number to string
+         */
         convertStatus(status: number): string {
             switch (status) {
                 case 0:
@@ -717,8 +742,13 @@ module cmm045.a.viewmodel {
                     self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
                 });
                 _.each(data.lstAppHdWork, function(hdwork) {
+                    let lstFrame: Array<vmbase.OverTimeFrame> = []
+                    _.each(hdwork.lstFrame, function(frame) {
+                        lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
+                            frame.timeItemTypeAtr, frame.applicationTime));
+                    });
                     self.lstAppHdWork.push(new vmbase.AppHolidayWorkFull(hdwork.appId, hdwork.workTypeName, hdwork.workTimeName, hdwork.startTime1, 
-                        hdwork.endTime1, hdwork.startTime2, hdwork.lstFrame));
+                        hdwork.endTime1, hdwork.startTime2, hdwork.endTime2 ,lstFrame));
                 });
                 _.each(data.lstAppWorkChange, function(wkChange) {
                     self.lstAppWorkChange.push(new vmbase.AppWorkChangeFull(wkChange.appId, wkChange.workTypeName, wkChange.workTimeName,

@@ -433,9 +433,9 @@ module cmm045.shr {
             startTime2: string;
             //勤務終了時刻2
             endTime2: string;
-            lstFrame: any;
+            lstFrame: Array<OverTimeFrame>;
             constructor(appId: string, workTypeName: string, workTimeName: string, startTime1: string,
-                endTime1: string, startTime2: string, endTime2: string, lstFrame: any){
+                endTime1: string, startTime2: string, endTime2: string, lstFrame: Array<OverTimeFrame>){
                 this.appId = appId;
                 this.workTypeName = workTypeName;
                 this.workTimeName = workTimeName;
