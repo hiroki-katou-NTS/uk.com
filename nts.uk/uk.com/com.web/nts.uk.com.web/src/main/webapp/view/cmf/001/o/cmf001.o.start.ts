@@ -2,7 +2,11 @@ module nts.uk.com.view.cmf001.o {
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(self) {
-            __viewContext.bind(screenModel);            
+            __viewContext.bind(screenModel);
+            
+            _.defer(() => {
+                $("#grd_Condition tr:first-child").focus();
+            });
         })
     });
 }
