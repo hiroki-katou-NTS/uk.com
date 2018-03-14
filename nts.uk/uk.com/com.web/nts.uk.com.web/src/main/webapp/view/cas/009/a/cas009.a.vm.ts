@@ -23,8 +23,8 @@ module cas009.a.viewmodel {
         constructor() {
             var self = this;
                 self.listRole = ko.observableArray([]);
-                self.roleCode = ko.observable("");
-                self.roleId = ko.observable("");
+                self.roleCode = ko.observable(null);
+                self.roleId = ko.observable(null);
                 self.employeeReferenceRange = ko.observable(0);
                 self.name = ko.observable("");
                 self.assignAtr = ko.observable(1);
@@ -50,9 +50,13 @@ module cas009.a.viewmodel {
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
                     roleType: 8,
                     multiple: false  
-                });
-                 self.component.currentCode.subscribe((newValue) => {
-                        if(newValue !=""){                            
+                });                     
+        }
+        
+        public initSubscribe(): void{
+                 let self = this;
+                 self.component.currentCode.subscribe((newValue) => {                 
+                        if(newValue !=null){                            
                             let current = _.find(self.listRole(), function(o){return o.roleId == newValue});
                             if(current != undefined){
                                 self.roleCode(current.roleCode)
@@ -61,46 +65,66 @@ module cas009.a.viewmodel {
                                 self.name(current.name);
                                 self.assignAtr(current.assignAtr);
                                 self.employeeReferenceRange(current.employeeReferenceRange);
-                                self.referFutureDate(current.referFutureDate );                                      
-                                $(".nts-input").ntsError("clear"); 
-                                 $('#roleName').focus();  
+                                self.referFutureDate(current.referFutureDate );                                                                                                                                     
                             }
                  
                         }else{
-                            self.roleCode("");
-                            self.roleId("");
+                            self.roleCode(null);
+                            self.roleId(null);
                             self.employeeReferenceRange(0);
                             self.name("");
                             self.assignAtr(0);
                             self.referFutureDate(false);
                             self.createMode(true);
-                            $(".nts-input").ntsError("clear");  
+                             
                         }
+                     self.setFocus();                     
    
-                });                     
+                });                
         }
+       
 
         /** Start Page */
        public  startPage(): any {           
             let self = this;
-            block.invisible();
-            service.getOptItemEnum().done((res) => {
-                self.enumRange(res);    
-                if(self.assignAtr() ==0)     self.enumRangeChange(self.enumRange().slice(0,1));
-                else  self.enumRangeChange(self.enumRange().slice(1,4));
-            });           
-            self.getListRole().done(()=>{
-                if(self.listRole().length==0) 
-                {
-                    self.createNew();
-                }else{
-                    self.component.currentCode(self.component.listRole()[0].roleId)                
-                }  
-            }).always(()=>{
-                      block.clear();  
+            block.invisible();       
+            $.when(self.getOpItemEnum(), self.userHasRole()).done(()=>{
+                self.getListRole().done(()=>{
+                    self.initSubscribe(); 
+                    if(self.listRole().length==0) 
+                    {
+                        self.createNew();
+                    }else{
+                        self.component.currentCode(self.component.listRole()[0].roleId)   
+                    }
+                    
+                }).always(()=>{
+                          block.clear();
+                          nts.uk.ui.errors.clearAll();  
+                });                
             });
-            self.userHasRole();
 
+
+        }
+        
+        public getOpItemEnum(): JQueryPromise<any>{
+            let self = this;    
+            let dfd = $.Deferred();
+            
+            service.getOptItemEnum().done(function(res){
+                
+                self.enumRange(res);
+                
+                if (self.assignAtr() == 0) 
+                    self.enumRangeChange(self.enumRange().slice(0, 1));
+                else
+                    self.enumRangeChange(self.enumRange().slice(1, 4));
+                
+                dfd.resolve();
+            }).fail((error) => {
+                alertError(error);
+            });
+            return dfd.promise();            
         }
         
         
@@ -114,15 +138,14 @@ module cas009.a.viewmodel {
                 if(roleIds.length>0){
                     service.getPersonInfoRole(roleIds).done((res) => {
                         
-                      //  self.component.listRole(_.sortBy(self.component.listRole(), o=>o.roleCode));
                         self.listRole(_.map(self.component.listRole(), function(x){
                             let personInfo : any = _.find(res, function(o){ return o.roleId == x.roleId  });
                             
                             return new model.Role(true, x.roleId, x.roleCode, x.employeeReferenceRange, x.name, x.assignAtr, personInfo.referFutureDate );                            
-                        }));
-                        self.component.currentCode("");                                                                                                                                
+                        }));                                                                                                                              
                         dfd.resolve();                                                                                                
                     });
+                    self.component.currentCode(null);
                 }else{
                     self.listRole([]);
                     self.createNew();
@@ -137,63 +160,75 @@ module cas009.a.viewmodel {
             let dfd = $.Deferred();
             service.userHasRole().done(function(res){
                    self.enableDetail(res);
+                   dfd.resolve();
             }).fail((error) => {
                 alertError(error);
             });
             return dfd.promise();
                 
         }        
-        
+        public setFocus(): void{
+            let self = this;
+            
+            if(self.component.currentCode()==null) 
+                $('#roleCode').focus();
+            else
+                $('#roleName').focus();  
+            _.defer(()=>{   nts.uk.ui.errors.clearAll();  });
+        }  
         
         
 
         public createNew(): any{
             let self = this;
-                self.component.currentCode("");
-                nts.uk.ui.errors.clearAll();
-                $('#roleCode').focus();
+                self.component.currentCode(null);
+                self.setFocus();                               
         }
         
         public save(): any{
             let self = this;
             $(".nts-input").trigger("validate");
-            if($(".nts-input").ntsError("hasError")) return ;
-             $('#roleName').focus();
+            if($(".nts-input").ntsError("hasError")) return ;            
             block.invisible();
             let role = new model.Role(self.createMode(), self.roleId(), self.roleCode(), self.employeeReferenceRange(), self.name(), self.assignAtr(), self.referFutureDate());
             service.saveRole(role).done(function(){
-                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });  
+                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });                  
                  
                     self.getListRole().done(()=>{
                            self.component.currentCode(_.find(self.listRole(), function(o){ return o.roleCode == role.roleCode  }).roleId);
                  }).always(()=>{
-                           block.clear();    
+                           block.clear();
+                           nts.uk.ui.errors.clearAll();    
                  });
           
             }).fail((error) => {
                  alertError(error);
                  block.clear();
+                 nts.uk.ui.errors.clearAll();
             });    
         }
         public remove(): any{
             let self = this;
 
-               if(self.component.currentCode() !="" && self.component.currentCode() !=null){
+               if(self.component.currentCode() !=null){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                         block.invisible();                        
                         service.deleteRole({roleId: self.roleId(), assignAtr: self.assignAtr()}).done(function(){
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                           
                             let index = _.findIndex(self.listRole(), ['roleId', self.roleId()]);
                             index = _.min([self.listRole().length - 2, index]);
                             self.getListRole().done(function(){
                                  self.selectRoleByIndex(index);                               
                             }).always(() =>{
-                                 block.clear();    
+                                 block.clear();
+                                 nts.uk.ui.errors.clearAll();    
                             });
                             
                         }).fail((error) => {
                                 alertError(error);
                                 block.clear();
+                                nts.uk.ui.errors.clearAll();
                         });   
                    }); 
                }   

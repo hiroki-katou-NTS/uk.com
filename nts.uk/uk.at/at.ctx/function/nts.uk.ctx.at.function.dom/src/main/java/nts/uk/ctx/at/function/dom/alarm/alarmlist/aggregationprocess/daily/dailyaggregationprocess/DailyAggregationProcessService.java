@@ -55,10 +55,28 @@ public class DailyAggregationProcessService {
 				.getExtractionCondition();
 
 		// tab2: 日別実績のエラーアラーム
-		List<ValueExtractAlarm> tab2 = dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
-		listValueExtractAlarm.addAll(tab2);
+		List<ValueExtractAlarm> extractDailyRecord = this.extractDailyRecord(dailyAlarmCondition, period, employee, companyID);
+		listValueExtractAlarm.addAll(extractDailyRecord);
+		
+		
 		
 		// tab4: 「システム固定のチェック項目」で実績をチェックする			
+		List<ValueExtractAlarm> extractFixedCondition = this.extractFixedCondition(dailyAlarmCondition, period, employee);
+		listValueExtractAlarm.addAll(extractFixedCondition);
+		
+		return listValueExtractAlarm;
+	}
+	
+	
+	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
+			PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
+		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
+	}
+	
+	
+	private List<ValueExtractAlarm> extractFixedCondition(DailyAlarmCondition dailyAlarmCondition, PeriodByAlarmCategory period, EmployeeSearchDto employee){
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
+		
 		//get data by dailyAlarmCondition
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
 		for(int i = 1;i <= listFixed.size();i++) {

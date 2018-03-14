@@ -50,7 +50,7 @@ public class ExtractAlarmListService {
 		
 		// ドメインモデル「アラームリスト抽出処理状況」を作成する
 		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(companyID, GeneralDate.today(), GeneralDateTime.now().minutes(),
-				employeeId, null, null);
+				employeeId, Optional.ofNullable(null), null);
 		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
 		
 		// 勤務実績のアラームリストの集計処理を行う
