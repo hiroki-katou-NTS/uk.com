@@ -136,13 +136,13 @@ public class HolidayShipmentFinder {
 		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().equals(AppDisplayAtr.DISPLAY)) {
 			if (uiType == 0) {
 				// メニューから起動
-				output.setPreOrPostType(InitValueAtr.PRE);
+				output.setPreOrPostType(InitValueAtr.PRE.value);
 			} else {
 				// その他のPG（日別修正、トップページアラーム、残業指示）から起動
-				output.setPreOrPostType(InitValueAtr.POST);
+				output.setPreOrPostType(InitValueAtr.POST.value);
 			}
 		}
-		output.setPreOrPostType(InitValueAtr.NOCHOOSE);
+		output.setPreOrPostType(InitValueAtr.NOCHOOSE.value);
 	}
 
 	private WorkStyle getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
