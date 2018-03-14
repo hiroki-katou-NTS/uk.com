@@ -23,7 +23,7 @@
 					data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF001_375')}</div>
 				<div id="K2_1" class="table-contents-area">
 					<div id="K2_2"
-						data-bind="ntsPanel:{width: '280px', height: '300px', direction: 'none', showIcon: true, visible: true}">
+						data-bind="ntsPanel:{width: '280px', height: '310px', direction: 'none', showIcon: true, visible: true}">
 						<div
 							data-bind="ntsSearchBox: {
 							searchMode: 'highlight', 
@@ -38,7 +38,7 @@
 
 						<table id="K3_1" class = "auto-increment"
 							data-bind="ntsGridList: {
-								height: 300,
+								height: 265,
 								width: 280,
 								name:'#{i18n.getText('CMF001_376')}',
 								dataSource: listConvertCode,
@@ -47,7 +47,6 @@
 					                { headerText: '#{i18n.getText('CMF001_377')}', key: 'dispConvertCode', width: 70, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF001_378')}', key: 'dispConvertName', width: 180, formatter: _.escape }
 					            ],
-					            rows: 10,
 					            showNumbering: true,
 								multiple: false,
 								value: selectedConvertCode

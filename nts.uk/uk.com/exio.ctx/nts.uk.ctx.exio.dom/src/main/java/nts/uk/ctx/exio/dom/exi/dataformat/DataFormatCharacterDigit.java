@@ -1,16 +1,17 @@
 package nts.uk.ctx.exio.dom.exi.dataformat;
 
-import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * コード編集桁
+ * @author HiepLD
+ * データ形式文字桁
  */
-@IntegerMaxValue(9999)
+@IntegerMaxValue(999)
 @IntegerMinValue(1)
-public class CodeEditDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
+public class DataFormatCharacterDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/**
 	 * 
 	 */
@@ -21,7 +22,7 @@ public class CodeEditDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>
 	 * 
 	 * @param rawValue
 	 */
-	public CodeEditDigit(int rawValue) {
+	public DataFormatCharacterDigit(int rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

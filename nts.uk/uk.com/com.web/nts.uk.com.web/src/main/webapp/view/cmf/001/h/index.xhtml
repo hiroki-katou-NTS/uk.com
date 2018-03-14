@@ -10,7 +10,7 @@
 			<script>var dialogSize = { width: 650, height: 500 };</script>
 			<com:ValidatorScript>
 	            nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
-	            nts.uk.ctx.exio.dom.exi.dataformat.CodeEditDigit
+	            nts.uk.ctx.exio.dom.exi.dataformat.DataFormatCharacterDigit
 	            nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -109,7 +109,7 @@
 								data-bind="ntsNumberEditor: {
 								value: codeEditDigit,
 								name:'#{i18n.getText('CMF001_279')}',
-								constraint: 'CodeEditDigit',
+								constraint: 'DataFormatCharacterDigit',
 								required : true,
 								option : {width : '35px'},
 								enable: $parent.enableCodeEditing()}" />
