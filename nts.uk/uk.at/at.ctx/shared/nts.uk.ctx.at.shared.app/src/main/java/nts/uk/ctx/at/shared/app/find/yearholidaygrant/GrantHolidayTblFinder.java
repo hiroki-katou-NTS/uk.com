@@ -46,18 +46,10 @@ public class GrantHolidayTblFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		List<GrantHdTbl> grantHolidayList = param.getGrantHolidayTblList().stream()
-				.map(x -> GrantHdTbl.createFromJavaType(
-						companyId, 
-						x.getGrantYearHolidayNo(), 
-						x.getConditionNo(), 
-						x.getYearHolidayCode(), 
-						x.getGrantDays(), 
-						x.getLimitedTimeHdDays(), 
-						x.getLimitedHalfHdCnt(), 
-						x.getLengthOfServiceMonths(), 
-						x.getLengthOfServiceYears(), 
-						x.getGrantReferenceDate(), 
-						x.getGrantSimultaneity()))
+				.map(x -> GrantHdTbl.createFromJavaType(x.getCompanyId(),
+														x.getConditionNo(), x.getYearHolidayCode(), 
+														x.getGrantNum(), x.getGrantDays(), 
+														x.getLimitTimeHd(), x.getLimitDayYear()))
 				.collect(Collectors.toList());
 		
 		GrantHdTbl.validateInput(grantHolidayList);

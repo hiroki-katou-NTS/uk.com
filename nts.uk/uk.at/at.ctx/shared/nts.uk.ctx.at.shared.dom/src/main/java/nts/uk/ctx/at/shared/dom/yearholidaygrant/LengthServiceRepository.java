@@ -2,14 +2,12 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import java.util.List;
 import java.util.Optional;
-
 /**
- * 
- * @author TanLV
+ * the length service repository interface
+ * @author yennth
  *
  */
-public interface GrantYearHolidayRepository {
-	
+public interface LengthServiceRepository {
 	/**
 	 * 
 	 * @param companyId
@@ -18,7 +16,7 @@ public interface GrantYearHolidayRepository {
 	 * @param grantYearHolidayNo
 	 * @return
 	 */
-	Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
+	Optional<LengthServiceTbl> find(String companyId, String yearHolidayCode, int grantNum);
 	
 	/**
 	 * Gets the year holiday grant by code.
@@ -27,21 +25,21 @@ public interface GrantYearHolidayRepository {
 	 * @param conditionNo the condition No
 	 * @return the holiday grant by codes
 	 */
-	List<GrantHdTbl> findByCode(String companyId, int conditionNo, String yearHolidayCode);
+	List<LengthServiceTbl> findByCode(String companyId, String yearHolidayCode);
 	
 	/**
 	 * Adds the holiday grant.
 	 *
 	 * @param holidayGrant the holiday grant
 	 */
-	void add(GrantHdTbl holidayGrant);
+	void add(LengthServiceTbl holidayGrant);
 	
 	/**
 	 * Update the holiday grant.
 	 *
 	 * @param holidayGrant the holiday grant
 	 */
-	void update(GrantHdTbl holidayGrant);
+	void update(LengthServiceTbl holidayGrant);
 	
 	/**
 	 * Removes the holiday grant.
@@ -51,12 +49,11 @@ public interface GrantYearHolidayRepository {
 	 * @param yearHolidayCode the year holiday code
 	 * @return the holiday grant by codes
 	 */
-	void remove(String companyId, int grantNum, int conditionNo, String yearHolidayCode);
-	
-	void remove(String companyId, int conditionNo, String yearHolidayCode);
+//	void remove(String companyId, int grantNum, String yearHolidayCode);
 	
 	void remove(String companyId, String yearHolidayCode);
 	
-	void remove(String companyId, String yearHolidayCode, List<Integer> conditionNos);
+	void remove(String companyId);
 	
+	void remove(String companyId, String yearHolidayCode, List<Integer> grantNums);
 }
