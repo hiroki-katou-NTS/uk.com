@@ -298,11 +298,11 @@ module nts.uk.at.view.kmk003.a {
                 toOriginalDto(convertedItem: FlowHdTimeZoneDuongModel): FlWorkHdTimeZoneDto {
                     return {
                         worktimeNo: convertedItem.workTimeNo,
-                        useInLegalBreakRestrictTime: convertedItem.useInLegalBreakRestrictTime(),
+                        useInLegalBreakRestrictTime: convertedItem.useInLegalBreakRestrictTime ? convertedItem.useInLegalBreakRestrictTime() : false,
                         inLegalBreakFrameNo: convertedItem.inLegalBreakFrameNo(),
-                        useOutLegalBreakRestrictTime: convertedItem.useOutLegalBreakRestrictTime(),
+                        useOutLegalBreakRestrictTime: convertedItem.useOutLegalBreakRestrictTime ? convertedItem.useOutLegalBreakRestrictTime() : false,
                         outLegalBreakFrameNo: convertedItem.outLegalBreakFrameNo(),
-                        useOutLegalPubHolRestrictTime: convertedItem.useOutLegalPubHolRestrictTime(),
+                        useOutLegalPubHolRestrictTime: convertedItem.useOutLegalPubHolRestrictTime ? convertedItem.useOutLegalPubHolRestrictTime() : false,
                         outLegalPubHolFrameNo: convertedItem.outLegalPubHolFrameNo(),
                         flowTimeSetting: {
                             rounding: {
