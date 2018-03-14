@@ -139,7 +139,7 @@ module nts.uk.com.view.ccg027.a.viewmodel {
 
         decision() {
             var self = this;
-            if (self.checkContenListMail()) {
+            if (self.checkContenListMail() && !$(".nts-input").ntsError("hasError")) {
                 var MailSettings = ({
                     subject: self.subject(),
                     text: self.text(),

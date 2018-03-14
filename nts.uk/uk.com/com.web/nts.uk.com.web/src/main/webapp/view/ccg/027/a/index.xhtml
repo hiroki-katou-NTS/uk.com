@@ -8,10 +8,22 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 900, height: 650 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
+			<script>
+				var dialogSize = { width: 900, height: 650 };
+				__viewContext.primitiveValueConstraints.MailAddress = {
+						valueType: 'String',
+						maxLength: 256,
+						charType: 'AnyHalfWidth',
+					};
+				__viewContext.primitiveValueConstraints.Subject = {
+					valueType: 'String',
+					maxLength: 100,
+				};
+				__viewContext.primitiveValueConstraints.Content = {
+					valueType: 'String',
+					maxLength: 1000,
+				};
+			</script>
 			<com:stylefile path="ccg027.a.style.css" />
 			<com:scriptfile path="ccg027.a.service.js" />
 			<com:scriptfile path="ccg027.a.start.js" />
@@ -23,10 +35,10 @@
 			<div id="contents-area">
 				<div class="cf" data-bind="visible: sendingAddressChecks">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_12')}</div>
+						<div data-bind="ntsFormLabel: {constraint: 'MailAddress'}">#{i18n.getText('CCG027_12')}</div>
 					</div>
 					<div class="right">
-						<input id="senderAddress" data-bind="ntsTextEditor: {value: senderAddress, enable: sendingAddressEnable}" />
+						<input id="senderAddress" data-bind="ntsTextEditor: {value: senderAddress, enable: sendingAddressEnable, constraint: 'MailAddress'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetCC">
@@ -47,26 +59,26 @@
 				</div>
 				<div class="cf" data-bind="visible: SetReply">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_9')}</div>
+						<div data-bind="ntsFormLabel: {constraint: 'MailAddress'}">#{i18n.getText('CCG027_9')}</div>
 					</div>
 					<div class="right">
-						<input  id="mailRely"  data-bind="ntsTextEditor: {value: mailRely}" />
+						<input  id="mailRely"  data-bind="ntsTextEditor: {value: mailRely, constraint: 'MailAddress'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetSubject">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_10')}</div>
+						<div data-bind="ntsFormLabel: {constraint: 'Subject'}">#{i18n.getText('CCG027_10')}</div>
 					</div>
 					<div class="right">
-						<input id="subject" data-bind="ntsTextEditor: {value: subject}" />
+						<input id="subject" data-bind="ntsTextEditor: {value: subject, constraint: 'Subject'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetBody">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_11')}</div>
+						<div data-bind="ntsFormLabel: { constraint: 'Content'}">#{i18n.getText('CCG027_11')}</div>
 					</div>
 					<div class="right">
-						<textarea rows="10" cols="63" id="text"  data-bind="ntsMultilineEditor: { value: text}" />
+						<textarea rows="10" cols="63" id="text"  data-bind="ntsMultilineEditor: { value: text, constraint: 'Content'}" />
 						<div id="wording"><span data-bind="text:wording"></span></div>
 					</div>
 				</div>
