@@ -18,20 +18,46 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: {jump: '../a/index.xhtml'}">#{i18n.getText('KAL002_4')}</a>
-				<button tabindex="2" data-bind="">#{i18n.getText('KAL002_5')}</button>
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: {jump: '../a/index.xhtml'}">#{i18n.getText('KAL002_4')}</a>
+				<button tabindex="2" data-bind="click: Registration">#{i18n.getText('KAL002_5')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="label">
 					<span>#{i18n.getText('KAL002_6')}</span>
 				</div>
-				<div>
+				<div class="setMail normal">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_7')}</div>	
+						<div data-bind="">#{i18n.getText('KAL002_7')}</div>
 					</div>
-					
+					<div class="right">
+						<div class="option">
+							<span>#{i18n.getText('KAL002_10')}</span>
+							<button data-bind="click : setMailNormal">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+						<div class="option">
+							<span>#{i18n.getText('KAL002_11')}</span>
+							<button data-bind="click : setMailNormalAd">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+					</div>
+					<div class="cf"></div>
 				</div>
-				
+				<div class="setMail auto">
+					<div class="left">
+						<div data-bind="">#{i18n.getText('KAL002_8')}</div>
+					</div>
+					<div class="right">
+						<div class="option">
+							<span>#{i18n.getText('KAL002_10')}</span>
+							<button data-bind="click : setMailAuto">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+						<div class="option">
+							<span>#{i18n.getText('KAL002_11')}</span>
+							<button data-bind="click : setMailAutoAd">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+					</div>
+					<div class="cf"></div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
