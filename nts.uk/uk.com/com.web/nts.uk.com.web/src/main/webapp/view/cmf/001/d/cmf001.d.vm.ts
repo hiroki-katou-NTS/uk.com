@@ -256,7 +256,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         openCMF001e(data: model.StandardAcceptItem) {
             let self = this;
             let listCsvData = [];
-            for (let i = 1; i < 15; i++) {
+            for (let i = 1; i < 20; i++) {
                 listCsvData.push({ csvItemName: 'Column ' + i, csvItemNumber: i });
             }
             setShared('CMF001eParams', {
