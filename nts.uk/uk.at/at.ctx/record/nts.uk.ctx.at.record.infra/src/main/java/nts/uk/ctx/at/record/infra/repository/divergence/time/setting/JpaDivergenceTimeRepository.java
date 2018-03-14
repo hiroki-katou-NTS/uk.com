@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMet
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.setting.*;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
@@ -131,5 +131,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		return KrcstDvgcTime.isEmpty() ? new ArrayList<DivergenceTime>()
 				: KrcstDvgcTime.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
+
+	
 	
 }

@@ -28,5 +28,11 @@ public class DivergenceReasonInputMethodFinder {
 		}).collect(Collectors.toList());
 	}
 	
+	DivergenceReasonInputMethodDto getDivTimeDetail(int divTimeNo){
+		String companyId = AppContexts.user().companyId();
+		
+		DivergenceReasonInputMethodDto divReasonInputDto = new DivergenceReasonInputMethodDto();
+		return null;
+	}
 
 }

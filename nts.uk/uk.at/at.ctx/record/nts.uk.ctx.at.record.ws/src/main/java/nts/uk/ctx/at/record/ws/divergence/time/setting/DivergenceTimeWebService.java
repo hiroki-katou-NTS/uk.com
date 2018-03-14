@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceReasonSelectCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeAttendanceCommandHandler;
-import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeCommand;
-import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeCommandHandler;
+import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeInputMethodSaveCommand;
+import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeInputMethodSaveCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.AddDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceItemSetCommand;
@@ -46,7 +46,7 @@ public class DivergenceTimeWebService extends WebService{
 	private DivergenceTimeAttendanceFinder divTimeAttendanceFinder;
 	
 	@Inject
-	private DivergenceTimeCommandHandler divTimeCommandHandler;
+	private DivergenceTimeInputMethodSaveCommandHandler divTimeSaveCommandHandler;
 	
 	@Inject
 	private DivergenceReasonSelectCommandHandler divReasonSelectCommandHandler;
@@ -80,8 +80,8 @@ public class DivergenceTimeWebService extends WebService{
 	 */
 	@POST
 	@Path("updatedivtime")
-	public void updateDivTime(DivergenceTimeCommand command){
-		//this.divTimeCommandHandler.handle(command);
+	public void updateDivTime(DivergenceTimeInputMethodSaveCommand command){
+		this.divTimeSaveCommandHandler.handle(command);
 	}
 	/**
 	 * get all divergence reason

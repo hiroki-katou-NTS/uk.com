@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.setting;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,9 +18,13 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMet
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
+import nts.uk.ctx.at.record.infra.repository.divergence.time.JpaCompanyDivergenceReferenceTimeSetMemento;
 
 public class JpaDivergenceReasonInputMethodRepository extends JpaRepository implements DivergenceReasonInputMethodRepository{
 
@@ -39,6 +44,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository impl
 		DivergenceReasonInputMethodGetMemento memento = new JpaDivergenceReasonInputMethodRepositoryGetMemento(entities);
 		return new DivergenceReasonInputMethod(memento);
 	}
+	
 	private List<DivergenceReasonInputMethod> findByCompanyId(String companyId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
