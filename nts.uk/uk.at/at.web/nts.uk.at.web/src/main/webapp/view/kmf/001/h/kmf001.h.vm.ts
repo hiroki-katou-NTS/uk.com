@@ -72,6 +72,7 @@ module nts.uk.pr.view.kmf001.h {
 
                 self.hasEmp = ko.observable(true);
                 self.saveDisable = ko.observable(true);
+                self.deleteEnable = ko.observable(true);
                 self.isEmpManaged = ko.computed(function() {
                     return self.hasEmp() && self.empSettingModel().isManage() == 1;
                 });
@@ -107,6 +108,10 @@ module nts.uk.pr.view.kmf001.h {
                     self.loadComSettingDetails();
                     self.selectedItem(self.employmentList()[0].code);
                     self.selectedName(self.employmentList()[0].name);
+                    var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                        return item.code == self.selectedItem();
+                    });
+                    self.deleteEnable(!!match);
                     $('#company-manage').focus();
                     dfd.resolve();
                 });
@@ -129,6 +134,10 @@ module nts.uk.pr.view.kmf001.h {
                         self.loadEmpSettingDetails(data);
                         self.hasEmp(true);
                         self.saveDisable(true);
+                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                            return item.code == self.selectedItem();
+                        });
+                        self.deleteEnable(!!match);
                         
                         // Set displayed Employee name
                         let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
@@ -138,6 +147,7 @@ module nts.uk.pr.view.kmf001.h {
                         self.selectedName('');
                         self.hasEmp(false);
                         self.saveDisable(false);
+                        self.deleteEnable(false);
                     }
                 });
             }
