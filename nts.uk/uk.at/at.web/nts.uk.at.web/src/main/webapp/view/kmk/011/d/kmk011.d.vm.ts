@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk011.d {
     import viewModelScreenE = nts.uk.at.view.kmk011.e.viewmodel;
     
     import CompanyDivergenceReferenceTimeHistoryDto = nts.uk.at.view.kmk011.d.model.CompanyDivergenceReferenceTimeHistoryDto;
+    import ComDivergenceTimeSettingDto = nts.uk.at.view.kmk011.d.model.ComDivergenceTimeSettingDto;
     
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -20,6 +21,7 @@ module nts.uk.at.view.kmk011.d {
             roundingRules: KnockoutObservableArray<any>;
             required: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
+            mapObj: KnockoutObservable<Map<number, ComDivergenceTimeSettingDto>>;
             
             //history screen
             enable_button_creat: KnockoutObservable<boolean>;
@@ -27,7 +29,6 @@ module nts.uk.at.view.kmk011.d {
             enable_button_delete: KnockoutObservable<boolean>;
             histList: KnockoutObservableArray<any>;
             histName: KnockoutObservable<string>;
-            currentHist: KnockoutObservable<number>
             selectedHist: KnockoutObservable<string>;
             isEnableListHist: KnockoutObservable<boolean>;
             
@@ -36,15 +37,12 @@ module nts.uk.at.view.kmk011.d {
                 _self.screenE = ko.observable(new viewModelScreenE.ScreenModel());
                 
                 //divergence time setting
-                _self.emailAuth =  ko.observable("test");
-                _self.myMessage = ko.observable("test21");
                 _self.roundingRules = ko.observableArray([
                     { code: '1', name: '四捨五入' },
                     { code: '2', name: '切り上げ' }
                 ]);
                 _self.selectedRuleCode = ko.observable(1);
-                _self.required = ko.observable(true);
-                _self.enable = ko.observable(true);
+                _self.mapObj = new Map<number, ComDivergenceTimeSettingDto>();
                 
                  //history screen
                 _self.enable_button_creat = ko.observable(true);
@@ -52,7 +50,6 @@ module nts.uk.at.view.kmk011.d {
                 _self.enable_button_delete = ko.observable(true);
                 _self.histList = ko.observableArray([]);
                 _self.histName = ko.observable('');
-                _self.currentHist = ko.observable(null);
                 _self.selectedHist = ko.observable(null)
                 _self.isEnableListHist = ko.observable(false);
             }
@@ -83,13 +80,17 @@ module nts.uk.at.view.kmk011.d {
                 return dfd.promise();
             }
             
+            public isDisableAllRow() : boolean {
+                return true;    
+            }
+            
             private fillListItemSetting(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-                service.getAllItemSetting().done(() => {
-                    
+                
+                $.when( service.getAllItemSetting(_self.selectedHist()), service.getAllDivergenceTime()).done((response1, response2) => {
+                    dfd.resolve();
                 });
-                dfd.resolve();
                 return dfd.promise();
             }
             

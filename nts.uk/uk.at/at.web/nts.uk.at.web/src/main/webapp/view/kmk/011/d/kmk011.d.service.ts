@@ -9,7 +9,7 @@ module nts.uk.at.view.kmk011.d {
             deleteHist: "",
             findListHistory: "at/record/divergence/time/history/companyDivergenceRefTime/findAll",
             findUseUnitSetting: "",
-            findListDivergenceTime: ""
+            findListDivergenceTime: "at/record/divergencetime/setting/getalldivtime"
         };
         
         export function save(data: model.ComDivergenceTimeSettingSaveCommand): JQueryPromise<any> {
