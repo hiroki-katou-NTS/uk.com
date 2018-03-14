@@ -359,6 +359,8 @@ module cmm045.a.viewmodel {
             return a;
         }
         /**
+         * 残業申請
+         * kaf005 - appType = 0
          * format data: over time before
          * ※申請モード、承認モード(事前)用レイアウト
          */
@@ -420,6 +422,38 @@ module cmm045.a.viewmodel {
          * ※承認モード(事後)用レイアウト
          * format data: over time after
          */
+        formatHdWorkAf(app: vmbase.ApplicationDto_New, hdWork: vmbase.AppHolidayWorkFull, masterInfo: vmbase.AppMasterInfo, lstAppGroup: Array<vmbase.AppPrePostGroup>): vmbase.DataModeApp {
+            let self = this;
+            let contentPre = '';
+            let contentResult = '';
+            //find don xin truoc, thuc te
+            let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
+            if (check !== undefined) {
+                if (check.preAppID != '') {
+                    let prRes = self.findContentPreOt(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
+                    contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
+                    contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
+                }
+            }
+            //reason application
+            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
+            let applicant: string = masterInfo.workplaceName + '<br/>' + masterInfo.empName;
+            let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
+            let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + ' ' + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTime(hdWork.lstFrame) + reason;
+            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
+            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
+            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
+                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), contentFull, self.convertDateTime(app.inputDate),
+                self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
+                masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
+            return a;
+        }
+        /**
+         * ※承認モード(事後)用レイアウト
+         * format data: over time after
+         */
         formatOverTimeAf(app: vmbase.ApplicationDto_New, overTime: vmbase.AppOverTimeInfoFull, masterInfo: vmbase.AppMasterInfo, lstAppGroup: Array<vmbase.AppPrePostGroup>): vmbase.DataModeApp {
             let self = this;
             let contentPre = '';
@@ -428,7 +462,7 @@ module cmm045.a.viewmodel {
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if (check !== undefined) {
                 if (check.preAppID != '') {
-                    let prRes = self.findContentPre(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
+                    let prRes = self.findContentPreOt(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
                     contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
                     contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
                 }
@@ -450,7 +484,40 @@ module cmm045.a.viewmodel {
                 return app.postAppID == appId;
             });
         }
-        findContentPre(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
+        /**
+         * find content pre and result
+         * 残業申請 - over time
+         */
+        findContentPreOt(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
+            let self = this;
+//            let overTime = self.findOverTimeById(appId, self.lstAppOt());
+//            let masterInfo = self.findMasterInfo(self.lstAppMaster(), appId);
+//            let app = self.findCommon(self.lstAppCommon(), appId);
+            let appPre = '';
+//            if(app !== undefined && overTime !== undefined && masterInfo !== undefined){
+//                appPre = self.formatOverTimeBf(app, overTime, masterInfo);
+//            }
+            if(appPreDB != null){
+                appPre = getText('CMM045_268') + ' ' + appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
+            }
+            let appResContent = '';
+            //thuc te
+            let appRes = self.convertFrameTime(lstFrameRes);
+            appResContent = getText('CMM045_274') + appRes;
+
+
+            let appInfor = {
+                appPre: appPre == null ? '' : getText('CMM045_272') + appPre,
+                appRes: lstFrameRes.length == 0 ? '' : appResContent
+            }
+            return appInfor;
+        }
+        /**
+         * find content pre and result
+         * 休日出勤時間申請 - holiday work
+         * TO DO
+         */
+        findContentPreHd(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
             let self = this;
 //            let overTime = self.findOverTimeById(appId, self.lstAppOt());
 //            let masterInfo = self.findMasterInfo(self.lstAppMaster(), appId);
@@ -481,6 +548,7 @@ module cmm045.a.viewmodel {
         }
         /**
          * 直行直帰申請
+         * kaf009 - appType = 4
          */
         formatGoBack(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
@@ -901,6 +969,9 @@ module cmm045.a.viewmodel {
             }
             return hh + ':' + min;
         }
+        /**
+         * find application name by appType
+         */
         findAppName(appType: number){
             switch (appType) {
                 case 0:
