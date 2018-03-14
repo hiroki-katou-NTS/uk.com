@@ -790,7 +790,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
 			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
-			String empName = displaySet.equals(ShowName.SHOW) ? empRequestAdapter.getEmployeeName(app.getEmployeeID()) : "";
+			String empName = "";
+			String inpEmpName = null;
+			if(displaySet.equals(ShowName.SHOW)){
+				 empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
+				 inpEmpName = app.getEmployeeID().equals(app.getEnteredPersonID()) ? null : empRequestAdapter.getEmployeeName(app.getEnteredPersonID());
+			}
+			
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
@@ -812,7 +818,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
 			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
-					empName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
+					empName, inpEmpName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
 		}
 		return lstAppMasterInfo;
 	}
