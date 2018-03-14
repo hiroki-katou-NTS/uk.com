@@ -100,7 +100,10 @@ module nts.uk.ui.jqueryExtentions {
             // Cell color
             let cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
             
-            $self.addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
+            $self.addClass('compact-grid nts-grid');
+            if ($self.closest(".nts-grid-wrapper").length === 0) {
+                $self.wrap($("<div class='nts-grid-wrapper'/>"));
+            }
             
             let columnControlTypes = {};
             let columnSpecialTypes = {};

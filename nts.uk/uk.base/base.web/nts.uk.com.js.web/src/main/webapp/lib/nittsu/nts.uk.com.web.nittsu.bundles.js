@@ -2979,10 +2979,6 @@ var nts;
                     if (parts[0] === '') {
                         parts.shift();
                     }
-                    //            let lastIndex = parts.length - 1;
-                    //            if (lastIndex >= 0 && parts[lastIndex]) {
-                    //                parts[lastIndex] = parts[lastIndex].split('?')[0];   
-                    //            }
                     for (var i = 0; i < parts.length; i++) {
                         if (parts[i] === '.')
                             continue;
@@ -23166,7 +23162,10 @@ var nts;
                         var flatCols = validation.scanValidators($self, options.columns);
                         // Cell color
                         var cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
-                        $self.addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
+                        $self.addClass('compact-grid nts-grid');
+                        if ($self.closest(".nts-grid-wrapper").length === 0) {
+                            $self.wrap($("<div class='nts-grid-wrapper'/>"));
+                        }
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
                         var bounceCombos = {};
