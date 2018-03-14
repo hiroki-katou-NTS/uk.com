@@ -57,7 +57,7 @@ public class ErAlWorkRecordCheckService {
 			ErrorAlarmCondition checkCondition) {
 		List<RegulationInfoEmployeeQueryR> searchR = this.filterEmployees(workingDate, employeeIds, checkCondition);
 
-		if (searchR.isEmpty()) {
+		if (searchR.isEmpty()) { 
 			return toEmptyResultMap();
 		}
 
