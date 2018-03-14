@@ -19911,6 +19911,11 @@ var nts;
                                 oldValue.endDate = result.isValid ? result.parsedValue : newText;
                             }
                             validateProcess(newText, $target, isStart, oldValue, result);
+                            var valueX = uk.time.formatPattern(newText, dateFormat, ISOFormat);
+                            if (!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date") {
+                                //console.log(1);
+                                $target.val(valueX);
+                            }
                             value(oldValue);
                         });
                         $input.on("blur", function (e) {
@@ -22314,6 +22319,7 @@ var nts;
                 var ntsDatepicker;
                 (function (ntsDatepicker) {
                     var CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
+                    var PICKER_CLASSES = ["datepicker-top-left", "datepicker-top-right", "datepicker-bottom-left", "datepicker-bottom-right"];
                     $.fn.ntsDatepicker = function (action, index) {
                         var $container = $(this);
                         if (action === "bindFlip") {
@@ -22358,6 +22364,7 @@ var nts;
                                 return;
                             }
                             CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            PICKER_CLASSES.forEach(function (cls) { return currentShowContainer.removeClass(cls); });
                             var containerHeight = container.outerHeight(true);
                             var containerWidth = container.outerWidth(true);
                             var showContainerHeight = currentShowContainer.outerHeight(true);
