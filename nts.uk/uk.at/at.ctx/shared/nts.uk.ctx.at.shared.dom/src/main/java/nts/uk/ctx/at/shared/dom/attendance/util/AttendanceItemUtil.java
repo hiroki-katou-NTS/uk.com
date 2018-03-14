@@ -285,6 +285,9 @@ public class AttendanceItemUtil {
 	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path) {
 		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
 		if(layout.listNoIndex()){
+			if(list.isEmpty()){
+				list.add(ReflectionUtil.newInstance(targetClass));
+			}
 			return list;
 		}
 		clearConflictEnumsInList(layout, targetClass, list, path);

@@ -90,20 +90,20 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
 
-		List<EmployeeInfoDtoExport> result = new ArrayList<>();
-		
+		List<EmployeeInfoDtoExport> result = new ArrayList<EmployeeInfoDtoExport>();
+
 		if (CollectionUtil.isEmpty(listEmpDomain)) {
 			return null;
 		}
-		
-		for (EmployeeDataMngInfo employee: listEmpDomain) {
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId,employee.getEmployeeId());
+
+		result =  listEmpDomain.stream().map(x -> {
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId, x.getEmployeeId());
 
 			if (affComHist == null)
-				continue;
-			
+				return null;
+
 			EmployeeInfoDtoExport employeeInfo = new EmployeeInfoDtoExport();
-			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
+			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(x.getEmployeeId());
 
 			if (affComHistByEmp.items() != null) {
 
@@ -123,13 +123,16 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 				}
 			}
 
-			employeeInfo.setCompanyId(employee.getCompanyId());
-			employeeInfo.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
-			employeeInfo.setEmployeeId(employee.getEmployeeId());
-			result.add(employeeInfo);
-		}
-		
+			employeeInfo.setCompanyId(x.getCompanyId());
+			employeeInfo.setEmployeeCode(x.getEmployeeCode() == null ? null : x.getEmployeeCode().v());
+			employeeInfo.setEmployeeId(x.getEmployeeId());
+
+			return employeeInfo;
+
+		}).filter(y -> y != null).collect(Collectors.toList());
+
 		return result;
+		
 	}
 
 	/*
@@ -206,18 +209,23 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 									Person person = personOpt.get();
 									EmpInfoExport empInfoExport = new EmpInfoExport();
 									empInfoExport.setPId(person.getPersonId() == null ? "" : person.getPersonId());
-									
-									empInfoExport.setPersonName(person.getPersonNameGroup().getPersonName().toString() == null ? "" : 
-												person.getPersonNameGroup().getPersonName().getFullName().toString());
-									
-									empInfoExport.setEmployeeId(affCompanyHistByEmployee.getSId() == null ? "" : affCompanyHistByEmployee.getSId());
-									
+
+									empInfoExport.setPersonName(
+											person.getPersonNameGroup().getPersonName().toString() == null ? ""
+													: person.getPersonNameGroup().getPersonName().getFullName()
+															.toString());
+
+									empInfoExport.setEmployeeId(affCompanyHistByEmployee.getSId() == null ? ""
+											: affCompanyHistByEmployee.getSId());
+
 									if (affCompanyHistByEmployee.getSId() != null) {
-										Optional<EmployeeDataMngInfo> employeeOpt = this.empDataMngRepo.findByEmpId(affCompanyHistByEmployee.getSId());
-										
+										Optional<EmployeeDataMngInfo> employeeOpt = this.empDataMngRepo
+												.findByEmpId(affCompanyHistByEmployee.getSId());
+
 										if (employeeOpt.isPresent()) {
 											EmployeeDataMngInfo employee = employeeOpt.get();
-											empInfoExport.setEmployeeCode(employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
+											empInfoExport.setEmployeeCode(employee.getEmployeeCode() == null ? ""
+													: employee.getEmployeeCode().v());
 											empInfoExport.setCompanyId(employee.getCompanyId());
 										}
 									}

@@ -97,8 +97,8 @@ public class AppOverTime extends AggregateRoot{
 		this.companyID = companyID;
 		this.appID = appID;
 		this.overTimeAtr = EnumAdaptor.valueOf(overTimeAtr, OverTimeAtr.class);
-		this.workTypeCode = new WorkTypeCode(workTypeCode);
-		this.siftCode = new WorkTimeCode(siftCode);
+		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
+		this.siftCode = siftCode == null ? null : new WorkTimeCode(siftCode);
 		this.workClockFrom1 = workClockFrom1;
 		this.workClockTo1 = workClockTo1;
 		this.workClockFrom2 = workClockFrom2;

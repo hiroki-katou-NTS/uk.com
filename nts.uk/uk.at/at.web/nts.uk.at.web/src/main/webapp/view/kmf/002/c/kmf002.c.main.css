@@ -31,3 +31,7 @@
 #scrC #component-ccg001 {
 	top: 100px;
 }
+
+#scrC #tableCommonMonth table thead tr th:nth-child(1) {
+	width: 60px;
+}

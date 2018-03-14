@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class GrantDateSetCommand {
 	/* 付与日のID */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	
 	/* 付与日の数 */
 	private int grantDateNo;

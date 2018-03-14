@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -24,13 +25,4 @@ public interface ClosureService {
 	 */
 	// 当月の期間を算出する
 	public DatePeriod getClosurePeriod(int closureId, YearMonth processingYm);
-
-	/**
-	 * 指定した年月日時点の締め期間を取得する
-	 * @param closureId 締めID
-	 * @param ymd 年月日
-	 * @return 締め期間
-	 */
-	// 2018.3.11 add shuichi_ishida
-	public Optional<ClosurePeriod> getClosurePeriodByYmd(int closureId, GeneralDate ymd);
 }

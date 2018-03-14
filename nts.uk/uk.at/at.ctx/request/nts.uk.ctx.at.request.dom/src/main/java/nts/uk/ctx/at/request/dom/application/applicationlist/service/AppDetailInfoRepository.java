@@ -16,4 +16,18 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public AppGoBackInfoFull getAppGoBackInfo(String companyID, String appId);
+	/**
+	 * get Application Holiday Work Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
+	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyID, String appId);
+	/**
+	 * get Application Work Change Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
+	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId);
 }

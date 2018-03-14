@@ -119,6 +119,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCareError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         employIdLogin: any;
+        dialogShow: any
 
         constructor() {
             var self = this;
@@ -164,6 +165,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             // show/hide profile icon
             self.showProfileIcon.subscribe((val) => {
                 self.reloadGrid();
+            });
+            
+            self.displayWhenZero.subscribe(val =>{
+                let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataTemp = [];
+                if (self.displayWhenZero()) {
+                    _.each(dataSource, data => {
+                        var dtt: any = {};
+                        _.each(data, (val, indx) => {
+                            if (String(val) == "0" || String(val) == "0:00") {
+                                dtt[indx] = "";
+                            } else {
+                                dtt[indx] = val;
+                            }
+                        });
+                        dataTemp.push(dtt);
+                    });
+                    $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+                } else {
+                   let dataSourceOld : any = self.formatDate(self.dailyPerfomanceData());
+                   let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                   let group : any = _.groupBy(dataChange, "rowId");
+                    _.each(dataSourceOld, data => {
+                        var dtt: any = {};
+                        if (group[data.id]) {
+                             dtt = data;
+                            _.each(group[data.id], val => {
+                                dtt[val.columnKey] = val.value;
+                            });
+                            dataTemp.push(dtt);
+                        } else {
+                            dataTemp.push(data);
+                        }
+                    });
+                    $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+                }
             });
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
             $(document).mouseup(function(e) {
@@ -429,12 +466,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.sheetsGrid.valueHasMutated();
         }
         proceed() {
+            var self = this;
+            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                self.dialogShow.close();
+            }
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
             let checkDataCare: boolean = true;
             if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
-                var self = this;
                 self.listCareError([]);
                 self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
@@ -527,21 +567,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         
         proceedSave() {
-           let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            var self = this;     
+            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                self.dialogShow.close();
+            }
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
             let checkDataCare: boolean = true;
             if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
-                var self = this;
                 self.listCareError([]);
                 self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-                let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
                 _.each(dataChange, (data: any) => {
                     if (data.columnKey != "sign") {
-                        let dataTemp = _.find(self.dpData, (item: any) => {
-                            return item.id == data.rowId.substring(1, data.rowId.length);
+                        let dataTemp = _.find(dataSource, (item: any) => {
+                            return item.id == data.rowId;
                         });
                         if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                             if (data.columnKey.indexOf("Name") != -1) {
@@ -551,7 +594,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 // check itemCare 
                                 let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
                                 if (groupCare == 0 || groupCare == 1) {
-                                    if (!self.checkErrorData(groupCare, data, dataSource) || self.listCareInputError().length >0) {
+                                    if (self.checkErrorData(groupCare, data, dataSource) == false || self.listCareInputError().length >0) {
                                         checkDataCare = false;
                                     }
                                 }
@@ -593,18 +636,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataChangeProcess).done((data) => {
                         // alert("done");
-                         if (_.isEmpty(data)) {
+                        dataChange = {};
+                        if (_.isEmpty(data)) {
                             self.btnExtraction_Click();
                         } else {
                             nts.uk.ui.block.clear();
                             if (data[0] != undefined) {
                                 self.listCareError(data[0])
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                            } else  if (data[1] != undefined){
+                               // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            } else if (data[1] != undefined){
                                 self.listCareInputError(data[1])
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                               // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                          
+                         self.showErrorDialog();
                         }
                         dfd.resolve();
                     }).fail((data) => {
@@ -616,7 +660,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                       // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                        self.showErrorDialog();
                     }
                 }
             }
@@ -964,8 +1009,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             };
             nts.uk.ui.windows.setShared("paramToGetError", param);
             nts.uk.ui.windows.setShared("errorValidate", errorValidateScreeen);
-            nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
-            });
+            self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml");
         }
         changeExtractionCondition() {
             var self = this;
@@ -1185,7 +1229,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.destroyGrid();
             let start = performance.now();
             self.extractionData();
-             console.log("calc load extractionData :" + (start- performance.now()));
+            console.log("calc load extractionData :" + (start- performance.now()));
             self.loadGrid();
         }
 
@@ -1598,7 +1642,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         controlType: 'FlexImage'
                     },
                     {
-                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_64"), enable: true, click: function(data) {
+                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
                             let source: any = $("#dpGrid").igGrid("option", "dataSource");
                             let rowItemSelect: any = _.find(source, function(value: any) {
                                 return value.id == data.id;
