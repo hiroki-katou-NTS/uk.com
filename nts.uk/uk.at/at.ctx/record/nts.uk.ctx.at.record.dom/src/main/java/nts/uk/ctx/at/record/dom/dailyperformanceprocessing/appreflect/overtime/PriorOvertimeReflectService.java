@@ -4,7 +4,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
  * @author do_dt
  *
  */
-public interface PriorReflectService {
+public interface PriorOvertimeReflectService {
 	/**
 	 * 事前申請の処理
 	 * @param param

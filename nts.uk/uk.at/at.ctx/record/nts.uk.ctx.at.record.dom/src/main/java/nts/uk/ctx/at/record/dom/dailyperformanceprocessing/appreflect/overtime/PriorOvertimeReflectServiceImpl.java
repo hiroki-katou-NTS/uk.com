@@ -10,9 +10,9 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 
 @Stateless
-public class PriorReflectServiceImpl implements PriorReflectService {
+public class PriorOvertimeReflectServiceImpl implements PriorOvertimeReflectService {
 	@Inject
-	private PriorReflectProcess priorProcess;
+	private PriorOvertimeReflectProcess priorProcess;
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Override

@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
  * @author do_dt
  *
  */
-public interface PriorReflectProcess {
+public interface PriorOvertimeReflectProcess {
 	/**
 	 * 予定勤種・就時の反映
 	 * @param para
