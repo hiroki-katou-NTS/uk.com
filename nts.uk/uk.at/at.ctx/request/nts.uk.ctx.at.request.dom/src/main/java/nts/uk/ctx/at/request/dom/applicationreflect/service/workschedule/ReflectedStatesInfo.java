@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.workschedule;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

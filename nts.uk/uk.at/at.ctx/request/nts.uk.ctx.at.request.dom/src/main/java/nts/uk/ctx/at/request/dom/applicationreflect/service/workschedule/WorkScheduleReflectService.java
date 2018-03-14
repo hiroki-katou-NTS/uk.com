@@ -1,6 +1,5 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.workschedule.service;
-import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectScheDto;
-import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectedStatesInfo;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
+
 /**
  * 勤務予定に反映
  * @author dudt

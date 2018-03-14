@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.workschedule;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 /**
  * 振出・休出時反映する区分
  * @author dudt

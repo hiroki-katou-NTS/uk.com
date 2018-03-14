@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.workschedule;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 /**
  * 実行種別
  * @author dudt

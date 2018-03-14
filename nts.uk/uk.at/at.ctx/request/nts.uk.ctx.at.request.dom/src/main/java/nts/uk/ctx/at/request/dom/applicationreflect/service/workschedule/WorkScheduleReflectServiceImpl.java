@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.workschedule.service;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 
 import javax.ejb.Stateless;
 
@@ -7,8 +7,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectScheDto;
-import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectedStatesInfo;
 @Stateless
 public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectService {
 	private ApplicationReflectProcessSche appReflectProcess;

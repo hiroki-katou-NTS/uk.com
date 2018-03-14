@@ -1,7 +1,4 @@
-package nts.uk.ctx.at.request.dom.applicationreflect.workschedule.service;
-
-import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectScheDto;
-import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectedStatesInfo;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 
 public interface ApplicationReflectProcessSche {
 	/**
