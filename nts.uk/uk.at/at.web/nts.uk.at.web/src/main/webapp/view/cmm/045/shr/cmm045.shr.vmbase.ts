@@ -354,13 +354,15 @@ module cmm045.shr {
             lstFrameRes: Array<vmbase.OverTimeFrame>;
             appPre: any;
             reasonAppPre: string;
+            appPreHd: any;
             constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>,
-                appPre: any, reasonAppPre: string){
+                appPre: any, reasonAppPre: string, appPreHd: any){
                 this.preAppID = preAppID;
                 this.postAppID = postAppID;
                 this.lstFrameRes = lstFrameRes;
                 this.appPre = appPre;
                 this.reasonAppPre = reasonAppPre;
+                this.appPreHd = appPreHd;
             }
         }
         export class ApproveAgent{
