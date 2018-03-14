@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCategoryDto;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
+import nts.uk.ctx.exio.dom.exi.adapter.role.OperableSystemImport;
+import nts.uk.ctx.exio.dom.exi.adapter.role.ExRoleAdapter;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
@@ -32,22 +34,29 @@ public class StdAcceptCondSetFinder {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
+	@Inject
+	private ExRoleAdapter roleAdapter;
+
 	public List<SystemTypeDto> getSystemTypes() {
 		List<SystemTypeDto> result = new ArrayList<>();
-//		String employeeId = AppContexts.user().employeeId();
-		// dummy request list #325: get system code by employee id
-		LoginUserInCharge charge = new LoginUserInCharge(true, true, true, true, true);
+
+		// list #325: get system code by employee id
+		OperableSystemImport charge = roleAdapter.getOperableSystem();
 		if (charge.isAttendance()) {
-			result.add(new SystemTypeDto(SystemType.ATTENDANCE_SYSTEM.value, TextResource.localize(SystemType.ATTENDANCE_SYSTEM.nameId)));
+			result.add(new SystemTypeDto(SystemType.ATTENDANCE_SYSTEM.value,
+					TextResource.localize(SystemType.ATTENDANCE_SYSTEM.nameId)));
 		}
 		if (charge.isHumanResource()) {
-			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value, TextResource.localize(SystemType.PERSON_SYSTEM.nameId)));
+			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value,
+					TextResource.localize(SystemType.PERSON_SYSTEM.nameId)));
 		}
 		if (charge.isOfficeHelper()) {
-			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value, TextResource.localize(SystemType.OFFICE_HELPER.nameId)));
+			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value,
+					TextResource.localize(SystemType.OFFICE_HELPER.nameId)));
 		}
 		if (charge.isSalary()) {
-			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value, TextResource.localize(SystemType.PAYROLL_SYSTEM.nameId)));
+			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value,
+					TextResource.localize(SystemType.PAYROLL_SYSTEM.nameId)));
 		}
 		return result;
 	}
@@ -120,8 +129,8 @@ public class StdAcceptCondSetFinder {
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
 		for (int i = 1; i <= 4; i++) {
 			for (int j = 1; j < 11; j++) {
-				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1, 1,
-						"1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
+				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j, 1,
+						1, 1, "1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
 			}
 		}
 

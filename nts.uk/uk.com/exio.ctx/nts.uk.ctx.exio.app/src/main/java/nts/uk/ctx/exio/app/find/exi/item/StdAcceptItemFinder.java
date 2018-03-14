@@ -8,10 +8,10 @@ import javax.inject.Inject;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
 /**
  * 受入項目（定型）
  */
+@Stateless
 public class StdAcceptItemFinder {
 
 	@Inject
