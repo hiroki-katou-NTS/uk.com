@@ -393,11 +393,13 @@ module nts.uk.at.view.kaf010.b {
                 let self = this,
                 appReason: string,
                 divergenceReason: string;
-                $("#inpStartTime1").trigger("validate");
-                $("#inpEndTime1").trigger("validate");
+                if (self.displayCaculationTime()) {
+                    $("#inpStartTime1").trigger("validate");
+                    $("#inpEndTime1").trigger("validate");
+                    if (!self.validate()) { return; }
+                }
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
-                if(!self.validate()){return;}
                 nts.uk.ui.block.invisible();
                 appReason = self.getReason(
                     self.typicalReasonDisplayFlg(),

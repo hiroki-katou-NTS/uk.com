@@ -6,36 +6,50 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+
 /**
  * 
  * @author hoatt
  *
  */
 @Stateless
-public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter{
+public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	@Inject
 	private SyWorkplacePub wkpPub;
+
+	/** The emp pub. */
+	@Inject
+	private SyEmploymentPub empPub;
+
 	/**
 	 * アルゴリズム「社員から職場を取得する」を実行する
 	 */
 	@Override
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date) {
 		Optional<SWkpHistExport> wkpExport = wkpPub.findBySid(sID, date);
-		if(wkpExport.isPresent()){
+		if (wkpExport.isPresent()) {
 			return toImport(wkpExport.get());
 		}
 		return null;
 	}
 
-	private WkpHistImport toImport(SWkpHistExport export){
-		return new WkpHistImport(export.getDateRange(), export.getEmployeeId(),
-				export.getWorkplaceId(), export.getWorkplaceCode(),
-				export.getWorkplaceName(),
-				export.getWkpDisplayName());
+	private WkpHistImport toImport(SWkpHistExport export) {
+		return new WkpHistImport(export.getDateRange(), export.getEmployeeId(), export.getWorkplaceId(),
+				export.getWorkplaceCode(), export.getWorkplaceName(), export.getWkpDisplayName());
 	}
+
+	@Override
+	public Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId,
+			GeneralDate baseDate) {
+		return this.empPub.findSEmpHistBySid(companyId, employeeId, baseDate)
+				.map(f -> new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getPeriod()));
+	}
+
 }
