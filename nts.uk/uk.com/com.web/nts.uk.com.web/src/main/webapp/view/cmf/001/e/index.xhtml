@@ -18,7 +18,7 @@
 		<ui:define name="content">
 			<div class="contents-area dialog-content"  >
 				<div id ="E1_1" class = "label dialog-title" >#{i18n.getText('CMF001_180')}</div>
-				<div  >
+				<div style = "margin-top: 15px; ">
 					<div id ="E1_2"  data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_181')}</div>
 					<div id ="E1_3" tabindex = "1"  style=" display:inline-block; width: 180px" 
 					data-bind="ntsSearchBox: {
@@ -34,6 +34,7 @@
 				
 					<table id="E2_1" class = "auto-increment" data-bind="ntsGridList: {
 							width: 300,
+							height: 385,
 							name:'#{i18n.getText('CMF001_182')}',
 							dataSource: listCsvItem,
 							primaryKey: 'csvItemNumber',
@@ -41,7 +42,6 @@
 				                { headerText: '', key: 'csvItemNumber', width: 40, hidden: true, formatter: _.escape },
 				                { headerText: '#{i18n.getText('CMF001_183')}', key: 'csvItemName', width: 180, formatter: _.escape }
 				            ],
-				            rows: 15,
 				            showNumbering: true,
 							multiple: false,
 							value: selectedCsvItemNumber
