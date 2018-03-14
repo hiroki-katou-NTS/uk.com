@@ -1,8 +1,6 @@
 module nts.uk.com.view.cmf001.o.viewmodel {
     import model = cmf001.share.model;
     import getText = nts.uk.resource.getText;
-    import lv = nts.layout.validate;
-    import vc = nts.layout.validation;
     import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
@@ -153,17 +151,17 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                         //基盤からファイルIDを取得する
                         self.fileId(res[0].id);
                     }
+                    $("#file-upload").focus();
                 }).fail(function(err) {
-                    dialog({ messageId: "Msg_1059" });
+                    dialog({ messageId: "Msg_910" });
                 }).always(() => {
                     block.clear();
                 });
-            }).fail(function(err) {
+            }).fail(function(err) {                
                 self.fileId('');
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
                 dialog({ messageId: "Msg_910" });
                 $("#file-upload").focus();
-            }).always(() => {
                 block.clear();
             });
         }
@@ -189,13 +187,15 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //取得した設定を「条件設定一覧」に表示する
                     self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
                     self.selectedConditionName(self.listCondition()[0].conditionSettingName());
+                    
+                    $("#grd_Condition tr:first-child").focus();
                 }
                 //取得データが0件の場合      
                 else {
                     //エラーメッセージ表示　Msg_907　外部受入設定が作成されていません。
                     dialog({ messageId: "Msg_907" });
                     $("#O6_1").focus();
-                }
+                }                
             }).fail(function(error) {
                 alertError(error);
             }).always(() => {
@@ -340,8 +340,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             setShared("CMF001lParams", { inputMode: false, dataType: item.itemType(), formatSetting: ko.toJS(settingL) });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
-        
-        private gotoA(): void{
+
+        private gotoA(): void {
             nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
         }
 
