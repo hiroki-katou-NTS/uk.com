@@ -56,6 +56,38 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
                 self.initial(numFormat);
             }
+            self.validate();
+        }
+        validate(){
+            var self = this;
+            self.numDataFormatSetting().effectiveDigitLength.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0){
+                    $('#G2_5').ntsError('clear');
+                    $('#G2_8').ntsError('clear');
+                }else{
+                    $('#G2_5').ntsError('check');
+                    $('#G2_8').ntsError('check');
+                }
+            });
+            self.numDataFormatSetting().decimalDivision.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0){
+                    $('#G3_6').ntsError('clear');
+                }else{
+                    $('#G3_6').ntsError('check');
+                }
+            });
+            self.numDataFormatSetting().fixedValue.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0){
+                    $('#G5_5').ntsError('clear');
+                    $('#G2_5').ntsError('check');
+                    $('#G2_8').ntsError('check');
+                    $('#G3_6').ntsError('check');
+                }else{
+                    $('#G2_5').ntsError('clear');
+                    $('#G2_8').ntsError('clear');
+                    $('#G3_6').ntsError('clear');
+                }
+            });
         }
         // データが取得できない場合
         initial(numFormat){
@@ -139,6 +171,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                     self.codeConvertCode(codeConvertCodeSelected);
                     self.numDataFormatSetting().codeConvertCode(codeConvertCodeSelected.dispConvertCode);
                 }
+                $('#G4_2').focus();
             });
         }
         // 数値編集の設定をして終了する
