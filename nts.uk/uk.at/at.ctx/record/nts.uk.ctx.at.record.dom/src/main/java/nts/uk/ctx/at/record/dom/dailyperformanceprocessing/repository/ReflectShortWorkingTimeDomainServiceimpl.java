@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
@@ -65,8 +66,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 					List<ShortWorkingTimeSheet> lstShortWorkingTimeSheet = new ArrayList<ShortWorkingTimeSheet>();
 					List<SChildCareFrame> lstTimeSlot = shortWorkTimeHistoryItem.getLstTimeSlot();
 					for (SChildCareFrame sChildCareFrame : lstTimeSlot) {
-						//fixed null confirm ? ShortWorkingTimeSheet
-						ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(sChildCareFrame.getTimeSlot()),EnumAdaptor.valueOf(shortWorkTimeHistoryItem.getChildCareAtr().value, ChildCareAttribute.class) , sChildCareFrame.getStartTime(), sChildCareFrame.getEndTime(), null, null);
+						ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(sChildCareFrame.getTimeSlot()),EnumAdaptor.valueOf(shortWorkTimeHistoryItem.getChildCareAtr().value, ChildCareAttribute.class) , sChildCareFrame.getStartTime(), sChildCareFrame.getEndTime(), new AttendanceTime(0), new AttendanceTime(0));
 						lstShortWorkingTimeSheet.add(shortWorkingTimeSheet);
 					}
 					return new ShortTimeOfDailyPerformance(employeeId, lstShortWorkingTimeSheet, date);

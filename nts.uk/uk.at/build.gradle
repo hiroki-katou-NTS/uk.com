@@ -26,13 +26,13 @@ buildscript {
 	}
 }
 
-//すべてのプロジェクトに適応すべき�容はここに追記す�
+//すべてのプロジェクトに適応すべき内容はここに追記する
 allprojects {
 	apply from: "$rootDir/gradle/properties.gradle"
 	apply from: "$rootDir/gradle/library_properties.gradle"
 	apply plugin: "com.jfrog.artifactory"
 
-	//ビルド及び実行�、Java8を対象とする
+	//ビルド及び実行は、Java8を対象とする
 	sourceCompatibility = "$javaVersion"
 	targetCompatibility = "$javaVersion" 
 
@@ -51,7 +51,7 @@ subprojects {
 		}
 	}
 	
-	//compileJavaとcompileTestJavaの実行時の断�コードをunicodeで挮
+	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
 	jar {
@@ -116,7 +116,7 @@ subprojects {
         compile group: 'nts.gul', name: 'nts.gul', version: '0.44'
         compile group: 'nts.arc', name: 'nts.arc', version: '0.59'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.9.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.9.2'
 	}
 }
 

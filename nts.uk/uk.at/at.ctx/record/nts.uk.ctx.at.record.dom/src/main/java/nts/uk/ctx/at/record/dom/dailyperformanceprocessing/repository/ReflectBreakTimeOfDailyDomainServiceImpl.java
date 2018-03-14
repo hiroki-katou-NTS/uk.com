@@ -19,6 +19,15 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneS
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageContent;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageResource;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
@@ -52,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -59,8 +69,6 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	@Inject
-	private WorkingConditionItemService workingConditionItemService;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
 	@Inject
@@ -72,12 +80,18 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
 	@Inject
-	private TimeLeavingOfDailyPerformanceRepository TimeLeavingRepo;
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingRepo;
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
+	@Inject
+	private ErrMessageInfoRepository errRepo;
 
 	@Override
-	public BreakTimeOfDailyPerformance reflectBreakTime(String companyId, String employeeID, GeneralDate processingDate,
+	public BreakTimeOfDailyPerformance reflectBreakTime(String companyId, String employeeID, GeneralDate processingDate,String empCalAndSumExecLogID,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance WorkInfo) {
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
@@ -86,7 +100,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
 			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 		} else {
-			Optional<TimeLeavingOfDailyPerformance> TimeLeavingOptional = this.TimeLeavingRepo.findByKey(employeeID,
+			Optional<TimeLeavingOfDailyPerformance> TimeLeavingOptional = this.timeLeavingRepo.findByKey(employeeID,
 					processingDate);
 			if (TimeLeavingOptional.isPresent()) {
 				TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance2 = TimeLeavingOptional.get();
@@ -99,7 +113,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		if (timeLeavingWorks == null) {
 			return null;
 		}
-		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, WorkInfo, breakTimeZoneSettingOutPut);
+		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, employeeID,  processingDate, empCalAndSumExecLogID, WorkInfo, breakTimeZoneSettingOutPut);
 		if (!checkBreakTimeSetting) {
 			return null;
 		}
@@ -179,10 +193,11 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	}
 
 	// 休憩時間帯設定を確認する
-	public boolean checkBreakTimeSetting(String companyId, WorkInfoOfDailyPerformance WorkInfo,
+	public boolean checkBreakTimeSetting(String companyId,String employeeID, GeneralDate processingDate,String empCalAndSumExecLogID, WorkInfoOfDailyPerformance WorkInfo,
 			BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
 		// fixed thieu reset breaktime
 		boolean checkReflect = false;
+		//1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService
 				.checkWorkDay(WorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		// 1日休日系
@@ -223,7 +238,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 					break;
 				case 1:// 時差勤務
-					checkReflect = ConfirmInterTimezoneStaggeredWorkSetting(companyId, weekdayHolidayClassification,
+					checkReflect = ConfirmInterTimezoneStaggeredWorkSetting(companyId, employeeID,   processingDate, empCalAndSumExecLogID, weekdayHolidayClassification,
 							WorkInfo, breakTimeZoneSettingOutPut, checkWorkDay);
 					break;
 
@@ -312,7 +327,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	}
 
 	// 時差勤務設定から休憩時間帯を確認する
-	public boolean ConfirmInterTimezoneStaggeredWorkSetting(String companyId, String weekdayHolidayClassification,
+	public boolean ConfirmInterTimezoneStaggeredWorkSetting(String companyId,String employeeID, GeneralDate processingDate,String empCalAndSumExecLogID, String weekdayHolidayClassification,
 			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
 			WorkStyle checkWorkDay) {
 
@@ -335,9 +350,19 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				// fixed errorAlarm = false
 				boolean errorAlarm = false;
 				if (errorAlarm) {
-
-					// fixed 13/3 viet tiep
-					// エラーログ書き込み
+					//エラーアラームをログ出力する
+				List<EmployeeDailyPerError> employeeDailyPerErrors = this.employeeDailyPerErrorRepo.findList(companyId, employeeID);
+					for (EmployeeDailyPerError employeeDailyPerError : employeeDailyPerErrors) {
+						Optional<ErrorAlarmWorkRecord> errorAlarmWorkRecordOptional = this.errorAlarmWorkRecordRepo.findByCode(employeeDailyPerError.getErrorAlarmWorkRecordCode().v());
+						if (errorAlarmWorkRecordOptional.isPresent()) {
+							ErrorAlarmWorkRecord errorAlarmWorkRecord = errorAlarmWorkRecordOptional.get();
+							
+							ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+									new ErrMessageResource("005"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
+									new ErrMessageContent(TextResource.localize(errorAlarmWorkRecord.getMessage().getMessageColor().v())));
+							errRepo.add(employmentErrMes);
+						}
+					}
 					return false;
 				} else {
 					DiffTimeWorkSetting diffTimeWorkSetting = this.diffTimeWorkSettingRepo
