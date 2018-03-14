@@ -9,65 +9,86 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeName;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeUseSet;
 
+
+/**
+ * The Class DivergenceTimeDto.
+ */
 @Getter
 public class DivergenceTimeDto implements DivergenceTimeSetMemento{
 	
 	/** The divergence time no. */
-	// 乖離時間NO
 	private int divergenceTimeNo;
 	
-	/** The c id. */
-	// 会社ID
-	private String companyId;
-	
 	/** The Use classification. */
-	// 使用区分
-	private int divTimeUseSet;
-	/** The divergence time name */
-	//乖離時間名称
-	private String divTimeName;
+	private int divergenceTimeUseSet;
 	
-	/** The divergence type*/
-	//乖離の種類
+	/**  The divergence time name. */
+	private String divergenceTimeName;
+	
+	/**  The divergence type. */
 	private int divType;
 	
-	/** The divergence time error cancel method*/
-	//乖離時間のエラーの解除方法
+	/**  The divergence time error cancel method. */
 	private boolean reasonInput;
+	
+	/** The reason select. */
 	private boolean reasonSelect;
 	
-	
+	/**
+	 * Instantiates a new divergence time dto.
+	 */
+	public DivergenceTimeDto() {
+		super();
+	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setDivergenceTimeNo(int)
+	 */
 	@Override
 	public void setDivergenceTimeNo(int divergenceTimeNo) {
 		this.divergenceTimeNo =  divergenceTimeNo;
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setCompanyId(java.lang.String)
+	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.companyId=companyId;
+		//no coding
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setDivTimeUseSet(nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeUseSet)
+	 */
 	@Override
 	public void setDivTimeUseSet(DivergenceTimeUseSet divTimeUset) {
-		this.divTimeUseSet = divTimeUset.value;
+		this.divergenceTimeUseSet = divTimeUset.value;
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setDivTimeName(nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeName)
+	 */
 	@Override
 	public void setDivTimeName(DivergenceTimeName divTimeName) {
-		this.divTimeName = divTimeName.toString();
+		this.divergenceTimeName = divTimeName.toString();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setDivType(nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType)
+	 */
 	@Override
 	public void setDivType(DivergenceType divType) {
 		this.divType = divType.value;
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setErrorCancelMedthod(nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeErrorCancelMethod)
+	 */
 	@Override
 	public void setErrorCancelMedthod(DivergenceTimeErrorCancelMethod errorCancelMedthod) {
 		this.reasonInput = errorCancelMedthod.isReasonInputed();
@@ -75,6 +96,9 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento{
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento#setTarsetItems(java.util.List)
+	 */
 	@Override
 	public void setTarsetItems(List<Double> targetItems) {
 		//no code

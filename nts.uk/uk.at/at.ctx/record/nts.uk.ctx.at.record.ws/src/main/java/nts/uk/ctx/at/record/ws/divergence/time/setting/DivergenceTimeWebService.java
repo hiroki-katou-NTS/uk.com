@@ -29,7 +29,7 @@ import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
 
-@Path("at/record/divergence.time.setting")
+@Path("at/record/divergencetime/setting")
 @Produces("application/json")
 public class DivergenceTimeWebService extends WebService{
 	
