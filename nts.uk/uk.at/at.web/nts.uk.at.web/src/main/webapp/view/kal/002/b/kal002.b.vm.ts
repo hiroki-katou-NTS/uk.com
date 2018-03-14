@@ -31,7 +31,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailNormal(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", false);
-            nts.uk.ui.windows.setShared("wording", "");
+            self.setPara();
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingNormalDto.mailSettings);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
@@ -45,7 +45,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailNormalAd(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", false);
-            nts.uk.ui.windows.setShared("wording", "");
+            self.setPara();
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingNormalDto.mailSettingAdmins);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
@@ -62,7 +62,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailAuto(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
-            nts.uk.ui.windows.setShared("wording", "");
+            self.setPara();
             nts.uk.ui.windows.setShared("senderAddress", self.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettings);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
@@ -77,7 +77,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
         setMailAutoAd(){
             var self = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
-            nts.uk.ui.windows.setShared("wording", "");
+            self.setPara();
             nts.uk.ui.windows.setShared("senderAddress", self.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
             nts.uk.ui.windows.setShared("MailSettings", self.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettingAdmins);
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
@@ -89,6 +89,17 @@ module nts.uk.at.view.kal002.b.viewmodel {
                 }
             });
         }
+        
+        setPara(){
+            nts.uk.ui.windows.setShared("SetCC", true);
+            nts.uk.ui.windows.setShared("SetBCC", true);
+            nts.uk.ui.windows.setShared("SetReply", true);
+            nts.uk.ui.windows.setShared("SetSubject", true);
+            nts.uk.ui.windows.setShared("SetBody", true);
+            nts.uk.ui.windows.setShared("wording", "");
+                    
+        }
+        
         Registration(){
             var self = this;
             var dfd = $.Deferred();

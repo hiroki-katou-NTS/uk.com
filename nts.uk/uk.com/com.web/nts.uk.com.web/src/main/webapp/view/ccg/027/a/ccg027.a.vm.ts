@@ -14,6 +14,12 @@ module nts.uk.com.view.ccg027.a.viewmodel {
         subject: KnockoutObservable<string>;
         text: KnockoutObservable<string>;
         mailRely: KnockoutObservable<string>;
+        
+        SetCC: KnockoutObservable<boolean>;
+        SetBCC: KnockoutObservable<boolean>;
+        SetReply: KnockoutObservable<boolean>;
+        SetSubject: KnockoutObservable<boolean>;
+        SetBody: KnockoutObservable<boolean>;
         wording: KnockoutObservable<string>;
 
         senderAddress: KnockoutObservable<string>;
@@ -31,8 +37,13 @@ module nts.uk.com.view.ccg027.a.viewmodel {
             self.subject = ko.observable(nts.uk.ui.windows.getShared("MailSettings").subject);
             self.text = ko.observable(nts.uk.ui.windows.getShared("MailSettings").text);
             self.mailRely = ko.observable(nts.uk.ui.windows.getShared("MailSettings").mailRely);
+            
+            self.SetCC = ko.observable(nts.uk.ui.windows.getShared("SetCC"));
+            self.SetBCC = ko.observable(nts.uk.ui.windows.getShared("SetBCC"));
+            self.SetReply = ko.observable(nts.uk.ui.windows.getShared("SetReply"));
+            self.SetSubject = ko.observable(nts.uk.ui.windows.getShared("SetSubject"));
+            self.SetBody = ko.observable(nts.uk.ui.windows.getShared("SetBody"));
             self.wording = ko.observable(nts.uk.ui.windows.getShared("wording"));
-
         }
 
         startPage(): JQueryPromise<any> {

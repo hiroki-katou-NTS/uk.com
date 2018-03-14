@@ -29,7 +29,7 @@
 						<input id="senderAddress" data-bind="ntsTextEditor: {value: senderAddress, enable: sendingAddressEnable}" />
 					</div>
 				</div>
-				<div class="cf">
+				<div class="cf" data-bind="visible: SetCC">
 					<div class="left">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_4')}</div>
 					</div>
@@ -37,7 +37,7 @@
 						<input id="mailAddressCC" data-bind="ntsTextEditor: {value: mailAddressCC}" />
 					</div>
 				</div>
-				<div class="cf">
+				<div class="cf" data-bind="visible: SetBCC">
 					<div class="left">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_6')}</div>
 					</div>
@@ -45,7 +45,7 @@
 						<input  id="mailAddressBCC" data-bind="ntsTextEditor: {value: mailAddressBCC}" />
 					</div>
 				</div>
-				<div class="cf">
+				<div class="cf" data-bind="visible: SetReply">
 					<div class="left">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_9')}</div>
 					</div>
@@ -53,7 +53,7 @@
 						<input  id="mailRely"  data-bind="ntsTextEditor: {value: mailRely}" />
 					</div>
 				</div>
-				<div class="cf">
+				<div class="cf" data-bind="visible: SetSubject">
 					<div class="left">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_10')}</div>
 					</div>
@@ -61,7 +61,7 @@
 						<input id="subject" data-bind="ntsTextEditor: {value: subject}" />
 					</div>
 				</div>
-				<div class="cf">
+				<div class="cf" data-bind="visible: SetBody">
 					<div class="left">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_11')}</div>
 					</div>
