@@ -2,5 +2,5 @@
 #contents-area{padding-top:25px;}
 #contents-area .cf .left{float:left; width:170px;}
 #contents-area .cf .right{float:left;}
-#contents-area .cf .right input{width: 521px!important;}
+#contents-area .cf .right input, #contents-area .cf .right #text{width: 521px!important;}
 #contents-area .cf .right #wording{width: 543px; margin-top: 10px;}
