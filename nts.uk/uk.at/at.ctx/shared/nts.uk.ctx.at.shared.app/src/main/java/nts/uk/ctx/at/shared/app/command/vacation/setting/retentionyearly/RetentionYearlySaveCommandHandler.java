@@ -79,10 +79,17 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
             this.repository.insert(retentionYearlySetting);
         }
         
-        boolean managementCategory = command.getRetentionYearly().getManagementCategory() == ManageDistinct.NO.value;
-        if (managementCategory) {
-            val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(managementCategory);
-            retentionYearlySettingEvent.toBePublished();
-        }
+        
+        //get ManagementCategory from DB
+        int managementCategoryDB = yearlyRetentionOpt.isPresent() == true ? yearlyRetentionOpt.get().getManagementCategory().value : -1;
+        
+        //check managementCategory change
+		boolean managementCategory = command.getRetentionYearly().getManagementCategory() != managementCategoryDB;
+		
+		if (managementCategory) {
+			boolean manage = command.getRetentionYearly().getManagementCategory() == ManageDistinct.YES.value;
+		    val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(manage);
+		    retentionYearlySettingEvent.toBePublished();
+		}
     }
 }

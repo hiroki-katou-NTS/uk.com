@@ -68,26 +68,40 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             this.annualRepo.add(setting);
         }
         
-        boolean annualManage = command.getAnnualManage() == ManageDistinct.NO.value;
+        //get ManagementCategory from DB
+        int yearManageTypeDB = domain != null ? domain.getYearManageType().value : -1;
+       //check managementCategory change
+        boolean annualManage = command.getAnnualManage() != yearManageTypeDB;
         if (annualManage) {
-            val annualPaidLeaveSettingEvent = new AnnualPaidLeaveSettingDomainEvent(annualManage);
-            val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(annualManage);
-            val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(annualManage);
+        	boolean manage = command.getAnnualManage() == ManageDistinct.YES.value;
+            val annualPaidLeaveSettingEvent = new AnnualPaidLeaveSettingDomainEvent(manage);
             annualPaidLeaveSettingEvent.toBePublished();
-            retentionYearlySettingEvent.toBePublished();
-            timeAnnualSettingEvent.toBePublished();
-        }
-        
-        boolean timeManageType = command.getTimeManageType() == ManageDistinct.NO.value;
-        if (timeManageType && !annualManage) {
-            val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(timeManageType);
-            timeAnnualSettingEvent.toBePublished();
-        }
-        
-        boolean maxManageSemiVacation = command.getMaxManageSemiVacation() == ManageDistinct.NO.value;
-        if (maxManageSemiVacation && !annualManage) {
-            val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(timeManageType);
-            manageAnnualSettingEvent.toBePublished();
+            
+            if(manage){
+            	 boolean addAttendanceDay = command.getAddAttendanceDay() == ManageDistinct.YES.value;
+            	 val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(addAttendanceDay);
+                 retentionYearlySettingEvent.toBePublished();
+                 
+                 //get timeManageType from DB
+                 int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
+                 //check timeManageType change
+                 boolean flatTimeManageType = command.getTimeManageType() != timeManageTypeDB;
+                 if(flatTimeManageType){
+                	 boolean flatManage = command.getTimeManageType() == ManageDistinct.YES.value;
+                	 val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(flatManage);
+                     timeAnnualSettingEvent.toBePublished();
+                 }
+                 
+                 //get timeManageType from DB
+                 int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+                 //check timeManageType change
+                 boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
+                 if(maxManageSemiVacation){
+                	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
+                	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
+                     manageAnnualSettingEvent.toBePublished(); 
+                 }
+            }
         }
     }
 

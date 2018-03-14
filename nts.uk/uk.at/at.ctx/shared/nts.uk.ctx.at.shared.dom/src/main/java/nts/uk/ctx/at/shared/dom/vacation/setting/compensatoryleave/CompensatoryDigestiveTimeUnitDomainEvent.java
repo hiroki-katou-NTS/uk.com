@@ -9,11 +9,11 @@ import lombok.Value;
 import nts.arc.layer.dom.event.DomainEvent;
 
 /*
- * 代休管理設定．管理区分変更
+ * 時間代休の消化単位．管理区分変更
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class CompensatoryLeaveComSettingDomainEvent extends DomainEvent {
-	/** 代休管理区分 */
+public class CompensatoryDigestiveTimeUnitDomainEvent extends DomainEvent {
+	/** 時間代休管理区分  */
 	private boolean parameter;
 }
