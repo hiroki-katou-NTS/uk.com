@@ -227,10 +227,10 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
 		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
 		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
 			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
 			}
 		}
 		return dedTotalTime;
