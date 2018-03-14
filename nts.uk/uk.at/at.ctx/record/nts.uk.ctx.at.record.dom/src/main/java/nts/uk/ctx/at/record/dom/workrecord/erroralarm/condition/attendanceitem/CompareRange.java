@@ -13,16 +13,16 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
  * @author hungnm
  *
  */
-// 範囲との比較
+// �?��との比�?
 public class CompareRange<V> extends CheckedCondition {
 
-    // 開始値
+    // 開始�?�
     private V startValue;
 
-    // 終了値
+    // 終�??�
     private V endValue;
 
-    // 比較演算子
+    // 比�?��算�?
     @Getter
     private RangeCompareType compareOperator;
 
@@ -71,14 +71,16 @@ public class CompareRange<V> extends CheckedCondition {
         Integer endV = value.apply(endValue);
         
         switch (this.compareOperator) {
+            case BETWEEN_RANGE_OPEN:
+                return targetV.compareTo(startV) > 0 && targetV.compareTo(endV) < 0;
             case BETWEEN_RANGE_CLOSED:
                 return targetV.compareTo(startV) >= 0 && targetV.compareTo(endV) <= 0;
             case BETWEEN_RANGE_OPEN:
-                return targetV.compareTo(startV) > 0 && targetV.compareTo(endV) < 0;
+            case OUTSIDE_RANGE_OPEN:
+                return targetV.compareTo(startV) < 0 || targetV.compareTo(endV) > 0;
             case OUTSIDE_RANGE_CLOSED:
                 return targetV.compareTo(startV) <= 0 || targetV.compareTo(endV) >= 0;
             case OUTSIDE_RANGE_OPEN:
-                return targetV.compareTo(startV) < 0 || targetV.compareTo(endV) > 0;
             default:
                 return false;
         }
