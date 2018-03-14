@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -108,15 +109,18 @@ public class WorkTimeSettingInfoFinder {
 					.findByWorkTimeCode(companyId, workTimeCode).get();
 
 			workTimeSetting.saveToMemento(workTimeSettingDto);
-			displayMode.saveToMemento(displayModeDto);
+			if (displayMode != null) { 
+				displayMode.saveToMemento(displayModeDto); 
+			}
 			predetemineTimeSetting.saveToMemento(predetemineTimeSettingDto);
 
+			WorkTimeDivision workTimeDivision = workTimeSetting.getWorkTimeDivision();
 			// check mode of worktime
-			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
+			if (workTimeDivision.getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
 				// workTimeSettingDto
 				// check WorkTimeMethodSet
 
-				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
+				switch (workTimeDivision.getWorkTimeMethodSet()) {
 				case FIXED_WORK:
 					FixedWorkSetting fixedWorkSetting = this.fixedWorkSettingRepository
 							.findByKey(companyId, workTimeCode).get();

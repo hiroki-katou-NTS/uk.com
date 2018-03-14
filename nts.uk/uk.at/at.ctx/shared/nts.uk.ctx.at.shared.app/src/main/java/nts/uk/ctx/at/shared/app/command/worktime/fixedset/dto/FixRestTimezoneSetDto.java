@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
 public class FixRestTimezoneSetDto implements FixRestTimezoneSetGetMemento {
 
 	/** The lst timezone. */
-	private List<DeductionTimeDto> lstTimezone;
+	private List<DeductionTimeDto> timezones;
 
 	/*
 	 * (non-Javadoc)
@@ -30,7 +30,7 @@ public class FixRestTimezoneSetDto implements FixRestTimezoneSetGetMemento {
 	 */
 	@Override
 	public List<DeductionTime> getLstTimezone() {
-		return this.lstTimezone.stream().map(item -> new DeductionTime(item)).collect(Collectors.toList());
+		return this.timezones.stream().map(item -> new DeductionTime(item)).collect(Collectors.toList());
 	}
 
 }

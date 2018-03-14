@@ -46,9 +46,13 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 		KshmtWorktimeDispModePK pk = new KshmtWorktimeDispModePK(domain.getCompanyId(), domain.getWorktimeCode().v());
 
 		Optional<KshmtWorktimeDispMode> op = this.queryProxy().find(pk, KshmtWorktimeDispMode.class);
-		KshmtWorktimeDispMode entity = op.get();
-		domain.saveToMemento(new JpaWorkTimeDisplayModeSetMemento(entity));
-		this.commandProxy().update(entity);
+		if (op.isPresent()) {
+			KshmtWorktimeDispMode entity = op.get();
+			domain.saveToMemento(new JpaWorkTimeDisplayModeSetMemento(entity));
+			this.commandProxy().update(entity);
+		} else {
+			this.add(domain);
+		}		
 	}
 
 	/*

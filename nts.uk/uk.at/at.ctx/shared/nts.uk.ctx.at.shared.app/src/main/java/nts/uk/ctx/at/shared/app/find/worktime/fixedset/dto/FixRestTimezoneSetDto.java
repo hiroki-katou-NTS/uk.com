@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento;
 public class FixRestTimezoneSetDto implements FixRestTimezoneSetSetMemento {
 
 	/** The lst timezone. */
-	private List<DeductionTimeDto> lstTimezone;
+	private List<DeductionTimeDto> timezones;
 
 	/*
 	 * (non-Javadoc)
@@ -35,9 +35,9 @@ public class FixRestTimezoneSetDto implements FixRestTimezoneSetSetMemento {
 	@Override
 	public void setLstTimezone(List<DeductionTime> lstTimezone) {
 		if (CollectionUtil.isEmpty(lstTimezone)) {
-			this.lstTimezone = new ArrayList<>();
+			this.timezones = new ArrayList<>();
 		} else {
-			this.lstTimezone = lstTimezone.stream().map(domain -> {
+			this.timezones = lstTimezone.stream().map(domain -> {
 				DeductionTimeDto dto = new DeductionTimeDto();
 				domain.saveToMemento(dto);
 				return dto;
