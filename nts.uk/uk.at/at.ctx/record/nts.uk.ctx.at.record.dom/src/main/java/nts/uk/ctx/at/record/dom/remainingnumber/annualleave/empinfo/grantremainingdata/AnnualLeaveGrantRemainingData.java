@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
+
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -7,13 +9,11 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 
 @Getter
-public class SpecialLeaveGrantRemainingData extends AggregateRoot{
+public class AnnualLeaveGrantRemainingData extends AggregateRoot{
 	
 	private String employeeId;
 	
-	private String specialLeaveCode;
-	
-	private GeneralDate grantData;
+	private GeneralDate grantDate;
 	
 	private GeneralDate deadline;
 	
@@ -21,6 +21,8 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot{
 	
 	private GrantRemainRegisterType registerType;
 	
-	private SpecialLeaveNumberInfo details;
+	private AnnualLeaveNumberInfo details;
+	
+	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
 }

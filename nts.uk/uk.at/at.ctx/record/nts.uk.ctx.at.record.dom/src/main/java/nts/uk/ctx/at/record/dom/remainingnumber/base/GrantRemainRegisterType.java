@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
+package nts.uk.ctx.at.record.dom.remainingnumber.base;
 
 import lombok.AllArgsConstructor;
 
