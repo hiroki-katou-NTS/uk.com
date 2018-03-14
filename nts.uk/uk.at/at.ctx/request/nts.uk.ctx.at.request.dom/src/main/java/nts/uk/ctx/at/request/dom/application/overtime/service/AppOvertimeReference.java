@@ -30,22 +30,9 @@ public class AppOvertimeReference {
 	 */
 	private SiftType siftTypeRefer;
 
-	/**
-	 * 勤務時間From1
-	 */
-	private Integer workClockFrom1Refer;
-	/**
-	 * 勤務時間To1
-	 */
-	private Integer workClockTo1Refer;
-	/**
-	 * 勤務時間From2
-	 */
-	private Integer workClockFrom2Refer;
-	/**
-	 * 勤務時間To2
-	 */
-	private Integer workClockTo2Refer;
+	private String workClockFromTo1Refer;
+	
+	private String workClockFromTo2Refer;
 	
 	/**
 	 * フレックス超過時間

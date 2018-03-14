@@ -17,14 +17,22 @@ public interface SystemResourceQueryRepository {
 	/**
 	 * Find by list resource id.
 	 *
+	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<SystemResourceData> findListResource(String companyId);
+	List<SystemResourceData> findListResourceCus(String companyId);
 	
-	
+	/**
+	 * Find list resource.
+	 *
+	 * @return the list
+	 */
+	List<SystemResourceData> findListResource();
+
 	/**
 	 * Find by resource id.
 	 *
+	 * @param companyId the company id
 	 * @param resourceId the resource id
 	 * @return the optional
 	 */
@@ -34,7 +42,7 @@ public interface SystemResourceQueryRepository {
 	/**
 	 * Update.
 	 *
-	 * @param systemResource the system resource
+	 * @param entity the entity
 	 */
 	void update(CismtI18NResourceCus entity);
 }

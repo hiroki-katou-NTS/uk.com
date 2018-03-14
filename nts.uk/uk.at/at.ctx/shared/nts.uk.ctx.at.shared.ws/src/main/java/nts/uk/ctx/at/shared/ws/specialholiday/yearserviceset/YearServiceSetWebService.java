@@ -26,7 +26,7 @@ public class YearServiceSetWebService extends WebService{
 	 */
 	@POST
 	@Path("findAll/{specialHolidayCode}") 
-	public List<YearServiceSetDto> finder(@PathParam("specialHolidayCode") String specialHolidayCode){
+	public List<YearServiceSetDto> finder(@PathParam("specialHolidayCode") int specialHolidayCode){
 		return this.finder.finder(specialHolidayCode);
 	}
 //	@POST

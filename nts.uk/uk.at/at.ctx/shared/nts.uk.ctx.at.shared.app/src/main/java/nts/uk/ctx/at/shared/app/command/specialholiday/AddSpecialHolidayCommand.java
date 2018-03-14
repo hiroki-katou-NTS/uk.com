@@ -20,7 +20,7 @@ public class AddSpecialHolidayCommand {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/** 特別休暇名称 */
 	private String specialHolidayName;

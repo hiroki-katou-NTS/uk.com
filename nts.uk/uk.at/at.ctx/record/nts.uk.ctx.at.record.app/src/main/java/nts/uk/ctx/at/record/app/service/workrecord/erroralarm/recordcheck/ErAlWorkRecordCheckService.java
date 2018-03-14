@@ -42,7 +42,7 @@ public class ErAlWorkRecordCheckService {
 			ErrorAlarmCondition checkCondition) {
 		return this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition));
 	}
-	
+
 	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
 			String EACheckID) {
 		ErrorAlarmCondition checkCondition = errorRecordRepo.findConditionByErrorAlamCheckId(EACheckID).orElse(null);
@@ -55,16 +55,17 @@ public class ErAlWorkRecordCheckService {
 
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds,
 			ErrorAlarmCondition checkCondition) {
-		List<RegulationInfoEmployeeQueryR> searchR = this.employeeSearch
-				.search(this.createQueryToFilterEmployees(workingDate, checkCondition));
+		List<RegulationInfoEmployeeQueryR> searchR = this.filterEmployees(workingDate, employeeIds, checkCondition);
 
-		if (searchR.isEmpty()) {
+		if (searchR.isEmpty()) { 
 			return toEmptyResultMap();
 		}
 
 		List<String> filted = searchR.stream().filter(e -> employeeIds.contains(e.getEmployeeId()))
 				.map(e -> e.getEmployeeId()).collect(Collectors.toList());
-
+		if (filted.isEmpty()) {
+			return toEmptyResultMap();
+		}
 		/** 社員に一致する日別実績を取得する */
 		List<DailyRecordDto> record = fullFinder.find(filted, new DatePeriod(workingDate, workingDate));
 
@@ -72,7 +73,8 @@ public class ErAlWorkRecordCheckService {
 			return toEmptyResultMap();
 		}
 
-		return record.stream().collect(Collectors.toMap(c -> c.employeeId(), c -> checkErrorAlarmCondition(c, checkCondition)));
+		return record.stream()
+				.collect(Collectors.toMap(c -> c.employeeId(), c -> checkErrorAlarmCondition(c, checkCondition)));
 	}
 
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds, String EACheckID) {
@@ -85,27 +87,33 @@ public class ErAlWorkRecordCheckService {
 		return toEmptyResultMap();
 	}
 
-	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition){
+	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 
 		/** 勤務種類をチェックする */
-		if (!condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-			/** 就業時間帯をチェックする */
-			if (!condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-				/** 勤怠項目をチェックする */
-				return condition.getAtdItemCondition().check(c -> AttendanceItemUtil.toItemValues(record, c)
-						.stream().map(iv -> getValue(iv)).collect(Collectors.toList())
-				);
-			}
+		if (condition.getWorkTypeCondition().isUse() && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
+			return false;
 		}
-		return false;
+		/** 就業時間帯をチェックする */
+		if (condition.getWorkTimeCondition().isUse() && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
+			return false;
+		}
+		/** 勤怠項目をチェックする */
+		return condition.getAtdItemCondition().check(c -> {
+			if (c.isEmpty()) {
+				return c;
+			}
+			return AttendanceItemUtil.toItemValues(record, c).stream().map(iv -> getValue(iv))
+					.collect(Collectors.toList());
+		});
 	}
 
 	private Integer getValue(ItemValue value) {
 		if (value.value() == null) {
 			return 0;
 		}
-		return value.getValueType() == ValueType.DECIMAL ? ((BigDecimal) value.value()).intValue() : (Integer) value.value();
+		return value.getValueType() == ValueType.DECIMAL ? ((BigDecimal) value.value()).intValue()
+				: (Integer) value.value();
 	}
 
 	private Map<String, Boolean> toEmptyResultMap() {

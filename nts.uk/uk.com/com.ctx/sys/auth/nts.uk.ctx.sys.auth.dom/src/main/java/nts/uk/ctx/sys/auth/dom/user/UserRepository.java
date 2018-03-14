@@ -17,7 +17,7 @@ public interface UserRepository {
 
 	List<User> searchBySpecialAndMulti(GeneralDate systemDate, int special, int multi);
 
-	List<User> searchUser(String userIDName, GeneralDate date);
+	List<SearchUser> searchUser(String userIDName, GeneralDate date);
 
 	List<User> getByListUser(List<String> userID);
 
@@ -25,6 +25,8 @@ public interface UserRepository {
 	
 	List<User> getListUserByListAsID(List<String> listAssociatePersonId);
 
+	Optional<User> getListUserByDefUser(String userID , int defUser ,GeneralDate  expirationDate);
+	
 	void addNewUser(User newUser);
 
 }

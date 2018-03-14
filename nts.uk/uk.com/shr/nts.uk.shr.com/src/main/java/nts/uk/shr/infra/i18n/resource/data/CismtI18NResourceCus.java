@@ -5,19 +5,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourceItem;
 import nts.uk.shr.infra.i18n.resource.container.MessageResourceItem;
 import nts.uk.shr.infra.i18n.resource.container.ProgramResourceItem;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "CISMT_I18N_RESOURCE_CUS")
-public class CismtI18NResourceCus {
+public class CismtI18NResourceCus extends UkJpaEntity {
 	
 	@EmbeddedId
 	public CismtI18NResourceCusPK pk;
@@ -39,6 +36,11 @@ public class CismtI18NResourceCus {
 			// 明らかにバグ（データ設定ミス）だが、エラーにして処理を停止させるほど深刻ではないので、処理を継続させる
 			return new MessageResourceItem(this.pk.systemId, this.pk.resourceId, this.content);
 		}
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.pk;
 	}
 
 }

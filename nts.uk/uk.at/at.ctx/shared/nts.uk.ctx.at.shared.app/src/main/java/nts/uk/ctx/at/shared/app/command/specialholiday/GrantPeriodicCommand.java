@@ -7,7 +7,7 @@ public class GrantPeriodicCommand {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	
 	/** 付与日数定期 */
 	private int grantDay;
