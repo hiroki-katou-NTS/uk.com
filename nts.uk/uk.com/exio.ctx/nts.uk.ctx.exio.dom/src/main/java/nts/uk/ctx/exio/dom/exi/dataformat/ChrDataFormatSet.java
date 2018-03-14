@@ -41,7 +41,7 @@ public class ChrDataFormatSet extends DataFormatSetting {
 	/**
 	 * コード編集桁
 	 */
-	private Optional<CodeEditDigit> cdEditDigit;
+	private Optional<DataFormatCharacterDigit> cdEditDigit;
 
 	/**
 	 * 固定値の値
@@ -67,7 +67,7 @@ public class ChrDataFormatSet extends DataFormatSetting {
 		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
 		this.cdEditMethod = Optional.ofNullable(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
 		this.fixedVal = Optional.ofNullable(new DataSettingFixedValue(fixedVal));
-		this.cdEditDigit = Optional.ofNullable(new CodeEditDigit(cdEditDigit));
+		this.cdEditDigit = Optional.ofNullable(new DataFormatCharacterDigit(cdEditDigit));
 		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
 		this.endDigit = Optional.of(new AcceptedDigit(endDigit));
 	}
