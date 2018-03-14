@@ -24,7 +24,7 @@
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
 				<li><a tabindex="-1" href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a tabindex="-1" href="#employment-tab" role="tab-navigator"
+				<li data-bind="visible: employmentVisible"><a tabindex="-1" href="#employment-tab" role="tab-navigator"
 					data-bind="click: switchToEmploymentTab" >#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
@@ -304,6 +304,7 @@
 												data-bind="ntsComboBox: {
 												options: expirationTimeEnums,
 												optionsValue: 'value',
+												visibleItemsCount: 15,
 												value: emExpirationTime,
 												optionsText: 'localizedName',
 												editable: false,

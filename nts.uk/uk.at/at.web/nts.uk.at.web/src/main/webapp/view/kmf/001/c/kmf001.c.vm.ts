@@ -48,7 +48,7 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 // 年休の管理
                 self.manageDistinctList = ko.observableArray([]);
-                self.selectedAnnualManage = ko.observable(0);
+                self.selectedAnnualManage = ko.observable(1);
                 self.enableAnnualVacation = ko.computed(function() {
                     return self.selectedAnnualManage() == 1;
                 }, self);

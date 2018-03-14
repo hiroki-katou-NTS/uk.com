@@ -68,9 +68,11 @@ module nts.uk.pr.view.kmf001.f {
             listComponentOption: KnockoutObservable<any>;
             
             firstLoad: KnockoutObservable<boolean>;
+            employmentVisible: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this;
-                self.compenManage = ko.observable(0);
+                self.compenManage = ko.observable(1);
                 self.compenPreApply = ko.observable(0);
                 self.compenTimeManage = ko.observable(0);
                 self.expirationDateCode = ko.observable(0);
@@ -183,6 +185,7 @@ module nts.uk.pr.view.kmf001.f {
                     alreadySettingList: this.alreadySettingList
                 };
                 self.firstLoad = ko.observable(true);
+                self.employmentVisible = ko.observable(self.compenManage() == 1);
             }
 
             public startPage(): JQueryPromise<any> {
@@ -326,6 +329,7 @@ module nts.uk.pr.view.kmf001.f {
                         self.backUpData(self.defaultData());
                     }
                     $('#compenManage').focus();
+                    self.employmentVisible(self.compenManage() == 1);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
