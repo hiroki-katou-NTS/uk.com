@@ -121,7 +121,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			throw new RuntimeException("「公休設定」ドメインが見つかりません！");
 		
 		if(!(publicHolidaySettingOpt.get().getPublicHdManagementStartDate() instanceof PublicHoliday ))
-			throw new  RuntimeException("In domain 「公休設定」, the field: 公休管理開始日 is not intance of 公休起算日 /nEAP don't check this Exception. /nPlease view EA!");
+			throw new  RuntimeException("In domain 「公休設定」, the field: 公休管理開始日 is not intance of 公休起算日 \nEAP don't check this Exception. \nPlease view EA!");
 		
 		PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
 		if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {

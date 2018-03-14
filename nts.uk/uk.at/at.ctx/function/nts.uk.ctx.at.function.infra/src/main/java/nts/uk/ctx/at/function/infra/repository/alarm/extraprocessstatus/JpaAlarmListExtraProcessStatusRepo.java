@@ -23,7 +23,9 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startTime = :startTime";
 	private final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
 			+ "WHERE c.kfnmtAlarmListExtraProcessStatusPK.companyID = :companyID"
-			+ " AND c.employeeID = :employeeID";
+			+ " AND c.employeeID = :employeeID"
+			+ " AND c.endDate IS NULL"
+			+ " AND c.endTime IS NULL";
 
 	
 	@Override
@@ -68,16 +70,14 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 
 	@Override
 	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID, String employeeID) {
-		Optional<AlarmListExtraProcessStatus> optAlarmStatus = this.queryProxy()
+		List<AlarmListExtraProcessStatus> listAlarmStatus = this.queryProxy()
 				.query(SELECT_ALEX_PROCESS_BY_END_DATE, KfnmtAlarmListExtraProcessStatus.class)
 				.setParameter("companyID", companyID).setParameter("employeeID", employeeID)
-				.getSingle(c -> c.toDomain());
-		if (optAlarmStatus.isPresent() && optAlarmStatus.get().getEndDate() == null
-				&& optAlarmStatus.get().getEndTime() == null)
-			return optAlarmStatus ;
-		else
+				.getList(c -> c.toDomain());
+		if (listAlarmStatus.isEmpty())
 			return Optional.ofNullable(null);
-
+		else
+			return Optional.of(listAlarmStatus.get(0));
 	}
 
 
