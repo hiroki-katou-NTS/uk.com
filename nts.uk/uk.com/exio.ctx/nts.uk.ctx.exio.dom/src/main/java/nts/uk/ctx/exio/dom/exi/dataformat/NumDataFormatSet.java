@@ -36,7 +36,7 @@ public class NumDataFormatSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<ValueOfFixed> valueOfFixedValue;
+	private Optional<DataSettingFixedValue> valueOfFixedValue;
 
 	/**
 	 * 少数桁数
@@ -72,7 +72,7 @@ public class NumDataFormatSet extends DataFormatSetting {
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
 
 		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
-		this.valueOfFixedValue = Optional.ofNullable(new ValueOfFixed(valueOfFixedValue));
+		this.valueOfFixedValue = Optional.ofNullable(new DataSettingFixedValue(valueOfFixedValue));
 		this.decimalDigitNum = Optional.ofNullable(new DecimalDigitNumber(decimalDigitNum));
 		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
 		this.endDigit = Optional.ofNullable(new AcceptedDigit(endDigit));

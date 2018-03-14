@@ -12,7 +12,7 @@
 			<com:ValidatorScript>
                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber
-                    nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed
+                    nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -195,7 +195,7 @@
 								value: valueOfFixedValue,
 								name: '#{i18n.getText('CMF001_256')}', 
 								required: true,
-								constraint: 'ValueOfFixed',
+								constraint: 'DataSettingFixedValue',
 								enable: $parent.enableFixedValue(),
 								option : {width : '200px'}}" />
 						</div>

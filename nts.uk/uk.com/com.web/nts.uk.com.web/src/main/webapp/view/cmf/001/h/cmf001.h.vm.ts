@@ -37,6 +37,42 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             if (!nts.uk.util.isNullOrUndefined(charSet)) {
                 self.initial(charSet);
             }
+            self.validate();
+        }
+        validate(){
+            var self = this;
+            self.characterDataFormatSetting().effectiveDigitLength.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0){
+                    $('#H2_5').ntsError('clear');
+                    $('#H2_8').ntsError('clear');
+                }else{
+                    $('#H2_5').ntsError('check');
+                    $('#H2_8').ntsError('check');
+                }
+            });
+            self.characterDataFormatSetting().codeEditing.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0){
+                    $('#H3_5').ntsError('clear');
+                }else{
+                    $('#H3_5').ntsError('check');
+                }
+            });
+            self.characterDataFormatSetting().fixedValue.subscribe(function(selectedValue: any) {
+                if (selectedValue == 0){
+                    $('#H5_5').ntsError('clear');
+                    if (self.characterDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE){
+                        $('#H2_5').ntsError('check');
+                        $('#H2_8').ntsError('check');
+                    }
+                    if (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE){
+                        $('#H3_5').ntsError('check');
+                    }
+                }else{
+                    $('#H2_5').ntsError('clear');
+                    $('#H2_8').ntsError('clear');
+                    $('#H3_5').ntsError('clear');
+                }
+            });
         }
         initComponents() {
             var self = this;
@@ -144,6 +180,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                     self.codeConvertCode(codeConvertCodeSelected);
                     self.characterDataFormatSetting().codeConvertCode(codeConvertCodeSelected.dispConvertCode);
                 }
+                $('#H4_2').focus();
             });
         }
         // 数値編集の設定をして終了する
@@ -154,6 +191,9 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 nts.uk.ui.windows.close();
             }
         }
+        /**
+        * 開始桁、終了桁に入力はあるか判別, 小数桁数に入力があるか判別, 固定値に入力があるか判別
+        */
         checkValidInput() {
             var self = this;
             if (self.characterDataFormatSetting().fixedValue() == 1) {
