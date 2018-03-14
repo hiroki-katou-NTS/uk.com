@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
 
     export class ScreenModel {
         numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting>
-        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, "", 0, ""));
+        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, null, 0, null));
         
         effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
@@ -99,7 +99,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             let convertCodeShared = numFormat.codeConvertCode;
             let convertCode = null;
             if (nts.uk.util.isNullOrUndefined(convertCodeShared)) {
-                convertCode = new model.AcceptanceCodeConvert("", "", 0);
+                convertCode = new model.AcceptanceCodeConvert(null, null, 0);
             } else {
                 convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
             }

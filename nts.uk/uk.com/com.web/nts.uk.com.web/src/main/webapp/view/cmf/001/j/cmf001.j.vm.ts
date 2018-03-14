@@ -90,7 +90,7 @@ module nts.uk.com.view.cmf001.j.viewmodel {
                     params.formatSetting.valueOfFixedValue));
             }
             else {
-                self.setting(new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 0, 0, ""));
+                self.setting(new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 0, 0, null));
             }
 
             self.checkRequired1.subscribe(function(data: any) {

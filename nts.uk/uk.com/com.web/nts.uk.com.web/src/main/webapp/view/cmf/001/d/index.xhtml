@@ -90,9 +90,11 @@
 							</div>
 						</div>
 						<div data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', showIcon: true, visible: true}">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
-							<div tabindex="7" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
-								items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
+							<div class="valign-center control-group cf">
+								<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
+								<div class="pull-left" tabindex="7" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
+									items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
+							</div>
 							<table id="D5_4" data-bind="ntsGridList: {
 									rows: 12,
 									name: '#[CMF001_39]', 

@@ -46,7 +46,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
                     params.formatSetting.valueOfFixedValue));
             }
             else {
-                self.setting(new model.DateDataFormatSetting(1, 0, ""));
+                self.setting(new model.DateDataFormatSetting(1, 0, null));
             }
 
             self.checkRequired1.subscribe(function(data: any) {
