@@ -203,6 +203,11 @@ module nts.uk.ui.koExtentions {
                 }
                 
                 validateProcess(newText, $target, isStart, oldValue, result);
+                var valueX = time.formatPattern(newText, dateFormat, ISOFormat);
+                if(!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date"){
+                    console.log(1);
+                    $target.val(valueX);
+                }
                 
                 value(oldValue);
             });
@@ -276,7 +281,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         $startDate.val("");
                     }     
-                }   
+                } 
                 var endDate = !nts.uk.util.isNullOrEmpty(data.value().endDate) ? time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
                 let oldEnd = !nts.uk.util.isNullOrEmpty($endDate.val()) ? time.formatPattern($endDate.val(), dateFormat, ISOFormat) : $endDate.val();
                 if (endDate !== oldEnd){
@@ -286,7 +291,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         $endDate.val("");
                     }       
-                } 
+                }
             }
             if(enable === false){
                 $container.find(".ntsDateRange_Component").removeAttr("tabindex");    
