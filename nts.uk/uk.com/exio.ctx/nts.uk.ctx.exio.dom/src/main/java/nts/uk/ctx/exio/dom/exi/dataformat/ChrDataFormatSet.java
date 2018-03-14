@@ -46,7 +46,7 @@ public class ChrDataFormatSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<ValueOfFixed> fixedVal;
+	private Optional<DataSettingFixedValue> fixedVal;
 
 	/**
 	 * 有効桁数開始桁
@@ -66,7 +66,7 @@ public class ChrDataFormatSet extends DataFormatSetting {
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
 		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
 		this.cdEditMethod = Optional.ofNullable(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
-		this.fixedVal = Optional.ofNullable(new ValueOfFixed(fixedVal));
+		this.fixedVal = Optional.ofNullable(new DataSettingFixedValue(fixedVal));
 		this.cdEditDigit = Optional.ofNullable(new CodeEditDigit(cdEditDigit));
 		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
 		this.endDigit = Optional.of(new AcceptedDigit(endDigit));
