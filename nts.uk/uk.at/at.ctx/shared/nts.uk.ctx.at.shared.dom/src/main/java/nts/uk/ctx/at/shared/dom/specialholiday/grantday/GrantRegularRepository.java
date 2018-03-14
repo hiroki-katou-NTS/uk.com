@@ -17,7 +17,7 @@ public interface GrantRegularRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	List<GrantRegular> findAll(String companyId, String specialHolidayCode);
+	List<GrantRegular> findAll(String companyId, int specialHolidayCode);
 
 	/**
 	 * Find all Com
@@ -26,7 +26,7 @@ public interface GrantRegularRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	List<GrantDateCom> findAllCom(String companyId, String specialHolidayCode);
+	List<GrantDateCom> findAllCom(String companyId, int specialHolidayCode);
 	
 	/**
 	 * Find Com by code
@@ -35,7 +35,7 @@ public interface GrantRegularRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	Optional<GrantDateCom> getComByCode(String companyId, String specialHolidayCode);
+	Optional<GrantDateCom> getComByCode(String companyId, int specialHolidayCode);
 	
 	/**
 	 * Find Set by code
@@ -44,7 +44,7 @@ public interface GrantRegularRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	List<GrantDateSet> getSetByCode(String companyId, String specialHolidayCode);
+	List<GrantDateSet> getSetByCode(String companyId, int specialHolidayCode);
 
 	/**
 	 * Add new Grant Date Com
@@ -66,7 +66,7 @@ public interface GrantRegularRepository {
 	 * @param personalGrantDateCode
 	 * @return
 	 */
-	Optional<GrantDatePer> getPerByCode(String companyId, String specialHolidayCode, String personalGrantDateCode);
+	Optional<GrantDatePer> getPerByCode(String companyId, int specialHolidayCode, String personalGrantDateCode);
 	
 	/**
 	 * Find Per Set by code
@@ -76,7 +76,7 @@ public interface GrantRegularRepository {
 	 * @param personalGrantDateCode
 	 * @return
 	 */
-	List<GrantDatePerSet> getPerSetByCode(String companyId, String specialHolidayCode, String personalGrantDateCode);
+	List<GrantDatePerSet> getPerSetByCode(String companyId, int specialHolidayCode, String personalGrantDateCode);
 
 	/**
 	 * Add new Grant date per
@@ -97,17 +97,17 @@ public interface GrantRegularRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	List<GrantDatePer> findAllPer(String companyId, String specialHolidayCode);
+	List<GrantDatePer> findAllPer(String companyId, int specialHolidayCode);
 	
 	/**
 	 * Remove Grant date per
 	 * 
 	 */
-	void removePer(String companyId, String specialHolidayCode, String personalGrantDateCode);
+	void removePer(String companyId, int specialHolidayCode, String personalGrantDateCode);
 
 	/**
 	 * Remove Grant date per set
 	 * 
 	 */
-	void removePerSet(String companyId, String specialHolidayCode, String personalGrantDateCode);
+	void removePerSet(String companyId, int specialHolidayCode, String personalGrantDateCode);
 }

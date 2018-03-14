@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 public class GrantDateComCommand {
 	/*付与日のID*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*付与基準日*/
 	private int grantDateAtr;

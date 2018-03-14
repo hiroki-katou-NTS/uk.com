@@ -11,7 +11,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -73,9 +73,19 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		this.useAtr = useAtr;
 	}
 
+	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, ConditionAtr conditionAtr,
+			Boolean useAtr) {
+		super();
+		this.companyId = companyId;
+		this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
+		this.targetNO = targetNO;
+		this.conditionAtr = conditionAtr;
+		this.useAtr = useAtr;
+	}
+
 	/**
 	 * Set CountableTarget
-	 * 
+	 *
 	 * @param additionAttendanceItems
 	 * @param substractionAttendanceItems
 	 * @return itself
@@ -89,7 +99,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 
 	/**
 	 * Set UnCountableTarget
-	 * 
+	 *
 	 * @param attendanceItem
 	 * @return itself
 	 */
@@ -99,7 +109,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param compareOpertor
 	 * @param conditionType
 	 * @param conditionValue
@@ -112,7 +122,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param compareOperator
 	 * @param conditionValue
 	 * @return
@@ -125,101 +135,59 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	}
 
 	public boolean checkTarget(Function<List<Integer>, List<Integer>> getItemValue) {
-		Integer target = 0;
-		if (this.uncountableTarget != null) {
-			target = getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
-		} else {
-			int plus = getItemValue.apply(this.countableTarget.getAddSubAttendanceItems().getAdditionAttendanceItems())
-					.stream().mapToInt(c -> c).sum();
-			int minus = getItemValue
-					.apply(this.countableTarget.getAddSubAttendanceItems().getSubstractionAttendanceItems()).stream()
-					.mapToInt(c -> c).sum();
-			target = plus - minus;
+		if (this.useAtr == null || !this.useAtr) {
+			return false;
 		}
+		Integer targetValue = calculateTargetValue(getItemValue);
 
 		if (this.compareRange != null) {
-			Integer startV = getRangeStartValue();
-			Integer endV = getRangeEndValue();
-			switch (this.compareRange.getCompareOperator()) {
-			case BETWEEN_RANGE_CLOSED:
-				return target.compareTo(startV) > 0 && target.compareTo(startV) < 0;
-			case BETWEEN_RANGE_OPEN:
-				return target.compareTo(startV) >= 0 && target.compareTo(endV) <= 0;
-			case OUTSIDE_RANGE_CLOSED:
-				return target.compareTo(startV) < 0 || target.compareTo(endV) > 0;
-			case OUTSIDE_RANGE_OPEN:
-				return target.compareTo(startV) <= 0 || target.compareTo(endV) >= 0;
-			default:
-				return false;
-			}
+			return this.compareRange.checkRange(targetValue, c -> getVValue(c));
 		} else {
-			Integer compareValue = 0;
-			if (this.compareSingleValue.getConditionType() == ConditionType.FIXED_VALUE) {
-				compareValue = getSingleFixValue();
-			} else {
-				compareValue = getItemValue.apply(Arrays.asList((int) this.compareSingleValue.getValue())).get(0);
-			}
-			switch (this.compareSingleValue.getCompareOpertor()) {
-			case EQUAL:
-				return target.compareTo(compareValue) == 0;
-			case GREATER_OR_EQUAL:
-				return target.compareTo(compareValue) >= 0;
-			case GREATER_THAN:
-				return target.compareTo(compareValue) > 0;
-			case LESS_OR_EQUAL:
-				return target.compareTo(compareValue) <= 0;
-			case LESS_THAN:
-				return target.compareTo(compareValue) < 0;
-			case NOT_EQUAL:
-				return target.compareTo(compareValue) != 0;
-			default:
-				return false;
-			}
+			return this.compareSingleValue.check(targetValue, getItemValue, c -> getVValue(c));
 		}
 	}
 
-	private Integer getSingleFixValue() {
+	private Integer calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {
+		if (this.uncountableTarget != null) {
+			return getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
+		} else {
+			return this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
+		}
+
+		// return toCheckValue(target);
+	}
+
+	private Integer getVValue(V target) {
+		if (this.compareRange == null && this.compareSingleValue.isAttendanceItem()) {
+			return ((AttendanceItemId) target).v();
+		}
 		switch (this.conditionAtr) {
 		case AMOUNT_VALUE:
-			return ((CheckedAmountValue) this.compareSingleValue.getValue()).v();
+			return ((CheckedAmountValue) target).v();
 		case TIME_DURATION:
-			return ((CheckedTimeDuration) this.compareSingleValue.getValue()).valueAsMinutes();
+			return ((CheckedTimeDuration) target).valueAsMinutes();
 		case TIME_WITH_DAY:
-			return ((TimeWithDayAttr) this.compareSingleValue.getValue()).valueAsMinutes();
+			return ((TimeWithDayAttr) target).valueAsMinutes();
 		case TIMES:
-			return ((CheckedTimesValue) this.compareSingleValue.getValue()).v();
+			return ((CheckedTimesValue) target).v();
 		default:
-			return 0;
+			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 		}
 	}
 
-	private Integer getRangeStartValue() {
-		switch (this.conditionAtr) {
-		case AMOUNT_VALUE:
-			return ((CheckedAmountValue) this.compareRange.getStartValue()).v();
-		case TIME_DURATION:
-			return ((CheckedTimeDuration) this.compareRange.getStartValue()).valueAsMinutes();
-		case TIME_WITH_DAY:
-			return ((TimeWithDayAttr) this.compareRange.getStartValue()).valueAsMinutes();
-		case TIMES:
-			return ((CheckedTimesValue) this.compareRange.getStartValue()).v();
-		default:
-			return 0;
-		}
-	}
-
-	private Integer getRangeEndValue() {
-		switch (this.conditionAtr) {
-		case AMOUNT_VALUE:
-			return ((CheckedAmountValue) this.compareRange.getEndValue()).v();
-		case TIME_DURATION:
-			return ((CheckedTimeDuration) this.compareRange.getEndValue()).valueAsMinutes();
-		case TIME_WITH_DAY:
-			return ((TimeWithDayAttr) this.compareRange.getEndValue()).valueAsMinutes();
-		case TIMES:
-			return ((CheckedTimesValue) this.compareRange.getEndValue()).v();
-		default:
-			return 0;
-		}
-	}
+	// @SuppressWarnings("unchecked")
+	// private V toCheckValue(Integer target) {
+	// switch (this.conditionAtr) {
+	// case AMOUNT_VALUE:
+	// return (V) new CheckedAmountValue(target);
+	// case TIME_DURATION:
+	// return (V) new CheckedTimeDuration(target);
+	// case TIME_WITH_DAY:
+	// return (V) new TimeWithDayAttr(target);
+	// case TIMES:
+	// return (V) new CheckedTimesValue(target);
+	// default:
+	// throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
+	// }
+	// }
 }

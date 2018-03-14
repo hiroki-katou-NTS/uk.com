@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
@@ -21,39 +22,35 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 	@Override
 	public List<RegulationInfoEmployeeQueryR> search(RegulationInfoEmployeeQuery query) {
 		return employeePub.find(createQueryToFilterEmployees(query)).stream()
-				.map(r -> RegulationInfoEmployeeQueryR.builder()
-														.employeeCode(r.getEmployeeCode())
-														.employeeId(r.getEmployeeId())
-														.employeeName(r.getEmployeeName())
-														.workplaceCode(r.getWorkplaceCode())
-														.workplaceId(r.getWorkplaceId())
-														.workplaceName(r.getWorkplaceName())
-														.build())
+				.map(r -> RegulationInfoEmployeeQueryR.builder().employeeCode(r.getEmployeeCode())
+						.employeeId(r.getEmployeeId()).employeeName(r.getEmployeeName())
+						.workplaceCode(r.getWorkplaceCode()).workplaceId(r.getWorkplaceId())
+						.workplaceName(r.getWorkplaceName()).build())
 				.collect(Collectors.toList());
 	}
 
 	private EmployeeSearchQueryDto createQueryToFilterEmployees(RegulationInfoEmployeeQuery queryX) {
-		String workingDate = queryX.getBaseDate().toString();
-		EmployeeSearchQueryDto query = new EmployeeSearchQueryDto();
-		query.setBaseDate(workingDate);
-		query.setFilterByEmployment(true);
-		query.setEmploymentCodes(queryX.getEmploymentCodes());
-		query.setFilterByDepartment(false);
-		query.setFilterByWorkplace(false);
-		query.setFilterByClassification(true);
-		query.setClassificationCodes(queryX.getClassificationCodes());
-		query.setFilterByJobTitle(true);
-		query.setJobTitleCodes(queryX.getJobTitleCodes());
-		query.setFilterByWorktype(true);
-		query.setWorktypeCodes(queryX.getWorktypeCodes());
-		query.setPeriodStart(workingDate);
-		query.setPeriodEnd(workingDate);
-		query.setIncludeIncumbents(true);
-		query.setIncludeWorkersOnLeave(true);
-		query.setIncludeOccupancy(true);
-		query.setIncludeAreOnLoan(true);
-		query.setIncludeGoingOnLoan(false);
-		query.setIncludeRetirees(false);
-		return query;
+		GeneralDateTime workingDate = GeneralDateTime.localDateTime(queryX.getBaseDate().localDate().atStartOfDay());
+		return EmployeeSearchQueryDto.builder().baseDate(workingDate)
+							.filterByEmployment(true)
+							.employmentCodes(queryX.getEmploymentCodes())
+							.filterByDepartment(false)
+							.filterByWorkplace(false)
+							.filterByClassification(true)
+							.classificationCodes(queryX.getClassificationCodes())
+							.filterByJobTitle(true)
+							.jobTitleCodes(queryX.getJobTitleCodes())
+							.filterByWorktype(true)
+							.worktypeCodes(queryX.getWorktypeCodes())
+							.periodStart(workingDate)
+							.periodEnd(workingDate)
+							.includeIncumbents(true)
+							.includeWorkersOnLeave(true)
+							.includeOccupancy(true)
+							.includeAreOnLoan(true)
+							.includeGoingOnLoan(false)
+							.systemType(2)
+//							.sortOrderNo(1)
+							.includeRetirees(false).build();
 	}
 }

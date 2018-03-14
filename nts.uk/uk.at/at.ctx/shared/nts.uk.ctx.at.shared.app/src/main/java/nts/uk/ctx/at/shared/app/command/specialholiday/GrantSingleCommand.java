@@ -6,7 +6,7 @@ import lombok.Data;
 public class GrantSingleCommand {
 
 	/** 特別休暇コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/** 種類 */
 	private int grantDaySingleType;

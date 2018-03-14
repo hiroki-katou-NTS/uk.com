@@ -33,4 +33,8 @@ public class WorkTimeCondition extends DomainObject {
 	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		return false;
 	}
+	
+	public boolean isUse() {
+		return this.getUseAtr() != null && this.getUseAtr();
+	}
 }

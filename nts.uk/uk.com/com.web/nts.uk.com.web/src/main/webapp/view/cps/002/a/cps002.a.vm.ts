@@ -63,8 +63,8 @@ module cps002.a.vm {
             showQuickSearchTab: false, // クイック検索
             showAdvancedSearchTab: true, // 詳細検索
             showBaseDate: false, // 基準日利用
-            showClosure: true, // 就業締め日利用
-            showAllClosure: true, // 全締め表示
+            showClosure: false, // 就業締め日利用
+            showAllClosure: false, // 全締め表示
             showPeriod: false, // 対象期間利用
             periodFormatYM: true, // 対象期間精度
 
@@ -88,7 +88,7 @@ module cps002.a.vm {
             showWorkplace: true, // 職場条件
             showClassification: true, // 分類条件
             showJobTitle: true, // 職位条件
-            showWorktype: true, // 勤種条件
+            showWorktype: false, // 勤種条件
             isMutipleCheck: false, // 選択モード
 
             /** Return data */
@@ -365,7 +365,7 @@ module cps002.a.vm {
             return false;
         }
 
-        completeStep1() {
+        completeStep0() {
             let self = this,
                 employee = self.currentEmployee(),
                 command = {
@@ -379,11 +379,11 @@ module cps002.a.vm {
 
                     if (self.createTypeId() === 3) {
 
-                        self.gotoStep3();
+                        self.gotoStep2();
                         return;
                     }
 
-                    self.gotoStep2();
+                    self.gotoStep1();
 
                 }).fail((error) => {
 
@@ -408,7 +408,7 @@ module cps002.a.vm {
         }
 
 
-        backtoStep1() {
+        backToStep0() {
 
             let self = this;
 
@@ -417,7 +417,7 @@ module cps002.a.vm {
             self.start();
         }
 
-        gotoStep3() {
+        gotoStep2() {
             let self = this,
                 command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
@@ -456,7 +456,7 @@ module cps002.a.vm {
         }
 
 
-        completeStep2() {
+        completeStep1() {
             let self = this;
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
 
@@ -470,7 +470,7 @@ module cps002.a.vm {
                 return;
             }
 
-            self.gotoStep3();
+            self.gotoStep2();
 
 
         }
@@ -481,7 +481,7 @@ module cps002.a.vm {
             return self.createTypeId() === 2;
         }
 
-        gotoStep2() {
+        gotoStep1() {
             let self = this;
 
             self.currentStep(1);
@@ -578,8 +578,8 @@ module cps002.a.vm {
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
-            if (self.currentStep() === 2) {
-                self.gotoStep2();
+            if (self.currentStep() === 2　&& self.createTypeId() !== 3) {
+                self.gotoStep1();
                 nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
@@ -635,7 +635,7 @@ module cps002.a.vm {
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
-                            self.backtoStep1();
+                            self.backToStep0();
 
                         } else {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });

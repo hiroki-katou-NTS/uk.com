@@ -26,7 +26,7 @@ public class ExtractAlarmListService {
 	@Inject
 	private AggregationProcessService aggregationProcessService;
 
-	public ExtractedAlarmDto extractAlarm(List<FuncEmployeeSearchDto> listEmployee, String checkPatternCode,
+	public ExtractedAlarmDto extractAlarm(List<EmployeeSearchDto> listEmployee, String checkPatternCode,
 			List<PeriodByAlarmCategory> periodByCategory) {		
 		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -60,7 +60,7 @@ public class ExtractAlarmListService {
 		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
 
 		// 集計結果を確認する sort list
-		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getWorkplaceName);
+		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd);
 		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode));
 		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate));
 		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));

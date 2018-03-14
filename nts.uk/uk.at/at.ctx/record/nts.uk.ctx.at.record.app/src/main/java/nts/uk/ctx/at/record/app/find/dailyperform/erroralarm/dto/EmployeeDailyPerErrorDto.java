@@ -47,7 +47,7 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 			dto.setCompanyID(domain.getCompanyID());
 			dto.setDate(domain.getDate());
 			dto.setEmployeeID(domain.getEmployeeID());
-			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode().v());
+			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode() == null ? null : domain.getErrorAlarmWorkRecordCode().v());
 			dto.exsistData();
 		}
 		return dto;

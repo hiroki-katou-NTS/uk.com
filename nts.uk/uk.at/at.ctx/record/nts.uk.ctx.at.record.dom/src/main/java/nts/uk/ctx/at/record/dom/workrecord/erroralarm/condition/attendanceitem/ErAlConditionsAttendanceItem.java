@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -48,6 +47,11 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	public static ErAlConditionsAttendanceItem init(int conditionOperator) {
 		return new ErAlConditionsAttendanceItem(EnumAdaptor.valueOf(conditionOperator, LogicalOperator.class));
 	}
+	
+	/** Init from Java type */
+	public static ErAlConditionsAttendanceItem init(LogicalOperator conditionOperator) {
+		return new ErAlConditionsAttendanceItem(conditionOperator);
+	}
 
 	/** Create from Java type */
 	public static ErAlConditionsAttendanceItem init(String atdItemConGroupId, int conditionOperator) {
@@ -55,8 +59,17 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 				EnumAdaptor.valueOf(conditionOperator, LogicalOperator.class));
 	}
 
+	/** Create from Java type */
+	public static ErAlConditionsAttendanceItem init(String atdItemConGroupId, LogicalOperator conditionOperator) {
+		return new ErAlConditionsAttendanceItem(atdItemConGroupId, conditionOperator);
+	}
+	
 	public void addAtdItemConditions(List<ErAlAttendanceItemCondition<?>> conditions) {
 		this.lstErAlAtdItemCon.addAll(conditions);
+	}
+	
+	public void addAtdItemConditions(ErAlAttendanceItemCondition<?> conditions) {
+		this.lstErAlAtdItemCon.add(conditions);
 	}
 
 	public void setGroupId(String atdItemConGroupId) {
@@ -64,16 +77,17 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	}
 
 	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
-		List<Boolean> result = lstErAlAtdItemCon.stream().map(aic -> {
-			return aic.checkTarget(getValueFromItemIds);
-		}).collect(Collectors.toList());
 		switch (this.conditionOperator) {
 		case AND:
-			return result.stream().allMatch(r -> r);
+			return lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).map(aic -> {
+				return aic.checkTarget(getValueFromItemIds);
+			}).allMatch(r -> r);
 		case OR:
-			return result.stream().anyMatch(r -> r);
+			return lstErAlAtdItemCon.stream().map(aic -> {
+				return aic.checkTarget(getValueFromItemIds);
+			}).anyMatch(r -> r);
 		default:
-			return false;
+			throw new RuntimeException("invalid conditionOperator: " + conditionOperator);
 		}
 	}
 }

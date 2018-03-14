@@ -1,5 +1,7 @@
 package nts.uk.shr.infra.web.session;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -18,22 +20,24 @@ public class ServletSessionLowLayer implements SessionLowLayer {
 
 	@Override
 	public void loggedIn() {
-		this.getSession().setAttribute(LOGGED_IN_FLAG, true);
+		this.getSession().ifPresent(s -> s.setAttribute(LOGGED_IN_FLAG, true));
 	}
 
 	@Override
 	public void loggedOut() {
-		this.getSession().removeAttribute(LOGGED_IN_FLAG);
-		this.getSession().invalidate();
+		this.getSession().ifPresent(s -> {
+			s.removeAttribute(LOGGED_IN_FLAG);
+			s.invalidate();
+		});
 	}
 	
 	@Override
 	public boolean isLoggedIn() {
-		Object flag = this.getSession().getAttribute(LOGGED_IN_FLAG);
+		Object flag = this.getSession().map(s -> s.getAttribute(LOGGED_IN_FLAG)).orElse(null);
 		return flag != null && (boolean)flag == true;
 	}
 	
-	private HttpSession getSession() {
-		return this.request.getSession(false);
+	private Optional<HttpSession> getSession() {
+		return Optional.ofNullable(this.request.getSession(false));
 	}
 }

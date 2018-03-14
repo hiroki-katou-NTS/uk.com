@@ -237,7 +237,7 @@ module nts.uk.at.view.kmk008.g {
                 self.ccg001ComponentOption = {
                     /** Common properties */
                     systemType: 2, // システム区分
-                    showEmployeeSelection: true, // 検索タイプ
+                    showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: false, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: true, // 基準日利用
