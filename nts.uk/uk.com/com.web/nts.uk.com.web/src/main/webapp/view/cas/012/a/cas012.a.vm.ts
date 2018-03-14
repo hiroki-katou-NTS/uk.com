@@ -22,14 +22,14 @@ module nts.uk.com.view.cas012.a.viewmodel {
 
         // Valid Period
         datePeriod: KnockoutObservable<any> = ko.observable({});
-
+    
         constructor() {
             var self = this;
             self.columns = ko.observableArray([
                 { headerText: 'GUID', key: 'GUID', width: 100, hidden: true },
-                { headerText: 'コード', key: 'loginID', width: 120, columnCssClass: "colStyle" },
-                { headerText: '名称', key: 'userName', width: 150, columnCssClass: "colStyle" },
-                { headerText: '説明', key: 'datePeriod', width: 230 }
+                { headerText: nts.uk.resource.getText("CAS012_13"), key: 'loginID', width: 120, columnCssClass: "colStyle" },
+                { headerText: nts.uk.resource.getText("CAS012_14"), key: 'userName', width: 150, columnCssClass: "colStyle" },
+                { headerText: nts.uk.resource.getText("CAS012_15"), key: 'datePeriod', width: 230 }
             ]);
             self.selectRoleIndividual = ko.observable(self.buildNewRoleIndividual());
         }
