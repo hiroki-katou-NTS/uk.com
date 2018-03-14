@@ -140,7 +140,7 @@
 						data-bind="ntsPanel:{width: '350px', height: '440px', direction: 'none', showIcon: true, visible: true}">
 						<div style="margin-bottom: 10px" class="label">#{i18n.getText('CMF002_347')}</div>
 						<div tabindex="13"
-							style="float: right; width: 200px; margin-bottom: 5px;"
+							style="float: right; width: 320px; margin-bottom: 5px;"
 							data-bind="ntsSearchBox: {
 								searchMode: 'filter',
 								fields: ['code', 'name'], 
@@ -153,7 +153,7 @@
 								value: selectedExternalOutputCategoryItemData,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
-									{ headerText: '#{i18n.getText('CMF002_88')}', key: 'key1', width: 30, formatter: _.escape },
+									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_89')}', key: 'key2', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_90')}', key: 'key3', width: 220, formatter: _.escape }
 					            ],
@@ -172,7 +172,7 @@
 					</div>
 					<div>
 						<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_94')}</div>
-						<div style="margin: 10px">
+						<div style="margin: 10px 10px 10px 0px">
 							<table id="C10_1"
 								data-bind="ntsGridList: {
 								rows: 15,
@@ -182,7 +182,7 @@
 								value: selectedStandardOutputItemCode,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
-									{ headerText: '#{i18n.getText('CMF002_95')}', key: 'key1', width: 30, formatter: _.escape },
+									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'key2', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'key3', width: 220, formatter: _.escape },
 					                { headerText: '', key: 'key4', width: 30, formatter: _.escape }
