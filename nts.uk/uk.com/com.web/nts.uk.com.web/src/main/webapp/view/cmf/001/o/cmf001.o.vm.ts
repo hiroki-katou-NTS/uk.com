@@ -337,7 +337,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             //L:「受入条件設定ダイアログをモーダルで表示する
             let settingL = null;
             if (item.screenConditionSetting) settingL = ko.toJS(item.screenConditionSetting);
-            setShared("CMF001lParams", { inputMode: false, dataType: 0, formatSetting: ko.toJS(settingL) });
+            setShared("CMF001lParams", { inputMode: false, dataType: item.itemType(), formatSetting: ko.toJS(settingL) });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
 

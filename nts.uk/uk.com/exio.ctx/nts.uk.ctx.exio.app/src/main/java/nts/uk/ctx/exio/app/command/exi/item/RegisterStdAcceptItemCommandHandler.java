@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exi.item;
 
-import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,7 +8,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemRepository;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -19,9 +16,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterStdAcceptItemCommandHandler extends CommandHandler<Cmf001DCommand> {
 
 	@Inject
-	private StdAcceptItemRepository repository;
-	
-	@Inject
 	private StdAcceptItemService itemSevice;
 
 	@Override
@@ -29,6 +23,5 @@ public class RegisterStdAcceptItemCommandHandler extends CommandHandler<Cmf001DC
 		Cmf001DCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		itemSevice.register(command.getListItem().stream().map(item -> item.toDomain(companyId)).collect(Collectors.toList()), command.getConditionSetting().toDomain(companyId));
-//		repository.add(addCommand.toDomain(companyId));
 	}
 }

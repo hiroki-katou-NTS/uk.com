@@ -347,7 +347,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                     sc.numberConditionValue2, sc.numberConditionValue1,
                                                     rs.conditionCode, rs.acceptItemNumber);
                                     }
-                                    return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionCode, rs.categoryItemNo, formatSetting, screenCondition);
+                                    return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionSettingCode, rs.categoryItemNo, formatSetting, screenCondition);
                                 });
                                 //_rsList = _.sortBy(_rsList, ['code']);
                                 self.listAcceptItem(_rsList);
@@ -404,6 +404,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         registerData() {
             let self = this;
             block.invisible();
+            self.selectedStandardImportSetting().categoryId(self.selectedCategory());
             let command = {conditionSetting: ko.toJS(self.selectedStandardImportSetting), listItem: ko.toJS(self.listAcceptItem)};
             service.registerData(command).done(() => {
                 info({ messageId: "Msg_15" }).then(() => {

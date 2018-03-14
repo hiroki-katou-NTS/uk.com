@@ -62,7 +62,6 @@ module nts.uk.com.view.cmf001.m.viewmodel {
                             code: self.newCondCode(),
                             name: self.newCondName()
                         }, true);  
-                        block.clear();
                         dfd.resolve();
                         nts.uk.ui.windows.close();
                     }
@@ -70,6 +69,8 @@ module nts.uk.com.view.cmf001.m.viewmodel {
                     alertError(error);
                     block.clear();
                     dfd.reject();
+                }).always(() => {
+                    block.clear();
                 });
                 
             }

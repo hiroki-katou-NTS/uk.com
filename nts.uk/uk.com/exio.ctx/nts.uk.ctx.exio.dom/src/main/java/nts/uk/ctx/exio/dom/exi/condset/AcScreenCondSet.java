@@ -87,18 +87,51 @@ public class AcScreenCondSet extends DomainObject {
 		super();
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.acceptItemNum = new AcceptanceLineNumber(acceptItemNum);
-		this.selectComparisonCondition = Optional
-				.ofNullable(EnumAdaptor.valueOf(selectComparisonCondition, SelectComparisonCondition.class));
-		this.timeConditionValue2 = Optional.ofNullable(new AcceptanceConditionTime(timeConditionValue2));
-		this.timeConditionValue1 = Optional.ofNullable(new AcceptanceConditionTime(timeConditionValue1));
-		this.timeMomentConditionValue2 = Optional.ofNullable(new AcceptanceConditionTimeMoment(timeMomentConditionValue2));
-		this.timeMomentConditionValue1 = Optional.ofNullable(new AcceptanceConditionTimeMoment(timeMomentConditionValue1));
-		this.dateConditionValue2 = Optional.ofNullable(dateConditionValue2);
-		this.dateConditionValue1 = Optional.ofNullable(dateConditionValue1);
-		this.characterConditionValue2 = Optional.ofNullable(new AcceptanceConditionString(characterConditionValue2));
-		this.characterConditionValue1 = Optional.ofNullable(new AcceptanceConditionString(characterConditionValue1));
-		this.numberConditionValue2 = Optional.ofNullable(new AcceptanceConditionValue(numberConditionValue2));
-		this.numberConditionValue1 = Optional.ofNullable(new AcceptanceConditionValue(numberConditionValue1));
+		if (selectComparisonCondition == null)
+			this.selectComparisonCondition = Optional.empty();
+		else
+			this.selectComparisonCondition = Optional
+					.of(EnumAdaptor.valueOf(selectComparisonCondition, SelectComparisonCondition.class));
+		if (timeConditionValue2 == null)
+			this.timeConditionValue2 = Optional.empty();
+		else
+			this.timeConditionValue2 = Optional.of(new AcceptanceConditionTime(timeConditionValue2));
+		if (timeConditionValue1 == null)
+			this.timeConditionValue1 = Optional.empty();
+		else
+			this.timeConditionValue1 = Optional.of(new AcceptanceConditionTime(timeConditionValue1));
+		if (timeMomentConditionValue2 == null)
+			this.timeMomentConditionValue2 = Optional.empty();
+		else
+			this.timeMomentConditionValue2 = Optional.of(new AcceptanceConditionTimeMoment(timeMomentConditionValue2));
+		if (timeMomentConditionValue1 == null)
+			this.timeMomentConditionValue1 = Optional.empty();
+		else
+			this.timeMomentConditionValue1 = Optional.of(new AcceptanceConditionTimeMoment(timeMomentConditionValue1));
+		if (dateConditionValue2 == null)
+			this.dateConditionValue2 = Optional.empty();
+		else
+			this.dateConditionValue2 = Optional.of(dateConditionValue2);
+		if (dateConditionValue1 == null)
+			this.dateConditionValue1 = Optional.empty();
+		else
+			this.dateConditionValue1 = Optional.of(dateConditionValue1);
+		if (characterConditionValue2 == null)
+			this.characterConditionValue2 = Optional.empty();
+		else
+			this.characterConditionValue2 = Optional.of(new AcceptanceConditionString(characterConditionValue2));
+		if (characterConditionValue1 == null)
+			this.characterConditionValue1 = Optional.empty();
+		else
+			this.characterConditionValue1 = Optional.of(new AcceptanceConditionString(characterConditionValue1));
+		if (numberConditionValue2 == null)
+			this.numberConditionValue2 = Optional.empty();
+		else
+			this.numberConditionValue2 = Optional.of(new AcceptanceConditionValue(numberConditionValue2));
+		if (numberConditionValue1 == null)
+			this.numberConditionValue1 = Optional.empty();
+		else
+			this.numberConditionValue1 = Optional.of(new AcceptanceConditionValue(numberConditionValue1));
 	}
 
 }

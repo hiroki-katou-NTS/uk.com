@@ -73,17 +73,22 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             let params = getShared("CMF001jParams");
             self.inputMode = params.inputMode;
             self.lineNumber = params.lineNumber;
-            self.setting = ko.observable(new model.InstantTimeDataFormatSetting(
-                params.formatSetting.effectiveDigitLength,
-                params.formatSetting.startDigit,
-                params.formatSetting.endDigit,
-                params.formatSetting.decimalSelect,
-                params.formatSetting.hourMinSelect,
-                params.formatSetting.delimiterSet,
-                params.formatSetting.roundProc,
-                params.formatSetting.roundProcCls,
-                params.formatSetting.fixedValue,
-                params.formatSetting.valueOfFixedValue));
+            if (params.formatSetting) {
+                self.setting(new model.InstantTimeDataFormatSetting(
+                    params.formatSetting.effectiveDigitLength,
+                    params.formatSetting.startDigit,
+                    params.formatSetting.endDigit,
+                    params.formatSetting.decimalSelect,
+                    params.formatSetting.hourMinSelect,
+                    params.formatSetting.delimiterSet,
+                    params.formatSetting.roundProc,
+                    params.formatSetting.roundProcCls,
+                    params.formatSetting.fixedValue,
+                    params.formatSetting.valueOfFixedValue));
+            }
+            else {
+                self.setting(new model.InstantTimeDataFormatSetting(1, 0, 0, 1, 1, 1, 1, 0, 0, ""));
+            }
         }
 
         private checkActive1(): boolean {

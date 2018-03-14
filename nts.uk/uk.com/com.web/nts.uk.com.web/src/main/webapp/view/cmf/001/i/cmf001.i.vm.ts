@@ -42,10 +42,15 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             let params = getShared("CMF001iParams");
             self.inputMode = params.inputMode;
             self.lineNumber = params.lineNumber;
-            self.setting = ko.observable(new model.DateDataFormatSetting(
-                params.formatSetting.formatSelection,
-                params.formatSetting.fixedValue,
-                params.formatSetting.valueOfFixedValue));
+            if (params.formatSetting) {
+                self.setting(new model.DateDataFormatSetting(
+                    params.formatSetting.formatSelection,
+                    params.formatSetting.fixedValue,
+                    params.formatSetting.valueOfFixedValue));
+            }
+            else {
+                self.setting(new model.DateDataFormatSetting(1, 0, ""));
+            }
         }
 
         private checkActive2(): boolean {
@@ -69,7 +74,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             if (self.setting().fixedValue() == self.atrUse) {
                 return true;
             }
-            return false; 
+            return false;
         }
 
         private saveSetting(): void {

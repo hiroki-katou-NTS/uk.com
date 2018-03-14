@@ -73,9 +73,9 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	/**
 	 * チェック完了
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "CHECK_COMPLETED")
-	public int checkCompleted;
+	public Integer checkCompleted;
 
 	/**
 	 * 既存データの削除方法
@@ -90,7 +90,7 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	}
 
 	public OiomtStdAcceptCondSet(String companyId, int systemType, String conditionSettingCode, String conditionSetName,
-			int deleteExistData, Integer acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
+			int deleteExistData, Integer acceptMode, Integer checkCompleted, String categoryId, Integer csvDataLineNumber,
 			Integer csvDataStartLine, Integer deleteExtDataMethod) {
 		super();
 		this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk(companyId, systemType, conditionSettingCode);
@@ -108,7 +108,7 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 		return new OiomtStdAcceptCondSet(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
 				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
 				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
-				domain.getCheckCompleted().value,
+				domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,

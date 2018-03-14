@@ -111,7 +111,7 @@ public class StdAcceptCondSetFinder {
 
 		List<ExAcpCategoryDto> lstDataCategory = new ArrayList<ExAcpCategoryDto>();
 		for (int i = 1; i <= 4; i++) {
-			lstDataCategory.add(new ExAcpCategoryDto("" + i, "カテゴリ名　" + i, 0L));
+			lstDataCategory.add(new ExAcpCategoryDto("1dfsdffs" + i, "カテゴリ名　" + i, 0L));
 		}
 		return lstDataCategory;
 	}
@@ -122,12 +122,6 @@ public class StdAcceptCondSetFinder {
 			for (int j = 1; j < 11; j++) {
 				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1, 1,
 						"1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
-			}
-		}
-		for (int i = 5; i <= 9; i++) {
-			for (int j = 1; j < 11; j++) {
-				lstCategoryItemData.add(new ExAcpCtgItemDatDto("" + (i - 5), j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1,
-						1, "1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
 			}
 		}
 

@@ -2,8 +2,6 @@ package nts.uk.ctx.exio.app.command.exi.condset;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
-import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Value
 public class StdAcceptCondSetCommand {
@@ -57,7 +55,7 @@ public class StdAcceptCondSetCommand {
 
 	public StdAcceptCondSet toDomain(String cid) {
 		return new StdAcceptCondSet(cid, this.systemType, this.conditionSettingCode, this.conditionSettingName,
-				this.deleteExistData, this.acceptMode, NotUseAtr.USE.value, this.categoryId, this.csvDataItemLineNumber,
+				this.deleteExistData, this.acceptMode, null, this.categoryId, this.csvDataItemLineNumber,
 				this.csvDataStartLine, this.deleteExistDataMethod);
 	}
 }

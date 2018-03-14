@@ -32,8 +32,6 @@ public class StdAcceptItemWebService {
 	@POST
 	@Path("register")
 	public void getAllStdAcceptItem(Cmf001DCommand command) {
-//		int length = listItem.size();
-//		System.out.println("data size: " + length);
 		this.regStdAcceptItemHandler.handle(command);
 	}
 }

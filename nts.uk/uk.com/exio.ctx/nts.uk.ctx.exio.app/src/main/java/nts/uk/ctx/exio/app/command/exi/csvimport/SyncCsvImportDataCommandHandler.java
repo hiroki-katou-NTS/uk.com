@@ -15,7 +15,7 @@ public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImpo
 	private static final String NUMBER_OF_SUCCESS = "処理カウント";
 	private static final String NUMBER_OF_TOTAL = "処理トータルカウント";
 	private static final String STOP_MODE = "中断するしない"; // 0 - しない　1-する
-	private static final String STATUS = "動作状態";
+	private static final String STATUS = "動作状態"; // 0 - チェック中, 1 - チェック完了, 2 - 受入中, 3 - 完了
 	
 	@Override
 	protected void handle(CommandHandlerContext<CsvImportDataCommand> context) {
