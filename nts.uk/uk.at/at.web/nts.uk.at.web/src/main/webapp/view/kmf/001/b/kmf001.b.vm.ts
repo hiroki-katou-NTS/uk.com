@@ -20,7 +20,7 @@ module nts.uk.pr.view.kmf001.b {
 
                 self.categoryEnums = ko.observableArray([]);
 
-                self.selectedPriority = ko.observable(0);
+                self.selectedPriority = ko.observable(1);
                 self.enableInputPriority = ko.computed(function() {
                     return self.selectedPriority() == 1;
                 }, self);
@@ -92,7 +92,7 @@ module nts.uk.pr.view.kmf001.b {
                 } else {
                     //if find data null
                     //Selected default button is "No Setting"
-                    self.selectedPriority(0);
+                    self.selectedPriority(1);
                     
                     self.priorityPause(false);
                     self.prioritySubstitute(false);

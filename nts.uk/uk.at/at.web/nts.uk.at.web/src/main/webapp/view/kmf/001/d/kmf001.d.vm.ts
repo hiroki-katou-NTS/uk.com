@@ -69,7 +69,7 @@ module nts.uk.pr.view.kmf001.d {
                     new ManagementModel(0, '管理しない')
                 ]);
                 self.selectedManagement = ko.observable(1);
-                self.selectedComManagement = ko.observable(0);
+                self.selectedComManagement = ko.observable(1);
                 self.hasSelectedEmp = ko.observable(false);
                 
                 self.employmentVisible = ko.observable(self.selectedComManagement() == 1);
@@ -86,7 +86,7 @@ module nts.uk.pr.view.kmf001.d {
                     new LeaveAsWorkDaysModel(true, '管理する'),
                     new LeaveAsWorkDaysModel(false, '管理しない')
                 ]);
-                self.leaveAsWorkDays = ko.observable(null);
+                self.leaveAsWorkDays = ko.observable(true);
                 self.enableRegister = ko.computed(function() {
                     return self.isManaged() && self.hasSelectedEmp();
                 }, self);
@@ -130,8 +130,8 @@ module nts.uk.pr.view.kmf001.d {
                     if (data == null) {
                         self.retentionYearsAmount(null);
                         self.maxDaysCumulation(null);
-                        self.leaveAsWorkDays(false);
-                        self.selectedComManagement(0);
+                        self.leaveAsWorkDays(true);
+                        self.selectedComManagement(1);
                     }
                     else {
                         self.initializeWholeCompanyData(data);
@@ -148,7 +148,7 @@ module nts.uk.pr.view.kmf001.d {
                 if (data == undefined) {
                     self.yearsAmountByEmp(null);
                     self.maxDaysCumulationByEmp(null);
-                    self.selectedManagement(0);
+                    self.selectedManagement(1);
                 }
                 else {
                     // Set EmploymentSetting Data
