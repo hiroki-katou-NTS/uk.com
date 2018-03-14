@@ -2957,7 +2957,7 @@ var nts;
              */
             var Locator = (function () {
                 function Locator(url) {
-                    this.rawUrl = url;
+                    this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
                 }
                 Locator.prototype.serialize = function () {
@@ -2970,7 +2970,7 @@ var nts;
                 };
                 Locator.prototype.mergeRelativePath = function (relativePath) {
                     var stack = this.rawUrl.split('/');
-                    var parts = relativePath.split('/');
+                    var parts = relativePath.split('?')[0].split('/');
                     var queryStringToAdd = QueryString.parseUrl(relativePath);
                     // 最後のファイル名は除外
                     // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
@@ -2987,7 +2987,6 @@ var nts;
                         else
                             stack.push(parts[i]);
                     }
-                    queryStringToAdd.mergeFrom(this.queryString);
                     var queryStringParts = queryStringToAdd.hasItems()
                         ? '?' + queryStringToAdd.serialize()
                         : '';
@@ -3376,7 +3375,7 @@ var nts;
                 else {
                     destination = location.current.mergeRelativePath(path);
                 }
-                return destination.rawUrl;
+                return destination.serialize();
             }
             request.resolvePath = resolvePath;
             var location;
