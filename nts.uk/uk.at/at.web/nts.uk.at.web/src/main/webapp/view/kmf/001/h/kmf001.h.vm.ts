@@ -35,6 +35,8 @@ module nts.uk.pr.view.kmf001.h {
             hasEmp: KnockoutObservable<boolean>;
             isEmpManaged: KnockoutObservable<boolean>;
 
+            employmentVisible: KnockoutObservable<boolean>;
+            
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
             constructor() {
@@ -86,6 +88,8 @@ module nts.uk.pr.view.kmf001.h {
                     isDialog: false,
                     alreadySettingList:  self.alreadySettingList
                 };
+                
+                self.employmentVisible = ko.observable(self.settingModel().isManage() == 1);
             }
 
             /**
@@ -201,10 +205,12 @@ module nts.uk.pr.view.kmf001.h {
                         self.settingModel().expirationDate(self.vacationExpirationEnums()[0].value);
                         self.settingModel().allowPrepaidLeave(self.applyPermissionEnums()[0].value);
                     }
+                    self.employmentVisible(self.settingModel().isManage() == 1);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
+                
                 return dfd.promise();
             }
 

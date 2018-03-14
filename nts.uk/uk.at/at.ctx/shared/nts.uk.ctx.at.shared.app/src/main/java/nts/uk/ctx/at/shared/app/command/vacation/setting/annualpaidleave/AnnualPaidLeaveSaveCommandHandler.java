@@ -72,8 +72,9 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         int yearManageTypeDB = domain != null ? domain.getYearManageType().value : -1;
        //check managementCategory change
         boolean annualManage = command.getAnnualManage() != yearManageTypeDB;
+        boolean manage = command.getAnnualManage() == ManageDistinct.YES.value;
+        
         if (annualManage) {
-        	boolean manage = command.getAnnualManage() == ManageDistinct.YES.value;
             val annualPaidLeaveSettingEvent = new AnnualPaidLeaveSettingDomainEvent(manage);
             annualPaidLeaveSettingEvent.toBePublished();
             
@@ -101,6 +102,27 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                 	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
                      manageAnnualSettingEvent.toBePublished(); 
                  }
+            }
+        }
+        if(manage){
+        	 //get timeManageType from DB
+            int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
+            //check timeManageType change
+            boolean flatTimeManageType = command.getTimeManageType() != timeManageTypeDB;
+            if(flatTimeManageType){
+           	 boolean flatManage = command.getTimeManageType() == ManageDistinct.YES.value;
+           	 val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(flatManage);
+                timeAnnualSettingEvent.toBePublished();
+            }
+            
+            //get timeManageType from DB
+            int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+            //check timeManageType change
+            boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
+            if(maxManageSemiVacation){
+           	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
+           	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
+                manageAnnualSettingEvent.toBePublished(); 
             }
         }
     }

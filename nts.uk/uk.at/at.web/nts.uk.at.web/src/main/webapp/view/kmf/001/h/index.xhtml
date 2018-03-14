@@ -19,7 +19,7 @@
 			<ul tabindex="1" class="navigator">
 				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator"
 					class="active"> #{i18n.getText('Com_Company')} </a></li>
-				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator"
+				<li data-bind="visible: employmentVisible"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator"
 					data-bind="click: checkComManaged">
 						#{i18n.getText('Com_Employment')} </a></li>
 			</ul>
@@ -79,6 +79,7 @@
 															data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
 																			optionsValue: 'value',
+																			visibleItemsCount: 15,
 																			value: expirationDate,
 																			optionsText: 'localizedName',
 																			editable: false,
