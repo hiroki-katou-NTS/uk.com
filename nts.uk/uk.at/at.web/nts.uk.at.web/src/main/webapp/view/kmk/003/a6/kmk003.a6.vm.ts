@@ -24,7 +24,6 @@ module a6 {
         dataSourceDiffTime: KnockoutObservableArray<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
-        isLoading: KnockoutObservable<boolean>;
         
         //update specs 7.6
 //        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
@@ -33,16 +32,10 @@ module a6 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading: KnockoutObservable<boolean>) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
-            self.isLoading = isLoading;
-            self.isLoading.subscribe((isLoading: boolean) => {
-                if (isLoading) {
-                    self.updateDataModel();
-                }
-            });
             self.updateDataByUpdateModel();
         }
 
@@ -94,20 +87,6 @@ module a6 {
         }
         
         /**
-         * function update data model
-         */
-        private updateDataModel(): void {
-            var self = this;
-            if (self.isFlowMode()) {
-                var dataFlow: any[] = [];
-                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.lstWorkTimezone()) {
-                    dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
-                }
-                self.dataSourceFlow(dataFlow);
-            }
-        }
-        
-        /**
          * function update data by update model
          */
         private updateDataByUpdateModel(): void {
@@ -117,59 +96,10 @@ module a6 {
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
 
-            self.dataSourceFlow = ko.observableArray([]);
-            self.dataSourceFlow.subscribe((dataFlow: any[]) => {
-                var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
-                var workTimezoneNo: number = 0;
-                //sort list item by time 
-                dataFlow = _.sortBy(dataFlow, [function(o:any) { return o.elapsedTime(); }]);
-                for (var dataModel of dataFlow) {
-                    workTimezoneNo++;
-                    lstWorkTimezone.push(self.toModelFlowDto(dataModel, workTimezoneNo));
-                }
-                self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
-            });       
+            self.dataSourceFlow = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.convertedList;
             self.dataSourceFlex = self.mainSettingModel.flexWorkSetting.offdayWorkTime.convertedList;
             self.dataSourceFixed = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.convertedList;
             self.dataSourceDiffTime = self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.convertedList;
-        }
-        /**
-         * function convert dto to model
-         */
-        private toModelFlowColumnSetting(dataDTO: FlWorkHdTimeZoneDto): any {
-            return {
-                elapsedTime: ko.observable(dataDTO.flowTimeSetting.elapsedTime),
-                rounding: ko.observable(dataDTO.flowTimeSetting.rounding.rounding),
-                roundingTime: ko.observable(dataDTO.flowTimeSetting.rounding.roundingTime),
-                inLegalBreakFrameNo: ko.observable(dataDTO.inLegalBreakFrameNo),
-                outLegalBreakFrameNo: ko.observable(dataDTO.outLegalBreakFrameNo),
-                outLegalPubHolFrameNo: ko.observable(dataDTO.outLegalPubHolFrameNo)
-            }
-        }
-
-        /**
-         * function convert data model of client to parent
-         */
-        private toModelFlowDto(dataModel: any, worktimeNo: number): FlWorkHdTimeZoneDto {
-            var rounding: TimeRoundingSettingDto = {
-                roundingTime: dataModel.roundingTime(),
-                rounding: dataModel.rounding()
-            };
-            var flowTimeSetting: FlTimeSettingDto = {
-                rounding: rounding,
-                elapsedTime: dataModel.elapsedTime(),
-            };
-            var dataDTO: FlWorkHdTimeZoneDto = {
-                worktimeNo: worktimeNo,
-                outLegalPubHolFrameNo: dataModel.outLegalPubHolFrameNo(),
-                useInLegalBreakRestrictTime: false,
-                flowTimeSetting: flowTimeSetting,
-                useOutLegalBreakRestrictTime: false,
-                useOutLegalPubHolRestrictTime: false,
-                inLegalBreakFrameNo: dataModel.inLegalBreakFrameNo(),
-                outLegalBreakFrameNo: dataModel.outLegalBreakFrameNo()
-            };
-            return dataDTO;
         }
 
         /**
@@ -390,21 +320,14 @@ module a6 {
             let input = valueAccessor();
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
-            var isLoading: KnockoutObservable<boolean> = input.isLoading;
-            var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
             nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data) {
-                let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
+                let screenModel = new ScreenModel(settingEnum, mainSettingModel);
                 screenModel.lstWorkDayOffFrame = data;
                 screenModel.initDataModel();
                 _.defer(() => {
                     $(element).load(webserviceLocator, function() {
                         ko.cleanNode($(element)[0]);
                         ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                        isClickSave.subscribe((v) => {
-                            if (v) {
-                                screenModel.dataSourceFlow.valueHasMutated();
-                            }
-                        });
                     });
                 });
             });

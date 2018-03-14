@@ -22,10 +22,9 @@ module nts.uk.at.view.kmk003.a {
     import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkCalcSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkCalcSettingModel;
-    import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
-    import FixedTableDataConverterNew = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverterNew;
+    import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     import TimeRange = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRange;
 
     import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
@@ -103,7 +102,7 @@ module nts.uk.at.view.kmk003.a {
             }
 
 
-            export class DiffTimeRestTimezoneModel extends FixedTableDataConverterNew<DiffTimeRangeModel, DiffTimeDeductTimezoneModel>{
+            export class DiffTimeRestTimezoneModel extends FixedTableDataConverter<DiffTimeRangeModel, DiffTimeDeductTimezoneModel>{
                 restTimezones: KnockoutObservableArray<DiffTimeDeductTimezoneModel>;
 
                 constructor() {

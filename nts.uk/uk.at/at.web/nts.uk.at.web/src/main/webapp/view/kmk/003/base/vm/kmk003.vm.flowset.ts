@@ -255,13 +255,71 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FlowOffdayWorkTzModel {
+            export class FlowHdTimeZoneDuongModel {
+                workTimeNo: number;
+                elapsedTime: KnockoutObservable<number>;
+                rounding: KnockoutObservable<number>;
+                roundingTime: KnockoutObservable<number>;
+
+                useInLegalBreakRestrictTime: KnockoutObservable<boolean>;
+                inLegalBreakFrameNo: KnockoutObservable<number>;
+                useOutLegalBreakRestrictTime: KnockoutObservable<boolean>;
+                outLegalBreakFrameNo: KnockoutObservable<number>;
+                useOutLegalPubHolRestrictTime: KnockoutObservable<boolean>;
+                outLegalPubHolFrameNo: KnockoutObservable<number>;
+
+                constructor(flowWorkHd: FlowWorkHdTimeZoneModel) {
+                    let self = this;
+                    self.workTimeNo = 0;
+                    self.elapsedTime = ko.observable(flowWorkHd.flowTimeSetting.elapsedTime());
+                    self.rounding = ko.observable(flowWorkHd.flowTimeSetting.rounding.rounding());
+                    self.roundingTime = ko.observable(flowWorkHd.flowTimeSetting.rounding.roundingTime());
+
+                    self.useInLegalBreakRestrictTime = ko.observable(flowWorkHd.useInLegalBreakRestrictTime());
+                    self.inLegalBreakFrameNo = ko.observable(flowWorkHd.inLegalBreakFrameNo());
+                    self.useOutLegalBreakRestrictTime = ko.observable(flowWorkHd.useOutLegalBreakRestrictTime());
+                    self.outLegalBreakFrameNo = ko.observable(flowWorkHd.outLegalBreakFrameNo());
+                    self.useOutLegalPubHolRestrictTime = ko.observable(flowWorkHd.useOutLegalPubHolRestrictTime());
+                    self.outLegalPubHolFrameNo = ko.observable(flowWorkHd.outLegalPubHolFrameNo());
+                }
+
+            }
+
+            export class FlowOffdayWorkTzModel extends FixedTableDataConverter<FlowHdTimeZoneDuongModel, FlowWorkHdTimeZoneModel> {
                 restTimeZone: FlowWorkRestTimezoneModel;
                 lstWorkTimezone: KnockoutObservableArray<FlowWorkHdTimeZoneModel>;
 
                 constructor() {
+                    super();
                     this.restTimeZone = new FlowWorkRestTimezoneModel();
-                    this.lstWorkTimezone = ko.observableArray([]);
+                    this.lstWorkTimezone = this.originalList;
+                }
+
+                toOriginalDto(convertedItem: FlowHdTimeZoneDuongModel): FlWorkHdTimeZoneDto {
+                    return {
+                        worktimeNo: convertedItem.workTimeNo,
+                        useInLegalBreakRestrictTime: convertedItem.useInLegalBreakRestrictTime ? convertedItem.useInLegalBreakRestrictTime() : false,
+                        inLegalBreakFrameNo: convertedItem.inLegalBreakFrameNo(),
+                        useOutLegalBreakRestrictTime: convertedItem.useOutLegalBreakRestrictTime ? convertedItem.useOutLegalBreakRestrictTime() : false,
+                        outLegalBreakFrameNo: convertedItem.outLegalBreakFrameNo(),
+                        useOutLegalPubHolRestrictTime: convertedItem.useOutLegalPubHolRestrictTime ? convertedItem.useOutLegalPubHolRestrictTime() : false,
+                        outLegalPubHolFrameNo: convertedItem.outLegalPubHolFrameNo(),
+                        flowTimeSetting: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.rounding()
+                            },
+                            elapsedTime: convertedItem.elapsedTime()
+                        }
+                    };
+                }
+
+                createOriginal(): FlowWorkHdTimeZoneModel {
+                    return new FlowWorkHdTimeZoneModel();
+                }
+
+                createConverted(original: FlowWorkHdTimeZoneModel): FlowHdTimeZoneDuongModel {
+                    return new FlowHdTimeZoneDuongModel(original);
                 }
 
                 updateData(data: FlOffdayWorkTzDto) {

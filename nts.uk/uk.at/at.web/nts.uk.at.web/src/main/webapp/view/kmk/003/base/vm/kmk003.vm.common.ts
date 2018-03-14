@@ -668,7 +668,7 @@ module nts.uk.at.view.kmk003.a {
                 abstract toDto(): any;
             }
 
-            export abstract class FixedTableDataConverterNew<Converted, Original extends BaseDataModel> {
+            export abstract class FixedTableDataConverter<Converted, Original extends BaseDataModel> {
                 convertedList: KnockoutObservableArray<Converted>;
                 originalList: KnockoutObservableArray<Original>;
                 originalListTemp: Array<any>;
@@ -730,8 +730,8 @@ module nts.uk.at.view.kmk003.a {
                  */
                 toListOriginalModel(newList: Array<Converted>): Array<Original> {
                     let self = this;
-                    self.optionalProcessing(newList);
-                    return _.map(newList, newVl => {
+                    let processed = self.optionalProcessing(newList);
+                    return _.map(processed, newVl => {
                         let vl = this.createOriginal();
                         vl.updateData(self.toOriginalDto(newVl));
                         return vl;
@@ -741,7 +741,9 @@ module nts.uk.at.view.kmk003.a {
                 /**
                  * Override if needed
                  */
-                optionalProcessing(list: Array<Converted>): void {}
+                optionalProcessing(list: Array<Converted>): Array<Converted> {
+                    return list;
+                }
 
                 /**
                  * From converted item to original Dto
@@ -766,120 +768,27 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export abstract class FixedTableDataConverter<C, O> {
-                convertedList: KnockoutObservableArray<C>;
-                originalList: KnockoutObservableArray<O>;
-                originalListTemp: Array<any>;
-                convertedListTemp: Array<any>;
-
-                constructor() {
-                    let self = this;
-                    self.convertedList = ko.observableArray([]);
-                    self.originalList = ko.observableArray([]);
-                    self.originalListTemp = [];
-                    self.convertedListTemp = [];
-
-                    self.originalList.subscribe(newList => {
-                        // set new original list temp
-                        self.originalListTemp = self.toOriginalListTemp(newList);
-
-                        // check new converted list vs converted list temp
-                        let newConverted = self.toConvertedList();
-                        let newConvertedTemp = self.toConvertedListTemp(newConverted);
-                        if (self.isNotEqual(newConvertedTemp, self.convertedListTemp)) {
-                            self.convertedList(newConverted); // update new converted list
-                        }
-                    });
-
-                    self.convertedList.subscribe(newList => {
-                        // set new converted list temp
-                        self.convertedListTemp = self.toConvertedListTemp(newList);
-
-                        // check new original list vs original list temp
-                        let newOriginal = self.fromConvertedList(newList);
-                        let newOriginalTemp = self.toOriginalListTemp(newOriginal);
-                        if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
-                            self.originalList(newOriginal); // update new original list
-                        }
-                    });
-                }
-
-                /**
-                 * To converted list temp
-                 */
-                abstract toConvertedListTemp(list: Array<C>): any;
-
-                /**
-                 * To original list temp
-                 */
-                abstract toOriginalListTemp(list: Array<O>): any;
-
-                /**
-                 * Convert to list time range
-                 */
-                abstract toConvertedList(): Array<C>;
-
-                /**
-                 * Revert to original list
-                 */
-                abstract fromConvertedList(newList: Array<C>): Array<O>;
-
-                /**
-                 * Evaluate 2 arrays
-                 */
-                isNotEqual(value: any, other: any): boolean {
-                    return !_.isEqual(value, other);
-                }
-            }
-
             export class OffdayWorkTimeConverter extends FixedTableDataConverter<OtherFlowColumnSetting, HDWorkTimeSheetSettingModel> {
                 constructor() {
                     super();
                 }
 
-                toConvertedListTemp(list: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingDto> {
-                    let self = this;
-                    return _.map(list, item => self.toOriginalDto(item));
-                }
-
-                /**
-                 * To original list temp
-                 */
-                toOriginalListTemp(list: Array<HDWorkTimeSheetSettingModel>): Array<HDWorkTimeSheetSettingDto> {
-                    return _.map(list, item => {
-                        return item.toDto();
-                    });
-                }
-
-                /**
-                 * Convert to list time range
-                 */
-                toConvertedList(): Array<OtherFlowColumnSetting> {
-                    let self = this;
-                    return _.map(self.originalList(), wtz => new OtherFlowColumnSetting(wtz));
-                }
-
-                /**
-                 * Revert to original list
-                 */
-                fromConvertedList(newList: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingModel> {
-                    let self = this;
-                    self.setWorkTimeNo(newList);
-                    return _.map(newList, newVl => {
-                        let vl = new HDWorkTimeSheetSettingModel();
-                        vl.updateData(self.toOriginalDto(newVl));
-                        return vl;
-                    });
-                }
-
-                setWorkTimeNo(list: Array<OtherFlowColumnSetting>): void {
+                optionalProcessing(list: Array<OtherFlowColumnSetting>): Array<OtherFlowColumnSetting> {
                     let count = 0;
-                    _.forEach(list, item => item.workTimeNo = ++count);
+                    return _.forEach(list, item => item.workTimeNo = ++count);
+                }
+
+                createOriginal(): HDWorkTimeSheetSettingModel {
+                    return new HDWorkTimeSheetSettingModel();
+                }
+
+                createConverted(original: HDWorkTimeSheetSettingModel): OtherFlowColumnSetting {
+                    return new OtherFlowColumnSetting(original);
                 }
 
                 toOriginalDto(convertedModel: OtherFlowColumnSetting): HDWorkTimeSheetSettingDto {
                     return {
-                        workTimeNo: 0, // set workTimeNo later.
+                        workTimeNo: convertedModel.workTimeNo,
                         timezone: {
                             rounding: {
                                 rounding: convertedModel.rounding(),
@@ -928,28 +837,6 @@ module nts.uk.at.view.kmk003.a {
                     self.outLegalPubHolFrameNo = ko.observable(hdwtssModel.outLegalPubHDFrameNo());
                 }
 
-            }
-
-            export abstract class TimeRangeModelConverter<T> extends FixedTableDataConverter<TimeRangeModel, T> {
-
-                toConvertedListTemp(list: Array<TimeRangeModel>): any {
-                    return _.map(list, item => {
-                        return { start: item.column1().startTime, end: item.column1().endTime };
-                    });
-                }
-
-                toOriginalListTemp(list: Array<any>): any {
-                    return _.map(list, item => {
-                        return { start: item.start(), end: item.end() };
-                    });
-                }
-
-                /**
-                 * Convert to TimeRangeItem
-                 */
-                public toTimeRangeItem(start: number, end: number): TimeRangeModel {
-                    return { column1: ko.observable({ startTime: start, endTime: end }) };
-                }
             }
 
             export class DeductionTimeModel extends BaseDataModel {
@@ -1009,7 +896,7 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FixRestTimezoneSetModel extends FixedTableDataConverterNew<TimeRangeModel, DeductionTimeModel> {
+            export class FixRestTimezoneSetModel extends FixedTableDataConverter<TimeRangeModel, DeductionTimeModel> {
                 timezones: KnockoutObservableArray<DeductionTimeModel>;
                 
                 constructor() {
@@ -1065,43 +952,19 @@ module nts.uk.at.view.kmk003.a {
                     this.hereAfterRestSet = new FlowRestSettingModel();
                 }
 
-                toConvertedListTemp(list: Array<FixedTableTimeEditorModel>): any {
-                    return _.map(list, item => {
-                        return { start: item.startCol(), end: item.endCol() };
-                    });
+                createOriginal(): FlowRestSettingModel {
+                    return new FlowRestSettingModel();
                 }
 
-                /**
-                 * To original list temp
-                 */
-                toOriginalListTemp(list: Array<FlowRestSettingModel>): any {
-                    return _.map(list, item => {
-                        return { start: item.flowPassageTime(), end: item.flowRestTime() };
-                    });
+                createConverted(original: FlowRestSettingModel): FixedTableTimeEditorModel {
+                    return new FixedTableTimeEditorModel(original);
                 }
 
-                /**
-                 * Convert to list time range
-                 */
-                toConvertedList(): Array<FixedTableTimeEditorModel> {
-                    let self = this;
-                    return _.map(self.flowRestSets(), rs => self.toTimeEditorItem(rs.flowPassageTime(), rs.flowRestTime()));
-                }
-
-                /**
-                 * Revert to original list
-                 */
-                fromConvertedList(newList: Array<FixedTableTimeEditorModel>): Array<FlowRestSettingModel> {
-                    return _.map(newList, newVl => {
-                        let vl = new FlowRestSettingModel();
-                        vl.flowPassageTime(newVl.startCol());
-                        vl.flowRestTime(newVl.endCol());
-                        return vl;
-                    });
-                }
-
-                private toTimeEditorItem(start: number, end: number): any {
-                    return { startCol: ko.observable(start), endCol: ko.observable(end) };
+                toOriginalDto(convertedModel: FixedTableTimeEditorModel): FlowRestSettingDto {
+                    return {
+                        flowPassageTime: convertedModel.startCol(),
+                        flowRestTime: convertedModel.endCol()
+                    };
                 }
 
                 updateData(data: FlowRestTimezoneDto) {
@@ -1135,6 +998,11 @@ module nts.uk.at.view.kmk003.a {
             export class FixedTableTimeEditorModel {
                 startCol: KnockoutObservable<number>;
                 endCol: KnockoutObservable<number>;
+
+                constructor(flowRestSet: FlowRestSettingModel) {
+                    this.startCol = ko.observable(flowRestSet.flowPassageTime());
+                    this.endCol = ko.observable(flowRestSet.flowRestTime());
+                }
             }
 
             export class FlowWorkRestTimezoneModel {
