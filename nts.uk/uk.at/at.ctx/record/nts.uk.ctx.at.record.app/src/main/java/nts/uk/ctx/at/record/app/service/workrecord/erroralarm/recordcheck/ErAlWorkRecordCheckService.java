@@ -63,6 +63,7 @@ public class ErAlWorkRecordCheckService {
 
 		List<String> filted = searchR.stream().filter(e -> employeeIds.contains(e.getEmployeeId()))
 												.map(e -> e.getEmployeeId()).collect(Collectors.toList());
+		if(filted.isEmpty()) return toEmptyResultMap();
 
 		/** 社員に一致する日別実績を取得する */
 		List<DailyRecordDto> record = fullFinder.find(filted, new DatePeriod(workingDate, workingDate));

@@ -9,15 +9,29 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneSettingOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
@@ -38,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTimeOfDailyDomainService {
@@ -56,15 +71,37 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	private FlexWorkSettingRepository flexWorkSettingRepo;
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
+	@Inject
+	private TimeLeavingOfDailyPerformanceRepository TimeLeavingRepo;
+	@Inject
+	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
 	@Override
-	public void reflectBreakTime(String companyId, List<TimeLeavingWork> timeLeavingWorks,
-			WorkInfoOfDailyPerformance WorkInfo) {
+	public BreakTimeOfDailyPerformance reflectBreakTime(String companyId, String employeeID, GeneralDate processingDate,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance WorkInfo) {
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
+		List<TimeLeavingWork> timeLeavingWorks = null;
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
+				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		} else {
+			Optional<TimeLeavingOfDailyPerformance> TimeLeavingOptional = this.TimeLeavingRepo.findByKey(employeeID,
+					processingDate);
+			if (TimeLeavingOptional.isPresent()) {
+				TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance2 = TimeLeavingOptional.get();
+				List<TimeLeavingWork> timeLeavingWorks2 = timeLeavingOfDailyPerformance2.getTimeLeavingWorks();
+				if (timeLeavingWorks2 != null && !timeLeavingWorks2.isEmpty()) {
+					timeLeavingWorks = timeLeavingWorks2;
+				}
+			}
+		}
+		if (timeLeavingWorks == null) {
+			return null;
+		}
 		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, WorkInfo, breakTimeZoneSettingOutPut);
 		if (!checkBreakTimeSetting) {
-			return;
+			return null;
 		}
 		List<DeductionTime> lstTimezone = breakTimeZoneSettingOutPut.getLstTimezone();
 		Collections.sort(lstTimezone, new Comparator<DeductionTime>() {
@@ -76,14 +113,29 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				return t1 < t2 ? -1 : 1;
 			}
 		});
-		for (DeductionTime deductionTime : lstTimezone) {
+		
+		List<BreakTimeSheet> lstBreakTime = new ArrayList<BreakTimeSheet>();
+		int size = lstTimezone.size();
+		for (int i = 0; i < size; i++) {
+			DeductionTime timeZone = lstTimezone.get(i);
+			// 時間帯．休憩枠NO
+			int frameNo = i + 1;
 			// 出退勤と重複する休憩時間帯のみ追加する
-			addBreakTime(timeLeavingWorks);
+			boolean checkAddBreakTime = checkAddBreakTime(timeLeavingWorks, timeZone, frameNo);
+			if(checkAddBreakTime){
+				//fixed 休憩時間(削除予定) =null
+				//breakTime = null
+				lstBreakTime.add(new BreakTimeSheet(new BreakFrameNo(frameNo), timeZone.getStart(), timeZone.getEnd(), null));
+			}
 		}
+		//休憩種類　←　「就業時間帯から参照」
+		return new BreakTimeOfDailyPerformance(employeeID,BreakType.REFER_WORK_TIME  , lstBreakTime, processingDate);
 
 	}
 
-	public void addBreakTime(List<TimeLeavingWork> timeLeavingWorks) {
+	// 出退勤と重複する休憩時間帯のみ追加する
+	public boolean checkAddBreakTime(List<TimeLeavingWork> timeLeavingWorks, DeductionTime timeZone, int frameNo ) {
+		boolean isAddBreaktime =false;
 		Collections.sort(timeLeavingWorks, new Comparator<TimeLeavingWork>() {
 			public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
 				if (o2 == null || o2.getAttendanceStamp() == null || !o2.getAttendanceStamp().isPresent()
@@ -103,11 +155,27 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				return t1 < t2 ? -1 : 1;
 			}
 		});
-		for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-			
-			// fixed 状態区分 = 非重複
+		int size = timeLeavingWorks.size();
+		for (int i = 0; i < size; i++) {
+			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
+			// 重複の判断処理
+			TimeWithDayAttr startDate1 = timeZone.getStart();
+			TimeWithDayAttr endDate1 = timeZone.getEnd();
+			TimeWithDayAttr startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+			TimeWithDayAttr endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(startDate1, endDate1);
+			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(startDate2, endDate2);
+			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+					.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+			DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+					.checkStateAtr(duplicateStateAtr);
+			// 非重複
+			if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
+				isAddBreaktime =true;
+				break;
+			}
 		}
-
+		return isAddBreaktime;
 	}
 
 	// 休憩時間帯設定を確認する
@@ -117,6 +185,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		boolean checkReflect = false;
 		WorkStyle checkWorkDay = this.basicScheduleService
 				.checkWorkDay(WorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+		// 1日休日系
 		if (checkWorkDay.value == 0) {
 			return false;
 		} else {
