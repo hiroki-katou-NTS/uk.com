@@ -108,9 +108,9 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AddSettingOfRegularWork addSettingOfRegularWork,
 			   												   VacationAddTimeSet vacationAddTimeSet) {
 		AttendanceTime workTime = new AttendanceTime(0);
-		DeductionTimeSheet dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
-												?oneDay.getTemporaryDeductionTimeSheet().get()
-												:new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList());
+		Optional<DeductionTimeSheet> dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
+												?oneDay.getTemporaryDeductionTimeSheet()
+												:Optional.of(new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList()));
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTimeForStatutory(PremiumAtr.RegularWork,
 																						  CalculationByActualTimeAtr.CalculationByActualTime,dedSheet,oneDay.getTimeVacationAdditionRemainingTime().get(),
