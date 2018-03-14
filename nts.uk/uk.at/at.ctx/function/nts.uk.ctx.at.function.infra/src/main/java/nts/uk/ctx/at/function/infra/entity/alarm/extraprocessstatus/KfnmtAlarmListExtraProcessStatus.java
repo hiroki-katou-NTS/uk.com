@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -26,10 +25,10 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	public String employeeID;
 	
 	@Column(name = "END_DATE")
-	public Date endDate;
+	public GeneralDate endDate;
 	
 	@Column(name = "END_TIME")
-	public int endTime;
+	public Integer endTime;
 	
 	
 	@Override
@@ -38,11 +37,11 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	}
 	
 	public KfnmtAlarmListExtraProcessStatus(KfnmtAlarmListExtraProcessStatusPK kfnmtAlarmListExtraProcessStatusPK,
-			String employeeID, GeneralDate endDate, int endTime) {
+			String employeeID, GeneralDate endDate, Integer endTime) {
 		super();
 		this.kfnmtAlarmListExtraProcessStatusPK = kfnmtAlarmListExtraProcessStatusPK;
 		this.employeeID = employeeID;
-		this.endDate = endDate.date();
+		this.endDate = endDate;
 		this.endTime = endTime;
 	}
 	
@@ -50,23 +49,23 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 		return new KfnmtAlarmListExtraProcessStatus(
 				new KfnmtAlarmListExtraProcessStatusPK(
 						domain.getCompanyID(),
-						domain.getStartDate().date(),
+						domain.getStartDate(),
 						domain.getStartTime()
 						),
 				domain.getEmployeeID(),
 				domain.getEndDate().isPresent() ==true? domain.getEndDate().get(): null,
-				domain.getEndTime().intValue()
+				domain.getEndTime()
 				);
 	}
 	
 	public AlarmListExtraProcessStatus toDomain() {
 		return new AlarmListExtraProcessStatus(
 				this.kfnmtAlarmListExtraProcessStatusPK.companyID,
-				GeneralDate.legacyDate(this.kfnmtAlarmListExtraProcessStatusPK.startDate),
+				this.kfnmtAlarmListExtraProcessStatusPK.startDate,
 				this.kfnmtAlarmListExtraProcessStatusPK.startTime,
 				this.employeeID,
-				Optional.of(GeneralDate.legacyDate(this.endDate)),
-				new Integer(this.endTime)
+				Optional.of(this.endDate),
+				this.endTime
 				);
 	}
 

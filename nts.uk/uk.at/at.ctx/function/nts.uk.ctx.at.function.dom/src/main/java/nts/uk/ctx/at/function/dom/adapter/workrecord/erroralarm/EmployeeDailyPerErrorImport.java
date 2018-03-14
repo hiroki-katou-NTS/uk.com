@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
-public class FuncEmployeeDailyPerErrorImport {
+public class EmployeeDailyPerErrorImport {
 	/** 会社ID: 会社ID */
 	private String companyID;
 	
