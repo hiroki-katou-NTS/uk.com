@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceReasonSel
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeAttendanceFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
@@ -61,6 +62,17 @@ public class DivergenceTimeWebService extends WebService{
 	public List<DivergenceTimeDto> getAllDivTime(){
 		return this.divTimeFinder.getAllDivTime();
 	}
+	
+	/**
+	 * get all divergence time
+	 * @return
+	 */
+	@POST
+	@Path("getalldivtimereasoninput")
+	public List<DivergenceTimeInputMethodDto> getAllDivTimeReasonInput(){
+		return this.divTimeInputFinder.getAllDivTime();
+	}
+	
 	
 	/**
 	 * update divergence time

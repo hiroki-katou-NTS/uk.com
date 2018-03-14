@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,30 +19,31 @@ public class DivergenceTimeInputMethodFinder {
 	@Inject
 	private DivergenceTimeFinder divTimeFinder;
 	
-//	public List<DivergenceReasonInputMethodDto> getAllDivTime(){
-//		List<DivergenceTimeDto> listdivTime = divTimeFinder.getAllDivTime();
-//		List<DivergenceReasonInputMethodDto> listDivReason = divReasonFinder.getAllDivTime();
-//		
-//		List<DivergenceTimeInputMethodDto> listDivTimeReason;
-//		
-//		listDivReason.stream().map(e->{new DivergenceTimeInputMethodDto(0, null, 0, null, 0, false, false, false, false);});
-//		
-//		
-//		return null;
-//	}
+	public List<DivergenceTimeInputMethodDto> getAllDivTime(){
+		List<DivergenceTimeDto> listdivTime = divTimeFinder.getAllDivTime();
+		List<DivergenceReasonInputMethodDto> listDivReason = divReasonFinder.getAllDivTime();
+		
+		List<DivergenceTimeInputMethodDto> listDivTimeInput = new ArrayList<DivergenceTimeInputMethodDto>();
+		
+		listdivTime.forEach(e-> {
+			DivergenceReasonInputMethodDto object= (DivergenceReasonInputMethodDto) listDivReason.stream().filter(a->a.getDivergenceTimeNo()==e.getDivergenceTimeNo()).findFirst().get();
+			listDivTimeInput.add(new DivergenceTimeInputMethodDto(e.getDivergenceTimeNo(),
+																	e.getCompanyId(),
+																	e.getDivTimeUseSet(),
+																	e.getDivTimeName(),
+																	e.getDivType(),
+																	e.isReasonInput(),
+																	e.isReasonSelect(),
+																	object.getDivergenceReasonInputed(),
+																	object.getDivergenceReasonSelected(),
+																	null)
+								);
+		});
+		
+		return listDivTimeInput;
+	}
 	
 	
 
 }
 
-//List<CompanyDivergenceReferenceTime> listDomain = this.comDivergenceRefTimeRepository.findAll(historyId);
-//
-//if (listDomain.isEmpty()){
-//	return Collections.emptyList();
-//}
-//
-//return listDomain.stream().map(e -> {
-//	CompanyDivergenceReferenceTimeDto dto = new CompanyDivergenceReferenceTimeDto();
-//	e.saveToMemento(dto);
-//	return dto;
-//}).collect(Collectors.toList());

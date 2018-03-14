@@ -2,11 +2,13 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
 import java.util.List;
 
+import lombok.Getter;
+import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectSetMemento;
 
-public class DivergenceReasonInputMethodDto implements DivergenceReasonInputMethodSetMemento {
+public class DivergenceReasonInputMethodDto implements DivergenceReasonInputMethodSetMemento,DivergenceReasonInputMethodGetMemento {
 	
 	/** The divergence time no. */
 	// 乖離時間NO
@@ -38,13 +40,13 @@ public class DivergenceReasonInputMethodDto implements DivergenceReasonInputMeth
 
 	@Override
 	public void setDivergenceTimeNo(int DivergenceTimeNo) {
-		// no code
+		this.divergenceTimeNo= DivergenceTimeNo;
 		
 	}
 
 	@Override
 	public void setCompanyId(String companyId) {
-		// no code
+		this.companyId=companyId;
 		
 	}
 
@@ -61,9 +63,34 @@ public class DivergenceReasonInputMethodDto implements DivergenceReasonInputMeth
 	}
 
 	@Override
-	public void setReasons(List<DivergenceReasonSelect> reason) {
-		// no code
+	public void setReasons(List<DivergenceReasonSelect> reasons) {
+		this.reasons=reasons;
 		
+	}
+
+	@Override
+	public boolean getDivergenceReasonInputed() {
+		return divergenceReasonInputed;
+	}
+
+	@Override
+	public boolean getDivergenceReasonSelected() {
+		return divergenceReasonSelected;
+	}
+
+	@Override
+	public int getDivergenceTimeNo() {
+		return divergenceTimeNo;
+	}
+
+	@Override
+	public String getCompanyId() {
+		return companyId;
+	}
+
+	@Override
+	public List<DivergenceReasonSelect> getReasons() {
+		return reasons;
 	}
 	
 

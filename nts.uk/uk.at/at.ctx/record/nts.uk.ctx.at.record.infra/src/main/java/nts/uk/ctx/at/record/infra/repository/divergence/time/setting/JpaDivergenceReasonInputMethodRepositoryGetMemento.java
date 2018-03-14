@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.setting;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,30 +26,28 @@ public class JpaDivergenceReasonInputMethodRepositoryGetMemento implements Diver
 
 	@Override
 	public int getDivergenceTimeNo() {
-		// TODO Auto-generated method stub
-		return 0;
+		return entities.getId().getNo();
 	}
 
 	@Override
 	public String getCompanyId() {
-		return AppContexts.user().companyId();
+		return entities.getId().getCid();
 	}
 
 	@Override
 	public boolean getDivergenceReasonInputed() {
-		// TODO Auto-generated method stub
-		return false;
+		if (entities.getDvgcReasonInputed().compareTo(BigDecimal.ZERO)==1)return false;
+		return true;
 	}
 
 	@Override
 	public boolean getDivergenceReasonSelected() {
-		// TODO Auto-generated method stub
-		return false;
+		if (entities.getDvgcReasonSelected().compareTo(BigDecimal.ZERO)==1)return false;
+		return true;
 	}
 
 	@Override
 	public List<DivergenceReasonSelect> getReasons() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
