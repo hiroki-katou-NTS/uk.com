@@ -135,15 +135,14 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         }
 
         private uploadFile(): void {
-            var self = this;
+            let self = this;
             block.invisible();
             $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
                 service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
                     self.totalLine(totalLine);
                     //アップロードCSVが取込開始行に満たない場合                   
-                    if (totalLine < self.selectedConditionStartLine()) {
-                        self.fileId('');
-                        self.fileName('');
+                    if (totalLine < self.selectedConditionStartLine()) { 
+                        self.resetFile();
                         dialog({ messageId: "Msg_1059" });
                     }
                     //アップロードCSVが取込開始行以上ある
@@ -153,17 +152,24 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     }
                     $("#file-upload").focus();
                 }).fail(function(err) {
+                    self.resetFile();
                     dialog({ messageId: "Msg_910" });
                 }).always(() => {
                     block.clear();
                 });
-            }).fail(function(err) {                
-                self.fileId('');
+            }).fail(function(err) {
+                self.resetFile();
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
                 dialog({ messageId: "Msg_910" });
                 $("#file-upload").focus();
                 block.clear();
             });
+        }
+
+        private resetFile(): void {
+            let self = this;
+            self.fileId('');
+            self.fileName('');
         }
 
         private loadListCondition(sysType): void {
@@ -187,7 +193,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //取得した設定を「条件設定一覧」に表示する
                     self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
                     self.selectedConditionName(self.listCondition()[0].conditionSettingName());
-                    
+
                     $("#grd_Condition tr:first-child").focus();
                 }
                 //取得データが0件の場合      
@@ -195,7 +201,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //エラーメッセージ表示　Msg_907　外部受入設定が作成されていません。
                     dialog({ messageId: "Msg_907" });
                     $("#O6_1").focus();
-                }                
+                }
             }).fail(function(error) {
                 alertError(error);
             }).always(() => {
@@ -209,6 +215,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             //ドメインモデル「受入項目（定型）」を取得する      
             service.getStdAcceptItem(self.selectedSysType(), self.selectedConditionCd()).done(function(data: Array<any>) {
                 self.listAccept.removeAll();
+                self.totalRecord(null);
                 if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptItem> = _.map(data, rs => {
                         let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
@@ -290,6 +297,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
+                }
+                else{
+                    block.clear();
                 }
             }).fail(function(error) {
                 alertError(error);
