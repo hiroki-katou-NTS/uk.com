@@ -53,7 +53,8 @@
 			</div>
 		</div>
 		<!-- app rec -->
-		<div id="app_rec_container" class="div_line">
+		<div data-bind="visible : appComSelectedCode() !=2"
+			id="app_rec_container" class="div_line">
 			<div id="app_rec_header" class="div_line app_header">
 				#{i18n.getText('KAF011_1')}</div>
 
@@ -78,10 +79,10 @@
 					<div tabindex="7" id="combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
-										options: dutyTypes ,
+										options: takingOutWkTypes ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: dutySelectedType ,
+										value: takingOutWkCD ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -97,7 +98,9 @@
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 				</div>
 				<div class="div_line_col_2 working_hour">
-					<button data-bind=" click: openKDL003" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+					<button
+						data-bind=" click:function(data, event) {openKDL003(true) } "
+						tabindex="1">#{i18n.getText('KAF011_5')}</button>
 					<div data-bind='text:genWorkingText()'></div>
 				</div>
 			</div>
@@ -106,7 +109,7 @@
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 				</div>
 				<div class="div_line_col_2 working_hour"
-					data-bind='with: workingHour '>
+					data-bind='with: takingOutWkTime '>
 					<input
 						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false ,option: timeOption }" />
@@ -136,7 +139,8 @@
 		</div>
 
 		<!-- app break -->
-		<div id="app_break_container">
+		<div id="app_break_container" class="div_line"
+			data-bind="visible : appComSelectedCode() !=1">
 			<div id="app_break_header" class="div_line app_header">
 				#{i18n.getText('KAF011_2')}</div>
 
@@ -161,10 +165,10 @@
 					<div tabindex="7" id="combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
-										options: dutyTypes ,
+										options: holidayWkTypes ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: dutySelectedType ,
+										value: holidayWkCD ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -184,7 +188,9 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour">
-						<button data-bind=" click: openKDL003" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+						<button
+							data-bind=" click: function(data, event) {openKDL003(false) } "
+							tabindex="1">#{i18n.getText('KAF011_5')}</button>
 						<div data-bind='text:genWorkingText()'></div>
 					</div>
 				</div>
@@ -193,7 +199,7 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour"
-						data-bind='with: workingHour '>
+						data-bind='with: holidayWkTime '>
 						<input
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false,option: timeOption }" />

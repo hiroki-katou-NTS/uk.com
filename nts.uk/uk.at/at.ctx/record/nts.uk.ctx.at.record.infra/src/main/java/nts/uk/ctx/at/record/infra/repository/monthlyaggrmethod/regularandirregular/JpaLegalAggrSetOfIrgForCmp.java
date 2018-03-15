@@ -47,9 +47,9 @@ public class JpaLegalAggrSetOfIrgForCmp extends JpaRepository implements LegalAg
 		KrcstMonsetCmpIrgAggr entity = this.getEntityManager().find(KrcstMonsetCmpIrgAggr.class, key);
 		if (entity == null) return;
 		entity.setValue.toOverTimeWithinIrregularCriteria =
-				(calcSetOfIrregular.isOverTimeLessThanCriteriaIsOverTimeWithinIrregularCriteria() ? 1 : 0);
+				(calcSetOfIrregular.isToOverTimeWithinIrregularCriteria() ? 1 : 0);
 		entity.setValue.toWorkTimeOutsideCriteria =
-				(calcSetOfIrregular.isWorkTimeMoreThanPrescribedOrCriteriaIsWorkTimeOutsideCriteria() ? 1 : 0);
+				(calcSetOfIrregular.isToWorkTimeOutsideCriteria() ? 1 : 0);
 		
 		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
 			List<OverTimeFrameNo> overTimeFrameNoList =

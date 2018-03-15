@@ -57,13 +57,15 @@ public class ErAlWorkRecordCheckService {
 			ErrorAlarmCondition checkCondition) {
 		List<RegulationInfoEmployeeQueryR> searchR = this.filterEmployees(workingDate, employeeIds, checkCondition);
 
-		if (searchR.isEmpty()) {
+		if (searchR.isEmpty()) { 
 			return toEmptyResultMap();
 		}
 
 		List<String> filted = searchR.stream().filter(e -> employeeIds.contains(e.getEmployeeId()))
-												.map(e -> e.getEmployeeId()).collect(Collectors.toList());
-
+				.map(e -> e.getEmployeeId()).collect(Collectors.toList());
+		if (filted.isEmpty()) {
+			return toEmptyResultMap();
+		}
 		/** 社員に一致する日別実績を取得する */
 		List<DailyRecordDto> record = fullFinder.find(filted, new DatePeriod(workingDate, workingDate));
 
@@ -71,8 +73,8 @@ public class ErAlWorkRecordCheckService {
 			return toEmptyResultMap();
 		}
 
-		return record.stream().collect(Collectors.toMap(c -> c.employeeId(), 
-														c -> checkErrorAlarmCondition(c, checkCondition)));
+		return record.stream()
+				.collect(Collectors.toMap(c -> c.employeeId(), c -> checkErrorAlarmCondition(c, checkCondition)));
 	}
 
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds, String EACheckID) {
@@ -89,20 +91,25 @@ public class ErAlWorkRecordCheckService {
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 
 		/** 勤務種類をチェックする */
-		if (!condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-			/** 就業時間帯をチェックする */
-			if (!condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-				/** 勤怠項目をチェックする */
-				return condition.getAtdItemCondition().check(c -> {
-					if (c.isEmpty()) {
-						return c;
-					}
-					return AttendanceItemUtil.toItemValues(record, c)
-													.stream().map(iv -> getValue(iv)).collect(Collectors.toList());
-				});
-			}
+		//TODO: uncomment
+//		if (condition.getWorkTypeCondition().isUse() && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
+		if (true && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
+			return false;
 		}
-		return false;
+		/** 就業時間帯をチェックする */
+		//TODO: uncomment
+//		if (condition.getWorkTimeCondition().isUse() && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
+			if (true && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
+			return false;
+		}
+		/** 勤怠項目をチェックする */
+		return condition.getAtdItemCondition().check(c -> {
+			if (c.isEmpty()) {
+				return c;
+			}
+			return AttendanceItemUtil.toItemValues(record, c).stream().map(iv -> getValue(iv))
+					.collect(Collectors.toList());
+		});
 	}
 
 	private Integer getValue(ItemValue value) {
@@ -123,20 +130,20 @@ public class ErAlWorkRecordCheckService {
 		query.setBaseDate(workingDate);
 		query.setReferenceRange(EmployeeReferenceRange.ALL_EMPLOYEE.value);
 		query.setFilterByEmployment(checkCondition.getCheckTargetCondtion().getFilterByEmployment());
-		query.setEmploymentCodes(checkCondition.getCheckTargetCondtion().getLstEmploymentCode().stream()
-																			.map(c -> c.v()).collect(Collectors.toList()));
+		query.setEmploymentCodes(checkCondition.getCheckTargetCondtion().getLstEmploymentCode().stream().map(c -> c.v())
+				.collect(Collectors.toList()));
 		query.setFilterByDepartment(false);
 		// query.setDepartmentCodes(departmentCodes);
 		query.setFilterByWorkplace(false);
 		// query.setWorkplaceCodes(workplaceCodes);
 		query.setFilterByClassification(checkCondition.getCheckTargetCondtion().getFilterByClassification());
 		query.setClassificationCodes(checkCondition.getCheckTargetCondtion().getLstClassificationCode().stream()
-																			.map(c -> c.v()).collect(Collectors.toList()));
+				.map(c -> c.v()).collect(Collectors.toList()));
 		query.setFilterByJobTitle(checkCondition.getCheckTargetCondtion().getFilterByJobTitle());
 		query.setJobTitleCodes(checkCondition.getCheckTargetCondtion().getLstJobTitleId());
 		query.setFilterByWorktype(checkCondition.getCheckTargetCondtion().getFilterByBusinessType());
-		query.setWorktypeCodes(checkCondition.getCheckTargetCondtion().getLstBusinessTypeCode().stream()
-																			.map(c -> c.v()).collect(Collectors.toList()));
+		query.setWorktypeCodes(checkCondition.getCheckTargetCondtion().getLstBusinessTypeCode().stream().map(c -> c.v())
+				.collect(Collectors.toList()));
 		query.setPeriodStart(workingDate.toString());
 		query.setPeriodEnd(workingDate.toString());
 		query.setIncludeIncumbents(true);

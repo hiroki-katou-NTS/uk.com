@@ -53,7 +53,7 @@ public class DivergenceTimeDto {
 				domain.getDivTimeId());
 	}
 
-	private static int getAttendanceTime(AttendanceTime domain) {
+	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 }

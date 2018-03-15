@@ -2957,7 +2957,7 @@ var nts;
              */
             var Locator = (function () {
                 function Locator(url) {
-                    this.rawUrl = url;
+                    this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
                 }
                 Locator.prototype.serialize = function () {
@@ -2970,7 +2970,7 @@ var nts;
                 };
                 Locator.prototype.mergeRelativePath = function (relativePath) {
                     var stack = this.rawUrl.split('/');
-                    var parts = relativePath.split('/');
+                    var parts = relativePath.split('?')[0].split('/');
                     var queryStringToAdd = QueryString.parseUrl(relativePath);
                     // 最後のファイル名は除外
                     // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
@@ -2987,7 +2987,6 @@ var nts;
                         else
                             stack.push(parts[i]);
                     }
-                    queryStringToAdd.mergeFrom(this.queryString);
                     var queryStringParts = queryStringToAdd.hasItems()
                         ? '?' + queryStringToAdd.serialize()
                         : '';
@@ -3376,7 +3375,7 @@ var nts;
                 else {
                     destination = location.current.mergeRelativePath(path);
                 }
-                return destination.rawUrl;
+                return destination.serialize();
             }
             request.resolvePath = resolvePath;
             var location;
@@ -9124,6 +9123,7 @@ var nts;
                     validation.DEF_HOUR_MAX = 9999;
                     validation.DEF_HOUR_MIN = 0;
                     validation.DEF_MIN_MAXMIN = 0;
+                    validation.DAY_MINS = 1439;
                     var Result = (function () {
                         function Result(isValid, value) {
                             this.isValid = isValid;
@@ -9303,7 +9303,9 @@ var nts;
                         if (((uk.util.isNullOrUndefined(hour) || hour === NaN) && (uk.util.isNullOrUndefined(minute) || minute === NaN))
                             || minute > validation.MINUTE_MAX)
                             return false;
-                        var targetTime = { hour: hour, minute: minute, negative: negative };
+                        var targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
+                        if (!targetTime)
+                            return false;
                         if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0)
                             return false;
                         return true;
@@ -9352,6 +9354,19 @@ var nts;
                             return -1;
                         }
                         return 0;
+                    }
+                    /**
+                     * Get complement.
+                     */
+                    function getComplement(time) {
+                        if (!time.negative)
+                            return time;
+                        var oTime = validation.DAY_MINS - (time.hour * 60 + time.minute);
+                        if (oTime < 0)
+                            return;
+                        var hour = Math.floor(oTime / 60);
+                        var minute = oTime - hour * 60;
+                        return { hour: hour, minute: minute, negative: true };
                     }
                     /**
                      * Parse.
@@ -19895,6 +19910,11 @@ var nts;
                                 oldValue.endDate = result.isValid ? result.parsedValue : newText;
                             }
                             validateProcess(newText, $target, isStart, oldValue, result);
+                            var valueX = uk.time.formatPattern(newText, dateFormat, ISOFormat);
+                            if (!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date") {
+                                //console.log(1);
+                                $target.val(valueX);
+                            }
                             value(oldValue);
                         });
                         $input.on("blur", function (e) {
@@ -22298,6 +22318,7 @@ var nts;
                 var ntsDatepicker;
                 (function (ntsDatepicker) {
                     var CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
+                    var PICKER_CLASSES = ["datepicker-top-left", "datepicker-top-right", "datepicker-bottom-left", "datepicker-bottom-right"];
                     $.fn.ntsDatepicker = function (action, index) {
                         var $container = $(this);
                         if (action === "bindFlip") {
@@ -22342,6 +22363,7 @@ var nts;
                                 return;
                             }
                             CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            PICKER_CLASSES.forEach(function (cls) { return currentShowContainer.removeClass(cls); });
                             var containerHeight = container.outerHeight(true);
                             var containerWidth = container.outerWidth(true);
                             var showContainerHeight = currentShowContainer.outerHeight(true);
@@ -23294,11 +23316,13 @@ var nts;
                                         var c = {
                                             id: rowId,
                                             columnKey: column.key,
-                                            $element: $gridCell
+                                            $element: $gridCell,
+                                            element: $gridCell[0]
                                         };
                                         // Format cell
                                         cellFormatter.style($self, c);
                                         color.rememberDisabled($self, c);
+                                        color.markIfEdit($self, c);
                                     }
                                 }, 0);
                                 return $container.html();
@@ -23716,7 +23740,12 @@ var nts;
                             var autoCommit = grid.options.autoCommit;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                            var origData = gridUpdate._getLatestValues(rId);
+                            var origDs = $grid.data(internal.ORIG_DS);
+                            var setting = $grid.data(internal.SETTINGS);
+                            var idx = setting.descriptor.keyIdxes[rId];
+                            if (uk.util.isNullOrUndefined(idx))
+                                return;
+                            var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
                                 notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
@@ -23761,8 +23790,14 @@ var nts;
                                 var options_1 = $grid.data(internal.GRID_OPTIONS);
                                 if (!options_1 || !options_1.getUserId || !options_1.userId)
                                     return;
-                                var record_1 = $grid.igGrid("findRecordByKey", rowId);
-                                var userId_1 = options_1.getUserId(record_1[options_1.primaryKey]);
+                                var id_1;
+                                if (uk.util.isNullOrUndefined(id_1 = origData[options_1.primaryKey])) {
+                                    var record = $grid.igGrid("findRecordByKey", rowId);
+                                    if (!record)
+                                        return;
+                                    id_1 = record[options_1.primaryKey];
+                                }
+                                var userId_1 = options_1.getUserId(id_1);
                                 var $cell_1 = internal.getCellById($grid, rowId, columnKey);
                                 var cols = void 0;
                                 if (userId_1 === options_1.userId) {
@@ -23804,8 +23839,14 @@ var nts;
                             var options = $grid.data(internal.GRID_OPTIONS);
                             if (!options || !options.getUserId || !options.userId)
                                 return;
-                            var record = $grid.igGrid("findRecordByKey", rowId);
-                            var userId = options.getUserId(record[options.primaryKey]);
+                            var id;
+                            if (!origData || uk.util.isNullOrUndefined(id = origData[options.primaryKey])) {
+                                var record = $grid.igGrid("findRecordByKey", rowId);
+                                if (!record)
+                                    return;
+                                id = record[options.primaryKey];
+                            }
+                            var userId = options.getUserId(id);
                             var $cell = internal.getCellById($grid, rowId, columnKey);
                             if (userId === options.userId) {
                                 $cell.addClass(color.ManualEditTarget);
@@ -26599,15 +26640,23 @@ var nts;
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: true };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                if (!uk.util.isNullOrUndefined(minutes))
-                                                    value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes)) {
+                                                    try {
+                                                        value = formatter.format(minutes);
+                                                    }
+                                                    catch (e) { }
+                                                }
                                             }
                                             else if (valueType === "Clock") {
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: false };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                if (!uk.util.isNullOrUndefined(minutes))
-                                                    value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes)) {
+                                                    try {
+                                                        value = formatter.format(minutes);
+                                                    }
+                                                    catch (e) { }
+                                                }
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();

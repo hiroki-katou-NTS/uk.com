@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class AlarmExtraValueWkReDto {
-
+	
+	private String gUID;
 	/**職場ID*/
 	private String workplaceID;
 	
@@ -29,7 +29,9 @@ public class AlarmExtraValueWkReDto {
 	private String alarmValueDate;
 
 	/**カテゴリ*/
-	private String category;
+	private int category;
+	
+	private String categoryName;
 	
 	/**アラーム項目*/
 	private String alarmItem;
@@ -39,5 +41,24 @@ public class AlarmExtraValueWkReDto {
 	
 	/**コメント*/
 	private String comment;
+
+	public AlarmExtraValueWkReDto(String workplaceID, String hierarchyCd, String workplaceName, String employeeID,
+			String employeeCode, String employeeName, String alarmValueDate, int category, String categoryName,
+			String alarmItem, String alarmValueMessage, String comment) {
+		super();
+		this.workplaceID = workplaceID;
+		this.hierarchyCd = hierarchyCd;
+		this.workplaceName = workplaceName;
+		this.employeeID = employeeID;
+		this.employeeCode = employeeCode;
+		this.employeeName = employeeName;
+		this.alarmValueDate = alarmValueDate;
+		this.category = category;
+		this.categoryName = categoryName;
+		this.alarmItem = alarmItem;
+		this.alarmValueMessage = alarmValueMessage;
+		this.comment = comment;
+	}
+	
 
 }

@@ -50,7 +50,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		appHolidayWork.setHolidayShiftNight(updateHolidayWorkCommand.getHolidayWorkShiftNight());
 		appHolidayWork.setWorkTimeCode(new WorkTimeCode(updateHolidayWorkCommand.getSiftTypeCode()));
 		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(updateHolidayWorkCommand.getWorkClockStart1(), updateHolidayWorkCommand.getWorkClockEnd1(), updateHolidayWorkCommand.getGoAtr1(), updateHolidayWorkCommand.getBackAtr1()));
-		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime2(updateHolidayWorkCommand.getWorkClockStart2(), updateHolidayWorkCommand.getWorkClockEnd2(), updateHolidayWorkCommand.getGoAtr2(), updateHolidayWorkCommand.getBackAtr2()));
+		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(updateHolidayWorkCommand.getWorkClockStart2(), updateHolidayWorkCommand.getWorkClockEnd2(), updateHolidayWorkCommand.getGoAtr2(), updateHolidayWorkCommand.getBackAtr2()));
 		appHolidayWork.setWorkTypeCode(new WorkTypeCode(updateHolidayWorkCommand.getWorkTypeCode()));
 		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
 		appHolidayWork.setVersion(updateHolidayWorkCommand.getVersion());

@@ -166,6 +166,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.showProfileIcon.subscribe((val) => {
                 self.reloadGrid();
             });
+            
+            self.displayWhenZero.subscribe(val =>{
+                let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataTemp = [];
+                if (self.displayWhenZero()) {
+                    _.each(dataSource, data => {
+                        var dtt: any = {};
+                        _.each(data, (val, indx) => {
+                            if (String(val) == "0" || String(val) == "0:00") {
+                                dtt[indx] = "";
+                            } else {
+                                dtt[indx] = val;
+                            }
+                        });
+                        dataTemp.push(dtt);
+                    });
+                    $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+                } else {
+                   let dataSourceOld : any = self.formatDate(self.dailyPerfomanceData());
+                   let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                   let group : any = _.groupBy(dataChange, "rowId");
+                    _.each(dataSourceOld, data => {
+                        var dtt: any = {};
+                        if (group[data.id]) {
+                             dtt = data;
+                            _.each(group[data.id], val => {
+                                dtt[val.columnKey] = val.value;
+                            });
+                            dataTemp.push(dtt);
+                        } else {
+                            dataTemp.push(data);
+                        }
+                    });
+                    $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+                }
+            });
             //$("#fixed-table").ntsFixedTable({ height: 50, width: 300 });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -206,10 +242,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
                     self.selectedDate(dateRange.startDate);
                     var elementDate = dateRange.startDate;
-                    while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
-                        self.lstDate.push({ date: elementDate });
-                        elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                    }
+                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
+                            self.lstDate.push({ date: elementDate });
+                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+                        }
+                }
                 }
             });
             self.dateRanger({
@@ -430,12 +468,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.sheetsGrid.valueHasMutated();
         }
         proceed() {
+            var self = this;
+            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                self.dialogShow.close();
+            }
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
             let checkDataCare: boolean = true;
             if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
-                var self = this;
                 self.listCareError([]);
                 self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
@@ -508,9 +549,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
-                                self.dialogShow.close();
-                            }
                          self.showErrorDialog();
                         }
                         dfd.resolve();
@@ -524,9 +562,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
-                            self.dialogShow.close();
-                        }
                         self.showErrorDialog();
                     }
                 }
@@ -534,12 +569,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         
         proceedSave() {
+            var self = this;     
+            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                self.dialogShow.close();
+            }
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
             let checkDataCare: boolean = true;
             if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
-                var self = this;        
                 self.listCareError([]);
                 self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
@@ -612,9 +650,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
-                                self.dialogShow.close();
-                            }
                          self.showErrorDialog();
                         }
                         dfd.resolve();
@@ -628,9 +663,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
-                            self.dialogShow.close();
-                        }
                         self.showErrorDialog();
                     }
                 }
@@ -1199,7 +1231,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.destroyGrid();
             let start = performance.now();
             self.extractionData();
-             console.log("calc load extractionData :" + (start- performance.now()));
+            console.log("calc load extractionData :" + (start- performance.now()));
             self.loadGrid();
         }
 

@@ -10,13 +10,21 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum ScheduleEditState {
-	// 変更なし
+	/**
+	 *  変更なし
+	 */
 	NO_CHANGE(0),
-	// 手修正(本人)
+	/**
+	 *  手修正(本人)
+	 */
 	HAND_CORRECTION_PRINCIPAL(1),
-	// 手修正(他人)
+	/**
+	 *  手修正(他人)
+	 */
 	HAND_CORRECTION_ORDER(2),
-	// 申請反映
+	/**
+	 *  申請反映
+	 */
 	REFLECT_APPLICATION(3);
 
 	public final int value;

@@ -42,19 +42,27 @@ public class StayingTimeDto {
 
 	public static StayingTimeDto fromStayingTime(StayingTimeOfDaily domain) {
 		return domain == null ? null : new StayingTimeDto(
-				domain.getStayingTime() == null ? null : domain.getStayingTime().valueAsMinutes(),
-				domain.getBeforeWoringTime() == null ? null : domain.getBeforeWoringTime().valueAsMinutes(), 
-				domain.getAfterLeaveTime() == null ? null : domain.getAfterLeaveTime().valueAsMinutes(),
-				domain.getBeforePCLogOnTime() == null ? null : domain.getBeforePCLogOnTime().valueAsMinutes(), 
-				domain.getAfterPCLogOffTime() == null ? null : domain.getAfterPCLogOffTime().valueAsMinutes());
+												getAttendanceTime(domain.getStayingTime()),
+												getAttendanceTime(domain.getBeforeWoringTime()), 
+												getAttendanceTime(domain.getAfterLeaveTime()),
+												getAttendanceTime(domain.getBeforePCLogOnTime()), 
+												getAttendanceTime(domain.getAfterPCLogOffTime()));
 	}
 
 	public StayingTimeOfDaily toDomain() {
 		return new StayingTimeOfDaily(
-					afterPCLogOffTime == null ? null : new AttendanceTime(afterPCLogOffTime), 
-					beforePCLogOnTime == null ? null : new AttendanceTime(beforePCLogOnTime),
-					beforeWoringTime == null ? null : new AttendanceTime(beforeWoringTime), 
-					stayingTime == null ? null : new AttendanceTime(stayingTime),
-					afterLeaveTime == null ? null : new AttendanceTime(afterLeaveTime));
+							toAttendanceTime(afterPCLogOffTime), 
+							toAttendanceTime(beforePCLogOnTime),
+							toAttendanceTime(beforeWoringTime), 
+							toAttendanceTime(stayingTime),
+							toAttendanceTime(afterLeaveTime));
+	}
+
+	private AttendanceTime toAttendanceTime(Integer time) {
+		return time == null ? null : new AttendanceTime(time);
+	}
+	
+	private static Integer getAttendanceTime(AttendanceTime time) {
+		return time == null ? null : time.valueAsMinutes();
 	}
 }
