@@ -6,6 +6,12 @@ module nts.uk.at.view.kmk011.b {
         var path: any = {
             save: "",
             find: "",
+            getAllDivergenceTime: "at/record/divergencetime/setting/getalldivtime",
+            updateDivTime: "at/record/divergencetime/updatedivtime",
+            updateTimeItemId: "at/record/divergencetime/updateTimeItemId",
+            getAllAttItem: "at/record/divergencetime/getAttendanceDivergenceItem",
+            getItemSet: "at/record/divergencetime/getitemset/",
+            getAllName: "at/record/divergencetime/AttendanceDivergenceName"
         };
 
         /**
@@ -20,30 +26,14 @@ module nts.uk.at.view.kmk011.b {
         export function getNameItemSelected(lstItemId: Array<number>): JQueryPromise<Array<viewmodel.model.DivergenceItem>> {
             return nts.uk.request.ajax("at", path.getAllName, lstItemId);
         }
-        /**
-        * get all attendance item id(id co the chon)
-        */
-        export function getAllAttItem(divType: number): JQueryPromise<Array<viewmodel.model.AttendanceType>> {
-            return nts.uk.request.ajax("at", path.getAllAttItem);
-        }
-        /**
-        * update time item id (da duoc chon lai)
-        */
-        export function updateTimeItemId(lstItemId: Array<viewmodel.model.DivergenceTimeItem>): JQueryPromise<Array<viewmodel.model.DivergenceTimeItem>> {
-            return nts.uk.request.ajax("at", path.updateTimeItemId, lstItemId);
-        }
+    
         /**
         * get all divergence time
         */
-        export function getAllDivTime(): JQueryPromise<Array<viewmodel.model.DivergenceTime>> {
-            return nts.uk.request.ajax("at", path.getAllDivTime);
+        export function getAllDivergenceTime(): JQueryPromise<Array<viewmodel.model.DivergenceTime>> {
+            return nts.uk.request.ajax("at", path.getAllDivergenceTime);
         }
-        /**
-         * update divergence time
-         */
-        export function updateDivTime(Object: viewmodel.model.ObjectDivergence): JQueryPromise<Array<viewmodel.model.DivergenceTimeItem>> {
-            return nts.uk.request.ajax("at", path.updateDivTime, Object);
-        }
+      
     }
-    
+
 }
