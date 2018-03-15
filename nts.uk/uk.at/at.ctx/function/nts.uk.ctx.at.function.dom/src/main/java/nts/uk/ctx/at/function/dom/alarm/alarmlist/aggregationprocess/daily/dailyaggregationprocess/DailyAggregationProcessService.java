@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyAggregationProcessService {
@@ -83,7 +84,7 @@ public class DailyAggregationProcessService {
 			if(listFixed.get(i).isUseAtr()) {
 				switch(i) {
 				case 0 :
-					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
+					for(GeneralDate date : period.getListDate()) {
 						String workType = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTypeCode();
 						
 						Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
@@ -94,7 +95,7 @@ public class DailyAggregationProcessService {
 					}
 					break;
 				case 1 :
-					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
+					for(GeneralDate date : period.getListDate()) {
 						String workTime = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTimeCode();
 						Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 						if(checkWorkTime.isPresent()) {

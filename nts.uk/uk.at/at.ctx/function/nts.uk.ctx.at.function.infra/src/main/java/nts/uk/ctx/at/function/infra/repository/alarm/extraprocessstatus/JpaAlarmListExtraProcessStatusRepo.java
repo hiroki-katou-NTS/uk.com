@@ -48,6 +48,7 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	@Override
 	public void addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		this.commandProxy().insert(KfnmtAlarmListExtraProcessStatus.toEntity( alarmListExtraProcessStatus));
+		this.getEntityManager().flush();
 		
 	}
 
