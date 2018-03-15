@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.PerServiceLengthTableCD;
 
 @Getter
 public class SpecialLeaveGrantSetting {
@@ -15,6 +16,6 @@ public class SpecialLeaveGrantSetting {
 	private Optional<GrantNumber> grantNumber;
 	
 	// 付与テーブル
-	private Optional<GrantTable> grantTable;
+	private Optional<PerServiceLengthTableCD> grantTable;
 	
 }
