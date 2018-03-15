@@ -64,6 +64,8 @@ module nts.uk.pr.view.kmf001.d {
                 self.yearsAmountByEmp = ko.observable(null);
                 self.maxDaysCumulationByEmp = ko.observable(null);
                 
+                self.deleteEnable = ko.observable(true);
+                
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理する'),
                     new ManagementModel(0, '管理しない')
@@ -204,12 +206,16 @@ module nts.uk.pr.view.kmf001.d {
                         let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
                         let selectedEmp = _.find(employmentList, { 'code': data });
                         self.selectedName(':   ' + selectedEmp.name);
-                        
+                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                            return item.code == self.selectedItem();
+                        });
+                        self.deleteEnable(!!match);
                         self.hasSelectedEmp(true);
                     }
                     else {
                         // Set displayed Employee name to empty
                         self.selectedName('');
+                        self.deleteEnable(false);
                         self.hasSelectedEmp(false);
                     }
                     
@@ -230,6 +236,10 @@ module nts.uk.pr.view.kmf001.d {
                         self.employmentList($('#left-content').getDataList());
                         // Set Selected Item
                         self.selectedItem(self.employmentList()[0].code);
+                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                            return item.code == self.selectedItem();
+                        });
+                        self.deleteEnable(!!match);
                         //                        self.hasSelectedEmp(true);
                     }
                 });

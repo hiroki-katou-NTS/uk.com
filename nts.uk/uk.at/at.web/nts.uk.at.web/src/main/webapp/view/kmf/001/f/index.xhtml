@@ -234,8 +234,8 @@
 					<button
 						data-bind="click: saveEmployment,enable: !isEmptyEmployment()"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
-					<button tabindex="4" data-bind="click: deleteEmployment,enable: !isEmptyEmployment()"
-						class="danger register-button">#{i18n.getText('KMF001_149')}</button>
+					<button tabindex="4" data-bind="click: deleteEmployment,enable: deleteEnable"
+						class="danger register-button" >#{i18n.getText('KMF001_149')}</button>
 					<!-- <div class="link_label">
 						<label data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div> -->
