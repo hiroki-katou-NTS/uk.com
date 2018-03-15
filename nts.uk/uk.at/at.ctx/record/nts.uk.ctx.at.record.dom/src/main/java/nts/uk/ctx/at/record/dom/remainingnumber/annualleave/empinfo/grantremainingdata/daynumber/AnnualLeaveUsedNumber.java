@@ -3,10 +3,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.DayNumber;
 
 @Getter
-public class AnnualLeaveUsedNumber extends DayNumber {
+public class AnnualLeaveUsedNumber{
 
 	/**
 	 * 日数
