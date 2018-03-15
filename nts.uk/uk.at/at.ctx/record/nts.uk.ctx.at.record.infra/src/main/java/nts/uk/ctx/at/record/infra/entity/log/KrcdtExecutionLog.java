@@ -59,9 +59,9 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
 	public String calExecutionSetInfoID;
 	
-	@ManyToOne
-	@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false)
-	public KrcdtEmpExecutionLog empexecutionlog;
+//	@ManyToOne
+//	@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false)
+//	public KrcdtEmpExecutionLog empexecutionlog;
 	
 	@OneToOne(mappedBy="executionlog", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO")
