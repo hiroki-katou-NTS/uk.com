@@ -50,10 +50,6 @@ module nts.uk.at.view.kal002.b.viewmodel {
             nts.uk.ui.windows.sub.modal("com","view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
                 if (data != null) {
-                    if(data.mailSettingAutomaticDto == null)
-                        data.mailSettingAutomaticDto = {
-                                
-                        }
                     self.MailAutoAndNormalDto.mailSettingNormalDto.mailSettingAdmins = data;
                 }
             });
