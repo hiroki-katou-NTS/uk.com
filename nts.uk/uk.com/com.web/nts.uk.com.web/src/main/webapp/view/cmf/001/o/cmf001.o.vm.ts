@@ -14,7 +14,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         activeStep: KnockoutObservable<number> = ko.observable(0);
 
         listSysType: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
-        selectedSysType: KnockoutObservable<number> = ko.observable(0);
+        selectedSysType: KnockoutObservable<number> = ko.observable(-1);
 
         listCondition: KnockoutObservableArray<model.StandardAcceptanceConditionSetting> = ko.observableArray([]);
         selectedConditionItem: any;
@@ -42,7 +42,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
 
             //ドメインモデル「受入条件設定（定型）」を取得する
-            self.loadListCondition(self.selectedSysType());
+            //self.loadListCondition(self.selectedSysType());
 
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
