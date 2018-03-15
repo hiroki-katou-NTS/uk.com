@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class PriorOvertimeReflectProcessImpl implements PriorOvertimeReflectProcess{
+public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
