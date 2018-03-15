@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt_;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Class JpaCompanyDivergenceReferenceTimeRepository.
@@ -92,6 +94,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 			// set value for entity
 			KrcstDrt drt = new KrcstDrt();
 			drt.setId(new KrcstDrtPK(historyId, i));
+			drt.setDvgcTimeUseSet(BigDecimal.valueOf(NotUseAtr.NOT_USE.value));
 			
 			// Insert to DB
 			this.commandProxy().insert(drt);
