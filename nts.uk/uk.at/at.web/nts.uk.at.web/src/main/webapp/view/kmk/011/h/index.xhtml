@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 500,
-					height : 400
+					width : 450,
+					height : 350
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,30 +22,35 @@
 		</ui:define>
 		<ui:define name="content">
 			<div tabindex="-1" id="contents-area" class="scrH">
-				<div class="title-content" style="margin-bottom: 20px; padding-left: 25px; margin-top: 20px; padding-right: 25px;">
+
+				<div class="title-content"
+					style="margin-bottom: 20px; padding-left: 25px; margin-top: 20px; padding-right: 25px;">
 					<!-- H1_1 -->
 					<pre tabindex="-1">#{i18n.getText('KMK011_70')}</pre>
 				</div>
 
-				<div class="title-content" style="margin-bottom: 20px; padding-left: 25px; padding-right: 25px;">
+				<div class="title-content"
+					style="margin-bottom: 20px; padding-left: 25px; padding-right: 25px;">
 					<!-- H1_7 -->
 					<span>#{i18n.getText('KMK011_8')}</span>
 				</div>
 
-				<div class="title-content" style="margin-bottom: 20px; padding-left: 60px; padding-right: 25px;">
+				<div class="title-content"
+					style="margin-bottom: 20px; padding-left: 60px; padding-right: 25px;">
 					<!-- H1_2 -->
 					<span>#{i18n.getText('Com_Company')}</span>
 				</div>
 
 				<div style="display: flex; flex-direction: row"
 					class="option-select-content">
-					<div id="manage_unit" style="padding-left: 25px; padding-right: 25px;">
+					<div id="manage_unit"
+						style="padding-left: 25px; padding-right: 25px;">
 						<!--H1-3-->
-						<div tabindex="-1" id="selectUnitCheck"
+						<div tabindex="-1" id="selectWorkTypeCheck,"
 							data-bind="ntsCheckBox: { checked: selectWorkTypeCheck, 
 														enable: true, 
 														text: '#{i18n.getText('KMK011_49')}'}">
-						</div>						
+						</div>
 					</div>
 				</div>
 			</div>

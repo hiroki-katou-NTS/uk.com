@@ -43,4 +43,28 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 				entity);
 		return new DivergenceReferenceTimeUsageUnit(memento);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * DivergenceReferenceTimeUsageUnitRepository#update(nts.uk.ctx.at.record.
+	 * dom.divergence.time.history.DivergenceReferenceTimeUsageUnit)
+	 */
+	@Override
+	public void update(DivergenceReferenceTimeUsageUnit domain) {
+		this.commandProxy().update(this.toEntity(domain));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * DivergenceReferenceTimeUsageUnitRepository#findById(java.lang.String)
+	 */
+	@Override
+	public DivergenceReferenceTimeUsageUnit findByCompanyId(String companyId) {
+		KrcstDrtUseUnit drtUseUnit = this.queryProxy().find(companyId, KrcstDrtUseUnit.class).orElse(new KrcstDrtUseUnit());
+		return this.toDomain(drtUseUnit);
+	}
 }

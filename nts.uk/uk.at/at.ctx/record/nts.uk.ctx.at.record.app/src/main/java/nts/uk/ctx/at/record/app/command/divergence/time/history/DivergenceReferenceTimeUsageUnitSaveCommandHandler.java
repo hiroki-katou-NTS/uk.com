@@ -28,7 +28,10 @@ public class DivergenceReferenceTimeUsageUnitSaveCommandHandler extends CommandH
 		DivergenceReferenceTimeUsageUnitCommand command = context.getCommand();
 		DivergenceReferenceTimeUsageUnit domain = new DivergenceReferenceTimeUsageUnit(command.getDivergenceReferenceTimeUsageUnitDto());
 		
-		divergenceRepo.add(domain);
+		domain = this.divergenceRepo.findByCompanyId(companyId);
+		if (domain != null){
+			this.divergenceRepo.update(domain);
+		}
 	}
 
 }

@@ -4,8 +4,8 @@ module nts.uk.at.view.kmk011.h {
          * define path to service
          */
         var path: any = {
-            save: "",
-            find: ""      
+            save: "at/record/divergence/time/history/divergenceRefTimeUsageUnit/save",
+            find: "at/record/divergence/time/history/divergenceRefTimeUsageUnit/find"      
         };
         
         export function save(): JQueryPromise<any> {
@@ -13,7 +13,7 @@ module nts.uk.at.view.kmk011.h {
         }
         
         export function find(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.findAll);
+            return nts.uk.request.ajax(path.find);
         }  
     }
 }

@@ -6,32 +6,42 @@ module nts.uk.at.view.kmk011.h {
     export module viewmodel {
         export class ScreenModel {
 
-            selectWorkTypeCheck: KnockoutObservable<number>;
+            selectWorkTypeCheck: KnockoutObservable<boolean>;
 
             constructor() {
                 let _self = this;
-                _self.selectWorkTypeCheck = ko.observable(0);
-
-                _self.selectWorkTypeCheck.subscribe(function() {
-                });
+                _self.selectWorkTypeCheck = ko.observable(true);
             }
 
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
+                service.find().done(function(value: DivergenceReferenceTimeUsageUnit) {
+
+                    alert(value.workTypeUseSet);
+                });
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-            private closeSaveDialog(): void{
+
+            private closeSaveDialog(): void {
                 let _self = this;
                 nts.uk.ui.windows.close();
             }
-            
+
             private closeDialog(): void {
-                nts.uk.ui.windows.close();    
+                nts.uk.ui.windows.close();
             }
+        }
+
+        export class DivergenceReferenceTimeUsageUnit {
+            workTypeUseSet: number;
+        }
+
+        export enum BoolValue {
+            TRUE = 1,
+            FALSE = 0
         }
     }
 }
