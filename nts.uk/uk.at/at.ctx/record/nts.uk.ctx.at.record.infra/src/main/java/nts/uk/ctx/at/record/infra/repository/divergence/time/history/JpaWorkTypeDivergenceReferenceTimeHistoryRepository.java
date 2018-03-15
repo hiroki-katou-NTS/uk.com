@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
@@ -33,10 +34,11 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 */
 	@Override
 	public WorkTypeDivergenceReferenceTimeHistory findByKey(String histId) {
-		KrcstWorktypeDrtHist worktypeDrtHist = this.queryProxy().find(histId, KrcstWorktypeDrtHist.class)
-				.orElse(new KrcstWorktypeDrtHist());
+		KrcstWorktypeDrtHist worktypeDrtHist = this.queryProxy().find(histId, KrcstWorktypeDrtHist.class).orElse(null);
 		ArrayList<KrcstWorktypeDrtHist> entities = new ArrayList<>();
-		entities.add(worktypeDrtHist);
+		if (worktypeDrtHist != null) {
+			entities.add(worktypeDrtHist);
+		}
 
 		return this.toDomain(entities);
 	}
@@ -125,8 +127,10 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	/**
 	 * Find by company id and work type.
 	 *
-	 * @param companyId the company id
-	 * @param workType the work type
+	 * @param companyId
+	 *            the company id
+	 * @param workType
+	 *            the work type
 	 * @return the list
 	 */
 	private List<KrcstWorktypeDrtHist> findByCompanyIdAndWorkType(String companyId, String workTypeCode) {
@@ -150,5 +154,11 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		List<KrcstWorktypeDrtHist> worktypeDrtHists = em.createQuery(cq).getResultList();
 
 		return worktypeDrtHists;
+	}
+
+	@Override
+	public Integer countByPeriodDate(GeneralDate startDate, GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

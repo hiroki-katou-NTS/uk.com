@@ -28,17 +28,20 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist
 @Stateless
 public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepository
 		implements CompanyDivergenceReferenceTimeHistoryRepository {
-	
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository#findbyPeriodDate(nts.arc.time.GeneralDate, nts.arc.time.GeneralDate)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * CompanyDivergenceReferenceTimeHistoryRepository#findbyPeriodDate(nts.arc.time
+	 * .GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public CompanyDivergenceReferenceTimeHistory findbyPeriodDate(GeneralDate startDate, GeneralDate endDate) {
+	public Integer countByPeriodDate(GeneralDate startDate, GeneralDate endDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -48,10 +51,12 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 */
 	@Override
 	public CompanyDivergenceReferenceTimeHistory findByHistId(String histId) {
-		KrcstComDrtHist krcstComDrtHist = this.queryProxy().find(histId, KrcstComDrtHist.class)
-				.orElse(new KrcstComDrtHist());
+		KrcstComDrtHist krcstComDrtHist = this.queryProxy().find(histId, KrcstComDrtHist.class).orElse(null);
 		ArrayList<KrcstComDrtHist> entities = new ArrayList<>();
-		entities.add(krcstComDrtHist);
+
+		if (krcstComDrtHist != null) {
+			entities.add(krcstComDrtHist);
+		}
 
 		return this.toDomain(entities);
 	}
@@ -132,7 +137,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 				comDrtHists);
 
 		domain.saveToMemento(memento);
-		
+
 		return comDrtHists;
 	}
 

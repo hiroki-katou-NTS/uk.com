@@ -28,8 +28,8 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt_;
 public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		implements CompanyDivergenceReferenceTimeRepository {
 
-	/** The Constant DIVERGENCE_TIME_MAX. */
-	private final int DIVERGENCE_TIME_MAX = 10;
+	/** The Constant DIVERGENCE_TIME_MAX_COUNT. */
+	private final int DIVERGENCE_TIME_MAX_COUNT = 10;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -88,7 +88,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void addDefaultDataWhenCreateHistory(String historyId) {
-		for (int i = 0; i < DIVERGENCE_TIME_MAX; i++) {
+		for (int i = 0; i < DIVERGENCE_TIME_MAX_COUNT; i++) {
 			// set value for entity
 			KrcstDrt drt = new KrcstDrt();
 			drt.setId(new KrcstDrtPK(historyId, i));

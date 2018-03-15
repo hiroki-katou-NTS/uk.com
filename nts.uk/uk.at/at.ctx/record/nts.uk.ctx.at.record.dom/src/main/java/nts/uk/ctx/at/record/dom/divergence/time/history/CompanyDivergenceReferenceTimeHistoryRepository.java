@@ -6,15 +6,15 @@ import nts.arc.time.GeneralDate;
  * The Interface CompanyDivergenceReferenceTimeHistoryRepository.
  */
 public interface CompanyDivergenceReferenceTimeHistoryRepository {
-	
+
 	/**
-	 * Findby period date.
+	 * Count by period date.
 	 *
 	 * @param startDate the start date
 	 * @param endDate the end date
-	 * @return the company divergence reference time history
+	 * @return the integer
 	 */
-	CompanyDivergenceReferenceTimeHistory findbyPeriodDate(GeneralDate startDate, GeneralDate endDate);
+	Integer countByPeriodDate(GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * Find by hist id.
