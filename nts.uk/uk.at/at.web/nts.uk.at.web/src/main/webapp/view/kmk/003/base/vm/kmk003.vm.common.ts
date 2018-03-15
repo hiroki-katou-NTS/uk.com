@@ -744,7 +744,7 @@ module nts.uk.at.view.kmk003.a {
                         self.originalListTemp = self.toListOriginalDto(newList);
 
                         // check new converted list vs converted list temp
-                        let newConverted = self.toListConvertedModel();
+                        let newConverted = self.fromOriginalListToConvertedList();
                         let newConvertedTemp = self.fromListConvertedToListOriginalDto(newConverted);
                         if (self.isNotEqual(newConvertedTemp, self.convertedListTemp)) {
                             self.convertedList(newConverted); // update new converted list
@@ -752,16 +752,31 @@ module nts.uk.at.view.kmk003.a {
                     });
 
                     self.convertedList.subscribe(newList => {
-                        // set new converted list temp
-                        self.convertedListTemp = self.fromListConvertedToListOriginalDto(newList);
-
-                        // check new original list vs original list temp
+                        const firstItemSize = _.size(newList[0]);
                         let newOriginal = self.toListOriginalModel(newList);
-                        let newOriginalTemp = self.toListOriginalDto(newOriginal);
-                        if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
-                            self.originalList(newOriginal); // update new original list
+                        if (self.convertedListTemp.length == 0 || _.some(newList, i => _.size(i) != firstItemSize)) {
+                            // update convertedListTemp length
+                            self.convertedListTemp.push("");
+
+                            // update converted list
+                            self.convertedList(self.toListConvertedModel(newOriginal));
+                        }
+                        else {
+                            // set new converted list temp
+                            self.convertedListTemp = self.fromListConvertedToListOriginalDto(newList);
+
+                            // check new original list vs original list temp
+                            let newOriginalTemp = self.toListOriginalDto(newOriginal);
+                            if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
+                                self.originalList(newOriginal); // update new original list
+                            }
                         }
                     });
+                }
+
+                fromOriginalListToConvertedList(): Array<Converted> {
+                    let self = this;
+                    return self.toListConvertedModel(self.originalList());
                 }
 
                 fromListConvertedToListOriginalDto(list: Array<Converted>): Array<any> {
@@ -769,9 +784,9 @@ module nts.uk.at.view.kmk003.a {
                     return _.map(list, item => self.toOriginalDto(item));
                 }
 
-                toListConvertedModel(): Array<Converted> {
+                toListConvertedModel(originalList: Array<Original>): Array<Converted> {
                     let self = this;
-                    return _.map(self.originalList(), o => self.createConverted(o));
+                    return _.map(originalList, o => self.createConverted(o));
                 }
 
                 /**
@@ -1801,7 +1816,7 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class OverTimeOfTimeZoneSetModel {
+            export class OverTimeOfTimeZoneSetModel extends BaseDataModel {
                 workTimezoneNo: KnockoutObservable<number>;
                 restraintTimeUse: KnockoutObservable<boolean>;
                 earlyOTUse: KnockoutObservable<boolean>;
@@ -1811,6 +1826,7 @@ module nts.uk.at.view.kmk003.a {
                 settlementOrder: KnockoutObservable<number>;
 
                 constructor() {
+                    super();
                     this.workTimezoneNo = ko.observable(0);
                     this.restraintTimeUse = ko.observable(false);
                     this.earlyOTUse = ko.observable(false);
@@ -1908,13 +1924,68 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FixedWorkTimezoneSetModel {
+            export class OverTimeFixedTableModel {
+                workTimezoneNo: number;
+                timezone: KnockoutObservable<any>;
+                rounding: KnockoutObservable<number>;
+                roundingTime: KnockoutObservable<number>;
+                restraintTimeUse: KnockoutObservable<boolean>;
+                otFrameNo: KnockoutObservable<number>;
+                earlyOTUse: KnockoutObservable<boolean>;
+                legalOTframeNo: KnockoutObservable<number>;
+                settlementOrder: KnockoutObservable<number>;
+
+                constructor(otModel: OverTimeOfTimeZoneSetModel) {
+                    this.workTimezoneNo = otModel.workTimezoneNo();
+                    this.timezone = ko.observable({
+                        startTime: otModel.timezone.start(),
+                        endTime: otModel.timezone.end()
+                    });
+                    this.rounding = ko.observable(otModel.timezone.rounding.rounding());
+                    this.roundingTime = ko.observable(otModel.timezone.rounding.roundingTime());
+                    this.restraintTimeUse = ko.observable(otModel.restraintTimeUse());
+                    this.otFrameNo = ko.observable(otModel.otFrameNo());
+                    this.earlyOTUse = ko.observable(otModel.earlyOTUse());
+                    this.legalOTframeNo = ko.observable(otModel.legalOTframeNo());
+                    this.settlementOrder = ko.observable(otModel.settlementOrder());
+                }
+            }
+
+            export class FixedWorkTimezoneSetModel extends FixedTableDataConverter<OverTimeFixedTableModel, OverTimeOfTimeZoneSetModel> {
                 lstWorkingTimezone: KnockoutObservableArray<EmTimeZoneSetModel>;
                 lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
                 constructor() {
+                    super();
                     this.lstWorkingTimezone = ko.observableArray([]);
-                    this.lstOTTimezone = ko.observableArray([]);
+                    this.lstOTTimezone = this.originalList;
+                }
+
+                toOriginalDto(convertedItem: OverTimeFixedTableModel): OverTimeOfTimeZoneSetDto {
+                    return {
+                        workTimezoneNo: convertedItem.workTimezoneNo ? convertedItem.workTimezoneNo : 0,
+                        timezone: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.roundingTime()
+                            },
+                            start: convertedItem.timezone().startTime,
+                            end: convertedItem.timezone().endTime
+                        },
+                        restraintTimeUse: convertedItem.restraintTimeUse ? convertedItem.restraintTimeUse() : false,
+                        earlyOTUse: convertedItem.earlyOTUse(),
+                        otFrameNo: convertedItem.otFrameNo(),
+                        legalOTframeNo: convertedItem.legalOTframeNo ? convertedItem.legalOTframeNo() : 1,
+                        settlementOrder: convertedItem.settlementOrder ? convertedItem.settlementOrder() : 1
+                    };
+                }
+
+                createOriginal(): OverTimeOfTimeZoneSetModel {
+                    return new OverTimeOfTimeZoneSetModel();
+                }
+
+                createConverted(original: OverTimeOfTimeZoneSetModel): OverTimeFixedTableModel {
+                    return new OverTimeFixedTableModel(original);
                 }
 
                 updateData(data: FixedWorkTimezoneSetDto) {

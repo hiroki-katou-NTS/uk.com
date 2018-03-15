@@ -230,13 +230,71 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class DiffTimezoneSettingModel {
+            export class DiffOverTimeFixedTableModel {
+                workTimezoneNo: number;
+                timezone: KnockoutObservable<any>;
+                rounding: KnockoutObservable<number>;
+                roundingTime: KnockoutObservable<number>;
+                restraintTimeUse: KnockoutObservable<boolean>;
+                otFrameNo: KnockoutObservable<number>;
+                earlyOTUse: KnockoutObservable<boolean>;
+                legalOTframeNo: KnockoutObservable<number>;
+                settlementOrder: KnockoutObservable<number>;
+                isUpdateStartTime: KnockoutObservable<boolean>;
+
+                constructor(otModel: DiffTimeOTTimezoneSetModel) {
+                    this.workTimezoneNo = otModel.workTimezoneNo();
+                    this.timezone = ko.observable({
+                        startTime: otModel.timezone.start(),
+                        endTime: otModel.timezone.end()
+                    });
+                    this.rounding = ko.observable(otModel.timezone.rounding.rounding());
+                    this.roundingTime = ko.observable(otModel.timezone.rounding.roundingTime());
+                    this.restraintTimeUse = ko.observable(otModel.restraintTimeUse());
+                    this.otFrameNo = ko.observable(otModel.otFrameNo());
+                    this.earlyOTUse = ko.observable(otModel.earlyOTUse());
+                    this.legalOTframeNo = ko.observable(otModel.legalOTframeNo());
+                    this.settlementOrder = ko.observable(otModel.settlementOrder());
+                    this.isUpdateStartTime = ko.observable(otModel.isUpdateStartTime());
+                }
+            }
+
+            export class DiffTimezoneSettingModel extends FixedTableDataConverter<DiffOverTimeFixedTableModel, DiffTimeOTTimezoneSetModel> {
                 employmentTimezones: KnockoutObservableArray<EmTimeZoneSetModel>;
                 lstOtTimezone: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
 
                 constructor() {
+                    super();
                     this.employmentTimezones = ko.observableArray([]);
-                    this.lstOtTimezone = ko.observableArray([]);
+                    this.lstOtTimezone = this.originalList;
+                }
+
+                toOriginalDto(convertedItem: DiffOverTimeFixedTableModel): DiffTimeOTTimezoneSetDto {
+                    return {
+                        workTimezoneNo: convertedItem.workTimezoneNo ? convertedItem.workTimezoneNo : 0,
+                        timezone: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.roundingTime()
+                            },
+                            start: convertedItem.timezone().startTime,
+                            end: convertedItem.timezone().endTime
+                        },
+                        restraintTimeUse: convertedItem.restraintTimeUse ? convertedItem.restraintTimeUse() : false,
+                        earlyOTUse: convertedItem.earlyOTUse(),
+                        otFrameNo: convertedItem.otFrameNo(),
+                        legalOTframeNo: convertedItem.legalOTframeNo ? convertedItem.legalOTframeNo() : 1,
+                        settlementOrder: convertedItem.settlementOrder ? convertedItem.settlementOrder() : 1,
+                        isUpdateStartTime: convertedItem.isUpdateStartTime ? convertedItem.isUpdateStartTime() : false
+                    };
+                }
+
+                createOriginal(): DiffTimeOTTimezoneSetModel {
+                    return new DiffTimeOTTimezoneSetModel();
+                }
+
+                createConverted(original: DiffTimeOTTimezoneSetModel): DiffOverTimeFixedTableModel {
+                    return new DiffOverTimeFixedTableModel(original);
                 }
 
                 updateData(data: DiffTimezoneSettingDto) {

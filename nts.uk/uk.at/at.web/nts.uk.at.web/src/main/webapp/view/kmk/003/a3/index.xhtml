@@ -10,7 +10,6 @@
    	</com:ValidatorScript>
    	
    	<div>
-   	<com:ko tag="if" bind="rebind">
 	<com:ko tag="ifnot" bind="isFlexMode">
 	
 		<com:ko tag="ifnot" bind="isFlowMode">
@@ -45,7 +44,7 @@
 					</com:ko>
 					<com:ko tag="ifnot" bind="isDetailMode">
 						<div tabindex="56" id="tab3_fixtable_oneday_fixed"
-							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixedSimple}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDetailMode">
 					<com:ko tag="if" bind="isUseHalfDay">
@@ -104,7 +103,7 @@
 					</com:ko>
 					<com:ko tag="ifnot" bind="isDetailMode">
 						<div tabindex="56" id="tab3_fixtable_oneday_difftime"
-							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTime}"></div>
+							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTimeSimple}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDetailMode">
 					<com:ko tag="if" bind="isUseHalfDay">
@@ -148,7 +147,7 @@
 				<com:ko tag="ifnot" bind="isDetailMode">
 					<div class="tab-seperator">
 						<div tabindex="59" id="tab3_fixtable_flow"
-							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
+							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlowSimple}"></div>
 					</div>
 				</com:ko>
 			</com:ko>
@@ -196,7 +195,6 @@
 					</com:ko>
 				</com:ko>
 			</div>
-	</com:ko>
 	</com:ko>
 	</div>
 </ui:composition>

@@ -124,13 +124,66 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FlowWorkTzSettingModel {
+            export class FixedTableFlowOTModel {
+                worktimeNo: number;
+                restrictTime: KnockoutObservable<boolean>;
+                elapsedTime: KnockoutObservable<number>;
+                rounding: KnockoutObservable<number>;
+                roundingTime: KnockoutObservable<number>;
+                otFrameNo: KnockoutObservable<number>;
+                inLegalOTFrameNo: KnockoutObservable<number>;
+                settlementOrder: KnockoutObservable<number>;
+
+                constructor(flowOt: FlowOTTimezoneModel) {
+                    this.worktimeNo = flowOt.worktimeNo();
+                    this.restrictTime = ko.observable(flowOt.restrictTime());
+                    this.elapsedTime = ko.observable(flowOt.flowTimeSetting.elapsedTime());
+                    this.rounding = ko.observable(flowOt.flowTimeSetting.rounding.rounding());
+                    this.roundingTime = ko.observable(flowOt.flowTimeSetting.rounding.roundingTime());
+                    this.otFrameNo = ko.observable(flowOt.otFrameNo());
+                    this.inLegalOTFrameNo = ko.observable(flowOt.inLegalOTFrameNo());
+                    this.settlementOrder = ko.observable(flowOt.settlementOrder());
+                }
+            }
+
+            export class FlowWorkTzSettingModel extends FixedTableDataConverter<FixedTableFlowOTModel, FlowOTTimezoneModel> {
                 workTimeRounding: TimeRoundingSettingModel;
                 lstOTTimezone: KnockoutObservableArray<FlowOTTimezoneModel>;
 
                 constructor() {
+                    super();
                     this.workTimeRounding = new TimeRoundingSettingModel();
-                    this.lstOTTimezone = ko.observableArray([]);
+                    this.lstOTTimezone = this.originalList;
+                }
+
+                optionalProcessing(list: Array<FixedTableFlowOTModel>): Array<FixedTableFlowOTModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.worktimeNo = ++count);
+                }
+
+                toOriginalDto(convertedItem: FixedTableFlowOTModel): FlOTTimezoneDto {
+                    return {
+                        worktimeNo: convertedItem.worktimeNo,
+                        restrictTime: convertedItem.restrictTime ? convertedItem.restrictTime() : false,
+                        otFrameNo: convertedItem.otFrameNo ? convertedItem.otFrameNo() : 1,
+                        flowTimeSetting: {
+                            elapsedTime: convertedItem.elapsedTime(),
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.rounding()
+                            }
+                        },
+                        inLegalOTFrameNo: convertedItem.inLegalOTFrameNo ? convertedItem.inLegalOTFrameNo() : 1,
+                        settlementOrder: convertedItem.settlementOrder ? convertedItem.settlementOrder() : 1
+                    };
+                }
+
+                createOriginal(): FlowOTTimezoneModel {
+                    return new FlowOTTimezoneModel();
+                }
+
+                createConverted(original: FlowOTTimezoneModel): FixedTableFlowOTModel {
+                    return new FixedTableFlowOTModel(original);
                 }
 
                 updateData(data: FlWorkTzSettingDto) {
@@ -293,6 +346,11 @@ module nts.uk.at.view.kmk003.a {
                     super();
                     this.restTimeZone = new FlowWorkRestTimezoneModel();
                     this.lstWorkTimezone = this.originalList;
+                }
+
+                optionalProcessing(list: Array<FlowHdTimeZoneDuongModel>): Array<FlowHdTimeZoneDuongModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.workTimeNo = ++count);
                 }
 
                 toOriginalDto(convertedItem: FlowHdTimeZoneDuongModel): FlWorkHdTimeZoneDto {
