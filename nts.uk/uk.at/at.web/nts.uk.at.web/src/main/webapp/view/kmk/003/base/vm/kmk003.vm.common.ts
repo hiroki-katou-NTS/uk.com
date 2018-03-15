@@ -47,6 +47,8 @@ module nts.uk.at.view.kmk003.a {
     import OverTimeCalcNoBreakDto = service.model.common.OverTimeCalcNoBreakDto;
     import ExceededPredAddVacationCalcDto = service.model.common.ExceededPredAddVacationCalcDto;
     import FixedWorkCalcSettingDto = service.model.common.FixedWorkCalcSettingDto;
+    import ScheduleBreakCalculationDto = service.model.common.ScheduleBreakCalculationDto;
+    import StampBreakCalculationDto = service.model.common.StampBreakCalculationDto;
 
     import LateEarlyAtr = service.model.common.LateEarlyAtr;
     import WorkSystemAtr = service.model.common.WorkSystemAtr;
@@ -474,40 +476,91 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlowFixedRestSetModel {
-                isReferRestTime: KnockoutObservable<boolean>;
-                usePrivateGoOutRest: KnockoutObservable<boolean>;
-                useAssoGoOutRest: KnockoutObservable<boolean>;
                 calculateMethod: KnockoutObservable<number>;
-
+                calculateFromSchedule: ScheduleBreakCalculationModel;
+                calculateFromStamp: StampBreakCalculationModel;
+                
                 constructor() {
-                    this.isReferRestTime = ko.observable(false);
-                    this.usePrivateGoOutRest = ko.observable(false);
-                    this.useAssoGoOutRest = ko.observable(false);
                     this.calculateMethod = ko.observable(0);
+                    this.calculateFromSchedule = new ScheduleBreakCalculationModel();
+                    this.calculateFromStamp = new StampBreakCalculationModel();
                 }
 
                 updatedData(data: FlowFixedRestSetDto) {
-                    this.isReferRestTime(data.isReferRestTime);
-                    this.usePrivateGoOutRest(data.usePrivateGoOutRest);
-                    this.useAssoGoOutRest(data.useAssoGoOutRest);
                     this.calculateMethod(data.calculateMethod);
+                    this.calculateFromSchedule.updatedData(data.calculateFromSchedule);
+                    this.calculateFromStamp.updatedData(data.calculateFromStamp);
                 }
 
                 toDto(): FlowFixedRestSetDto {
                     var dataDTO: FlowFixedRestSetDto = {
+                        calculateMethod: this.calculateMethod(),
+                        calculateFromSchedule: this.calculateFromSchedule.toDto(),
+                        calculateFromStamp: this.calculateFromStamp.toDto()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.calculateMethod(0);
+                    this.calculateFromSchedule.resetData();
+                    this.calculateFromStamp.resetData();
+                }
+            }
+            
+            export class ScheduleBreakCalculationModel {
+                isReferRestTime: KnockoutObservable<boolean>;
+                isCalcFromSchedule: KnockoutObservable<boolean>;
+                
+                constructor() {
+                    this.isReferRestTime = ko.observable(false);
+                    this.isCalcFromSchedule = ko.observable(false);
+                }
+
+                updatedData(data: ScheduleBreakCalculationDto) {
+                    this.isReferRestTime(data.isReferRestTime);
+                    this.isCalcFromSchedule(data.isCalcFromSchedule);
+                }
+
+                toDto(): ScheduleBreakCalculationDto {
+                    var dataDTO: ScheduleBreakCalculationDto = {
                         isReferRestTime: this.isReferRestTime(),
-                        usePrivateGoOutRest: this.usePrivateGoOutRest(),
-                        useAssoGoOutRest: this.useAssoGoOutRest(),
-                        calculateMethod: this.calculateMethod()
+                        isCalcFromSchedule: this.isCalcFromSchedule()
                     };
                     return dataDTO;
                 }
 
                 resetData() {
                     this.isReferRestTime(false);
+                    this.isCalcFromSchedule(false);
+                }
+            }
+            
+            export class StampBreakCalculationModel {
+                usePrivateGoOutRest: KnockoutObservable<boolean>;
+                useAssoGoOutRest: KnockoutObservable<boolean>;
+                
+                constructor() {
+                    this.usePrivateGoOutRest = ko.observable(false);
+                    this.useAssoGoOutRest = ko.observable(false);
+                }
+
+                updatedData(data: StampBreakCalculationDto) {
+                    this.usePrivateGoOutRest(data.usePrivateGoOutRest);
+                    this.useAssoGoOutRest(data.useAssoGoOutRest);
+                }
+
+                toDto(): StampBreakCalculationDto {
+                    var dataDTO: StampBreakCalculationDto = {
+                        usePrivateGoOutRest: this.usePrivateGoOutRest(),
+                        useAssoGoOutRest: this.useAssoGoOutRest()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
                     this.usePrivateGoOutRest(false);
                     this.useAssoGoOutRest(false);
-                    this.calculateMethod(0);
                 }
             }
 
@@ -515,24 +568,28 @@ module nts.uk.at.view.kmk003.a {
                 flowRestSetting: FlowRestSetModel;
                 flowFixedRestSetting: FlowFixedRestSetModel;
                 usePluralWorkRestTime: KnockoutObservable<boolean>;
+                roundingBreakMultipleWork: TimeRoundingSettingModel;
 
                 constructor() {
                     this.flowRestSetting = new FlowRestSetModel();
                     this.flowFixedRestSetting = new FlowFixedRestSetModel();
                     this.usePluralWorkRestTime = ko.observable(false);
+                    this.roundingBreakMultipleWork = new TimeRoundingSettingModel();
                 }
 
                 updateData(data: FlowWorkRestSettingDetailDto) {
                     this.flowRestSetting.updateData(data.flowRestSetting);
                     this.flowFixedRestSetting.updatedData(data.flowFixedRestSetting);
                     this.usePluralWorkRestTime(data.usePluralWorkRestTime);
+                    this.roundingBreakMultipleWork.updateData(data.roundingBreakMultipleWork);
                 }
 
                 toDto(): FlowWorkRestSettingDetailDto {
                     var dataDTO: FlowWorkRestSettingDetailDto = {
                         flowRestSetting: this.flowRestSetting.toDto(),
                         flowFixedRestSetting: this.flowFixedRestSetting.toDto(),
-                        usePluralWorkRestTime: this.usePluralWorkRestTime()
+                        usePluralWorkRestTime: this.usePluralWorkRestTime(),
+                        roundingBreakMultipleWork: this.roundingBreakMultipleWork.toDto()
                     };
                     return dataDTO;
                 }
@@ -541,6 +598,7 @@ module nts.uk.at.view.kmk003.a {
                     this.flowRestSetting.resetData();
                     this.flowFixedRestSetting.resetData();
                     this.usePluralWorkRestTime(false);
+                    this.roundingBreakMultipleWork.resetData();
                 }
             }
 

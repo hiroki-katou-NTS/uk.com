@@ -19,9 +19,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixHalfDayWorkTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedStampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
@@ -43,6 +44,9 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	/** The wtz common set policy. */
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
+	
+	@Inject
+	private FixedStampReflectTimezonePolicy fixedStampReflectTimezonePolicy;
 
 	/**
 	 * Validate.
@@ -80,35 +84,9 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
 			be.addMessage("Msg_520");
 		}
-		fixedWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
-			// #Msg_516
-			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime())) {
-				be.addMessage("Msg_516");
-			}
-
-			// #Msg_1028
-			if (setting.getStartTime().lessThanOrEqualTo(
-					predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
-				be.addMessage("Msg_1028");
-			}
-
-			// #Msg_1029
-			if (setting.getEndTime().greaterThanOrEqualTo(
-					predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
-				be.addMessage("Msg_1029");
-			}
-
-			// #Msg_1030
-
-			// #Msg_1031
-
-			// #Msg_1032
-
-			// #Msg_1033
-
-			// #Msg_1034
-
-		});
+		
+		// validate list stamp timezone
+		this.fixedStampReflectTimezonePolicy.validate(be, predetemineTimeSet, fixedWorkSetting);
 
 		// Check #Msg_516 domain HDWorkTimeSheetSetting
 		fixedWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().forEach(setting -> {

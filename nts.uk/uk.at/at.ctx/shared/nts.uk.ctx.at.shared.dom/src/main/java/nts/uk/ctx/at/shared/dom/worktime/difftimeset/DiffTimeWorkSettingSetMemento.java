@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -92,5 +93,5 @@ public interface DiffTimeWorkSettingSetMemento {
      *
      * @param fixedWorkCalcSetting the new calculation setting
      */
-    void setCalculationSetting(FixedWorkCalcSetting fixedWorkCalcSetting);
+    void setCalculationSetting(Optional<FixedWorkCalcSetting> fixedWorkCalcSetting);
 }

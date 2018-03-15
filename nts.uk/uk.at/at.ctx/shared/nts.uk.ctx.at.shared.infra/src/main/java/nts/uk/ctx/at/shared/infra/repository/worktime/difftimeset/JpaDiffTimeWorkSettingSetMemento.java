@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
@@ -201,8 +203,10 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 	 * dom.worktime.fixedset.FixedWorkCalcSetting)
 	 */
 	@Override
-	public void setCalculationSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
-		fixedWorkCalcSetting.saveToMemento(new JpaFixedWorkCalcSettingSetMemento(this.entity));
+	public void setCalculationSetting(Optional<FixedWorkCalcSetting> fixedWorkCalcSetting) {
+		if (fixedWorkCalcSetting.isPresent()) {
+			fixedWorkCalcSetting.get().saveToMemento(new JpaFixedWorkCalcSettingSetMemento<KshmtDiffTimeWorkSet>(this.entity));
+		}	
 	}
 
 }

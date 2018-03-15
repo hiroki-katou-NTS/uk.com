@@ -60,10 +60,9 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface FlowFixedRestSetDto {
-                    isReferRestTime: boolean;
-                    usePrivateGoOutRest: boolean;
-                    useAssoGoOutRest: boolean;
                     calculateMethod: number;
+                    calculateFromSchedule: ScheduleBreakCalculationDto;
+                    calculateFromStamp: StampBreakCalculationDto;
                 }
 
                 export interface FlowRestSetDto {
@@ -88,6 +87,7 @@ module nts.uk.at.view.kmk003.a {
                     flowRestSetting: FlowRestSetDto;
                     flowFixedRestSetting: FlowFixedRestSetDto;
                     usePluralWorkRestTime: boolean;
+                    roundingBreakMultipleWork: TimeRoundingSettingDto;
                 }
 
                 export interface FlowWorkRestSettingDto {
@@ -299,6 +299,16 @@ module nts.uk.at.view.kmk003.a {
                     overTimeCalcNoBreak: OverTimeCalcNoBreakDto;
                 }
 
+                export interface ScheduleBreakCalculationDto {
+                    isReferRestTime: boolean;
+                    isCalcFromSchedule: boolean;
+                }
+                
+                export interface StampBreakCalculationDto {
+                    usePrivateGoOutRest: boolean;
+                    useAssoGoOutRest: boolean;
+                }
+                
                 // Common Enum
                 export enum LateEarlyAtr {
                     LATE,

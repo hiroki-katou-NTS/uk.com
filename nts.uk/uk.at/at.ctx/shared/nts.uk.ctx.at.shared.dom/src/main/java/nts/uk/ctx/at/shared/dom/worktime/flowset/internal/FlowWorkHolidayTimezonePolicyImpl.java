@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowTimeSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowWorkHolidayTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**

@@ -14,12 +14,13 @@ import javax.inject.Inject;
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.CoreTimeSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexHalfDayWorkTimePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexOffdayWorkTimePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexStampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
@@ -49,6 +50,10 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	/** The core time setting policy. */
 	@Inject
 	private CoreTimeSettingPolicy coreTimeSettingPolicy;
+
+	/** The flex stamp reflect timezone policy. */
+	@Inject
+	private FlexStampReflectTimezonePolicy flexStampReflectTimezonePolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -80,6 +85,9 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, predTime, flexWork.getCommonSetting());
+
+		// validate list stamp timezone
+		this.flexStampReflectTimezonePolicy.validate(be, predTime, flexWork);
 	}
 
 	/**

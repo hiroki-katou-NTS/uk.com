@@ -9,12 +9,12 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezonePolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowHalfDayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowOffdayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowStampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowTimeSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**

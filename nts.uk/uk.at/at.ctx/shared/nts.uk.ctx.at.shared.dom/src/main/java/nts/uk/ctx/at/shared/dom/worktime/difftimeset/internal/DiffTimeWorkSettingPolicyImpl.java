@@ -19,10 +19,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeHalfDayWorkTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeStampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
@@ -48,6 +49,9 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	/** The wtz common set policy. */
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
+	
+	@Inject
+	private DiffTimeStampReflectTimezonePolicy diffTimeStampReflectTimezonePolicy;
 
 	/**
 	 * Validate.
@@ -90,6 +94,9 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
+		
+		// validate list stamp timezone
+		this.diffTimeStampReflectTimezonePolicy.validate(be, pred, diffTimeWorkSetting);
 
 	}
 

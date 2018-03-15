@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.flexset;
@@ -39,6 +39,10 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 	@Column(name = "IS_REFER_REST_TIME")
 	private int isReferRestTime;
 
+	/** The is calc from schedule. */
+	@Column(name = "IS_CALC_FROM_SCHEDULE")
+	private int isCalcFromSchedule;
+
 	/** The user private go out rest. */
 	@Column(name = "USER_PRIVATE_GO_OUT_REST")
 	private int userPrivateGoOutRest;
@@ -74,6 +78,14 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 	/** The common calculate method. */
 	@Column(name = "COMMON_CALCULATE_METHOD")
 	private int commonCalculateMethod;
+	
+	/** The rest set unit. */
+	@Column(name = "REST_SET_UNIT")
+	private int restSetUnit;
+
+	/** The rest set rounding. */
+	@Column(name = "REST_SET_ROUNDING")
+	private int restSetRounding;
 
 	/**
 	 * Instantiates a new kshmt flex rest set.
@@ -81,11 +93,12 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 	public KshmtFlexRestSet() {
 		super();
 	}
-	
+
 	/**
 	 * Instantiates a new kshmt flex rest set.
 	 *
-	 * @param kshmtFlexRestSetPK the kshmt flex rest set PK
+	 * @param kshmtFlexRestSetPK
+	 *            the kshmt flex rest set PK
 	 */
 	public KshmtFlexRestSet(KshmtFlexRestSetPK kshmtFlexRestSetPK) {
 		super();
@@ -116,8 +129,7 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 		}
 		KshmtFlexRestSet other = (KshmtFlexRestSet) object;
 		if ((this.kshmtFlexRestSetPK == null && other.kshmtFlexRestSetPK != null)
-				|| (this.kshmtFlexRestSetPK != null
-						&& !this.kshmtFlexRestSetPK.equals(other.kshmtFlexRestSetPK))) {
+				|| (this.kshmtFlexRestSetPK != null && !this.kshmtFlexRestSetPK.equals(other.kshmtFlexRestSetPK))) {
 			return false;
 		}
 		return true;
@@ -132,6 +144,5 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexRestSetPK;
 	}
-
 
 }

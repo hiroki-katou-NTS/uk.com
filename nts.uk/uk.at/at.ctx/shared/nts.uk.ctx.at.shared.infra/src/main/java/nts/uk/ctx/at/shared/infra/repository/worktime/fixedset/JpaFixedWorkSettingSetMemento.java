@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflec
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
@@ -223,7 +224,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	@Override
 	public void setCalculationSetting(Optional<FixedWorkCalcSetting> fixedWorkCalcSetting) {
 		if (fixedWorkCalcSetting.isPresent()) {
-			fixedWorkCalcSetting.get().saveToMemento(new JpaFixedWorkCalcSettingSetMemento(this.entity));
+			fixedWorkCalcSetting.get().saveToMemento(new JpaFixedWorkCalcSettingSetMemento<KshmtFixedWorkSet>(this.entity));
 		}		
 	}
 }
