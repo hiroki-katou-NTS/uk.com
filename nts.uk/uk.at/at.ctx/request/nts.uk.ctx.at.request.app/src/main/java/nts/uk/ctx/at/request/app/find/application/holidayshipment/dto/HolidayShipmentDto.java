@@ -53,9 +53,14 @@ public class HolidayShipmentDto {
 	int preOrPostType;
 
 	/**
-	 * 振出用就業時間帯
-	 * 振休用就業時間帯
-	 * Mặc định null
+	 * 申請者社員ID
+	 */
+	String employeeID;
+
+	private boolean manualSendMailAtr;
+
+	/**
+	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null
 	 */
 
 }
