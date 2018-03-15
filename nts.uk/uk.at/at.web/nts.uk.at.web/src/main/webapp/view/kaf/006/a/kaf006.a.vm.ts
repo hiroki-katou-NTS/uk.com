@@ -29,6 +29,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
         displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(true);
+        displayStartFlg: KnockoutObservable<boolean> = ko.observable(false);
         contentFlg: KnockoutObservable<boolean> = ko.observable(true);
         eblTimeStart1:  KnockoutObservable<boolean> = ko.observable(false);
         eblTimeEnd1:  KnockoutObservable<boolean> = ko.observable(false);
@@ -58,7 +59,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         multilContent2: KnockoutObservable<string> = ko.observable('');
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
-        employeeID : string ="000426a2-181b-4c7f-abc8-6fff9f4f983a";
+        employeeID : KnockoutObservable<string> = ko.observable('');
         //休憩時間
         restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
@@ -86,11 +87,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         constructor() {
             
             let self = this;
-          
-            
-            $("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
-            $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-            $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
@@ -114,6 +110,29 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeID: null        
             }).done((data) => {
                 self.initData(data);
+                self.holidayTypeCode.subscribe(function(value){
+                    if(!nts.uk.util.isNullOrEmpty(self.selectedValue())){
+                         var dfd = $.Deferred();
+                        service.getAllAppForLeave({
+                            startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                            endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
+                            employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
+                            displayHalfDayValue: self.displayHalfDayValue(),
+                            holidayType: value,
+                            alldayHalfDay: self.selectedValue()
+                        }).done((data) => {
+                            self.displayStartFlg(true);
+                            self.changeWorkHourValue(data.changeWorkHourFlg);
+                            for(let i = 0;i < data.workTypes.length;i++){
+                                self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode,data.workTypes[i].displayName) );
+                            }
+                            dfd.resolve(data);
+                        }).fail((res) =>{
+                            dfd.reject(res);  
+                        });
+                        return dfd.promise();
+                    }
+                });
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);    
             }).fail((res) => {
@@ -141,10 +160,19 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let self = this;
             self.manualSendMailAtr(data.manualSendMailFlg);
             self.employeeName(data.employeeName);
+            self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
             self.convertListHolidayType(data.holidayAppTypes);
             self.holidayTypeCode(10);
             self.displayPrePostFlg(data.prePostFlg);
+            if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
+                let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+                self.reasonCombo(lstReasonCombo);
+                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                self.selectedReason(reasonID);
+                
+                self.multilContent(data.application.applicationReason);
+            }
         }
          registerClick(){
              

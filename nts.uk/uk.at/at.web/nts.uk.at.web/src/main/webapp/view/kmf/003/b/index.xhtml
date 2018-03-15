@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 900,
-					height : 600
+					height : 580
 				};
 			</script>
 			<com:ValidatorScript>
@@ -30,6 +30,13 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 		
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="functions-area">
+				<button id="A_BTN_002" class="proceed" data-bind="click: submit">#{i18n.getText('KMF003_4')}</button>
+				<button id="A_BTN_003" data-bind="click: cancel">#{i18n.getText('KMF003_56')}</button>
+			</div>
+			<!-- END FUNCTION AREA-->
+			
 			<!-- BEGIN CONTENT AREA-->
 			<div id="contents-area">
 				<table>
@@ -153,15 +160,6 @@
 			</div>
 			<!-- END CONTENT AREA-->
 			
-			<!-- BEGIN FUNCTION AREA-->
-			<div id="functions-area-bottom">
-				<button id="A_BTN_002" class="x-large proceed"
-					data-bind="click: submit">#{i18n.getText('KMF003_4')}</button>
-				<button id="A_BTN_003" data-bind="click: cancel"
-					class="large">#{i18n.getText('KMF003_56')}</button>
-			</div>
-			<!-- END FUNCTION AREA-->
-
 		</ui:define>
 	</ui:composition>
 </body>

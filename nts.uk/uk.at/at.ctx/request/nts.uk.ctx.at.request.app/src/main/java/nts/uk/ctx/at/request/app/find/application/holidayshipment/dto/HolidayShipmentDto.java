@@ -9,7 +9,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 @Data
@@ -51,7 +50,7 @@ public class HolidayShipmentDto {
 	/**
 	 * 申請表示設定
 	 */
-	InitValueAtr preOrPostType;
+	int preOrPostType;
 
 	/**
 	 * 振出用就業時間帯
