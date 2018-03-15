@@ -136,9 +136,9 @@ module nts.uk.com.view.cmf001.share.model {
     
     export function getTimeRounding(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_TimeRounding_DOWN_LESS_1_MINUTE')),
-            new model.ItemModel(1, getText('Enum_TimeRounding_LESS_1_MINUTE')),
-            new model.ItemModel(2, getText('Enum_TimeRounding_OFF_TO_LESS_1_MINUTE'))
+            new model.ItemModel(1, getText('Enum_TimeRounding_DOWN_LESS_1_MINUTE')),
+            new model.ItemModel(2, getText('Enum_TimeRounding_LESS_1_MINUTE')),
+            new model.ItemModel(3, getText('Enum_TimeRounding_OFF_TO_LESS_1_MINUTE'))
         ];
     }
     
