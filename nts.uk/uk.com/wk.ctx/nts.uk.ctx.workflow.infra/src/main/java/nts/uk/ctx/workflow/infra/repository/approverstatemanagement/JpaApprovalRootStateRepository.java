@@ -42,6 +42,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	
 	private static final String SELECT_BY_EMP_DATE;
 	
+	private static final String SELECT_BY_DATE_AND_TYPE;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -78,7 +80,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.employeeID = :employeeID");
 		SELECT_BY_EMP_DATE = builderString.toString();
 		
-		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.recordDate = :recordDate");
+		builderString.append(" AND e.rootType = :rootType");
+		SELECT_BY_DATE_AND_TYPE = builderString.toString();
 	}
 	@Override
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs) {
@@ -184,6 +191,14 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.setParameter("endDate", endDate)
 				.setParameter("rootType", rootType)
 				.setParameter("employeeID", employeeID).getList(x -> x.toDomain());
+	}
+
+	@Override
+	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType) {
+		return this.queryProxy().query(SELECT_BY_DATE_AND_TYPE, WwfdtApprovalRootState.class)
+				.setParameter("recordDate", date)
+				.setParameter("rootType", rootType)
+				.getList(x -> x.toDomain());
 	}
 
 	

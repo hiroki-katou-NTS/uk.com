@@ -24,6 +24,8 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsAppro
 public class JpaPersonApprovalRootRepository extends JpaRepository implements PersonApprovalRootRepository{
 
 	 private final String FIND_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
+	 private final String FIND_BY_CID = FIND_ALL
+			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId";
 	 private final String FIN_BY_EMP = FIND_ALL
 			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
@@ -66,7 +68,15 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " ORDER BY c.startDate DESC";
 	 private final String FIND_PS_APP_LASTEST = FIN_BY_EMP
 			 + " AND c.endDate = :endDate";
-			 
+	 private final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
+				+ " AND c.startDate <= :baseDate"
+				+ " AND c.endDate >= :baseDate"
+				+ " AND c.confirmationRootType = :confirmationRootType"
+				+ " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String FIND_BY_DATE_EMP = FIND_BY_CID 
+				+ " AND c.startDate <= :baseDate"
+				+ " AND c.endDate >= :baseDate"
+				+ " AND c.employmentRootAtr = :employmentRootAtr";	
 	/**
 	 * get all Person Approval Root
 	 * @param companyId
@@ -324,6 +334,23 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("endDate", endDate)
+				.getList(c -> toDomainPsApR(c));
+	}
+	@Override
+	public List<PersonApprovalRoot> getPsAppRoot(String companyID, GeneralDate date, Integer employmentRootAtr,
+			Integer confirmRootAtr) {
+		if(confirmRootAtr==null){
+			return this.queryProxy().query(FIND_BY_DATE_EMP, WwfmtPsApprovalRoot.class)
+					.setParameter("companyId", companyID)
+					.setParameter("baseDate", date)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c -> toDomainPsApR(c));
+		}
+		return this.queryProxy().query(FIND_BY_DATE_EMP_CONFIRM, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmRootAtr)
+				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c -> toDomainPsApR(c));
 	}
 }

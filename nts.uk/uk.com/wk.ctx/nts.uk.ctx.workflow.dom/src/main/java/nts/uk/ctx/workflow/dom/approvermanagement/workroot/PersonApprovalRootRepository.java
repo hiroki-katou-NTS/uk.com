@@ -123,4 +123,7 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId,GeneralDate endDate);
+	
+	List<PersonApprovalRoot> getPsAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
 }
