@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Setter;
@@ -78,9 +79,12 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	 */
 	@Override
 	public Optional<DivergenceReferenceTimeValue> getDivergenceReferenceTimeValue() {
-		return Optional.of(
-				new DivergenceReferenceTimeValue(new DivergenceReferenceTime(this.krcstDrt.getAlarmTime().intValue()),
-						new DivergenceReferenceTime(this.krcstDrt.getErrorTime().intValue())));
+		BigDecimal alarmTime = this.krcstDrt.getAlarmTime();
+		BigDecimal errorTime = this.krcstDrt.getErrorTime();
+
+		return Optional.of(new DivergenceReferenceTimeValue(
+				new DivergenceReferenceTime(alarmTime == null ? 0 : alarmTime.intValue()),
+				new DivergenceReferenceTime(errorTime == null ? 0 : errorTime.intValue())));
 	}
 
 }
