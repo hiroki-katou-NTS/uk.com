@@ -923,9 +923,15 @@ module nts.custombinding {
         remove = (item, sender) => {
             let target = $(sender.target),
                 layout = target.parents('.layout-control'),
-                opts = layout.data('options');
+                opts = layout.data('options'),
+                ctrls = layout.data('controls'),
+                clst = $(ctrls.sortable).scrollTop();
 
             opts.sortable.removeItem(item, false);
+
+            setTimeout(() => {
+                $(ctrls.sortable).scrollTop(clst);
+            }, 0);
         };
 
         private _constructor = (element: HTMLElement, valueAccessor: any) => {

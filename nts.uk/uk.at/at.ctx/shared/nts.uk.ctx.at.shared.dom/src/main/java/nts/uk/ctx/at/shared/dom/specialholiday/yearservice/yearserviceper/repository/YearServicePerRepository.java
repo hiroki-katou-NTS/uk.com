@@ -34,7 +34,7 @@ public interface YearServicePerRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	List<YearServicePerSet> findPerSet(String companyId, String specialHolidayCode, String yearServiceCode);
+	List<YearServicePerSet> findPerSet(String companyId, int specialHolidayCode, String yearServiceCode);
 	/**
 	 * find by year
 	 * @param companyId
@@ -48,7 +48,7 @@ public interface YearServicePerRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	List<YearServicePer> findAllPer (String companyId, String specialHolidayCode);
+	List<YearServicePer> findAllPer (String companyId, int specialHolidayCode);
 	/**
 	 * update name
 	 * @param yearServicePer
@@ -68,7 +68,7 @@ public interface YearServicePerRepository {
 	 * @param yearServiceCode
 	 * author HoangYen
 	 */
-	void delete(String companyId, String specialHolidayCode, String yearServiceCode);
+	void delete(String companyId, int specialHolidayCode, String yearServiceCode);
 	/**
 	 * find by code
 	 * @param companyId
@@ -77,5 +77,5 @@ public interface YearServicePerRepository {
 	 * @return
 	 * author HoangYen
 	 */
-	Optional<YearServicePer> findPer(String companyId, String specialHolidayCode, String yearServiceCode);
+	Optional<YearServicePer> findPer(String companyId, int specialHolidayCode, String yearServiceCode);
 }

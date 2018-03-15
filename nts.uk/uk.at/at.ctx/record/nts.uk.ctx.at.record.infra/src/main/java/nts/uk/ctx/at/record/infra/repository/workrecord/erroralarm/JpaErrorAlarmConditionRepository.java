@@ -104,6 +104,9 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 
 	@Override
 	public List<ErrorAlarmCondition> findMessageConByListErAlCheckId(List<String> listEralCheckId) {
+		
+		if(listEralCheckId.isEmpty()) return new ArrayList<ErrorAlarmCondition>();
+		
 		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
                 .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
                 	new ErrorAlarmCondition(item.eralCheckId, item.messageDisplay)).collect(Collectors.toList());

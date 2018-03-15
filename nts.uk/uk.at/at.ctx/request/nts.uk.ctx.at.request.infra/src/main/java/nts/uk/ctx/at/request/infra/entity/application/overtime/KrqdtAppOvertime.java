@@ -83,8 +83,8 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 
 	public KrqdtAppOvertime fromDomainValue(AppOverTime appOverTime){
 		this.version = appOverTime.getVersion();
-		this.setWorkTypeCode(appOverTime.getWorkTypeCode().v());
-		this.setSiftCode(appOverTime.getSiftCode().v());
+		this.setWorkTypeCode(appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v());
+		this.setSiftCode(appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());
 		this.setWorkClockFrom1(appOverTime.getWorkClockFrom1());
 		this.setWorkClockTo1(appOverTime.getWorkClockTo1());
 		this.setWorkClockFrom2(appOverTime.getWorkClockFrom2());
@@ -112,8 +112,8 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 							overtimeInput.getFrameNo(),
 							overtimeInput.getTimeItemTypeAtr().value
 						), 
-						overtimeInput.getStartTime().v(), 
-						overtimeInput.getEndTime().v(), 
+						overtimeInput.getStartTime() == null ? null : overtimeInput.getStartTime().v(), 
+						overtimeInput.getEndTime() == null ? null : overtimeInput.getEndTime().v(), 
 						overtimeInput.getApplicationTime().v());
 				this.overtimeInputs.add(krqdtOvertimeInput);
 				return null;

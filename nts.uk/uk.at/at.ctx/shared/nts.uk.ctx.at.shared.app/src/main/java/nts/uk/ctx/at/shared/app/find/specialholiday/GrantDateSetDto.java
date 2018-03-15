@@ -11,7 +11,7 @@ public class GrantDateSetDto {
 	private String companyId;
 
 	/* 付与日のID */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	
 	/* 付与日の数 */
 	private int grantDateNo;

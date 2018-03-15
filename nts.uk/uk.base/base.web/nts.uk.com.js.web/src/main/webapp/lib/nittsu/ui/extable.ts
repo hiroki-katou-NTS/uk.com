@@ -2704,7 +2704,7 @@ module nts.uk.ui.exTable {
                 let structure = [];
                 let structData: string = "";
                 _.forEach(cells, function(cell: any, index: number) {
-                    let rowIndex = cell.rowIndex;
+                    let rowIndex = parseInt(cell.rowIndex);
                     let columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
                     if (index === 0) {
                         minRow = maxRow = rowIndex;
@@ -2996,6 +2996,7 @@ module nts.uk.ui.exTable {
         export let DEF_HOUR_MAX = 9999;
         export let DEF_HOUR_MIN = 0;
         export let DEF_MIN_MAXMIN = 0;
+        export let DAY_MINS = 1439;
         
         class Result {
             isValid: boolean;
@@ -3082,6 +3083,14 @@ module nts.uk.ui.exTable {
                                 || which(innerIdx, dataType, internal.DURATION)
                                 || which(innerIdx, dataType, internal.NUMBER)
                                 || which(innerIdx, dataType, internal.TEXT);
+                    
+                    let constraints = ui.validation.getConstraint(col.primitiveValue);
+                    if (constraints && constraints.valueType === "Time") {
+                        max = constraints.max ? constraints.max : col.max;
+                        min = constraints.min ? constraints.min : col.min;
+                        required = constraints.required ? constraints.required : col.required;
+                        return false;
+                    }
                     max = col.max;
                     min = col.min;
                     required = col.required;
@@ -3161,7 +3170,8 @@ module nts.uk.ui.exTable {
             }
             if (((util.isNullOrUndefined(hour) || hour === NaN) && (util.isNullOrUndefined(minute) || minute === NaN))
                 || minute > MINUTE_MAX) return false;
-            let targetTime = { hour: hour, minute: minute, negative: negative };
+            let targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
+            if (!targetTime) return false;
             if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0) return false;
             return true; 
         }
@@ -3202,6 +3212,18 @@ module nts.uk.ui.exTable {
                 return -1;
             }
             return 0;
+        }
+        
+        /**
+         * Get complement.
+         */
+        function getComplement(time: any) {
+            if (!time.negative) return time;
+            let oTime = DAY_MINS - (time.hour * 60 + time.minute);
+            if (oTime < 0) return;
+            let hour = Math.floor(oTime / 60);
+            let minute = oTime - hour * 60;
+            return { hour: hour, minute: minute, negative: true };
         }
         
         /**
@@ -3371,9 +3393,9 @@ module nts.uk.ui.exTable {
          * Select range.
          */
         function selectRange($grid: HTMLElement, $cell: HTMLElement) {
-            if (util.isNullOrUndefined($cell)) return;
+            if (util.isNullOrUndefined($cell) || selector.is($cell, "." + BODY_PRF + DETAIL)) return;
             let lastSelected = $.data($grid, internal.LAST_SELECTED);
-            if (!lastSelected) {
+            if (!lastSelected) { 
                 selectCell($grid, $cell);
                 return;
             }

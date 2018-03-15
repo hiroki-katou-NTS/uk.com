@@ -8,7 +8,7 @@ public class GrantSingleDto {
 	private String companyId;
 
 	/* 特別休暇コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/* 種類 */
 	private int grantDaySingleType;

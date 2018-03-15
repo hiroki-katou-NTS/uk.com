@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UpdateYearServicePerCommand {
 	/**コード**/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	private String yearServiceCode;
 	private int yearServiceNo;
 	private String yearServiceName;

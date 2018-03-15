@@ -61,12 +61,16 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				ClosureId.ClosureFour,
 				new ClosureDate(0, true),
 				YearMonth.of(2018, 1),
-				new DatePeriod(GeneralDate.ymd(2018, 1, 1), GeneralDate.ymd(2018, 1, 31))));
+				new DatePeriod(GeneralDate.ymd(2018, 1, 1), GeneralDate.ymd(2018, 1, 31)),
+				new DatePeriod(GeneralDate.ymd(2018, 1, 1), GeneralDate.ymd(2018, 1, 31))
+				));
 		aggrPeriods.add(AggrPeriodEachActualClosure.of(
 				ClosureId.ClosureFour,
 				new ClosureDate(0, true),
 				YearMonth.of(2018, 2),
-				new DatePeriod(GeneralDate.ymd(2018, 2, 1), GeneralDate.ymd(2018, 2, 27))));
+				new DatePeriod(GeneralDate.ymd(2018, 2, 1), GeneralDate.ymd(2018, 2, 27)),
+				new DatePeriod(GeneralDate.ymd(2018, 2, 1), GeneralDate.ymd(2018, 2, 27))
+				));
 		ClosurePeriod closurePeriod = ClosurePeriod.of(
 				ClosureId.ClosureFour,
 				new ClosureDate(0, true),

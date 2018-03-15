@@ -128,46 +128,36 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		RoleWhetherLoginPubExport outputRole = new RoleWhetherLoginPubExport();
 		Optional<Role> roleEmployment =  roleRepo.findByRoleId(employmentRoleID);
 		if(roleEmployment.isPresent()) {
-			if(roleEmployment.get().getRoleType().equals(RoleAtr.INCHARGE)) {
+			if(roleEmployment.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setEmployeeCharge(true);
 			}
-		}else {
-			throw new BusinessException("can not get role by roleID = "+employmentRoleID);
 		}
 		Optional<Role> roleSalaryRole =  roleRepo.findByRoleId(salaryRoleID);
 		if(roleSalaryRole.isPresent()) {
-			if(roleSalaryRole.get().getRoleType().equals(RoleAtr.INCHARGE)) {
+			if(roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setSalaryProfessional(true);
 			}
-		}else {
-			throw new BusinessException("can not get role by roleID = "+salaryRoleID);
 		}
 		
 		Optional<Role> roleHumanResource =  roleRepo.findByRoleId(humanResourceRoleID);
 		if(roleHumanResource.isPresent()) {
-			if(roleHumanResource.get().getRoleType().equals(RoleAtr.INCHARGE)) {
+			if(roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setHumanResOfficer(true);
 			}
-		}else {
-			throw new BusinessException("can not get role by roleID = "+humanResourceRoleID);
 		}
 		
 		Optional<Role> roleOfficeHelper =  roleRepo.findByRoleId(officeHelperRoleID);
 		if(roleOfficeHelper.isPresent()) {
-			if(roleOfficeHelper.get().getRoleType().equals(RoleAtr.INCHARGE)) {
+			if(roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setOfficeHelperPersonne(true);
 			}
-		}else {
-			throw new BusinessException("can not get role by roleID = "+officeHelperRoleID);
 		}
 		
 		Optional<Role> rolePersonalInfor =  roleRepo.findByRoleId(personalInforRoleID);
 		if(rolePersonalInfor.isPresent()) {
-			if(rolePersonalInfor.get().getRoleType().equals(RoleAtr.INCHARGE)) {
+			if(rolePersonalInfor.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setPersonalInformation(true);
 			}
-		}else {
-			throw new BusinessException("can not get role by roleID = "+personalInforRoleID);
 		}
 		
 		return outputRole;

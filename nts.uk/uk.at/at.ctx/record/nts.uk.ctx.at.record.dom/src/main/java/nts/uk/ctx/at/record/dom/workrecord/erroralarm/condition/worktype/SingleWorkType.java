@@ -45,9 +45,12 @@ public class SingleWorkType extends WorkTypeCondition {
 
 	@Override
 	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+		if(!workInfo.getRecordWorkInformation().getWorkTypeCode().equals(workInfo.getScheduleWorkInformation().getWorkTypeCode())){
+			return false;
+		}
 		if (this.isUse() && this.targetWorkType != null) {
 			return this.targetWorkType.contains(workInfo.getRecordWorkInformation().getWorkTypeCode());
 		}
-		return false;
+		return true;
 	}
 }
