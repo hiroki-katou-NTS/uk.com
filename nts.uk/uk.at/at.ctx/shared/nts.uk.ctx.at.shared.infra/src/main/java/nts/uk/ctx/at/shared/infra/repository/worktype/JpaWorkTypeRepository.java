@@ -89,11 +89,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String FIND_WORKTYPE_BY_DEPRECATE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.kshmtWorkTypePK.workTypeCode = :workTypeCd"
 			+ " AND c.deprecateAtr = 0";
-
 	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
 	// java.util.List)
 	private static String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
 	private static String FIND_WORKTYPE_ONEDAY;
+	private static String FIND_WORKTYPE_FOR_SHOTING;
+	private static String FIND_WORKTYPE_FOR_PAUSE;
 	static {
 		StringBuilder builder = new StringBuilder();
 		builder.append(SELECT_FROM_WORKTYPE);
@@ -113,6 +114,37 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" AND c.oneDayAtr = :oneDayAtr");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_ONEDAY = builder.toString();
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = 0");
+		builder.append(" AND ( ");
+		builder.append(" (c.worktypeAtr = 0 AND c.oneDayAtr = 7)");
+		builder.append(" OR (c.worktypeAtr= 1 AND c.morningAtr = 7 AND c.afternoonAtr IN (1,2,3,4,5,6,9) )");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr IN (1,2,3,4,5,6,9)) AND c.afternoonAtr = 7  ");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 7 AND c.afternoonAtr = 0)");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 0 AND c.afternoonAtr = 7)");
+		builder.append(")");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_FOR_SHOTING = builder.toString();
+
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = 0");
+		builder.append(" AND ( ");
+		builder.append(" (c.worktypeAtr = 0 AND c.oneDayAtr = 8)");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 8 AND c.afternoonAtr = 0)");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 0 AND c.afternoonAtr = 8)");
+		builder.append(" OR (c.worktypeAtr= 1 AND c.morningAtr = 8 AND c.afternoonAtr IN (1,2,3,4,5,6,9) )");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr IN (1,2,3,4,5,6,9)) AND c.afternoonAtr = 8 ");
+
+		builder.append(")");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_FOR_PAUSE = builder.toString();
+
 	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
@@ -226,8 +258,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#findNotDeprecated(
+	 * @see nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#findNotDeprecated(
 	 * java.lang.String)
 	 */
 	@Override
@@ -313,6 +344,19 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("abolishAtr", abolishAtr).setParameter("oneDayAtr", oneDayAtr).getList(x -> toDomain(x));
 	}
 
+	private final String FIND_WORKTYPE_BY_ATR_AND_ONEDAY = "SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = :abolishAtr AND c.worktypeAtr = :worktypeAtr AND c.oneDayAtr = :oneDayAtr"
+			+ "ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
+	@Override
+	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay) {
+		return this.queryProxy().query(FIND_WORKTYPE_BY_ATR_AND_ONEDAY, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("oneDayAtr", oneDay)
+				.getList(x -> toDomain(x));
+	}
+
 	@Override
 	public List<List<String>> findCodeAndNameOfWorkTypeByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_CODE_AND_NAME_OF_WORKTYPE, Object[].class)
@@ -341,5 +385,18 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		return this.queryProxy().query(FIND_WORKTYPE_BY_DEPRECATE, KshmtWorkType.class)
 				.setParameter("companyId", companyId).setParameter("workTypeCd", workTypeCd)
 				.getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public List<WorkType> findWorkTypeForShorting(String companyId) {
+		return this.queryProxy().query(FIND_WORKTYPE_FOR_SHOTING, KshmtWorkType.class)
+				.setParameter("companyId", companyId).getList(x -> toDomain(x));
+
+	}
+
+	@Override
+	public List<WorkType> findWorkTypeForPause(String companyId) {
+		return this.queryProxy().query(FIND_WORKTYPE_FOR_PAUSE, KshmtWorkType.class)
+				.setParameter("companyId", companyId).getList(x -> toDomain(x));
 	}
 }

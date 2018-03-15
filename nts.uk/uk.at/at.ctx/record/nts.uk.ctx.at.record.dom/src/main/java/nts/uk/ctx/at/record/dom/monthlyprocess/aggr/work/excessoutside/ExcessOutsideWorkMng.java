@@ -69,7 +69,7 @@ public class ExcessOutsideWorkMng {
 	/** 締め日付 */
 	private final ClosureDate closureDate;
 	/** 期間 */
-	private final DatePeriod datePeriod;
+	private final DatePeriod procPeriod;
 	/** 労働制 */
 	private final WorkingSystem workingSystem;
 	/** 職場ID */
@@ -109,7 +109,7 @@ public class ExcessOutsideWorkMng {
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
 	 * @param closureDate 締め日
-	 * @param datePeriod 期間
+	 * @param procPeriod 期間
 	 * @param workingSystem 労働制
 	 * @param monthlyCalculation 月別実績の月の計算
 	 */
@@ -125,7 +125,7 @@ public class ExcessOutsideWorkMng {
 		this.yearMonth = monthlyCalculation.getYearMonth();
 		this.closureId = monthlyCalculation.getClosureId();
 		this.closureDate = monthlyCalculation.getClosureDate();
-		this.datePeriod = monthlyCalculation.getDatePeriod();
+		this.procPeriod = monthlyCalculation.getProcPeriod();
 		this.workingSystem = monthlyCalculation.getWorkingSystem();
 		this.workplaceId = monthlyCalculation.getWorkplaceId();
 		this.employmentCd = monthlyCalculation.getEmploymentCd();
@@ -233,7 +233,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
 			aggrValue = regAndIrgTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.yearMonth, this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap, this.statutoryWorkingTimeWeek,
 					aggregateTotalWorkingTime, this, repositories);
@@ -241,7 +241,7 @@ public class ExcessOutsideWorkMng {
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.aggrSettingMonthly, this.holidayAdditionOpt,
 					aggrValue.getAggregateTotalWorkingTime(),
@@ -252,13 +252,13 @@ public class ExcessOutsideWorkMng {
 			
 			// フレックス勤務の月別実績を集計する
 			aggrValue = flexTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.yearMonth, this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					flexAggregateMethod, aggrSetOfFlex, this.attendanceTimeOfDailyMap,
 					aggregateTotalWorkingTime, this,
 					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
-			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.datePeriod,
+			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.procPeriod,
 					flexAggregateMethod, this.workplaceId, this.employmentCd, aggrSetOfFlex, this.holidayAdditionOpt,
 					aggrValue.getAggregateTotalWorkingTime(),
 					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
@@ -268,7 +268,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 実働時間の集計
 			aggrValue.getAggregateTotalWorkingTime().aggregateActualWorkingTime(
-					this.datePeriod, this.workingSystem, regAndIrgTime, flexTime);
+					this.procPeriod, this.workingSystem, regAndIrgTime, flexTime);
 			
 			// 時間外超過明細．丸め後合計時間に移送する
 			this.excessOutsideWorkDetail.setTotalTimeAfterRound(
@@ -306,7 +306,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
 			aggrValue = regAndIrgTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.yearMonth, this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap, this.statutoryWorkingTimeWeek,
 					aggregateTotalWorkingTime, this, repositories);
@@ -314,7 +314,7 @@ public class ExcessOutsideWorkMng {
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.aggrSettingMonthly, this.holidayAdditionOpt,
 					aggrValue.getAggregateTotalWorkingTime(),
@@ -329,13 +329,13 @@ public class ExcessOutsideWorkMng {
 			
 			// フレックス勤務の月別実績を集計する
 			aggrValue = flexTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.yearMonth, this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					flexAggregateMethod, aggrSetOfFlex, this.attendanceTimeOfDailyMap,
 					aggregateTotalWorkingTime, this,
 					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
-			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.datePeriod,
+			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.procPeriod,
 					flexAggregateMethod, this.workplaceId, this.employmentCd, aggrSetOfFlex, this.holidayAdditionOpt,
 					aggrValue.getAggregateTotalWorkingTime(),
 					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
@@ -351,7 +351,7 @@ public class ExcessOutsideWorkMng {
 		if (aggrValue != null){
 		
 			// 丸め時間を割り当てる
-			this.excessOutsideWorkDetail.assignRoundTime(this.monthlyDetail, this.datePeriod, this.roundingSet);
+			this.excessOutsideWorkDetail.assignRoundTime(this.monthlyDetail, this.procPeriod, this.roundingSet);
 			
 			// 時間外超過内訳に割り当てる
 			this.assignExcessOutsideWorkBreakdownForReverseTimeSeries();
@@ -618,8 +618,8 @@ public class ExcessOutsideWorkMng {
 		this.excessOutsideWork.addMinutesToMonthlyTotalPremiumTime(monthPremiumTime.v());
 		
 		// 「期間．終了日」を処理日にする
-		GeneralDate procDate = this.datePeriod.end();
-		while (procDate.afterOrEquals(this.datePeriod.start())){
+		GeneralDate procDate = this.procPeriod.end();
+		while (procDate.afterOrEquals(this.procPeriod.start())){
 			
 			// 月割増時間を日単位で割り当てる
 			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
@@ -773,8 +773,8 @@ public class ExcessOutsideWorkMng {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 「期間．終了日」を処理日にする
-		GeneralDate procDate = this.datePeriod.end();
-		while (procDate.afterOrEquals(this.datePeriod.start())){
+		GeneralDate procDate = this.procPeriod.end();
+		while (procDate.afterOrEquals(this.procPeriod.start())){
 			
 			// 月割増時間を日単位で割り当てる
 			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
@@ -803,8 +803,8 @@ public class ExcessOutsideWorkMng {
 		AttendanceTimeMonthWithMinus flexExcessTargetTime = new AttendanceTimeMonthWithMinus(flexExcessTargetMinutes);
 		
 		// 「期間．終了日」を処理日にする
-		GeneralDate procDate = this.datePeriod.end();
-		while (procDate.afterOrEquals(this.datePeriod.start())){
+		GeneralDate procDate = this.procPeriod.end();
+		while (procDate.afterOrEquals(this.procPeriod.start())){
 			
 			// フレックス超過対象時間を日単位で割り当てる
 			flexExcessTargetTime = this.excessOutsideWorkDetail.assignFlexExcessTargetTimeByDayUnit(
@@ -853,8 +853,8 @@ public class ExcessOutsideWorkMng {
 	private void assignExcessOutsideWorkBreakdownForReverseTimeSeries(){
 		
 		// 「期間．開始日」を処理日にする
-		GeneralDate procDate = this.datePeriod.start();
-		while (procDate.beforeOrEquals(this.datePeriod.end())){
+		GeneralDate procDate = this.procPeriod.start();
+		while (procDate.beforeOrEquals(this.procPeriod.end())){
 			
 			// 日ごとに時間外超過の値を求める
 			this.askExcessOutsideWorkEachDay(procDate);
