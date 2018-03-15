@@ -37,11 +37,9 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
 					(c) -> new TimeSheetDto(c.getWorkNo().v(),
-							TimeStampDto.createTimeStamp(c.getAttendance()),
-							TimeStampDto.createTimeStamp(c.getLeaving()),
-							0
-
-					)));
+											TimeStampDto.createTimeStamp(c.getAttendance()),
+											TimeStampDto.createTimeStamp(c.getLeaving()),
+											0)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
 			dto.exsistData();

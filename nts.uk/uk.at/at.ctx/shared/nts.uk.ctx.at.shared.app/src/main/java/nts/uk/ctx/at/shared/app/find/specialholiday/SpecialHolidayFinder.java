@@ -50,7 +50,7 @@ public class SpecialHolidayFinder {
 	 * 
 	 * @return
 	 */
-	public GrantDateComDto getComByCode(String specialHolidayCode) {
+	public GrantDateComDto getComByCode(int specialHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
@@ -68,7 +68,7 @@ public class SpecialHolidayFinder {
 	 * 
 	 * @return
 	 */
-	public List<GrantDateSetDto> getAllSetByCode(String specialHolidayCode) {
+	public List<GrantDateSetDto> getAllSetByCode(int specialHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
@@ -216,7 +216,7 @@ public class SpecialHolidayFinder {
 	 * 
 	 * @return
 	 */
-	public GrantDatePerDto getPerByCode(String specialHolidayCode, String personalGrantDateCode) {
+	public GrantDatePerDto getPerByCode(int specialHolidayCode, String personalGrantDateCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
@@ -234,7 +234,7 @@ public class SpecialHolidayFinder {
 	 * 
 	 * @return
 	 */
-	public List<GrantDatePerSetDto> getPerSetByCode(String specialHolidayCode, String personalGrantDateCode) {
+	public List<GrantDatePerSetDto> getPerSetByCode(int specialHolidayCode, String personalGrantDateCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
@@ -247,7 +247,7 @@ public class SpecialHolidayFinder {
 	 * 
 	 * @return
 	 */
-	public List<GrantDatePerDto> getAllPerByCode(String specialHolidayCode) {
+	public List<GrantDatePerDto> getAllPerByCode(int specialHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 

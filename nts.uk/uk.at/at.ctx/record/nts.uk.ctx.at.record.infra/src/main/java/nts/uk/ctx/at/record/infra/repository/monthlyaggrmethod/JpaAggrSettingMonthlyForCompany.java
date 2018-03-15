@@ -557,9 +557,9 @@ public class JpaAggrSettingMonthlyForCompany extends JpaRepository implements Ag
 		}
 		val entityIrgAggr = entity.krcstMonsetCmpIrgAggr;
 		entityIrgAggr.setValue.toOverTimeWithinIrregularCriteria =
-				(calcSetOfIrregular.isOverTimeLessThanCriteriaIsOverTimeWithinIrregularCriteria() ? 1 : 0);
+				(calcSetOfIrregular.isToOverTimeWithinIrregularCriteria() ? 1 : 0);
 		entityIrgAggr.setValue.toWorkTimeOutsideCriteria =
-				(calcSetOfIrregular.isWorkTimeMoreThanPrescribedOrCriteriaIsWorkTimeOutsideCriteria() ? 1 : 0);
+				(calcSetOfIrregular.isToWorkTimeOutsideCriteria() ? 1 : 0);
 
 		treatOverTimeOfLessThanCriteriaPerDay = irgAggregateTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
 		treatHolidayWorkTimeOfLessThanCriteriaPerWeek = irgAggregateTimeSet.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();

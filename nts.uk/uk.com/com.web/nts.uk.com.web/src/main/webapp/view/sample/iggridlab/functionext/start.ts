@@ -71,9 +71,9 @@ module nts.uk.ui.gridlist {
             }
         }
         
-        var comboItems = [ new ItemModel('1', '基本給'),
-                            new ItemModel('2', '役職手当'),
-                            new ItemModel('3', '基本給2') ];
+        var comboItems = [ new ItemModel(1, '基本給'),
+                            new ItemModel(2, '役職手当'),
+                            new ItemModel(3, '基本給2') ];
         var comboColumns = [{ prop: 'code', length: 1 },
                             { prop: 'name', length: 4 }];
         var comboItems2 = [ new ItemModel('4', '基本給'),
@@ -182,7 +182,7 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Inbound time', key: 'time', width: '140px', columnCssClass: "halign-right", headerCssClass: "center-align",
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
-                                                                cDisplayType: "Clock",
+                                                                cDisplayType: "TimeWithDay",
                                                                 min: "10:00", max: "30:00",
                                                                 required: true
                                                             }

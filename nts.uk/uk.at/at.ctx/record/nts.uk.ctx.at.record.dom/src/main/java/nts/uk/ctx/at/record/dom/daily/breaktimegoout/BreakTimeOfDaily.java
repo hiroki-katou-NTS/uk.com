@@ -34,7 +34,6 @@ public class BreakTimeOfDaily {
 	/** 補正後時間帯: 休憩時間帯 */
 	private List<BreakTimeSheet> breakTimeSheet;
 	
-	@Inject
 	
 	/**
 	 * Constructor
@@ -101,6 +100,19 @@ public class BreakTimeOfDaily {
 									  withinDedTime,
 									  excessDedTime);
 	}
+	
+//	private static getBreakTimeSheet(CalculationRangeOfOneDay oneDay) {
+//		List<BreakTimeSheet> totalList = new ArrayList<>();
+//		DeductionAtr dedAtr = DeductionAtr.Appropriate;
+//		ConditionAtr conAtr = ConditionAtr.BREAK;
+//		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
+//			totalList.addAll(oneDay.getWithinWorkingTimeSheet().get().getDedTimeSheetByDedAtr(dedAtr, conAtr));
+//		}
+//		val overTime;
+//		val holidayWork;
+//		
+//		return totalList;
+//	}
 
 
 	

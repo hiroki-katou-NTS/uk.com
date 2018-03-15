@@ -32,23 +32,25 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 	private EmployeeSearchQueryDto createQueryToFilterEmployees(RegulationInfoEmployeeQuery queryX) {
 		GeneralDateTime workingDate = GeneralDateTime.localDateTime(queryX.getBaseDate().localDate().atStartOfDay());
 		return EmployeeSearchQueryDto.builder().baseDate(workingDate)
-							.filterByEmployment(true)
+							.filterByEmployment(queryX.getFilterByEmployment())
 							.employmentCodes(queryX.getEmploymentCodes())
-							.filterByDepartment(false)
-							.filterByWorkplace(false)
-							.filterByClassification(true)
+							.filterByDepartment(queryX.getFilterByDepartment())
+							.filterByWorkplace(queryX.getFilterByWorkplace())
+							.filterByClassification(queryX.getFilterByClassification())
 							.classificationCodes(queryX.getClassificationCodes())
-							.filterByJobTitle(true)
+							.filterByJobTitle(queryX.getFilterByJobTitle())
 							.jobTitleCodes(queryX.getJobTitleCodes())
-							.filterByWorktype(true)
+							.filterByWorktype(queryX.getFilterByWorktype())
 							.worktypeCodes(queryX.getWorktypeCodes())
 							.periodStart(workingDate)
 							.periodEnd(workingDate)
-							.includeIncumbents(true)
-							.includeWorkersOnLeave(true)
-							.includeOccupancy(true)
-							.includeAreOnLoan(true)
-							.includeGoingOnLoan(false)
-							.includeRetirees(false).build();
+							.includeIncumbents(queryX.getIncludeIncumbents())
+							.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave())
+							.includeOccupancy(queryX.getIncludeOccupancy())
+							.includeAreOnLoan(queryX.getIncludeAreOnLoan())
+							.includeGoingOnLoan(queryX.getIncludeGoingOnLoan())
+							.systemType(2)
+//							.sortOrderNo(1)
+							.includeRetirees(queryX.getIncludeRetirees()).build();
 	}
 }

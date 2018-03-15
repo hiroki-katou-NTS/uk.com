@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RemoveSpecialHolidayCommand {
 	/*特別休暇コード*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 }

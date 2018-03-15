@@ -333,8 +333,10 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				// ドメインモデル「承認ルートインスタンス」を取得する
 				employeeApproverID.add(agent.getEmployeeId());
 				List<ApprovalRootState> approvalRootStateAgents = this.approvalRootStateRepository.findEmployeeAppByApprovalRecordDate(startDate, endDate, agent.getEmployeeId(),rootType);
-				for(ApprovalRootState approver : approvalRootStateAgents){
-					approvalRootStates.add(approver);
+				if(!CollectionUtil.isEmpty(approvalRootStateAgents)){
+					for(ApprovalRootState approver : approvalRootStateAgents){
+						approvalRootStates.add(approver);
+					}
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkingData;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -15,7 +16,7 @@ public class CheckingDataDefault implements CheckingDataService {
 		
 		
 		
-		return null;
+		return Collections.emptyList();
 	}
 
 }

@@ -22,7 +22,6 @@ public class AggrPeriodEachActualClosure {
 	private YearMonth yearMonth;
 	/** 期間 */
 	private DatePeriod period;
-	
 	/** 本来の締め期間 */
 	private DatePeriod originalClosurePeriod;
 	
@@ -35,6 +34,7 @@ public class AggrPeriodEachActualClosure {
 		this.closureDate = new ClosureDate(0, true);
 		this.yearMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		this.originalClosurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 	}
 	
 	/**
@@ -43,16 +43,18 @@ public class AggrPeriodEachActualClosure {
 	 * @param closureDate 締め日
 	 * @param yearMonth 年月
 	 * @param period 期間
+	 * @param originalClosurePeriod 本来の締め期間
 	 * @return 実締め毎集計期間
 	 */
-	public static AggrPeriodEachActualClosure of(
-			ClosureId closureId, ClosureDate closureDate, YearMonth yearMonth, DatePeriod period){
+	public static AggrPeriodEachActualClosure of(ClosureId closureId, ClosureDate closureDate,
+			YearMonth yearMonth, DatePeriod period, DatePeriod originalClosurePeriod){
 		
 		AggrPeriodEachActualClosure domain = new AggrPeriodEachActualClosure();
 		domain.closureId = closureId;
 		domain.closureDate = closureDate;
 		domain.yearMonth = yearMonth;
 		domain.period = period;
+		domain.originalClosurePeriod = originalClosurePeriod;
 		return domain;
 	}
 }

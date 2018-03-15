@@ -229,9 +229,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() == null)
+		if(workInfo.getRecordWorkInformation().getWorkTimeCode() == null)
 			return oneRange;
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return oneRange;
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily);
@@ -246,10 +246,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
-		breakTimeSheet.add(new BreakTimeSheet(new BreakFrameNo(1),
-											  new TimeWithDayAttr(720),
-											  new TimeWithDayAttr(780),
-											  new AttendanceTime(0)));
+//		breakTimeSheet.add(new BreakTimeSheet(new BreakFrameNo(1),
+//											  new TimeWithDayAttr(720),
+//											  new TimeWithDayAttr(780),
+//											  new AttendanceTime(0)));
+		if(!integrationOfDaily.getBreakTime().isEmpty()) {
+			if(!integrationOfDaily.getBreakTime().get(0).getBreakTimeSheets().isEmpty()) {
+				breakTimeSheet.addAll(integrationOfDaily.getBreakTime().get(0).getBreakTimeSheets());
+			}
+		}
 		
 		List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();
 		breakTimeOfDailyList.add(new BreakTimeOfDailyPerformance(employeeId, 
@@ -271,7 +276,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
 		
 		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(companyId, 
-																	new TimeWithDayAttr(1440),
+																	new TimeWithDayAttr(1320),
 																	new TimeWithDayAttr(1740));
 		
 		//流動勤務の休憩時間帯
@@ -302,11 +307,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																									autoCalSetting); 
 			/*前日の勤務情報取得  */
 		WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInformationRepository.find(employeeId, targetDate).get());
-		val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+		val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
 		//val yesterDay = this.workTypeRepository.findByPK(companyId, "001");//yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		/*翌日の勤務情報取得 */
 		WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInformationRepository.find( employeeId, targetDate).get());
-		val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+		val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
 		//val tomorrow = this.workTypeRepository.findByPK(companyId, "001");//tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
@@ -324,7 +329,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 														),
 												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
 											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
-											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay.get(), workType.get(),tomorrow.get(),
+											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
@@ -337,7 +342,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().v());
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
 						RestClockManageAtr.IS_CLOCK_MANAGE, goOutTimeSheetList,
-						new CommonRestSetting(RestTimeOfficeWorkCalcMethod.NOT_APPROP_ALL),
+						new CommonRestSetting(RestTimeOfficeWorkCalcMethod.OFFICE_WORK_APPROP_ALL),
 						Optional.of(FixedRestCalculateMethod.MASTER_REF), workTime.get().getWorkTimeDivision(),
 						oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
 						BonusPaySetting.createFromJavaType(companyId,
@@ -347,10 +352,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Collections.emptyList()
 						)
 						, fixedWorkSetting.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
-						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), overDayEndCalcSet, Collections.emptyList(), yesterDay.get(), workType.get(),
-						tomorrow.get(), new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
-						personalInfo.getStatutoryWorkTime(), autoCalcOverTimeWork, fixedWorkSetting.get().getLegalOTSetting(), StatutoryPrioritySet.priorityNormalOverTimeWork, 
-						workTime.get(),breakTimeOfDailyList,midNightTimeSheet,personalInfo);
+						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), 
+						overDayEndCalcSet, 
+						Collections.emptyList(), 
+						yesterDay, 
+						workType.get(),
+						tomorrow, 
+						new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
+						personalInfo.getStatutoryWorkTime(), 
+						autoCalcOverTimeWork, 
+						fixedWorkSetting.get().getLegalOTSetting(), 
+						StatutoryPrioritySet.priorityNormalOverTimeWork, 
+						workTime.get(),
+						breakTimeOfDailyList,
+						midNightTimeSheet,
+						personalInfo);
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -481,8 +497,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
 			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
-			
-
 		}
 		
 		//休暇加算時間設定
@@ -519,7 +533,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 		
 
-		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+//		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
 				   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
         .map(editState -> editState.getAttendanceItemId())
@@ -534,7 +548,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		IntegrationOfDaily calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 			
 		/*日別実績への項目移送*/
-		//return integrationOfDaily;
+		//eturn integrationOfDaily;
 		return calcResultIntegrationOfDaily;
 	}
 	
@@ -556,13 +570,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*所定時間設定取得*/
 		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		Optional<PredetemineTimeSetting> predetermineTimeSet = Optional.empty();
-		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null)
+		String workTimeCode = null;
+		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
 			predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+			workTimeCode = integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString();
+		}
 		
 		if(!predetermineTimeSet.isPresent()) {
 			predetermineTimeSet = Optional.of(new PredetemineTimeSetting(companyId,
 															new AttendanceTime(0),
-															new WorkTimeCode(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString()),
+															new WorkTimeCode(workTimeCode),
 															new PredetermineTime(new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
 																	  			 new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))),
 															false,
@@ -575,7 +592,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
 												   ,predetermineTimeSet.get().getStartDateClock().forwardByMinutes(predetermineTimeSet.get().getRangeTimeDay().valueAsMinutes()));
 		
-		WorkInfoOfDailyPerformance toDayWorkInfo = workInformationRepository.find(employeeId, targetDate).orElse(workInformationRepository.find(employeeId, targetDate).get());
+		WorkInfoOfDailyPerformance toDayWorkInfo = workInformationRepository.find(employeeId, targetDate).get();
 		
 		/*ジャストタイムの判断するための設定取得*/
 //		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;

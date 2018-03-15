@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -15,16 +20,21 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
+import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWorkingTimeDomainService {
@@ -44,15 +54,28 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	private SWorkTimeHistItemRepository SWorkTimeHistItemRepo;
 
 	@Override
-	public void reflect(String companyId, GeneralDate date, String employeeId) {
+	public ShortTimeOfDailyPerformance reflect(String companyId, GeneralDate date, String employeeId) {
 		boolean confirmReflectWorkingTime = confirmReflectWorkingTime(companyId, date, employeeId);
 		if (confirmReflectWorkingTime) {
 			Optional<ShortWorkTimeHistory> findByBaseDate = this.SWorkTimeHistoryRepo.findByBaseDate(employeeId, date);
 			if (findByBaseDate.isPresent()) {
 				ShortWorkTimeHistory shortWorkTimeHistory = findByBaseDate.get();
-				// this.SWorkTimeHistItemRepo.findByKey(employeeId, ))
+				Optional<ShortWorkTimeHistoryItem> ShortWorkTimeHistoryItemOptional = this.SWorkTimeHistItemRepo.findByKey(employeeId, shortWorkTimeHistory.getHistoryItems().get(0).identifier());
+				if(ShortWorkTimeHistoryItemOptional.isPresent()){
+					ShortWorkTimeHistoryItem shortWorkTimeHistoryItem = ShortWorkTimeHistoryItemOptional.get();
+					List<ShortWorkingTimeSheet> lstShortWorkingTimeSheet = new ArrayList<ShortWorkingTimeSheet>();
+					List<SChildCareFrame> lstTimeSlot = shortWorkTimeHistoryItem.getLstTimeSlot();
+					for (SChildCareFrame sChildCareFrame : lstTimeSlot) {
+						ShortWorkingTimeSheet shortWorkingTimeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(sChildCareFrame.getTimeSlot()),EnumAdaptor.valueOf(shortWorkTimeHistoryItem.getChildCareAtr().value, ChildCareAttribute.class) , sChildCareFrame.getStartTime(), sChildCareFrame.getEndTime(), new AttendanceTime(0), new AttendanceTime(0));
+						lstShortWorkingTimeSheet.add(shortWorkingTimeSheet);
+					}
+					return new ShortTimeOfDailyPerformance(employeeId, lstShortWorkingTimeSheet, date);
+				}
+				return null;
 			}
+			return null;
 		}
+		return null;
 	}
 
 	// 短時間勤務時間帯を反映するか確認する
@@ -118,8 +141,6 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		Optional<WorkInfoOfDailyPerformance> WorkInfoOfDailyPerformanceOptional = this.workInformationRepo
 				.find(employeeId, date);
 		WorkInfoOfDailyPerformance WorkInfo = WorkInfoOfDailyPerformanceOptional.get();
-		// recordWorkInformation or scheduleWorkInformation? fixed
-		// recordWorkInformation
 		WorkInformation scheduleWorkInformation = WorkInfo.getRecordWorkInformation();
 		WorkTypeCode workTypeCode = scheduleWorkInformation.getWorkTypeCode();
 		boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId, workTypeCode.v());

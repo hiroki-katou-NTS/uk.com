@@ -33,7 +33,7 @@ public class GrantRelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("findAll/{sphdCode}")
-	public List<GrantRelationshipDto> finder(@PathParam ("sphdCode") String sphdCode){
+	public List<GrantRelationshipDto> finder(@PathParam ("sphdCode") int sphdCode){
 		return this.finder.finder(sphdCode);
 	}
 	

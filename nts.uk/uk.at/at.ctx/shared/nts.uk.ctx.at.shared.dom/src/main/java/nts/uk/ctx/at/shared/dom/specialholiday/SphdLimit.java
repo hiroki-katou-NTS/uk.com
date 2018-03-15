@@ -64,7 +64,7 @@ public class SphdLimit extends DomainObject {
 	 * @param specialVacationMethod
 	 * @return
 	 */
-	public static SphdLimit createFromJavaType(String companyId, String specialHolidayCode, Integer specialVacationMonths,
+	public static SphdLimit createFromJavaType(String companyId, int specialHolidayCode, Integer specialVacationMonths,
 			Integer specialVacationYears, int grantCarryForward, int limitCarryoverDays, int specialVacationMethod) {
 		return new SphdLimit(companyId, new SpecialHolidayCode(specialHolidayCode),
 				specialVacationMonths != null ? new SpecialVacationMonths(specialVacationMonths) : null, 

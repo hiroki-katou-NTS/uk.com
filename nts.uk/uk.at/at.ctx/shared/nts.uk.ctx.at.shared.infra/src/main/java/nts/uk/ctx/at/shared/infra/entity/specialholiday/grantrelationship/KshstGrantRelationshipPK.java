@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship;
+ package nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ public class KshstGrantRelationshipPK implements Serializable{
 	public String companyId;
 	/*コード*/
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 	/*コード*/
 	@Column(name = "RELATIONSHIP_CD")
 	public String relationshipCode;
