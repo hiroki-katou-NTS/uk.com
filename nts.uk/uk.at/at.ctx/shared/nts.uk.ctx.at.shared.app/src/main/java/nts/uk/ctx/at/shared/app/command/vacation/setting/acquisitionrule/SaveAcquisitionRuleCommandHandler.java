@@ -11,10 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.AcquisitionRuleDto;
-import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.AnnualHolidayItemDto;
-import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.HoursHolidayItemDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
@@ -50,7 +47,7 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
 		
 		//Check is managed, keep old values when is not managed
-		if (acquisitionRuleCommand.getCategory().equals(ManageDistinct.NO)) {
+		if (acquisitionRuleCommand.getCategory().equals(SettingDistinct.NO)) {
 			if (optVaAcRule.isPresent()) {
 				AcquisitionRule acquisitionRuleDB = optVaAcRule.get();
 				acquisitionRuleDB.setCategory(acquisitionRuleCommand.getCategory());

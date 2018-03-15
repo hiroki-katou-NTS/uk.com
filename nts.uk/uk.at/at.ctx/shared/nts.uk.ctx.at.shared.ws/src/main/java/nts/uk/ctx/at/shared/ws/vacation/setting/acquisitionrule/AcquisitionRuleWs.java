@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.command.vacation.setting.acquisitionrule.Acquisi
 import nts.uk.ctx.at.shared.app.command.vacation.setting.acquisitionrule.SaveAcquisitionRuleCommandHandler;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.AcquisitionRuleDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.AcquisitionRuleFinder;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 
 /**
  * The Class AcquisitionRuleWs.
@@ -66,6 +66,6 @@ public class AcquisitionRuleWs extends WebService {
 	@POST
 	@Path("enum/category")
 	public List<EnumConstant> getVacationExpirationEnum() {
-		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
+		return EnumAdaptor.convertToValueNameList(SettingDistinct.class);
 	}
 }
