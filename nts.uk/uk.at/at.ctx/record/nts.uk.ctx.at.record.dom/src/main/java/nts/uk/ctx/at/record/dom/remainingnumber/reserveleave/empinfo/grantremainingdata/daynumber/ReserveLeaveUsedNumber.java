@@ -7,8 +7,14 @@ import lombok.Getter;
 @Getter
 public class ReserveLeaveUsedNumber {
 	
-	private Float days;
+	/**
+	 * 日数
+	 */
+	private ReserveLeaveUsedDayNumber days;
 	
-	private Optional<Float> overLimitDays;
+	/**
+	 * 上限超過消滅日数
+	 */
+	private Optional<ReserveLeaveUsedDayNumber> overLimitDays;
 
 }
