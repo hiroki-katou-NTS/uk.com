@@ -1,7 +1,6 @@
 module nts.uk.com.view.cmf001.o.viewmodel {
     import model = cmf001.share.model;
     import getText = nts.uk.resource.getText;
-    import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
@@ -111,14 +110,14 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             //条件コードは選択されているか判別
             if (self.selectedConditionCd() == null || self.selectedConditionCd() == '') {
                 //Msg_963　を表示する。受入条件が選択されていません。
-                dialog({ messageId: "Msg_963" });
+                alertError({ messageId: "Msg_963" });
                 $("#grd_Condition").focus();
                 return;
             }
             //受入ファイルがアップロードされているか判別
             if (self.fileId() == null || self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
-                dialog({ messageId: "Msg_964" });
+                alertError({ messageId: "Msg_964" });
                 $("#file-upload").focus();
                 return;
             }
@@ -140,7 +139,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //アップロードCSVが取込開始行に満たない場合                   
                     if (totalLine < self.selectedConditionStartLine()) {
                         self.resetFile();
-                        dialog({ messageId: "Msg_1059" });
+                        alertError({ messageId: "Msg_1059" });
                     }
                     //アップロードCSVが取込開始行以上ある
                     else {
@@ -150,14 +149,14 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     $("#file-upload").focus();
                 }).fail(function(err) {
                     self.resetFile();
-                    dialog({ messageId: "Msg_910" });
+                    alertError({ messageId: "Msg_910" });
                 }).always(() => {
                     block.clear();
                 });
             }).fail(function(err) {
                 self.resetFile();
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
-                dialog({ messageId: "Msg_910" });
+                alertError({ messageId: "Msg_910" });
                 $("#file-upload").focus();
                 block.clear();
             });
@@ -196,7 +195,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //取得データが0件の場合      
                 else {
                     //エラーメッセージ表示　Msg_907　外部受入設定が作成されていません。
-                    dialog({ messageId: "Msg_907" });
+                    alertError({ messageId: "Msg_907" });
                     $("#O6_1").focus();
                 }
             }).fail(function(error) {
@@ -269,13 +268,18 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     });
 
                     //アップロードしたファイルを読み込む
-                    let sv1 = service.getRecord(self.fileId(), _rspList.length, self.selectedConditionStartLine() - 1);
+                    let columns = [];
+                    _.each(_rspList, rs => {
+                        columns.push(rs.csvItemNumber() - 1);
+                    });
+                    let sv1 = service.getRecord(self.fileId(), columns, self.selectedConditionStartLine() - 1);
                     let sv2 = service.getCategoryItem(self.selectedConditionItem.categoryId);
 
                     $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {
                         _.each(_rspList, rs => {
-                            let item1 = data1[rs.csvItemNumber() - 1];
+                            let item1 = data1[0];                            
                             rs.sampleData(item1);
+                            data1.shift();
 
                             let item2 = _.find(data2, x => { return x.itemNo == rs.categoryItemNo(); });
                             rs.acceptItemName(item2.itemName);

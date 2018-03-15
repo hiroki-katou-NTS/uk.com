@@ -7,10 +7,10 @@ module nts.uk.com.view.cmf001.o {
         var paths = {
             getSystemType: "exio/exi/condset/getSysType",
             getConditionList: "exio/exi/condset/getStdAcceptCondSetBySysType/{0}",
-            getNumberOfLine: "exio/exi/condset/getNumberOfLine/{0}",
+            getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}",
             getAllStdAcceptItem: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
             getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
-            getRecord: "exio/exi/condset/getRecord/{0}/{1}/{2}",
+            getRecord: "exio/exi/csvimport/getCsvRecord"
         }
 
         export function getSysTypes(): JQueryPromise<any> {
@@ -36,10 +36,10 @@ module nts.uk.com.view.cmf001.o {
             let _path = format(paths.getCategoryItem, categoryId);
             return ajax("com", _path);
         };
-
-        export function getRecord(fileId: string, numOfCol: number, index: number): JQueryPromise<any> {
-            let _path = format(paths.getRecord, fileId, numOfCol, index);
-            return ajax('com', _path);
+        
+        export function getRecord(fileId: string, columns: Array<number>, index: number): JQueryPromise<any> {
+            let dto: any = {fileId: fileId, columns: columns, index: index}
+            return ajax('com', paths.getRecord, dto);
         };
     }
 }
