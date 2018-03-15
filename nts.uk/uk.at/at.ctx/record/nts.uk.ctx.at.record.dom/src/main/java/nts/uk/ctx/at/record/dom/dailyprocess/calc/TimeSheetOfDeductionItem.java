@@ -406,7 +406,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		else if(this.deductionAtr.isGoOut() && this.goOutReason.isPresent() && this.goOutReason.get().equalReason(atr)) {
 			return true;
 		}
-		else if(this.deductionAtr.isChildCare() && false/*育児介護区分追加後作成*/) {
+		else if(this.deductionAtr.isChildCare() ) {//&& false/*育児介護区分追加後作成*/) {
 			return false;
 		}
 		return false;

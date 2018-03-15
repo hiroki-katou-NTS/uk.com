@@ -16,7 +16,9 @@ public interface EmployeeDailyPerErrorRepository {
 	boolean checkExistErrorCodeByPeriod(String employeeID, DatePeriod datePeriod, String errorCode);
 	
 	EmployeeDailyPerError find(String employeeID, GeneralDate processingDate);
-
+	
+	List<EmployeeDailyPerError> findList(String companyID,String employeeID);
+	
 	List<EmployeeDailyPerError> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 	
 	List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate);

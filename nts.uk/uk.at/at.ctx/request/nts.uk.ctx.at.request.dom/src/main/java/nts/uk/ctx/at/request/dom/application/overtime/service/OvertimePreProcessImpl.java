@@ -473,10 +473,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				}
 				result.setSiftTypeRefer(siftType);
 			}
-			result.setWorkClockFrom1Refer(recordWorkInfoImport.getAttendanceStampTimeFirst());
-			result.setWorkClockTo1Refer(recordWorkInfoImport.getLeaveStampTimeFirst());
-			result.setWorkClockFrom2Refer(recordWorkInfoImport.getAttendanceStampTimeSecond());
-			result.setWorkClockTo2Refer(recordWorkInfoImport.getLeaveStampTimeSecond());
+			result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(),recordWorkInfoImport.getLeaveStampTimeFirst()));
+			result.setWorkClockFromTo2Refer(convertWorkClockFromTo(recordWorkInfoImport.getLeaveStampTimeSecond(),recordWorkInfoImport.getLeaveStampTimeSecond()));
 			result.setOverTimeShiftNightRefer(recordWorkInfoImport.getShiftNightCaculation());
 			result.setFlexExessTimeRefer(recordWorkInfoImport.getFlexCaculation());
 			result.setAppDateRefer(appDate);
@@ -498,7 +496,25 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		}
 		return result;
 	}
-
+	private String convertWorkClockFromTo(Integer startTime, Integer endTime){
+		String WorkClockFromTo = "";
+		if(startTime == null && endTime != null){
+			TimeWithDayAttr endTimeWithDay = new TimeWithDayAttr(endTime);
+			WorkClockFromTo = "　"
+					+  "　~　"
+					+ endTimeWithDay.getDayDivision().description
+					+ convertForWorkClock(endTime);
+		}
+		if(startTime != null && endTime != null){
+			TimeWithDayAttr startTimeWithDay = new TimeWithDayAttr(startTime);
+			TimeWithDayAttr endTimeWithDay = new TimeWithDayAttr(endTime);
+		 WorkClockFromTo = startTimeWithDay.getDayDivision().description 
+							+ convertForWorkClock(startTime) + "　~　"
+							+ endTimeWithDay.getDayDivision().description
+							+ convertForWorkClock(endTime);
+		}
+		return WorkClockFromTo;
+	}
 	private String convert(int minute) {
 		String hourminute = Strings.EMPTY;
 		if (minute == -1) {
@@ -506,10 +522,24 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		} else if (minute == 0) {
 			hourminute = ZEZO_TIME;
 		} else {
-			int hour = minute / 60;
+			int hour = Math.abs(minute) / 60;
 			int hourInDay = hour % 24;
-			int minutes = minute % 60;
+			int minutes =  Math.abs(minute) % 60;
 			hourminute = (hourInDay < 10 ? ("0" + hourInDay) : hourInDay) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+		}
+		return hourminute;
+	}
+	private String convertForWorkClock(int minute) {
+		String hourminute = Strings.EMPTY;
+		if (minute == -1) {
+			return null;
+		} else if (minute == 0) {
+			hourminute = ZEZO_TIME;
+		} else {
+			int hour = Math.abs(minute) / 60;
+			int hourInDay = hour % 24;
+			int minutes =  Math.abs(minute) % 60;
+			hourminute = hourInDay + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
 		}
 		return hourminute;
 	}

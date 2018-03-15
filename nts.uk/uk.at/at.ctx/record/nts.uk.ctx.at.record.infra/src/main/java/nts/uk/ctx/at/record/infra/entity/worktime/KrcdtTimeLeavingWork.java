@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -150,10 +151,9 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	
 	private static void toEntityAttendance(KrcdtTimeLeavingWork krcdtTimeLeavingWork, TimeActualStamp attendanceStamp){
 		if (attendanceStamp != null) {
-			WorkStamp actualStamp = attendanceStamp.getActualStamp().orElse(null);
-			WorkStamp stamp = attendanceStamp.getStamp().orElse(null);
-			if(actualStamp != null){
-				krcdtTimeLeavingWork.attendanceActualPlaceCode = actualStamp.getLocationCode().isPresent() ? actualStamp.getLocationCode().get().v() : null;
+			if(attendanceStamp.getActualStamp() != null && attendanceStamp.getActualStamp().isPresent()){
+				val actualStamp = attendanceStamp.getActualStamp().get();
+				krcdtTimeLeavingWork.attendanceActualPlaceCode = (actualStamp.getLocationCode() != null && actualStamp.getLocationCode().isPresent()) ? actualStamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.attendanceActualRoudingTime = actualStamp.getAfterRoundingTime() != null ? actualStamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.attendanceActualSourceInfo = actualStamp.getStampSourceInfo() != null ? actualStamp.getStampSourceInfo().value : null;
 				krcdtTimeLeavingWork.attendanceActualTime = actualStamp.getTimeWithDay() != null ? actualStamp.getTimeWithDay().v() : null;
@@ -162,8 +162,9 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
 				krcdtTimeLeavingWork.attendanceActualTime = null;
 			}
-			if (stamp != null) {
-				krcdtTimeLeavingWork.attendanceStampPlaceCode = stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get().v() : null;
+			if (attendanceStamp.getStamp() != null && attendanceStamp.getStamp().isPresent()) {
+				val stamp = attendanceStamp.getStamp().get();
+				krcdtTimeLeavingWork.attendanceStampPlaceCode = (stamp.getLocationCode() != null && stamp.getLocationCode().isPresent()) ? stamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.attendanceStampRoudingTime = stamp.getAfterRoundingTime() != null ? stamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.attendanceStampSourceInfo = stamp.getStampSourceInfo() != null ? stamp.getStampSourceInfo().value : null;
 				krcdtTimeLeavingWork.attendanceStampTime = stamp.getTimeWithDay() != null ? stamp.getTimeWithDay().v() : null;
@@ -187,10 +188,9 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	
 	private static void toEntityLeave(KrcdtTimeLeavingWork krcdtTimeLeavingWork, TimeActualStamp leaveStamp){
 		if (leaveStamp != null) {
-			WorkStamp actualStamp = leaveStamp.getActualStamp().orElse(null);
-			WorkStamp stamp = leaveStamp.getStamp().orElse(null);
-			if (actualStamp != null) {
-				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = actualStamp.getLocationCode().isPresent() ? actualStamp.getLocationCode().get().v() : null;
+			if (leaveStamp.getActualStamp() != null && leaveStamp.getActualStamp().isPresent()) {
+				WorkStamp actualStamp = leaveStamp.getActualStamp().orElse(null);
+				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = (actualStamp.getLocationCode() != null && actualStamp.getLocationCode().isPresent()) ? actualStamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = actualStamp.getAfterRoundingTime() != null ? actualStamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.leaveActualSourceInfo = actualStamp.getStampSourceInfo() != null ? actualStamp.getStampSourceInfo().value : null;
 				krcdtTimeLeavingWork.leaveWorkActualTime = actualStamp.getTimeWithDay() != null ? actualStamp.getTimeWithDay().v() : null;
@@ -199,8 +199,9 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
 				krcdtTimeLeavingWork.leaveWorkActualTime = null;
 			}
-			if (stamp != null) {
-				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get().v() : null;
+			if (leaveStamp.getStamp() != null && leaveStamp.getStamp().isPresent()) {
+				WorkStamp stamp = leaveStamp.getStamp().orElse(null);
+				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = (stamp.getLocationCode() != null && stamp.getLocationCode().isPresent()) ? stamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.leaveWorkStampRoundingTime = stamp.getAfterRoundingTime() != null ? stamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = stamp.getStampSourceInfo() != null ? stamp.getStampSourceInfo().value : null;
 				krcdtTimeLeavingWork.leaveWorkStampTime = stamp.getTimeWithDay() != null ? stamp.getTimeWithDay().v() : null;
