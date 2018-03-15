@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf006.shr.service {
     var paths: any = {
         getAppForLeaveStart: "at/request/application/appforleave/getAppForLeaveStart",
+        getAllAppForLeave: "at/request/application/appforleave/getAllAppForLeave",
         findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         getCaculationResult: "at/request/application/overtime/getCaculationResult",
@@ -15,6 +16,9 @@ module nts.uk.at.view.kaf006.shr.service {
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAppForLeaveStart, param);
+    }
+    export function getAllAppForLeave(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAllAppForLeave, param);
     }
     
     export function findByChangeAppDate(param: any): JQueryPromise<any> {
