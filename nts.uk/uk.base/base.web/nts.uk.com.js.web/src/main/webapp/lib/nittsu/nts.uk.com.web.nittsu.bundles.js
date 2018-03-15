@@ -23777,7 +23777,8 @@ var nts;
                          * Notify update.
                          */
                         function notifyUpdate($grid, rowId, columnKey, value, origData) {
-                            if (origData && origData[columnKey] === value) {
+                            if (origData && (origData[columnKey] === value
+                                || (uk.util.isNullOrUndefined(origData[columnKey]) && _.isEmpty(value)))) {
                                 var updatedCells_1 = $grid.data(internal.UPDATED_CELLS);
                                 if (updatedCells_1) {
                                     _.remove(updatedCells_1, function (c, i) {
@@ -26707,7 +26708,11 @@ var nts;
                                                 var groupSeparator = constraint.groupSeparator || ",";
                                                 var rawValue = uk.text.replaceAll(value, groupSeparator, "");
                                                 var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                                value = formatter.format(Number(rawValue));
+                                                var numVal = Number(rawValue);
+                                                if (!isNaN(numVal))
+                                                    value = formatter.format(numVal);
+                                                else
+                                                    value = rawValue;
                                             }
                                         }
                                     }

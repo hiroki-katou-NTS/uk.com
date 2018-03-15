@@ -707,7 +707,8 @@ module nts.uk.ui.jqueryExtentions {
              * Notify update.
              */
             function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any, origData: any) {
-                if (origData && origData[columnKey] === value) {
+                if (origData && (origData[columnKey] === value
+                    || (util.isNullOrUndefined(origData[columnKey]) && _.isEmpty(value)))) {
                     let updatedCells = $grid.data(internal.UPDATED_CELLS);
                     if (updatedCells) {
                         _.remove(updatedCells, function(c, i) {
@@ -3627,7 +3628,9 @@ module nts.uk.ui.jqueryExtentions {
                                     let groupSeparator = constraint.groupSeparator || ",";
                                     let rawValue = text.replaceAll(value, groupSeparator, "");
                                     let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                    value = formatter.format(Number(rawValue));
+                                    let numVal = Number(rawValue);
+                                    if (!isNaN(numVal)) value = formatter.format(numVal);
+                                    else value = rawValue;
                                 }
                             }
                         }
