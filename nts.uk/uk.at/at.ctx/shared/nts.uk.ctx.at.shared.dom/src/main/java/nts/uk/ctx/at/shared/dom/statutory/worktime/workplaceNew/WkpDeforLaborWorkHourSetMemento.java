@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSettingNew;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
  * The Interface WkpDeforLaborWorkHourSetMemento.
@@ -30,7 +30,7 @@ public interface WkpDeforLaborWorkHourSetMemento {
 	/**
 	 * Sets the working time setting new.
 	 *
-	 * @param workingTimeSettingNew the new working time setting new
+	 * @param workingTimeSet the new working time setting new
 	 */
-	void setWorkingTimeSettingNew(WorkingTimeSettingNew workingTimeSettingNew);
+	void setWorkingTimeSet(WorkingTimeSetting workingTimeSet);
 }

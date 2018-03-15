@@ -4,45 +4,27 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
-import java.util.List;
-
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthStatutoryWorkingHourDeforWorker;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSetting;
 
 /**
  * The Class WkpNormalSetting.
  */
 @Getter
 // 職場別通常勤務月間労働時間
-public class WkpNormalSetting extends AggregateRoot implements MonthStatutoryWorkingHourDeforWorker {
+public class WkpNormalSetting extends NormalSetting
+		implements MonthStatutoryWorkingHourDeforWorker {
 
 	/** The company id. */
+	// 会社ID
 	private CompanyId companyId;
 
 	/** The workplace id. */
+	// 職場ID
 	private WorkplaceId workplaceId;
-
-	/** The year. */
-	private Year year;
-
-	/** The statutory setting. */
-	private List<MonthlyTime> statutorySetting;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
-	 * MonthStatutoryWorkingHourDeforWorker#getListStatutorySetting()
-	 */
-	@Override
-	public List<MonthlyTime> getListStatutorySetting() {
-		return statutorySetting;
-	}
 
 	/**
 	 * Instantiates a new wkp normal setting.
@@ -50,7 +32,7 @@ public class WkpNormalSetting extends AggregateRoot implements MonthStatutoryWor
 	 * @param memento
 	 *            the memento
 	 */
-	public WkpNormalSetting(WkpNormalSetting memento) {
+	public WkpNormalSetting(WkpNormalSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.year = memento.getYear();

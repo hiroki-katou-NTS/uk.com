@@ -4,16 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingGetMemento;
 
 /**
  * The Interface ComNormalSettingGetMemento.
  */
-public interface ComNormalSettingGetMemento {
+public interface ComNormalSettingGetMemento extends NormalSettingGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -21,19 +18,5 @@ public interface ComNormalSettingGetMemento {
 	 * @return the company id
 	 */
 	CompanyId getCompanyId();
-
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	Year getYear();
-
-	/**
-	 * Gets the statutory setting.
-	 *
-	 * @return the statutory setting
-	 */
-	List<MonthlyTime> getStatutorySetting();
 
 }

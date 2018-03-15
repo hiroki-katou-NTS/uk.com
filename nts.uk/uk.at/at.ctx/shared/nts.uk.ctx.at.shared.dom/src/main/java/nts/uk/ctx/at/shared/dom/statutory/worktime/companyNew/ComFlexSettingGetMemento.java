@@ -4,16 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento;
 
 /**
  * The Interface ComFlexSettingGetMemento.
  */
-public interface ComFlexSettingGetMemento {
+public interface ComFlexSettingGetMemento extends FlexSettingGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -22,24 +19,4 @@ public interface ComFlexSettingGetMemento {
 	 */
 	CompanyId getCompanyId();
 
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	Year getYear();
-
-	/**
-	 * Gets the statutory setting.
-	 *
-	 * @return the statutory setting
-	 */
-	List<MonthlyTime> getStatutorySetting();
-
-	/**
-	 * Gets the specified setting.
-	 *
-	 * @return the specified setting
-	 */
-	List<MonthlyTime> getSpecifiedSetting();
 }

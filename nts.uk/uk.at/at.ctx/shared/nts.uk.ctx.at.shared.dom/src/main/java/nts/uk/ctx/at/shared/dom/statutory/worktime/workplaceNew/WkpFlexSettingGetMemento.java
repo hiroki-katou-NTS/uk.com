@@ -4,17 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento;
 
 /**
  * The Interface WkpFlexSettingSetMemento.
  */
-public interface WkpFlexSettingGetMemento {
+public interface WkpFlexSettingGetMemento extends FlexSettingGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -29,26 +26,5 @@ public interface WkpFlexSettingGetMemento {
 	 * @return the workplace id
 	 */
 	WorkplaceId getWorkplaceId();
-
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	Year getYear();
-
-	/**
-	 * Gets the statutory setting.
-	 *
-	 * @return the statutory setting
-	 */
-	List<MonthlyTime> getStatutorySetting();
-
-	/**
-	 * Gets the specified setting.
-	 *
-	 * @return the specified setting
-	 */
-	List<MonthlyTime> getSpecifiedSetting();
 
 }

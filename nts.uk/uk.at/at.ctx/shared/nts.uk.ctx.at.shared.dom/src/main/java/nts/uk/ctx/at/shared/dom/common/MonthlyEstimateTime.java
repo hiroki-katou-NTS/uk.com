@@ -17,7 +17,8 @@ public class MonthlyEstimateTime extends TimeDurationPrimitiveValue<MonthlyEstim
 	/**
 	 * Instantiates a new monthly estimate time.
 	 *
-	 * @param timeAsMinutes the time as minutes
+	 * @param timeAsMinutes
+	 *            the time as minutes
 	 */
 	public MonthlyEstimateTime(int timeAsMinutes) {
 		super(timeAsMinutes);

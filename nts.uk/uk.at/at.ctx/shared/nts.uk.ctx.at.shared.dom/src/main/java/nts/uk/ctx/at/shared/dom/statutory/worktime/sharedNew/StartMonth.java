@@ -9,15 +9,15 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class StartMonth.
  */
-//期首月
+// 期首月
 public class StartMonth {
-	
+
+	// 会社ID
 	/** The company id. */
-	/** 会社ID */
 	private CompanyId companyId;
-	
+
+	// 起算月
 	/** The start month. */
-	/** 起算月.*/
-	private StartingMonthType startMonth; 
+	private StartingMonthType startMonth;
 
 }

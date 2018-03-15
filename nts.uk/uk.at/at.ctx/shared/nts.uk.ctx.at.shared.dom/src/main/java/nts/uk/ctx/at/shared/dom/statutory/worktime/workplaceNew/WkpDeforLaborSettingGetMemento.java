@@ -4,17 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento;
 
 /**
  * The Interface WkpDeforLaborSettingGetMemento.
  */
-public interface WkpDeforLaborSettingGetMemento {
+public interface WkpDeforLaborSettingGetMemento extends DeforLaborSettingGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -30,17 +27,4 @@ public interface WkpDeforLaborSettingGetMemento {
 	 */
 	WorkplaceId getWorkplaceId();
 
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	Year getYear();
-
-	/**
-	 * Gets the statutory setting.
-	 *
-	 * @return the statutory setting
-	 */
-	List<MonthlyTime> getStatutorySetting();
 }

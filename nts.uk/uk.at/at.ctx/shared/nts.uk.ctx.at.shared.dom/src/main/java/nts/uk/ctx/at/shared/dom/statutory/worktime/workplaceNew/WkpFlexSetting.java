@@ -4,14 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
-import java.util.List;
-
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthStatutoryWorkingHourFlexWork;
 
 /**
@@ -19,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthStatutoryWorki
  */
 @Getter
 // 職場別フレックス勤務月間労働時間
-public class WkpFlexSetting extends AggregateRoot implements MonthStatutoryWorkingHourFlexWork {
+public class WkpFlexSetting extends FlexSetting implements MonthStatutoryWorkingHourFlexWork {
 
 	/** The company id. */
 	private CompanyId companyId;
@@ -27,44 +23,13 @@ public class WkpFlexSetting extends AggregateRoot implements MonthStatutoryWorki
 	/** The workplace id. */
 	private WorkplaceId workplaceId;
 
-	/** The year. */
-	private Year year;
-
-	/** The statutory setting. */
-	private List<MonthlyTime> statutorySetting;
-
-	/** The specified setting. */
-	private List<MonthlyTime> specifiedSetting;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
-	 * MonthStatutoryWorkingHourFlexWork#getListStatutorySetting()
-	 */
-	@Override
-	public List<MonthlyTime> getListStatutorySetting() {
-		return statutorySetting;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
-	 * MonthStatutoryWorkingHourFlexWork#getListSpecifiedSetting()
-	 */
-	@Override
-	public List<MonthlyTime> getListSpecifiedSetting() {
-		return specifiedSetting;
-	}
-
 	/**
 	 * Instantiates a new wkp flex setting.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public WkpFlexSetting(WkpFlexSetting memento) {
+	public WkpFlexSetting(WkpFlexSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.year = memento.getYear();

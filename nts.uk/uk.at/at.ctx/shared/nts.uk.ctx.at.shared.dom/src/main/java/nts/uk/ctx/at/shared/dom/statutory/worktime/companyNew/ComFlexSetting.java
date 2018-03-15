@@ -4,61 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew;
 
-import java.util.List;
-
 import lombok.Getter;
-import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthStatutoryWorkingHourFlexWork;
 
 /**
  * The Class ComFlexSetting.
  */
 @Getter
-@Setter
 // 会社別フレックス勤務月間労働時間.
-public class ComFlexSetting extends AggregateRoot implements MonthStatutoryWorkingHourFlexWork {
+public class ComFlexSetting extends FlexSetting implements MonthStatutoryWorkingHourFlexWork {
 
 	/** The company id. */
 	/** 会社ID. */
 	private CompanyId companyId;
-
-	/** The year. */
-	/** 年. */
-	private Year year;
-
-	/** The statutory setting. */
-	/** 法定時間. */
-	private List<MonthlyTime> statutorySetting;
-
-	/** The specified setting. */
-	/** 所定時間. */
-	private List<MonthlyTime> specifiedSetting;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.
-	 * MonthStatutoryWorkingHourFlexWork#getListStatutorySetting()
-	 */
-	@Override
-	public List<MonthlyTime> getListStatutorySetting() {
-		return statutorySetting;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.
-	 * MonthStatutoryWorkingHourFlexWork#getListSpecifiedSetting()
-	 */
-	@Override
-	public List<MonthlyTime> getListSpecifiedSetting() {
-		return specifiedSetting;
-	}
 
 	/**
 	 * Instantiates a new com flex setting.
@@ -66,7 +26,7 @@ public class ComFlexSetting extends AggregateRoot implements MonthStatutoryWorki
 	 * @param memento
 	 *            the memento
 	 */
-	public ComFlexSetting(ComFlexSetting memento) {
+	public ComFlexSetting(ComFlexSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.year = memento.getYear();
 		this.statutorySetting = memento.getStatutorySetting();
@@ -85,4 +45,5 @@ public class ComFlexSetting extends AggregateRoot implements MonthStatutoryWorki
 		memento.setStatutorySetting(this.statutorySetting);
 		memento.setSpecifiedSetting(this.specifiedSetting);
 	}
+
 }
