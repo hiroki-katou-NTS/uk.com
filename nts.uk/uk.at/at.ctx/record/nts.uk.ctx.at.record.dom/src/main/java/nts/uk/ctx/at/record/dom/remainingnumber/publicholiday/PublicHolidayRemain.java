@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.publicholiday;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * 公休付与残数データ
@@ -8,7 +9,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class PublicHolidayRemain {
+public class PublicHolidayRemain extends AggregateRoot{
 	
 	// 社員ID
 	private String employeeId;

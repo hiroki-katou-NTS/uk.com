@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 /**
@@ -9,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
  *
  */
 @Getter
-public class SpecialLeaveBasicInfo {
+public class SpecialLeaveBasicInfo extends AggregateRoot{
 	
 	// 社員ID
 	private String employeeId;
