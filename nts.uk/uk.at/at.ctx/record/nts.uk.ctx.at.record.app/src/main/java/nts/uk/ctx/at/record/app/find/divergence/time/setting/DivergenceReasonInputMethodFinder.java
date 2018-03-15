@@ -47,20 +47,4 @@ public class DivergenceReasonInputMethodFinder {
 		}).collect(Collectors.toList());
 	}
 
-	/**
-	 * Gets the div time detail.
-	 *
-	 * @param divTimeNo
-	 *            the div time no
-	 * @return the div time detail
-	 */
-	DivergenceReasonInputMethodDto getDivTimeDetail(int divTimeNo) {
-		// get company id
-		String companyId = AppContexts.user().companyId();
-
-		// get DivergenceReasonInputMethod info
-		DivergenceReasonInputMethodDto divReasonInputDto = new DivergenceReasonInputMethodDto();
-		return null;
-	}
-
 }

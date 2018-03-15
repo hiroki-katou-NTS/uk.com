@@ -32,7 +32,7 @@ public class JpaDivergenceTimeRepositoryGetMemento implements DivergenceTimeGetM
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeGetMemento#getDivergenceTimeNo()
 	 */
 	@Override
-	public int getDivergenceTimeNo() {
+	public Integer getDivergenceTimeNo() {
 		return entities.getId().getNo();
 	}
 

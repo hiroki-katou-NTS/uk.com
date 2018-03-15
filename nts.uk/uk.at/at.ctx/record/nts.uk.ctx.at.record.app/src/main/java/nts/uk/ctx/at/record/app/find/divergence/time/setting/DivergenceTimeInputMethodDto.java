@@ -44,7 +44,7 @@ public class DivergenceTimeInputMethodDto {
 	private boolean divergenceReasonSelected;
 
 	/** Attendance Item list. */
-	private List<String> attendanceName;
+	private List<Integer> attendanceId;
 
 	/**
 	 * Instantiates a new divergence time input method dto.
@@ -72,7 +72,7 @@ public class DivergenceTimeInputMethodDto {
 	 */
 	public DivergenceTimeInputMethodDto(int divergenceTimeNo, String companyId, int divTimeUseSet,
 			String divergenceTimeName, int divType, boolean reasonInput, boolean reasonSelect,
-			boolean divergenceReasonInputed, boolean divergenceReasonSelected, List<String> attendanceName) {
+			boolean divergenceReasonInputed, boolean divergenceReasonSelected, List<Integer> attendanceId) {
 		super();
 		this.divergenceTimeNo = divergenceTimeNo;
 		this.companyId = companyId;
@@ -83,7 +83,7 @@ public class DivergenceTimeInputMethodDto {
 		this.reasonSelect = reasonSelect;
 		this.divergenceReasonInputed = divergenceReasonInputed;
 		this.divergenceReasonSelected = divergenceReasonSelected;
-		this.attendanceName = attendanceName;
+		this.attendanceId = attendanceId;
 	}
 
 }

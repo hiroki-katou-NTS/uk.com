@@ -36,6 +36,9 @@ public class DivergenceTimeWebService extends WebService {
 
 	@Inject
 	private DivergenceTimeInputMethodFinder divTimeInputmethodFinder;
+	
+//	@Inject
+//	private DivergenceTimeSaveCommandHandler divTimeSaveCommandHandler;
 
 	/**
 	 * get all divergence time.
@@ -59,6 +62,12 @@ public class DivergenceTimeWebService extends WebService {
 		return this.divTimeInputmethodFinder.getAllDivTime();
 	}
 
+	/**
+	 * Gets the div time info.
+	 *
+	 * @param divTimeNo the div time no
+	 * @return the div time info
+	 */
 	@POST
 	@Path("getdivtimeinfo")
 	public DivergenceTimeInputMethodDto getDivTimeInfo(@PathParam("divTimeId") int divTimeNo) {

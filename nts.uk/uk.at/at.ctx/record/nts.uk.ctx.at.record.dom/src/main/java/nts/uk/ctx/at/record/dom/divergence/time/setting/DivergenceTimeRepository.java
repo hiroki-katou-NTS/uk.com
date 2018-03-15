@@ -2,6 +2,10 @@ package nts.uk.ctx.at.record.dom.divergence.time.setting;
 
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface DivergenceTimeRepository.
+ */
 public interface DivergenceTimeRepository {
 
 	/**
@@ -20,5 +24,14 @@ public interface DivergenceTimeRepository {
 	 * @return the div time info
 	 */
 	DivergenceTime getDivTimeInfo(String companyId, int divTimeNo);
+
+	/**
+	 * Find attendance id.
+	 *
+	 * @param companyId the company id
+	 * @param divTimeNo the div time no
+	 * @return the list
+	 */
+	List<Integer> findAttendanceId(String companyId, int divTimeNo);
 
 }

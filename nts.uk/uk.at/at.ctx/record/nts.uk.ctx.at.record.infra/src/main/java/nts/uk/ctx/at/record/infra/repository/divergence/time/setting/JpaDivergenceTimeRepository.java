@@ -15,10 +15,17 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.*;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JpaDivergenceTimeRepository.
+ */
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
 
@@ -124,6 +131,38 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		if (KrcstDvgcTime != null)
 			return this.toDomain(KrcstDvgcTime);
 		return new DivergenceTime(null);
+
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository#findAttendanceId(java.lang.String, int)
+	 */
+	@Override
+	public List<Integer> findAttendanceId(String companyId, int divTimeNo) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDvgcAttendance> cq = criteriaBuilder.createQuery(KrcstDvgcAttendance.class);
+		Root<KrcstDvgcAttendance> root = cq.from(KrcstDvgcAttendance.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.cid), companyId));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.no), divTimeNo));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KrcstDvgcAttendance> KrcstDvgcAttendance = em.createQuery(cq).getResultList();
+
+		// return
+		return KrcstDvgcAttendance.isEmpty() ? new ArrayList<Integer>()
+				: KrcstDvgcAttendance.stream().map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 
 	}
 

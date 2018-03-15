@@ -14,7 +14,7 @@ public interface DivergenceTimeGetMemento {
 	 *
 	 * @return the divergence type
 	 */
-	int getDivergenceTimeNo();
+	Integer getDivergenceTimeNo();
 
 	/**
 	 * Gets the Company id.
