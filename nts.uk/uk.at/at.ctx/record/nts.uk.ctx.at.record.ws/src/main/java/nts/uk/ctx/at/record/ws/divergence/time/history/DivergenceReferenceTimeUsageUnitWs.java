@@ -13,9 +13,6 @@ import nts.uk.ctx.at.record.app.command.divergence.time.history.DivergenceRefere
 @Produces("application/json")
 public class DivergenceReferenceTimeUsageUnitWs extends WebService{
 	
-	@Inject
-	private DivergenceReferenceTimeUsageUnitCommand command;
-	
 	@Inject 
 	private DivergenceReferenceTimeUsageUnitSaveCommandHandler saveHandler;
 	
