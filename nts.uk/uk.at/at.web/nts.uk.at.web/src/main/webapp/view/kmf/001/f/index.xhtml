@@ -16,6 +16,9 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime
+			</com:ValidatorScript>
 			<script type="text/javascript">
 				
 			</script>
@@ -154,21 +157,21 @@
 							<div class="text_width" ><label>#{i18n.getText('KMF001_81')}</label></div>
 							<div class="input_width pad_left_30"><input id="workOneDay"
 								class="check_error float_right" tabindex="12"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
+								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay, constraint: 'OneDayTime', option: inputOption, inputFormat: 'time', mode: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 							<td colspan = "2" class="pad_left_70">
 							<div class = "text_width"><label>#{i18n.getText('KMF001_82')}</label></div>
 							<div class="input_width pad_left_30">
 							<input id="workHalfDay"
 								class="check_error" tabindex="13"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
+								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
 									<input id="workAll" class="check_error" tabindex="14"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 								<div class="text_width">
 									<label>#{i18n.getText('KMF001_83')}</label>
@@ -195,7 +198,7 @@
 								</div>
 								<div class="input_width pad_left_30">
 									<input id="overOneDay" class="check_error" tabindex="17"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
 							<td colspan="2" class="pad_left_70">
@@ -204,7 +207,7 @@
 								</div>
 								<div class="input_width pad_left_30">
 									<input id="overHalfDay" class="check_error" tabindex="18"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
 						</tr>
@@ -212,7 +215,7 @@
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
 									<input id="overAll" class="check_error" tabindex="19"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 								<div class="text_width">
 									<label>#{i18n.getText('KMF001_83')}</label>

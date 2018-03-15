@@ -61,8 +61,8 @@ module nts.uk.pr.view.kmf001.d {
                 
                 self.retentionYearsAmount = ko.observable(null);
                 self.maxDaysCumulation = ko.observable(null);
-                self.yearsAmountByEmp = ko.observable(null);
-                self.maxDaysCumulationByEmp = ko.observable(null);
+                self.yearsAmountByEmp = ko.observable(0);
+                self.maxDaysCumulationByEmp = ko.observable(0);
                 
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理する'),
@@ -146,8 +146,8 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 self.clearEmptErrors();
                 if (data == undefined) {
-                    self.yearsAmountByEmp(null);
-                    self.maxDaysCumulationByEmp(null);
+                    self.yearsAmountByEmp(0);
+                    self.maxDaysCumulationByEmp(0);
                     self.selectedManagement(1);
                 }
                 else {
