@@ -26067,7 +26067,6 @@ var nts;
                                         processor.copyHandler();
                                     }
                                     else if (evt.ctrlKey && utils.isCutKey(evt)) {
-                                        processor.cutHandler();
                                     }
                                 });
                                 return this;

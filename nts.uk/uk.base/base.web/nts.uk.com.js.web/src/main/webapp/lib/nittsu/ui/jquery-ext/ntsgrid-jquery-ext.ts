@@ -2975,7 +2975,7 @@ module nts.uk.ui.jqueryExtentions {
                         } else if (evt.ctrlKey && utils.isCopyKey(evt)) {
                             processor.copyHandler();
                         } else if (evt.ctrlKey && utils.isCutKey(evt)) {
-                            processor.cutHandler();   
+//                            processor.cutHandler();   
                         }
                     });
                     return this;
