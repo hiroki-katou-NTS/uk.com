@@ -9,6 +9,8 @@ import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcess
 @Value
 public class AlarmListExtraProcessStatusCmd {
 
+	/**ID*/
+	private String extraProcessStatusID;
 	/**会社ID */
 	private String companyID;
 	/** 開始年月日*/
@@ -24,6 +26,7 @@ public class AlarmListExtraProcessStatusCmd {
 	
 	public static AlarmListExtraProcessStatus toDomain(AlarmListExtraProcessStatusCmd command) {
 		return new AlarmListExtraProcessStatus(
+				command.getExtraProcessStatusID(),
 				command.getCompanyID(),
 				command.getStartDate(),
 				command.getStartTime(),

@@ -32,7 +32,7 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	@Column(name = "START_DATE")	
 	public GeneralDate startDate;
 	
-	@Column(name = "START_TIME")	
+	@Column(name = "START_TIME")		
 	public Integer startTime;
 	
 	@Column(name = "SID")
