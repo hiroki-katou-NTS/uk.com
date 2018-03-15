@@ -279,7 +279,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
                     $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {
                         _.each(_rspList, rs => {
-                            let item1 = data1[0];                            
+                            let item1 = data1[0];
                             rs.sampleData(item1);
                             data1.shift();
 
@@ -317,34 +317,43 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //数値型の場合                    
                     //G:「数値型設定」ダイアログをモーダルで表示する
                     setShared("CMF001gParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(item.numberFormatSetting) });
-                    nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml").onClosed(() => {
+                        $("#P6_1").focus();
+                    });
                     break;
                 case 1:
                     //文字型の場合
                     //H:「文字型設定」ダイアログをモーダルで表示する
                     setShared("CMF001hParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(item.charFormatSetting) });
-                    nts.uk.ui.windows.sub.modal("/view/cmf/001/h/index.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/h/index.xhtml").onClosed(() => {
+                        $("#P6_1").focus();
+                    });
                     break;
                 case 2:
                     //日付型の場合  
                     //I:「日付型設定」ダイアログをモーダルで表示する
                     setShared("CMF001iParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(item.dateFormatSetting) });
-                    nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml").onClosed(() => {
+                        $("#P6_1").focus();
+                    });
                     break;
                 case 3:
                     //時刻型の場合 
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
                     setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(item.instTimeFormatSetting) });
-                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml").onClosed(() => {
+                        $("#P6_1").focus();
+                    });
                     break;
                 case 4:
                     //時間型の場合
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
                     setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(item.timeFormatSetting) });
-                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml").onClosed(() => {
+                        $("#P6_1").focus();
+                    });
                     break;
             }
-            $("#P6_1").focus();
         }
 
         private receiveCondition(item): void {
@@ -352,8 +361,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             let settingL = null;
             if (item.screenConditionSetting) settingL = ko.toJS(item.screenConditionSetting);
             setShared("CMF001lParams", { inputMode: false, dataType: item.itemType(), formatSetting: ko.toJS(settingL) });
-            nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
-            $("#P6_1").focus();
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml").onClosed(() => {
+                $("#P6_1").focus();
+            });
         }
 
         private gotoA(): void {
