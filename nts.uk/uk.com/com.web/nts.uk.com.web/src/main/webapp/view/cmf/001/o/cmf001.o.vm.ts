@@ -41,9 +41,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
 
-            //ドメインモデル「受入条件設定（定型）」を取得する
-            //self.loadListCondition(self.selectedSysType());
-
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
                 //画面上の条件コード/名称をクリアする
@@ -141,7 +138,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
                     self.totalLine(totalLine);
                     //アップロードCSVが取込開始行に満たない場合                   
-                    if (totalLine < self.selectedConditionStartLine()) { 
+                    if (totalLine < self.selectedConditionStartLine()) {
                         self.resetFile();
                         dialog({ messageId: "Msg_1059" });
                     }
@@ -298,7 +295,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                         block.clear();
                     });
                 }
-                else{
+                else {
                     block.clear();
                 }
             }).fail(function(error) {
