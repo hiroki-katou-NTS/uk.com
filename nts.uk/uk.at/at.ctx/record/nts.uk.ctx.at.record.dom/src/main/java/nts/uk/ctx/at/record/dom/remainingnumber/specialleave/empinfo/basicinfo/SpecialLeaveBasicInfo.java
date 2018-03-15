@@ -8,7 +8,7 @@ public class SpecialLeaveBasicInfo {
 	
 	private String employeeId;
 	
-	private String specialLeaveCode;
+	private SpecialLeaveCode specialLeaveCode;
 
 	private UseAtr used;
 	
