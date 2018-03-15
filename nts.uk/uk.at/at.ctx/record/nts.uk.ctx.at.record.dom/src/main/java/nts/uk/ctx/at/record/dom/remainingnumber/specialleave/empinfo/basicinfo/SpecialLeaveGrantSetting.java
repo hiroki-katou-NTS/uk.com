@@ -8,10 +8,13 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class SpecialLeaveGrantSetting {
 	
+	// 付与基準日
 	private GeneralDate grantStandardDate;
 	
+	// 付与日数
 	private Optional<Integer> grantNumber;
 	
+	// 付与テーブル
 	private Optional<GrantTable> grantTable;
 	
 }
