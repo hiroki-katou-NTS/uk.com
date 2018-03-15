@@ -55,7 +55,6 @@ public class JpaExceededPredAddVacationCalcGetMemento<T extends UkJpaEntity>
 					.valueOf(((KshmtDiffTimeWorkSet) this.entity).getExceededPredCalcMethod());
 		}
 		throw new IllegalStateException("entity type is not valid");
-
 	}
 
 	/*

@@ -52,7 +52,6 @@ public class JpaFixedWorkCalcSettingSetMemento<T extends UkJpaEntity> implements
 					.saveToMemento(new JpaExceededPredAddVacationCalcSetMemento<KshmtDiffTimeWorkSet>(
 							(KshmtDiffTimeWorkSet) this.entity));
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 
 	/*
@@ -73,6 +72,5 @@ public class JpaFixedWorkCalcSettingSetMemento<T extends UkJpaEntity> implements
 			overTimeCalcNoBreak.saveToMemento(
 					new JpaOverTimeCalcNoBreakSetMemento<KshmtDiffTimeWorkSet>((KshmtDiffTimeWorkSet) this.entity));
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 }

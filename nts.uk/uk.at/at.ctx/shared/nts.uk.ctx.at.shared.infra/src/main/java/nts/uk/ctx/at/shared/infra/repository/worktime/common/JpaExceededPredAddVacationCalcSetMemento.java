@@ -50,7 +50,6 @@ public class JpaExceededPredAddVacationCalcSetMemento<T extends UkJpaEntity>
 				((KshmtDiffTimeWorkSet) this.entity).setExceededPredCalcMethod(calcMethod.value);
 			}
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 
 	/*
@@ -72,6 +71,5 @@ public class JpaExceededPredAddVacationCalcSetMemento<T extends UkJpaEntity>
 				((KshmtDiffTimeWorkSet) this.entity).setExceededPredOtFrameNo(otFrameNo.v());
 			}
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 }

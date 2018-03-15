@@ -48,7 +48,6 @@ public class JpaOverTimeCalcNoBreakSetMemento<T extends UkJpaEntity> implements 
 				((KshmtDiffTimeWorkSet) this.entity).setOtCalcMethod(calcMethod.value);
 			}
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 
 	/**
@@ -69,7 +68,6 @@ public class JpaOverTimeCalcNoBreakSetMemento<T extends UkJpaEntity> implements 
 				((KshmtDiffTimeWorkSet) this.entity).setOtInLaw(inLawOT.v());
 			}
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 
 	/**
@@ -90,6 +88,5 @@ public class JpaOverTimeCalcNoBreakSetMemento<T extends UkJpaEntity> implements 
 				((KshmtDiffTimeWorkSet) this.entity).setOtNotInLaw(notInLawOT.v());
 			}
 		}
-		throw new IllegalStateException("entity type is not valid");
 	}
 }
