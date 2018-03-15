@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface OvertimeRepository {
 	/**
 	 * @param companyID
@@ -22,4 +24,5 @@ public interface OvertimeRepository {
 	
 	public void delete(String companyID, String appID);
 	
+	public Optional<AppOverTime> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr);
 }
