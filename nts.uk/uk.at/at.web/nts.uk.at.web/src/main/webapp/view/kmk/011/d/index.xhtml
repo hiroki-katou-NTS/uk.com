@@ -31,7 +31,7 @@
 			<ul tabindex="1" class="navigator">
 				<li data-bind="click: onSelectTabOne"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectTabTwo"><a tabindex="-1"
+				<li data-bind="click: onSelectTabTwo, visible: useUnitSetting"><a tabindex="-1"
 					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KMK011_49')}</a></li>
 			</ul>
 		</ui:define>

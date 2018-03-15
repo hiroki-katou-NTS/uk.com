@@ -17,9 +17,10 @@ module nts.uk.at.view.kmk011.h {
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
-                service.find().done(function(value: DivergenceReferenceTimeUsageUnit) {
-
-                    alert(value.workTypeUseSet);
+                service.find().done(function(value: any) {
+                   if(value != null) {
+                       _self.selectWorkTypeCheck(value.workTypeUseSet)
+                   }
                 });
                 dfd.resolve();
                 return dfd.promise();

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.divergence.time.history;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -10,6 +12,9 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeU
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class DivergenceReferenceTimeUsageUnitSaveCommandHandler.
+ */
 @Stateless
 public class DivergenceReferenceTimeUsageUnitSaveCommandHandler extends CommandHandler<DivergenceReferenceTimeUsageUnitCommand>{
 	
@@ -17,19 +22,26 @@ public class DivergenceReferenceTimeUsageUnitSaveCommandHandler extends CommandH
 	@Inject
 	private DivergenceReferenceTimeUsageUnitRepository divergenceRepo;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<DivergenceReferenceTimeUsageUnitCommand> context) {
-		// TODO Auto-generated method stub
 		
 		/*Get company ID*/	
 		String companyId = AppContexts.user().companyId();
 		
+		//get command
 		DivergenceReferenceTimeUsageUnitCommand command = context.getCommand();
-		DivergenceReferenceTimeUsageUnit domain = new DivergenceReferenceTimeUsageUnit(command.getDivergenceReferenceTimeUsageUnitDto());
 		
-		domain = this.divergenceRepo.findByCompanyId(companyId);
-		if (domain != null){
+		// find unit setting
+		Optional<DivergenceReferenceTimeUsageUnit> opt = this.divergenceRepo.findByCompanyId(companyId);
+		
+		//update 
+		if (opt.isPresent()){
+			DivergenceReferenceTimeUsageUnit domain = opt.get();
+			domain.setWorkTypeUseSet(command.getDivergenceReferenceTimeUsageUnitDto().getWorkTypeUseSet());
 			this.divergenceRepo.update(domain);
 		}
 	}

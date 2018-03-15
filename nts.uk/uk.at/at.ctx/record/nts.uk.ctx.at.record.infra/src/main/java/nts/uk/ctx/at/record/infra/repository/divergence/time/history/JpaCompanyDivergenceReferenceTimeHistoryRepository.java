@@ -14,6 +14,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
@@ -27,7 +28,17 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist
 @Stateless
 public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepository
 		implements CompanyDivergenceReferenceTimeHistoryRepository {
-
+	
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository#findbyPeriodDate(nts.arc.time.GeneralDate, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public CompanyDivergenceReferenceTimeHistory findbyPeriodDate(GeneralDate startDate, GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -47,4 +47,19 @@ public interface WorkTypeDivergenceReferenceTimeRepository {
 	 * @param domain the domain
 	 */
 	void delete(WorkTypeDivergenceReferenceTime domain);
+	
+	/**
+	 * Adds the default data when create history.
+	 *
+	 * @param historyId the history id
+	 */
+	void addDefaultDataWhenCreateHistory(String historyId);
+	
+	/**
+	 * Copy data from latest history.
+	 *
+	 * @param targetHistId the target hist id
+	 * @param destHistId the dest hist id
+	 */
+	void copyDataFromLatestHistory(String targetHistId, String destHistId);
 }

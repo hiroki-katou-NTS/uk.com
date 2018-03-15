@@ -1,17 +1,23 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
+
+/**
+ * The Class DivergenceReferenceTimeUsageUnit.
+ */
 @Getter
-@AllArgsConstructor
+@Setter
 public class DivergenceReferenceTimeUsageUnit extends AggregateRoot {
 
+	/** The c id. */
 	/* Company Id */
 	private String cId;
 
+	/** The work type use set. */
 	/* Worktype usage */
 	private BigDecimal workTypeUseSet;
 
@@ -25,13 +31,14 @@ public class DivergenceReferenceTimeUsageUnit extends AggregateRoot {
 		this.workTypeUseSet = memento.getWorkTypeUseSet();
 	}
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
 	public void saveToMemento(DivergenceReferenceTimeUsageUnitSetMemento memento) {
 		memento.setCompanyId(this.cId);
 		memento.setWorkTypeUseSet(this.workTypeUseSet);
-	}
-
-	public DivergenceReferenceTimeUsageUnit() {
-		// TODO Auto-generated constructor stub
 	}
 
 }

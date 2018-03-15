@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,12 +13,29 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtUseUnit;
 public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 		implements DivergenceReferenceTimeUsageUnitRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * DivergenceReferenceTimeUsageUnitRepository#update(nts.uk.ctx.at.record.
+	 * dom.divergence.time.history.DivergenceReferenceTimeUsageUnit)
+	 */
 	@Override
-	public void add(DivergenceReferenceTimeUsageUnit domain) {
-		// TODO Auto-generated method stub
-		this.commandProxy().insert(this.toEntity(domain));
+	public void update(DivergenceReferenceTimeUsageUnit domain) {
+		this.commandProxy().update(this.toEntity(domain));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * DivergenceReferenceTimeUsageUnitRepository#findById(java.lang.String)
+	 */
+	@Override
+	public Optional<DivergenceReferenceTimeUsageUnit> findByCompanyId(String companyId) {
+		return this.queryProxy().find(companyId, KrcstDrtUseUnit.class).map(e -> this.toDomain(e));
+	}
+	
 	/**
 	 * To entity.
 	 *
@@ -42,29 +61,5 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 		JpaDivergenceReferenceTimeUsageUnitGetMemento memento = new JpaDivergenceReferenceTimeUsageUnitGetMemento(
 				entity);
 		return new DivergenceReferenceTimeUsageUnit(memento);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * DivergenceReferenceTimeUsageUnitRepository#update(nts.uk.ctx.at.record.
-	 * dom.divergence.time.history.DivergenceReferenceTimeUsageUnit)
-	 */
-	@Override
-	public void update(DivergenceReferenceTimeUsageUnit domain) {
-		this.commandProxy().update(this.toEntity(domain));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * DivergenceReferenceTimeUsageUnitRepository#findById(java.lang.String)
-	 */
-	@Override
-	public DivergenceReferenceTimeUsageUnit findByCompanyId(String companyId) {
-		KrcstDrtUseUnit drtUseUnit = this.queryProxy().find(companyId, KrcstDrtUseUnit.class).orElse(new KrcstDrtUseUnit());
-		return this.toDomain(drtUseUnit);
 	}
 }

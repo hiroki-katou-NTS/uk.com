@@ -1,10 +1,20 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface CompanyDivergenceReferenceTimeHistoryRepository.
  */
 public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	
+	/**
+	 * Findby period date.
+	 *
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 * @return the company divergence reference time history
+	 */
+	CompanyDivergenceReferenceTimeHistory findbyPeriodDate(GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * Find by hist id.

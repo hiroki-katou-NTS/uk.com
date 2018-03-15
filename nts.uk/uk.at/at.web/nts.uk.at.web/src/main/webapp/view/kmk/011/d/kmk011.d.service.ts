@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk011.d {
             findAllItemSetting:"at/record/divergence/time/companyDivergenceRefTime/find",
             deleteHist: "",
             findListHistory: "at/record/divergence/time/history/companyDivergenceRefTime/findAll",
-            findUseUnitSetting: "",
+            findUseUnitSetting: "at/record/divergence/time/history/divergenceRefTimeUsageUnit/find",
             findListDivergenceTime: "at/record/divergencetime/setting/getalldivtime"
         };
         

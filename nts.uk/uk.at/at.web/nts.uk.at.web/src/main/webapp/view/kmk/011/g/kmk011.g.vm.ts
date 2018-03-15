@@ -1,9 +1,9 @@
-module nts.uk.at.view.kmk011.f {
+module nts.uk.at.view.kmk011.g {
     
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     
-    import CreateHistoryCommand = nts.uk.at.view.kmk011.f.model.CreateHistoryCommand;
+    import CreateHistoryCommand = nts.uk.at.view.kmk011.g.model.CreateHistoryCommand;
     
     export module viewmodel {
         export class ScreenModel {
@@ -13,11 +13,6 @@ module nts.uk.at.view.kmk011.f {
             dateValue: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
-            
-            // radio group
-            itemListRadio: KnockoutObservableArray<any>;
-            selectedId: KnockoutObservable<number>;
-            enableRadio: KnockoutObservable<boolean>;
             
             constructor(){
                 let _self = this;
@@ -38,23 +33,19 @@ module nts.uk.at.view.kmk011.f {
                 _self.endDateString.subscribe(function(value){
                     _self.dateValue().endDate = value;   
                     _self.dateValue.valueHasMutated();      
-                });
-                
-                //radio group
-                _self.itemListRadio = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText("KMK011_73")),
-                    new BoxModel(1, nts.uk.resource.getText("KMK011_29"))
-                ]);
-                _self.selectedId = ko.observable(1);
-                _self.enableRadio = ko.observable(true);
-                
+                });  
             }
             
             public start_page() : JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
-                dfd.resolve();
+                service.findByHistoryId(nts.uk.ui.windows.getShared('history')).done((res: CreateHistoryCommand) => {
+                    _self.startDateString(res.startDate);
+                    _self.endDateString(res.endDate);
+                    dfd.resolve();
+                });
+                
                 return dfd.promise();
             }
             
@@ -62,21 +53,13 @@ module nts.uk.at.view.kmk011.f {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
-                var data = new CreateHistoryCommand(null,_self.dateValue().startDate, _self.dateValue().endDate);
+                var data = new CreateHistoryCommand(nts.uk.ui.windows.getShared('history'),_self.dateValue().startDate, _self.dateValue().endDate);
                 
-                if (_self.selectedId() == CreateMode.NEW){
-                    service.add(data).done(() => {
-                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            dfd.resolve();
-                         });
-                    });
-                } else {
-                    service.copy(data).done(() => {
-                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            dfd.resolve();
-                         });
-                    });
-                }
+                service.save(data).done(() => {
+                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        dfd.resolve();
+                     });
+                });
               
                 return dfd.promise();
             }
@@ -85,21 +68,6 @@ module nts.uk.at.view.kmk011.f {
             public close() : void {
                 nts.uk.ui.windows.close();    
             }
-        }
-        
-        export class BoxModel {
-            id: number;
-            name: string;
-            constructor(id: number, name: string){
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }
-        
-        export class CreateMode {
-            static COPY_DATA= 0;
-            static NEW = 1;
         }
     }
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryGetMemento;
@@ -21,10 +23,10 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 	private String historyId;
 	
 	/** The start date. */
-	private GeneralDate startDate;
+	private String startDate;
 	
 	/** The end date. */
-	private GeneralDate endDate;
+	private String endDate;
 	
 	/**
 	 * Instantiates a new company divergence reference time history command.
@@ -47,7 +49,7 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 	@Override
 	public List<DateHistoryItem> getHistoryItems() {
 		String histId = null;
-		if(this.historyId.isEmpty()){
+		if(StringUtils.isEmpty(this.historyId)){
 			histId = UUID.randomUUID().toString();
 		} else {
 			histId = this.historyId;
@@ -55,7 +57,7 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 		
 		List<DateHistoryItem> list = new ArrayList<DateHistoryItem>();
 		
-		DatePeriod period = new DatePeriod(this.startDate, this.endDate);
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"), GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
 		list.add(new DateHistoryItem(histId, period));
 		return list;
 	}

@@ -83,4 +83,16 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 
 	}
 
+	@Override
+	public void addDefaultDataWhenCreateHistory(String historyId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

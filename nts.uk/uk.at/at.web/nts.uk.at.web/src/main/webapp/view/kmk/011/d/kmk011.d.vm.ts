@@ -15,6 +15,8 @@ module nts.uk.at.view.kmk011.d {
         export class ScreenModel {
             screenE: KnockoutObservable<any>;
             
+            useUnitSetting: KnockoutObservable<boolean>;
+            
             //divergence time setting
             emailAuth: KnockoutObservable<string>;
             myMessage: KnockoutObservable<string>;
@@ -36,6 +38,7 @@ module nts.uk.at.view.kmk011.d {
             constructor() {
                 var _self = this;
                 _self.screenE = ko.observable(new viewModelScreenE.ScreenModel());
+                _self.useUnitSetting = ko.observable(true);
                 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
@@ -100,11 +103,11 @@ module nts.uk.at.view.kmk011.d {
                         _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.alarmTime);
                         _self.mapObj.get(item.divergenceTimeNo).errorTime(item.errorTime);
                     });
-                    response2.forEach((item1: any) => {
-                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeNo(item1.divergenceTimeNo);
-                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeUseSet(item1.divergenceTimeUseSet);
-                        _self.mapObj2.get(item1.divergenceTimeNo).alarmTime(item1.divergenceTimeName);
-                    });
+//                    response2.forEach((item1: any) => {
+//                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeNo(item1.divergenceTimeNo);
+//                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeUseSet(item1.divergenceTimeUseSet);
+//                        _self.mapObj2.get(item1.divergenceTimeNo).alarmTime(item1.divergenceTimeName);
+//                    });
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -119,10 +122,11 @@ module nts.uk.at.view.kmk011.d {
                 //fill list history
                 service.getAllHistory().done((response: any) => {
                     if (response != null){
-                        response.forEach(function(item: CompanyDivergenceReferenceTimeHistoryDto){
+                        response.forEach(function(item: CompanyDivergenceReferenceTimeHistoryDto) {
                               textDisplay = item.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.endDate;
                               historyData.push(new HistModel(item.historyId, textDisplay));
                         });
+                        _self.selectedHist(historyData[0].historyId);
                         _self.enable_button_edit(true);
                         _self.enable_button_delete(true);
                     } else {
@@ -140,7 +144,9 @@ module nts.uk.at.view.kmk011.d {
             private findAllManageUseUnit() : JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-                
+                service.getUseUnitSetting().done((response) => {
+                    _self.useUnitSetting(response.workTypeUseSet);
+                });
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -175,13 +181,16 @@ module nts.uk.at.view.kmk011.d {
             
             // history mode
             public createMode() : void {
+                let _self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
-                       
+                      _self.start_page(SideBarTabIndex.FIRST);
                 });
             }
             public editMode() : void {
-                 nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
-                       
+                let _self = this;
+                nts.uk.ui.windows.setShared('history', _self.selectedHist());
+                nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
+                       _self.start_page(SideBarTabIndex.FIRST);
                 });
             }
             public deleteMode() : void {

@@ -1,23 +1,18 @@
-module nts.uk.at.view.kmk011.f {
+module nts.uk.at.view.kmk011.g {
     export module service {
         /**
          * define path to service
          */
         var path: any = {
             save: "at/record/divergence/time/history/companyDivergenceRefTime/save",
-            copy: "at/record/divergence/time/history/companyDivergenceRefTime/copy",
             findByHistId: "at/record/divergence/time/history/companyDivergenceRefTime/find"
         };
         
-        export function add(data: model.CreateHistoryCommand): JQueryPromise<any> {
+        export function save(data: model.CreateHistoryCommand): JQueryPromise<any> {
             return nts.uk.request.ajax("at", path.save, data);
         }
         
-         export function copy(data: model.CreateHistoryCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.copy, data);
-        }
-        
-        export function findByHistoryId(historyId: string): JQueryPromise<any> {
+        export function findByHistoryId(historyId: string): JQueryPromise<model.CreateHistoryCommand> {
             return nts.uk.request.ajax("at", path.findByHistId + "/" + historyId);
         }
     }

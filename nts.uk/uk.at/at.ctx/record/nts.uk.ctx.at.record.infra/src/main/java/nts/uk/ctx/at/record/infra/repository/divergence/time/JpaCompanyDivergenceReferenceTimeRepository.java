@@ -152,4 +152,10 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 
 		return entity;
 	}
+
+	@Override
+	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
+		// TODO Auto-generated method stub
+		
+	}
 }

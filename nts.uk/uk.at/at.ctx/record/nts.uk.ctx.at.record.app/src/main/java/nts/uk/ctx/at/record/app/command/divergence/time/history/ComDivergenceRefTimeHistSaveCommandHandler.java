@@ -21,9 +21,6 @@ public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<C
 	@Override
 	protected void handle(CommandHandlerContext<ComDivergenceRefTimeHistSaveCommand> context) {
 		
-		
-//		String companyId = AppContexts.user().companyId();
-		
 		ComDivergenceRefTimeHistSaveCommand command = context.getCommand();
 		
 		CompanyDivergenceReferenceTimeHistory domain = new CompanyDivergenceReferenceTimeHistory(command);

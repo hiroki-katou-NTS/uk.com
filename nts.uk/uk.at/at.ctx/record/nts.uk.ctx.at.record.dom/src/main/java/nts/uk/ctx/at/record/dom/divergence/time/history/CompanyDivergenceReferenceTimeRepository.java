@@ -25,12 +25,11 @@ public interface CompanyDivergenceReferenceTimeRepository {
 	 * @return the list
 	 */
 	List<CompanyDivergenceReferenceTime> findAll(String histId);
-	
-	
+		
 	/**
 	 * Update.
 	 *
-	 * @param domain the domain
+	 * @param listDomain the list domain
 	 */
 	void update(List<CompanyDivergenceReferenceTime> listDomain);
 	
@@ -47,4 +46,12 @@ public interface CompanyDivergenceReferenceTimeRepository {
 	 * @param historyId the history id
 	 */
 	void addDefaultDataWhenCreateHistory(String historyId);
+	
+	/**
+	 * Copy data from latest history.
+	 *
+	 * @param targetHistId the target hist id
+	 * @param destHistId the dest hist id
+	 */
+	void copyDataFromLatestHistory(String targetHistId, String destHistId);
 }

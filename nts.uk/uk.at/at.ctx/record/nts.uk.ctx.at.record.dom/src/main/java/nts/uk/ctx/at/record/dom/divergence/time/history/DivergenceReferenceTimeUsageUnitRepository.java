@@ -1,14 +1,8 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-public interface DivergenceReferenceTimeUsageUnitRepository {
+import java.util.Optional;
 
-	/**
-	 * Adds the.
-	 *
-	 * @param domain
-	 *            the domain
-	 */
-	void add(DivergenceReferenceTimeUsageUnit domain);
+public interface DivergenceReferenceTimeUsageUnitRepository {
 
 	/**
 	 * Update.
@@ -25,5 +19,5 @@ public interface DivergenceReferenceTimeUsageUnitRepository {
 	 *            the company id
 	 * @return the divergence reference time usage unit
 	 */
-	DivergenceReferenceTimeUsageUnit findByCompanyId(String companyId);
+	Optional<DivergenceReferenceTimeUsageUnit> findByCompanyId(String companyId);
 }
