@@ -127,10 +127,10 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
 
 	public KrqdtAppHolidayWork fromDomainValue(AppHolidayWork appHolidayWork){
 		this.version = appHolidayWork.getVersion();
-		this.setWorkTypeCode(appHolidayWork.getWorkTypeCode().v());
-		this.setWorkTimeCode(appHolidayWork.getWorkTimeCode().v());
-		this.setWorkClockStart1(appHolidayWork.getWorkClock1().getStartTime().v());
-		this.setWorkClockEnd1(appHolidayWork.getWorkClock1().getEndTime().v());
+		this.setWorkTypeCode(appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v());
+		this.setWorkTimeCode(appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v());
+		this.setWorkClockStart1(appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v());
+		this.setWorkClockEnd1(appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v());
 		this.setGoAtr1(appHolidayWork.getWorkClock1().getGoAtr().value);
 		this.setBackAtr1(appHolidayWork.getWorkClock1().getBackAtr().value);
 		this.setWorkClockStart2(appHolidayWork.getWorkClock2().getStartTime() == null ? null : appHolidayWork.getWorkClock2().getStartTime().v());
@@ -156,8 +156,8 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
 								holidayWorkInputInput.getAttendanceType().value,
 								holidayWorkInputInput.getFrameNo()
 						), 
-						holidayWorkInputInput.getStartTime().v(), 
-						holidayWorkInputInput.getEndTime().v(), 
+						holidayWorkInputInput.getStartTime() == null ? null : holidayWorkInputInput.getStartTime().v(), 
+						holidayWorkInputInput.getEndTime() == null ? null : holidayWorkInputInput.getEndTime().v(), 
 						holidayWorkInputInput.getApplicationTime().v());
 				this.holidayWorkInputs.add(krqdtOvertimeInput);
 				return null;

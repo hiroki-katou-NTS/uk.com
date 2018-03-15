@@ -69,15 +69,16 @@ public class CompareRange<V> extends CheckedCondition {
     public boolean checkRange(Integer targetV, Function<V, Integer> value) {
         Integer startV = value.apply(startValue);
         Integer endV = value.apply(endValue);
+        
         switch (this.compareOperator) {
             case BETWEEN_RANGE_CLOSED:
-                return targetV.compareTo(startV) > 0 && targetV.compareTo(endV) < 0;
-            case BETWEEN_RANGE_OPEN:
                 return targetV.compareTo(startV) >= 0 && targetV.compareTo(endV) <= 0;
+            case BETWEEN_RANGE_OPEN:
+                return targetV.compareTo(startV) > 0 && targetV.compareTo(endV) < 0;
             case OUTSIDE_RANGE_CLOSED:
-                return targetV.compareTo(startV) < 0 || targetV.compareTo(endV) > 0;
-            case OUTSIDE_RANGE_OPEN:
                 return targetV.compareTo(startV) <= 0 || targetV.compareTo(endV) >= 0;
+            case OUTSIDE_RANGE_OPEN:
+                return targetV.compareTo(startV) < 0 || targetV.compareTo(endV) > 0;
             default:
                 return false;
         }

@@ -26,10 +26,13 @@ public class EachStatutoryHolidayWorkTime {
 		switch(statutoryAtr) {
 		case WithinPrescribedHolidayWork:
 			statutory = statutory.addMinutes(time.valueAsMinutes());
+			break;
 		case ExcessOfStatutoryHolidayWork:
 			excess = excess.addMinutes(time.valueAsMinutes());
+			break;
 		case PublicHolidayWork:
 			publicholiday = publicholiday.addMinutes(time.valueAsMinutes());
+			break;
 		default:
 			throw new RuntimeException("unknown statutoryAtr:"+statutoryAtr);
 		}

@@ -9,6 +9,7 @@ module nts.uk.ui.jqueryExtentions {
     module ntsDatepicker {
         
         let CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
+        let PICKER_CLASSES = ["datepicker-top-left", "datepicker-top-right", "datepicker-bottom-left", "datepicker-bottom-right"];
         
         $.fn.ntsDatepicker = function(action: string, index?: number): any {
             var $container = $(this);
@@ -58,6 +59,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 CONTAINER_CLASSES.forEach(cls => container.removeClass(cls));
+                PICKER_CLASSES.forEach(cls => currentShowContainer.removeClass(cls)); 
                 
                 let containerHeight = container.outerHeight(true); 
                 let containerWidth = container.outerWidth(true);
