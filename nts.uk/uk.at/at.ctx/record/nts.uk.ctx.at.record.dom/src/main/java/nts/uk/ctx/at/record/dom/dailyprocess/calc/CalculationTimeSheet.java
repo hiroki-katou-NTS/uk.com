@@ -163,7 +163,7 @@ public abstract class CalculationTimeSheet {
 	 * @param conditionAtr　条件
 	 * @return　控除項目の時間帯
 	 */
-	private List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
+	public List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
 		val returnList = (dedAtr.isDeduction())?this.deductionTimeSheet:this.recordedTimeSheet;
 		switch(conditionAtr) {
 			case BREAK:
@@ -351,11 +351,14 @@ public abstract class CalculationTimeSheet {
 	 * @return 切り出したl控除時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> recreateDeductionItemBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore, DeductionAtr dedAtr){
+		
 		List<TimeSheetOfDeductionItem> deductionList = new ArrayList<>();
 		if(dedAtr.isDeduction()) {
+			
 			deductionList = this.deductionTimeSheet;
 		}
 		else {
+			
 			deductionList = this.recordedTimeSheet;
 		}
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
@@ -363,7 +366,7 @@ public abstract class CalculationTimeSheet {
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			
 			if(deductionItem.contains(baseTime)) {
-				//returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
+				returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
 				returnList.add(deductionItem);
 			}
 			else if(deductionItem.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {

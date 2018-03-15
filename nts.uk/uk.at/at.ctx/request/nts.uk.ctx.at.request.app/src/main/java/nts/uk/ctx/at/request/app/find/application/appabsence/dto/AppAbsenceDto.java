@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 
 @Data
 public class AppAbsenceDto {
@@ -61,7 +62,7 @@ public class AppAbsenceDto {
 	/**
 	 * 就業時間帯変更する
 	 */
-	private boolean changeWorkHour;
+	private boolean changeWorkHourFlg;
 	/**
 	 * 終日半日休暇区分
 	 */
@@ -116,4 +117,9 @@ public class AppAbsenceDto {
 	private boolean prePostFlg;
 	
 	private List<Integer> holidayAppTypes;
+	
+	/**
+	 * workTypes
+	 */
+	private List<AbsenceWorkType> workTypes;
 }

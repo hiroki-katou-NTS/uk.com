@@ -13,10 +13,9 @@ import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyDto;
 import nts.uk.ctx.sys.portal.dom.adapter.employee.EmployeeAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.employee.ShortEmployeeDto;
+import nts.uk.ctx.sys.portal.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
-import nts.uk.ctx.sys.portal.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.portal.dom.adapter.user.UserDto;
 import nts.uk.ctx.sys.portal.dom.permissionmenu.RoleType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -33,13 +32,13 @@ public class ChangeCompanyCommandHandler extends CommandHandler<ChangeCompanyCom
 	private EmployeeAdapter employeeAdapter;
 	
 	@Inject
-	private UserAdapter userAdapter;
-	
-	@Inject
 	private RoleGrantAdapter roleGrantAdapter;
 	
 	@Inject
 	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private PersonInfoAdapter personInfoAdapter;
 	
 	@Inject
 	private RoleSetPortalFinder roleSetFinder;
@@ -56,13 +55,11 @@ public class ChangeCompanyCommandHandler extends CommandHandler<ChangeCompanyCom
 			ShortEmployeeDto empDto = emp.get();
 			contextManager.changeCompany(userCtx.userId(), userCtx.personId(), userCtx.contractCode(),
 					empDto.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), empDto.getEmployeeId(), empDto.getEmployeeCode());
-			command.setPersonName(empDto.getPersonName());
 		} else {
-			Optional<UserDto> userOpt = userAdapter.getUserInfo(userCtx.userId());
 			contextManager.changeCompany(userCtx.userId(), userCtx.personId(), userCtx.contractCode(), 
 					command.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), null, null);
-			command.setPersonName(userOpt.map(u -> u.getUserName()).orElse(""));
 		}
+		command.setPersonName(personInfoAdapter.getBusinessName(userCtx.employeeId()));
 		
 		RoleIdSetter roleSetter = contextManager.roleIdSetter();
 		getRole(userCtx.userId(), command.getCompanyId(), RoleType.EMPLOYMENT).ifPresent(r -> roleSetter.forAttendance(r));
