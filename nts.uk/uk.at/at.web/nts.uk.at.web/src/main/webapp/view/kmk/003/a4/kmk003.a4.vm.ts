@@ -112,6 +112,43 @@ module a4 {
                 _self.selectedTab('tab-5');            
             }
         }
+        
+        /**
+         * Open Dialog Advance Setting
+         */
+        public openAdvanceSettingDialog(): void {
+            let _self = this;
+
+            nts.uk.ui.block.grayout();
+            
+            let dataObject: any = {
+                isFlow: _self.mainSettingModel.workTimeSetting.isFlow(),
+//                delFromEmTime: _self.model.commonSetting.lateEarlySet.commonSet.delFromEmTime(),       
+//                lateStampExactlyTimeIsLateEarly: _self.model.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(),
+//                lateGraceTime: _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.graceTime(),
+//                lateIncludeWorkingHour: _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.includeWorkingHour(),
+//                leaveEarlyStampExactlyTimeIsLateEarly: _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(),
+//                leaveEarlyGraceTime: _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.graceTime(),
+//                leaveEarlyIncludeWorkingHour: _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.includeWorkingHour()
+            };
+            nts.uk.ui.windows.setShared("KMK003_DIALOG_J_INPUT_DATA", dataObject);
+            nts.uk.ui.windows.sub.modal("/view/kmk/003/j/index.xhtml").onClosed(() => {
+                let outputDataObject: any = nts.uk.ui.windows.getShared("KMK003_DIALOG_J_OUTPUT_DATA");               
+                if (nts.uk.util.isNullOrUndefined(outputDataObject)) {
+                    return;    
+                }
+                
+//                _self.model.commonSetting.lateEarlySet.commonSet.delFromEmTime(outputDataObject.delFromEmTime);       
+//                _self.model.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(outputDataObject.lateStampExactlyTimeIsLateEarly);
+//                _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.graceTime(outputDataObject.lateGraceTime);
+//                _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.includeWorkingHour(outputDataObject.lateIncludeWorkingHour);
+//                _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(outputDataObject.leaveEarlyStampExactlyTimeIsLateEarly);
+//                _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.graceTime(outputDataObject.leaveEarlyGraceTime);
+//                _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.includeWorkingHour(outputDataObject.leaveEarlyIncludeWorkingHour);
+                
+                nts.uk.ui.block.clear();
+            });
+        }
     }
     export class Item {
         code: number;
