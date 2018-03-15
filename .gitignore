@@ -1,3 +1,26 @@
+#ignore project build folders
+**/build*
+**/bin*
+
+#ignore gradle cache folder
+**/.gradle*
+**/.nb-gradle*
+**/.settings*
+
+#ignore sass-cache folder
+**/.sass-cache*
+
+**/.metadata*
+**/.recommenders*
+**/taskArtifacts*
+
+#ignore all gradle project files
+*.classpath
+*.project
+*.launch
+*.class
+*.orig
+
 #ignore all js, map file
 **/*.js
 **/*.map
