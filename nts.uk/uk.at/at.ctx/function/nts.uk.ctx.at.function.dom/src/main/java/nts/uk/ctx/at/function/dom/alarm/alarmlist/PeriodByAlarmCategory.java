@@ -21,7 +21,7 @@ public class PeriodByAlarmCategory {
 	
 	public List<GeneralDate> getListDate() {
 		List<GeneralDate> result = Collections.emptyList();
-		for(GeneralDate date = GeneralDate.localDate(startDate.localDate()); date.after(endDate); date.addDays(1)) {
+		for(GeneralDate date = GeneralDate.localDate(startDate.localDate()); date.before(endDate); date.addDays(1)) {
 			result.add(date);
 		}
 		return result;
