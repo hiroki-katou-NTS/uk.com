@@ -5,10 +5,19 @@ import lombok.Getter;
 @Getter
 public class TimeAnnualLeaveMax {
 	
-	private Integer maxMinutes;
+	/**
+	 * 上限時間
+	 */
+	private MaxMinutes maxMinutes;
 	
-	private Integer usedMinutes;
+	/**
+	 * 使用時間
+	 */
+	private UsedMinutes usedMinutes;
 	
-	private Integer remainingMinutes;
+	/**
+	 * 残時間
+	 */
+	private RemainingMinutes remainingMinutes;
 
 }

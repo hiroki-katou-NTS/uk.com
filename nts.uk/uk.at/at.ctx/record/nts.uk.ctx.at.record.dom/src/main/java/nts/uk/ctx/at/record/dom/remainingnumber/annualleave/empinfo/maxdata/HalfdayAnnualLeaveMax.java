@@ -5,10 +5,19 @@ import lombok.Getter;
 @Getter
 public class HalfdayAnnualLeaveMax {
 	
-	private Integer maxTimes;
+	/**
+	 * 上限回数
+	 */
+	private MaxTimes maxTimes;
 	
-	private Integer usedTimes;
+	/**
+	 * 使用回数
+	 */
+	private UsedTimes usedTimes;
 	
-	private Integer remainingTimes;
+	/**
+	 * 残回数
+	 */
+	private RemainingTimes remainingTimes;
 
 }
