@@ -535,7 +535,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, appPre, reasonAppPre);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, appPre, reasonAppPre, null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -553,7 +553,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
 					}else{
-						group = new AppPrePostGroup("", appID, result.getLstFrameResult(), appPre, reasonAppPre);
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult(), appPre, reasonAppPre, null);
 					}
 				}
 				if(group != null){
@@ -571,7 +571,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			AppPrePostGroup group = null;
 			AppHolidayWorkFull appHdPost = repoAppDetail.getAppHolidayWorkInfo(companyId, appID);
 			CheckColorTime checkColor = null;
-			AppOverTimeInfoFull appPre = null;
+			AppHolidayWorkFull appPre = null;
 			String reasonAppPre = "";
 			//承認一覧表示設定.休出の事前申請
 			if(displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
@@ -580,7 +580,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(lstAppPre.isEmpty()){
 					checkColor = new CheckColorTime(appID, 1);
 				}else{
-					appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
+					appPre = repoAppDetail.getAppHolidayWorkInfo(companyId, lstAppPre.get(0).getAppID());
 					reasonAppPre = lstAppPre.get(0).getAppReason().v();
 					if(lstAppPre.get(0).getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL)){
 						checkColor = new CheckColorTime(appID, 1);
@@ -592,11 +592,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				if(!lstAppPre.isEmpty()){
-					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, appPre, reasonAppPre);
+					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, null, reasonAppPre, appPre);
 				}
 			}
-			//承認一覧表示設定.残業の実績
-			if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
+			//承認一覧表示設定.休出の実績
+			if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
 				TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time);
@@ -610,7 +610,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(group != null){
 					group.setTime(result.getLstFrameResult());
 				}else{
-					group = new AppPrePostGroup("", appID, result.getLstFrameResult(), appPre, reasonAppPre);
+					group = new AppPrePostGroup("", appID, result.getLstFrameResult(), null, reasonAppPre, appPre);
 				}
 			}
 			if(group != null){
@@ -790,7 +790,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
 			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
-			String empName = displaySet.equals(ShowName.SHOW) ? empRequestAdapter.getEmployeeName(app.getEmployeeID()) : "";
+			String empName = "";
+			String inpEmpName = null;
+			if(displaySet.equals(ShowName.SHOW)){
+				 empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
+				 inpEmpName = app.getEmployeeID().equals(app.getEnteredPersonID()) ? null : empRequestAdapter.getEmployeeName(app.getEnteredPersonID());
+			}
+			
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
@@ -812,7 +818,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
 			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
-					empName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
+					empName, inpEmpName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
 		}
 		return lstAppMasterInfo;
 	}

@@ -7,8 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -19,7 +17,10 @@ import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationRe
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
@@ -63,6 +64,10 @@ public class AppAbsenceFinder {
 	private ApplicationReasonRepository applicationReasonRepository;
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
+	@Inject
+	private AppAbsenceThreeProcess appAbsenceThreeProcess;
+	@Inject
+	private AppAbsenceFourProcess appAbsenceFourProcess;
 	
 	public AppAbsenceDto getAppForLeave(String appDate, String employeeID){
 		
@@ -126,9 +131,34 @@ public class AppAbsenceFinder {
 	 * @param alldayHalfDay
 	 * @return
 	 */
-	public AppAbsenceDto getAllDisplay(String startAppDate, String endAppDate, String workType,String employeeID,Integer holidayType,int alldayHalfDay){
+	public AppAbsenceDto getAllDisplay(String startAppDate, String endAppDate, boolean displayHalfDayValue,String employeeID,Integer holidayType,int alldayHalfDay){
+		if(employeeID == null){
+			employeeID = AppContexts.user().employeeId();
+		}
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceDto result = new AppAbsenceDto();
 		
-		return null;
+		// 1-1.新規画面起動前申請共通設定を取得する
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
+				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
+				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+		List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay);
+		result.setWorkTypes(workTypes);
+		if(CollectionUtil.isEmpty(workTypes)){
+			result.setChangeWorkHourFlg(false);
+		}else{
+			result.setChangeWorkHourFlg(this.appAbsenceFourProcess.getDisplayControlWorkingHours(workTypes.get(0).getWorkTypeCode(), hdAppSet, companyID));
+		}
+		if(holidayType == HolidayAppType.DIGESTION_TIME.value){
+			//TODO
+			//9.必要な時間を算出する
+		}else if(holidayType == HolidayAppType.SPECIAL_HOLIDAY.value){
+			//TODO
+			// 10.特別休暇の情報を取得する
+		}
+		return result;
 	}
 	public AppAbsenceDto getChangeAppDate(String startAppDate, String endAppDate,String employeeID){
 		AppAbsenceDto result = new AppAbsenceDto();
