@@ -20,6 +20,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class DiffTimeStampReflectTimezonePolicyImpl implements DiffTimeStampReflectTimezonePolicy {
 
+	private static final Integer WORK_NO_1 = 1;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,7 +58,7 @@ public class DiffTimeStampReflectTimezonePolicyImpl implements DiffTimeStampRefl
 				be.addMessage("Msg_516");
 			}
 
-			if (stampReflectTz.getWorkNo().v().equals(1)) {
+			if (WORK_NO_1.equals(stampReflectTz.getWorkNo().v())) {
 				// Msg_1028
 				if (GoLeavingWorkAtr.GO_WORK.equals(stampReflectTz.getClassification())
 						&& stampReflectTz.getStartTime().greaterThan(timezone.getTimezoneShiftOne().getStart())) {
