@@ -52,13 +52,13 @@ public class GrantHolidayTblFinder {
 														x.getLimitTimeHd(), x.getLimitDayYear()))
 				.collect(Collectors.toList());
 		
-		GrantHdTbl.validateInput(grantHolidayList);
+//		GrantHdTbl.validateInput(grantHolidayList);
 		
 		List<GrantHolidayTblDto> result = new ArrayList<>();
 		
 		// calculate date
 		for (GrantHdTbl item : grantHolidayList) {
-			item.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
+//			item.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
 			result.add(GrantHolidayTblDto.fromDomain(item));
 		}
 		

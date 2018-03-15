@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Month;
 /**
  * 勤続年数テーブル
  * @author yennth
  *
  */
-@Value
+@Data
 @AllArgsConstructor
 public class LengthServiceTbl extends AggregateRoot{
 	/* 会社ID */
@@ -37,6 +40,7 @@ public class LengthServiceTbl extends AggregateRoot{
 	
 	/* 月数 */
 	private Month month;
+	private GeneralDate grantDate;
 	
 	
 	/**
@@ -66,10 +70,20 @@ public class LengthServiceTbl extends AggregateRoot{
 			}
 			yearMonths.add(new YearMonthHoliday(currentCondition.getYear().v(), currentCondition.getMonth().v()));
 						
-//			// 勤続年数が入力されている場合、付与日数を入力すること
-//			if (currentCondition.getGrantReferenceDate() == null || currentCondition.getGrantReferenceDate().value == null) {
-//				throw new BusinessException("Msg_270");
-//			}
+			// 年数、月数ともに未入力の場合登録不可
+			if (currentCondition.getYear() == null && currentCondition.getMonth() == null) {
+				throw new BusinessException("Can't register 年数、月数ともに未入力の場合登録不可");
+			}
+			
+			// 年数が入力されており、月数が未入力の場合「X年0ヶ月」として登録する
+			if(currentCondition.getYear() != null &&  currentCondition.getMonth() == null){
+				currentCondition.setYear(new LimitedTimeHdDays(0));
+			}
+			
+			// 月数が入力されており、年数が未入力の場合「0年Xヶ月」として登録する
+			if(currentCondition.getYear() == null &&  currentCondition.getMonth() != null){
+				currentCondition.setMonth(new Month(0));
+			}
 						
 			if (i == 0) {
 				continue;
@@ -93,4 +107,44 @@ public class LengthServiceTbl extends AggregateRoot{
 									new LimitedTimeHdDays(day), new Month(month));
 	}
 	
+	/**
+	 * 
+	 * @param grantHolidayList
+	 */
+	public void calculateGrantDate(GeneralDate referenceDate, GeneralDate simultaneousGrantDate,
+			UseSimultaneousGrant useSimultaneousGrant) {
+		GeneralDate c = GeneralDate.ymd(referenceDate.year(), referenceDate.month(), referenceDate.day());
+		c = c.addMonths(month.v());
+		c = c.addYears(year.v());
+		
+		if (UseSimultaneousGrant.USE.equals(useSimultaneousGrant)) {
+			if (GrantSimultaneity.USE.equals(this.allowStatus)) {
+				// 処理名4.付与日シュミレーション計算処理について
+				if ((c.month() == simultaneousGrantDate.month() && c.day() >= simultaneousGrantDate.day()) || c.month() > simultaneousGrantDate.month()) {
+					this.grantDate = GeneralDate.ymd(c.year(), simultaneousGrantDate.month(), simultaneousGrantDate.day());
+				} else {
+					this.grantDate = GeneralDate.ymd(c.year() -1 , simultaneousGrantDate.month(), simultaneousGrantDate.day());
+				}
+			} else {
+				this.grantDate = c;
+			}
+
+		} else {
+			// 処理名3.付与日シュミレーション計算処理について
+			this.grantDate = c;
+		}
+	}
+
+	public LengthServiceTbl(String companyId, YearHolidayCode yearHolidayCode, GrantNum grantNum,
+			GrantSimultaneity allowStatus, GrantReferenceDate standGrantDay, LimitedTimeHdDays year, Month month) {
+		super();
+		this.companyId = companyId;
+		this.yearHolidayCode = yearHolidayCode;
+		this.grantNum = grantNum;
+		this.allowStatus = allowStatus;
+		this.standGrantDay = standGrantDay;
+		this.year = year;
+		this.month = month;
+	}
+
 }
