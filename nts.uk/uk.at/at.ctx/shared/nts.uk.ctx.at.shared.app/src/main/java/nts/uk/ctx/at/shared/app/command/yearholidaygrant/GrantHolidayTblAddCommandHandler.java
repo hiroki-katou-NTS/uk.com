@@ -44,7 +44,7 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 		
 		List<GrantHdTbl> grantHolidays = command.getGrantHolidayList().stream()
 				.map(x->x.toDomain(companyId)).collect(Collectors.toList());
-		GrantHdTbl.validateInput(grantHolidays);
+//		GrantHdTbl.validateInput(grantHolidays);
 		
 		// remove all
 		grantYearHolidayRepo.remove(companyId, command.getConditionNo(), command.getYearHolidayCode());

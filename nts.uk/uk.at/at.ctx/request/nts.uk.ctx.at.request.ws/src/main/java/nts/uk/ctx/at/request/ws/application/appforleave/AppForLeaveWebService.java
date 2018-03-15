@@ -21,10 +21,25 @@ public class AppForLeaveWebService extends WebService{
 	public AppAbsenceDto getAppForLeaveStart(Param param) {
 		return this.appForLeaveFinder.getAppForLeave(param.getAppDate(),param.getEmployeeID());
 	}
+	@POST
+	@Path("getAllAppForLeave")
+	public AppAbsenceDto getAppForLeaveAll(ParamGetALL param) {
+		return this.appForLeaveFinder.getAllDisplay(param.getStartAppDate(),param.getEndAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
+	}
 }
 
 @Value
 class Param{
 	private String appDate;
 	private String employeeID;
+}
+
+@Value
+class ParamGetALL{
+	private String startAppDate;
+	private String endAppDate;
+	private String employeeID;
+	private boolean displayHalfDayValue;
+	private Integer holidayType;
+	private int alldayHalfDay;
 }

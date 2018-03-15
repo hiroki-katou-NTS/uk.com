@@ -242,10 +242,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
                     self.selectedDate(dateRange.startDate);
                     var elementDate = dateRange.startDate;
-                    while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
-                        self.lstDate.push({ date: elementDate });
-                        elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                    }
+                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
+                            self.lstDate.push({ date: elementDate });
+                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+                        }
+                }
                 }
             });
             self.dateRanger({

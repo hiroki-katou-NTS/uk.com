@@ -101,102 +101,111 @@
 								value: holidayTypeCode,
 								enable: true }"></div>
 		</div>
-		<div class="valign-center-kaf006  control-group-kaf006"
-			data-bind="visible: contentFlg">
-			<!--A5_1 勤務種類-->
-			<div class="lblTitle-kaf006 cm-column-kaf006"
-				data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_16')}</div>
-			<!--A5_2 勤務種類一覧-->
-			<div tabindex="13" class="combo-box-kaf006"
-				data-bind="ntsComboBox: {name: '#[KAF006_16]', 
+		<div data-bind = "visible : displayStartFlg">
+			<div class="valign-center-kaf006  control-group-kaf006"
+				data-bind="visible: contentFlg">
+				<!--A5_1 勤務種類-->
+				<div class="lblTitle-kaf006 cm-column-kaf006"
+					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_16')}</div>
+				<!--A5_2 勤務種類一覧-->
+				<div tabindex="13" class="combo-box-kaf006"
+					data-bind="ntsComboBox: {name: '#[KAF006_16]', 
 								options: typeOfDutys,
 								optionsValue: 'typeOfDutyID',
 								optionsText: 'typeOfDutyName',
 								value: selectedTypeOfDuty,
 								enable: true}">
-			</div>
-			<!--A5_3 半日の組み合わせを表示-->
-			<div class=""
-				data-bind="ntsCheckBox: { checked: displayHalfDayValue, enable: selectedValue() == 0, text: '#{i18n.getText('KAF006_17')}'}"></div>
-		</div>
-		<div data-bind ="visible:displayChangeWorkHour">
-			<div class="valign-center-kaf006 control-group-kaf006">
-				<!--A6_1 就業時間帯を変更する-->
+				</div>
+				<!--A5_3 半日の組み合わせを表示-->
 				<div class=""
-					data-bind="ntsCheckBox: { checked: changeWorkHourValue, enable: true, text: '#{i18n.getText('KAF006_18')}'}"></div>
-				<!--A6_2 罫線-->
-				<HR data-bind=""
-					style="width: 1000px;"></HR>
+					data-bind="ntsCheckBox: { checked: displayHalfDayValue, enable: selectedValue() == 0, text: '#{i18n.getText('KAF006_17')}'}"></div>
 			</div>
-			<div class="valign-center-kaf006 control-group-kaf006 margin-left-for-workChange-kaf006">
-				<div class="table">
-					<div class="cell valign-top-kaf006 cm-column2-kaf006">
-						<!--A6_3 就業時間帯-->
-						<div class="lblTitle-kaf006"
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_19')}</div>
-					</div>
-					<div class="cell valign-top-kaf006 cm-column2-kaf006">
-						<!--A6_4 就業時間帯選択-->
-						<button class="proceed"
-							data-bind="click: btnSelectWorkTimeZone, enable : changeWorkHourValue">#{i18n.getText('KAF006_20')}</button>
-					</div>
-					<div class="cell valign-center-kaf006">
-						<!--A6_5 就業時間帯選択対象-->
-						<label class="row-cell-margin" data-bind="">#{i18n.getText('KAF006_21')}</label>
-					</div>
+			<div data-bind="visible:displayChangeWorkHour">
+				<div class="valign-center-kaf006 control-group-kaf006">
+					<!--A6_1 就業時間帯を変更する-->
+					<div class=""
+						data-bind="ntsCheckBox: { checked: changeWorkHourValue, enable: true, text: '#{i18n.getText('KAF006_18')}'}"></div>
+					<!--A6_2 罫線-->
+					<HR data-bind="" style="width: 1000px;"></HR>
 				</div>
-			</div>
-			<div class="valign-center-kaf006 control-group-kaf006 margin-left-for-workChange-kaf006">
-				<div class="table">
-					<div class="cell valign-top-kaf006 cm-column2-kaf006">
-						<!--A6_6 勤務時間-->
-						<div class="lblTitle-kaf006"
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_22')}</div>
-					</div>
-					<div class="cell valign-top-kaf006 cm-column2-kaf006">
-						<div>
-							<!--A6_7 開始時刻-->							
-							<input  class="row-cell-margin inputDate-kaf006 right-content-kaf006" id="inpStartTime2"
-								data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
-							<!--A6_8 ～-->									
-							<label class="valign-center-kaf006 link-label-kaf006">#{i18n.getText('KAF005_39')}</label>
+				<div
+					class="valign-center-kaf006 control-group-kaf006 margin-left-for-workChange-kaf006">
+					<div class="table">
+						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+							<!--A6_3 就業時間帯-->
+							<div class="lblTitle-kaf006"
+								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_19')}</div>
 						</div>
-					</div>
-					<div class="cell valign-center-kaf006">
-						<div>
-						<!--A6_9 終了時刻-->
-						<input tabindex="11" class="row-cell-margin inputDate-kaf006 right-content-kaf006" id="inpEndTime2"
-								data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
+						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+							<!--A6_4 就業時間帯選択-->
+							<button class="proceed"
+								data-bind="click: btnSelectWorkTimeZone, enable : changeWorkHourValue">#{i18n.getText('KAF006_20')}</button>
+						</div>
+						<div class="cell valign-center-kaf006">
+							<!--A6_5 就業時間帯選択対象-->
+							<label class="row-cell-margin" data-bind="">#{i18n.getText('KAF006_21')}</label>
 						</div>
 					</div>
 				</div>
+				<div
+					class="valign-center-kaf006 control-group-kaf006 margin-left-for-workChange-kaf006">
+					<div class="table">
+						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+							<!--A6_6 勤務時間-->
+							<div class="lblTitle-kaf006"
+								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_22')}</div>
+						</div>
+						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+							<div>
+								<!--A6_7 開始時刻-->
+								<input
+									class="row-cell-margin inputDate-kaf006 right-content-kaf006"
+									id="inpStartTime2"
+									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
+								<!--A6_8 ～-->
+								<label class="valign-center-kaf006 link-label-kaf006">#{i18n.getText('KAF005_39')}</label>
+							</div>
+						</div>
+						<div class="cell valign-center-kaf006">
+							<div>
+								<!--A6_9 終了時刻-->
+								<input tabindex="11"
+									class="row-cell-margin inputDate-kaf006 right-content-kaf006"
+									id="inpEndTime2"
+									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-		<!--定型理由 -->
-		<div class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
-			data-bind="if: typicalReasonDisplayFlg">
-			<!--A7_1 申請定型理由-->
-			<div class="lblTitle-kaf006 cm-column-kaf006" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
-			<!--A7_2 申請定型理由-->
-			<div tabindex="15" class="combo-box-kaf006"
-				data-bind="ntsComboBox: {name: '#[KAF006_24]', 
+			<!--定型理由 -->
+			<div
+				class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
+				data-bind="if: typicalReasonDisplayFlg">
+				<!--A7_1 申請定型理由-->
+				<div class="lblTitle-kaf006 cm-column-kaf006"
+					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
+				<!--A7_2 申請定型理由-->
+				<div tabindex="15" class="combo-box-kaf006"
+					data-bind="ntsComboBox: {name: '#[KAF006_24]', 
 								options: reasonCombo,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: true,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
+				</div>
 			</div>
-		</div>
-		<!-- 申請理由（ラベル) -->
-		<div class="cf valign-top-kaf006 control-group-kaf006"
-			data-bind="if: displayAppReasonContentFlg">
-			<!--A7_3 申請理由-->
-			<div class="lblTitle-kaf006 cm-column-kaf006" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF006_26')}</div>
-			<!--A7_4 申請理由-->
-			<div id="multiline">
-				<textarea tabindex="16" id="appReason" class="textarea-kaf006"
-					data-bind="ntsMultilineEditor: {name: '#[KAF006_26]', 
+			<!-- 申請理由（ラベル) -->
+			<div class="cf valign-top-kaf006 control-group-kaf006"
+				data-bind="if: displayAppReasonContentFlg">
+				<!--A7_3 申請理由-->
+				<div class="lblTitle-kaf006 cm-column-kaf006"
+					data-bind="ntsFormLabel: {}">#{i18n.getText('KAF006_26')}</div>
+				<!--A7_4 申請理由-->
+				<div id="multiline">
+					<textarea tabindex="16" id="appReason" class="textarea-kaf006"
+						data-bind="ntsMultilineEditor: {name: '#[KAF006_26]', 
 								value: multilContent,
 								option: {
 									resizeable: false,
@@ -204,6 +213,7 @@
 			                    	required: requiredReason()
 			                   	},
 							}" />
+				</div>
 			</div>
 		</div>
 	</div>
