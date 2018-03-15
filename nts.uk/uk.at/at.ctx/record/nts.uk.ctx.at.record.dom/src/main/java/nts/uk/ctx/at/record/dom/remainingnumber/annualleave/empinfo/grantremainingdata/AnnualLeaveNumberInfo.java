@@ -8,12 +8,24 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
 @Getter
 public class AnnualLeaveNumberInfo {
 	
+	/**
+	 * 付与数
+	 */
 	private AnnualLeaveGrantNumber grantNumber;
 	
+	/**
+	 * 使用数
+	 */
 	private AnnualLeaveUsedNumber usedNumber;
 	
+	/**
+	 * 残数
+	 */
 	private AnnualLeaveRemainingNumber remainingNumber;
 	
-	private float usedPercent;
+	/**
+	 * 使用率
+	 */
+	private AnnualLeaveUsedPercent usedPercent;
 
 }

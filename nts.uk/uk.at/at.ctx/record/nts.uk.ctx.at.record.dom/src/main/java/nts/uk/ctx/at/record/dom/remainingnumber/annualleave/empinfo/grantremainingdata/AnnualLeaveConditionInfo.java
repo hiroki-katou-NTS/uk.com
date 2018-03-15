@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.YearDayNumber;
 
 @Getter
 public class AnnualLeaveConditionInfo {
 	
-	private Float prescribedDays;
+	private YearDayNumber prescribedDays;
 	
-	private Float deductedDays;
+	private YearDayNumber deductedDays;
 	
-	private Float workingDays;
+	private YearDayNumber workingDays;
 	
 }
