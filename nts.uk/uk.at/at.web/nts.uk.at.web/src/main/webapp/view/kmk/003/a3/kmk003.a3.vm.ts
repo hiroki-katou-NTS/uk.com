@@ -329,7 +329,7 @@ module a3 {
                      key: "elapsedTime",
                      defaultValue: ko.observable(0), 
                      width: 100, 
-                     template: `<input data-bind="ntsTimeEditor: {
+                     template: `<input class="time-edior-column" data-bind="ntsTimeEditor: {
                             constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',
@@ -510,14 +510,6 @@ module a3 {
         constructor() {
         }
 
-        private getData() {
-            let self = this;
-            // service.findWorkTimeSetByCode()
-        }
-
-        /**
-         * Update
-         */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
