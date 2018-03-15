@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 @Data
@@ -58,6 +60,8 @@ public class HolidayShipmentDto {
 	String employeeID;
 
 	private boolean manualSendMailAtr;
+
+	List<ApplicationReasonDto> appReasons;
 
 	/**
 	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null

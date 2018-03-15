@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf011.shr.screenModel {
 
-    import dialog = nts.uk.ui.dialog;
+    import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
 
@@ -27,9 +27,9 @@ module nts.uk.at.view.kaf011.shr.screenModel {
 
         holidayWk: KnockoutObservable<WorkItems> = ko.observable(new WorkItems());
 
-        stereoTypes = ko.observableArray([]);
+        appReasons = ko.observableArray([]);
 
-        stereoSelectedType: KnockoutObservable<number> = ko.observable(0);
+        appReasonSelectedType: KnockoutObservable<number> = ko.observable(0);
 
         reason: KnockoutObservable<string> = ko.observable('');
 
@@ -107,12 +107,13 @@ module nts.uk.at.view.kaf011.shr.screenModel {
                 self.prePostSelectedCode(data.preOrPostType);
                 self.takingOutWk().wkTypes(data.takingOutWkTypes || []);
                 self.holidayWk().wkTypes(data.holidayWkTypes || []);
+                self.appReasons(data.appReasons || []);
             }
         }
 
         register() {
             let self = this;
-            dialog.alertError({ messageId: "register" });
+            dialog({ messageId: "register" });
         }
 
         openKDL009() {
@@ -200,6 +201,7 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         takingOutWkTypes: Array<any>;
         holidayWkTypes: Array<any>;
         preOrPostType: any;
+        appReasons: Array<any>;
     }
     interface IWorkType {
         /* 勤務種類コード */

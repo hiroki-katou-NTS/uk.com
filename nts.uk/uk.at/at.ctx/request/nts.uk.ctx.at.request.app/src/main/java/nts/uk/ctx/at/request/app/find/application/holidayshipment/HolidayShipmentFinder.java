@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettin
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimezoneUseDto;
+import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -363,7 +364,9 @@ public class HolidayShipmentFinder {
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
-		appResonRepo.getReasonByCompanyId(companyID);
+
+		output.setAppReasons(appResonRepo.getReasonByCompanyId(companyID).stream()
+				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 		// アルゴリズム「基準日別設定の取得」を実行する
 		getDateSpecificSetting(companyID, employeeID, refDate, false, takingOutWkTypeCD, takingOutWkTimeCD,
 				holidayWkTypeCD, holidayWkTimeCD, appCommonSettingOutput, output);
