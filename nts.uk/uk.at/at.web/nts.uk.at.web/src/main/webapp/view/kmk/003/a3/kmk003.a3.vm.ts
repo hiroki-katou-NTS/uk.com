@@ -247,62 +247,9 @@ module a3 {
             };
         }
 
-        
         /**
-         * function convert dto to model
+         * Set fixed table data source
          */
-        private toModelFixedColumnSetting(dataDTO: OverTimeOfTimeZoneSetDto): any {
-            return {
-                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
-                rounding: ko.observable(dataDTO.timezone.rounding.rounding),
-                roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
-                otFrameNo: ko.observable(dataDTO.otFrameNo),
-                earlyOTUse: ko.observable(dataDTO.earlyOTUse),
-                legalOTframeNo: ko.observable(dataDTO.legalOTframeNo),
-                settlementOrder: ko.observable(dataDTO.settlementOrder)
-            }
-        }
-        /**
-         * function convert dto to model
-         */
-        private toModelDiffTimeColumnSetting(dataDTO: DiffTimeOTTimezoneSetDto): any {
-            return {
-                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
-                rounding: ko.observable(dataDTO.timezone.rounding.rounding),
-                roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
-                otFrameNo: ko.observable(dataDTO.otFrameNo),
-                earlyOTUse: ko.observable(dataDTO.earlyOTUse),
-                legalOTframeNo: ko.observable(dataDTO.legalOTframeNo),
-                settlementOrder: ko.observable(dataDTO.settlementOrder)
-            }
-        }
-        
-        /**
-         * function convert data model of client to parent
-         */
-        private toModelDiffTimeDto(dataModel: any, workTimezoneNo: number): DiffTimeOTTimezoneSetDto {
-            var rounding: TimeRoundingSettingDto = {
-                roundingTime: dataModel.roundingTime(),
-                rounding: dataModel.rounding()
-            };
-            var timezone: TimeZoneRoundingDto = {
-                rounding: rounding,
-                start: dataModel.timezone().startTime,
-                end: dataModel.timezone().endTime
-            };
-            var dataDTO: DiffTimeOTTimezoneSetDto = {
-                workTimezoneNo: workTimezoneNo,
-                restraintTimeUse: false,
-                timezone: timezone,
-                otFrameNo: dataModel.otFrameNo(),
-                earlyOTUse: dataModel.earlyOTUse(),
-                legalOTframeNo: dataModel.legalOTframeNo?dataModel.legalOTframeNo():1,
-                settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1,
-                isUpdateStartTime: false
-            };
-            return dataDTO;
-        }
-
         private setDatasource(): void {
             let self = this;
 
@@ -370,7 +317,10 @@ module a3 {
             });
             return stringColumns;
         }
-        
+
+        /**
+         * Define flow simple columns 
+         */
         private columnSettingFlowSimple(): Array<any> {
             let self = this;
             return [
