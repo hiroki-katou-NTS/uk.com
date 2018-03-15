@@ -39,6 +39,6 @@ public class KshstLengthServiceTbl extends UkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return null;
+		return kshstLengthServiceTblPK;
 	}
 }

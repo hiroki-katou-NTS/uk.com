@@ -124,7 +124,8 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 		kshstGrantHdTbl.grantDay =	holidayGrant.getGrantDays().v();
 		kshstGrantHdTbl.limitTimeHd = holidayGrant.getLimitTimeHd() != null ? holidayGrant.getLimitTimeHd().get().v() : 0;
 		kshstGrantHdTbl.limitDayYear = holidayGrant.getLimitDayYear() != null ? holidayGrant.getLimitDayYear().get().v() : 0;
-		return null;
+		
+		return kshstGrantHdTbl;
 	}
 
 }

@@ -3,11 +3,18 @@ module nts.uk.at.view.kmf003.b1.service {
      *  Service paths
      */
     var servicePath = {
+        findLengthOfService: "at/share/lengthofservice/findByCode/{0}"
         findByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
-        addGrantHdTbl: "at/share/grantholidaytbl/add",
-        updateGrantHdTbl: "at/share/grantholidaytbl/update",
-        deleteGrantHdTbl: "at/share/grantholidaytbl/delete"
+        addGrantHdTbl: "at/share/grantholidaytbl/add"
     }  
+    
+    /**
+     *  Find length of service data by codes
+     */
+    export function findLengthOfService(yearHolidayCode: string): JQueryPromise<LengthServiceTblDto> {
+        var path = nts.uk.text.format(servicePath.findByCode, yearHolidayCode);
+        return nts.uk.request.ajax(path);
+    } 
     
     /**
      *  Find data by codes
@@ -23,47 +30,29 @@ module nts.uk.at.view.kmf003.b1.service {
     export function addYearHolidayGrant(data: Array<GrantHolidayTblDto>): JQueryPromise<any> {
         var path = nts.uk.text.format(servicePath.addGrantHdTbl);
         return nts.uk.request.ajax("at", path, data);
-    }  
-    
-    /**
-     *  Update data
-     */
-    export function updateYearHolidayGrant(data: Array<GrantHolidayTblDto>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.updateGrantHdTbl);
-        return nts.uk.request.ajax("at", path, data);
-    }  
-    
-    /**
-     *  Delete data
-     */
-    export function deleteYearHolidayGrant(codes: Array<Codes>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.deleteGrantHdTbl);
-        return nts.uk.request.ajax("at", path, codes);
     }
     
     export interface GrantHolidayTblDto {
-        grantYearHolidayNo: number,
         conditionNo: number,
         yearHolidayCode: string,
+        grantHolidayList: Array<GrantHolidayTbl>
+    }
+    
+    export interface GrantHolidayTbl {
+        conditionNo: number,
+        yearHolidayCode: string,
+        grantNum: number,
         grantDays: number,
-        limitedTimeHdDays: number,
-        limitedHalfHdCnt: number,
-        lengthOfServiceMonths: number,
-        lengthOfServiceYears: number,
-        grantReferenceDate: number,
-        grantSimultaneity: number
+        limitTimeHd: number,
+        limitDayYear: number
     }
     
-    export interface Codes {
-        grantYearHolidayNo: number,
-        conditionNo: number,
+    export interface LengthServiceTblDto {
         yearHolidayCode: string,
-    }
-    
-    export interface DataTranfer {
-        grantHolidayTblList: Array<GrantHolidayTblDto>,
-        useSimultaneousGrant: number, 
-        referDate: number, 
-        simultaneousGrantDate: number
+        grantNum: number,
+        allowStatus: number,
+        standGrantDay: number,
+        year: number,
+        month: number
     }
 }

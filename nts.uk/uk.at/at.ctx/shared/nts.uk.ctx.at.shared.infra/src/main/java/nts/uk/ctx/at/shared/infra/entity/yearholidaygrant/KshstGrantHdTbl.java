@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_GRANT_HD_TBL")
+@Table(name="KSHST_YEAR_HD_GRANT_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstGrantHdTbl extends UkJpaEntity {
