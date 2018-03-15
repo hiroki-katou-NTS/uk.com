@@ -44,9 +44,9 @@ public class W4D4CheckService {
 		
 		if (countHoliday < 4) {
 			String alarmDate = period.start().toString() + "~" + period.end().toString();
-			String W4D4 = TextResource.localize("#KAL012_62");
-			String alarmComment = TextResource.localize("#KAL012_64");
-			String alarmMessage = TextResource.localize("#KAL012_64");
+			String W4D4 = TextResource.localize("KAL010_62");
+			String alarmComment = TextResource.localize("KAL010_64");
+			String alarmMessage = TextResource.localize("KAL010_63");
 			alarmMessage = String.format(alarmMessage, countHoliday+"日", alarmDate);
 			AlarmExtractionValue4W4D result = new AlarmExtractionValue4W4D(workplaceID, employeeID, alarmDate, W4D4, W4D4, alarmMessage, alarmComment);
 			return Optional.of(result);

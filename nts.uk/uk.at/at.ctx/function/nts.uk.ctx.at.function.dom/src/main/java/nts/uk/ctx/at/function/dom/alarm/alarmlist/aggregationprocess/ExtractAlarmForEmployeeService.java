@@ -48,14 +48,16 @@ public class ExtractAlarmForEmployeeService {
 			if (checkCondition.isDaily()) {
 				for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
 					// アルゴリズム「日次の集計処理」を実行する
-					result.addAll(dailyAggregationProcessService.dailyAggregationProcess(checkConditionCode, periodByAlarmCategory, employee));
+					List<ValueExtractAlarm> dailyAlarmList = dailyAggregationProcessService.dailyAggregationProcess(checkConditionCode, periodByAlarmCategory, employee);
+					result.addAll(dailyAlarmList);
 				}
 			}
 			// カテゴリ：4週4休のチェック条件(4 week 4 day)
 			else if (checkCondition.is4W4D()) {
 				// アルゴリズム「4週4休の集計処理」を実行する
-				for (String checkConditionCode : checkCondition.getCheckConditionList()) {				
-					w4D4AlarmService.calculateTotal4W4D(employee, period, checkConditionCode);
+				for (String checkConditionCode : checkCondition.getCheckConditionList()) {
+					List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employee, period, checkConditionCode);
+					result.addAll(w4d4AlarmList);
 				}
 			}
 			// カテゴリ：月次のチェック条件 (monthly)

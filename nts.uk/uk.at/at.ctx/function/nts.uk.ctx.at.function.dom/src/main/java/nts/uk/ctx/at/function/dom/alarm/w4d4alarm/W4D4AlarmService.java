@@ -42,7 +42,7 @@ public class W4D4AlarmService {
 		// TODO: Narrow down the target audience
 		
 		// Acquire company employee's work place history
-		WorkplaceImport workplaceImport = workplaceAdapter.getWorlkplaceHistory(employee.getId(), period.end());
+		//WorkplaceImport workplaceImport = workplaceAdapter.getWorlkplaceHistory(employee.getId(), period.end());
 		
 		AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
 		AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
