@@ -8,27 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<!-- <com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay
-				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekDay
-				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNumberOfDays
-			</com:ValidatorScript> -->
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime
+			</com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
-			
-			<script>
-				__viewContext.primitiveValueConstraints.OvertimeWorkFrameName = {
-						valueType: 'String',
-						maxLength: 12,
-				};
-			</script>
-
-			
-<!-- 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" /> -->
 			
 			<com:stylefile path="../common/divergence_time_setting.main.css" />
 			<com:stylefile path="../common/history.main.css" />
