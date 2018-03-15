@@ -40,5 +40,5 @@ public interface ReflectWorkInforDomainService {
 	 * @param day
 	 * @return
 	 */
-	Optional<WorkInfoOfDailyPerformance> reflectHolidayOfDailyPerfor(String employeeId, GeneralDate day);
+	Optional<WorkInfoOfDailyPerformance> reflectHolidayOfDailyPerfor(String companyId, String employeeId, GeneralDate day);
 }
