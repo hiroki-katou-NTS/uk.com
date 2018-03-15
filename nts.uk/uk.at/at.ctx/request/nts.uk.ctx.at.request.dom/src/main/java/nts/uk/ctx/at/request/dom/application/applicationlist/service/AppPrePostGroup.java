@@ -16,4 +16,7 @@ public class AppPrePostGroup {
 	//実績
 	@Setter
 	private List<OverTimeFrame> time;
+	
+	private AppOverTimeInfoFull appPre;
+	private String reasonAppPre;
 }

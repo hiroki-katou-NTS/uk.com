@@ -288,10 +288,10 @@ public class TotalWorkingTime {
 		
 		//総労働時間
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
-						  + withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
-						  + overWorkTime
-						  + holidayWorkTime
-						  + tempTime.totalTemporaryFrameTime());
+						  					   + withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
+						  					   + overWorkTime
+						  					   + holidayWorkTime
+						  					   + tempTime.totalTemporaryFrameTime());
 		
 
 

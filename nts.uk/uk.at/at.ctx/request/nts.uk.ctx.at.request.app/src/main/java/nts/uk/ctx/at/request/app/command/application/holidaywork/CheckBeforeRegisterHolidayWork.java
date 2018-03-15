@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -69,7 +70,7 @@ public class CheckBeforeRegisterHolidayWork {
 		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain);
 	}
 
-	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork overtime) {
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork) {
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
@@ -82,7 +83,7 @@ public class CheckBeforeRegisterHolidayWork {
 		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
 				ApplicationType.BREAK_TIME_APPLICATION, app.getAppDate());
 		// 03-01_事前申請超過チェック
-		Map<AttendanceType, List<HolidayWorkInput>> findMap = overtime.getHolidayWorkInputs().stream()
+		Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
@@ -99,11 +100,18 @@ public class CheckBeforeRegisterHolidayWork {
 			}
 		}
 		// 6.計算処理 : TODO
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId, app.getAppDate(), overtime.getWorkTypeCode().toString(), overtime.getWorkTimeCode().toString(), overtime.getWorkClock1().getStartTime().v(), overtime.getWorkClock1().getEndTime().v(), 100, 200);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId,
+				app.getAppDate(),
+				appHolidayWork.getWorkTypeCode()== null ? "" : appHolidayWork.getWorkTypeCode().toString(),
+				appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().toString(), 
+				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(),
+				appHolidayWork.getWorkClock1().getEndTime() == null? null: appHolidayWork.getWorkClock1().getEndTime().v(),
+				100,
+				200);
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
-				holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, overtime.getCompanyID(), app.getAppDate(), breakTime, overtime.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime());
 			}
 		}
 		
@@ -172,7 +180,17 @@ public class CheckBeforeRegisterHolidayWork {
 		}
 		
 		// 6.計算処理 : TODO
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId, appRoot.getAppDate(), holidayWorkDomain.getWorkTypeCode().toString(), holidayWorkDomain.getWorkTimeCode().toString(), holidayWorkDomain.getWorkClock1().getStartTime().v(), holidayWorkDomain.getWorkClock1().getEndTime().v(), 100, 200);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeId,
+						appRoot.getAppDate(),
+						holidayWorkDomain.getWorkTypeCode() == null ? ""
+								: holidayWorkDomain.getWorkTypeCode().toString(),
+						holidayWorkDomain.getWorkTimeCode() == null ? ""
+								: holidayWorkDomain.getWorkTimeCode().toString(),
+						holidayWorkDomain.getWorkClock1().getStartTime() == null ? null
+								: holidayWorkDomain.getWorkClock1().getStartTime().v(),
+						holidayWorkDomain.getWorkClock1().getEndTime() == null ? null
+								: holidayWorkDomain.getWorkClock1().getEndTime().v(),
+						100, 200);
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
@@ -225,13 +243,13 @@ public class CheckBeforeRegisterHolidayWork {
 	private static List<HolidayWorkInput> getHolidayWorkInput(List<HolidayWorkInputCommand> inputCommand, String Cid, String appId,
 			int attendanceId) {
 		return inputCommand.stream().filter(item -> {
-			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
-			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
+			Integer startTime = item.getStartTime() == null ? null : item.getStartTime().intValue();
+			Integer endTime = item.getEndTime() == null ? null : item.getEndTime().intValue();
 			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
-			return startTime != -1 || endTime != -1 || appTime != -1;
+			return startTime != null || endTime != null || appTime != -1;
 		}).map(item -> {
-			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
-			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
+			Integer startTime = item.getStartTime() == null ? null : item.getStartTime().intValue();
+			Integer endTime = item.getEndTime() == null ? null : item.getEndTime().intValue();
 			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
 			return HolidayWorkInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(), startTime,
 					endTime, appTime);
@@ -239,6 +257,9 @@ public class CheckBeforeRegisterHolidayWork {
 	}
 	private static List<CaculationTime> convertList(List<HolidayWorkInput> holidayInput){
 		List<CaculationTime> calculations = new ArrayList<>();
+		if(CollectionUtil.isEmpty(holidayInput)){
+			return calculations;
+		}
 		for(HolidayWorkInput holidayWork : holidayInput){
 			CaculationTime cal = new CaculationTime();
 			cal.setAttendanceID(holidayWork.getAttendanceType().value);

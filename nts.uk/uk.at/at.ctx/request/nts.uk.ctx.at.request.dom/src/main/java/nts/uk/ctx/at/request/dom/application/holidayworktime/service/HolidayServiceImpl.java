@@ -18,6 +18,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.BusinessDayCalendarAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.BusinessDayCalendarImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.HolidayClsImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
@@ -46,6 +48,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	@Inject
 	private BusinessDayCalendarAdapter businessDayCalendarAdapter;
+	@Inject
+	private WorkplaceAdapter wkpAdapter;
 	
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
@@ -69,9 +73,14 @@ public class HolidayServiceImpl implements HolidayService {
 			}
 		}else{
 			
-			//Imported(申請承認)「職場ID」を取得する : TODO
+			//Imported(申請承認)「職場ID」を取得する 
+			//アルゴリズム「社員から職場を取得する」を実行する - req #30
+			WkpHistImport wkp = wkpAdapter.findWkpBySid(employeeID, appDate);
 			String workplaceID = "";
-			// 「申請日－法定外・法定内休日区分」をチェック　→Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する
+			if(wkp !=null){
+				workplaceID = wkp.getWorkplaceId();
+			}
+			// 「申請日－法定外・法定内休日区分」をチェック　→Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する - req 253
 			Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
 			if(buOptional.isPresent()){
 				String workTypeCode = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString();

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 @AllArgsConstructor
 @Setter
@@ -19,9 +20,13 @@ public class ReflectScheDto {
 	/** 申請内容	 */
 	private Application_New application;
 	/** 振出・休出時反映する区分	 */
-	private OutsetBreakReflectAtr reflectAtr;
+	private boolean reflectAtr;
 	/**	時刻の反映*/
 	private ApplyTimeRequestAtr timeAtr;
 	/**	直行直帰申請 */
 	private GoBackDirectly goBackDirectly;
+	/**
+	 * 休暇申請
+	 */
+	private AppAbsence forLeave;
 }
