@@ -101,9 +101,9 @@ module nts.uk.at.view.kmk011.d {
                         _self.mapObj.get(item.divergenceTimeNo).errorTime(item.errorTime);
                     });
                     response2.forEach((item1: any) => {
-                        _self.mapObj.get(item1.divergenceTimeNo).divergenceTimeNo(item1.divergenceTimeNo);
-                        _self.mapObj.get(item1.divergenceTimeNo).noUseAtr(item1.notUseAtr);
-                        _self.mapObj.get(item1.divergenceTimeNo).alarmTime(item1.divergenceTimeName);
+                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeNo(item1.divergenceTimeNo);
+                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeUseSet(item1.divergenceTimeUseSet);
+                        _self.mapObj2.get(item1.divergenceTimeNo).alarmTime(item1.divergenceTimeName);
                     });
                     dfd.resolve();
                 });
