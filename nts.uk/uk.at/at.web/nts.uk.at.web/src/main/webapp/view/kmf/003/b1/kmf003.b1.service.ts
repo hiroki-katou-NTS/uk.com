@@ -3,7 +3,7 @@ module nts.uk.at.view.kmf003.b1.service {
      *  Service paths
      */
     var servicePath = {
-        findLengthOfService: "at/share/lengthofservice/findByCode/{0}"
+        findLengthOfService: "at/share/lengthofservice/findByCode/{0}",
         findByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
         addGrantHdTbl: "at/share/grantholidaytbl/add"
     }  
@@ -12,7 +12,7 @@ module nts.uk.at.view.kmf003.b1.service {
      *  Find length of service data by codes
      */
     export function findLengthOfService(yearHolidayCode: string): JQueryPromise<LengthServiceTblDto> {
-        var path = nts.uk.text.format(servicePath.findByCode, yearHolidayCode);
+        var path = nts.uk.text.format(servicePath.findLengthOfService, yearHolidayCode);
         return nts.uk.request.ajax(path);
     } 
     

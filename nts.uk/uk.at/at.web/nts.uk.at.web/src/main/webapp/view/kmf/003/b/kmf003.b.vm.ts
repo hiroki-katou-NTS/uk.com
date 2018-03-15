@@ -61,9 +61,6 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             $.when(self.getLengthOfService(), self.getGrantHdTbl()).done(function() {
                 let combinedData = [];
                 
-                self.lengthOfServiceData;
-                self.grantHdData;
-                
                 for(var i = 0; i < self.lengthOfServiceData.length; i++){
                     var item : IItem = {
                         grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
