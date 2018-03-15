@@ -123,7 +123,7 @@ module cmm045.a.viewmodel {
                                 app.startDate, app.endDate, app.version));
                         });
                         _.each(data.lstMasterInfo, function(master) {
-                            self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName
+                            self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
                                 master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor));
                         });
                         _.each(data.lstAppGoBack, function(goback) {
@@ -144,8 +144,8 @@ module cmm045.a.viewmodel {
                         });
                         self.itemApplication([]);
                         self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));
-                        _.each(data.lstAppType, function(appType){
-                            self.itemApplication.push(new vmbase.ChoseApplicationList(appType, self.findAppName(appType)));                          
+                        _.each(data.lstAppInfor, function(appInfo){
+                            self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));                          
                         });
                         self.lstListAgent([]);
                         _.each(data.lstAgent, function(agent){
@@ -397,14 +397,14 @@ module cmm045.a.viewmodel {
                 count += 1;
             }
             //ﾌﾚｯｸｽ超過
-            let frame12 = self.findFrameByNo(lstFrame, 11);
+            let frame12 = self.findFrameByNo(lstFrame, 12);
             if (frame12 !== undefined && frame12.applicationTime != 0) {
                 framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
                 time += frame12.applicationTime;
                 count += 1;
             }
-            _.each(lstSort, function(item, index) {
-                if (index != 11 && index != 12 && item.applicationTime != 0) {//時間外深夜時間
+            _.each(lstSort, function(item) {
+                if (item.frameNo != 11 && item.frameNo != 12 && item.applicationTime != 0) {//時間外深夜時間
                     if (count <= 3) {
                         framName += item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
@@ -423,14 +423,12 @@ module cmm045.a.viewmodel {
         convertFrameTimeHd(lstFrame: Array<vmbase.OverTimeFrame>): any {
             let self = this;
             let framName = '';
-            let framName11 = '';
-            let framName12 = '';
             let time = 0;
             let count = 0;
             let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
             _.each(lstSort, function(item, index) {
-                if (index != 11 && index != 12 && item.applicationTime != 0) {//時間外深夜時間
-                    if (count <= 2) {
+                if (item.applicationTime != 0) {
+                    if (count <= 1) {
                         framName += item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
@@ -439,9 +437,12 @@ module cmm045.a.viewmodel {
             });
             let other = count > 2 ? count - 2 : 0;
             let otherInfo = other > 0 ? '他' + other + '枠' : '';
-            let result = self.convertTime_Short_HM(time) + '(' + framName11 + framName12 + framName + otherInfo + ')';
+            let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
             return result;
         }
+        /**
+         * find frame by frame no
+         */
         findFrameByNo(lstFrame: Array<vmbase.OverTimeFrame>, frameNo: number): any {
             return _.find(lstFrame, function(frame) {
                 return frame.frameNo == frameNo;
@@ -816,7 +817,7 @@ module cmm045.a.viewmodel {
                         app.startDate, app.endDate, app.version));
                 });
                 _.each(data.lstMasterInfo, function(master) {
-                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName, master.workplaceName,
+                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.inpEmpName, master.workplaceName,
                         master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor));
                 });
                 _.each(data.lstAppGoBack, function(goback) {
@@ -837,8 +838,8 @@ module cmm045.a.viewmodel {
                 });
                 self.itemApplication([]);
                 self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));
-                _.each(data.lstAppType, function(appType){
-                    self.itemApplication.push(new vmbase.ChoseApplicationList(appType, self.findAppName(appType)));                          
+                _.each(data.lstAppInfor, function(appInfo){
+                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));                          
                 });
                 self.lstListAgent([]);
                 _.each(data.lstAgent, function(agent){
@@ -1004,30 +1005,6 @@ module cmm045.a.viewmodel {
             }
             return hh + ':' + min;
         }
-        /**
-         * find application name by appType
-         */
-        findAppName(appType: number){
-            switch (appType) {
-                case 0:
-                    return '残業申請';
-                case 2:
-                    return '勤務変更申請';
-                case 3:
-                    return '(水)';
-                case 4:
-                    return '直行直帰申請';
-                case 5:
-                    return '(金)';
-                case 6:
-                    return '休日出勤時間申請';
-                case 10: 
-                    return '振休振出申請';
-                default:
-                    return '全件表示';
-            }
-        }
-        
     }
 
 }
