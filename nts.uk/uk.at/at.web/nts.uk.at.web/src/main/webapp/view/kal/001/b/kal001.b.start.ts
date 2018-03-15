@@ -5,6 +5,7 @@ module nts.uk.at.view.kal001.b {
         console.log(extractedAlarmData);
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $("#grid").igGrid("option", "dataSource", extractedAlarmData);
         });
     });
 }
