@@ -36,7 +36,8 @@ module nts.uk.com.view.cmf001.k.viewmodel {
             var dfd = $.Deferred();
             service.getCodeConvert().done(function(result: Array<any>) {
                 if (result && result.length) {
-                    let _listConvertCode: Array<model.AcceptanceCodeConvert> = _.map(result, x => {
+                    let _codeConvertResult: Array<any> = _.sortBy(result, ['convertCd']);
+                    let _listConvertCode: Array<model.AcceptanceCodeConvert> = _.map(_codeConvertResult, x => {
                         return new model.AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting);
                     });
                     //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
