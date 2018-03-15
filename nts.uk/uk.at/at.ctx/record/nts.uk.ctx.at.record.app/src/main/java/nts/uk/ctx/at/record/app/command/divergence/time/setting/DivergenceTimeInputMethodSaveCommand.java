@@ -4,43 +4,71 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Checks if is divergence reason selected.
+ *
+ * @return true, if is divergence reason selected
+ */
 @Getter
+
+/**
+ * Sets the divergence reason selected.
+ *
+ * @param divergenceReasonSelected the new divergence reason selected
+ */
 @Setter
+
+/**
+ * Instantiates a new divergence time input method save command.
+ *
+ * @param divergenceTimeNo the divergence time no
+ * @param companyId the company id
+ * @param divergenceTimeUseSet the divergence time use set
+ * @param divergenceTimeName the divergence time name
+ * @param divergenceType the divergence type
+ * @param reasonInput the reason input
+ * @param reasonSelect the reason select
+ * @param divergenceReasonInputed the divergence reason inputed
+ * @param divergenceReasonSelected the divergence reason selected
+ */
 @AllArgsConstructor
 public class DivergenceTimeInputMethodSaveCommand {
-	
+
 	/** The divergence time no. */
-	// 乖離時間NO
+
 	private int divergenceTimeNo;
-	
+
 	/** The c id. */
-	// 会社ID
+
 	private String companyId;
-	
+
 	/** The Use classification. */
-	// 使用区分
+
 	private int divergenceTimeUseSet;
-	/** The divergence time name */
-	//乖離時間名称
+
+	/** The divergence time name. */
+
 	private String divergenceTimeName;
-	
-	/** The divergence type*/
-	//乖離の種類
+
+	/** The divergence type. */
+
 	private int divergenceType;
-	
-	/** The divergence time error cancel method*/
-	//乖離時間のエラーの解除方法
+
+	/** The divergence time error cancel method. */
+
 	private boolean reasonInput;
+
+	/** The reason select. */
+
 	private boolean reasonSelect;
-	
-	/** The divergence reason inputed*/
-	//乖離理由を入力する
+
+	/** The divergence reason inputed. */
+
 	private boolean divergenceReasonInputed;
-	
-	/** The divergence reason selected*/
-	//乖離理由を選択肢から選ぶ
+
+	/** The divergence reason selected. */
+
 	private boolean divergenceReasonSelected;
-	
-	
 
 }

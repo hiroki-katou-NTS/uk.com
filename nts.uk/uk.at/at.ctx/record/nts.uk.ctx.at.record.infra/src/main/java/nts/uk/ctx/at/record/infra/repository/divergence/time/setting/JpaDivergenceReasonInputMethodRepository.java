@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.setting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,28 +12,46 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodSetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
-import nts.uk.ctx.at.record.infra.repository.divergence.time.JpaCompanyDivergenceReferenceTimeSetMemento;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JpaDivergenceReasonInputMethodRepository.
+ */
 @Stateless
-public class JpaDivergenceReasonInputMethodRepository extends JpaRepository implements DivergenceReasonInputMethodRepository{
+public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
+		implements DivergenceReasonInputMethodRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodRepository#getAllDivTime(java.lang.String)
+	 */
 	@Override
 	public List<DivergenceReasonInputMethod> getAllDivTime(String companyId) {
-		
+
 		return this.findByCompanyId(companyId);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodRepository#getDivTimeInfo(java.lang.String,
+	 * int)
+	 */
+	@Override
+	public DivergenceReasonInputMethod getDivTimeInfo(String companyId, int divTimeNo) {
+
+		return this.findByCode(companyId, divTimeNo);
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -43,10 +60,18 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository impl
 	 * @return the company divergence reference time history
 	 */
 	private DivergenceReasonInputMethod toDomain(KrcstDvgcTime entities) {
-		DivergenceReasonInputMethodGetMemento memento = new JpaDivergenceReasonInputMethodRepositoryGetMemento(entities);
+		DivergenceReasonInputMethodGetMemento memento = new JpaDivergenceReasonInputMethodRepositoryGetMemento(
+				entities);
 		return new DivergenceReasonInputMethod(memento);
 	}
-	
+
+	/**
+	 * Find by company id.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the list
+	 */
 	private List<DivergenceReasonInputMethod> findByCompanyId(String companyId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -58,7 +83,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository impl
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get( KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -70,4 +95,41 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository impl
 		return KrcstDvgcTime.isEmpty() ? new ArrayList<DivergenceReasonInputMethod>()
 				: KrcstDvgcTime.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
+
+	/**
+	 * Find by code.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param divTimeNo
+	 *            the div time no
+	 * @return the divergence reason input method
+	 */
+	private DivergenceReasonInputMethod findByCode(String companyId, int divTimeNo) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDvgcTime> cq = criteriaBuilder.createQuery(KrcstDvgcTime.class);
+		Root<KrcstDvgcTime> root = cq.from(KrcstDvgcTime.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.no), divTimeNo));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		KrcstDvgcTime KrcstDvgcTime = em.createQuery(cq).getResultList().get(0);
+
+		// return
+		if (KrcstDvgcTime != null)
+			return this.toDomain(KrcstDvgcTime);
+		return new DivergenceReasonInputMethod(null);
+
+	}
+
 }

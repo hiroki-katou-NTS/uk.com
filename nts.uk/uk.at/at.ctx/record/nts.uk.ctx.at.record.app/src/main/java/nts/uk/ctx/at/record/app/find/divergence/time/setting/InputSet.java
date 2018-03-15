@@ -9,11 +9,20 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InputSet {
 	
+	/** The select use set. */
 	private int selectUseSet;
-	
+
+	/** The cancel err sel reason. */
 	private int cancelErrSelReason;
-	
-	public static InputSet convertType(int selectUseSet,int cancelErrSelReason){
-		return new InputSet(selectUseSet,cancelErrSelReason);
+
+	/**
+	 * Convert type.
+	 *
+	 * @param selectUseSet the select use set
+	 * @param cancelErrSelReason the cancel err sel reason
+	 * @return the input set
+	 */
+	public static InputSet convertType(int selectUseSet, int cancelErrSelReason) {
+		return new InputSet(selectUseSet, cancelErrSelReason);
 	}
 }
