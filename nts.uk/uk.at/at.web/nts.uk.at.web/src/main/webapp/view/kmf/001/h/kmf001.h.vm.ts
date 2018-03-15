@@ -54,16 +54,16 @@ module nts.uk.pr.view.kmf001.h {
                 self.empSettingModel = ko.observable(null);
                 self.settingModel = ko.observable(
                     new SubstVacationSettingModel({
-                        isManage: 0,
+                        isManage: 1,
                         expirationDate: 0,
-                        allowPrepaidLeave: 0
+                        allowPrepaidLeave: 1
                     }));
                 self.empSettingModel = ko.observable(
                     new EmpSubstVacationModel({
                         contractTypeCode: "",
-                        isManage: 0,
+                        isManage: 1,
                         expirationDate: 0,
-                        allowPrepaidLeave: 0
+                        allowPrepaidLeave: 1
                     }));
 
                 self.isComManaged = ko.computed(function() {

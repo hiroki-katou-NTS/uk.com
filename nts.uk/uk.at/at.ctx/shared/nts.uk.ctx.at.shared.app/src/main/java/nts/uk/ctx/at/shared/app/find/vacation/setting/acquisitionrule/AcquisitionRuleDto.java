@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule;
 
 import lombok.Builder;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
@@ -48,7 +48,7 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	 * Settingclassification)
 	 */
 	@Override
-	public void setCategory(ManageDistinct category) {
+	public void setCategory(SettingDistinct category) {
 		this.category = category.value;
 	}
 

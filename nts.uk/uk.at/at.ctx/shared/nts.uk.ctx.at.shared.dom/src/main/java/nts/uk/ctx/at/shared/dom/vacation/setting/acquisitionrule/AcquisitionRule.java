@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 
 /**
  * The Class AcquisitionRule.
@@ -23,7 +23,7 @@ public class AcquisitionRule extends DomainObject {
 
 	/** The setting classification. */
 	@Setter
-	private ManageDistinct category;
+	private SettingDistinct category;
 	
 	/**年休より優先する休暇*/
 	@Setter

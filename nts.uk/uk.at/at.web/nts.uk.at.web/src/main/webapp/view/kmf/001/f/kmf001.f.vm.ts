@@ -73,8 +73,8 @@ module nts.uk.pr.view.kmf001.f {
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(1);
-                self.compenPreApply = ko.observable(0);
-                self.compenTimeManage = ko.observable(0);
+                self.compenPreApply = ko.observable(1);
+                self.compenTimeManage = ko.observable(1);
                 self.expirationDateCode = ko.observable(0);
                 self.timeUnitCode = ko.observable(0);
                 self.checkWorkTime = ko.observable(true);

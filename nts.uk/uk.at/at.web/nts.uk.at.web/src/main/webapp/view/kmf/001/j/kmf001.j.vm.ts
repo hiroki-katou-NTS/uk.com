@@ -50,7 +50,7 @@ module nts.uk.pr.view.kmf001.j {
 //                self.empSettingModel = ko.observable(null);
                 self.settingModel = ko.observable(
                     new SixtyHourVacationSettingModel({
-                        isManage: 0,
+                        isManage: 1,
                         digestiveUnit: 0,
                         sixtyHourExtra: 0
                     }));

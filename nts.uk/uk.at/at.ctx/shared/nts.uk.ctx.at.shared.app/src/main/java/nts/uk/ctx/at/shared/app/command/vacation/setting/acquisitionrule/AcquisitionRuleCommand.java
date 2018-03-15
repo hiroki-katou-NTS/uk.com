@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.acquisitionrule;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
@@ -70,8 +70,8 @@ public class AcquisitionRuleCommand {
 		 * AcquisitionRuleGetMemento#getCategory()
 		 */
 		@Override
-		public ManageDistinct getCategory() {
-			return ManageDistinct.valueOf(this.command.category);
+		public SettingDistinct getCategory() {
+			return SettingDistinct.valueOf(this.command.category);
 		}
 
 		/*

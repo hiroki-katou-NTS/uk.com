@@ -4,10 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.acquisitionrule;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
@@ -61,8 +58,8 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 	 * VaAcRuleGetMemento#getSettingclassification()
 	 */
 	@Override
-	public ManageDistinct getCategory() {
-		return ManageDistinct.valueOf(this.typeValue.getCategory());
+	public SettingDistinct getCategory() {
+		return SettingDistinct.valueOf(this.typeValue.getCategory());
 	}
 
 	@Override

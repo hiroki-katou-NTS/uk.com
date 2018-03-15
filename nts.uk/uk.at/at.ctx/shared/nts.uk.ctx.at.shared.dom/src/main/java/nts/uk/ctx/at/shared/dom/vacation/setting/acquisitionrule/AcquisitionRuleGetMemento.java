@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 
 /**
  * The Interface VaAcRuleGetMemento.
@@ -23,7 +23,7 @@ public interface AcquisitionRuleGetMemento {
 	 *
 	 * @return the settingclassification
 	 */
-	ManageDistinct getCategory();
+	SettingDistinct getCategory();
 	
 	/**
 	 * Gets the acquisition order.
