@@ -46,7 +46,7 @@ public class JpaExecutionLogRepository extends JpaRepository implements Executio
 
 	@Override
 	public List<ExecutionLog> getExecutionLogs(String empCalAndSumExecLogID) {
-		return this.queryProxy().query(SELECT_BY_EXECUTION_LOG, KrcdtExecutionLog.class)
+		return this.queryProxy().query(SELECT_BY_CAL_AND_SUM_EXE_ID, KrcdtExecutionLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getList(c -> c.toDomain());
 
 	}
