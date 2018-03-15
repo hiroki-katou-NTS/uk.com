@@ -25,7 +25,7 @@
 						<div data-bind="ntsFormLabel: {constraint: 'MailAddress'}">#{i18n.getText('CCG027_12')}</div>
 					</div>
 					<div class="right">
-						<input id="senderAddress" data-bind="ntsTextEditor: {value: senderAddress, enable: sendingAddressEnable, constraint: 'MailAddress'}" />
+						<input id="senderAddress" data-bind="ntsTextEditor: {value: senderAddress, enable: sendingAddressEnable, constraint: 'MailAddress', name: '#[CCG027_13]'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetCC">
@@ -33,7 +33,7 @@
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_4')}</div>
 					</div>
 					<div class="right">
-						<input id="mailAddressCC" data-bind="ntsTextEditor: {value: mailAddressCC}" />
+						<input id="mailAddressCC" data-bind="ntsTextEditor: {value: mailAddressCC, name: '#[CCG027_5]'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetBCC">
@@ -41,15 +41,15 @@
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG027_6')}</div>
 					</div>
 					<div class="right">
-						<input  id="mailAddressBCC" data-bind="ntsTextEditor: {value: mailAddressBCC}" />
+						<input  id="mailAddressBCC" data-bind="ntsTextEditor: {value: mailAddressBCC, name: '#[CCG027_7]'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetReply">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {constraint: 'MailAddress'}">#{i18n.getText('CCG027_9')}</div>
+						<div data-bind="ntsFormLabel: {constraint: 'MailAddress'}">#{i18n.getText('CCG027_8')}</div>
 					</div>
 					<div class="right">
-						<input  id="mailRely"  data-bind="ntsTextEditor: {value: mailRely, constraint: 'MailAddress'}" />
+						<input  id="mailRely"  data-bind="ntsTextEditor: {value: mailRely, constraint: 'MailAddress', name: '#[CCG027_9]'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetSubject">
@@ -57,7 +57,7 @@
 						<div data-bind="ntsFormLabel: {constraint: 'Subject'}">#{i18n.getText('CCG027_10')}</div>
 					</div>
 					<div class="right">
-						<input id="subject" data-bind="ntsTextEditor: {value: subject, constraint: 'Subject'}" />
+						<input id="subject" data-bind="ntsTextEditor: {value: subject, constraint: 'Subject', name: '#[CCG027_10]'}" />
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetBody">
@@ -65,7 +65,7 @@
 						<div data-bind="ntsFormLabel: { constraint: 'Content'}">#{i18n.getText('CCG027_11')}</div>
 					</div>
 					<div class="right">
-						<textarea rows="10" cols="63" id="text"  data-bind="ntsMultilineEditor: { value: text, constraint: 'Content'}" />
+						<textarea rows="10" cols="63" id="text"  data-bind="ntsMultilineEditor: { value: text, constraint: 'Content', name: '#[CCG027_11]'}" />
 						<div id="wording"><span data-bind="text:wording"></span></div>
 					</div>
 				</div>
