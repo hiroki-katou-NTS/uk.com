@@ -5,12 +5,10 @@ import lombok.Getter;
 @Getter
 public class AnnualLeaveConditionInfo {
 	
-	private Integer prescribedDays;
+	private Float prescribedDays;
 	
-	private Integer deductedDays;
+	private Float deductedDays;
 	
-	private Integer workingDays;
+	private Float workingDays;
 	
-	private Double workingPercent;
-
 }

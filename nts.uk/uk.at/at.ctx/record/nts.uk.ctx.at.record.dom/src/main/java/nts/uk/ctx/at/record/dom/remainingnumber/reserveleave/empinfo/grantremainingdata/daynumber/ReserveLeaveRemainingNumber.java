@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class ReserveLeaveRemainingNumber {
 	
-	private Integer days;
+	private Float days;
 
 }

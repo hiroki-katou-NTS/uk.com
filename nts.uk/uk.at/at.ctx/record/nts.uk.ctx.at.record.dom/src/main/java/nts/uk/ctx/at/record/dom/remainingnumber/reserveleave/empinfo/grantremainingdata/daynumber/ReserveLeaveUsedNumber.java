@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class ReserveLeaveUsedNumber {
 	
-	private Integer days;
+	private Float days;
 	
-	private Optional<Integer> overLimitDays;
+	private Optional<Float> overLimitDays;
 
 }

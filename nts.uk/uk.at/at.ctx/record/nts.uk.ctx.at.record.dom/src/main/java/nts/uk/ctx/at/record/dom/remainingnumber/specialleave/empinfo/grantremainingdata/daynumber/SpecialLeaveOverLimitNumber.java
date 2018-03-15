@@ -4,8 +4,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.DayNumber;
 
 public class SpecialLeaveOverLimitNumber extends DayNumber{
 	
-	public SpecialLeaveOverLimitNumber(int days, Integer hours) {
-		super(days, hours);
+	public SpecialLeaveOverLimitNumber(float days, Integer minutes) {
+		super(days, minutes);
 	}
 
 }

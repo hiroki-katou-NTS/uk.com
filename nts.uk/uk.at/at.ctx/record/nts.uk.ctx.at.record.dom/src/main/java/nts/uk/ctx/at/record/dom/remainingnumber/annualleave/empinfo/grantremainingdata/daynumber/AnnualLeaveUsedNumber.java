@@ -11,10 +11,10 @@ public class AnnualLeaveUsedNumber extends DayNumber {
 	/**
 	 * 積み崩し日数
 	 */
-	private Optional<Integer> stowageDays;
+	private Optional<Float> stowageDays;
 
-	public AnnualLeaveUsedNumber(int days, Integer hours, Integer stowageDays) {
-		super(days, hours);
+	public AnnualLeaveUsedNumber(float days, Integer minutes, Float stowageDays) {
+		super(days, minutes);
 		this.stowageDays = stowageDays != null ? Optional.of(stowageDays) : Optional.empty();
 	}
 

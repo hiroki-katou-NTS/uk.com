@@ -4,8 +4,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.DayNumber;
 
 public class AnnualLeaveRemainingNumber extends DayNumber{
 	
-	public AnnualLeaveRemainingNumber(int days, Integer hours) {
-		super(days, hours);
+	public AnnualLeaveRemainingNumber(float days, Integer minutes) {
+		super(days, minutes);
 	}
 
 }

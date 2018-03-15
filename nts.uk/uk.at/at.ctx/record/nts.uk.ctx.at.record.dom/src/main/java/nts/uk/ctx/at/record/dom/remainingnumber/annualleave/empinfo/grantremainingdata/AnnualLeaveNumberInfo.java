@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantNumber;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 
 @Getter
@@ -11,8 +12,8 @@ public class AnnualLeaveNumberInfo {
 	
 	private AnnualLeaveUsedNumber usedNumber;
 	
-	private AnnualLeaveGrantRemainingData remainingNumber;
+	private AnnualLeaveRemainingNumber remainingNumber;
 	
-	private Double usedPercent;
+	private float usedPercent;
 
 }

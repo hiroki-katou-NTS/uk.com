@@ -4,8 +4,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.DayNumber;
 
 public class SpecialLeaveGrantNumber extends DayNumber{
 	
-	public SpecialLeaveGrantNumber(int days, Integer hours) {
-		super(days, hours);
+	public SpecialLeaveGrantNumber(float days, Integer minutes) {
+		super(days, minutes);
 	}
 	
 }

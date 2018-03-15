@@ -18,8 +18,8 @@ public class SpecialLeaveUsedNumber extends DayNumber {
 	 */
 	private Optional<Integer> overLimitDays;
 
-	public SpecialLeaveUsedNumber(int days, Integer hours, Integer stowageDays, Integer overLimitDays) {
-		super(days, hours);
+	public SpecialLeaveUsedNumber(float days, Integer minutes, Integer stowageDays, Integer overLimitDays) {
+		super(days, minutes);
 		this.stowageDays = stowageDays == null ? Optional.of(stowageDays) : Optional.empty();
 		this.overLimitDays = overLimitDays == null ? Optional.of(overLimitDays) : Optional.empty();
 	}
