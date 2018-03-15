@@ -51,6 +51,26 @@ public class FileUtil {
 		return result;
 	}
 
+	public static List<String> getRecord(InputStream inputStream, int[] columns, int index) {
+		// get new line code of system
+		String newLineCode = getNewLineCode();
+
+		// get csv reader
+		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
+				.withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+		List<String> result = new ArrayList<>();
+		try {
+			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
+			NtsCsvRecord record = csvParsedResult.getRecords().get(index);
+			for (int i = 0; i < columns.length; i++) {
+				result.add((String) record.getColumn(columns[i]));
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	/**
 	 * Gets the new line code.
 	 *

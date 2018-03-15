@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.find.exi.condset;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +11,11 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCategoryDto;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
-import nts.uk.ctx.exio.dom.exi.adapter.role.OperableSystemImport;
 import nts.uk.ctx.exio.dom.exi.adapter.role.ExRoleAdapter;
+import nts.uk.ctx.exio.dom.exi.adapter.role.OperableSystemImport;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
-import nts.uk.ctx.exio.dom.exi.service.FileUtil;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -81,34 +78,6 @@ public class StdAcceptCondSetFinder {
 	public boolean isCodeExist(int systemType, String conditionCode) {
 		String companyId = AppContexts.user().companyId();
 		return stdConditionRepo.isSettingCodeExist(companyId, systemType, conditionCode);
-	}
-
-	public int getNumberOfLine(String fileId) {
-		int totalRecord = 0;
-		try {
-			// get input stream by fileId
-			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-
-			totalRecord = FileUtil.getNumberOfLine(inputStream);
-			inputStream.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return totalRecord;
-	}
-
-	public List<String> getRecordByIndex(String fileId, int numOfCol, int index) {
-		List<String> result;
-		try {
-			// get input stream by fileId
-			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
-
-			result = FileUtil.getRecordByIndex(inputStream, numOfCol, index);
-			inputStream.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
 	}
 
 	/**

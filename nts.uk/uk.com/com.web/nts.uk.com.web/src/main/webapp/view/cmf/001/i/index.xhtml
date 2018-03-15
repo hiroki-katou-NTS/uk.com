@@ -35,7 +35,7 @@
 						</td>
 						<td>
 							<!--I2_2 形式選択-->
-							<div tabindex="1"
+							<div id="I2_2" tabindex="1"
 								data-bind="ntsRadioBoxGroup: {
 								name: '#[CMF001_302]',
 								options: itemsFormatSelection,
@@ -77,10 +77,10 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!--I5_1 設定-->
-				<button id="btn_I5_1" class="x-large proceed" tabindex="5"
+				<button class="x-large proceed" tabindex="5"
 					data-bind="click: saveSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_325')}</button>
 				<!--I5_2 キャンセル-->
-				<button id="btn_I5_2" class="large" tabindex="6"
+				<button id="I5_2" class="large" tabindex="6"
 					data-bind="click: cancelSetting">#{i18n.getText('CMF001_326')}</button>
 			</div>
 		</ui:define>

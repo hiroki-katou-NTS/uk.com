@@ -79,19 +79,6 @@ public class StdAcceptCondSetWebService {
 	}
 	
 	@POST
-	@Path("getNumberOfLine/{fileId}")
-	public int getNumberOfLine(@PathParam("fileId") String fileId) {
-		return stdAcceptCondSetFind.getNumberOfLine(fileId);
-	}
-	
-	@POST
-	@Path("getRecord/{fileId}/{numOfCol}/{index}")
-	public List<String> getRecord(@PathParam("fileId") String fileId, @PathParam("numOfCol") int numOfCol, @PathParam("index") int index) {
-		return stdAcceptCondSetFind.getRecordByIndex(fileId, numOfCol, index);
-	}
-	
-	
-	@POST
 	@Path("copyCondSet")
 	public void copyCondSet(CopyStdAcceptCondSetCommand command) {
 		copyStdAccCondSetHandler.handle(command);
