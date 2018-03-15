@@ -12,7 +12,7 @@ public class SpecialLeaveGrantSetting {
 	private GeneralDate grantStandardDate;
 	
 	// 付与日数
-	private Optional<Integer> grantNumber;
+	private Optional<GrantNumber> grantNumber;
 	
 	// 付与テーブル
 	private Optional<GrantTable> grantTable;
