@@ -20,6 +20,8 @@ module nts.uk.pr.view.ccg007.b {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
+                let isSignOn = url.indexOf('signon=on') >= 0;
                 //get system config
                 //get local contract info
                 blockUI.invisible();
@@ -32,12 +34,17 @@ module nts.uk.pr.view.ccg007.b {
                                 self.openContractAuthDialog();
                             }
                             else {
-                                //Get login ID and set here
-                                nts.uk.characteristics.restore("form1LoginInfo").done(function(loginInfo) {
-                                    if (loginInfo) {
-                                        self.loginId(loginInfo.loginId);
-                                    }
-                                });
+                                if (isSignOn) {
+                                    self.submitLogin();
+                                }
+                                else {
+                                    //Get login ID and set here
+                                    nts.uk.characteristics.restore("form1LoginInfo").done(function(loginInfo) {
+                                        if (loginInfo) {
+                                            self.loginId(loginInfo.loginId);
+                                        }
+                                    });
+                                }
                             }
                         }
                         else {

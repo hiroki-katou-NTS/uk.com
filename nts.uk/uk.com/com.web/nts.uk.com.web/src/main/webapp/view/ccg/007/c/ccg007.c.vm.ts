@@ -63,19 +63,27 @@ module nts.uk.pr.view.ccg007.c {
             private getEmployeeLoginSetting(contractCode: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
+                let isSignOn = url.indexOf('signon=on') >= 0;
                 service.getEmployeeLoginSetting(contractCode).done(function(data) {
                     if (data.gotoForm1) {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        //get login infor from local storeage 
-                        nts.uk.characteristics.restore("form2LoginInfo").done(function(loginInfo) {
-                            if (loginInfo) {
-                                self.companyCode(loginInfo.companyCode);
-                                self.employeeCode(loginInfo.employeeCode);
-                            }
-                            dfd.resolve();
-                        });
+                        //シングルサインオン（Active DirectorySSO）かをチェックする
+                        if (isSignOn) {
+                            self.submitLogin();
+                        }
+                        else {
+                            //get login infor from local storeage 
+                            nts.uk.characteristics.restore("form2LoginInfo").done(function(loginInfo) {
+                                if (loginInfo) {
+                                    self.companyCode(loginInfo.companyCode);
+                                    self.employeeCode(loginInfo.employeeCode);
+                                }
+                                dfd.resolve();
+                            });
+                        }
                     }
                 });
                 return dfd.promise();

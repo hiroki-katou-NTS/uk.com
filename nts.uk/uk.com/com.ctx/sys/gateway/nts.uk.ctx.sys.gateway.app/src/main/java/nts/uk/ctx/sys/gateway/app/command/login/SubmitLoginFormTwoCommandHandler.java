@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
@@ -49,6 +48,10 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	protected void internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
 		SubmitLoginFormTwoCommand command = context.getCommand();
+		if (command.isSignOn()) {
+			// アルゴリズム「アカウント照合」を実行する
+			this.compareAccount();
+		} else {
 		String companyCode = command.getCompanyCode();
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
@@ -84,6 +87,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//set role Id for LoginUserContextManager
 		this.setRoleId(user.getUserId());
+				}
 	}
 
 	/**
@@ -174,18 +178,6 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			return user.get();
 		} else {
 			throw new BusinessException("Msg_301");
-		}
-	}
-
-	/**
-	 * Compare hash password.
-	 *
-	 * @param user the user
-	 * @param password the password
-	 */
-	private void compareHashPassword(UserImport user, String password) {
-		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
-			throw new BusinessException("Msg_302");
 		}
 	}
 

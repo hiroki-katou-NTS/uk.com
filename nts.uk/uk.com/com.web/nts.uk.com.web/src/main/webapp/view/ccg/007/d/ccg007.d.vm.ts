@@ -24,6 +24,7 @@ module nts.uk.pr.view.ccg007.d {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                
                 //get system config
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
@@ -82,26 +83,34 @@ module nts.uk.pr.view.ccg007.d {
             private getEmployeeLoginSetting(contractCode: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                //get check signon
+                let url = _.toLower(_.trim(_.trim($(location).attr('href')),'%20'));
+                let isSignOn = url.indexOf('signon=on')>=0;
                 service.getEmployeeLoginSetting(contractCode).done(function(data) {
                     if (data.gotoForm1) {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
-                            //get list company from server 
-                            self.companyList(data);
-                            if (data.length > 0) {
-                                self.selectedCompanyCode(self.companyList()[0].companyCode);
-                            }
-                            //get local storage info and set here
-                            nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo) {
-                                if (loginInfo) {
-                                    self.selectedCompanyCode(loginInfo.companyCode);
-                                    self.employeeCode(loginInfo.employeeCode);
+                        if (isSignOn) {
+                            self.submitLogin();
+                        }
+                        else {
+                            service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
+                                //get list company from server 
+                                self.companyList(data);
+                                if (data.length > 0) {
+                                    self.selectedCompanyCode(self.companyList()[0].companyCode);
                                 }
-                                dfd.resolve();
+                                //get local storage info and set here
+                                nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo) {
+                                    if (loginInfo) {
+                                        self.selectedCompanyCode(loginInfo.companyCode);
+                                        self.employeeCode(loginInfo.employeeCode);
+                                    }
+                                    dfd.resolve();
+                                });
                             });
-                        });
+                        }
                     }
                 });
                 return dfd.promise();

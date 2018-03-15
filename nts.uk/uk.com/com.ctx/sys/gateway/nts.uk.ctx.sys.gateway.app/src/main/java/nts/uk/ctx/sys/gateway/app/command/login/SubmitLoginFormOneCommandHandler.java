@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
@@ -32,8 +31,12 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 */
 	@Override
 	protected void internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
-
+		
 		SubmitLoginFormOneCommand command = context.getCommand();
+		if (command.isSignOn()) {
+			//アルゴリズム「アカウント照合」を実行する
+			this.compareAccount();
+		} else {
 		String loginId = command.getLoginId();
 		String password = command.getPassword();
 		// check validate input
@@ -48,13 +51,14 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		}
 
 		// check password
-		this.compareHashPassword(user, password);
+		this.compareHashPassword(user.get(), password);
 
 		// check time limit
 		this.checkLimitTime(user);
 		
 		//set info to session
 		this.initSession(user.get());
+		}
 	}
 
 	/**
@@ -73,19 +77,6 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		}
 	}
 	
-	
-	/**
-	 * Compare hash password.
-	 *
-	 * @param user the user
-	 * @param password the password
-	 */
-	private void compareHashPassword(Optional<UserImport> user, String password) {
-		if (!PasswordHash.verifyThat(password, user.get().getUserId()).isEqualTo(user.get().getPassword())) {
-			throw new BusinessException("Msg_302");
-		}
-	}
-
 	/**
 	 * Check limit time.
 	 *

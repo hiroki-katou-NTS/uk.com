@@ -21,6 +21,9 @@ public class SubmitLoginFormOneCommand {
 	/** The contract password. */
 	private String contractPassword;
 
+	/** The is sign on. */
+	private boolean signOn;
+	
 	/**
 	 * Instantiates a new submit login form one command.
 	 */
@@ -103,4 +106,22 @@ public class SubmitLoginFormOneCommand {
 	public void setContractPassword(String contractPassword) {
 		this.contractPassword = contractPassword;
 	}
+	
+	/**
+	 * Checks if is sign on.
+	 *
+	 * @return true, if is sign on
+	 */
+	public boolean isSignOn() {
+        return signOn;
+    }
+
+    /**
+     * Sets the sign on.
+     *
+     * @param signOn the new sign on
+     */
+    public void setSignOn(boolean signOn) {
+        this.signOn = signOn;
+    }
 }

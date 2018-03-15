@@ -16,8 +16,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
+import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
@@ -31,6 +33,14 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutDataDto;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
@@ -70,6 +80,17 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	@Inject
 	private RoleFromUserIdAdapter roleFromUserIdAdapter;
 
+	@Inject
+	private WindowAccountRepository windowAccountRepository;
+	
+	@Inject
+	private UserAdapter userAdapter;
+	
+	@Inject
+	private AccountLockPolicyRepository accountLockPolicyRepository;
+	
+//	@Inject
+//	private LogoutDataRepository logoutDataRepository;
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
 
@@ -292,5 +313,90 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 			return systemConfig.get();
 		}
 		return null;
+	}
+	
+	/**
+	 * Compare hash password.
+	 *
+	 * @param user the user
+	 * @param password the password
+	 */
+	protected void compareHashPassword(UserImport user, String password) {
+		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
+			//アルゴリズム「ロックアウト」を実行する　※２次対応
+			this.logoutExecuted(user);
+			throw new BusinessException("Msg_302");
+		}
+	}
+	
+	private void logoutExecuted(UserImport user)
+	{
+		//TODO get count failure
+		Integer countFailure = 0;
+		
+		//ドメインモデル「アカウントロックポリシー」を取得する
+		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(user.getContractCode())).get();
+		if (accountLockPolicy.isUse()) {
+			// ロックアウト条件に満たしているかをチェックする
+			if (countFailure < accountLockPolicy.getErrorCount().v().intValue()) {
+				return;
+			} else {
+				// ドメインモデル「ロックアウトデータ」に１件レコードを追加する
+				LogoutDataDto dto = LogoutDataDto.builder().contractCode(user.getContractCode())
+						.userId(user.getUserId()).logoutDateTime(GeneralDate.today()).logType(LogType.AUTO_LOCK.value)
+						.build();
+				LogoutData logoutData = new LogoutData(dto);
+//				this.logoutDataRepository.add(logoutData);
+
+				// エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する
+				throw new BusinessException(accountLockPolicy.getLockOutMessage().v());
+			}
+
+		}
+	}
+	
+	//アルゴリズム「アカウント照合」を実行する
+	protected void compareAccount()
+	{
+		// Windowsログイン時のアカウントを取得する
+		//TODO get UserName and HostName
+		//need confirm kiban
+		
+		String username = "";
+		String hostname = "";
+		String userId = "";
+		
+		//ドメインモデル「Windowsアカウント情報」を取得する
+		
+		//ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from 「Windowsアカウント」
+		//TODO chuyen tu List<WindowAccount> sang 1 object WindowAccount sau khi update cmm021
+		Optional<WindowAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username, hostname);
+		
+		if (opWindowAccount.isPresent()) {
+			// エラーメッセージ（#Msg_876）を表示する。
+			throw new BusinessException("Msg_876");
+		} else {
+			if (opWindowAccount.get().getUseAtr().equals(UseAtr.NotUse)) {
+				throw new BusinessException("Msg_876");
+			} else {
+				this.getUserAndCheckLimitTime(opWindowAccount.get());
+			}
+		}
+	}
+	
+	private void getUserAndCheckLimitTime(WindowAccount windowAccount) {
+		// get user
+		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
+
+		// Validate limit time
+		if (optUserImport.isPresent()) {
+			if (optUserImport.get().getExpirationDate().after(GeneralDate.today())) {
+				throw new BusinessException("Msg_316");
+			}
+		}
+		else
+		{
+			//TODO
+		}
 	}
 }
