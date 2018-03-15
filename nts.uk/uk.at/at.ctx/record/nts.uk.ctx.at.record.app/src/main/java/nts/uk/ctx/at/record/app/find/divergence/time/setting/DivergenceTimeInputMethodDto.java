@@ -2,46 +2,77 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DivergenceTimeInputMethodDto.
+ */
 public class DivergenceTimeInputMethodDto {
-	
+
 	/** The divergence time no. */
-	// 乖離時間NO
+
 	private int divergenceTimeNo;
-	
+
 	/** The c id. */
-	// 会社ID
+
 	private String companyId;
-	
+
 	/** The Use classification. */
-	// 使用区分
+
 	private int divergenceTimeUseSet;
-	/** The divergence time name */
-	//乖離時間名称
+
+	/** The divergence time name. */
+
 	private String divergenceTimeName;
-	
-	/** The divergence type*/
-	//乖離の種類
+
+	/** The divergence type. */
+
 	private int divergenceType;
-	
-	/** The divergence time error cancel method*/
-	//乖離時間のエラーの解除方法
+
+	/** The divergence time error cancel method. */
+
 	private boolean reasonInput;
+
+	/** The reason select. */
 	private boolean reasonSelect;
-	
-	/** The divergence reason inputed*/
-	//乖離理由を入力する
+
+	/** The divergence reason inputed. */
+
 	private boolean divergenceReasonInputed;
-	
-	/** The divergence reason selected*/
-	//乖離理由を選択肢から選ぶ
+
+	/** The divergence reason selected. */
+
 	private boolean divergenceReasonSelected;
-	
-	/** Attendance Item list*/
+
+	/** Attendance Item list. */
 	private List<String> attendanceName;
 
-	public DivergenceTimeInputMethodDto(int divergenceTimeNo, String companyId, int divTimeUseSet, String divergenceTimeName,
-			int divType, boolean reasonInput, boolean reasonSelect, boolean divergenceReasonInputed,
-			boolean divergenceReasonSelected,List<String> attendanceName ) {
+	/**
+	 * Instantiates a new divergence time input method dto.
+	 *
+	 * @param divergenceTimeNo
+	 *            the divergence time no
+	 * @param companyId
+	 *            the company id
+	 * @param divTimeUseSet
+	 *            the div time use set
+	 * @param divergenceTimeName
+	 *            the divergence time name
+	 * @param divType
+	 *            the div type
+	 * @param reasonInput
+	 *            the reason input
+	 * @param reasonSelect
+	 *            the reason select
+	 * @param divergenceReasonInputed
+	 *            the divergence reason inputed
+	 * @param divergenceReasonSelected
+	 *            the divergence reason selected
+	 * @param attendanceName
+	 *            the attendance name
+	 */
+	public DivergenceTimeInputMethodDto(int divergenceTimeNo, String companyId, int divTimeUseSet,
+			String divergenceTimeName, int divType, boolean reasonInput, boolean reasonSelect,
+			boolean divergenceReasonInputed, boolean divergenceReasonSelected, List<String> attendanceName) {
 		super();
 		this.divergenceTimeNo = divergenceTimeNo;
 		this.companyId = companyId;
@@ -54,7 +85,5 @@ public class DivergenceTimeInputMethodDto {
 		this.divergenceReasonSelected = divergenceReasonSelected;
 		this.attendanceName = attendanceName;
 	}
-	
-	
-	
+
 }

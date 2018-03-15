@@ -9,17 +9,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceReasonSelectCommandHandler;
-import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeAttendanceCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeInputMethodSaveCommand;
-import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeInputMethodSaveCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.AddDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceItemSetCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommand;
-import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommand;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceReasonSelectFinder;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeAttendanceFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeSettingFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodDto;
@@ -31,129 +25,160 @@ import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceType
 
 @Path("at/record/divergencetime/setting")
 @Produces("application/json")
-public class DivergenceTimeWebService extends WebService{
-	
-//	@Inject
-//	private DivergenceTimeInputMethodFinder divTimeInputFinder;
-	
+public class DivergenceTimeWebService extends WebService {
+
+	// @Inject
+	// private DivergenceTimeInputMethodFinder divTimeInputFinder;
+
+	/** The div time finder. */
 	@Inject
 	private DivergenceTimeSettingFinder divTimeFinder;
-	
-//	@Inject
-//	private DivergenceReasonSelectFinder divReasonselectFinder;
-//	
-//	@Inject
-//	private DivergenceTimeAttendanceFinder divTimeAttendanceFinder;
-//	
-//	@Inject
-//	private DivergenceTimeInputMethodSaveCommandHandler divTimeSaveCommandHandler;
-//	
-//	@Inject
-//	private DivergenceReasonSelectCommandHandler divReasonSelectCommandHandler;
-//	
-//	@Inject
-//	private DivergenceTimeAttendanceCommandHandler divTimeAttendanceCommandHandler;
+
+	@Inject
+	private DivergenceTimeInputMethodFinder divTimeInputmethodFinder;
+
 	/**
-	 * get all divergence time
-	 * @return
+	 * get all divergence time.
+	 *
+	 * @return the all div time
 	 */
 	@POST
 	@Path("getalldivtime")
-	public List<DivergenceTimeDto> getAllDivTime(){
+	public List<DivergenceTimeDto> getAllDivTime() {
 		return this.divTimeFinder.getAllDivTime();
 	}
-	
+
 	/**
-	 * get all divergence time
-	 * @return
+	 * get all divergence time.
+	 *
+	 * @return the all div time reason input
 	 */
 	@POST
 	@Path("getalldivtimereasoninput")
-	public List<DivergenceTimeInputMethodDto> getAllDivTimeReasonInput(){
-		return null;
+	public List<DivergenceTimeInputMethodDto> getAllDivTimeReasonInput() {
+		return this.divTimeInputmethodFinder.getAllDivTime();
 	}
-	
-	
+
+	@POST
+	@Path("getdivtimeinfo")
+	public DivergenceTimeInputMethodDto getDivTimeInfo(@PathParam("divTimeId") int divTimeNo) {
+		return this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(divTimeNo);
+	}
+
 	/**
-	 * update divergence time
+	 * update divergence time.
+	 *
 	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("updatedivtime")
-	public void updateDivTime(DivergenceTimeInputMethodSaveCommand command){
-//		this.divTimeSaveCommandHandler.handle(command);
+	public void updateDivTime(DivergenceTimeInputMethodSaveCommand command) {
+		// this.divTimeSaveCommandHandler.handle(command);
 	}
+
 	/**
-	 * get all divergence reason
+	 * get all divergence reason.
+	 *
 	 * @param divTimeId
-	 * @return
+	 *            the div time id
+	 * @return the all div reason
 	 */
 	@POST
 	@Path("getalldivreason/{divTimeId}")
-	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId){
-		//return this.divReasonselectFinder.getAllDivReasonByCode(divTimeId);
+	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId) {
+		// return this.divReasonselectFinder.getAllDivReasonByCode(divTimeId);
 		return null;
 	}
+
 	/**
-	 * add divergence reason
+	 * add divergence reason.
+	 *
 	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("adddivreason")
-	public void addDivReason(AddDivergenceReasonCommand command){
-		//this.divReasonSelectCommandHandler.handle(command);
+	public void addDivReason(AddDivergenceReasonCommand command) {
+		// this.divReasonSelectCommandHandler.handle(command);
 	}
+
 	/**
-	 * update divergence reason
+	 * update divergence reason.
+	 *
 	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("updatedivreason")
-	public void updateDivReason(UpdateDivergenceReasonCommand command){
-		//this.divReasonSelectCommandHandler.handle(command);
+	public void updateDivReason(UpdateDivergenceReasonCommand command) {
+		// this.divReasonSelectCommandHandler.handle(command);
 	}
+
 	/**
-	 * delete divergence reason
+	 * delete divergence reason.
+	 *
 	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("deletedivreason")
-	public void deleteDivReason(DeleteDivergenceReasonCommand command){
-		//this.divReasonSelectCommandHandler.handle(command);
+	public void deleteDivReason(DeleteDivergenceReasonCommand command) {
+		// this.divReasonSelectCommandHandler.handle(command);
 	}
+
 	/**
-	 * get item set
+	 * get item set.
+	 *
 	 * @param divTimeId
-	 * @return
+	 *            the div time id
+	 * @return the item set
 	 */
 	@POST
 	@Path("getitemset/{divTimeId}")
-	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId){
-		//return this.divTimeAttendanceFinder.getAllDivReasonByCode(divTimeId);
+	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId) {
+		// return this.divTimeAttendanceFinder.getAllDivReasonByCode(divTimeId);
 		return null;
 	}
+
 	/**
-	 * update time item id
+	 * update time item id.
+	 *
 	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("updateTimeItemId")
-	public void updateTimeItemId(List<UpdateDivergenceItemSetCommand> command){
-		//this.divTimeAttendanceCommandHandler.handle(command);
+	public void updateTimeItemId(List<UpdateDivergenceItemSetCommand> command) {
+		// this.divTimeAttendanceCommandHandler.handle(command);
 	}
+
+	/**
+	 * Gets the at type.
+	 *
+	 * @return the at type
+	 */
 	@POST
 	@Path("getAttendanceDivergenceItem")
-	public List<AttendanceTypeDivergenceAdapterDto> getAtType(){
-		//乖離時間：1
-		//return this.divTimeAttendanceFinder.getAllAtType(1);
+	public List<AttendanceTypeDivergenceAdapterDto> getAtType() {
+		// 乖離時間：1
+		// return this.divTimeAttendanceFinder.getAllAtType(1);
 		return null;
 	}
+
+	/**
+	 * Gets the at name.
+	 *
+	 * @param dailyAttendanceItemIds
+	 *            the daily attendance item ids
+	 * @return the at name
+	 */
 	@POST
 	@Path("AttendanceDivergenceName")
-	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds){
-		//return this.divTimeAttendanceFinder.getAtName(dailyAttendanceItemIds);
+	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
+		// return
+		// this.divTimeAttendanceFinder.getAtName(dailyAttendanceItemIds);
 		return null;
 	}
-	
 
 }

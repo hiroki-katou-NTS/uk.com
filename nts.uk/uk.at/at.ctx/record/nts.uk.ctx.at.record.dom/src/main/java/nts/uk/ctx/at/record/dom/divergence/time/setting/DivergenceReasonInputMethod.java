@@ -8,8 +8,30 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * Gets the reasons.
+ *
+ * @return the reasons
+ */
 @Getter
+
+/**
+ * Sets the reasons.
+ *
+ * @param reasons the new reasons
+ */
 @Setter
+
+/**
+ * Instantiates a new divergence reason input method.
+ *
+ * @param divergenceTimeNo the divergence time no
+ * @param companyId the company id
+ * @param divergenceReasonInputed the divergence reason inputed
+ * @param divergenceReasonSelected the divergence reason selected
+ * @param reasons the reasons
+ */
 @AllArgsConstructor
 public class DivergenceReasonInputMethod extends AggregateRoot{
 	
@@ -21,15 +43,15 @@ public class DivergenceReasonInputMethod extends AggregateRoot{
 	// 会社ID
 	private String companyId;
 	
-	/** The divergence reason inputed*/
+	/**  The divergence reason inputed. */
 	//乖離理由を入力する
 	private boolean divergenceReasonInputed;
 	
-	/** The divergence reason selected*/
+	/**  The divergence reason selected. */
 	//乖離理由を選択肢から選ぶ
 	private boolean divergenceReasonSelected;
 	
-	/**The reason list*/
+	/** The reason list. */
 	//乖離理由の選択肢
 	private List<DivergenceReasonSelect> reasons;
 	

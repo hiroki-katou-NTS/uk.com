@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.divergence.time.setting;
 
+/**
+ * The Interface DivergenceReasonSelectGetMemento.
+ */
 public interface DivergenceReasonSelectGetMemento {
 
 	/**
@@ -8,12 +11,14 @@ public interface DivergenceReasonSelectGetMemento {
 	 * @return the divergence reason code
 	 */
 	DivergenceReasonCode getDivergenceReasonCode();
+
 	/**
 	 * Gets the divergence reason.
 	 *
 	 * @return the divergence reason
 	 */
 	DivergenceReason getReason ();
+
 	/**
 	 * Gets the divergence reason required.
 	 *

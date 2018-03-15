@@ -7,42 +7,48 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeName;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Gets the target items.
+ *
+ * @return the target items
+ */
 @Getter
-public class DivergenceTime extends AggregateRoot{
+public class DivergenceTime extends AggregateRoot {
 
 	/** The divergence time no. */
 	// 乖離時間NO
 	private int divergenceTimeNo;
-	
+
 	/** The c id. */
 	// 会社ID
 	private String companyId;
-	
+
 	/** The Use classification. */
 	// 使用区分
 	private DivergenceTimeUseSet divTimeUseSet;
-	/** The divergence time name */
-	//乖離時間名称
+	
+	/**  The divergence time name. */
+	// 乖離時間名称
 	private DivergenceTimeName divTimeName;
-	
-	/** The divergence type*/
-	//乖離の種類
+
+	/**  The divergence type. */
+	// 乖離の種類
 	private DivergenceType divType;
-	
-	/** The divergence time error cancel method*/
-	//乖離時間のエラーの解除方法
+
+	/**  The divergence time error cancel method. */
+	// 乖離時間のエラーの解除方法
 	private DivergenceTimeErrorCancelMethod errorCancelMedthod;
-	
-	/** The target item list*/
-	//対象項目一覧
+
+	/**  The target item list. */
+	// 対象項目一覧
 	private List<Double> targetItems;
-	
-	
 
 	/**
 	 * Instantiates a new divergence time.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public DivergenceTime(DivergenceTimeGetMemento memento) {
 		super();
@@ -54,14 +60,15 @@ public class DivergenceTime extends AggregateRoot{
 		this.errorCancelMedthod = memento.getErrorCancelMedthod();
 		this.targetItems = memento.getTargetItems();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(DivergenceTimeSetMemento memento){
-	
+	public void saveToMemento(DivergenceTimeSetMemento memento) {
+
 		memento.setDivergenceTimeNo(this.divergenceTimeNo);
 		memento.setCompanyId(this.companyId);
 		memento.setDivTimeName(this.divTimeName);
@@ -69,10 +76,12 @@ public class DivergenceTime extends AggregateRoot{
 		memento.setDivType(this.divType);
 		memento.setErrorCancelMedthod(this.errorCancelMedthod);
 		memento.setTarsetItems(this.targetItems);
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -84,7 +93,9 @@ public class DivergenceTime extends AggregateRoot{
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -105,10 +116,5 @@ public class DivergenceTime extends AggregateRoot{
 			return false;
 		return true;
 	}
-	
-	
 
-
-	
-	
 }

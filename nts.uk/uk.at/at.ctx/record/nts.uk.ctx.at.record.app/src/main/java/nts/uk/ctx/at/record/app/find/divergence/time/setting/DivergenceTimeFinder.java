@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -11,35 +10,20 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DivergenceTimeSettingFinder.
- */
 @Stateless
-public class DivergenceTimeSettingFinder {
-
-	/** The div time repo. */
+public class DivergenceTimeFinder {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
-
-	/**
-	 * Gets the all div time.
-	 *
-	 * @return the all div time
-	 */
-	public List<DivergenceTimeDto> getAllDivTime() {
-		// Get company id
+	
+	public List<DivergenceTimeDto> getAllDivTime(){
 		String companyId = AppContexts.user().companyId();
-
-		// Get list divergence time
+		
 		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
-
+		
 		// Check list empty
-		if (listDivTime.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		// Convert domain to dto
+				if (listDivTime.isEmpty()) {
+					return Collections.emptyList();
+				}
 		return listDivTime.stream().map(e -> {
 			DivergenceTimeDto dto = new DivergenceTimeDto();
 			e.saveToMemento(dto);
