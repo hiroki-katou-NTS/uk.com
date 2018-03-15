@@ -26,13 +26,14 @@ module nts.uk.at.view.kmk011.b {
             enableInput: KnockoutObservable<boolean>;
             checkErrorInput: KnockoutObservable<boolean>;
 
-
+            divergenceTimeName: KnockoutObservable<string>;
             enable: KnockoutObservable<boolean>;
             divergenceTimeId: KnockoutObservable<number>;
             itemDivergenceTime: KnockoutObservable<viewmodel.model.DivergenceTime>;
             listDivergenceItem: KnockoutObservableArray<viewmodel.model.DivergenceItem>;
             listItemSelected: KnockoutObservableArray<viewmodel.model.DivergenceItem>;
             listItem: KnockoutObservableArray<number>;
+            
 
             use: KnockoutObservable<string>;
             notUse: KnockoutObservable<string>;
@@ -42,6 +43,7 @@ module nts.uk.at.view.kmk011.b {
 
             constructor() {
                 var self = this;
+                
                 self.check = false;
                 self.listItem = ko.observableArray([]);
                 self.enableUse = ko.observable(false);
@@ -49,69 +51,73 @@ module nts.uk.at.view.kmk011.b {
                 self.enableInput = ko.observable(false);
                 self.currentCode = ko.observable(1);
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100 },
-                    { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divTimeName', formatter: _.escape, width: 200 }
+                    { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divergenceTimeNo', width: 100 },
+                    { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divergenceTimeName', formatter: _.escape, width: 200 }
                 ]);
                 self.dataSource = ko.observableArray([]);
                 self.useSet = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") },
                     { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
                 ]);
+                
+                self.selectUse = ko.observable(0);
+                self.divergenceTimeName = ko.observable('');
                 self.divTimeName = ko.observable('');
                 self.timeItemName = ko.observable('');
                 self.checkErrorSelect = ko.observable(true);
                 self.enable = ko.observable(true);
                 self.divergenceTimeId = ko.observable(null);
                 self.itemDivergenceTime = ko.observable(null);
-                self.selectUse = ko.observable(0);
+                
                 self.selectSelect = ko.observable(0);
                 self.selectInput = ko.observable(0);
+                
                 self.checkErrorInput = ko.observable(false);
                 self.checkErrorSelect = ko.observable(false);
                 self.listDivergenceItem = ko.observableArray([]);
                 self.listItemSelected = ko.observableArray([]);
                 //subscribe currentCode
-                self.currentCode.subscribe(function(codeChanged) {
-                    self.clearError();
-                    if (codeChanged == 0) { return; }
-                    self.selectUse(null);
-                    self.itemDivergenceTime(self.findDivTime(codeChanged));
-                    self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
-                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
-                    self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
-                    self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
-                    self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
-                    self.timeItemName('');
-                    self.listItemSelected();
-                    service.getItemSelected(self.divergenceTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
-                        if (lstItem == null || lstItem === undefined || lstItem.length == 0) {
-                            self.timeItemName();
-                            self.listItemSelected([]);
-                        } else {
-                            var listItemId = [];
-                            for (let j = 0; j < lstItem.length; j++) {
-                                listItemId[j] = lstItem[j].attendanceId;
-                            }
-                            service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>) {
-                                self.listItemSelected(lstName);
-                                self.findTimeName(self.divergenceTimeId());
-                            });
-                        }
-                    })
-                    if (self.itemDivergenceTime().reasonInput) {
-                        self.checkErrorInput(true);
-                    } else {
-                        self.checkErrorInput(false);
-                    }
-                    if (self.itemDivergenceTime().reasonSelect) {
-                        self.checkErrorSelect(true);
-                    } else {
-                        self.checkErrorSelect(false);
-                    }
-
-                    self.check = false;
-                    $("#itemname").focus();
-                });
+//                self.currentCode.subscribe(function(codeChanged) {
+//                    self.clearError();
+//                    if (codeChanged == 0) { return; }
+//                    self.selectUse(0);
+//                    self.itemDivergenceTime(self.findDivTime(codeChanged));
+//                    self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
+//                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
+//                    self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
+//                    self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
+//                    self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
+//                    self.timeItemName('');
+//                    self.listItemSelected();
+////                    service.getItemSelected(self.divergenceTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
+////                        if (lstItem == null || lstItem === undefined || lstItem.length == 0) {
+////                            self.timeItemName();
+////                            self.listItemSelected([]);
+////                        } else {
+////                            var listItemId = [];
+////                            for (let j = 0; j < lstItem.length; j++) {
+////                                listItemId[j] = lstItem[j].attendanceId;
+////                            }
+////                            service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>) {
+////                                self.listItemSelected(lstName);
+////                                self.findTimeName(self.divergenceTimeId());
+////                            });
+////                        }
+////                    });
+//                    if (self.itemDivergenceTime().reasonInput) {
+//                        self.checkErrorInput(true);
+//                    } else {
+//                        self.checkErrorInput(false);
+//                    }
+//                    if (self.itemDivergenceTime().reasonSelect) {
+//                        self.checkErrorSelect(true);
+//                    } else {
+//                        self.checkErrorSelect(false);
+//                    }
+//
+//                    self.check = false;
+//                    $("#itemname").focus();
+//                });
                 //subscribe selectUse
                 self.selectUse.subscribe(function(codeChanged) {
                     if (codeChanged == 1) {
@@ -154,10 +160,11 @@ module nts.uk.at.view.kmk011.b {
             }
 
             public start_page(): JQueryPromise<any> {
+                
                 var self = this;
                 blockUI.invisible();
                 var dfd = $.Deferred();
-                service.getAllDivTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
+                service.getAllDivergenceTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                     blockUI.clear();
                     if (lstDivTime === undefined || lstDivTime.length == 0) {
                         self.dataSource();

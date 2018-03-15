@@ -13,10 +13,10 @@
 				nts.uk.ctx.at.record.dom.divergencetime.Time
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk011_old.a.main.css" />
-			<com:scriptfile path="kmk011_old.a.start.js" />
-			<com:scriptfile path="kmk011_old.a.vm.js" />
-			<com:scriptfile path="kmk011_old.a.service.js" />
+			<com:stylefile path="kmk011.b.main.css" />
+			<com:scriptfile path="kmk011.b.start.js" />
+			<com:scriptfile path="kmk011.b.vm.js" />
+			<com:scriptfile path="kmk011.b.service.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -34,16 +34,15 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div class="cf">
 						<div style="float: left">
-							<table tabindex="2" id="single-list-dataSource"
+				<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									width: 350,
-									height: 200,
-									options: dataSource,								
-									optionsValue: 'divergenceTimeId',
+									height: 280,
+									options: dataSource,
 									columns: columns,
 									multiple: false,
 									value: currentCode,
-									enable: true}">
+									enable: true}" >
 							</table>
 						</div>
 					</div>
@@ -54,13 +53,14 @@
 							<col width="135px" />
 							<col width="*" />
 						</colgroup>
+
 						<tr class="row">
 							<td>
-								<!-- A3_1 -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_6')}</div>
+								<!-- B3_1 -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_6')}</div>
 							</td>
 							<td>
-								<!-- A3_2: Setting Use -->
+								<!-- B3_2: Setting Use -->
 								<div tabindex="3" style="padding-left: 5px"
 									data-bind="ntsSwitchButton: {
 									options: useSet,
@@ -74,19 +74,17 @@
 						<tr class="row">
 							<td>
 								<!--B4_1 -->
-								<div
-									data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">B4_1</div>
+								<div data-bind="ntsFormLabel: {required: true }">B4_1</div>
 							</td>
 							<td style="padding-left: 5px">
 								<!-- B4_2: Divergence Time Name --> <span
-								data-bind="text:DivergenceTimeName"></span>
+								data-bind="text:divergenceTimeName"></span>
 							</td>
 						</tr>
 						<tr class="row">
 							<td>
 								<!--B3_3 -->
-								<div
-									data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK011_9')}</div>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_9')}</div>
 							</td>
 							<td style="padding-left: 5px">
 								<!-- B3_4: Divergence Time Name --> <input tabindex="4"
@@ -101,7 +99,7 @@
 						</tr>
 						<tr class="row">
 							<td>
-								<!-- A3_5 -->
+								<!-- B3_5 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
 							</td>
 							<td style="padding-left: 5px">
@@ -135,7 +133,7 @@
 									enable: enableUse }">
 								</div> <!-- A3_14: Open Dialog Divergence Reason -->
 								<button tabindex="9" class="nts-validate" id="inpDialog"
-									data-bind="click: openBDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
+									data-bind="click: openCDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
 							</td>
 						</tr>
 						<tr>

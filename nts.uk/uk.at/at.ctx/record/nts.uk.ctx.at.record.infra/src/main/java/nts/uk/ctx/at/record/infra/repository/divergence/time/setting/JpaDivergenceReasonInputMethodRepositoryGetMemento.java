@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.setting;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento;
@@ -66,7 +65,8 @@ public class JpaDivergenceReasonInputMethodRepositoryGetMemento implements Diver
 	 */
 	@Override
 	public boolean getDivergenceReasonInputed() {
-		if (entities.getDvgcReasonInputed().compareTo(BigDecimal.ZERO) == 1)
+
+		if (entities.getDvgcReasonInputed().intValue() == 1)
 			return false;
 		return true;
 	}
@@ -79,7 +79,7 @@ public class JpaDivergenceReasonInputMethodRepositoryGetMemento implements Diver
 	 */
 	@Override
 	public boolean getDivergenceReasonSelected() {
-		if (entities.getDvgcReasonSelected().compareTo(BigDecimal.ZERO) == 1)
+		if (entities.getDvgcReasonInputed().intValue() == 1)
 			return false;
 		return true;
 	}

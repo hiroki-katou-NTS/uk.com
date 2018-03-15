@@ -14,10 +14,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DivergenceTimeInputMethodFinder.
- */
+
 @Stateless
 public class DivergenceTimeInputMethodFinder {
 
@@ -59,7 +56,8 @@ public class DivergenceTimeInputMethodFinder {
 							e.getDivergenceTimeName(), e.getDivType(), e.isReasonInput(), e.isReasonSelect(),
 							object.getDivergenceReasonInputed(), object.getDivergenceReasonSelected(), null));
 		});
-
+		
+		// return
 		return listDivTimeInput;
 
 	}
@@ -73,15 +71,22 @@ public class DivergenceTimeInputMethodFinder {
 	 */
 	public DivergenceTimeInputMethodDto getDivTimeInputMethodInfo(int divTimeNo) {
 
+		// get DivergenceTimeDto
 		DivergenceTimeDto divTimeInfo = this.getDivTimeInfo(divTimeNo);
 
+		// get DivergenceReasonInputMethodDto
 		DivergenceReasonInputMethodDto divReasonInputMethodInfo = this.getDivReasonInfo(divTimeNo);
 
+		// get DivergenceAttendanceId list
+		List<Integer> attendanceIdList = this.getAttendanceIds(divTimeNo);
+
+		// Convert DivergenceReasonInputMethodDto, DivergenceTimeDto and
+		// DivergenceAttendanceId list to DivergenceTimeInputMethodDto
 		return new DivergenceTimeInputMethodDto(divTimeInfo.getDivergenceTimeNo(), AppContexts.user().companyId(),
 				divTimeInfo.getDivergenceTimeUseSet(), divTimeInfo.getDivergenceTimeName(), divTimeInfo.getDivType(),
 				divTimeInfo.isReasonInput(), divTimeInfo.isReasonSelect(),
 				divReasonInputMethodInfo.getDivergenceReasonInputed(),
-				divReasonInputMethodInfo.getDivergenceReasonSelected(), null);
+				divReasonInputMethodInfo.getDivergenceReasonSelected(), attendanceIdList);
 
 	}
 
@@ -132,6 +137,22 @@ public class DivergenceTimeInputMethodFinder {
 		} else
 			return new DivergenceReasonInputMethodDto();
 
+	}
+
+	/**
+	 * Gets the attendance ids.
+	 *
+	 * @param divTimeNo
+	 *            the div time no
+	 * @return the attendance ids
+	 */
+	public List<Integer> getAttendanceIds(int divTimeNo) {
+		// get company id
+
+		String companyId = AppContexts.user().companyId();
+
+		// return
+		return divTimeRepo.findAttendanceId(companyId, divTimeNo);
 	}
 
 	/**
