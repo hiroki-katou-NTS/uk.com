@@ -124,10 +124,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             //P:外部受入サマリー画面へ遷移する
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
+            $("#P6_1").focus();
         }
         private gotoO(): void {
             //受入設定選択に戻る
             $('#ex_accept_wizard').ntsWizard("goto", 0);
+            $("#grd_Condition tr:first-child").focus();
         }
 
         private uploadFile(): void {
@@ -342,6 +344,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
+            $("#P6_1").focus();
         }
 
         private receiveCondition(item): void {
@@ -350,6 +353,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             if (item.screenConditionSetting) settingL = ko.toJS(item.screenConditionSetting);
             setShared("CMF001lParams", { inputMode: false, dataType: item.itemType(), formatSetting: ko.toJS(settingL) });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
+            $("#P6_1").focus();
         }
 
         private gotoA(): void {
