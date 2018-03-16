@@ -82,13 +82,13 @@ module nts.uk.pr.view.kmf001.f {
                 self.selectedOfWorkTime = ko.observable(1);
                 self.selectedOfOverTime = ko.observable(1);
 
-                self.workOneDay = ko.observable('00:00');
-                self.workHalfDay = ko.observable('00:00');
-                self.workAll = ko.observable('00:00');
+                self.workOneDay = ko.observable('0000');
+                self.workHalfDay = ko.observable('0000');
+                self.workAll = ko.observable('0000');
 
-                self.overOneDay = ko.observable('00:00');
-                self.overHalfDay = ko.observable('00:00');
-                self.overAll = ko.observable('00:00');
+                self.overOneDay = ko.observable('0000');
+                self.overHalfDay = ko.observable('0000');
+                self.overAll = ko.observable('0000');
 
                 self.inputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     filldirection: "right",
@@ -405,9 +405,9 @@ module nts.uk.pr.view.kmf001.f {
                 let self = this;
                 self.checkOverTime(data.useDivision);
                 self.selectedOfOverTime(data.transferDivision);
-                self.overOneDay(self.convertTimeToString(data.oneDayTime));
-                self.overHalfDay(self.convertTimeToString(data.halfDayTime));
-                self.overAll(self.convertTimeToString(data.certainTime));
+                self.overOneDay(data.oneDayTime);
+                self.overHalfDay(data.halfDayTime);
+                self.overAll(data.certainTime);
             }
 
             //load data for work time
@@ -415,9 +415,9 @@ module nts.uk.pr.view.kmf001.f {
                 let self = this;
                 self.checkWorkTime(data.useDivision);
                 self.selectedOfWorkTime(data.transferDivision);
-                self.workOneDay(self.convertTimeToString(data.oneDayTime));
-                self.workHalfDay(self.convertTimeToString(data.halfDayTime));
-                self.workAll(self.convertTimeToString(data.certainTime));
+                self.workOneDay(data.oneDayTime);
+                self.workHalfDay(data.halfDayTime);
+                self.workAll(data.certainTime);
             }
 
             //save company
@@ -505,20 +505,20 @@ module nts.uk.pr.view.kmf001.f {
                         {
                             occurrenceType: OccurrenceDivision.OverTime,
                             transferSetting: {
-                                certainTime: self.convertTime(self.overAll()),
+                                certainTime: self.overAll(),
                                 useDivision: self.checkOverTime(),
-                                oneDayTime: self.convertTime(self.overOneDay()),
-                                halfDayTime: self.convertTime(self.overHalfDay()),
+                                oneDayTime: self.overOneDay(),
+                                halfDayTime: self.overHalfDay(),
                                 transferDivision: self.selectedOfOverTime()
                             }
                         },
                         {
                             occurrenceType: OccurrenceDivision.DayOffTime,
                             transferSetting: {
-                                certainTime: self.convertTime(self.workAll()),
+                                certainTime: self.workAll(),
                                 useDivision: self.checkWorkTime(),
-                                oneDayTime: self.convertTime(self.workOneDay()),
-                                halfDayTime: self.convertTime(self.workHalfDay()),
+                                oneDayTime: self.workOneDay(),
+                                halfDayTime: self.workHalfDay(),
                                 transferDivision: self.selectedOfWorkTime()
                             }
                         }
@@ -547,37 +547,25 @@ module nts.uk.pr.view.kmf001.f {
                         {
                             occurrenceType: OccurrenceDivision.OverTime,
                             transferSetting: {
-                                certainTime: self.enableOverAll() ? self.convertTime(self.overAll()) : overTime.certainTime,
+                                certainTime: self.enableOverAll() ? self.overAll() : overTime.certainTime,
                                 useDivision: self.isManageCompen() ? self.checkOverTime() : overTime.useDivision,
-                                oneDayTime: self.enableDesignOver() ? self.convertTime(self.overOneDay()) : overTime.oneDayTime,
-                                halfDayTime: self.enableDesignOver() ? self.convertTime(self.overHalfDay()) : overTime.halfDayTime,
+                                oneDayTime: self.enableDesignOver() ? self.overOneDay() : overTime.oneDayTime,
+                                halfDayTime: self.enableDesignOver() ? self.overHalfDay() : overTime.halfDayTime,
                                 transferDivision: self.enableOverArea() ? self.selectedOfOverTime() : overTime.transferDivision,
                             }
                         },
                         {
                             occurrenceType: OccurrenceDivision.DayOffTime,
                             transferSetting: {
-                                certainTime: self.enableWorkAll() ? self.convertTime(self.workAll()) : workTime.certainTime,
+                                certainTime: self.enableWorkAll() ? self.workAll() : workTime.certainTime,
                                 useDivision: self.isManageCompen() ? self.checkWorkTime() : workTime.useDivision,
-                                oneDayTime: self.enableDesignWork() ? self.convertTime(self.workOneDay()) : workTime.oneDayTime,
-                                halfDayTime: self.enableDesignWork() ? self.convertTime(self.workHalfDay()) : workTime.halfDayTime,
+                                oneDayTime: self.enableDesignWork() ? self.workOneDay() : workTime.oneDayTime,
+                                halfDayTime: self.enableDesignWork() ? self.workHalfDay() : workTime.halfDayTime,
                                 transferDivision: self.enableWorkArea() ? self.selectedOfWorkTime() : workTime.transferDivision,
                             }
                         }
                     ]
                 };
-            }
-            
-            //convert time string -> int
-            private convertTime(time: string) {
-                return nts.uk.time.parseTime(time).hours * 100 + nts.uk.time.parseTime(time).minutes;
-            }
-            private convertTimeToString(timeNumber: number) {
-                var timeString = nts.uk.time.parseTime(timeNumber).format();
-                if (timeString.length == 4) {
-                    timeString = "0" + timeString;
-                }
-                return timeString;
             }
 
             //save employment

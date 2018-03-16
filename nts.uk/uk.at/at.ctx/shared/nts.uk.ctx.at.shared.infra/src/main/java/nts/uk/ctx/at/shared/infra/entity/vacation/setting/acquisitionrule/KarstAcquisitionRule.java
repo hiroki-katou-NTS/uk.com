@@ -47,18 +47,10 @@ public class KarstAcquisitionRule extends UkJpaEntity implements Serializable {
 	/** 60H超休を優先 */
 	@Column(name = "FUNDED_PAID_HOLIDAY")
 	private int fundedPaidHoliday;
-
-	/** The exsess holiday. */
-//	@Column(name = "EXSESS_HOLIDAY")
-//	private int exsessHoliday;
 	
 	/** 代休を優先  */
 	@Column(name = "EXCESS_HOLIDAY")
 	private int excessHoliday;
-
-	/** The special holiday. */
-//	@Column(name = "SPECIAL_HOLIDAY")
-//	private int specialHoliday;
 
 	/** 60H超休を優先超休を優先  */
 	@Column(name = "OVERRIDE_HOLIDAY")
