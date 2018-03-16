@@ -449,11 +449,48 @@ public class PerInfoItemDefFinder {
 
 	// lanlt start
 	// return list id of item definition if it's require;
-	public List<ItemRequiredBackGroud> getAllRequiredIds() {
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCompanyID() {
 		String companyId = AppContexts.user().companyId();
 		String contractCd = AppContexts.user().contractCode();
 		List<ItemRequiredBackGroud> itemRequiredLst = new ArrayList<>();
 		this.pernfoItemDefRep.getAllRequiredIds(contractCd, companyId).stream().forEach(item -> {
+
+			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
+			itemNameRequired.setRowId(item);
+			itemNameRequired.setColumnKey("itemName");
+			itemNameRequired.setState(toList("ntsgrid-alarm"));
+
+			ItemRequiredBackGroud setting = new ItemRequiredBackGroud();
+			setting.setRowId(item);
+			setting.setColumnKey("setting");
+			setting.setState(toList("ntsgrid-alarm"));
+
+			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
+			other.setRowId(item);
+			other.setColumnKey("otherAuth");
+			other.setState(toList("ntsgrid-alarm"));
+
+			itemRequiredLst.add(itemNameRequired);
+			itemRequiredLst.add(setting);
+			itemRequiredLst.add(other);
+
+		});
+		return itemRequiredLst;
+	}
+	
+	/**
+	 * @author lanlt
+	 * dung cho man hinh B cua CPS009
+	 * getAllItemRequiredIdsByCtgId
+	 * @param ctgId
+	 * @return
+	 */
+	public List<ItemRequiredBackGroud> getAllItemRequiredIdsByCtgId(String ctgId) {
+		String contractCd = AppContexts.user().contractCode();
+		List<ItemRequiredBackGroud> itemRequiredLst = new ArrayList<>();
+		
+		List<String> itemX = this.pernfoItemDefRep.getAllRequiredIdsByCtgId(contractCd, ctgId);
+		itemX.stream().forEach(item -> {
 
 			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
 			itemNameRequired.setRowId(item);

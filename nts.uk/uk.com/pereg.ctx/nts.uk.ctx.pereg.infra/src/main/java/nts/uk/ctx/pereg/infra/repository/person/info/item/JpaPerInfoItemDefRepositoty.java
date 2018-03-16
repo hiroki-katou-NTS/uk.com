@@ -247,6 +247,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0",
 			"AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)");	
 	
+	private final static String SELECT_REQUIRED_ITEMS_ID_BY_CTG_ID = String.join(" ",
+			"SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i",
+			"INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0",
+			"AND i.perInfoCtgId =:perInfoCtgId");	
+	
 	// lanlt end
 
 	@Override
@@ -806,8 +812,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public List<String> getAllRequiredIds(String contractCd, String companyId) {
-		return queryProxy().query(SELECT_REQUIRED_ITEMS_ID_BY_CID, String.class).setParameter("contractCd", contractCd)
+		return this.queryProxy().query(SELECT_REQUIRED_ITEMS_ID_BY_CID, String.class).setParameter("contractCd", contractCd)
 				.setParameter("companyId", companyId).getList();
+	}
+
+	@Override
+	public List<String> getAllRequiredIdsByCtgId(String contract, String ctgId) {
+		return this.queryProxy().query(SELECT_REQUIRED_ITEMS_ID_BY_CTG_ID, String.class)
+				.setParameter("contractCd", contract)
+				.setParameter("perInfoCtgId", ctgId)
+				.getList();
 	}
 
 }

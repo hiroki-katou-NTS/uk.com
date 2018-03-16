@@ -8,12 +8,13 @@ module nts.uk.com.view.cps009.b.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
-        itemInitLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        itemInitLst: Array<any> = [];
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
         itemColumns: Array<any> = [];
         currentItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        state: Array<any>  = [];
         constructor() {
 
             let self = this;
@@ -35,7 +36,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            self.itemInitLst([]);
+            self.itemInitLst = [];
             let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '' };
             self.categoryName(param.ctgName);
             service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data) {
@@ -48,7 +49,8 @@ module nts.uk.com.view.cps009.b.viewmodel {
                     });
                 } else {
                     
-                    self.itemInitLst(data);
+                    self.itemInitLst = data.itemLst;
+                    self.state = data.itemRequired;
 
 
                 }
@@ -62,12 +64,13 @@ module nts.uk.com.view.cps009.b.viewmodel {
          */
         registerItems() {
             let self = this,
+                itemList = $('#grid0').igGrid("option","dataSource");
                 obj = {
                     isCancel: false,
                     refMethodType: self.selectedRuleCode(),
-                    lstItem: self.currentItem()
+                    lstItem: _.map(_.filter(itemList, function(item){ return item.disabled == true}),function(item){return item.perInfoItemDefId;})
                 };;
-            if (self.currentItem().length == 0) {
+            if (obj.lstItem.length == 0) {
                 //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_362' });
                 return;
