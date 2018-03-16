@@ -219,4 +219,49 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	List<WorkType> findWorkTypeForPause(String companyId);
+	
+	/**
+	 * 2.勤務種類を取得する（詳細）
+	 * @param companyId
+	 * @param abolishAtr
+	 * @param allDayAtrs
+	 * @param mornings
+	 * @param afternoons
+	 * @param morning
+	 * @param afternoon
+	 * @return
+	 */
+	List<WorkType> findWorkTypeForAppHolidayAppType(String companyId,List<Integer> allDayAtrs, List<Integer> mornings,List<Integer> afternoons,Integer morning,Integer afternoon);
+	
+	/**
+	 * findWorkTypeForHalfDay by list workTypeCodes
+	 * @param companyId
+	 * @param abolishAtr
+	 * @param workTypeAtr
+	 * @param halfDay
+	 * @return
+	 */
+	List<WorkType> findWorkTypeForHalfDay(String companyId,List<Integer> halfDay,List<String> workTypeCodes);
+	
+	/**
+	 * findWorkTypeForAllDayAndHalfDay
+	 * @param companyId
+	 * @param halfDay
+	 * @param workTypeCodes
+	 * @param oneDays
+	 * @return
+	 */
+	List<WorkType> findWorkTypeForAllDayAndHalfDay(String companyId,List<Integer> halfDay,List<String> workTypeCodes,List<Integer> oneDays);
+	
+	/**
+	 * findWorkTypeByCodes
+	 * @param companyId
+	 * @param workTypeCodes
+	 * @param abolishAtr
+	 * @param worktypeAtr
+	 * @return
+	 */
+	List<WorkType> findWorkTypeByCodes(String companyId,List<String> workTypeCodes,int abolishAtr, int worktypeAtr);
+	
+	
 }

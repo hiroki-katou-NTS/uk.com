@@ -95,6 +95,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static String FIND_WORKTYPE_ONEDAY;
 	private static String FIND_WORKTYPE_FOR_SHOTING;
 	private static String FIND_WORKTYPE_FOR_PAUSE;
+	private static String FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE;
+	private static String FIND_WORKTYPE_BY_LIST_WORKTYPECODES;
+	private static String FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES;
+	private static String FIND_BY_CODES;
 	static {
 		StringBuilder builder = new StringBuilder();
 		builder.append(SELECT_FROM_WORKTYPE);
@@ -135,15 +139,59 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(SELECT_ALL_WORKTYPE);
 		builder.append(" AND c.deprecateAtr = 0");
 		builder.append(" AND ( ");
+		builder.append(" (c.worktypeAtr = 0 AND c.oneDayAtr IN :oneDayAtrs)");
+		builder.append(" OR (c.worktypeAtr= 1 AND c.morningAtr = :morningAtr AND c.afternoonAtr IN :afternoonAtrs )");
+		builder.append(" OR(c.worktypeAtr= 1 AND c.afternoonAtr = :afternoonAtr AND c.morningAtr IN :morningAtrs )");
+		builder.append(")");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE = builder.toString();
+
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = 0");
+		builder.append(" AND ( ");
 		builder.append(" (c.worktypeAtr = 0 AND c.oneDayAtr = 8)");
 		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 8 AND c.afternoonAtr = 0)");
 		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 0 AND c.afternoonAtr = 8)");
 		builder.append(" OR (c.worktypeAtr= 1 AND c.morningAtr = 8 AND c.afternoonAtr IN (1,2,3,4,5,6,9) )");
 		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr IN (1,2,3,4,5,6,9)) AND c.afternoonAtr = 8 ");
-
 		builder.append(")");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_FOR_PAUSE = builder.toString();
+
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = 0");
+		builder.append(" AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes");
+		builder.append(" AND c.worktypeAtr = 1 AND ( c.morningAtr IN :morningAtrs OR c.afternoonAtr IN :afternoonAtrs )");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_BY_LIST_WORKTYPECODES = builder.toString();
+
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = 0");
+		builder.append(" AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes AND ( ");
+		builder.append(" (c.worktypeAtr = 0 AND c.oneDayAtr IN :oneDayAtrs)");
+		builder.append(" OR (c.worktypeAtr = 1 AND c.morningAtr IN :morningAtrs AND c.afternoonAtr IN :afternoonAtrs )");
+		builder.append(")");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES = builder.toString();
+
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_ALL_WORKTYPE);
+		builder.append(" AND c.deprecateAtr = :abolishAtr");
+		builder.append(" AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes ");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr ");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_BY_CODES = builder.toString();
 
 	}
 
@@ -385,5 +433,47 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findWorkTypeForPause(String companyId) {
 		return this.queryProxy().query(FIND_WORKTYPE_FOR_PAUSE, KshmtWorkType.class)
 				.setParameter("companyId", companyId).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<WorkType> findWorkTypeForAppHolidayAppType(String companyId,List<Integer> allDayAtrs, List<Integer> mornings,List<Integer> afternoons,Integer morning,Integer afternoon) {
+		return this.queryProxy().query(FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("oneDayAtrs", allDayAtrs)
+				.setParameter("morningAtr", morning)
+				.setParameter("afternoonAtrs", afternoons)
+				.setParameter("afternoonAtr", afternoon)
+				.setParameter("morningAtrs", mornings).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<WorkType> findWorkTypeForHalfDay(String companyId, List<Integer> halfDay, List<String> workTypeCodes) {
+		return this.queryProxy().query(FIND_WORKTYPE_BY_LIST_WORKTYPECODES, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workTypeCodes", workTypeCodes)
+				.setParameter("morningAtrs", halfDay)
+				.setParameter("afternoonAtrs", halfDay).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<WorkType> findWorkTypeForAllDayAndHalfDay(String companyId, List<Integer> halfDay,
+			List<String> workTypeCodes, List<Integer> oneDays) {
+		return this.queryProxy().query(FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workTypeCodes", workTypeCodes)
+				.setParameter("oneDayAtrs", oneDays)
+				.setParameter("morningAtrs", halfDay)
+				.setParameter("afternoonAtrs", halfDay).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<WorkType> findWorkTypeByCodes(String companyId, List<String> workTypeCodes, int abolishAtr,
+			int worktypeAtr) {
+		// FIND_BY_CODES
+		return this.queryProxy().query(FIND_BY_CODES, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workTypeCodes", workTypeCodes)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("worktypeAtr", worktypeAtr).getList(x -> toDomain(x));
 	}
 }
