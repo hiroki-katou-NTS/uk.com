@@ -159,6 +159,10 @@ public class DailyWork extends DomainObject { // 1日の勤務
 	public boolean isClosure() {
 		return WorkTypeClassification.Closure.equals(this.oneDay);
 	}
+	
+	public boolean isOneDay() {
+		return this.workTypeUnit == WorkTypeUnit.OneDay; 
+	}
 
 	public boolean isOneDayHoliday() {
 		return this.oneDay == WorkTypeClassification.Holiday;
