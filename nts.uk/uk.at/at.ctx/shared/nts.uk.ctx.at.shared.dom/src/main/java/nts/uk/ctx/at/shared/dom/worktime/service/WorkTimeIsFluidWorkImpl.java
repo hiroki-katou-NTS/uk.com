@@ -18,7 +18,7 @@ public class WorkTimeIsFluidWorkImpl implements WorkTimeIsFluidWork{
 	@Override
 	public boolean checkWorkTimeIsFluidWork(String workTimeCode) {
 		String companyId = AppContexts.user().companyId();
-		WorkTimeForm　workTimeForm = WorkTimeForm.FIXED;
+		WorkTimeForm workTimeForm = WorkTimeForm.FIXED;
 		//就業時間帯の設定
 		Optional<WorkTimeSetting> findByCode = workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		if(!findByCode.isPresent()) {

@@ -31,7 +31,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode()); 
-		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstScheWorkTimeType());		
+		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstScheWorkTimeType(), true);		
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode()); 
-		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstItemRecord());
+		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstItemRecord(), false);
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR

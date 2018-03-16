@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
@@ -45,8 +44,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-	@Inject
-	private WorkTimezoneLateEarlySetGetMemento workMemento;
+	//@Inject
+	//private WorkTimezoneLateEarlySetGetMemento workMemento;
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Override
@@ -215,7 +214,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		
 		//時間丁度の打刻は遅刻・早退とするをチェックする
 		WorkTimeSetting workTimeData = findByCode.get();
-		List<OtherEmTimezoneLateEarlySet> lstEmTimezon = workMemento.getOtherClassSet();
+		//TODO can xem lai
+		/*List<OtherEmTimezoneLateEarlySet> lstEmTimezon = workMemento.getOtherClassSet();
 		OtherEmTimezoneLateEarlySet emTimezon;
 		if(isPre) {
 			emTimezon = lstEmTimezon.stream()
@@ -233,7 +233,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return timeData + 1;
 			}
 
-		}				
+		}*/				
 		return timeData;
 	}
 
