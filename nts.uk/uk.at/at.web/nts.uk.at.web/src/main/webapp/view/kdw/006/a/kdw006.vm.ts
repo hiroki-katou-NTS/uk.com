@@ -1,78 +1,62 @@
 module nts.uk.at.view.kdw006 {
     export module viewmodel {
         export class ScreenModel {
-            constructor(dataShare) {
-            }
 
-            startPage(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
+            constructor() {
             }
 
             openB() {
+                let self = this;
+                self.checkMode();
                 nts.uk.request.jump("/view/kdw/006/b/index.xhtml");
             }
 
             openC() {
+                let self = this;
+                self.checkMode();
                 nts.uk.request.jump("/view/kdw/006/c/index.xhtml");
             }
 
             openD() {
+                let self = this;
+                self.checkMode();
                 nts.uk.request.jump("/view/kdw/006/d/index.xhtml");
             }
 
-
             open002Setting() {
-                let isDaily = true;
-                nts.uk.request.jump("/view/kdw/002/a/index.xhtml", { ShareObject: isDaily });
+                let self = this;
+                self.checkMode();
+                nts.uk.request.jump("/view/kdw/002/a/index.xhtml");
             }
 
             open002Control() {
-                let isDaily = true;
-                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
+                let self = this;
+                self.checkMode();
+                nts.uk.request.jump("/view/kdw/002/b/index.xhtml");
             }
-
             open007() {
-                let isDaily = true;
-                nts.uk.request.jump("/view/kdw/007/a/index.xhtml", { ShareObject: isDaily });
+                let self = this;
+                self.checkMode();
+                nts.uk.request.jump("/view/kdw/007/a/index.xhtml");
             }
-
             open008() {
-                let isDaily = true;
-                nts.uk.request.jump("/view/kdw/008/d/index.xhtml", { ShareObject: isDaily });
+                let self = this;
+                self.checkMode();
+                nts.uk.request.jump("/view/kdw/008/a/index.xhtml");
             }
 
-            open006_G() {
-                nts.uk.request.jump("/view/kdw/006/g/index.xhtml");
+            // set params
+            checkMode() {
+                let self = this;
+                let mode = $("#sidebar").ntsSideBar("getCurrent");
+                if (mode == 1) {
+                    nts.uk.ui.windows.setShared('mode', "DAILY");
+                } else if (mode == 2) {
+                    nts.uk.ui.windows.setShared('mode', "MONTHLY");
+                } else {
+                    nts.uk.ui.windows.setShared('mode', "COMMON");
+                }
             }
-
-            open002Month() {
-                let isDaily = false;
-                nts.uk.request.jump("/view/kdw/002/a/index.xhtml", { ShareObject: isDaily });
-            }
-
-            open002ControlMonth() {
-                let isDaily = false;
-                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
-            }
-
-            open007Month() {
-                let isDaily = false;
-                nts.uk.request.jump("/view/kdw/007/a/index.xhtml", { ShareObject: isDaily });
-            }
-
-            open008Month() {
-                let isDaily = false;
-                nts.uk.request.jump("/view/kdw/008/d/index.xhtml", { ShareObject: isDaily });
-            }
-
-            openKDW002() {
-                let isDaily = false;
-                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
-            }
-
         }
     }
 }

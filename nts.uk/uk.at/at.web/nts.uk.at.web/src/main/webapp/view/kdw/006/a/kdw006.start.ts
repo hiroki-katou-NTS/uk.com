@@ -1,21 +1,16 @@
-module nts.uk.at.view.kdw006 {  
+module nts.uk.at.view.kdw006 { 
+ 
     __viewContext.ready(function() {
-        let dataShare:any;
-         this.transferred.ifPresent(data => {
-            console.log(data);
-             dataShare = data;
-        });
-        
-        let screenModel = new viewmodel.ScreenModel(dataShare);
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
-            let sidebar = 0;
-            if(dataShare){
-                sidebar = dataShare.ShareObject;   
-            }
-                
-            $("#sidebar").ntsSideBar("active", sidebar);
-            $('#button1').focus();
-        });
+        let screenModel = new viewmodel.ScreenModel();
+        __viewContext.bind(screenModel);
+        let mode = nts.uk.ui.windows.getShared('mode'); 
+        if (mode == 'MONTHLY'){
+            $('.navigator li a#MONTHLY').trigger('click');
+        }else if (mode == 'DAILY'){
+            $('.navigator li a#DAILY').trigger('click');
+        } else{
+            $('.navigator li a#COMMON').trigger('click');
+        }
+        $('#button1').focus();
     });
 }
