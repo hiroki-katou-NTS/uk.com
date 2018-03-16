@@ -32,6 +32,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 
 	/** The Constant DIVERGENCE_TIME_MAX_COUNT. */
 	private final int DIVERGENCE_TIME_MAX_COUNT = 10;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,6 +73,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
 
 		// query data
 		List<KrcstDrt> krcstDrts = em.createQuery(cq).getResultList();
@@ -95,7 +97,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 			KrcstDrt drt = new KrcstDrt();
 			drt.setId(new KrcstDrtPK(historyId, i));
 			drt.setDvgcTimeUseSet(BigDecimal.valueOf(NotUseAtr.NOT_USE.value));
-			
+
 			// Insert to DB
 			this.commandProxy().insert(drt);
 		}
@@ -159,6 +161,6 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	@Override
 	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
