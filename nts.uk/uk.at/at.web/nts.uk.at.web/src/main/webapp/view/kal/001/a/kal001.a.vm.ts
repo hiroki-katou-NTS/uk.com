@@ -117,6 +117,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let dfd = $.Deferred<any>();
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
+            block.invisible();
             service.getAlarmByUser().done((alarmData)=>{
                 
                 self.alarmCombobox(alarmData);
@@ -132,6 +133,8 @@ module nts.uk.at.view.kal001.a.model {
                         dfd.resolve();
                     }).fail((errorCheckTime) =>{
                         alertError(errorCheckTime);
+                    }).always(()=>{
+                        block.clear();    
                     });
                                         
                 }else{
@@ -141,6 +144,7 @@ module nts.uk.at.view.kal001.a.model {
                 
             }).fail((errorAlarm)=>{
                  alertError(errorAlarm);
+                 block.clear();
             });
             
 
@@ -203,7 +207,7 @@ module nts.uk.at.view.kal001.a.model {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
             }
-            
+            block.invisible();
             service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
                 if(dataExtractAlarm.extracting) {
@@ -221,6 +225,8 @@ module nts.uk.at.view.kal001.a.model {
                 });
             }).fail((errorExtractAlarm)=>{
                 alertError(errorExtractAlarm);
+            }).always(()=>{
+                block.clear();    
             });
 
         }
