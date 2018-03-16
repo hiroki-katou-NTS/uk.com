@@ -11,7 +11,6 @@ module nts.uk.com.view.cmf001.h.viewmodel {
 
     export class ScreenModel {
         characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
-
         effectDigitItem: KnockoutObservableArray<model.ItemModel>;
         codeEditingItem: KnockoutObservableArray<model.ItemModel>;
         effectFixedValItem: KnockoutObservableArray<model.ItemModel>;
@@ -39,6 +38,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             }
             self.validate();
         }
+        // エラー時に保存ボタンを無効にする
         validate(){
             var self = this;
             self.characterDataFormatSetting().effectiveDigitLength.subscribe(function(selectedValue: any) {
@@ -77,7 +77,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
         }
         initComponents() {
             var self = this;
-            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, null));
+            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, 0, null));
 
             self.effectDigitItem = ko.observableArray([
                 new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_268')),
@@ -140,6 +140,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             
             return dfd.promise();
         }
+        //項目制御
         enableEffectDigitLengthCls(){
             var self = this;
             return (self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);

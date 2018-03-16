@@ -10,38 +10,18 @@ module nts.uk.com.view.cmf001.g.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting>
-        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, null, 0, null));
-        
-        effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
-            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_224'))
-        ]);
-        effectMinorityItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_232')),
-            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_233'))
-        ]);
-        effectFixedValItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_254')),
-            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_255'))
-        ]);
+        numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting>;
+        effectDigitItem: KnockoutObservableArray<model.ItemModel>;
+        effectMinorityItem: KnockoutObservableArray<model.ItemModel>;
+        effectFixedValItem: KnockoutObservableArray<model.ItemModel>;
         decimalPointClsItem: KnockoutObservableArray<model.ItemModel>;
         decimalFractionItem: KnockoutObservableArray<model.ItemModel>;
-        codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert> = ko.observable(new model.AcceptanceCodeConvert("","",0));
+        codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert>;
         inputMode: boolean = true;
         lineNumber: number = -1;
         constructor() {
             var self = this;
-            self.decimalPointClsItem = ko.observableArray([
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
-            ]);
-            self.decimalFractionItem = ko.observableArray([
-                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, getText('Enum_Rounding_Truncation')),
-                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, getText('Enum_Rounding_Round_Up')),
-                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, getText('Enum_Rounding_Down_4_Up_5'))
-            ]);
-            
+            self.initComponents();
             let params = getShared("CMF001gParams");
             let inputMode = params.inputMode;
             let lineNumber = params.lineNumber;
@@ -58,6 +38,34 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             }
             self.validate();
         }
+        initComponents(){
+            var self = this;
+            
+            self.numDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, null, 0, null));
+            self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("","",0));
+            self.decimalPointClsItem = ko.observableArray([
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
+            ]);
+            self.decimalFractionItem = ko.observableArray([
+                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, getText('Enum_Rounding_Truncation')),
+                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, getText('Enum_Rounding_Round_Up')),
+                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, getText('Enum_Rounding_Down_4_Up_5'))
+            ]);
+            self.effectDigitItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_224'))
+            ]);
+            self.effectMinorityItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_232')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_233'))
+            ]);
+            self.effectFixedValItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_254')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_255'))
+            ]);
+        }
+        // エラー時に保存ボタンを無効にする
         validate(){
             var self = this;
             self.numDataFormatSetting().effectiveDigitLength.subscribe(function(selectedValue: any) {
@@ -132,6 +140,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             }
             return dfd.promise();
         }
+        //項目制御
         enableEffectDigitLengthCls() {
             var self = this;
             return (self.inputMode && self.numDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
