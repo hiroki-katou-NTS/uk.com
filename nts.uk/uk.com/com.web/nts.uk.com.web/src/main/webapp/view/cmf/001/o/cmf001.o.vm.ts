@@ -67,8 +67,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.selectedConditionStartLine(0);
                 }
                 //「受入ファイルアップロード」をクリアする
-                self.fileId('');
-                self.fileName('');
+                self.resetFile();
             });
 
             $("#grd_Accept").ntsFixedTable({ height: 373 });
@@ -129,44 +128,35 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         private gotoO(): void {
             //受入設定選択に戻る
             $('#ex_accept_wizard').ntsWizard("goto", 0);
+            $("#grd_Condition tr[aria-selected='true']").focus();
         }
 
-        private uploadFile(): void {
+        private uploadFileFinish(fileInfo: any): void {
             let self = this;
-            block.invisible();
-            $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-                service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
-                    self.totalLine(totalLine);
-                    //アップロードCSVが取込開始行に満たない場合                   
-                    if (totalLine < self.selectedConditionStartLine()) {
-                        self.resetFile();
-                        alertError({ messageId: "Msg_1059" });
-                    }
-                    //アップロードCSVが取込開始行以上ある
-                    else {
-                        //基盤からファイルIDを取得する
-                        self.fileId(res[0].id);
-                    }
-                    $("#file-upload").focus();
-                }).fail(function(err) {
+            service.getNumberOfLine(fileInfo.id).done(function(totalLine: any) {
+                self.totalLine(totalLine);
+                //アップロードCSVが取込開始行に満たない場合                   
+                if (totalLine < self.selectedConditionStartLine()) {
                     self.resetFile();
-                    alertError({ messageId: "Msg_910" });
-                }).always(() => {
-                    block.clear();
-                });
+                    alertError({ messageId: "Msg_1059" });
+                }
+                //アップロードCSVが取込開始行以上ある
+                else {
+                    //基盤からファイルIDを取得する
+                    self.fileId(fileInfo.id);
+                }
             }).fail(function(err) {
                 self.resetFile();
-                //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
-                alertError({ messageId: "Msg_910" });
+                alertError({ messageId: "Msg_1059" });
+            }).always(() => {
                 $("#file-upload").focus();
-                block.clear();
             });
         }
 
         private resetFile(): void {
             let self = this;
-            self.fileId('');
-            self.fileName('');
+            self.fileId(null);
+            self.fileName(null);
         }
 
         private loadListCondition(sysType): void {
@@ -190,8 +180,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //取得した設定を「条件設定一覧」に表示する
                     self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
                     self.selectedConditionName(self.listCondition()[0].conditionSettingName());
-
-                    $("#grd_Condition tr:first-child").focus();
                 }
                 //取得データが0件の場合      
                 else {
@@ -203,6 +191,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 alertError(error);
             }).always(() => {
                 block.clear();
+                _.defer(() => {
+                    $("#grd_Condition tr:first-child").focus();
+                });
             });
         }
 
@@ -277,14 +268,20 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let sv2 = service.getCategoryItem(self.selectedConditionItem.categoryId);
 
                     $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {
-                        _.each(_rspList, rs => {
-                            let item1 = data1[0];
-                            rs.sampleData(item1);
-                            data1.shift();
+                        if (data1 && data1.length) {
+                            _.each(_rspList, rs => {
+                                let item1 = data1[0];
+                                rs.sampleData(item1);
+                                data1.shift();
+                            });
+                        }
 
-                            let item2 = _.find(data2, x => { return x.itemNo == rs.categoryItemNo(); });
-                            rs.acceptItemName(item2.itemName);
-                        });
+                        if (data2 && data2.length) {
+                            _.each(_rspList, rs => {
+                                let item2 = _.find(data2, x => { return x.itemNo == rs.categoryItemNo(); });
+                                rs.acceptItemName(item2.itemName);
+                            });
+                        }
 
                         self.listAccept(_rspList);
 

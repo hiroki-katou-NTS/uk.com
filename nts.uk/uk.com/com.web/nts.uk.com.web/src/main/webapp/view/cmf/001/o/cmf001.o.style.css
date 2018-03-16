@@ -4,12 +4,12 @@
 
 #ex_accept_wizard>.steps {
 	width: 250px;
-	height: 590px;
+	height: 600px;
 }
 
 #ex_accept_wizard>.content {
 	width: 890px;
-	height: 590px;
+	height: 600px;
 	background: none;
 }
 
