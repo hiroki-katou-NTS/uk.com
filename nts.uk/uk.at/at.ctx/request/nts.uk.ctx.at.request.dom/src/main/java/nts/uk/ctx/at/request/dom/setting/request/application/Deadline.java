@@ -8,7 +8,7 @@ package nts.uk.ctx.at.request.dom.setting.request.application;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
-@IntegerRange(max = 31, min = 1)
+@IntegerRange(max = 31, min = 0)
 public class Deadline extends IntegerPrimitiveValue<Deadline> {
 
 	public Deadline(int rawValue) {
