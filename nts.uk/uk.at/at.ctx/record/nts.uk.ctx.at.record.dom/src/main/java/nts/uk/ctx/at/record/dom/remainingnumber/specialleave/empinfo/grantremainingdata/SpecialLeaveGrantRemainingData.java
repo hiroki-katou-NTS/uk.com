@@ -8,6 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.SpecialVacationCD;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 	// 社員ID
 	private String employeeId;
 	// 特別休暇コード
-	private String specialLeaveCode;
+	private SpecialVacationCD specialLeaveCode;
 	// 付与日
 	private GeneralDate grantDate;
 	// 期限日

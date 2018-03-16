@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.TimeRange;
 
 
 // 時間 - 特別休暇付与時間
-//@TimeRange(min = "00:00", max = "999:59")
+@TimeRange(min = "00:00", max = "999:59")
 public class TimeOfGrant extends TimeDurationPrimitiveValue<TimeOfGrant> {
 
 	/** The Constant serialVersionUID. */

@@ -16,9 +16,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 public class SpecialLeaveNumberInfo {
 	//付与数
 	private SpecialLeaveGrantNumber grantNumber;
-	
+	//使用数
 	private SpecialLeaveUsedNumber usedNumber;
-	
+	//残数
 	private SpecialLeaveRemainingNumber remainingNumber;
 
 }
