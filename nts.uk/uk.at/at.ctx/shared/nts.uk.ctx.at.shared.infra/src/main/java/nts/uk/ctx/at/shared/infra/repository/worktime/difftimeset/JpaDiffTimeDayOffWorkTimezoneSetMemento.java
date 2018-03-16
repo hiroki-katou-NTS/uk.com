@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSet;
@@ -68,7 +68,7 @@ public class JpaDiffTimeDayOffWorkTimezoneSetMemento implements DiffTimeDayOffWo
 	}
 
 	@Override
-	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone) {
+	public void setWorkTimezones(List<HDWorkTimeSheetSetting> workTimezone) {
 		//KSHMT_DIFF_TIME_HOL_SET
 		if (workTimezone == null || workTimezone.isEmpty()) {
 			this.entity.setLstKshmtDiffTimeHolSet(new ArrayList<>());

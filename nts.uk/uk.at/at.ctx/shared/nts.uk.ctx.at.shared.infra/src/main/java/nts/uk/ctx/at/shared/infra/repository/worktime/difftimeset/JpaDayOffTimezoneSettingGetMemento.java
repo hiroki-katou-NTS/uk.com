@@ -7,12 +7,12 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-public class JpaDayOffTimezoneSettingGetMemento implements DayOffTimezoneSettingGetMemento {
+public class JpaDayOffTimezoneSettingGetMemento implements HDWorkTimeSheetSettingGetMemento {
 
 	private KshmtDiffTimeHolSet entity;
 
@@ -61,10 +61,4 @@ public class JpaDayOffTimezoneSettingGetMemento implements DayOffTimezoneSetting
 	public BreakFrameNo getOutLegalPubHDFrameNo() {
 		return new BreakFrameNo(new BigDecimal(this.entity.getPubHolFrameNo()));
 	}
-
-	@Override
-	public boolean getIsUpdateStartTime() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getUpdStartTime());
-	}
-
 }

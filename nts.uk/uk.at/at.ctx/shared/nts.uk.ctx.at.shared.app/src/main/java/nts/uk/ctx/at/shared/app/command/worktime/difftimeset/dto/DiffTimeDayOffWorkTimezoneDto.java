@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.HDWorkTimeSheetSettingDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
@@ -25,7 +26,7 @@ public class DiffTimeDayOffWorkTimezoneDto {
 	private DiffTimeRestTimezoneDto restTimezone;
 
 	/** The work timezone. */
-	private List<DayOffTimezoneSettingDto> workTimezones;
+	private List<HDWorkTimeSheetSettingDto> workTimezones;
 
 	/**
 	 * To domain.
@@ -66,7 +67,7 @@ public class DiffTimeDayOffWorkTimezoneDto {
 		}
 
 		@Override
-		public List<DayOffTimezoneSetting> getWorkTimezones() {
+		public List<HDWorkTimeSheetSetting> getWorkTimezones() {
 			if(this.dto.workTimezones == null)
 			{
 				return null;
@@ -75,7 +76,7 @@ public class DiffTimeDayOffWorkTimezoneDto {
 			return this.dto.workTimezones.stream().sorted((timezone1, timezon2) -> timezone1.getTimezone().getStart()
 					.compareTo(timezon2.getTimezone().getStart())).map(item -> {
 						item.setWorkTimeNo(++workTimeNo);
-						return item.toDomain();
+						return new HDWorkTimeSheetSetting(item);
 					}).collect(Collectors.toList());
 		}
 
