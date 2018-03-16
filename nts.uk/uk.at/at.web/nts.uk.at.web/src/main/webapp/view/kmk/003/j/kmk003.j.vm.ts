@@ -2,6 +2,8 @@ module nts.uk.at.view.kmk003.j {
 
     export module viewmodel {  
         
+        import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
+        
         export class ScreenModel {        
             
             // Screen data 
@@ -11,14 +13,27 @@ module nts.uk.at.view.kmk003.j {
             isFlow: KnockoutObservable<boolean>;
             
             // Data
-                     
+            classificationGetStart: KnockoutObservable<number>;
+            
+            listPriorityClassification: KnockoutObservableArray<any>;
+            listRounding: KnockoutObservableArray<any>;
+            
             constructor() {
                 let _self = this;
                 
                 _self.dataObject = null;
-                _self.isFlow = ko.observable(null);
+                _self.isFlow = ko.observable(true);
                 
                 //TODO
+                _self.listPriorityClassification = ko.observableArray([
+                    {value: 0, localizedName: nts.uk.resource.getText("KMK003_69")},
+                    {value: 1, localizedName: nts.uk.resource.getText("KMK003_70")}
+                ]);
+                _self.listRounding = ko.observableArray([
+                    {value: 0, localizedName: nts.uk.resource.getText("KMK003_72")},
+                    {value: 1, localizedName: nts.uk.resource.getText("KMK003_73")}
+                ]);
+                _self.classificationGetStart = ko.observable(0);
             }
             
             /**
