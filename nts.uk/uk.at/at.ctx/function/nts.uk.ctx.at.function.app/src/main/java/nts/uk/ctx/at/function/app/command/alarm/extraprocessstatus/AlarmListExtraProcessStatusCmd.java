@@ -31,7 +31,7 @@ public class AlarmListExtraProcessStatusCmd {
 				command.getStartDate(),
 				command.getStartTime(),
 				command.getEmployeeID(),
-				command.getEndDate()==null?null:Optional.of(command.getEndDate()),
+				command.getEndDate(),
 				command.getEndTime()
 				);
 	}

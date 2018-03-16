@@ -68,9 +68,9 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 				domain.getCompanyID(),
 				domain.getStartDate(),
 				domain.getStartTime(),
-				domain.getEmployeeID(),
-				domain.getEndDate().isPresent() ==true? domain.getEndDate().get(): null,
-				domain.getEndTime()
+				domain.getEmployeeID().isPresent() ==true?domain.getEmployeeID().get(): null,
+				domain.getEndDate().isPresent()==true? domain.getEndDate().get(): null,
+				domain.getEndTime().isPresent()==true? domain.getEndTime().get(): null 
 				);
 	}
 	
@@ -81,7 +81,7 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 				this.startDate,
 				this.startTime,
 				this.employeeID,
-				Optional.of(this.endDate),
+				this.endDate,
 				this.endTime
 				);
 	}
