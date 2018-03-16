@@ -819,10 +819,14 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue03.subscribe(function(value) {
                 var result = Number(value) - 1;
                 
-                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
-                    $('#cond03').ntsError('set', {messageId:"Msg_262"});
-                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
-                    $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                if(self.A7_4SelectedRuleCode() == 0){
+                    if(self.useCls02() && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)) {
+                        $('#cond03').ntsError('set', {messageId:"Msg_262"});
+                    }                    
+                } else if(self.A7_4SelectedRuleCode() == 1){
+                    if(self.useCls02() && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)) {
+                        $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                    }
                 } else {
                     if(self.useCls04()) {
                         if(self.conditionValue03() == undefined || self.conditionValue03() == "") {
@@ -839,10 +843,14 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue04.subscribe(function(value) {
                 var result = Number(value) - 1;
                 
-                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
-                    $('#cond04').ntsError('set', {messageId:"Msg_262"});
-                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
-                    $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                if(self.A7_4SelectedRuleCode() == 0){
+                    if(self.useCls03() && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)) {
+                        $('#cond04').ntsError('set', {messageId:"Msg_262"});
+                    }  
+                } else if(self.A7_4SelectedRuleCode() == 1){
+                    if(self.useCls03() && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)) {
+                        $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                    }
                 } else {
                     if(self.useCls05()) {
                         if(self.conditionValue04() == undefined || self.conditionValue04() == "") {
@@ -865,10 +873,14 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     result = Number(value) - 1;
                 }
                 
-                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)){
-                    $('#cond05').ntsError('set', {messageId:"Msg_262"});
-                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)){
-                    $('#cond05').ntsError('set', {messageId:"Msg_263"});
+                if(self.A7_4SelectedRuleCode() == 0){
+                    if(self.useCls04() && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)) {
+                        $('#cond05').ntsError('set', {messageId:"Msg_262"});
+                    }
+                } else if(self.A7_4SelectedRuleCode() == 1){
+                    if(self.useCls04() && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)) {
+                        $('#cond05').ntsError('set', {messageId:"Msg_263"});
+                    }
                 }
             });
             

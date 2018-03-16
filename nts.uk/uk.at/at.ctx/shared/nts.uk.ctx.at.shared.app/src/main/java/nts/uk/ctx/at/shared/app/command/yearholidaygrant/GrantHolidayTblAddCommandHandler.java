@@ -50,7 +50,7 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 		
 		// 勤続年数が入力されている場合、付与日数を入力すること
 		for (GrantHdTbl item : grantHolidays) {
-			if(item.getGrantDays().v() == null && (item.getLimitTimeHd().isPresent() || item.getLimitDayYear().isPresent())) {
+			if(item.getGrantDays().v() == null) {
 				throw new BusinessException("Msg_270");
 			}
 		}

@@ -123,62 +123,79 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
          */
         bindData(data: any, isNew: boolean){
             var self = this;
+            var dfd = $.Deferred();
+            var flag = false;
             
             self.items.removeAll();
             
-            //Update case
-            if(isNew) {
-                for(var i = 0; i < data.length; i++){
+            service.checkData().done(function(check){
+                
+                if(check.manageType == 1 && check.reference == 1) {
+                    flag = true;
+                } else if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+                
+                //Update case
+                if(isNew) {
+                    for(var i = 0; i < data.length; i++){
+                        var item : IItem = {
+                            grantYearHolidayNo: data[i].grantYearHolidayNo(),
+                            conditionNo: self.conditionData.conditionNo,
+                            yearHolidayCode: data[i].yearHolidayCode(),
+                            lengthOfServiceYears: data[i].lengthOfServiceYears(),
+                            lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
+                            grantDays: null,
+                            limitedTimeHdDays: null,
+                            limitedHalfHdCnt: null,
+                            gdEnable: true,
+                            ltdEnable: flag,
+                            lthEnable: flag 
+                        };
+                        self.items.push(new Item(item));
+                    }
+                } else {
+                    for(var i = 0; i < data.length; i++){
+                        var item : IItem = {
+                            grantYearHolidayNo: data[i].grantYearHolidayNo(),
+                            conditionNo: self.conditionData.conditionNo,
+                            yearHolidayCode: data[i].yearHolidayCode(),
+                            lengthOfServiceYears: data[i].lengthOfServiceYears(),
+                            lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
+                            grantDays: data[i].grantDays(),
+                            limitedTimeHdDays: data[i].limitedTimeHdDays(),
+                            limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
+                            gdEnable: true,
+                            ltdEnable: flag,
+                            lthEnable: flag
+                        };
+                        self.items.push(new Item(item));
+                    }
+                }            
+                
+                for(var j = data.length; j < 20; j++) {
                     var item : IItem = {
-                        grantYearHolidayNo: data[i].grantYearHolidayNo(),
+                        grantYearHolidayNo: j + 1,
                         conditionNo: self.conditionData.conditionNo,
-                        yearHolidayCode: data[i].yearHolidayCode(),
-                        lengthOfServiceYears: data[i].lengthOfServiceYears(),
-                        lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
+                        yearHolidayCode: self.conditionData.code,
+                        lengthOfServiceYears: null,
+                        lengthOfServiceMonths: null,
                         grantDays: null,
                         limitedTimeHdDays: null,
                         limitedHalfHdCnt: null,
-                        gdEnable: true,
-                        ltdEnable: true,
-                        lthEnable: true 
+                        gdEnable: false,
+                        ltdEnable: false,
+                        lthEnable: false
                     };
-                    self.items.push(new Item(item));
+                    self.items.push(new Item(item));    
                 }
-            } else {
-                for(var i = 0; i < data.length; i++){
-                    var item : IItem = {
-                        grantYearHolidayNo: data[i].grantYearHolidayNo(),
-                        conditionNo: self.conditionData.conditionNo,
-                        yearHolidayCode: data[i].yearHolidayCode(),
-                        lengthOfServiceYears: data[i].lengthOfServiceYears(),
-                        lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
-                        grantDays: data[i].grantDays(),
-                        limitedTimeHdDays: data[i].limitedTimeHdDays(),
-                        limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
-                        gdEnable: true,
-                        ltdEnable: true,
-                        lthEnable: true
-                    };
-                    self.items.push(new Item(item));
-                }
-            }            
-            
-            for(var j = data.length; j < 20; j++) {
-                var item : IItem = {
-                    grantYearHolidayNo: j + 1,
-                    conditionNo: self.conditionData.conditionNo,
-                    yearHolidayCode: self.conditionData.code,
-                    lengthOfServiceYears: null,
-                    lengthOfServiceMonths: null,
-                    grantDays: null,
-                    limitedTimeHdDays: null,
-                    limitedHalfHdCnt: null,
-                    gdEnable: false,
-                    ltdEnable: false,
-                    lthEnable: false
-                };
-                self.items.push(new Item(item));    
-            }
+                
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
         }
         
         /**
