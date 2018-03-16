@@ -20,6 +20,8 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageResource;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -48,13 +50,16 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Inject
 	private ReflectWorkInforDomainService reflectWorkInforDomainService;
+	
+	@Inject
+	private ResetDailyPerforDomainService resetDailyPerforDomainService;
 
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
 
 	@Override
 	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
-			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, ExecutionType reCreateAttr) {
+			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
 				
 		// 正常終了 : 0
 		// 中断 : 1
@@ -96,10 +101,23 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 					// アルゴリズム「実績ロックされているか判定する」を実行する
 					EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId, employeeAndClosureDto,
 							day);
-
+					
 					if (employeeAndClosure.getLock() == 0) {
-						this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-								empCalAndSumExecLogID, reCreateAttr);
+						ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
+//						
+//						if (reCreateAttr == ExecutionType.RERUN) {
+//							DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get().getCreationType();
+//							if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
+//								// 再設定
+////								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
+//							} else {
+//								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
+//										empCalAndSumExecLogID, reCreateAttr);
+//							}
+//						} else{
+							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
+									empCalAndSumExecLogID, reCreateAttr);
+//						}
 					} 
 					if (asyncContext.hasBeenRequestedToCancel()) {
 						asyncContext.finishedAsCancelled();

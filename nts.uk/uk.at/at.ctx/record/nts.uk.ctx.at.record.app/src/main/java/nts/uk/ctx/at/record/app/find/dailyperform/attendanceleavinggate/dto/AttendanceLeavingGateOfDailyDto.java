@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -37,8 +35,8 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
 					(c) -> new TimeSheetDto(c.getWorkNo().v(),
-											TimeStampDto.createTimeStamp(c.getAttendance()),
-											TimeStampDto.createTimeStamp(c.getLeaving()),
+											TimeStampDto.createTimeStamp(c.getAttendance().orElse(null)),
+											TimeStampDto.createTimeStamp(c.getLeaving().orElse(null)),
 											0)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
@@ -64,8 +62,8 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		}
 		return new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
-								createWorkStamp(c.getStart()),
-								createWorkStamp(c.getEnd()))));
+															createWorkStamp(c.getStart()),
+															createWorkStamp(c.getEnd()))));
 	}
 
 	private WorkStamp createWorkStamp(TimeStampDto c) {

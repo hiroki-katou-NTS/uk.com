@@ -5,10 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -43,6 +45,9 @@ public class MonthlyCalculation {
 	private AggregateTotalWorkingTime totalWorkingTime;
 	/** 総拘束時間 */
 	private AggregateTotalTimeSpentAtWork totalTimeSpentAtWork;
+	/** 36協定時間 */
+	@Setter
+	private AgreementTimeOfMonthly agreementTime;
 
 	/** 会社ID */
 	private String companyId;
@@ -93,6 +98,7 @@ public class MonthlyCalculation {
 		this.statutoryWorkingTime = new AttendanceTimeMonth(0);
 		this.totalWorkingTime = new AggregateTotalWorkingTime();
 		this.totalTimeSpentAtWork = new AggregateTotalTimeSpentAtWork();
+		this.agreementTime = new AgreementTimeOfMonthly();
 		
 		this.companyId = "empty";
 		this.employeeId = "empty";
@@ -123,6 +129,7 @@ public class MonthlyCalculation {
 	 * @param statutoryWorkingTime 法定労働時間
 	 * @param totalWorkingTime 総労働時間
 	 * @param totalTimeSpentAtWork 総拘束時間
+	 * @param agreementTime 36協定時間
 	 * @return 月別実績の月の計算
 	 */
 	public static MonthlyCalculation of(
@@ -130,7 +137,8 @@ public class MonthlyCalculation {
 			FlexTimeOfMonthly flexTime,
 			AttendanceTimeMonth statutoryWorkingTime,
 			AggregateTotalWorkingTime totalWorkingTime,
-			AggregateTotalTimeSpentAtWork totalTimeSpentAtWork){
+			AggregateTotalTimeSpentAtWork totalTimeSpentAtWork,
+			AgreementTimeOfMonthly agreementTime){
 		
 		val domain = new MonthlyCalculation();
 		domain.actualWorkingTime = actualWorkingTime;
@@ -138,6 +146,7 @@ public class MonthlyCalculation {
 		domain.statutoryWorkingTime = statutoryWorkingTime;
 		domain.totalWorkingTime = totalWorkingTime;
 		domain.totalTimeSpentAtWork = totalTimeSpentAtWork;
+		domain.agreementTime = agreementTime;
 		return domain;
 	}
 	
