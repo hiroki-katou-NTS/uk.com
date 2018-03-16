@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
@@ -11,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
 
+@Stateless
 public class EmploymentHistoryPubImp implements IEmploymentHistoryPub{
 	
 	@Inject
