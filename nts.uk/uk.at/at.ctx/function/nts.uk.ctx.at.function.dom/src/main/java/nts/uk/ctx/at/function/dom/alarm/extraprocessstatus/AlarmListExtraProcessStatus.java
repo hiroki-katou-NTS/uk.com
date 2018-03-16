@@ -12,6 +12,9 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 public class AlarmListExtraProcessStatus extends AggregateRoot {
+	
+	/**ID*/
+	private String extraProcessStatusID;
 	/**会社ID */
 	private String companyID;
 	/** 開始年月日*/
@@ -25,19 +28,24 @@ public class AlarmListExtraProcessStatus extends AggregateRoot {
 	/**終了時刻*/
 	private Integer endTime;
 
-	public AlarmListExtraProcessStatus(String companyID, GeneralDate startDate, int startTime, String employeeID,
-			Optional<GeneralDate> endDate, Integer endTime) {
+
+	
+	public void setEndDateAndEndTime(GeneralDate endDate,int endTime) {
+		this.endDate = Optional.of(endDate);
+		this.endTime = endTime;
+	}
+
+
+
+	public AlarmListExtraProcessStatus(String extraProcessStatusID, String companyID, GeneralDate startDate,
+			int startTime, String employeeID, Optional<GeneralDate> endDate, Integer endTime) {
 		super();
+		this.extraProcessStatusID = extraProcessStatusID;
 		this.companyID = companyID;
 		this.startDate = startDate;
 		this.startTime = startTime;
 		this.employeeID = employeeID;
 		this.endDate = endDate;
-		this.endTime = endTime;
-	}
-	
-	public void setEndDateAndEndTime(GeneralDate endDate,int endTime) {
-		this.endDate = Optional.of(endDate);
 		this.endTime = endTime;
 	}
 

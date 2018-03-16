@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WkpConfigAtTimeAdapterDto;
@@ -22,6 +21,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class AggregationProcessService {
@@ -63,8 +63,8 @@ public class AggregationProcessService {
 		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
 		
 		// MAP Enum AlarmCategory 
-		List<EnumConstant> listValueName = EnumAdaptor.convertToValueNameList(AlarmCategory.class);
-		Map<String, EnumConstant> mapNameToEnum = listValueName.stream().collect(Collectors.toMap(EnumConstant::getLocalizedName, x->x));
+		Map<String, AlarmCategory> mapTextResourceToEnum = this.mapTextResourceToEnum();
+		
 		
 		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
 		for(ValueExtractAlarm value: valueList) {
@@ -74,7 +74,7 @@ public class AggregationProcessService {
 					value.getEmployeeID(),
 					mapEmployeeId.get(value.getEmployeeID()).getCode(),
 					mapEmployeeId.get(value.getEmployeeID()).getName(), 
-					value.getAlarmValueDate(), mapNameToEnum.get(value.getClassification()).getValue(),
+					value.getAlarmValueDate(), mapTextResourceToEnum.get(value.getClassification()).value,
 					value.getClassification(),
 					value.getAlarmItem(),
 					value.getAlarmValueMessage(),
@@ -83,5 +83,14 @@ public class AggregationProcessService {
 		}
 		return result;
 	}
+	
+	private Map<String, AlarmCategory> mapTextResourceToEnum(){
+		Map<String, AlarmCategory> map = new HashMap<String, AlarmCategory>();
+		map.put(TextResource.localize("KAL010_1"), AlarmCategory.DAILY);
+		map.put(TextResource.localize("KAL010_62"), AlarmCategory.SCHEDULE_4WEEK);
+		map.put(TextResource.localize("KAL010_100"), AlarmCategory.MONTHLY);
+		return map;
+	} 
+	
 
 }

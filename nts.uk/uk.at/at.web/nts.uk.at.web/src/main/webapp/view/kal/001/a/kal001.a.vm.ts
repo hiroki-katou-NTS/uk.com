@@ -153,10 +153,12 @@ module nts.uk.at.view.kal001.a.model {
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));
+                        }));                        
                     }).fail((errorTime)=>{
                         alertError(errorTime);
-                    });    
+                    });
+                    
+                    self.checkAll(false);
             });
         }
         

@@ -6,11 +6,10 @@ module nts.uk.at.view.kal001.b {
             columns: KnockoutObservableArray<any>;
             currentSelectedRow: KnockoutObservable<any>;
 
-            dataSource : KnockoutObservableArray<model.ValueExtractAlarmDto>;
+            dataSource : Array<model.ValueExtractAlarmDto>=[];
             constructor() {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
-                self.dataSource = ko.observableArray([]);
                 
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'gUID', width: 1 ,hidden :true },
@@ -51,7 +50,7 @@ module nts.uk.at.view.kal001.b {
                 
                 $("#grid").igGrid({ 
                         height: '500px',
-                        dataSource: self.dataSource(),
+                        dataSource: self.dataSource,
                         primaryKey: 'GUID',
                         columns: self.columns(), 
                         features: [
@@ -74,7 +73,7 @@ module nts.uk.at.view.kal001.b {
 
             exportExcel(): void {
                 let self = this;
-                service.saveAsExcel(self.dataSource());
+                service.saveAsExcel(self.dataSource);
             }
             
             sendEmail(): void {

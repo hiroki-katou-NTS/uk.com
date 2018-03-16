@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.fourweekfourdayoff;
+package nts.uk.ctx.at.record.dom.workrecord.alarmlist.fourweekfourdayoff;
 
 import lombok.Value;
 
