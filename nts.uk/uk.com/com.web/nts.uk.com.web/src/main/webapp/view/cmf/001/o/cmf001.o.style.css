@@ -4,12 +4,12 @@
 
 #ex_accept_wizard>.steps {
 	width: 250px;
-	height: 600px;
+	height: 590px;
 }
 
 #ex_accept_wizard>.content {
 	width: 890px;
-	height: 600px;
+	height: 590px;
 	background: none;
 }
 
@@ -31,6 +31,7 @@
 	{
 	background-color: #CFF1A5;
 	text-align: right;
+	height: 1em;
 }
 
 .img-icon {
