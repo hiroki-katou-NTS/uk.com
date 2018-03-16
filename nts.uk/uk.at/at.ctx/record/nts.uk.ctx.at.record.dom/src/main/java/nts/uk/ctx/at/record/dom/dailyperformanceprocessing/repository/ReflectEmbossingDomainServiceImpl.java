@@ -820,10 +820,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(indexAttendanceLeavingGate);
 		if ("入門".equals(inOrOutClass)) {
 			attendanceLeavingGates.set(indexAttendanceLeavingGate, new AttendanceLeavingGate(
-					attendanceLeavingGate.getWorkNo(), inorOutStamp, attendanceLeavingGate.getLeaving()));
+					attendanceLeavingGate.getWorkNo(), inorOutStamp, attendanceLeavingGate.getLeaving().orElse(null)));
 		} else {
 			attendanceLeavingGates.set(indexAttendanceLeavingGate, new AttendanceLeavingGate(
-					attendanceLeavingGate.getWorkNo(), attendanceLeavingGate.getAttendance(), inorOutStamp));
+					attendanceLeavingGate.getWorkNo(), attendanceLeavingGate.getAttendance().orElse(null), inorOutStamp));
 		}
 
 		return attendanceLeavingGateOfDaily;
@@ -856,7 +856,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(i);
 				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo
 						&& attendanceLeavingGate.getAttendance() != null) {
-					inOrOutWorkStamp = attendanceLeavingGate.getAttendance();
+					//TODO: for a Nam fix
+					inOrOutWorkStamp = attendanceLeavingGate.getAttendance().orElse(null);
 					ReflectEntryGateOutput reflectEntryGateOutput = new ReflectEntryGateOutput();
 					reflectEntryGateOutput.setLocationCode((inOrOutWorkStamp.getLocationCode()!=null && inOrOutWorkStamp.getLocationCode().isPresent())? inOrOutWorkStamp.getLocationCode().get():null );
 					reflectEntryGateOutput.setStampSourceInfo(inOrOutWorkStamp.getStampSourceInfo());
@@ -869,7 +870,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(i);
 				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo
 						&& attendanceLeavingGate.getLeaving() != null) {
-					inOrOutWorkStamp = attendanceLeavingGate.getLeaving();
+					//TODO: for a Nam fix
+					inOrOutWorkStamp = attendanceLeavingGate.getLeaving().orElse(null);
 					ReflectEntryGateOutput reflectEntryGateOutput = new ReflectEntryGateOutput();
 					reflectEntryGateOutput.setLocationCode((inOrOutWorkStamp.getLocationCode()!=null && inOrOutWorkStamp.getLocationCode().isPresent())? inOrOutWorkStamp.getLocationCode().get():null );
 					reflectEntryGateOutput.setStampSourceInfo(inOrOutWorkStamp.getStampSourceInfo());
