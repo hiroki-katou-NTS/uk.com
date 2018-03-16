@@ -18,7 +18,7 @@ public class DivergenceReasonSelectDto implements DivergenceReasonSelectSetMemen
 	private String reason;
 
 	/** The reason required. */
-	int reasonRequired;
+	private int reasonRequired;
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +56,7 @@ public class DivergenceReasonSelectDto implements DivergenceReasonSelectSetMemen
 	 */
 	@Override
 	public void setReasonRequired(DivergenceInputRequired reasonRequired) {
-		// TODO Auto-generated method stub
+
 		this.reasonRequired = reasonRequired.value;
 	}
 

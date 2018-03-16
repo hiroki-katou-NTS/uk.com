@@ -9,13 +9,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeInputMethodSaveCommand;
+import nts.uk.ctx.at.record.app.command.divergence.time.setting.DivergenceTimeInputMethodSaveCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.AddDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceItemSetCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeSettingFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
@@ -37,8 +38,8 @@ public class DivergenceTimeWebService extends WebService {
 	@Inject
 	private DivergenceTimeInputMethodFinder divTimeInputmethodFinder;
 	
-//	@Inject
-//	private DivergenceTimeSaveCommandHandler divTimeSaveCommandHandler;
+	@Inject
+	private DivergenceTimeInputMethodSaveCommandHandler divTimeSaveCommandHandler;
 
 	/**
 	 * get all divergence time.
@@ -69,9 +70,10 @@ public class DivergenceTimeWebService extends WebService {
 	 * @return the div time info
 	 */
 	@POST
-	@Path("getdivtimeinfo")
+	@Path("getdivtimeinfo/{divTimeId}")
 	public DivergenceTimeInputMethodDto getDivTimeInfo(@PathParam("divTimeId") int divTimeNo) {
-		return this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(divTimeNo);
+		DivergenceTimeInputMethodDto result = this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(divTimeNo);
+		return result ;
 	}
 
 	/**
@@ -80,12 +82,17 @@ public class DivergenceTimeWebService extends WebService {
 	 * @param command
 	 *            the command
 	 */
-	@POST
-	@Path("updatedivtime")
-	public void updateDivTime(DivergenceTimeInputMethodSaveCommand command) {
-		// this.divTimeSaveCommandHandler.handle(command);
-	}
+//	@POST
+//	@Path("updatedivtime")
+//	public void updateDivTime(DivergenceTimeInputMethodSaveCommand command) {
+//		 this.divTimeSaveCommandHandler.handle(command);
+//	}
 
+	@POST
+	@Path("getDivType")
+	public DivergenceTypeDto getDivTime(){
+		return null;
+	}
 	/**
 	 * get all divergence reason.
 	 *

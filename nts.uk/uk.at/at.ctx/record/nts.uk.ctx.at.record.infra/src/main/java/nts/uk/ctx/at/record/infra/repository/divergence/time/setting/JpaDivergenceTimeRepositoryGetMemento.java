@@ -73,7 +73,7 @@ public class JpaDivergenceTimeRepositoryGetMemento implements DivergenceTimeGetM
 	 */
 	@Override
 	public DivergenceTimeErrorCancelMethod getErrorCancelMedthod() {
-		return new DivergenceTimeErrorCancelMethod(entities.getDvgcReasonInputed().intValue(),entities.getDvgcReasonSelected().intValue());
+		return new DivergenceTimeErrorCancelMethod(entities.getReasonInputCanceled().intValue(),entities.getReasonSelectCanceled().intValue());
 	}
 
 	/* (non-Javadoc)

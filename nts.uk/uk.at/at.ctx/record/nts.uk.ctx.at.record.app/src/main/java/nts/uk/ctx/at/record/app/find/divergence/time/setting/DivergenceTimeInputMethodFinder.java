@@ -82,12 +82,12 @@ public class DivergenceTimeInputMethodFinder {
 
 		// Convert DivergenceReasonInputMethodDto, DivergenceTimeDto and
 		// DivergenceAttendanceId list to DivergenceTimeInputMethodDto
-		return new DivergenceTimeInputMethodDto(divTimeInfo.getDivergenceTimeNo(), AppContexts.user().companyId(),
+		DivergenceTimeInputMethodDto result = new DivergenceTimeInputMethodDto(divTimeInfo.getDivergenceTimeNo(), AppContexts.user().companyId(),
 				divTimeInfo.getDivergenceTimeUseSet(), divTimeInfo.getDivergenceTimeName(), divTimeInfo.getDivType(),
 				divTimeInfo.isReasonInput(), divTimeInfo.isReasonSelect(),
 				divReasonInputMethodInfo.getDivergenceReasonInputed(),
 				divReasonInputMethodInfo.getDivergenceReasonSelected(), attendanceIdList);
-
+		return result;
 	}
 
 	/**

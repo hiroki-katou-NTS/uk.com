@@ -134,8 +134,12 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository#findAttendanceId(java.lang.String, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository
+	 * #findAttendanceId(java.lang.String, int)
 	 */
 	@Override
 	public List<Integer> findAttendanceId(String companyId, int divTimeNo) {
@@ -164,6 +168,22 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		return KrcstDvgcAttendance.isEmpty() ? new ArrayList<Integer>()
 				: KrcstDvgcAttendance.stream().map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 
+	}
+
+	private KrcstDvgcTime toEntity(DivergenceTime domain) {
+		KrcstDvgcTime entity = this.queryProxy().find(domain.getCompanyId(), KrcstDvgcTime.class)
+				.orElse(new KrcstDvgcTime());
+
+		domain.saveToMemento(new JpaDivergenceTimeRepositorySetMemento(entity));
+
+		return entity;
+
+	}
+
+	@Override
+	public void update(DivergenceTime divTimeDomain) {
+
+		this.commandProxy().update(this.toEntity(divTimeDomain));
 	}
 
 }

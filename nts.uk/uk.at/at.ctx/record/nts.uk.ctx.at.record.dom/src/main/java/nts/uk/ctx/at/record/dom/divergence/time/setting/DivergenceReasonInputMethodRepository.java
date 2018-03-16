@@ -14,5 +14,7 @@ public interface DivergenceReasonInputMethodRepository {
 	
 	DivergenceReasonInputMethod getDivTimeInfo(String companyId, int divTimeNo);
 	
+	void update(DivergenceReasonInputMethod domain);
+	
 
 }

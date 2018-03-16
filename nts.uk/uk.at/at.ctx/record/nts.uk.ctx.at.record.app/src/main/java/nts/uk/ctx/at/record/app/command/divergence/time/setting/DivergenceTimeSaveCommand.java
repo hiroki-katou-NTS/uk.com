@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.app.command.divergence.time.setting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeGetMemento;
@@ -9,6 +11,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeName;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeUseSet;
 import nts.uk.shr.com.context.AppContexts;
 
+@AllArgsConstructor
 public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 
 	/** The divergence time no. */
@@ -38,16 +41,8 @@ public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 	/** The reason select. */
 	private boolean reasonSelect;
 
-	/** The divergence reason inputed. */
-
-	private boolean divergenceReasonInputed;
-
-	/** The divergence reason selected. */
-
-	private boolean divergenceReasonSelected;
-
 	/** Attendance Item list. */
-	private List<Integer> attendanceId;
+	private List<Double> attendanceId;
 
 	/**
 	 * Instantiates a new divergence time save command.
@@ -103,8 +98,9 @@ public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 	public DivergenceTimeErrorCancelMethod getErrorCancelMedthod() {
 		DivergenceTimeErrorCancelMethod object = new DivergenceTimeErrorCancelMethod();
 
-		object.setReasonInputed(divergenceReasonInputed);
-		object.setReasonSelected(divergenceReasonSelected);
+		object.setReasonInputed(this.reasonInput);
+		object.setReasonSelected(this.reasonSelect);
+
 		return object;
 	}
 
@@ -117,9 +113,8 @@ public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public List<Double> getTargetItems() {
-		// return this.attendanceId.stream().map(e->
-		// (Double)e).collect(Collectors.toList());
-		return null;
+		return this.attendanceId;
+
 	}
 
 	/*

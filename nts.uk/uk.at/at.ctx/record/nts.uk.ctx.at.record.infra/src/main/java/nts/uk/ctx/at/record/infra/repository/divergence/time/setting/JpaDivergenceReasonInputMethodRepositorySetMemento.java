@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.setting;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodSetMemento;
@@ -9,7 +10,24 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 public class JpaDivergenceReasonInputMethodRepositorySetMemento implements DivergenceReasonInputMethodSetMemento {
 
 	/** The entities. */
-	private KrcstDvgcTime entities;
+	private KrcstDvgcTime entity;
+
+	/**
+	 * Instantiates a new jpa divergence time repository set memento.
+	 */
+	public JpaDivergenceReasonInputMethodRepositorySetMemento() {
+
+	}
+
+	/**
+	 * Instantiates a new jpa divergence time repository set memento.
+	 *
+	 * @param entity
+	 *            the entity
+	 */
+	public JpaDivergenceReasonInputMethodRepositorySetMemento(KrcstDvgcTime entity) {
+		this.entity = entity;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -20,6 +38,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	@Override
 	public void setDivergenceTimeNo(int DivergenceTimeNo) {
 
+		this.entity.getId().setNo(DivergenceTimeNo);
 	}
 
 	/*
@@ -30,7 +49,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
+		// No code
 
 	}
 
@@ -42,8 +61,10 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	 */
 	@Override
 	public void setDivergenceReasonInputed(boolean divergenceReasonInputed) {
-		// TODO Auto-generated method stub
-
+		if (divergenceReasonInputed)
+			this.entity.setReasonInputCanceled(new BigDecimal(1));
+		else
+			this.entity.setReasonInputCanceled(new BigDecimal(0));
 	}
 
 	/*
@@ -55,7 +76,10 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	 */
 	@Override
 	public void setDivergenceReasonSelected(boolean divergenceReasonSelected) {
-		// TODO Auto-generated method stub
+		if (divergenceReasonSelected)
+			this.entity.setReasonSelectCanceled(new BigDecimal(1));
+		else
+			this.entity.setReasonSelectCanceled(new BigDecimal(0));
 
 	}
 
@@ -67,7 +91,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	 */
 	@Override
 	public void setReasons(List<DivergenceReasonSelect> reason) {
-		// TODO Auto-generated method stub
+		// no code
 
 	}
 

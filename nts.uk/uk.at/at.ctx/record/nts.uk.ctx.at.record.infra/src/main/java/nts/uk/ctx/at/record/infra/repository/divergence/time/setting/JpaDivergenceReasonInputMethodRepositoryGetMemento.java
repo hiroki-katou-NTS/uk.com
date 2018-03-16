@@ -64,8 +64,7 @@ public class JpaDivergenceReasonInputMethodRepositoryGetMemento implements Diver
 	 * DivergenceReasonInputMethodGetMemento#getDivergenceReasonInputed()
 	 */
 	@Override
-	public boolean getDivergenceReasonInputed() {
-
+	public boolean getDivergenceReasonInputed() {		
 		if (entities.getDvgcReasonInputed().intValue() == 1)
 			return false;
 		return true;

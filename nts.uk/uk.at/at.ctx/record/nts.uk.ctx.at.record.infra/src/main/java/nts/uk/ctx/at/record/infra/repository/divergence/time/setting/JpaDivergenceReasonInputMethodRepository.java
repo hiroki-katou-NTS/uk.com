@@ -132,4 +132,20 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 
 	}
 
+	@Override
+	public void update(DivergenceReasonInputMethod domain) {
+		this.commandProxy().update(this.toEntity(domain));
+
+	}
+
+	private KrcstDvgcTime toEntity(DivergenceReasonInputMethod domain) {
+
+		KrcstDvgcTime entity = this.queryProxy().find(domain.getCompanyId(), KrcstDvgcTime.class)
+				.orElse(new KrcstDvgcTime());
+
+		domain.saveToMemento(new JpaDivergenceReasonInputMethodRepositorySetMemento(entity));
+
+		return entity;
+	}
+
 }

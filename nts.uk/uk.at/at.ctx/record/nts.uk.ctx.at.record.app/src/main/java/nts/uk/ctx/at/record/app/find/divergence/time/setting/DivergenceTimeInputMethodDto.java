@@ -2,10 +2,13 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
 import java.util.List;
 
+import lombok.Data;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class DivergenceTimeInputMethodDto.
  */
+@Data
 public class DivergenceTimeInputMethodDto {
 
 	/** The divergence time no. */
@@ -70,6 +73,9 @@ public class DivergenceTimeInputMethodDto {
 	 * @param attendanceName
 	 *            the attendance name
 	 */
+	public DivergenceTimeInputMethodDto(){
+		super();
+	}
 	public DivergenceTimeInputMethodDto(int divergenceTimeNo, String companyId, int divTimeUseSet,
 			String divergenceTimeName, int divType, boolean reasonInput, boolean reasonSelect,
 			boolean divergenceReasonInputed, boolean divergenceReasonSelected, List<Integer> attendanceId) {
