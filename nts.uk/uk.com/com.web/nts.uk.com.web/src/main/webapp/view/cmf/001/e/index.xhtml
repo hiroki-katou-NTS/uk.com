@@ -30,11 +30,9 @@
 						fields: ['csvItemName'], 
 						mode: 'igGrid'}" 
 						/>		
-				
-				
-					<table tabindex = "-1" id="E2_1" class = "auto-increment" data-bind="ntsGridList: {
+					<table style = "height: 100%;" tabindex = "-1" id="E2_1" class = "auto-increment" data-bind="ntsGridList: {
 							width: 300,
-							height: 391,
+							height: listCsvItemHeight(),
 							name:'#{i18n.getText('CMF001_182')}',
 							dataSource: listCsvItem,
 							primaryKey: 'csvItemNumber',

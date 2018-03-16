@@ -12,6 +12,7 @@ module nts.uk.com.view.cmf001.e.viewmodel {
     export class ScreenModel {
         listCsvItem: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
         selectedCsvItemNumber: KnockoutObservable<number> = ko.observable(null);
+        listCsvItemHeight: KnockoutObservable<number> = ko.observable(391);
         constructor() {
             var self = this;
             let params = getShared("CMF001eParams");
@@ -29,6 +30,11 @@ module nts.uk.com.view.cmf001.e.viewmodel {
             }else{
                 // データ0件＝CSVが未読込の場合
                 alertError({ messageId: "Msg_905"});
+            }
+            // クロムブラウザを検出する
+            let browserInfo = navigator.userAgent.toLowerCase();
+            if( browserInfo.indexOf('chrome') > -1 && browserInfo .indexOf('edge') == -1 ){
+                self.listCsvItemHeight(385);
             }
         }
         // キャンセルして終了する

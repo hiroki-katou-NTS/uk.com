@@ -68,6 +68,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                         $('#H3_5').ntsError('check');
                     }
                 }else{
+                    $('#H5_5').ntsError('check');
                     $('#H2_5').ntsError('clear');
                     $('#H2_8').ntsError('clear');
                     $('#H3_5').ntsError('clear');
@@ -211,7 +212,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                         return false;
                     } else {
                         if (startDigit > endDigit) {
-                            alertError({ messageId: "Msg_1108", messageParams: [getText('CMF001_270'), getText('CMF001_273')] });
+                            alertError({ messageId: "Msg_1119", messageParams: [getText('CMF001_270'), getText('CMF001_273')] });
                             return false;
                         }
                     }

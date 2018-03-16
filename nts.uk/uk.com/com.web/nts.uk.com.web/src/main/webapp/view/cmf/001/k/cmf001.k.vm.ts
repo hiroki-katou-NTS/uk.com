@@ -13,22 +13,24 @@ module nts.uk.com.view.cmf001.k.viewmodel {
 
         listConvertCode: KnockoutObservableArray<model.AcceptanceCodeConvert>
         selectedConvertCode: KnockoutObservable<string>
+        convertCodeListHeight: KnockoutObservable<number> = ko.observable(269);
         /* screen */
         constructor() {
             var self = this;
             let firstItem = new model.AcceptanceCodeConvert("", getText('CMF001_268'), 0);
             self.listConvertCode = ko.observableArray([firstItem]);
             self.selectedConvertCode = ko.observable("");
+            //ドメインモデル「受入コード変換」を取得する
             let params = getShared("CMF001kParams");
             let selectedConvertCode = params.selectedConvertCode;
             let convertCode = selectedConvertCode.dispConvertCode;
             let convertName = selectedConvertCode.dispConvertName;
             self.selectedConvertCode(convertCode);
-        }
-        displayScreen() {
-            var self = this;
-            //ドメインモデル「受入コード変換」を取得する
-            
+            // クロムブラウザを検出する
+            let browserInfo = navigator.userAgent.toLowerCase();
+            if( browserInfo.indexOf('chrome') > -1 && browserInfo .indexOf('edge') == -1 ){
+                self.convertCodeListHeight(265);
+            }
         }
         start(): JQueryPromise<any> {
             block.invisible();
