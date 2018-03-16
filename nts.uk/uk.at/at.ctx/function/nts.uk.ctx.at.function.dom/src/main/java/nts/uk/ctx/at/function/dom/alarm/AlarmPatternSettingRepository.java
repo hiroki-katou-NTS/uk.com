@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.dom.alarm;
 import java.util.List;
 import java.util.Optional;
 
-import alarmPatternRepo.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 
 public interface AlarmPatternSettingRepository {

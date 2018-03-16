@@ -31,23 +31,10 @@ public class PreAppOvertimeDto {
 	 * siftType
 	 */
 	private SiftType siftTypePre;
-
-	/**
-	 * 勤務時間From1
-	 */
-	private Integer workClockFrom1Pre;
-	/**
-	 * 勤務時間To1
-	 */
-	private Integer workClockTo1Pre;
-	/**
-	 * 勤務時間From2
-	 */
-	private Integer workClockFrom2Pre;
-	/**
-	 * 勤務時間To2
-	 */
-	private Integer workClockTo2Pre;
+	
+	private String workClockFromTo1Pre;
+	
+	private String workClockFromTo2Pre;
 	
 	/**
 	 * フレックス超過時間

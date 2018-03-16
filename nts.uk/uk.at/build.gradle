@@ -26,13 +26,13 @@ buildscript {
 	}
 }
 
-//すべてのプロジェクトに適応すべき�容はここに追記す�
+//すべてのプロジェクトに適応すべき内容はここに追記する
 allprojects {
 	apply from: "$rootDir/gradle/properties.gradle"
 	apply from: "$rootDir/gradle/library_properties.gradle"
 	apply plugin: "com.jfrog.artifactory"
 
-	//ビルド及び実行�、Java8を対象とする
+	//ビルド及び実行は、Java8を対象とする
 	sourceCompatibility = "$javaVersion"
 	targetCompatibility = "$javaVersion" 
 
@@ -51,7 +51,7 @@ subprojects {
 		}
 	}
 	
-	//compileJavaとcompileTestJavaの実行時の断�コードをunicodeで挮
+	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
 	jar {
@@ -116,7 +116,7 @@ subprojects {
         compile group: 'nts.gul', name: 'nts.gul', version: '0.44'
         compile group: 'nts.arc', name: 'nts.arc', version: '0.59'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.9.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.9.2'
 	}
 }
 
@@ -146,7 +146,7 @@ project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ac') {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.7.1')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.35')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.4')
 	}
 }
@@ -191,7 +191,7 @@ project (':at.ctx:shared:nts.uk.ctx.at.shared.ac') {
 	dependencies {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: '0.8.2')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.35')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.4')
 	}
 }
@@ -208,7 +208,7 @@ project (':at.ctx:shared:nts.uk.ctx.at.shared.pubimp') {
 	}
 }
 
-//=========================at:schedule�==================================
+//=========================at:schedule�==================================
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.ws') {
 	dependencies {
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
@@ -246,7 +246,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.ac') {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.pub')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: '0.8.2')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.35')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.4')
 	}
 }
@@ -262,9 +262,9 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.pubimp') {
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 	}
 }
-//=========================at:schedule�====================================
+//=========================at:schedule�====================================
 
-//=========================at:function�==================================
+//=========================at:function�==================================
 project (':at.ctx:function:nts.uk.ctx.at.function.ws') {
 	dependencies {
 	       compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
@@ -303,7 +303,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.36')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.7.1')
 	}
 }
@@ -319,9 +319,9 @@ project (':at.ctx:function:nts.uk.ctx.at.function.pubimp') {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.infra')
 	}
 }
-//=========================at:function�====================================
+//=========================at:function�====================================
 
-//=========================at:record�==================================
+//=========================at:record�==================================
 project (':at.ctx:record:nts.uk.ctx.at.record.ws') {
 	dependencies {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.app')
@@ -359,10 +359,10 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 		
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.4')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.36')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.7.1')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: '0.3.2')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.14')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.17')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
@@ -378,9 +378,9 @@ project (':at.ctx:record:nts.uk.ctx.at.record.pubimp') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
 	}
 }
-//=========================at:record�====================================
+//=========================at:record�====================================
 
-//=========================at:request�==================================
+//=========================at:request�==================================
 project (':at.ctx:request:nts.uk.ctx.at.request.ws') {
 	dependencies {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.app')
@@ -416,8 +416,8 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.app')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.15')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.36')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.17')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
 	}
 }
 project (':at.ctx:request:nts.uk.ctx.at.request.pub') {
@@ -432,9 +432,9 @@ project (':at.ctx:request:nts.uk.ctx.at.request.pubimp') {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.infra')
 	}
 }
-//=========================at:request�====================================
+//=========================at:request�====================================
 
-//=====================at.screen�=============================
+//=====================at.screen�=============================
 project (':at.screen:nts.uk.screen.at.ws') {
 	dependencies {
 		compile project (':at.screen:nts.uk.screen.at.app')
@@ -456,10 +456,10 @@ project (':at.screen:nts.uk.screen.at.app') {
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.app')
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: '0.8.2')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.36')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.36')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.37')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.37')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.6.4')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.15')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.17')
 	}
 }
 
@@ -473,12 +473,12 @@ project (':at.screen:nts.uk.screen.at.infra') {
 		compile project (':at.ctx:at.auth:nts.uk.ctx.at.auth.infra')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: '0.8.2')
-		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.36')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.37')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.6.4')
 	}
 }
-//=========================at:screen�====================================
-//=============at.file�==========================================
+//=========================at:screen�====================================
+//=============at.file�==========================================
 project (':at.file:nts.uk.file.at.ws') {
 	dependencies {
 		compile project (':at.file:nts.uk.file.at.app')
@@ -510,8 +510,8 @@ project (':at.file:nts.uk.file.at.infra') {
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 	}
 }
-//=============at.file�==========================================
-//=====================nts.uk.at.web�=============================
+//=============at.file�==========================================
+//=====================nts.uk.at.web�=============================
 project (':at.web:nts.uk.at.web') {
 	apply plugin: 'war'
 	war {
@@ -596,24 +596,24 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.file:nts.uk.file.at.app')
 		runtime project (':at.file:nts.uk.file.at.infra')
 		
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.15')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.12.15')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.12.15')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.15')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.12.15')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.12.15')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.17')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.12.17')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.12.17')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.17')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.12.17')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.12.17')
 		
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.ac', version: '0.1.7')		
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1.7')
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: '0.1.7')
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: '0.1.7')
 		 
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.36')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.36')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.36')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.36')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.10.36')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.10.36')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.37')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.37')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.37')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.37')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.10.37')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.10.37')
 		
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.app', version: '0.6.4')
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.6.4')
@@ -659,7 +659,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.ac', version: '0.4'
 	}
 }
-//=====================nts.uk.at.web�=============================
+//=====================nts.uk.at.web�=============================
 
 artifactory {
 	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver

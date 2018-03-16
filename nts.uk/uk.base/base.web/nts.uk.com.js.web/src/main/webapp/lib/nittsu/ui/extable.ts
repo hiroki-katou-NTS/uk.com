@@ -2996,6 +2996,7 @@ module nts.uk.ui.exTable {
         export let DEF_HOUR_MAX = 9999;
         export let DEF_HOUR_MIN = 0;
         export let DEF_MIN_MAXMIN = 0;
+        export let DAY_MINS = 1439;
         
         class Result {
             isValid: boolean;
@@ -3169,7 +3170,8 @@ module nts.uk.ui.exTable {
             }
             if (((util.isNullOrUndefined(hour) || hour === NaN) && (util.isNullOrUndefined(minute) || minute === NaN))
                 || minute > MINUTE_MAX) return false;
-            let targetTime = { hour: hour, minute: minute, negative: negative };
+            let targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
+            if (!targetTime) return false;
             if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0) return false;
             return true; 
         }
@@ -3210,6 +3212,18 @@ module nts.uk.ui.exTable {
                 return -1;
             }
             return 0;
+        }
+        
+        /**
+         * Get complement.
+         */
+        function getComplement(time: any) {
+            if (!time.negative) return time;
+            let oTime = DAY_MINS - (time.hour * 60 + time.minute);
+            if (oTime < 0) return;
+            let hour = Math.floor(oTime / 60);
+            let minute = oTime - hour * 60;
+            return { hour: hour, minute: minute, negative: true };
         }
         
         /**

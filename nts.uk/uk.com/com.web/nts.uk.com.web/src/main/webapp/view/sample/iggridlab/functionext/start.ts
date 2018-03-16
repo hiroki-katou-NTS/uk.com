@@ -71,9 +71,9 @@ module nts.uk.ui.gridlist {
             }
         }
         
-        var comboItems = [ new ItemModel('1', '基本給'),
-                            new ItemModel('2', '役職手当'),
-                            new ItemModel('3', '基本給2') ];
+        var comboItems = [ new ItemModel(1, '基本給'),
+                            new ItemModel(2, '役職手当'),
+                            new ItemModel(3, '基本給2') ];
         var comboColumns = [{ prop: 'code', length: 1 },
                             { prop: 'name', length: 4 }];
         var comboItems2 = [ new ItemModel('4', '基本給'),
@@ -374,11 +374,11 @@ module nts.uk.ui.gridlist {
                                                         { name: "sheet2", text: "Sheet 2", columns: ["header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
                                             },
-//                                            {
-//                                                name: "LoadOnDemand",
-//                                                allKeysPath: "/sample/lazyload/keys",
-//                                                pageRecordsPath: "/sample/lazyload/data",
-//                                            }
+                                            {
+                                                name: "LoadOnDemand",
+                                                allKeysPath: "/sample/lazyload/keys",
+                                                pageRecordsPath: "/sample/lazyload/data",
+                                            }
                                          ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'Combobox', width: '70px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },

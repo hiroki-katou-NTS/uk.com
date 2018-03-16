@@ -59,7 +59,7 @@ public class ExcessOfStatutoryTimeDailyPerformDto {
 		return time == null ? null : new AttendanceTime(time);
 	}
 	
-	private static int getAttendanceTime(AttendanceTime domain) {
+	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 }

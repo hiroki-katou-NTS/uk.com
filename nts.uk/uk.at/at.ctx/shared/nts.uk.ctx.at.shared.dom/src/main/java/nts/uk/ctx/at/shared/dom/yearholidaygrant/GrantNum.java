@@ -2,9 +2,9 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.constraint.IntegerRange;
 
-@DecimalRange(min = "1", max = "20")
+@IntegerRange(min = 1, max = 20)
 public class GrantNum extends IntegerPrimitiveValue<GrantNum>{
 
 	public GrantNum(Integer rawValue) {

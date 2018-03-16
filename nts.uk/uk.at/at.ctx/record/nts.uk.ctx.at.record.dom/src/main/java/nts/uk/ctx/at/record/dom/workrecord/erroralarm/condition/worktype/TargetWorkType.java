@@ -40,7 +40,7 @@ public class TargetWorkType extends DomainObject {
 		if (this.isUse()) {
 			return this.lstWorkType.contains(target);
 		}
-		return false;
+		return true;
 	}
 	
 	public boolean isUse() {

@@ -270,8 +270,10 @@ public class AppHolidayWorkFinder {
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				appHolidayWorkDto.setDisplayCaculationTime(true);
-				WorkType workType = workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).get();
-				appHolidayWorkDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
+				WorkType workType = workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).isPresent() ?  workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).get() : null ;
+				if(workType != null){
+					appHolidayWorkDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
+				}
 				Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
 				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 				// 4_b.勤務種類を取得する（詳細）
@@ -280,10 +282,7 @@ public class AppHolidayWorkFinder {
 				// 5_a.就業時間帯を取得する（詳細）
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
 				appHolidayWorkDto.setWorkTimes(listWorkTimeCodes);
-				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString())
-						.orElseGet(()->{
-							return workTimeRepository.findByCompanyId(companyID).get(0);
-						});
+				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString()).isPresent() ? workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString()).get() : null;
 				if(workTime != null){
 					appHolidayWorkDto.setWorkTime(new SiftType(appHolidayWork.getWorkTimeCode().toString(),workTime.getWorkTimeDisplayName().getWorkTimeName().toString()));
 				}
@@ -304,10 +303,10 @@ public class AppHolidayWorkFinder {
 		// 6.計算処理 : TODO
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(appHolidayWork.getApplication().getEmployeeID(), 
 																								appHolidayWork.getApplication().getAppDate(), 
-																								appHolidayWork.getWorkTypeCode().v(),
-																								appHolidayWork.getWorkTimeCode().toString(), 
-																								appHolidayWork.getWorkClock1().getStartTime().v(), 
-																								appHolidayWork.getWorkClock1().getEndTime().v(), 100, 200);
+																								appHolidayWork.getWorkTypeCode() == null ? "" : appHolidayWork.getWorkTypeCode().v(),
+																								appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), 
+																								appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
+																								appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(), 100, 200);
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		getBreaktime(companyID, holidayWorkInputDtos);
 		List<HolidayWorkInputDto> breakTimes = appHolidayWorkDto.getHolidayWorkInputDtos().stream().filter(x -> x.getAttendanceType() == AttendanceType.BREAKTIME.value).collect(Collectors.toList());

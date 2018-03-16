@@ -1,5 +1,7 @@
 module nts.uk.com.view.ccg008.a.viewmodel {
     import commonModel = ccg.model;
+    import ntsFile = nts.uk.request.file; 
+    
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
@@ -93,7 +95,8 @@ module nts.uk.com.view.ccg008.a.viewmodel {
 
             if (data.flowMenu != null) {
                 _.map(data.flowMenu, (items) => {
-                    var html = '<iframe style="width:' + ((items.widthSize * 150) - 13) + 'px;height:' + ((items.heightSize * 150) - 50) + 'px" src="' + nts.uk.request.liveView(items.fileID) + '"/>';
+                    let flowMenuUrl = ntsFile.liveViewUrl(items.fileID, "index.htm");
+                    let html = '<iframe style="width:' + ((items.widthSize * 150) - 13) + 'px;height:' + ((items.heightSize * 150) - 50) + 'px" src="' + flowMenuUrl + '"/>';
                     listPlacement.push(new model.Placement(items.fileID, items.topPageName,
                         items.row, items.column,
                         items.widthSize, items.heightSize, null,
