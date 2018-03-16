@@ -33,7 +33,7 @@ public class AggregationProcessService {
 	private ExtractAlarmForEmployeeService extractService;
 
 	@Inject
-	private SyWorkplaceAdapter workplaceAdapter;
+	private SyWorkplaceAdapter syWorkplaceAdapter;
 		
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<EmployeeSearchDto> listEmployee, String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
 		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
@@ -49,14 +49,14 @@ public class AggregationProcessService {
 		List<ValueExtractAlarm> valueList = new ArrayList<>();
 		// 従業員ごと に行う(for list employee)
 		for (EmployeeSearchDto employee : listEmployee) {
-			valueList.addAll(extractService.process(alarmPatternSetting.get().getCheckConList(), periodByCategory, employee));
+			 valueList.addAll(extractService.process(alarmPatternSetting.get().getCheckConList(), periodByCategory, employee));
 		}
 				
 		
 		// get list workplaceId and hierarchyCode 
-		List<WkpConfigAtTimeAdapterDto> hierarchyWPList = workplaceAdapter.findByWkpIdsAtTime(companyID,
-				GeneralDate.today(),
-				listEmployee.stream().map(e -> e.getWorkplaceId()).distinct().collect(Collectors.toList()));
+		List<String> listWorkplaceId = listEmployee.stream().map(e -> e.getWorkplaceId()).distinct().collect(Collectors.toList());
+		listWorkplaceId.removeIf( e->e==null);
+		List<WkpConfigAtTimeAdapterDto> hierarchyWPList = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, GeneralDate.today(), listWorkplaceId);
 		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = hierarchyWPList.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
 		
 		// Map employeeID to EmployeeSearchDto object
@@ -69,7 +69,7 @@ public class AggregationProcessService {
 		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
 		for(ValueExtractAlarm value: valueList) {
 			AlarmExtraValueWkReDto itemResult = new AlarmExtraValueWkReDto(value.getWorkplaceID(),
-					hierarchyWPMap.get(value.getWorkplaceID()).getHierarchyCd(),
+					value.getWorkplaceID()==null? "": hierarchyWPMap.get(value.getWorkplaceID()).getHierarchyCd(),
 					mapEmployeeId.get(value.getEmployeeID()).getWorkplaceName(), 
 					value.getEmployeeID(),
 					mapEmployeeId.get(value.getEmployeeID()).getCode(),
