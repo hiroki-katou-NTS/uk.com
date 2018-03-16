@@ -36,7 +36,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.screenMode = ko.observable(model.SCREEN_MODE.NEW);
             self.listStandardImportSetting = ko.observableArray([]);
             self.selectedStandardImportSettingCode = ko.observable('');
-            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(0, '', '', 1, null, 0, 0));
+            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(0, '', '', 1));
             self.selectedStandardImportSettingCode.subscribe((data) => {
                 if (data) {
                     block.invisible();
@@ -146,7 +146,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             service.getAllStdData(self.systemType()).done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rs => {
-                        return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSettingCode, rs.conditionSettingName, rs.deleteExistData, rs.acceptMode, rs.csvDataItemLineNumber, rs.csvDataStartLine);
+                        return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSettingCode, rs.conditionSettingName, rs.deleteExistData);
                     });
 //                    _rsList = _.sortBy(_rsList, ['code']);
                     self.listStandardImportSetting(_rsList);
@@ -180,16 +180,15 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedStandardImportSettingCode('');
-            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting(self.systemType(), '', '', 1, null, 0, 0));
+            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting(self.systemType(), '', '', 1));
             self.screenMode(model.SCREEN_MODE.NEW);
             $("#B4_3").focus();
         }
 
         registerCondition() {
             let self = this;
-            let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().systemType(), self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine());
+            let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().systemType(), self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine(), self.selectedStandardImportSetting().deleteExistDataMethod(), self.selectedStandardImportSetting().categoryId());
             data.action(self.screenMode());
-//            data.systemType(self.systemType());
             let command: any = ko.toJS(data);
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
