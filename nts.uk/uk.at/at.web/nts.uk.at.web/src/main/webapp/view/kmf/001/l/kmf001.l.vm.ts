@@ -29,6 +29,72 @@ module nts.uk.pr.view.kmf001.l {
                 
                 self.childNursingSetting = ko.observable(new NursingSettingModel(self));
                 self.backupChildNursingSetting = ko.observable(null);
+                
+                self.nursingSetting().selectedManageNursing.subscribe(function(v) {
+                    if(v == 0){
+                        // 子の看護
+                        $('#nursing-month').ntsError('clear');
+                        $('#nursing-day').ntsError('clear');
+                        $('#nursing-number-leave-day').ntsError('clear');
+                        $('#nursing-number-person').ntsError('clear');
+                        $('#work-type-code-nursing').ntsError('clear');
+                        
+                        let dfd = $.Deferred();
+                        service.findSetting().done(function(res: any) {
+                            if (res) {
+                                // NURSING
+                                self.nursingSetting().monthDay(res[0].startMonthDay);
+                                self.nursingSetting().nursingNumberLeaveDay(res[0].nursingNumberLeaveDay);
+                                self.nursingSetting().nursingNumberPerson(res[0].nursingNumberPerson);
+                                self.nursingSetting().workTypeCodes(res[0].workTypeCodes);
+                                self.nursingSetting().typeCode(res[0].workType);
+                            } else{
+                                self.nursingSetting().monthDay(null);
+                                self.nursingSetting().nursingNumberLeaveDay(null);
+                                self.nursingSetting().nursingNumberPerson(null);
+                                self.nursingSetting().workTypeCodes(null);
+                                self.nursingSetting().typeCode('');
+                            }
+                            dfd.resolve();
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        });
+                        return dfd.promise();
+                    }
+                });
+                
+                self.childNursingSetting().selectedManageNursing.subscribe(function(v) {
+                    if(v == 0){
+                         // 介護
+                        $('#child-nursing-month').ntsError('clear');
+                        $('#child-nursing-day').ntsError('clear');
+                        $('#child-nursing-number-leave-day').ntsError('clear');
+                        $('#child-nursing-number-person').ntsError('clear');
+                        $('#work-type-code-child-nursing').ntsError('clear');
+                        
+                        let dfd = $.Deferred();
+                        service.findSetting().done(function(res: any) {
+                            if (res) {
+                                // NURSING
+                                self.childNursingSetting().monthDay(res[1].startMonthDay);
+                                self.childNursingSetting().nursingNumberLeaveDay(res[1].nursingNumberLeaveDay);
+                                self.childNursingSetting().nursingNumberPerson(res[1].nursingNumberPerson);
+                                self.childNursingSetting().workTypeCodes(res[1].workTypeCodes);
+                                self.childNursingSetting().typeCode(res[1].workType);
+                            } else{
+                                self.childNursingSetting().monthDay(null);
+                                self.childNursingSetting().nursingNumberLeaveDay(null);
+                                self.childNursingSetting().nursingNumberPerson(null);
+                                self.childNursingSetting().workTypeCodes(null);
+                                self.childNursingSetting().typeCode('');
+                            }
+                            dfd.resolve();
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        });
+                        return dfd.promise();
+                    }
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -223,6 +289,8 @@ module nts.uk.pr.view.kmf001.l {
                 self.nursingNumberPerson = ko.observable(null);
                 self.workTypeCodes = ko.observableArray([]);
                 self.typeCode = ko.observable('');
+                
+
             }
             
             private openDialog() {
