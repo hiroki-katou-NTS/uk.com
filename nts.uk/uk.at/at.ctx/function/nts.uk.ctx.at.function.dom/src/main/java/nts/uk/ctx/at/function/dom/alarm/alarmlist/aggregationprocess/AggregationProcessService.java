@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WkpConfigAtTimeAdapterDto;
+import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
@@ -48,8 +51,7 @@ public class AggregationProcessService {
 		for (EmployeeSearchDto employee : listEmployee) {
 			valueList.addAll(extractService.process(alarmPatternSetting.get().getCheckConList(), periodByCategory, employee));
 		}
-		
-		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
+				
 		
 		// get list workplaceId and hierarchyCode 
 		List<WkpConfigAtTimeAdapterDto> hierarchyWPList = workplaceAdapter.findByWkpIdsAtTime(companyID,
@@ -57,8 +59,14 @@ public class AggregationProcessService {
 				listEmployee.stream().map(e -> e.getWorkplaceId()).distinct().collect(Collectors.toList()));
 		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = hierarchyWPList.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
 		
+		// Map employeeID to EmployeeSearchDto object
 		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
 		
+		// MAP Enum AlarmCategory 
+		List<EnumConstant> listValueName = EnumAdaptor.convertToValueNameList(AlarmCategory.class);
+		Map<String, EnumConstant> mapNameToEnum = listValueName.stream().collect(Collectors.toMap(EnumConstant::getLocalizedName, x->x));
+		
+		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
 		for(ValueExtractAlarm value: valueList) {
 			AlarmExtraValueWkReDto itemResult = new AlarmExtraValueWkReDto(value.getWorkplaceID(),
 					hierarchyWPMap.get(value.getWorkplaceID()).getHierarchyCd(),
@@ -66,7 +74,7 @@ public class AggregationProcessService {
 					value.getEmployeeID(),
 					mapEmployeeId.get(value.getEmployeeID()).getCode(),
 					mapEmployeeId.get(value.getEmployeeID()).getName(), 
-					value.getAlarmValueDate(),
+					value.getAlarmValueDate(), mapNameToEnum.get(value.getClassification()).getValue(),
 					value.getClassification(),
 					value.getAlarmItem(),
 					value.getAlarmValueMessage(),

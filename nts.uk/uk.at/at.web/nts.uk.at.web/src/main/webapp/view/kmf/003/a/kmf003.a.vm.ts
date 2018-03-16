@@ -145,7 +145,10 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.showLblSet04(data.grantConditions[3] ? data.grantConditions[3].hadSet : false);
                         self.showLblSet05(data.grantConditions[4] ? data.grantConditions[4].hadSet : false); 
                                     
-                        self.setFocus();             
+                        self.setFocus();  
+                        
+                        // clear all error
+                        nts.uk.ui.errors.clearAll();
                     }).fail(function(res) {
                           
                     });
@@ -585,37 +588,72 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             };
             
             nts.uk.ui.windows.setShared("KMF003_CONDITION_NO", data);
-            nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
-                var dataIsNotNull = nts.uk.ui.windows.getShared("KMF003_HAVE_DATA");
-                
-                if(dataIsNotNull) {
-                    if(conditionNo === 1){
-                        self.showLblSet01(true);
-                    } else if(conditionNo === 2){
-                        self.showLblSet02(true);
-                    } else if(conditionNo === 3){
-                        self.showLblSet03(true);
-                    } else if(conditionNo === 4){
-                        self.showLblSet04(true);
-                    } else if(conditionNo === 5){
-                        self.showLblSet05(true);
+            
+            if(conditionNo === 1) {
+                nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
+                    var dataIsNotNull = nts.uk.ui.windows.getShared("KMF003_HAVE_DATA");
+                    
+                    if(dataIsNotNull) {
+                        if(conditionNo === 1){
+                            self.showLblSet01(true);
+                        } else if(conditionNo === 2){
+                            self.showLblSet02(true);
+                        } else if(conditionNo === 3){
+                            self.showLblSet03(true);
+                        } else if(conditionNo === 4){
+                            self.showLblSet04(true);
+                        } else if(conditionNo === 5){
+                            self.showLblSet05(true);
+                        }
+                    } else {
+                        if(conditionNo === 1){
+                            self.showLblSet01(false);
+                        } else if(conditionNo === 2){
+                            self.showLblSet02(false);
+                        } else if(conditionNo === 3){
+                            self.showLblSet03(false);
+                        } else if(conditionNo === 4){
+                            self.showLblSet04(false);
+                        } else if(conditionNo === 5){
+                            self.showLblSet05(false);
+                        }
                     }
-                } else {
-                    if(conditionNo === 1){
-                        self.showLblSet01(false);
-                    } else if(conditionNo === 2){
-                        self.showLblSet02(false);
-                    } else if(conditionNo === 3){
-                        self.showLblSet03(false);
-                    } else if(conditionNo === 4){
-                        self.showLblSet04(false);
-                    } else if(conditionNo === 5){
-                        self.showLblSet05(false);
+                    
+                    nts.uk.ui.windows.setShared("KMF003_CANCEL_DATA", true);
+                });   
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kmf/003/b1/index.xhtml").onClosed(() => {
+                    var dataIsNotNull = nts.uk.ui.windows.getShared("KMF003_HAVE_DATA");
+                    
+                    if(dataIsNotNull) {
+                        if(conditionNo === 1){
+                            self.showLblSet01(true);
+                        } else if(conditionNo === 2){
+                            self.showLblSet02(true);
+                        } else if(conditionNo === 3){
+                            self.showLblSet03(true);
+                        } else if(conditionNo === 4){
+                            self.showLblSet04(true);
+                        } else if(conditionNo === 5){
+                            self.showLblSet05(true);
+                        }
+                    } else {
+                        if(conditionNo === 1){
+                            self.showLblSet01(false);
+                        } else if(conditionNo === 2){
+                            self.showLblSet02(false);
+                        } else if(conditionNo === 3){
+                            self.showLblSet03(false);
+                        } else if(conditionNo === 4){
+                            self.showLblSet04(false);
+                        } else if(conditionNo === 5){
+                            self.showLblSet05(false);
+                        }
                     }
-                }
-                
-                nts.uk.ui.windows.setShared("KMF003_CANCEL_DATA", true);
-            });    
+                    
+                    nts.uk.ui.windows.setShared("KMF003_CANCEL_DATA", true);
+                });   
+            }
         }
         
         /**

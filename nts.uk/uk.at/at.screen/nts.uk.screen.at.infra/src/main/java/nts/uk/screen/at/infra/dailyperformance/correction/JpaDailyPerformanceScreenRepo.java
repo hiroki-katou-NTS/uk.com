@@ -115,6 +115,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_FORMAT_DP_CORRECTION;
 
+	private final static String SEL_FORMAT_DP_CORRECTION_MULTI;
+	
 	private final static String SEL_CLOSURE_IDS;
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE;
@@ -212,6 +214,18 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND b.krcmtBusinessTypeDailyPK.businessTypeCode IN :lstBusinessTypeCode ");
 		builderString.append(" ORDER BY b.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
 		SEL_FORMAT_DP_CORRECTION = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtBusinessTypeDaily b INNER JOIN");
+		builderString.append(" KrcstBusinessTypeSorted s");
+		builderString.append(" WHERE s.krcstBusinessTypeSortedPK.companyId = :companyId");
+		builderString.append(
+				" AND b.krcmtBusinessTypeDailyPK.attendanceItemId = s.krcstBusinessTypeSortedPK.attendanceItemId");
+		builderString.append(" AND b.krcmtBusinessTypeDailyPK.companyId = :companyId");
+		builderString.append(" AND b.krcmtBusinessTypeDailyPK.businessTypeCode IN :lstBusinessTypeCode ");
+		builderString.append(" ORDER BY s.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
+		SEL_FORMAT_DP_CORRECTION_MULTI = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT NEW ");
@@ -594,14 +608,27 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType) {
-		return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION, KrcmtBusinessTypeDaily.class)
-				.setParameter("companyId", AppContexts.user().companyId())
-				.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
-				.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
-						f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
-						String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo), f.order,
-						f.columnWidth != null ? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
-				.distinct().collect(Collectors.toList());
+		if (lstBusinessType.size() > 1) {
+			return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION_MULTI, KrcmtBusinessTypeDaily.class)
+					.setParameter("companyId", AppContexts.user().companyId())
+					.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
+					.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
+							f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
+							String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo),
+							f.order, f.columnWidth != null
+									? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
+					.distinct().collect(Collectors.toList());
+		} else {
+			return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION, KrcmtBusinessTypeDaily.class)
+					.setParameter("companyId", AppContexts.user().companyId())
+					.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
+					.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
+							f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
+							String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo),
+							f.order, f.columnWidth != null
+									? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
+					.distinct().collect(Collectors.toList());
+		}
 	}
 
 	@Override

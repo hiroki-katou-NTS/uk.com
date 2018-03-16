@@ -34,6 +34,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -267,7 +270,7 @@ public class OverTimeOfDaily {
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,AutoCalculationOfOverTimeWork overTimeAutoCalcSet,WithinWorkTimeSheet withinWorkTimeSheetList,CalcMethodOfNoWorkingDay calcMethod,
 												  HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,
 												  Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-												  DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+												  Optional<DeductionTimeSheet> tempDedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 												  StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 												  Optional<PersonalLaborCondition> personalCondition, LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
 												  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
@@ -287,8 +290,11 @@ public class OverTimeOfDaily {
 			if(workTimeDailyAtr.isPresent() && workTimeDailyAtr.get().isFlex()) {
 				val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
 				flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,
-						flexCalcMethod.get(),predetermineTimeSet,
-						dedTimeSheet,vacationClass,timevacationUseTimeOfDaily,
+						//flexCalcMethod.get(),
+						new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
+																		   new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
+						predetermineTimeSet,
+						tempDedTimeSheet,vacationClass,timevacationUseTimeOfDaily,
 						statutoryDivision,siftCode,
 						personalCondition,lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
 						leaveEarlyTimeOfDaily,late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻

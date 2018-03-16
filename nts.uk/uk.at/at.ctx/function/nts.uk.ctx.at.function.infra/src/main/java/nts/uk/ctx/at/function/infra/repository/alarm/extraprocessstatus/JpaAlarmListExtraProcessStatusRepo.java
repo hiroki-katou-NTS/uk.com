@@ -21,9 +21,12 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	private final String SELECT_ALEX_PROCESS_BY_CODE = SELECT_ALL_ALEX_PROCESS_BY_CID 
 			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startDate = :startDate"
 			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startTime = :startTime";
-	private final String SELECT_ALEX_PROCESS_BY_END_DATE = SELECT_ALL_ALEX_PROCESS_BY_CID 
-			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.endDate = :endDate"
-			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.endTime = :endTime";
+	private final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
+			+ "WHERE c.kfnmtAlarmListExtraProcessStatusPK.companyID = :companyID"
+			+ " AND c.employeeID = :employeeID"
+			+ " AND c.endDate IS NULL"
+			+ " AND c.endTime IS NULL";
+
 	
 	@Override
 	public List<AlarmListExtraProcessStatus> getAllAlListExtaProcess(String companyID) {
@@ -45,6 +48,7 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	@Override
 	public void addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		this.commandProxy().insert(KfnmtAlarmListExtraProcessStatus.toEntity( alarmListExtraProcessStatus));
+		this.getEntityManager().flush();
 		
 	}
 
@@ -66,12 +70,15 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	}
 
 	@Override
-	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID) {
-		return this.queryProxy().query(SELECT_ALEX_PROCESS_BY_END_DATE,KfnmtAlarmListExtraProcessStatus.class)
-				.setParameter("companyID", companyID)
-				.setParameter("endDate", null)
-				.setParameter("endTime", null)
-				.getSingle(c -> c.toDomain());
+	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID, String employeeID) {
+		List<AlarmListExtraProcessStatus> listAlarmStatus = this.queryProxy()
+				.query(SELECT_ALEX_PROCESS_BY_END_DATE, KfnmtAlarmListExtraProcessStatus.class)
+				.setParameter("companyID", companyID).setParameter("employeeID", employeeID)
+				.getList(c -> c.toDomain());
+		if (listAlarmStatus.isEmpty())
+			return Optional.ofNullable(null);
+		else
+			return Optional.of(listAlarmStatus.get(0));
 	}
 
 

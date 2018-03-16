@@ -18,7 +18,7 @@ public class GridItem {
 	private String addressCode2;
 	private String address1;
 	private String address2;
-	private String comboCode1;
+	private int comboCode1;
 	private String combo;
 	private String header0;
 	private int comboCode2;
@@ -42,7 +42,7 @@ public class GridItem {
         this.addressCode2 = "002";
         this.address1 = "HN";
         this.address2 = "愛知県日本";
-        this.comboCode1 = String.valueOf(index % 3 + 1);
+        this.comboCode1 = index % 3 + 1;
         this.combo = String.valueOf(index % 3 + 1);
         this.header0 = "Out";
         this.comboCode2 = index % 3 + 4;

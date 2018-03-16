@@ -59,12 +59,12 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setOverTimeAtr(EnumAdaptor.valueOf(command.getOvertimeAtr(), OverTimeAtr.class));
 		appOverTime.setOverTimeInput(overTimeInputs);
 		appOverTime.setOverTimeShiftNight(command.getOverTimeShiftNight());
-		appOverTime.setSiftCode(new WorkTimeCode(command.getSiftTypeCode()));
+		appOverTime.setSiftCode(command.getSiftTypeCode() == null ? null : new WorkTimeCode(command.getSiftTypeCode()));
 		appOverTime.setWorkClockFrom1(command.getWorkClockFrom1());
 		appOverTime.setWorkClockFrom2(command.getWorkClockFrom2());
 		appOverTime.setWorkClockTo1(command.getWorkClockTo1());
 		appOverTime.setWorkClockTo2(command.getWorkClockTo2());
-		appOverTime.setWorkTypeCode(new WorkTypeCode(command.getWorkTypeCode()));
+		appOverTime.setWorkTypeCode(command.getWorkTypeCode() == null? null : new WorkTypeCode(command.getWorkTypeCode()));
 		appOverTime.getApplication().setAppReason(new AppReason(applicationReason));
 		appOverTime.setVersion(command.getVersion());
 		appOverTime.getApplication().setVersion(appOverTime.getVersion());

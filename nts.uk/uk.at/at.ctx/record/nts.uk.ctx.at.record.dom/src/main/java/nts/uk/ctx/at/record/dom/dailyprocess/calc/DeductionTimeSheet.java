@@ -175,8 +175,8 @@ public class DeductionTimeSheet {
 					duplicateBreakSheet.forEach(tc -> {
 						/*ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む*/
 						sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
-																				  timeSheet.getTimeSheet()
-																				, timeSheet.calcrange
+																				  new TimeZoneRounding(tc.getStart(), tc.getEnd(), timeSheet.getTimeSheet().getRounding())
+																				, tc.getSpan()
 																				, timeSheet.recordedTimeSheet
 																				, timeSheet.deductionTimeSheet
 																				, timeSheet.bonusPayTimeSheet
@@ -381,7 +381,7 @@ public class DeductionTimeSheet {
 	}
 	
 	/**
-	 * 固定勤務 時に休 時間帯を取得する
+	 * 固定勤務 時に就業時間帯orスケマスタから設定を取得する
 	 * @param restCalc 固定給系の計算方法
 	 * @return 休  時間帯
  */
