@@ -13,8 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class RegisterStdAcceptItemCommandHandler extends CommandHandler<Cmf001DCommand> {
-
+public class RegisterReturnStdAcceptItemCommandHandler extends CommandHandler<Cmf001DCommand> {
 	@Inject
 	private StdAcceptItemService itemSevice;
 
@@ -22,7 +21,7 @@ public class RegisterStdAcceptItemCommandHandler extends CommandHandler<Cmf001DC
 	protected void handle(CommandHandlerContext<Cmf001DCommand> context) {
 		Cmf001DCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		itemSevice.register(
+		itemSevice.registerAndReturn(
 				command.getListItem().stream().map(item -> item.toDomain(companyId)).collect(Collectors.toList()),
 				command.getConditionSetting().toDomain(companyId));
 	}

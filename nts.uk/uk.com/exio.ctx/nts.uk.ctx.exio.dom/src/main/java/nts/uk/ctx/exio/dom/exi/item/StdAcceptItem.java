@@ -41,12 +41,12 @@ public class StdAcceptItem extends AggregateRoot {
 	/**
 	 * CSV項目番号
 	 */
-	private int csvItemNumber;
+	private Optional<Integer> csvItemNumber;
 
 	/**
 	 * CSV項目名
 	 */
-	private String csvItemName;
+	private Optional<String> csvItemName;
 
 	/**
 	 * 項目型
@@ -66,28 +66,28 @@ public class StdAcceptItem extends AggregateRoot {
 	/**
 	 * データ形式設定
 	 */
-	private DataFormatSetting dataFormatSetting;
+	private Optional<DataFormatSetting> dataFormatSetting;
 
 	
 	
 	public StdAcceptItem(String cid, int systemType, String conditionSetCd, int acceptItemNumber, int categoryItemNo,
-			int csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
+			Integer csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
 		super();
 		this.cid = cid;
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.categoryItemNo = categoryItemNo;
 		this.acceptItemNumber = acceptItemNumber;
-		this.csvItemNumber = csvItemNumber;
-		this.csvItemName = csvItemName;
+		this.csvItemNumber = Optional.ofNullable(csvItemNumber);
+		this.csvItemName = Optional.ofNullable(csvItemName);
 		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
 		this.acceptScreenConditionSetting = Optional.ofNullable(acceptScreenConditionSetting);
-		this.dataFormatSetting = dataFormatSetting;
+		this.dataFormatSetting = Optional.ofNullable(dataFormatSetting);
 	}
 
 	public StdAcceptItem(String cid, AcceptanceConditionCode conditionSetCd, int acceptItemNumber,
-			SystemType systemType, int csvItemNumber, String csvItemName, ItemType itemType, int categoryItemNo,
-			Optional<AcScreenCondSet> acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
+			SystemType systemType, Optional<Integer> csvItemNumber, Optional<String> csvItemName, ItemType itemType, int categoryItemNo,
+			Optional<AcScreenCondSet> acceptScreenConditionSetting, Optional<DataFormatSetting> dataFormatSetting) {
 		super();
 		this.cid = cid;
 		this.conditionSetCd = conditionSetCd;

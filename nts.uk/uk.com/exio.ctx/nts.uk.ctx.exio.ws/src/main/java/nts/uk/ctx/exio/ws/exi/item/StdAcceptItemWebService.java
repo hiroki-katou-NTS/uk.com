@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.command.exi.item.Cmf001DCommand;
+import nts.uk.ctx.exio.app.command.exi.item.RegisterReturnStdAcceptItemCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.item.RegisterStdAcceptItemCommandHandler;
 import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemDto;
 import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemFinder;
@@ -18,9 +19,12 @@ import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemFinder;
 public class StdAcceptItemWebService {
 	@Inject
 	private StdAcceptItemFinder stdAcceptItem;
-	
+
 	@Inject
 	private RegisterStdAcceptItemCommandHandler regStdAcceptItemHandler;
+
+	@Inject
+	private RegisterReturnStdAcceptItemCommandHandler regReturnStdAcceptItemHandler;
 
 	@POST
 	@Path("getAllStdAcceptItem/{systemType}/{conditionSetCd}")
@@ -28,10 +32,17 @@ public class StdAcceptItemWebService {
 			@PathParam("conditionSetCd") String conditionSetCd) {
 		return this.stdAcceptItem.getStdAcceptItems(systemType, conditionSetCd);
 	}
-	
+
 	@POST
 	@Path("register")
-	public void getAllStdAcceptItem(Cmf001DCommand command) {
+	public void register(Cmf001DCommand command) {
 		this.regStdAcceptItemHandler.handle(command);
 	}
+
+	@POST
+	@Path("registerReturn")
+	public void registerReturn(Cmf001DCommand command) {
+		this.regReturnStdAcceptItemHandler.handle(command);
+	}
+
 }

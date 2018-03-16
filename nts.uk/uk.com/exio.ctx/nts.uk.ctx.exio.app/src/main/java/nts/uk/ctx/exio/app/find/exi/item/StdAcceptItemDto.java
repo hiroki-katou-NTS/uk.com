@@ -36,7 +36,7 @@ public class StdAcceptItemDto {
 	/**
 	 * CSV項目番号
 	 */
-	private int csvItemNumber;
+	private Integer csvItemNumber;
 
 	/**
 	 * CSV項目名
@@ -47,7 +47,7 @@ public class StdAcceptItemDto {
 	 * 項目型
 	 */
 	private int itemType;
-	
+
 	private int categoryItemNo;
 
 	private NumDataFormatSetDto numberFormatSetting;
@@ -63,18 +63,21 @@ public class StdAcceptItemDto {
 	private AcScreenCondSetDto screenConditionSetting;
 
 	public static StdAcceptItemDto fromDomain(StdAcceptItem domain) {
-		return new StdAcceptItemDto(domain.getSystemType().value, domain.getConditionSetCd().v(), domain.getAcceptItemNumber(),
-				domain.getCsvItemNumber(), domain.getCsvItemName(), domain.getItemType().value, domain.getCategoryItemNo(),
-				domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting() != null
-						? NumDataFormatSetDto.fromDomain((NumDataFormatSet) domain.getDataFormatSetting()) : null,
-				domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting() != null
-						? ChrDataFormatSetDto.fromDomain((ChrDataFormatSet) domain.getDataFormatSetting()) : null,
-				domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting() != null
-						? DateDataFormSetDto.fromDomain((DateDataFormSet) domain.getDataFormatSetting()) : null,
-				domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting() != null
-						? InsTimeDatFmSetDto.fromDomain((InsTimeDatFmSet) domain.getDataFormatSetting()) : null,
-				domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting() != null
-						? TimeDataFmSetDto.fromDomain((TimeDataFormatSet) domain.getDataFormatSetting()) : null,
+		return new StdAcceptItemDto(domain.getSystemType().value, domain.getConditionSetCd().v(),
+				domain.getAcceptItemNumber(),
+				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
+				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null, domain.getItemType().value,
+				domain.getCategoryItemNo(),
+				domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
+						? NumDataFormatSetDto.fromDomain((NumDataFormatSet) domain.getDataFormatSetting().get()) : null,
+				domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
+						? ChrDataFormatSetDto.fromDomain((ChrDataFormatSet) domain.getDataFormatSetting().get()) : null,
+				domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
+						? DateDataFormSetDto.fromDomain((DateDataFormSet) domain.getDataFormatSetting().get()) : null,
+				domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
+						? InsTimeDatFmSetDto.fromDomain((InsTimeDatFmSet) domain.getDataFormatSetting().get()) : null,
+				domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting().isPresent()
+						? TimeDataFmSetDto.fromDomain((TimeDataFormatSet) domain.getDataFormatSetting().get()) : null,
 				domain.getAcceptScreenConditionSetting().isPresent()
 						? AcScreenCondSetDto.fromDomain(domain.getAcceptScreenConditionSetting().get()) : null);
 	}

@@ -13,4 +13,6 @@ public interface StdAcceptItemService {
 
 	void register(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting);
 	
+	void registerAndReturn(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting);
+	
 }

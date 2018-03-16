@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.find.exi.csvimport.CsvImportDataFinder;
+import nts.uk.ctx.exio.app.find.exi.csvimport.CsvMappingDataDto;
 import nts.uk.ctx.exio.app.find.exi.csvimport.GettingCsvDataDto;
 
 @Path("exio/exi/csvimport")
@@ -24,9 +25,9 @@ public class CsvDataImportService {
 	}
 	
 	@POST
-	@Path("getRecord/{fileId}/{numOfCol}/{index}")
-	public List<String> getRecord(@PathParam("fileId") String fileId, @PathParam("numOfCol") int numOfCol, @PathParam("index") int index) {
-		return fileFind.getRecordByIndex(fileId, numOfCol, index);
+	@Path("getRecord/{fileId}/{dataLineNum}/{startLine}")
+	public List<CsvMappingDataDto> getRecord(@PathParam("fileId") String fileId, @PathParam("dataLineNum") int dataLineNum, @PathParam("startLine") int startLine) {
+		return fileFind.getRecordByIndex(fileId, dataLineNum, startLine);
 	}
 	
 	@POST

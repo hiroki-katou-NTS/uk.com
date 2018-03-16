@@ -126,11 +126,14 @@ public class StdAcceptCondSet extends AggregateRoot {
 					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
-	public void updateWhenSettingItems(Integer check, String categoryId, Integer csvDataLineNumber, Integer csvDataStartLine) {
-		this.checkCompleted = Optional.of(EnumAdaptor.valueOf(check, NotUseAtr.class));
+	public void updateWhenSettingItems(String categoryId, Integer csvDataLineNumber, Integer csvDataStartLine) {
 		this.categoryId = Optional.of(categoryId);
 		this.csvDataLineNumber = Optional.of(new AcceptanceLineNumber(csvDataLineNumber));
 		this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
+	}
+	
+	public void updateCheckComplete(Integer check) {
+		this.checkCompleted = Optional.of(EnumAdaptor.valueOf(check, NotUseAtr.class));
 	}
 	
 }

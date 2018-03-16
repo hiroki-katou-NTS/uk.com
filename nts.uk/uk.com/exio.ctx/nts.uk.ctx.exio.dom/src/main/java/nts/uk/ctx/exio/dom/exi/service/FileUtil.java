@@ -12,14 +12,13 @@ import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 
 public class FileUtil {
+	
+	private static final String NEW_LINE_CHAR = "\r\n";
 
 	public static int getNumberOfLine(InputStream inputStream) {
-		// get new line code of system
-		String newLineCode = getNewLineCode();
-
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+				.withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 
 		int count = 0;
 		try {
@@ -31,19 +30,20 @@ public class FileUtil {
 		return count;
 	}
 
-	public static List<String> getRecordByIndex(InputStream inputStream, int numOfCol, int index) {
-		// get new line code of system
-		String newLineCode = getNewLineCode();
-
+	public static List<List<String>> getRecordByIndex(InputStream inputStream, int dataLineNum, int startLine) {
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
-		List<String> result = new ArrayList<>();
+				.withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
+		List<List<String>> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
-			NtsCsvRecord record = csvParsedResult.getRecords().get(index);
-			for (int i = 0; i < numOfCol; i++) {
-				result.add((String) record.getColumn(i));
+			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(dataLineNum - 1);
+			NtsCsvRecord record = csvParsedResult.getRecords().get(startLine - 1);
+			for (int i = 0; i < 100; i++) {
+				List<String> data = new ArrayList<>();
+				data.add((String) colHeader.getColumn(i));
+				data.add((String) record.getColumn(i));
+				result.add(data);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -52,12 +52,9 @@ public class FileUtil {
 	}
 
 	public static List<String> getRecord(InputStream inputStream, int[] columns, int index) {
-		// get new line code of system
-		String newLineCode = getNewLineCode();
-
 		// get csv reader
 		NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
-				.withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+				.withFormat(CSVFormat.EXCEL.withRecordSeparator(NEW_LINE_CHAR));
 		List<String> result = new ArrayList<>();
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
@@ -71,12 +68,4 @@ public class FileUtil {
 		return result;
 	}
 
-	/**
-	 * Gets the new line code.
-	 *
-	 * @return the new line code
-	 */
-	private static String getNewLineCode() {
-		return "\r\n"; // CR+LF
-	}
 }

@@ -53,14 +53,14 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 	/**
 	 * CSV項目番号
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "CSV_ITEM_NUMBER")
-	public int csvItemNumber;
+	public Integer csvItemNumber;
 
 	/**
 	 * CSV項目名
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "CSV_ITEM_NAME")
 	public String csvItemName;
 
@@ -98,7 +98,7 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 	}
 
 	public OiomtStdAcceptItem(String cid, int sysType, String conditionCode, int acceptItemNum, int categoryItemNo,
-			int csvItemNumber, String csvItemName, int itemType, OiomtAcScreenCondSet acceptScreenCondSet,
+			Integer csvItemNumber, String csvItemName, int itemType, OiomtAcScreenCondSet acceptScreenCondSet,
 			OiomtNumDataFormatSet numDataFormatSet, OiomtChrDataFormatSet charDataFormatSet,
 			OiomtDateDataFormSet dateDataFormatSet, OiomtInsTimeDatFmSet insTimeDataFormatSet,
 			OiomtTimeDataFmSet timeDataFormatSet) {
@@ -118,25 +118,28 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 
 	public static OiomtStdAcceptItem fromDomain(StdAcceptItem domain) {
 		return new OiomtStdAcceptItem(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
-				domain.getAcceptItemNumber(), domain.getCategoryItemNo(), domain.getCsvItemNumber(),
-				domain.getCsvItemName(), domain.getItemType().value,
+				domain.getAcceptItemNumber(), domain.getCategoryItemNo(),
+				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
+				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null, domain.getItemType().value,
 				domain.getAcceptScreenConditionSetting().isPresent()
 						? OiomtAcScreenCondSet.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
 						: null,
-				domain.getItemType() == ItemType.NUMERIC
-						? OiomtNumDataFormatSet.fromDomain(domain, (NumDataFormatSet) domain.getDataFormatSetting())
+				domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
+						? OiomtNumDataFormatSet.fromDomain(domain,
+								(NumDataFormatSet) domain.getDataFormatSetting().get())
 						: null,
-				domain.getItemType() == ItemType.CHARACTER
-						? OiomtChrDataFormatSet.fromDomain(domain, (ChrDataFormatSet) domain.getDataFormatSetting())
+				domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
+						? OiomtChrDataFormatSet.fromDomain(domain,
+								(ChrDataFormatSet) domain.getDataFormatSetting().get())
 						: null,
-				domain.getItemType() == ItemType.DATE
-						? OiomtDateDataFormSet.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting())
+				domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
+						? OiomtDateDataFormSet.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting().get())
 						: null,
-				domain.getItemType() == ItemType.INS_TIME
-						? OiomtInsTimeDatFmSet.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting())
+				domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
+						? OiomtInsTimeDatFmSet.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting().get())
 						: null,
-				domain.getItemType() == ItemType.TIME
-						? OiomtTimeDataFmSet.fromDomain(domain, (TimeDataFormatSet) domain.getDataFormatSetting())
+				domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting().isPresent()
+						? OiomtTimeDataFmSet.fromDomain(domain, (TimeDataFormatSet) domain.getDataFormatSetting().get())
 						: null);
 	}
 

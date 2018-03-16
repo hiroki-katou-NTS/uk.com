@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCategoryDto;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
 import nts.uk.ctx.exio.dom.exi.adapter.role.ExRoleAdapter;
@@ -27,9 +26,6 @@ public class StdAcceptCondSetFinder {
 
 	@Inject
 	private StdAcceptCondSetRepository stdConditionRepo;
-
-	@Inject
-	private StoredFileStreamService fileStreamService;
 
 	@Inject
 	private ExRoleAdapter roleAdapter;
@@ -89,7 +85,7 @@ public class StdAcceptCondSetFinder {
 
 		List<ExAcpCategoryDto> lstDataCategory = new ArrayList<ExAcpCategoryDto>();
 		for (int i = 1; i <= 4; i++) {
-			lstDataCategory.add(new ExAcpCategoryDto("1dfsdffs" + i, "カテゴリ名　" + i, 0L));
+			lstDataCategory.add(new ExAcpCategoryDto("1dfsdffs" + i, "カテゴリ名　" + i));
 		}
 		return lstDataCategory;
 	}
@@ -98,8 +94,7 @@ public class StdAcceptCondSetFinder {
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
 		for (int i = 1; i <= 4; i++) {
 			for (int j = 1; j < 11; j++) {
-				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j, 1,
-						1, 1, "1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
+				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j%2));
 			}
 		}
 
