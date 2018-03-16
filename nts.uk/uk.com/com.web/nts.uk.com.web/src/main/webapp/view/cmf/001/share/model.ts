@@ -148,7 +148,7 @@ module nts.uk.com.view.cmf001.share.model {
         conditionSettingName: KnockoutObservable<string>;
         dispConditionSettingName: string;
         deleteExistData: KnockoutObservable<number>;
-        deleteExistDataMethod: KnockoutObservable<number> = ko.observable(1);
+        deleteExistDataMethod: KnockoutObservable<number> = ko.observable(null);
         acceptMode: KnockoutObservable<number> = ko.observable(null);
         csvDataItemLineNumber: KnockoutObservable<number> = ko.observable(null);
         csvDataStartLine: KnockoutObservable<number> = ko.observable(null);

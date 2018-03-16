@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 470,
-					height : 560
+					height : 570
 				};
 			</script>
 			<com:ValidatorScript>
@@ -29,206 +29,204 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>
-					<!-- L1_1タイトル -->
-					<div class="title_content">#{i18n.getText('CMF001_385')}</div>
-					<table id="table_content">
-						<!-- row1 -->
-						<tr>
-							<td>
-								<!--L2_1項目名（ラベル） -->
-								<div class="form-label enable">
-									<label>#{i18n.getText('CMF001_386')}</label>
-								</div>
-							</td>
-							<!-- L2_2項目名 -->
-							<td><div class="lable" data-bind="text: receiptItemName"></div></td>
-						</tr>
-						<!-- row2 -->
-						<tr>
-							<td>
-								<!-- L2_3条件選択（ラベル） -->
-								<div data-bind="ntsFormLabel: {required: true}"
-									class="form-label enable">
-									<label>#{i18n.getText('CMF001_387')}</label>
-								</div>
-							</td>
-							<td>
-								<!-- L2_4条件選択 -->
-								<div id="combo-box" tabindex="1"
-									data-bind="ntsComboBox: {
-									optionsValue: 'code',
-									visibleItemsCount: 11,
-									optionsText: 'name',
-									name: '#[CMF001_388]',
-									required: true,
-									value: selectComparisonCondition,
-									options: compareItems,
-									enable: inputMode,
-									columns: [
-										{ prop: 'name', length: 18 },
-									]}">
-								</div>
-							</td>
-						</tr>
-						<!-- row3 -->
-						<tr>
-							<td>
-								<!-- L2_5条件値１（ラベル） -->
-								<div class="form-label enable">
-									<label>#{i18n.getText('CMF001_389')}</label>
-								</div>
-							</td>
-							<td>
-								<!-- L2_6条件値１_1 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
-									<input tabindex="2" class="numberCondition"
-										data-bind="ntsNumberEditor: {value: numberConditionValue1, 
-															     enable: inputMode &amp;&amp; enabledCond1,
-															     constraint: 'AcceptanceConditionValue', 
-															     name: '#[CMF001_390]',
-															     option: {width: '177px'},
-															     required: requiredCond1,
-															     optionsText: 'name'}" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値1_2--> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
-									<input tabindex="4" class="characterCondition"
-										data-bind="ntsTextEditor: {value: characterConditionValue1, 
-																 enable: inputMode &amp;&amp; enabledCond1,
-																 option: {width: '177px'},
-																 constraint: 'AcceptanceConditionString',   
-																 name: '#[CMF001_390]',
-																 required: requiredCond1,
-																 optionsText: 'name'}" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値1_3 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
-									<div tabindex="6" class="dateCondition"
-										data-bind="ntsDatePicker: {value: dateConditionValue1, 
-								                                 enable: inputMode &amp;&amp; enabledCond1,
-								                                 dateFormat: 'YYYY/MM/DD', 
-								                                 acceptJapaneseCalendar: true,
-								                                 required: requiredCond1,
-								                                 name: '#[CMF001_390]' }" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値1_4 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
-									<input tabindex="8" class="timeMomentCondition"
-										data-bind="ntsTimeEditor: {value: timeMomentConditionValue1, 
-															     inputFormat: 'time',
-															     mode: 'time',
-																 enable: inputMode &amp;&amp; enabledCond1,
-																 constraint: 'AcceptanceConditionTimeMoment',  
-																 name: '#[CMF001_390]',
-																 required: requiredCond1,
-																 optionsText: 'name'}" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値1_5 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
-									<input tabindex="10" class="timeCondition"
-										data-bind="ntsTimeEditor: {value: timeConditionValue1, 
-															     inputFormat: 'time',
-															     mode: 'time',
-																 enable: inputMode &amp;&amp; enabledCond1,
-																 constraint: 'AcceptanceConditionTime',   
-																 name:'#[CMF001_390]',
-																 required: requiredCond1,
-																 optionsText: 'name'}" />
-								</com:ko-if>
-							</td>
-						</tr>
-						<!-- row4 -->
-						<tr>
-							<td>
-								<!-- L2_7条件値２（ラベル） -->
-								<div class="form-label enable}">
-									<label>#{i18n.getText('CMF001_391')}</label>
-								</div>
-							</td>
-							<td>
-								<!-- L2_8条件値２_1 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
-									<input tabindex="3" class="numberCondition"
-										data-bind="ntsNumberEditor: {value: numberConditionValue2, 
-																 enable: inputMode &amp;&amp; enabledCond2,
-																 constraint: 'AcceptanceConditionValue',  
-																 name:'#[CMF001_392]',
-																 option: {width: '177px'},
-																 required: requiredCond2}" />
+				<!-- L1_1タイトル -->
+				<div class="title_content">#{i18n.getText('CMF001_385')}</div>
+				<table id="table_content">
+					<!-- row1 -->
+					<tr>
+						<td>
+							<!--L2_1項目名（ラベル） -->
+							<div class="form-label enable">
+								<label>#{i18n.getText('CMF001_386')}</label>
+							</div>
+						</td>
+						<!-- L2_2項目名 -->
+						<td><div class="lable" data-bind="text: receiptItemName"></div></td>
+					</tr>
+					<!-- row2 -->
+					<tr>
+						<td>
+							<!-- L2_3条件選択（ラベル） -->
+							<div data-bind="ntsFormLabel: {required: true}"
+								class="form-label enable">
+								<label>#{i18n.getText('CMF001_387')}</label>
+							</div>
+						</td>
+						<td>
+							<!-- L2_4条件選択 -->
+							<div id="combo-box" tabindex="1"
+								data-bind="ntsComboBox: {
+								optionsValue: 'code',
+								visibleItemsCount: 11,
+								optionsText: 'name',
+								name: '#[CMF001_388]',
+								required: true,
+								value: selectComparisonCondition,
+								options: compareItems,
+								enable: inputMode,
+								columns: [
+									{ prop: 'name', length: 18 },
+								]}">
+							</div>
+						</td>
+					</tr>
+					<!-- row3 -->
+					<tr>
+						<td>
+							<!-- L2_5条件値１（ラベル） -->
+							<div class="form-label enable">
+								<label>#{i18n.getText('CMF001_389')}</label>
+							</div>
+						</td>
+						<td>
+							<!-- L2_6条件値１_1 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
+								<input tabindex="2" class="numberCondition"
+									data-bind="ntsNumberEditor: {value: numberConditionValue1, 
+														     enable: inputMode &amp;&amp; enabledCond1,
+														     constraint: 'AcceptanceConditionValue', 
+														     name: '#[CMF001_390]',
+														     option: {width: '177px'},
+														     required: requiredCond1,
+														     optionsText: 'name'}" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値1_2--> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
+								<input tabindex="4" class="characterCondition"
+									data-bind="ntsTextEditor: {value: characterConditionValue1, 
+															 enable: inputMode &amp;&amp; enabledCond1,
+															 option: {width: '177px'},
+															 constraint: 'AcceptanceConditionString',   
+															 name: '#[CMF001_390]',
+															 required: requiredCond1,
+															 optionsText: 'name'}" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値1_3 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
+								<div tabindex="6" class="dateCondition"
+									data-bind="ntsDatePicker: {value: dateConditionValue1, 
+							                                 enable: inputMode &amp;&amp; enabledCond1,
+							                                 dateFormat: 'YYYY/MM/DD', 
+							                                 acceptJapaneseCalendar: true,
+							                                 required: requiredCond1,
+							                                 name: '#[CMF001_390]' }" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値1_4 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
+								<input tabindex="8" class="timeMomentCondition"
+									data-bind="ntsTimeEditor: {value: timeMomentConditionValue1, 
+														     inputFormat: 'time',
+														     mode: 'time',
+															 enable: inputMode &amp;&amp; enabledCond1,
+															 constraint: 'AcceptanceConditionTimeMoment',  
+															 name: '#[CMF001_390]',
+															 required: requiredCond1,
+															 optionsText: 'name'}" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値1_5 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
+								<input tabindex="10" class="timeCondition"
+									data-bind="ntsTimeEditor: {value: timeConditionValue1, 
+														     inputFormat: 'time',
+														     mode: 'time',
+															 enable: inputMode &amp;&amp; enabledCond1,
+															 constraint: 'AcceptanceConditionTime',   
+															 name:'#[CMF001_390]',
+															 required: requiredCond1,
+															 optionsText: 'name'}" />
+							</com:ko-if>
+						</td>
+					</tr>
+					<!-- row4 -->
+					<tr>
+						<td>
+							<!-- L2_7条件値２（ラベル） -->
+							<div class="form-label enable}">
+								<label>#{i18n.getText('CMF001_391')}</label>
+							</div>
+						</td>
+						<td>
+							<!-- L2_8条件値２_1 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
+								<input tabindex="3" class="numberCondition"
+									data-bind="ntsNumberEditor: {value: numberConditionValue2, 
+															 enable: inputMode &amp;&amp; enabledCond2,
+															 constraint: 'AcceptanceConditionValue',  
+															 name:'#[CMF001_392]',
+															 option: {width: '177px'},
+															 required: requiredCond2}" />
 
-								</com:ko-if> 
-								
-								<!-- L2_8条件値２_2 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
-									<input tabindex="5" class="characterCondition"
-										data-bind="ntsTextEditor: {value: characterConditionValue2, 
-																 enable: inputMode &amp;&amp; enabledCond2,
-																 option: {width: '177px'},
-																 constraint: 'AcceptanceConditionString',   
-																 name: '#[CMF001_392]',
-																 required: requiredCond2}" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値２_3 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
-									<div tabindex="7" class="dateCondition"
-										data-bind="ntsDatePicker: {value: dateConditionValue2, 
-								                                 enable: inputMode &amp;&amp; enabledCond2,
-								                                 dateFormat: 'YYYY/MM/DD',
-								                                 acceptJapaneseCalendar: true,
-								                                 name: '#[CMF001_392]',
-								                                 required: requiredCond2}" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値２_4 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
-									<input tabindex="9" class="timeMomentCondition"
-										data-bind="ntsTimeEditor: {value: timeMomentConditionValue2, 
-																 inputFormat: 'time', 
-																 mode: 'time',
-																 enable: inputMode &amp;&amp; enabledCond2,
-																 constraint: 'AcceptanceConditionTimeMoment', 
-																 name: '#[CMF001_392]',
-																 required: requiredCond2}" />
-								</com:ko-if> 
-								
-								<!-- L2_8条件値２_5 --> 
-								<com:ko-if
-									bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
-									<input tabindex="11" class="timeCondition"
-										data-bind="ntsTimeEditor: {value: timeConditionValue2,
-																 inputFormat: 'time', 
-																 mode: 'time',
-																 enable: inputMode &amp;&amp; enabledCond2, 
-																 constraint: 'AcceptanceConditionTime',  
-																 name:'#[CMF001_392]',
-																 required: requiredCond2}" />
-								</com:ko-if>
-							</td>
-						</tr>
-					</table>
-				</div>
+							</com:ko-if> 
+							
+							<!-- L2_8条件値２_2 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
+								<input tabindex="5" class="characterCondition"
+									data-bind="ntsTextEditor: {value: characterConditionValue2, 
+															 enable: inputMode &amp;&amp; enabledCond2,
+															 option: {width: '177px'},
+															 constraint: 'AcceptanceConditionString',   
+															 name: '#[CMF001_392]',
+															 required: requiredCond2}" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値２_3 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
+								<div tabindex="7" class="dateCondition"
+									data-bind="ntsDatePicker: {value: dateConditionValue2, 
+							                                 enable: inputMode &amp;&amp; enabledCond2,
+							                                 dateFormat: 'YYYY/MM/DD',
+							                                 acceptJapaneseCalendar: true,
+							                                 name: '#[CMF001_392]',
+							                                 required: requiredCond2}" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値２_4 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
+								<input tabindex="9" class="timeMomentCondition"
+									data-bind="ntsTimeEditor: {value: timeMomentConditionValue2, 
+															 inputFormat: 'time', 
+															 mode: 'time',
+															 enable: inputMode &amp;&amp; enabledCond2,
+															 constraint: 'AcceptanceConditionTimeMoment', 
+															 name: '#[CMF001_392]',
+															 required: requiredCond2}" />
+							</com:ko-if> 
+							
+							<!-- L2_8条件値２_5 --> 
+							<com:ko-if
+								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
+								<input tabindex="11" class="timeCondition"
+									data-bind="ntsTimeEditor: {value: timeConditionValue2,
+															 inputFormat: 'time', 
+															 mode: 'time',
+															 enable: inputMode &amp;&amp; enabledCond2, 
+															 constraint: 'AcceptanceConditionTime',  
+															 name:'#[CMF001_392]',
+															 required: requiredCond2}" />
+							</com:ko-if>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- L3_1設定 -->
 				<button class="x-large" tabindex="12"
-					data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_393')}</button>
+					data-bind="click: saveSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_393')}</button>
 				<!-- L3_2キャンセル -->
-				<button class="large" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
+				<button class="large" id="L3_2" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

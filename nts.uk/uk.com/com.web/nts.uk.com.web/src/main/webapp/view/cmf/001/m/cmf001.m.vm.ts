@@ -35,7 +35,7 @@ module nts.uk.com.view.cmf001.m.viewmodel {
             self.targetType = item.name;
             self.selectionType = params.systemType;
             self.conditionCode = ko.observable(params.conditionCode);
-            self.conditionName = ko.observable(params.conditionName);    
+            self.conditionName = ko.observable(params.conditionName);
         }
          /**
          * Close dialog.
@@ -54,7 +54,7 @@ module nts.uk.com.view.cmf001.m.viewmodel {
                 service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
                     if(result && !self.checked()){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] }).then(() => {
-                            $("#M4").focus();  
+                            $("#M2_7").focus();  
                         });
                     } else {
                         setShared('CMF001mOutput', {
