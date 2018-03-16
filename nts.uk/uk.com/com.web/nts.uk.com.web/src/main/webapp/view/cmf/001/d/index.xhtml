@@ -13,11 +13,6 @@
 			<com:scriptfile path="cmf001.d.service.js" />
 			<com:scriptfile path="cmf001.d.vm.js" />
 
-<!-- 			<com:ValidatorScript> -->
-<!-- 		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode -->
-<!-- 		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName -->
-<!-- 		    </com:ValidatorScript> -->
-
 			<com:scriptfile path="cmf001.d.start.js" />
 			
 		</ui:define>
@@ -40,16 +35,16 @@
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
-							<div id="file-upload" style="display: inline-block; width: 340px" data-bind="ntsFileUpload:{
+							<div tabindex="4" id="file-upload" style="display: inline-block; width: 340px" data-bind="ntsFileUpload:{
 								name: '#[CMF001_137]',
 								filename: filename,
-								accept: accept,
+								accept: [''],
 								text: 'CMF001_138',
 								aslink: false,
 								enable: true,
 								onchange: onchange,
 								immediateUpload: true,
-								stereoType: stereoType,
+								stereoType: 'csvfile',
 								uploadFinished: finished
 							}"></div>
 						</div>
@@ -57,17 +52,17 @@
 					<div class="line-number" style="display: inline-block;">
 						<div class="valign-center control-group" data-bind="with: selectedStandardImportSetting">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
-							<input data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, option: {width: '70px'}}" />
+							<input tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, option: {width: '70px'}}" />
 							<span class="label">#{i18n.getText('CMF001_141')}</span>
 						</div>
 						<div class="valign-center control-group" data-bind="with: selectedStandardImportSetting">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
-							<input data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, option: {width: '70px'}}" />
+							<input tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, option: {width: '70px'}}" />
 							<span class="label">#{i18n.getText('CMF001_144')}</span>
 						</div>
 					</div>
 					<div class="valign-center control-group" style="display: inline-block; padding-left: 10px; vertical-align: text-bottom">
-						<button>#{i18n.getText('CMF001_145')}</button>
+						<button tabindex="7" data-bind="click: refreshCsvData">#{i18n.getText('CMF001_145')}</button>
 					</div>
 				</div>
 				<div class="fixed-flex-layout">
@@ -75,7 +70,7 @@
 						<div data-bind="ntsPanel:{width: '300px', height: '40px', direction: 'bottom', showIcon: false, visible: true}">
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_150')}</div>
-								<div tabindex="6" data-bind="ntsComboBox: {
+								<div tabindex="8" data-bind="ntsComboBox: {
 									options: listCategory,
 									optionsValue: 'categoryId',
 									visibleItemsCount: 15,
@@ -92,17 +87,17 @@
 						<div data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', showIcon: true, visible: true}">
 							<div class="valign-center control-group cf">
 								<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
-								<div class="pull-left" tabindex="7" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
+								<div class="pull-left" tabindex="9" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
 									items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
 							</div>
 							<table id="D5_4" data-bind="ntsGridList: {
 									rows: 12,
 									name: '#[CMF001_39]', 
 									dataSource: listCategoryItem,
-									primaryKey: 'dispItemNo', 
+									primaryKey: 'itemNo', 
 									columns: [
-						                { headerText: '', key: 'dispItemNo', width: 10, hidden: true, formatter: _.escape },
-						                { headerText: '#{i18n.getText('CMF001_153')}', key: 'dispItemName', width: 280, formatter: _.escape }
+						                { headerText: '', key: 'itemNo', width: 10, hidden: true, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CMF001_153')}', key: 'itemName', width: 280, formatter: _.escape }
 						            ], 
 									multiple: false,
 									value: selectedCategoryItem
@@ -142,11 +137,11 @@
 									<td><span class="label" data-bind="text: acceptItemName"></span></td>
 									<td>
 										<span class="label" data-bind="text: csvItemName"></span>
-										<button class="pull-right" data-bind="click: function() {$parent.openCMF001e($data)}">#{i18n.getText('CMF001_167')}</button>
+										<button tabindex="10" class="pull-right" data-bind="click: function() {$parent.openCMF001e($data)}">#{i18n.getText('CMF001_167')}</button>
 									</td>
-									<td><span class="label" data-bind="text: 'Sample Data From File'"></span></td>
+									<td><span class="label" data-bind="text: sampleData"></span></td>
 									<td>
-										<div style="width: 95px;" data-bind="ntsComboBox: {
+										<div tabindex="11" style="width: 95px;" data-bind="ntsComboBox: {
 											options: $parent.dataTypes,
 											optionsValue: 'code',
 											visibleItemsCount: 5,

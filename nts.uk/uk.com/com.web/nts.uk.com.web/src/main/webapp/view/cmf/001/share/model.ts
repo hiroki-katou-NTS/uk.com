@@ -201,11 +201,10 @@ module nts.uk.com.view.cmf001.share.model {
         timeFormatSetting: KnockoutObservable<TimeDataFormatSetting> = ko.observable(null);
         screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting> = ko.observable(null);
         categoryItemNo: KnockoutObservable<number>;
-        categoryId: KnockoutObservable<string> = ko.observable("");
         systemType: KnockoutObservable<number>;
-        sampleData: KnockoutObservable<string>;
+        sampleData: KnockoutObservable<string> = ko.observable(null);
         
-        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, sampleData?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
@@ -235,9 +234,8 @@ module nts.uk.com.view.cmf001.share.model {
             }
             if (screenSet)
                 this.screenConditionSetting(screenSet);
-            if (categoryId)
-                this.categoryId(categoryId);            
-            this.sampleData = ko.observable("");
+            if (sampleData)    
+                this.sampleData(sampleData);
         }
     }
 
@@ -252,16 +250,14 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     export class ExternalAcceptanceCategoryItemData {
-        itemNo: KnockoutObservable<number>;
-        itemName: KnockoutObservable<string>;
-        dispItemNo: number;
-        dispItemName: string;
+        itemNo: number;
+        itemName: string;
+        required: boolean;
 
-        constructor(code: number, name: string) {
-            this.itemNo = ko.observable(code);
-            this.itemName = ko.observable(name);
-            this.dispItemNo = code;
-            this.dispItemName = name;
+        constructor(code: number, name: string, required: boolean) {
+            this.itemNo = code;
+            this.itemName = name;
+            if (required) this.required = required;
         }
     }
 
@@ -298,11 +294,12 @@ module nts.uk.com.view.cmf001.share.model {
     export class MappingListData {
         csvItemName: string;
         csvItemNumber: number;
-        dispCsvItemName: string;
-        dispCsvItemNumber: number;
-        constructor(itemNumber: number, itemName: string) {
+        sampleData: string;
+        
+        constructor(itemNumber: number, itemName: string, sampleData?: string) {
             this.csvItemName = itemName;
             this.csvItemNumber = itemNumber;
+            if (sampleData) this.sampleData = sampleData;
         }
     }
     
