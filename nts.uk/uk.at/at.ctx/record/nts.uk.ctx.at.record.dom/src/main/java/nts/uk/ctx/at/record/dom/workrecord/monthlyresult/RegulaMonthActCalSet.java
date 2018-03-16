@@ -4,21 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthlyresult;
 
-import java.util.List;
-
-import lombok.Getter;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriod;
-
- 
 /**
-  * The Class SettlementPeriodOfIrgNew.
-  */
-@Getter
-// 変形労働精算期間
-public class SettlementPeriodOfIrgNew {
+ * The Interface SetRegularActualWorkMonthly.
+ */
+// 通常勤務月別実績集計設定
+public interface RegulaMonthActCalSet {
 
-	// 精算期間
-	private List<SettlementPeriod> settlementPeriods;
-	
+	/**
+	 * Gets the legal aggr set of reg new.
+	 *
+	 * @return the legal aggr set of reg new
+	 */
+	// 集計設定
+	RegularWorkTimeAggrSet getAggrSetting();
+
 }
-

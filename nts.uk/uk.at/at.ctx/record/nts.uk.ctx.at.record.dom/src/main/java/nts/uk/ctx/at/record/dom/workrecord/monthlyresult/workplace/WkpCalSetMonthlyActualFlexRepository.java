@@ -18,27 +18,27 @@ public interface WkpCalSetMonthlyActualFlexRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpCalSetMonthlyActualFlex> findByCidAndWkpId(String cid, String wkpId);
+	Optional<WkpFlexMonthActCalSet> findByCidAndWkpId(String cid, String wkpId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param wkpCalSetMonthlyActualFlex the wkp cal set monthly actual flex
 	 */
-	void add(WkpCalSetMonthlyActualFlex wkpCalSetMonthlyActualFlex);
+	void add(WkpFlexMonthActCalSet wkpCalSetMonthlyActualFlex);
 
 	/**
 	 * Update.
 	 *
 	 * @param wkpCalSetMonthlyActualFlex the wkp cal set monthly actual flex
 	 */
-	void update(WkpCalSetMonthlyActualFlex wkpCalSetMonthlyActualFlex);
+	void update(WkpFlexMonthActCalSet wkpCalSetMonthlyActualFlex);
 
 	/**
 	 * Delete.
 	 *
 	 * @param wkpCalSetMonthlyActualFlex the wkp cal set monthly actual flex
 	 */
-	void delete(WkpCalSetMonthlyActualFlex wkpCalSetMonthlyActualFlex);
+	void delete(WkpFlexMonthActCalSet wkpCalSetMonthlyActualFlex);
 
 }

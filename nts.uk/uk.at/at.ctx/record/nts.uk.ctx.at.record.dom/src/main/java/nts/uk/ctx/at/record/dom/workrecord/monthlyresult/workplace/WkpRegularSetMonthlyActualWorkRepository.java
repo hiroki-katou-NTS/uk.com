@@ -18,27 +18,27 @@ public interface WkpRegularSetMonthlyActualWorkRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpRegularSetMonthlyActualWork> findByCidAndWkpId(String cid, String wkpId);
+	Optional<WkpRegulaMonthActCalSet> findByCidAndWkpId(String cid, String wkpId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param wkpRegularSetMonthlyActualWork the wkp regular set monthly actual work
 	 */
-	void add(WkpRegularSetMonthlyActualWork wkpRegularSetMonthlyActualWork);
+	void add(WkpRegulaMonthActCalSet wkpRegularSetMonthlyActualWork);
 
 	/**
 	 * Update.
 	 *
 	 * @param wkpRegularSetMonthlyActualWork the wkp regular set monthly actual work
 	 */
-	void update(WkpRegularSetMonthlyActualWork wkpRegularSetMonthlyActualWork);
+	void update(WkpRegulaMonthActCalSet wkpRegularSetMonthlyActualWork);
 
 	/**
 	 * Delete.
 	 *
 	 * @param wkpRegularSetMonthlyActualWork the wkp regular set monthly actual work
 	 */
-	void delete(WkpRegularSetMonthlyActualWork wkpRegularSetMonthlyActualWork);
+	void delete(WkpRegulaMonthActCalSet wkpRegularSetMonthlyActualWork);
 
 }

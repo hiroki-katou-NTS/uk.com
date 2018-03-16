@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.workplace;
+package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.employee;
 
 import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Interface WkpCalSetMonthlyActualFlexSetMemento.
+ * The Interface EmployeeCalSetMonthlyFlexSetMemento.
  */
-public interface WkpCalSetMonthlyActualFlexSetMemento {
+public interface ShainFlexMonthActCalSetSetMemento {
 
 	/**
 	 * Sets the company id.
@@ -21,11 +21,11 @@ public interface WkpCalSetMonthlyActualFlexSetMemento {
 	void setCompanyId(CompanyId companyId);
 
 	/**
-	 * Sets the workplace id.
+	 * Sets the employee id.
 	 *
-	 * @param workplaceId the new workplace id
+	 * @param employeeId the new employee id
 	 */
-	void setWorkplaceId(WorkplaceId workplaceId);
+	void setEmployeeId(EmployeeId employeeId);
 
 	/**
 	 * Sets the aggr setting monthly of flx new.
@@ -33,4 +33,5 @@ public interface WkpCalSetMonthlyActualFlexSetMemento {
 	 * @param aggrSettingMonthlyOfFlxNew the new aggr setting monthly of flx new
 	 */
 	void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew);
+
 }

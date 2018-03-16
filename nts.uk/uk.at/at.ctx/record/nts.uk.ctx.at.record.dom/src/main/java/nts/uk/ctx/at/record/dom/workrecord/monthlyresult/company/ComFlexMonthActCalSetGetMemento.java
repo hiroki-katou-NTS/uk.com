@@ -2,16 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.workplace;
+package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.company;
 
 import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
- * The Interface WkpCalSetMonthlyActualFlexGetMemento.
+ * The Interface CompanyCalMonthlyFlexGetMemento.
  */
-public interface WkpCalSetMonthlyActualFlexGetMemento {
+public interface ComFlexMonthActCalSetGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -21,17 +20,9 @@ public interface WkpCalSetMonthlyActualFlexGetMemento {
 	CompanyId getCompanyId();
 
 	/**
-	 * Gets the workplace id.
-	 *
-	 * @return the workplace id
-	 */
-	WorkplaceId getWorkplaceId();
-
-	/**
 	 * Gets the aggr setting monthly of flx new.
 	 *
 	 * @return the aggr setting monthly of flx new
 	 */
 	FlexMonthWorkTimeAggrSet getAggrSetting();
-
 }

@@ -4,14 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.workplace;
 
-import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
- * The Interface WkpCalSetMonthlyActualFlexGetMemento.
+ * The Interface WkpRegularSetMonthlyActualWorkGetMemento.
  */
-public interface WkpCalSetMonthlyActualFlexGetMemento {
+public interface WkpRegulaMonthActCalSetGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -28,10 +28,10 @@ public interface WkpCalSetMonthlyActualFlexGetMemento {
 	WorkplaceId getWorkplaceId();
 
 	/**
-	 * Gets the aggr setting monthly of flx new.
+	 * Gets the legal aggr set of reg new.
 	 *
-	 * @return the aggr setting monthly of flx new
+	 * @return the legal aggr set of reg new
 	 */
-	FlexMonthWorkTimeAggrSet getAggrSetting();
+	RegularWorkTimeAggrSet getAggrSetting();
 
 }

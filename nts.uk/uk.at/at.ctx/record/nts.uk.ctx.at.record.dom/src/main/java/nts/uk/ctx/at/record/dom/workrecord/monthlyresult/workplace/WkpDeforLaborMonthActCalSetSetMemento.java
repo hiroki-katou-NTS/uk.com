@@ -4,14 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.workplace;
 
-import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
- * The Interface WkpCalSetMonthlyActualFlexSetMemento.
+ * The Interface WkpTransLaborSetMonthlySetMemento.
  */
-public interface WkpCalSetMonthlyActualFlexSetMemento {
+public interface WkpDeforLaborMonthActCalSetSetMemento {
 
 	/**
 	 * Sets the company id.
@@ -28,9 +28,10 @@ public interface WkpCalSetMonthlyActualFlexSetMemento {
 	void setWorkplaceId(WorkplaceId workplaceId);
 
 	/**
-	 * Sets the aggr setting monthly of flx new.
+	 * Sets the legal aggr set of irg new.
 	 *
-	 * @param aggrSettingMonthlyOfFlxNew the new aggr setting monthly of flx new
+	 * @param legalAggrSetOfIrgNew the new legal aggr set of irg new
 	 */
-	void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew);
+	void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew);
+
 }

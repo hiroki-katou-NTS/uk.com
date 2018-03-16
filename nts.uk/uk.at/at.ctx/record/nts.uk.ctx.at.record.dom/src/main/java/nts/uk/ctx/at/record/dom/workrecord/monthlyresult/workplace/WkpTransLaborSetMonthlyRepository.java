@@ -18,27 +18,27 @@ public interface WkpTransLaborSetMonthlyRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpTransLaborSetMonthly> findByCidAndWkpid(String cid, String wkpId);
+	Optional<WkpDeforLaborMonthActCalSet> findByCidAndWkpid(String cid, String wkpId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param wkpTransLaborSetMonthly the wkp trans labor set monthly
 	 */
-	void add(WkpTransLaborSetMonthly wkpTransLaborSetMonthly);
+	void add(WkpDeforLaborMonthActCalSet wkpTransLaborSetMonthly);
 
 	/**
 	 * Update.
 	 *
 	 * @param wkpTransLaborSetMonthly the wkp trans labor set monthly
 	 */
-	void update(WkpTransLaborSetMonthly wkpTransLaborSetMonthly);
+	void update(WkpDeforLaborMonthActCalSet wkpTransLaborSetMonthly);
 
 	/**
 	 * Delete.
 	 *
 	 * @param wkpTransLaborSetMonthly the wkp trans labor set monthly
 	 */
-	void delete(WkpTransLaborSetMonthly wkpTransLaborSetMonthly);
+	void delete(WkpDeforLaborMonthActCalSet wkpTransLaborSetMonthly);
 
 }

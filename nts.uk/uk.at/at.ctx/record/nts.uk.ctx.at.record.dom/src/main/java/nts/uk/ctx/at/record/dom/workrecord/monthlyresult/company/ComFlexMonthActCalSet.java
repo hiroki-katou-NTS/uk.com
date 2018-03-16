@@ -1,0 +1,62 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.record.dom.workrecord.monthlyresult.company;
+
+import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
+/**
+ * The Class CompanyCalMonthlyFlex.
+ */
+@Getter
+// フレックス会社別月別実績集計設定
+public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet {
+
+	/** The company id. */
+	// 会社ID
+	private CompanyId companyId;
+
+	/** The aggr setting monthly of flx new. */
+	// 集計設定
+	private FlexMonthWorkTimeAggrSet aggrSetting;
+
+	/**
+	 * Instantiates a new company cal monthly flex.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public ComFlexMonthActCalSet(ComFlexMonthActCalSetGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.aggrSetting = memento.getAggrSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(ComFlexMonthActCalSetSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setAggrSetting(this.aggrSetting);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.monthlyresult.FlexMonthActCalSet#
+	 * getAggrSettings()
+	 */
+	@Override
+	public FlexMonthWorkTimeAggrSet getAggregateSetting() {
+		return this.aggrSetting;
+	}
+
+}
