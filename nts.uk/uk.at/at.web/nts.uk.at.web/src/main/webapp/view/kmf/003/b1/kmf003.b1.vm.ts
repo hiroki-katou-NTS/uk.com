@@ -195,16 +195,18 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
 
             var grantHolidayTblList = [];
             _.forEach(self.items(), function(item) {
-                grantHolidayTblList.push({
-                    grantYearHolidayNo: item.grantYearHolidayNo(),
-                    conditionNo: item.conditionNo(),
-                    yearHolidayCode: item.yearHolidayCode(),
-                    lengthOfServiceYears: item.lengthOfServiceYears(),
-                    lengthOfServiceMonths: item.lengthOfServiceMonths(),
-                    grantDays: item.grantDays(),
-                    limitedTimeHdDays: item.limitedTimeHdDays(),
-                    limitedHalfHdCnt: item.limitedHalfHdCnt()
-                });
+                if(item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null) {
+                    grantHolidayTblList.push({
+                        grantNum: item.grantYearHolidayNo(),
+                        conditionNo: item.conditionNo(),
+                        yearHolidayCode: item.yearHolidayCode(),
+                        lengthOfServiceYears: item.lengthOfServiceYears(),
+                        lengthOfServiceMonths: item.lengthOfServiceMonths(),
+                        grantDays: item.grantDays(),
+                        limitTimeHd: item.limitedTimeHdDays(),
+                        limitDayYear: item.limitedHalfHdCnt()
+                    });
+                }
             });
             
             // if no data then return
