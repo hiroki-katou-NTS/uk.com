@@ -717,18 +717,25 @@ project (':at.web:nts.uk.at.web') {
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pub', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pubimp', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.ac', version: version
-	}
+	}	
 	
-	compileTypeScript {
+	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
 		target = "ES5"
 		noLib = true
-		watch = true
+		watch = false
 		sourcemap = true
+		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')
 	}
 	
-	task tsc() {
-		finalizedBy compileTypeScript
+	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
+		target = "ES5"
+		noLib = true
+		watch = true
+		sourcemap = true
+		include '**/*.ts'
+		source = new File('src/main/webapp/view')
+		outputDir = new File('src/main/webapp/view')
 	}
 }

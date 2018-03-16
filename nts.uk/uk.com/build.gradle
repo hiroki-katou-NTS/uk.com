@@ -979,19 +979,26 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':query:nts.uk.query.infra')
 		runtime project (':query:nts.uk.query.pub')
 		runtime project (':query:nts.uk.query.pubimp')
-	}
+	}	
 	
-	compileTypeScript {
+	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
 		target = "ES5"
 		noLib = true
-		watch = true
+		watch = false
 		sourcemap = true
+		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')
 	}
 	
-	task tsc() {
-		finalizedBy compileTypeScript
+	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
+		target = "ES5"
+		noLib = true
+		watch = true
+		sourcemap = true
+		include '**/*.ts'
+		source = new File('src/main/webapp/view')
+		outputDir = new File('src/main/webapp/view')
 	}
 }
 //========================nts.uk.com.web�====================================
