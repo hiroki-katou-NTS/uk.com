@@ -3,35 +3,47 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import lombok.Setter;
-import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
+import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class JpaCompanyDivergenceReferenceTimeGetMemento.
+ * The Class JpaWorkTypeDivergenceReferenceTimeGetMemento.
  */
-public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDivergenceReferenceTimeGetMemento {
+public class JpaWorkTypeDivergenceReferenceTimeGetMemento implements WorkTypeDivergenceReferenceTimeGetMemento {
 
 	/** The entity. */
-	@Setter
 	private KrcstDrt entity;
 
-	public JpaCompanyDivergenceReferenceTimeGetMemento() {
+	/** The work type code. */
+	private WorkTypeCode workTypeCode;
+
+	/**
+	 * Instantiates a new jpa work type divergence reference time get memento.
+	 */
+	public JpaWorkTypeDivergenceReferenceTimeGetMemento() {
 	}
 
-	public JpaCompanyDivergenceReferenceTimeGetMemento(KrcstDrt krcstDrt) {
-		this.entity = krcstDrt;
+	/**
+	 * Instantiates a new jpa work type divergence reference time get memento.
+	 *
+	 * @param entity
+	 *            the entity
+	 */
+	public JpaWorkTypeDivergenceReferenceTimeGetMemento(KrcstDrt entity, WorkTypeCode workTypeCode) {
+		this.entity = entity;
+		this.workTypeCode = workTypeCode;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeGetMemento#getDivergenceTimeNo()
+	 * WorkTypeDivergenceReferenceTimeGetMemento#getDivergenceTimeNo()
 	 */
 	@Override
 	public Integer getDivergenceTimeNo() {
@@ -42,7 +54,7 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeGetMemento#getCompanyId()
+	 * WorkTypeDivergenceReferenceTimeGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
@@ -53,7 +65,7 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeGetMemento#getNotUseAtr()
+	 * WorkTypeDivergenceReferenceTimeGetMemento#getNotUseAtr()
 	 */
 	@Override
 	public NotUseAtr getNotUseAtr() {
@@ -64,7 +76,18 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeGetMemento#getHistoryId()
+	 * WorkTypeDivergenceReferenceTimeGetMemento#getWorkTypeCode()
+	 */
+	@Override
+	public WorkTypeCode getWorkTypeCode() {
+		return this.workTypeCode;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeGetMemento#getHistoryId()
 	 */
 	@Override
 	public String getHistoryId() {
@@ -75,7 +98,7 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeGetMemento#getDivergenceReferenceTimeValue()
+	 * WorkTypeDivergenceReferenceTimeGetMemento#getDivergenceReferenceTimeValue()
 	 */
 	@Override
 	public Optional<DivergenceReferenceTimeValue> getDivergenceReferenceTimeValue() {

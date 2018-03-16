@@ -46,7 +46,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		pk.setHistId(histId);
 		pk.setDvgcTimeNo(divergenceTimeNo.value);
 
-		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(new KrcstDrt());
+		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(null);
 
 		return Optional.of(this.toDomain(drt));
 	}
@@ -59,24 +59,9 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public List<CompanyDivergenceReferenceTime> findAll(String histId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
-		Root<KrcstDrt> root = cq.from(KrcstDrt.class);
-
-		// Build query
-		cq.select(root);
-
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), histId));
-
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
 
 		// query data
-		List<KrcstDrt> krcstDrts = em.createQuery(cq).getResultList();
+		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId);
 
 		// return
 		return krcstDrts.isEmpty() ? new ArrayList<CompanyDivergenceReferenceTime>()
@@ -128,6 +113,26 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		this.commandProxy().remove(this.toEntity(domain));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * CompanyDivergenceReferenceTimeRepository#copyDataFromLatestHistory(java.lang.
+	 * String, java.lang.String)
+	 */
+	@Override
+	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
+		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId);
+
+		targetHistories.forEach(history -> {
+			// set new history ID
+			history.getId().setHistId(destHistId);
+
+			// Insert to DB
+			this.commandProxy().insert(history);
+		});
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -136,6 +141,10 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 * @return the company divergence reference time
 	 */
 	private CompanyDivergenceReferenceTime toDomain(KrcstDrt entity) {
+		if (entity == null) {
+			return null;
+		}
+
 		JpaCompanyDivergenceReferenceTimeGetMemento memento = new JpaCompanyDivergenceReferenceTimeGetMemento(entity);
 		return new CompanyDivergenceReferenceTime(memento);
 	}
@@ -158,9 +167,33 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		return entity;
 	}
 
-	@Override
-	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
-		// TODO Auto-generated method stub
+	/**
+	 * Find by history id.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @return the list
+	 */
+	private List<KrcstDrt> findByHistoryId(String historyId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
+		Root<KrcstDrt> root = cq.from(KrcstDrt.class);
 
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+
+		// query data
+		List<KrcstDrt> krcstDrts = em.createQuery(cq).getResultList();
+
+		return krcstDrts;
 	}
 }

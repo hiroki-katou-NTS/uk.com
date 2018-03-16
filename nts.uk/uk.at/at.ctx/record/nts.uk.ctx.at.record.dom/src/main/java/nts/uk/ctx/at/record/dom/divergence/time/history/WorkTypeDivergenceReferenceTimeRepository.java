@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -8,38 +9,32 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * The Interface WorkTypeDivergenceReferenceTimeRepository.
  */
 public interface WorkTypeDivergenceReferenceTimeRepository {
-	
+
 	/**
 	 * Find by key.
 	 *
 	 * @param histId the hist id
 	 * @param workTypeCode the work type code
 	 * @param divergenceTimeNo the divergence time no
-	 * @return the work type divergence reference time
+	 * @return the optional
 	 */
-	WorkTypeDivergenceReferenceTime findByKey(String histId, WorkTypeCode workTypeCode, DivergenceType divergenceTimeNo);
+	Optional<WorkTypeDivergenceReferenceTime> findByKey(String histId, WorkTypeCode workTypeCode, DivergenceType divergenceTimeNo);
 	
 	/**
 	 * Find all.
 	 *
 	 * @param histId the hist id
+	 * @param workTypeCode the work type code
 	 * @return the list
 	 */
-	List<WorkTypeDivergenceReferenceTime> findAll(String histId);
-	
-	/**
-	 * Adds the.
-	 *
-	 * @param domain the domain
-	 */
-	void add(WorkTypeDivergenceReferenceTime domain);
+	List<WorkTypeDivergenceReferenceTime> findAll(String histId, WorkTypeCode workTypeCode);
 	
 	/**
 	 * Update.
 	 *
 	 * @param domain the domain
 	 */
-	void update(WorkTypeDivergenceReferenceTime domain);
+	void update(List<WorkTypeDivergenceReferenceTime> listDomain);
 	
 	/**
 	 * Delete.

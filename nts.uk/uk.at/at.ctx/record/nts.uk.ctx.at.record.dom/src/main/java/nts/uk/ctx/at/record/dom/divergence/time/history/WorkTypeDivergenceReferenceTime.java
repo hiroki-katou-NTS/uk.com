@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -12,6 +13,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 // 勤務種別ごとの乖離基準時間
 @Getter
+@Setter
 public class WorkTypeDivergenceReferenceTime extends AggregateRoot {
 	/** The divergence time no. */
 	// 乖離時間NO
