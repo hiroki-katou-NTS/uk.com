@@ -20,12 +20,14 @@
 			</ui:define>
 			
 			<ui:define name="content">
-				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click: saveData,  enable: $root.errors.isEmpty">#{i18n.getText('KML001_2')}</button>
-					<button data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>
+				<div id="functions-area">
+					<div class="valign-center control-group">
+						<button class="proceed short-button" data-bind="click: saveData,  enable: $root.errors.isEmpty">#{i18n.getText('KML001_2')}</button>
+						<button data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>
+					</div>
 				</div>
-				<div id="contents-area">
-						<div class="pull-left">
+				<div id="contents-area" class="fixed-flex-layout">
+						<div class="fixed-flex-layout-left">
 							<div class="caret-right caret-background bg-green">
 								<div>
 									<button class="dateControlBtn" data-bind="click: createDialog">#{i18n.getText('KML001_41')}</button>
@@ -45,7 +47,7 @@
 								
 							</div>
 						</div>
-						<div>
+						<div class="fixed-flex-layout-right">
 							<div class="table">
 								<div id="formula">
 									<div class="table">
