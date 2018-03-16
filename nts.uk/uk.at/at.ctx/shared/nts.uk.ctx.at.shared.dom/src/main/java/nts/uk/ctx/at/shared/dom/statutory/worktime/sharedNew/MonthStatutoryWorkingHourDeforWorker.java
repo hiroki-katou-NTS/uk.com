@@ -11,7 +11,6 @@ import java.util.List;
  */
 // 通常・変形勤務の月間法定労働時間
 public interface MonthStatutoryWorkingHourDeforWorker {
-
 	/**
 	 * Gets the list statutory setting.
 	 *

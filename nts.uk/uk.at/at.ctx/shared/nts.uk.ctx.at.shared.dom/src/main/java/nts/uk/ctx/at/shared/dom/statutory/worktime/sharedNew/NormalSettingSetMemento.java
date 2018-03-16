@@ -6,9 +6,7 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 
 /**
  * The Interface ComNormalSettingSetMemento.

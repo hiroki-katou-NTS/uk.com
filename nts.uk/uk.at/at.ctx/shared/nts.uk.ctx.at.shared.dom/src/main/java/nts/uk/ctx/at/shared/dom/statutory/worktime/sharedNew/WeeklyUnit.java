@@ -14,12 +14,6 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
  * The Class Weekly.
  */
 // 週単位
-
-/**
- * Gets the start.
- *
- * @return the start
- */
 @Getter
 public class WeeklyUnit extends ValueObject {
 

@@ -8,8 +8,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
+
 /**
- * The Interface EmpMentDeforLaborSettingGetMemento.
+ * The Interface EmpDeforLaborSettingGetMemento.
  */
 public interface EmpDeforLaborSettingGetMemento extends DeforLaborSettingGetMemento {
 
