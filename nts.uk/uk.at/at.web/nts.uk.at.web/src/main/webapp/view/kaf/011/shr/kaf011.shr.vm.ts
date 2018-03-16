@@ -1,13 +1,12 @@
 module nts.uk.at.view.kaf011.shr.screenModel {
 
-    import dialog = nts.uk.ui.dialog;
+    import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
+
     export class ViewModel {
 
-        constructor() {
 
-        }
 
         prePostTypes = ko.observableArray([
             { code: 0, text: text('KAF011_14') },
@@ -24,36 +23,53 @@ module nts.uk.at.view.kaf011.shr.screenModel {
 
         appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
-        takingOutWkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
+        takingOutWk: KnockoutObservable<WorkItems> = ko.observable(new WorkItems());
 
-        takingOutWkCD: KnockoutObservable<string> = ko.observable('');
+        holidayWk: KnockoutObservable<WorkItems> = ko.observable(new WorkItems());
 
-        takingOutWkTimeCD: KnockoutObservable<string> = ko.observable('');
+        appReasons = ko.observableArray([]);
 
-        takingOutWkTime: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
-
-        holidayWkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
-
-        holidayWkCD: KnockoutObservable<string> = ko.observable('');
-
-        holidayWkTimeCD: KnockoutObservable<string> = ko.observable('');
-
-        holidayWkTime: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
-
-        stereoTypes = ko.observableArray([]);
-
-        stereoSelectedType: KnockoutObservable<number> = ko.observable(0);
+        appReasonSelectedType: KnockoutObservable<number> = ko.observable(0);
 
         reason: KnockoutObservable<string> = ko.observable('');
 
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
+
+        constructor() {
+            let self = this;
+            self.takingOutWk().appDate.subscribe((newDate) => {
+                console.log(newDate);
+                self.changeDate();
+            });
+            self.holidayWk().appDate.subscribe((newDate) => {
+                self.changeDate();
+            });
+
+
+
+        }
+        changeDate() {
+
+            let vm: ViewModel = __viewContext['viewModel'],
+                changeDateParam = {
+                    holidayDate: formatDate(vm.holidayWk().appDate(), "yyyy/MM/dd").format(),
+                    takingOutDate: formatDate(vm.takingOutWk().appDate(), "yyyy/MM/dd").format(),
+                    comType: vm.appComSelectedCode(),
+                    uiType: 1
+
+                }
+            service.changeDay(changeDateParam).done((data) => {
+
+
+            });
+        }
 
         start(): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred(),
                 startParam = {
                     sID: null,
-                    appDate: nts.uk.time.formatDate(self.appDate(), "yyyy/MM/dd").format(),
+                    appDate: formatDate(self.appDate(), "yyyy/MM/dd").format(),
                     uiType: 1
                 };
 
@@ -61,33 +77,57 @@ module nts.uk.at.view.kaf011.shr.screenModel {
                 self.setDataFromStart(data);
 
 
+            }).fail((error) => {
+                dialog({ messageId: error.message });
             }).always(() => {
                 dfd.resolve();
 
             });
             return dfd.promise();
         }
+        genWorkingText(childData: IWorkTime) {
+            let self = this,
+                result = childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName;
+            if (childData.first) {
+                result += ' ' + self.parseTime(childData.first.start) + '~' + self.parseTime(childData.first.end);
+                if (childData.second) {
+
+                }
+            }
+            return result;
+
+        }
+        parseTime(value) {
+            return nts.uk.time.parseTime(value, true).format()
+        }
 
         setDataFromStart(data: IHolidayShipment) {
             let self = this;
             if (data) {
                 self.prePostSelectedCode(data.preOrPostType);
-                self.takingOutWkTypes(data.takingOutWkTypes || []);
-                self.holidayWkTypes(data.holidayWkTypes || []);
+                self.takingOutWk().wkTypes(data.takingOutWkTypes || []);
+                self.holidayWk().wkTypes(data.holidayWkTypes || []);
+                self.appReasons(data.appReasons || []);
             }
         }
 
         register() {
             let self = this;
-            dialog.alertError({ messageId: "register" });
+            dialog({ messageId: "register" });
+        }
+
+        openKDL009() {
+
+
         }
 
         openKDL003(isTakingOut) {
-
             let self = this,
-                workTypeCodes = isTakingOut === true ? self.takingOutWkTypes() : self.holidayWkTypes(),
-                selectedWorkTypeCode = isTakingOut === true ? self.takingOutWkCD() : self.holidayWkTypes(),
-                WorkTimeCd = isTakingOut === true ? self.takingOutWkTimeCD() : self.holidayWkTimeCD();
+                vm: ViewModel = __viewContext['viewModel'],
+                workItems: WorkItems = isTakingOut === true ? self.takingOutWk() : self.holidayWk(),
+                workTypeCodes = workItems.wkTypes(),
+                selectedWorkTypeCode = workItems.wkCD(),
+                WorkTimeCd = workItems.wkTimeCD();
 
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: workTypeCodes,
@@ -99,19 +139,17 @@ module nts.uk.at.view.kaf011.shr.screenModel {
                 //view all code of selected item 
                 var childData: IWorkTime = nts.uk.ui.windows.getShared('childData');
 
+                workItems.wkText(vm.genWorkingText(childData));
+                workItems.wkTimeCD(childData.selectedWorkTimeCode);
+                if (childData.first) {
+                    workItems.wkCD(childData.selectedWorkTypeCode);
+                    workItems.wkTime().startTime(childData.first.start);
+                    workItems.wkTime().endTime(childData.first.end);
+                }
                 //フォーカス制御
                 //self.changeFocus('#inpStartTime1');
             });
         }
-
-        genWorkingText() {
-            let self = this;
-            return '001' + ' ' + 'KDL' + ' ' + '08:30' + '~' + '09:30';
-        }
-
-
-
-
     }
 
     interface IWorkingHour {
@@ -121,8 +159,8 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         endType: number;
     }
     export class WorkingHour {
-        startTime: KnockoutObservable<number> = ko.observable(100);
-        endTime: KnockoutObservable<number> = ko.observable(100);
+        startTime: KnockoutObservable<number> = ko.observable(null);
+        endTime: KnockoutObservable<number> = ko.observable(null);
         startTypes: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, text: text('KAF011_39') },
             { code: 2, text: text('KAF011_40') }
@@ -135,21 +173,24 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         endType: KnockoutObservable<number> = ko.observable(1);
 
         timeOption = ko.mapping.fromJS({
+            timeWithDay: true,
             width: "130px"
         });
         constructor(IWorkingHour?) {
-            this.startTime = ko.observable(IWorkingHour ? IWorkingHour.startTime || null : 100);
-            this.endTime = ko.observable(IWorkingHour ? IWorkingHour.endTime || null : 100);
-            this.startType = ko.observable(IWorkingHour ? IWorkingHour.startType || 1 : 1);
-            this.endType = ko.observable(IWorkingHour ? IWorkingHour.endType || 1 : 1);
-
+            if (IWorkingHour) {
+                this.startTime = ko.observable(IWorkingHour.startTime || null);
+                this.endTime = ko.observable(IWorkingHour.endTime || null);
+                this.startType = ko.observable(IWorkingHour.startType || 1);
+                this.endType = ko.observable(IWorkingHour.endType || 1);
+            }
         }
     }
     interface IWorkTime {
+        selectedWorkTypeCode: string;
         first: any;
         second: any;
-        selectedWorkTypeCode: string;
-        selectedWorkTypeName: string;
+        selectedWorkTimeCode: string;
+        selectedWorkTimeName: string;
     }
 
     interface IHolidayShipment {
@@ -160,6 +201,7 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         takingOutWkTypes: Array<any>;
         holidayWkTypes: Array<any>;
         preOrPostType: any;
+        appReasons: Array<any>;
     }
     interface IWorkType {
         /* 勤務種類コード */
@@ -172,6 +214,41 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         selectedWorkTypeCode: string;
         workTimeCodes: Array<string>;
         selectedWorkTimeCode: string;
+    }
+    class WorkItems {
+        wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
+        wkCD: KnockoutObservable<string> = ko.observable('');
+        wkTimeCD: KnockoutObservable<string> = ko.observable('');
+        wkTime: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
+        wkText: KnockoutObservable<string> = ko.observable('');
+        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
+        constructor() {
+            let self = this;
+            self.wkCD.subscribe((newWkType) => {
+                if (self.wkTimeCD()) {
+                    let changeWkTypeParam = {
+                        wkTypeCD: newWkType,
+                        wkTimeCD: self.wkTimeCD()
+
+                    };
+                    service.changeWkType(changeWkTypeParam).done((data: Array<ITimezoneUse>) => {
+                        if (data.length > 0) {
+                            self.wkTime().startTime(data[0].start);
+                            self.wkTime().endTime(data[0].end);
+                        }
+                    });
+                }
+            });
+
+
+        }
+    }
+
+    interface ITimezoneUse {
+        useAtr: number;
+        workNo: number;
+        start: number;
+        end: number;
     }
     interface IApprovalSetting {
         bottomComment: boolean;

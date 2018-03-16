@@ -71,26 +71,29 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		List<KshmtWorkingCondItem> result = new ArrayList<>();
+				
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// condition
-		lstpredicateWhere
-				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeIds));
-		lstpredicateWhere
-				.add(root.get(KshmtWorkingCondItem_.monthlyPattern).in(monthlyPatternCodes));
-//		lstpredicateWhere.add(criteriaBuilder.isNotNull(root.get(KshmtWorkingCondItem_.monthlyPattern)));
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-				GeneralDate.max()));
+			// condition
+			lstpredicateWhere
+					.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
+			lstpredicateWhere
+					.add(root.get(KshmtWorkingCondItem_.monthlyPattern).in(monthlyPatternCodes));
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+					GeneralDate.max()));
 
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		
-		// create query
-		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			// create query
+			TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
 
-		List<KshmtWorkingCondItem> result = query.getResultList();
+			result.addAll(query.getResultList());
+		});
 		
 		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
@@ -98,7 +101,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		}
 
 		// exclude select
-		return result.stream().map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e))).collect(Collectors.toList());
+		return result.stream()
+				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
+				.collect(Collectors.toList());
 	}
 
 	/*

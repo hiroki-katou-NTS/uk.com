@@ -14,4 +14,11 @@ import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 public class SettingOfFlexWork extends AggregateRoot{
 	private FlexCalcMethodOfHalfWork flexCalcMethod;
 
+	public SettingOfFlexWork(FlexCalcMethodOfHalfWork flexCalcMethod) {
+		super();
+		this.flexCalcMethod = flexCalcMethod;
+	}
+	
+	
+
 }

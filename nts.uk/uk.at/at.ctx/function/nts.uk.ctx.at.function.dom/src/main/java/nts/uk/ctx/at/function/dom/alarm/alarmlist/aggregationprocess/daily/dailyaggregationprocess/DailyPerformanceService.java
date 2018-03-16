@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.arc.enums.EnumAdaptor;
+
 import nts.uk.ctx.at.function.dom.adapter.ErAlApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.ErAlApplicationAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
@@ -17,15 +18,14 @@ import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.dailyperform.DailyRecordWorkAdapter;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.MessageWRExtraConAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.FuncEmployeeDailyPerErrorAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.FuncEmployeeDailyPerErrorImport;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -33,7 +33,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class DailyPerformanceService {
 	// 社員の日別実績エラー一覧
 	@Inject
-	private FuncEmployeeDailyPerErrorAdapter employeeDailyAdapter;
+	private EmployeeDailyPerErrorAdapter employeeDailyAdapter;
 
 	// 勤務実績のエラーアラーム
 	@Inject
@@ -45,7 +45,7 @@ public class DailyPerformanceService {
 	
 	// Get attendance item name 勤怠項目名
 	@Inject
-	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameService;
 	
 	// get attendance value　勤怠項目価値
 	@Inject
@@ -64,7 +64,7 @@ public class DailyPerformanceService {
 		List<ValueExtractAlarm> valueExtractAlarmList= new ArrayList<>();
 		
 		List<String> listCode = dailyAlarmCondition.getErrorAlarmCode();
-		if(listCode ==null || listCode.isEmpty()) return null;
+		if(listCode ==null || listCode.isEmpty()) return new ArrayList<>();
 		
 		// 勤務実績のエラーアラーム
 		List<ErrorAlarmWorkRecordAdapterDto> errorAlarmWorkRecord = errorAlarmWorkRecordAdapter
@@ -73,11 +73,11 @@ public class DailyPerformanceService {
 				.collect(Collectors.toMap(ErrorAlarmWorkRecordAdapterDto::getCode, x -> x));
 		
 		// 社員の日別実績エラー一覧
-		List<FuncEmployeeDailyPerErrorImport> employeeDailyList = employeeDailyAdapter.getByErrorAlarm(employee.getId(),
+		List<EmployeeDailyPerErrorImport> employeeDailyList = employeeDailyAdapter.getByErrorAlarm(employee.getId(),
 				new DatePeriod(period.getStartDate(), period.getEndDate()), listCode);
 
 		if(dailyAlarmCondition.isAddApplication()) {
-			for(FuncEmployeeDailyPerErrorImport eDaily:  employeeDailyList) {
+			for(EmployeeDailyPerErrorImport eDaily:  employeeDailyList) {
 				ErrorAlarmWorkRecordAdapterDto errorAlarm = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode());
 				if(errorAlarm == null) {
 					employeeDailyList.removeIf( e->e.getErrorAlarmWorkRecordCode().equals(eDaily.getErrorAlarmWorkRecordCode()));
@@ -118,10 +118,11 @@ public class DailyPerformanceService {
 				.collect(Collectors.toMap(MessageWRExtraConAdapterDto::getDisplayMessage, x -> x));
 
 
-		for(FuncEmployeeDailyPerErrorImport eDaily: employeeDailyList) {
+		for(EmployeeDailyPerErrorImport eDaily: employeeDailyList) {
 			// Attendance name and value
-			Map<Integer, String> attendanceNameMap = dailyAttendanceItemNameAdapter
-					.getDailyAttendanceItemNameAsMapName(eDaily.getAttendanceItemList());
+			Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService
+					.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
+					.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
 //			List<ItemValue> attendanceValueList = dailyRecordWorkAdapter
 //					.getByEmployeeList(employee.getId(), eDaily.getDate(), eDaily.getAttendanceItemList()).getItems();
 			

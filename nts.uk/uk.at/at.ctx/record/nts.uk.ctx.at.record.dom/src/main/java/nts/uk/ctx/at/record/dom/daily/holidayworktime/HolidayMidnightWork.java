@@ -24,9 +24,9 @@ public class HolidayMidnightWork {
 	public TimeWithCalculation calcTotalTime() {
 		AttendanceTime calcTime = new AttendanceTime(0);
 		AttendanceTime time = new AttendanceTime(0);
-		for(int listNo = 1 ; listNo < this.holidayWorkMidNightTime.size() ; listNo++) {
-			time = time.addMinutes(this.holidayWorkMidNightTime.get(listNo).getTime().getTime().valueAsMinutes());
-			calcTime = calcTime.addMinutes(this.holidayWorkMidNightTime.get(listNo).getTime().getTime().valueAsMinutes());
+		for(int listNo = 1 ; listNo <= this.holidayWorkMidNightTime.size() ; listNo++) {
+			time = time.addMinutes(this.holidayWorkMidNightTime.get(listNo - 1).getTime().getTime().valueAsMinutes());
+			calcTime = calcTime.addMinutes(this.holidayWorkMidNightTime.get(listNo - 1).getTime().getTime().valueAsMinutes());
 		}
 		return TimeWithCalculation.createTimeWithCalculation(time, calcTime);
 	}

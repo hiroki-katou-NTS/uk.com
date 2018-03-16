@@ -134,7 +134,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public Optional<User> getListUserByDefUser(String userID, int defUser, GeneralDate expirationDate) {
 		return this.queryProxy().query(SELECT_USER_BY_DEFUSER , SacmtUser.class)
 				.setParameter("userID", userID)
-				.setParameter("defUser", 0)
+				.setParameter("defUser", 1)
 				.setParameter("expirationDate", expirationDate).getSingle(c -> c.toDomain());
 	}
 
