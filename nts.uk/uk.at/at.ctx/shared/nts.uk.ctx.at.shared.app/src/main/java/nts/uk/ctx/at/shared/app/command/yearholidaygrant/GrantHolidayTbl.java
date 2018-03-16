@@ -12,9 +12,6 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
  */
 @Value
 public class GrantHolidayTbl {
-	/* 会社ID */
-	private String companyId;
-
 	/* 条件NO */
 	private int conditionNo;
 	

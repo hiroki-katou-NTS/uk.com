@@ -41,6 +41,7 @@ public class JpaLengthServiceRepository extends JpaRepository implements LengthS
 		entity.allowStatus = domain.getAllowStatus().value;
 		entity.month = domain.getMonth().v();
 		entity.year = domain.getYear().v();
+		entity.standGrantDay = domain.getStandGrantDay().value;
 		return entity;
 	}
 	/**
