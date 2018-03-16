@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyAggregationProcessService {
@@ -55,17 +56,35 @@ public class DailyAggregationProcessService {
 				.getExtractionCondition();
 
 		// tab2: 日別実績のエラーアラーム
-		List<ValueExtractAlarm> tab2 = dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
-		listValueExtractAlarm.addAll(tab2);
+		List<ValueExtractAlarm> extractDailyRecord = this.extractDailyRecord(dailyAlarmCondition, period, employee, companyID);
+		listValueExtractAlarm.addAll(extractDailyRecord);
+		
+		
 		
 		// tab4: 「システム固定のチェック項目」で実績をチェックする			
+		List<ValueExtractAlarm> extractFixedCondition = this.extractFixedCondition(dailyAlarmCondition, period, employee);
+		listValueExtractAlarm.addAll(extractFixedCondition);
+		
+		return listValueExtractAlarm;
+	}
+	
+	
+	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
+			PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
+		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
+	}
+	
+	
+	private List<ValueExtractAlarm> extractFixedCondition(DailyAlarmCondition dailyAlarmCondition, PeriodByAlarmCategory period, EmployeeSearchDto employee){
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
+		
 		//get data by dailyAlarmCondition
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
-		for(int i = 1;i <= listFixed.size();i++) {
+		for(int i = 0;i < listFixed.size();i++) {
 			if(listFixed.get(i).isUseAtr()) {
 				switch(i) {
-				case 1 :
-					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
+				case 0 :
+					for(GeneralDate date : period.getListDate()) {
 						String workType = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTypeCode();
 						
 						Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
@@ -75,8 +94,8 @@ public class DailyAggregationProcessService {
 						
 					}
 					break;
-				case 2 :
-					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
+				case 1 :
+					for(GeneralDate date : period.getListDate()) {
 						String workTime = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTimeCode();
 						Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 						if(checkWorkTime.isPresent()) {
@@ -84,13 +103,13 @@ public class DailyAggregationProcessService {
 						}
 					}
 					break;
-				case 3 : 
+				case 2 : 
 					 List<ValueExtractAlarm> listCheckPrincipalUnconfirm = fixedCheckItemAdapter.checkPrincipalUnconfirm(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
 					 if(!listCheckPrincipalUnconfirm.isEmpty()) {
 						 listValueExtractAlarm.addAll(listCheckPrincipalUnconfirm);
 					 }
 					break;
-				case 4 :
+				case 3 :
 					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
 					if(!listCheckAdminUnverified.isEmpty()) {
 						 listValueExtractAlarm.addAll(listCheckAdminUnverified);

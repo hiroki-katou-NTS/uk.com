@@ -22,5 +22,12 @@ public class ReserveLeaveNumberInfo {
 	 * 残日数
 	 */
 	private ReserveLeaveRemainingDayNumber remainingNumber;
+	
+	public ReserveLeaveNumberInfo(double grantDays, double usedDays,
+			Double overLimitDays, double remainDays) {
+		this.grantNumber = new ReserveLeaveGrantDayNumber(grantDays);
+		this.usedNumber = new ReserveLeaveUsedNumber(usedDays, overLimitDays);
+		this.remainingNumber = new ReserveLeaveRemainingDayNumber(remainDays);
+	}
 
 }

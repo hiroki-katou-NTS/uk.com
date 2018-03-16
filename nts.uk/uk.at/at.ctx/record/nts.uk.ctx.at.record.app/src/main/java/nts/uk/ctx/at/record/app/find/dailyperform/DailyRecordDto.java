@@ -182,15 +182,19 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	}
 
 	public DailyRecordDto addEditStates(EditStateOfDailyPerformanceDto editStates) {
+		if(this.editStates.stream().filter(c -> c.getAttendanceItemId() == editStates.getAttendanceItemId()).findFirst().isPresent()){
+			return this;
+		}
 		this.editStates.add(editStates);
 		return this;
 	}
 
 	public DailyRecordDto addEditStates(List<EditStateOfDailyPerformanceDto> editStates) {
-		if (editStates == null) {
+		if (editStates == null || editStates.isEmpty()) {
 			return this;
 		}
-		this.editStates.addAll(editStates);
+		List<Integer> current = this.editStates.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
+		this.editStates.addAll(editStates.stream().filter(c -> !current.contains(c.getAttendanceItemId())).collect(Collectors.toList()));
 		return this;
 	}
 

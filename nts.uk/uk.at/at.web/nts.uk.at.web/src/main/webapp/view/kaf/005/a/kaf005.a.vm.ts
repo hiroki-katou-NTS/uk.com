@@ -317,12 +317,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
-            $("#inpStartTime1").trigger("validate");
-            $("#inpEndTime1").trigger("validate");
+            if(self.displayCaculationTime()){
+                $("#inpStartTime1").trigger("validate");
+                $("#inpEndTime1").trigger("validate");
+                if(!self.validate()){return;}
+            }
             //return if has error
-            if (nts.uk.ui.errors.hasError()){return;}   
-            if(!self.validate()){return;}
-            
+            if (nts.uk.ui.errors.hasError()){return;}              
             //block screen
             nts.uk.ui.block.invisible();
             let appReason: string,
@@ -356,9 +357,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let flexExessTimeTmp: number = null;
             for (let i = 0; i < self.overtimeHours().length; i++) {
                 if(self.overtimeHours()[i].frameNo() == 11){
-                    overTimeShiftNightTmp = self.overtimeHours()[i].applicationTime;                    
-                }else if(self.overtimeHours()[i].frameNo() == 12){
-                    flexExessTimeTmp = self.overtimeHours()[i].applicationTime;  
+                    overTimeShiftNightTmp = self.overtimeHours()[i].applicationTime();                    
+                }
+                if(self.overtimeHours()[i].frameNo() == 12){
+                    flexExessTimeTmp = self.overtimeHours()[i].applicationTime();  
                 }
             }
             let overtime: common.AppOverTime = {
@@ -376,8 +378,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
-                flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
+                overTimeShiftNight: overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp,
+                flexExessTime: flexExessTimeTmp == null ? -1 : flexExessTimeTmp,
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
                 calculateFlag: self.calculateFlag()
@@ -747,13 +749,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
                 self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
             }
-            if(!nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom1Pre) && !nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo1Pre)){
-                 self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
-            }
-            if(!nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom2Pre) || !nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo2Pre)){
-                self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
-            }
-            if(self.workClockFrom2To2Pre () == null){
+            self.workClockFrom1To1Pre(data.preAppOvertimeDto.workClockFromTo1Pre);
+            self.workClockFrom2To2Pre(data.preAppOvertimeDto.workClockFromTo2Pre);
+            if(nts.uk.util.isNullOrEmpty(self.workClockFrom2To2Pre())){
                 self.displayWorkClockFrom2To2Pre(false);
             }
             self.overtimeHoursPre.removeAll();
@@ -767,7 +765,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
                         data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
                         data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                        self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
+                        data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
                         }
                     }else{
                         continue;    
@@ -775,8 +773,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     
                 }
             }
-             self.overTimeShiftNightPre(self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
-             self.flexExessTimePre(self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
+             self.overTimeShiftNightPre(data.preAppOvertimeDto.overTimeShiftNightPre == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.overTimeShiftNightPre));
+             self.flexExessTimePre(data.preAppOvertimeDto.flexExessTimePre == -1 ? null : self.convertIntToTime(data.preAppOvertimeDto.flexExessTimePre));
             }
         }
         convertAppOvertimeReferDto(data :any){
@@ -791,13 +789,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
                     self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
                 }
-                if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
-                     self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));
-                }
-                if(data.appOvertimeReference.workClockFrom2Refer != null || data.appOvertimeReference.workClockTo2Refer!= null){
-                    self.workClockFrom2To2Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom2Refer) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.appOvertimeReference.workClockTo2Refer));
-                }
-                if(self.workClockFrom2To2Reference () == null){
+                self.workClockFrom1To1Reference(data.appOvertimeReference.workClockFromTo1Refer);
+                self.workClockFrom2To2Reference(data.appOvertimeReference.workClockFromTo2Refer);
+                if(nts.uk.util.isNullOrEmpty(self.workClockFrom2To2Reference())){
                     self.displayWorkClockFrom2To2Reference(false);
                 }
                 self.overtimeHoursPre.removeAll();
@@ -811,12 +805,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
                             data.appOvertimeReference.overTimeInputsRefer[i].applicationTime,
                             data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                            self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
+                            data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
                             }
                     }
                 }
-                 self.overTimeShiftNightRefer(self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
-                 self.flexExessTimeRefer(self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
+                 self.overTimeShiftNightRefer(data.appOvertimeReference.overTimeShiftNightRefer == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
+                 self.flexExessTimeRefer(data.appOvertimeReference.flexExessTimeRefer == -1? null : self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
             }
         }
         

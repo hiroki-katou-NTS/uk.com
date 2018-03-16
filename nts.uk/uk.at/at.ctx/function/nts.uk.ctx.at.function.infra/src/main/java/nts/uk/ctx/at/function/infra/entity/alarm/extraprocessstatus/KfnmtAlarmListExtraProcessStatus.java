@@ -28,7 +28,7 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	public GeneralDate endDate;
 	
 	@Column(name = "END_TIME")
-	public int endTime;
+	public Integer endTime;
 	
 	
 	@Override
@@ -37,7 +37,7 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	}
 	
 	public KfnmtAlarmListExtraProcessStatus(KfnmtAlarmListExtraProcessStatusPK kfnmtAlarmListExtraProcessStatusPK,
-			String employeeID, GeneralDate endDate, int endTime) {
+			String employeeID, GeneralDate endDate, Integer endTime) {
 		super();
 		this.kfnmtAlarmListExtraProcessStatusPK = kfnmtAlarmListExtraProcessStatusPK;
 		this.employeeID = employeeID;
@@ -53,8 +53,8 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 						domain.getStartTime()
 						),
 				domain.getEmployeeID(),
-				domain.getEndDate().get(),
-				domain.getEndTime().intValue()
+				domain.getEndDate().isPresent() ==true? domain.getEndDate().get(): null,
+				domain.getEndTime()
 				);
 	}
 	
@@ -65,7 +65,7 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 				this.kfnmtAlarmListExtraProcessStatusPK.startTime,
 				this.employeeID,
 				Optional.of(this.endDate),
-				new Integer(this.endTime)
+				this.endTime
 				);
 	}
 

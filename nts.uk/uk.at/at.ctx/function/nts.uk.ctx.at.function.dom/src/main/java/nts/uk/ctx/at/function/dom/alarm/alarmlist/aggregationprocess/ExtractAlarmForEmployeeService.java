@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,6 +31,8 @@ public class ExtractAlarmForEmployeeService {
 	public List<ValueExtractAlarm> process(List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, EmployeeSearchDto employee){
 		
 		List<ValueExtractAlarm> result = new ArrayList<>();
+		List<Integer> listCategory = listPeriodByCategory.stream().map( x->x.getCategory()).collect(Collectors.toList());
+		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value));
 		
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
@@ -52,7 +55,7 @@ public class ExtractAlarmForEmployeeService {
 			else if (checkCondition.is4W4D()) {
 				// アルゴリズム「4週4休の集計処理」を実行する
 				for (String checkConditionCode : checkCondition.getCheckConditionList()) {				
-					w4D4AlarmService.calculateTotal4W4D(employee.getId(), period, checkConditionCode);
+					w4D4AlarmService.calculateTotal4W4D(employee, period, checkConditionCode);
 				}
 			}
 			// カテゴリ：月次のチェック条件 (monthly)

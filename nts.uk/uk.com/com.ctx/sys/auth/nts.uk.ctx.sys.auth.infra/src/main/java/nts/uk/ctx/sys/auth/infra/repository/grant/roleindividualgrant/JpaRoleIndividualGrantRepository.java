@@ -11,6 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrantPK;
 
@@ -19,6 +20,9 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 
 	private final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
 			+ " AND c.strD <= :date AND c.endD >= :date";
+	
+	private final String SELECT_BY_DATE_AND_COMPANY_MANAGE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
+			+ " AND c.strD <= :date AND c.endD >= :date" + " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate date) {
@@ -31,7 +35,13 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
 				.setParameter("date", date).getList(c -> c.toDomain());
 	}
-
+	
+	@Override
+	public List<RoleIndividualGrant> findListByUserAndDateForCompanyAdmin(String userId, GeneralDate date,RoleType roleType) {
+		return this.queryProxy().query(SELECT_BY_DATE_AND_COMPANY_MANAGE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
+				.setParameter("date", date).setParameter("roleType", roleType.value).getList(c -> c.toDomain());
+	}
+	
 	private final String SELECT_BY_ROLE_USER = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.companyID = :cid"
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType AND c.sacmtRoleIndiviGrantPK.userID = :userID";
 

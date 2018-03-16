@@ -8,7 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.at.function.dom.alarm.mailsettings.MailAddress
+					nts.uk.ctx.at.function.dom.alarm.mailsettings.Subject
+					nts.uk.ctx.at.function.dom.alarm.mailsettings.Content
 				</com:ValidatorScript>
 			<com:stylefile path="kal002.b.style.css" />
 			<com:scriptfile path="kal002.b.service.js" />
@@ -18,20 +20,46 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: {jump: '../a/index.xhtml'}">#{i18n.getText('KAL002_4')}</a>
-				<button tabindex="2" data-bind="">#{i18n.getText('KAL002_5')}</button>
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: {jump: '../a/index.xhtml'}">#{i18n.getText('KAL002_4')}</a>
+				<button class="proceed" tabindex="2" data-bind="click: Registration">#{i18n.getText('KAL002_5')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="label">
 					<span>#{i18n.getText('KAL002_6')}</span>
 				</div>
-				<div>
+				<div class="setMail normal">
 					<div class="left">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_7')}</div>	
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_7')}</div>
 					</div>
-					
+					<div class="right">
+						<div class="option">
+							<span>#{i18n.getText('KAL002_10')}</span>
+							<button  tabindex="3" data-bind="click : setMailNormal">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+						<div class="option">
+							<span>#{i18n.getText('KAL002_11')}</span>
+							<button  tabindex="4" data-bind="click : setMailNormalAd">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+					</div>
+					<div class="cf"></div>
 				</div>
-				
+				<div class="setMail auto">
+					<div class="left">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_8')}</div>
+					</div>
+					<div class="right">
+						<div class="option">
+							<span>#{i18n.getText('KAL002_10')}</span>
+							<button  tabindex="5" data-bind="click : setMailAuto">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+						<div class="option">
+							<span>#{i18n.getText('KAL002_11')}</span>
+							<button tabindex="6" data-bind="click : setMailAutoAd">#{i18n.getText('KAL002_9')}</button>
+						</div>	
+					</div>
+					<div class="cf"></div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
