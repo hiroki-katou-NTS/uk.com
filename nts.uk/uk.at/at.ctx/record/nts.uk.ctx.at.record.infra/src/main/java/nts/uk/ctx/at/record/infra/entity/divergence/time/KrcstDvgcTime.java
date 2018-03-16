@@ -50,6 +50,14 @@ public class KrcstDvgcTime extends UkJpaEntity implements Serializable {
 	@Column(name="DVGC_TYPE")
 	private BigDecimal dvgcType;
 
+	/** The reason input canceled. */
+	@Column(name="REASON_INPUT_CANCELED")
+	private BigDecimal reasonInputCanceled;
+
+	/** The reason select canceled. */
+	@Column(name="REASON_SELECT_CANCELED")
+	private BigDecimal reasonSelectCanceled;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
