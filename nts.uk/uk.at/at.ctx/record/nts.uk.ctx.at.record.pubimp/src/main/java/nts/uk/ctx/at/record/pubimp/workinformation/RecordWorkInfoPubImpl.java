@@ -124,7 +124,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordWorkInformation().getWorkTimeCode().v(),
+				domain.getRecordWorkInformation().getWorkTimeCode()==null?"":domain.getRecordWorkInformation().getWorkTimeCode().v(),
 				domain.getRecordWorkInformation().getWorkTypeCode().v()
 				);
 	}
