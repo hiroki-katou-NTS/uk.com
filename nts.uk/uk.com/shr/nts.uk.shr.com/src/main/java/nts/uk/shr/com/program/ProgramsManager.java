@@ -1503,6 +1503,11 @@ public class ProgramsManager {
 			"/view/cmm/045/a/index.xhtml");
 	public static final Program CMM045B= new Program(WebAppId.AT, ProgramIdConsts.CMM045B, "CMM045_2",
 			"/view/cmm/045/b/index.xhtml");
+	
+	
+	public static final Program CPS001G= new Program(WebAppId.COM, ProgramIdConsts.CPS001G, "CPS001_97",
+			"/view/cps/001/g/index.xhtml");
+	
 	/**
 	 * All programs map.
 	 */
