@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 
 /**
  * 年休付与テーブル
