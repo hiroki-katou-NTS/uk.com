@@ -8,17 +8,17 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Table(name = "KRCMT_ANNLEA_BASIC_INFO")
-public class AnnLeaBasicInfoEntity extends UkJpaEntity{
+public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
 	
 	@Id
     @Column(name = "EMPLOYEE_ID")
     public String employeeId;
 	
 	@Column(name = "WORK_DAYS_PER_YEAR")
-    public double workDaysPerYear;
+    public int workDaysPerYear;
 	
 	@Column(name = "WORK_DAYS_BEFORE_INTRO")
-    public double workDaysBeforeIntro;
+    public int workDaysBeforeIntro;
 	
 	@Column(name = "GRANT_TABLE_CODE")
     public String grantTableCode;

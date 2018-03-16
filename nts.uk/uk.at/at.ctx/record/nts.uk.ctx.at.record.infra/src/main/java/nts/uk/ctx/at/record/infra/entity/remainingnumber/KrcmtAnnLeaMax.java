@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Table(name ="KRCMT_ANNLEA_MAX")
-public class AnnLeaMaxEntity extends UkJpaEntity{
+public class KrcmtAnnLeaMax extends UkJpaEntity{
 	
 	@Id
     @Column(name = "EMPLOYEE_ID")
