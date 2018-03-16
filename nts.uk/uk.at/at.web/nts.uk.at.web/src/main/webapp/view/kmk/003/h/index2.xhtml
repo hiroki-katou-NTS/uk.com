@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 700
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk003.h.style.css" />			
+			<com:scriptfile path="kmk003.h.vm.js" />
+			<com:scriptfile path="kmk003.h.start.js" />
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<div id="contents-area">				
+				<div class="main-container">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
+					<hr/>
+					<span class="margin-first-child ntsControl">
+						<label class="ntsRadioBox control-group">
+							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: value7, enable: true" />
+							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_241')"></span>
+						</label>
+						<br/>
+						<label class="ntsRadioBox control-group">
+							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: value1, enable: true" />
+							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_242')"></span>
+						</label>
+					</span>
+					<div class="margin-second-child">
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value2 }">#{i18n.getText('KMK003_293')}
+						</div>
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value3 }">#{i18n.getText('KMK003_294')}
+						</div>
+					</div>
+					<span class="margin-first-child ntsControl control-group">
+						<label class="ntsRadioBox">
+							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: value4, enable: true" />
+							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_243')"></span>
+						</label>
+					</span>
+					<div class="margin-second-child">
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value5 }">#{i18n.getText('KMK003_250')}
+						</div>
+						<br/>
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value6 }">#{i18n.getText('KMK003_251')}
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div id="functions-area-bottom">
+				<button tabindex="23" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="24" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

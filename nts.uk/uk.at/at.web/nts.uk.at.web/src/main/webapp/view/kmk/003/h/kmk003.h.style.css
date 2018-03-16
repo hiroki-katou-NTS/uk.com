@@ -1,0 +1,27 @@
+.main-container {
+	margin: 10px;
+}
+
+.dialog-block {
+	margin: 20px;
+}
+
+.dialog-rows {
+	margin-top: 10px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.input-warp {
+	width: 50px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+.margin-first-child {
+	margin-left: 20px;
+}
+
+.margin-second-child {
+	margin-left: 40px;
+}
