@@ -29,24 +29,24 @@ module nts.uk.at.view.kal001.b {
                 let self = this;
                 let dfd = $.Deferred();
                 
-                for (let i = 1; i < 100; i++) {
-                    let temp = {
-                                gUID: '' +i,
-                                workplaceID : "workplaceID" +i,
-                                hierarchyCd : "hierarchyCd"+i,
-                                workplaceName : "workplaceName"+i,
-                                employeeID : "employeeID"+i,
-                                employeeCode : "employeeCode"+i,
-                                employeeName : "employeeName" +i,
-                                alarmValueDate : "alarmValueDate" +i,
-                                category : i,
-                                categoryName: "category" +i,
-                                alarmItem : "alarmItem" +i,
-                                alarmValueMessage : "alarmValueMessage" +i,
-                                comment : "comment" +i,                                
-                              };
-                    self.dataSource.push(temp);
-                }
+//                for (let i = 1; i < 100; i++) {
+//                    let temp = {
+//                                gUID: '' +i,
+//                                workplaceID : "workplaceID" +i,
+//                                hierarchyCd : "hierarchyCd"+i,
+//                                workplaceName : "workplaceName"+i,
+//                                employeeID : "employeeID"+i,
+//                                employeeCode : "employeeCode"+i,
+//                                employeeName : "employeeName" +i,
+//                                alarmValueDate : "alarmValueDate" +i,
+//                                category : i,
+//                                categoryName: "category" +i,
+//                                alarmItem : "alarmItem" +i,
+//                                alarmValueMessage : "alarmValueMessage" +i,
+//                                comment : "comment" +i,                                
+//                              };
+//                    self.dataSource.push(temp);
+//                }
                 
                 $("#grid").igGrid({ 
                         height: '500px',
