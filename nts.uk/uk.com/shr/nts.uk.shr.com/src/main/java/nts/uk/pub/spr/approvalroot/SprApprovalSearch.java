@@ -1,13 +1,13 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.approvalroot;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.pub.spr.output.ApprovalComSpr;
-import nts.uk.pub.spr.output.ApprovalPersonSpr;
-import nts.uk.pub.spr.output.ApprovalPhaseSpr;
-import nts.uk.pub.spr.output.ApprovalRootStateSpr;
-import nts.uk.pub.spr.output.ApprovalWorkplaceSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalComSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalPersonSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalPhaseSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalRootStateSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalWorkplaceSpr;
 
 /**
  * 

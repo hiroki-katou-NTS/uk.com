@@ -13,13 +13,13 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
-import nts.uk.pub.spr.SprApprovalSearch;
-import nts.uk.pub.spr.output.ApprovalComSpr;
-import nts.uk.pub.spr.output.ApprovalPersonSpr;
-import nts.uk.pub.spr.output.ApprovalPhaseSpr;
-import nts.uk.pub.spr.output.ApprovalRootStateSpr;
-import nts.uk.pub.spr.output.ApprovalWorkplaceSpr;
-import nts.uk.pub.spr.output.ApproverSpr;
+import nts.uk.pub.spr.approvalroot.SprApprovalSearch;
+import nts.uk.pub.spr.approvalroot.output.ApprovalComSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalPersonSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalPhaseSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalRootStateSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalWorkplaceSpr;
+import nts.uk.pub.spr.approvalroot.output.ApproverSpr;
 /**
  * 
  * @author Doan Duy Hung

@@ -1,8 +1,8 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.login;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.pub.spr.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 /**
  * 01 勤怠システムへ
  * @author Doan Duy Hung

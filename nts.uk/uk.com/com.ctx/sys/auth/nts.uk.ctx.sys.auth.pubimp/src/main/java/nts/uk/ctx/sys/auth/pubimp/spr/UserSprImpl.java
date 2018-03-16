@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.grant.RoleFromUserIdPub;
-import nts.uk.pub.spr.UserSprService;
-import nts.uk.pub.spr.output.UserSpr;
+import nts.uk.pub.spr.login.UserSprService;
+import nts.uk.pub.spr.login.output.UserSpr;
 /**
  * 
  * @author Doan Duy Hung

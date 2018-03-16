@@ -1,14 +1,14 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.approvalroot;
 
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.pub.spr.output.EmployeeInDesignatedSpr;
-import nts.uk.pub.spr.output.EmployeeInfoSpr;
-import nts.uk.pub.spr.output.EmployeeJobHistSpr;
-import nts.uk.pub.spr.output.EmployeeSpr;
-import nts.uk.pub.spr.output.PersonInfoSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeInDesignatedSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeInfoSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeJobHistSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeSpr;
+import nts.uk.pub.spr.approvalroot.output.PersonInfoSpr;
 
 /**
  * 

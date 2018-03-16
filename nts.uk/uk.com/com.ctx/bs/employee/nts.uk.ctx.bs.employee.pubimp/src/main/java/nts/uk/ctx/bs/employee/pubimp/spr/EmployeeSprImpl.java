@@ -16,12 +16,12 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
-import nts.uk.pub.spr.EmployeeSprService;
-import nts.uk.pub.spr.output.EmployeeInDesignatedSpr;
-import nts.uk.pub.spr.output.EmployeeInfoSpr;
-import nts.uk.pub.spr.output.EmployeeJobHistSpr;
-import nts.uk.pub.spr.output.EmployeeSpr;
-import nts.uk.pub.spr.output.PersonInfoSpr;
+import nts.uk.pub.spr.approvalroot.EmployeeSprService;
+import nts.uk.pub.spr.approvalroot.output.EmployeeInDesignatedSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeInfoSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeJobHistSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeSpr;
+import nts.uk.pub.spr.approvalroot.output.PersonInfoSpr;
 
 /**
  * 

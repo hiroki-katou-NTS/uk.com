@@ -1,4 +1,4 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.login;
 
 import java.util.Optional;
 
@@ -10,8 +10,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.pub.spr.output.LoginUserContextSpr;
-import nts.uk.pub.spr.output.UserSpr;
+import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.UserSpr;
 /**
  * 
  * @author Doan Duy Hung

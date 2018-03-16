@@ -1,4 +1,4 @@
-package nts.uk.pub.spr.output;
+package nts.uk.pub.spr.approvalroot.output;
 
 import java.util.List;
 

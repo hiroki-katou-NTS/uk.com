@@ -1,9 +1,9 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.approvalroot;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.pub.spr.output.ApprovalRootSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
 
 /**
  * 04 承認ルート

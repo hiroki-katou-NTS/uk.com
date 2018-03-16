@@ -1,4 +1,4 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.approvalroot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,16 +15,16 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.pub.spr.output.ApprovalComSpr;
-import nts.uk.pub.spr.output.ApprovalPersonSpr;
-import nts.uk.pub.spr.output.ApprovalPhaseSpr;
-import nts.uk.pub.spr.output.ApprovalRootSpr;
-import nts.uk.pub.spr.output.ApprovalRootStateSpr;
-import nts.uk.pub.spr.output.ApprovalWorkplaceSpr;
-import nts.uk.pub.spr.output.EmployeeInDesignatedSpr;
-import nts.uk.pub.spr.output.EmployeeJobHistSpr;
-import nts.uk.pub.spr.output.EmployeeSpr;
-import nts.uk.pub.spr.output.PersonInfoSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalComSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalPersonSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalPhaseSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalRootStateSpr;
+import nts.uk.pub.spr.approvalroot.output.ApprovalWorkplaceSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeInDesignatedSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeJobHistSpr;
+import nts.uk.pub.spr.approvalroot.output.EmployeeSpr;
+import nts.uk.pub.spr.approvalroot.output.PersonInfoSpr;
 /**
  * 
  * @author Doan Duy Hung

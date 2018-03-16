@@ -1,24 +1,21 @@
-package nts.uk.pub.spr.output;
+package nts.uk.pub.spr.approvalroot.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 /**
- * 個人別就業承認ルート
+ * 職場別就業承認ルート
  * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
 @Getter
-public class ApprovalPersonSpr {
+public class ApprovalWorkplaceSpr {
 	/**会社ID*/
 	private String companyId;
 	/**承認ID*/
 	public String approvalId;
-	/**社員ID*/
-	private String employeeId;
-	/**申請種類*/
-	private Integer applicationType;
+	/**履歴ID*/
+	private String workplaceId;
 	/**分岐ID*/
 	private String branchId;
 	/**任意項目申請ID*/
@@ -27,4 +24,6 @@ public class ApprovalPersonSpr {
 	private Integer confirmationRootType;
 	/**就業ルート区分*/
 	private Integer employmentRootAtr;
+	/**申請種類*/
+	private Integer applicationType;
 }

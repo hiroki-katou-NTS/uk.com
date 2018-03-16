@@ -1,4 +1,4 @@
-package nts.uk.pub.spr.output;
+package nts.uk.pub.spr.login.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

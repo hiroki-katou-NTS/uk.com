@@ -1,9 +1,9 @@
-package nts.uk.pub.spr;
+package nts.uk.pub.spr.login;
 
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.pub.spr.output.UserSpr;
+import nts.uk.pub.spr.login.output.UserSpr;
 /**
  * 
  * @author Doan Duy Hung
