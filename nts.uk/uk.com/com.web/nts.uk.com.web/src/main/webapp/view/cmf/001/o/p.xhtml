@@ -140,10 +140,10 @@
 					<td style="text-align: center;">
 						<!--P6_1 ←受入設定へ-->
 						<button id="P6_1" class="large" tabindex="2"
-							data-bind="click: gotoO">#{i18n.getText('CMF001_479')}</button>
-						<!--P6_2 受入実行-->
+							data-bind="click: gotoO">#{i18n.getText('CMF001_479')}</button> <!--P6_2 受入実行-->
 						<button class="proceed x-large" tabindex="3"
-							style="margin-left: 10px" data-bind="click: gotoQ">#{i18n.getText('CMF001_480')}</button>
+							style="margin-left: 10px"
+							data-bind="click: gotoQ, enable: listAccept().length > 0">#{i18n.getText('CMF001_480')}</button>
 					</td>
 				</tr>
 			</table>

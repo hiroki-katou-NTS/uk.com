@@ -129,7 +129,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         private gotoO(): void {
             //受入設定選択に戻る
             $('#ex_accept_wizard').ntsWizard("goto", 0);
-            $("#grd_Condition tr:first-child").focus();
         }
 
         private uploadFile(): void {
@@ -303,6 +302,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 }
                 else {
                     block.clear();
+                    //エラーメッセージ表示　　Msg_1117　　項目が設定されていません。確認してください。
+                    alertError({ messageId: "Msg_1117" });
                 }
             }).fail(function(error) {
                 alertError(error);
