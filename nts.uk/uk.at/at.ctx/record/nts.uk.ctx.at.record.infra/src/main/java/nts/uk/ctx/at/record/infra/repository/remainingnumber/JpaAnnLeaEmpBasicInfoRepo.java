@@ -23,4 +23,39 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		return Optional.empty();
 	}
 
+	@Override
+	public void add(AnnualLeaveEmpBasicInfo basicInfo) {
+		KrcmtAnnLeaBasicInfo entity = new KrcmtAnnLeaBasicInfo();
+		entity.employeeId = basicInfo.getEmployeeId();
+		entity.workDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
+		entity.workDaysBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().v();
+		entity.grantTableCode = basicInfo.getGrantRule().getGrantTableCode().v();
+		entity.grantStandardDate = basicInfo.getGrantRule().getGrantStandardDate();
+		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public void update(AnnualLeaveEmpBasicInfo basicInfo) {
+		Optional<KrcmtAnnLeaBasicInfo> entityOpt = this.queryProxy().find(basicInfo.getEmployeeId(),
+				KrcmtAnnLeaBasicInfo.class);
+		if (entityOpt.isPresent()) {
+			KrcmtAnnLeaBasicInfo ent = entityOpt.get();
+			ent.workDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
+			ent.workDaysBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().v();
+			ent.grantTableCode = basicInfo.getGrantRule().getGrantTableCode().v();
+			ent.grantStandardDate = basicInfo.getGrantRule().getGrantStandardDate();
+			this.commandProxy().update(ent);
+		}
+	}
+
+	@Override
+	public void delete(String employeeId) {
+		Optional<KrcmtAnnLeaBasicInfo> entityOpt = this.queryProxy().find(employeeId, KrcmtAnnLeaBasicInfo.class);
+		if (entityOpt.isPresent()) {
+			KrcmtAnnLeaBasicInfo ent = entityOpt.get();
+			this.commandProxy().remove(ent);
+		}
+
+	}
+
 }
