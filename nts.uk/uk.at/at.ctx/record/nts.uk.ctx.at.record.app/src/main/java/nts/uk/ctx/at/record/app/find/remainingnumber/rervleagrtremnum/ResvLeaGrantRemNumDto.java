@@ -77,7 +77,7 @@ public class ResvLeaGrantRemNumDto {
 		dto.grantDays = details.getGrantNumber().v();
 		dto.useDays = details.getUsedNumber().getDays().v();
 		dto.overLimitDays = details.getUsedNumber().getOverLimitDays().isPresent()
-				? details.getUsedNumber().getOverLimitDays().get().v() : 0;
+				? details.getUsedNumber().getOverLimitDays().get().v() : 0d;
 		dto.remainingDays = details.getRemainingNumber().v();
 		return dto;
 	}
