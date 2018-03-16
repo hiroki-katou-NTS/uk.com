@@ -23,8 +23,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         selectedConditionStartLine: KnockoutObservable<number> = ko.observable(0);
 
         //upload file
-        fileId: KnockoutObservable<string> = ko.observable('');
-        fileName: KnockoutObservable<string> = ko.observable('');
+        fileId: KnockoutObservable<string> = ko.observable(null);
+        fileName: KnockoutObservable<string> = ko.observable(null);
         listAccept: KnockoutObservableArray<model.StandardAcceptItem> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
@@ -114,7 +114,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 return;
             }
             //受入ファイルがアップロードされているか判別
-            if (self.fileId() == null || self.fileId() == '') {
+            if (self.fileId() == null) {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 alertError({ messageId: "Msg_964" });
                 $("#file-upload").focus();
