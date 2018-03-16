@@ -170,6 +170,7 @@ public interface WorkTypeRepository {
 	 * @param workTypeCd
 	 */
 	void remove(String companyId, String workTypeCd);
+	
 	/**
 	 * @param companyId  会社ID
 	 * @param abolishAtr 勤務種類.廃止する
@@ -177,6 +178,9 @@ public interface WorkTypeRepository {
 	 * @return the list of Work Type
 	 */
 	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr);
+	
+	/** Find WorkType by deprecate, workTypeUnit, oneDay */
+	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
 	
 	/**
 	 * Get acquired attendance work type

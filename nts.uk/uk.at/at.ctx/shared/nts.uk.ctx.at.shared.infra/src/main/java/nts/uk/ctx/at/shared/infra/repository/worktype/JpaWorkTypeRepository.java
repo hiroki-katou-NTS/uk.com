@@ -392,6 +392,19 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("abolishAtr", abolishAtr).setParameter("oneDayAtr", oneDayAtr).getList(x -> toDomain(x));
 	}
 
+	private final String FIND_WORKTYPE_BY_ATR_AND_ONEDAY = "SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = :abolishAtr AND c.worktypeAtr = :worktypeAtr AND c.oneDayAtr = :oneDayAtr"
+			+ "ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
+	@Override
+	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay) {
+		return this.queryProxy().query(FIND_WORKTYPE_BY_ATR_AND_ONEDAY, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("oneDayAtr", oneDay)
+				.getList(x -> toDomain(x));
+	}
+
 	@Override
 	public List<List<String>> findCodeAndNameOfWorkTypeByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_CODE_AND_NAME_OF_WORKTYPE, Object[].class)

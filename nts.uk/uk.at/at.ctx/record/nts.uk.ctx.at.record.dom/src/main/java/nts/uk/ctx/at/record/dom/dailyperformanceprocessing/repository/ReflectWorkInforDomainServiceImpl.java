@@ -119,8 +119,12 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -1182,11 +1186,28 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	}
 
 	@Override
-	public Optional<WorkInfoOfDailyPerformance> reflectHolidayOfDailyPerfor(String employeeId, GeneralDate day) {
+	public Optional<WorkInfoOfDailyPerformance> reflectHolidayOfDailyPerfor(String companyId, String employeeId, GeneralDate day) {
 		RecStatusOfEmployeeImport recStatusOfEmployeeImport = this.recStatusOfEmployeeAdapter.getStatusOfEmployeeService(employeeId, day);
 		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = Optional.empty();
 		if (recStatusOfEmployeeImport != null) {
 			if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2 || recStatusOfEmployeeImport.getStatusOfEmployment() == 3) {
+				List<WorkType> workTypeList = this.workTypeRepository.findByCompanyId(companyId);
+				List<WorkType> workTypeOneDayList =  workTypeList.stream()
+						.filter(x -> x.isOneDay())
+						.collect(Collectors.toList());
+				WorkType workTypeNeed = null;
+				for (WorkType workType : workTypeOneDayList) {
+					WorkTypeSet workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay) ;
+					if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2 && WorkTypeClassification.LeaveOfAbsence == workType.getDailyWork().getOneDay()) {
+						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
+						workTypeNeed = workType;
+					} else if (recStatusOfEmployeeImport.getStatusOfEmployment() == 3 && WorkTypeClassification.Closure == workType.getDailyWork().getOneDay() )  {
+						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
+						workTypeNeed = workType;
+					}
+				}
+				
+				
 				
 			}
 		}
