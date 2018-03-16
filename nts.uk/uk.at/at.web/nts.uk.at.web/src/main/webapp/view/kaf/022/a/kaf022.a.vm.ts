@@ -1873,7 +1873,7 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdB25(data.postTypesiftReflectFlg);
                     self.selectedIdB27(data.postWorktimeReflectFlg);
                     self.selectedIdB29(data.postBreakReflectFlg);
-                    self.selectedCodeB30(data.attendanceId);
+                    self.selectedCodeB30(data.restAtr);
                     self.selectedIdB31(data.calendarDispAtr);
                     self.selectedIdB32(data.instructExcessOtAtr);
                     self.selectedCodeB33(data.unitAssignmentOvertime);
@@ -2187,7 +2187,7 @@ module nts.uk.at.view.kmf022 {
                     postTypesiftReflectFlg: self.selectedIdB25(),
                     postWorktimeReflectFlg: self.selectedIdB27(),
                     postBreakReflectFlg: self.selectedIdB29(),
-                    attendanceId: self.selectedCodeB30(),
+                    restAtr: self.selectedCodeB30(),
                     calendarDispAtr: self.selectedIdB31(),
                     instructExcessOtAtr: self.selectedIdB32(),
                     unitAssignmentOvertime: self.selectedCodeB33(),
