@@ -95,10 +95,10 @@ public class ApplicationListFinder {
 				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
-		List<Integer> lstAppType = this.findListApp(lstAppDto);
+		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo());
 		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), 
-				lstAppType, lstAgent, lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange());
+				lstAgent, lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstAppType);
 	}
 	/**
 	 * find status approval
@@ -161,13 +161,13 @@ public class ApplicationListFinder {
 	 * @param lstApp
 	 * @return
 	 */
-	private List<Integer> findListApp(List<ApplicationDto_New> lstApp){
-		List<Integer> lstAppType = new ArrayList<>();
-		for (ApplicationDto_New app : lstApp) {
-			if(!lstAppType.contains(app.getApplicationType())){
-				lstAppType.add(app.getApplicationType());
+	private List<AppInfor> findListApp(List<AppMasterInfo> lstApp){
+		List<AppInfor> lstAppType = new ArrayList<>();
+		for (AppMasterInfo app : lstApp) {
+			if(!lstAppType.contains(new AppInfor(app.getAppType(), app.getDispName()))){
+				lstAppType.add(new AppInfor(app.getAppType(), app.getDispName()));
 			}
 		}
-		return lstAppType.stream().sorted((x, y) -> x-y).collect(Collectors.toList());
+		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());
 	}
 }

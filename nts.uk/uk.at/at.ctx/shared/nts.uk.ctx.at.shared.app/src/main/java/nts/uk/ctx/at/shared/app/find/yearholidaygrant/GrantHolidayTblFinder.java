@@ -7,10 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,8 +41,6 @@ public class GrantHolidayTblFinder {
 	 * @return
 	 */
 	public List<GrantHolidayTblDto> calculateGrantDate(CalculateGrantHdTblParam param) {
-		String companyId = AppContexts.user().companyId();
-		
 		List<GrantHdTbl> grantHolidayList = param.getGrantHolidayTblList().stream()
 				.map(x -> GrantHdTbl.createFromJavaType(x.getCompanyId(),
 														x.getConditionNo(), x.getYearHolidayCode(), 

@@ -11,15 +11,19 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimezoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -29,10 +33,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outpu
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -93,11 +100,21 @@ public class HolidayShipmentFinder {
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Inject
 	private CollectAchievement collectAchievement;
+	@Inject
+	private ApprovalRootAdapter rootAdapter;
 
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	AppCommonSettingOutput appCommonSettingOutput;
 	HolidayShipmentDto output = new HolidayShipmentDto();
 
+	/**
+	 * start event
+	 * 
+	 * @param employeeID
+	 * @param initDateInput
+	 * @param uiType
+	 * @return HolidayShipmentDto
+	 */
 	public HolidayShipmentDto getHolidayShipment(String employeeID, String initDateInput, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
 		String companyID = AppContexts.user().companyId();
@@ -118,11 +135,11 @@ public class HolidayShipmentFinder {
 			Optional<WorkTimeCode> WorkTimeCodeOpt = perLaborCond.getWorkCategory().getWeekdayTime().getWorkTimeCode();
 			String wkTimeCD = WorkTimeCodeOpt.isPresent() ? WorkTimeCodeOpt.get().v() : "";
 			GeneralDate appDate, deadDate;
-			String takingOutWkTypeCD, wkHourCD, shiftWkTypeCD, shutOffCD;
+			String takingOutWkTypeCD, takingOutWkTimeCD, holiDayWkTypeCD, holidayWkTimeCD;
 			appDate = deadDate = null;
-			takingOutWkTypeCD = wkHourCD = shiftWkTypeCD = shutOffCD = null;
-			commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, wkTimeCD, wkHourCD,
-					deadDate, shiftWkTypeCD, shutOffCD);
+			takingOutWkTypeCD = takingOutWkTimeCD = holiDayWkTypeCD = holidayWkTimeCD = null;
+			commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD,
+					deadDate, holiDayWkTypeCD, holidayWkTimeCD);
 			// アルゴリズム「勤務時間初期値の取得」を実行する
 			String wkTypeCD = output.getTakingOutWkTypes().size() > 0
 					? output.getTakingOutWkTypes().get(0).getWorkTypeCode() : "";
@@ -130,6 +147,82 @@ public class HolidayShipmentFinder {
 		}
 
 		return output;
+	}
+
+	public List<TimezoneUseDto> changeWorkType(String workTypeCD, String wkTimeCD) {
+		String companyID = AppContexts.user().companyId();
+		return getWkTimeInitValue(companyID, workTypeCD, wkTimeCD).stream()
+				.map(x -> new TimezoneUseDto(x.getUseAtr().value, x.getWorkNo(), x.getStart().v(), x.getEnd().v()))
+				.collect(Collectors.toList());
+
+	}
+
+	public List<TimezoneUseDto> changeDay(String takingOutDateInput, String holidayDateImput, int comType) {
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		GeneralDate baseDate = GeneralDate.fromString(
+				comType == ApplicationCombination.Holiday.value ? holidayDateImput : takingOutDateInput, DATE_FORMAT);
+		GeneralDate takingOutDate = comType == ApplicationCombination.TakingOut.value
+				? GeneralDate.fromString(takingOutDateInput, DATE_FORMAT) : null;
+		GeneralDate holidayDate = comType == ApplicationCombination.Holiday.value
+				? GeneralDate.fromString(holidayDateImput, DATE_FORMAT) : null;
+		AchievementOutput achievementOutput = getAchievement(companyID, employeeID, baseDate);
+
+		changeAppDate(takingOutDate, holidayDate, companyID, employeeID);
+
+		return null;
+	}
+
+	private void changeAppDate(GeneralDate takingOutDate, GeneralDate holidayDate, String companyID,
+			String employeeID) {
+		// アルゴリズム「基準申請日の決定」を実行する
+		GeneralDate criteriaDate = DetRefDate(takingOutDate, holidayDate);
+		int rootAtr = EmploymentRootAtr.APPLICATION.value;
+		int appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value;
+		AppCommonSettingOutput appCommonSet = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+				companyID, employeeID, rootAtr, ApplicationType.BREAK_TIME_APPLICATION, criteriaDate);
+
+		ApplicationSetting appSet = appCommonSet.applicationSetting;
+
+		if (appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
+			// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
+			List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
+					rootAtr, appType, criteriaDate);
+
+			// アルゴリズム「基準日別設定の取得」を実行する
+			getDateSpecificSetting(companyID, employeeID, criteriaDate, true, null, null, null, null, appCommonSet);
+
+		}
+		// アルゴリズム「事前事後区分の最新化」を実行する
+		updatePrePostSegments(criteriaDate);
+
+	}
+
+	private void updatePrePostSegments(GeneralDate criteriaDate) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private GeneralDate DetRefDate(GeneralDate takingOutDate, GeneralDate holidayDate) {
+
+		if (holidayDate != null && takingOutDate != null) {
+
+			if (takingOutDate.after(holidayDate)) {
+
+				return holidayDate;
+			} else {
+				return takingOutDate;
+
+			}
+		} else {
+			if (takingOutDate != null) {
+				return holidayDate;
+			} else {
+				return takingOutDate;
+			}
+
+		}
+
 	}
 
 	private void judgmentOfPreOrPostType(ApplicationType appType, GeneralDate baseDate, int uiType) {
@@ -145,9 +238,9 @@ public class HolidayShipmentFinder {
 		output.setPreOrPostType(InitValueAtr.NOCHOOSE.value);
 	}
 
-	private WorkStyle getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
+	private List<TimezoneUse> getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
 		// ドメインモデル「勤務種類」を取得する
-		WorkStyle result = null;
+		List<TimezoneUse> result = new ArrayList<TimezoneUse>();
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (WkTypeOpt.isPresent()) {
 
@@ -157,7 +250,7 @@ public class HolidayShipmentFinder {
 			getDayAttendance(dailyWork);
 			if (!wkType.getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
-				getPreTimeZone(companyID, wkTimeCode, wkType);
+				return getPreTimeZone(companyID, wkTimeCode, wkType);
 			}
 
 		}
@@ -273,15 +366,15 @@ public class HolidayShipmentFinder {
 	}
 
 	private void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate appDate,
-			String takingOutWkTypeCD, String wkTimeCD, String wkHourCD, GeneralDate deadDate, String shiftWkTypeCD,
-			String shutOffCD) {
+			String takingOutWkTypeCD, String takingOutWkTimeCD, GeneralDate deadDate, String holidayWkTypeCD,
+			String holidayWkTimeCD) {
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 		appResonRepo.getReasonByCompanyId(companyID);
 		// アルゴリズム「基準日別設定の取得」を実行する
-		getDateSpecificSetting(companyID, employeeID, refDate, false, wkTimeCD, appDate, takingOutWkTypeCD, wkHourCD,
-				deadDate, shiftWkTypeCD, shutOffCD);
+		getDateSpecificSetting(companyID, employeeID, refDate, false, takingOutWkTypeCD, takingOutWkTimeCD,
+				holidayWkTypeCD, holidayWkTimeCD, appCommonSettingOutput);
 
 		getAchievement(companyID, employeeID, appDate);
 
@@ -299,26 +392,33 @@ public class HolidayShipmentFinder {
 	}
 
 	private void getDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean getSetting,
-			String workTimeCode, GeneralDate appDate, String takingOutWkTypeCD, String wkHourCD, GeneralDate deadDate,
-			String shiftWkTypeCD, String shutOffCD) {
+			String takingOutWkTypeCD, String takingOutWkTimeCode, String holidayWkTypeCD, String holidayWkTimeCD,
+			AppCommonSettingOutput appCommonSet) {
 		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> empImpOpt = wpAdapter.getEmpHistBySid(companyID, employeeID, refDate);
 		// アルゴリズム「所属職場を含む上位職場を取得」を実行する
 		List<String> wpkIds = empAdaptor.findWpkIdsBySid(companyID, employeeID, refDate);
 		if (empImpOpt.isPresent() && CollectionUtil.isEmpty(wpkIds)) {
-			// INPUT.設定取得＝false -> Không xử lý đoạn
-			// アルゴリズム「雇用別申請承認設定の取得」を実行する và アルゴリズム「申請承認機能設定の取得」を実行する
+			String employmentCD = empImpOpt.get().getEmploymentCode();
+
+			if (getSetting) {
+				// INPUT.設定取得＝true
+				// アルゴリズム「雇用別申請承認設定の取得」を実行する
+
+				// アルゴリズム「申請承認機能設定の取得」を実行する
+
+			}
 
 			// アルゴリズム「振出用勤務種類の取得」を実行する
 			// TakingOut
-			output.setTakingOutWkTypes(getWorkTypeFor(companyID, empImpOpt.get().getEmploymentCode(), takingOutWkTypeCD)
-					.stream().map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
+			output.setTakingOutWkTypes(getWorkTypeFor(companyID, employmentCD, takingOutWkTypeCD).stream()
+					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 
 			// INPUT.振出就業時間帯コード＝設定なし
 			// アルゴリズム「振休用勤務種類の取得」を実行する
 			// Holiday
-			output.setHolidayWkTypes(getWorkTypeFor(companyID, empImpOpt.get().getEmploymentCode(), shiftWkTypeCD)
-					.stream().map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
+			output.setHolidayWkTypes(getWorkTypeFor(companyID, employmentCD, holidayWkTypeCD).stream()
+					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 			// INPUT.振休就業時間帯コード＝設定なし
 
 		}
