@@ -89,6 +89,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.overOneDay = ko.observable('0000');
                 self.overHalfDay = ko.observable('0000');
                 self.overAll = ko.observable('0000');
+                self.deleteEnable = ko.observable(true);
 
                 self.inputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     filldirection: "right",
@@ -166,10 +167,16 @@ module nts.uk.pr.view.kmf001.f {
                         let selectedEmp = _.find(employmentList, { 'code': employmentCode });
                         self.emSelectedName(selectedEmp.name);
                         self.isEmptyEmployment(false);
+                        
+                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                            return item.code == employmentCode;
+                        });
+                        self.deleteEnable(!!match);
                     }
                     else {
                         //not selected item -> disable All
                         self.isEmptyEmployment(true);
+                        self.deleteEnable(false);
                     }
                 });
 
@@ -235,6 +242,12 @@ module nts.uk.pr.view.kmf001.f {
                         dfd.resolve();
                     } else {
                         self.emSelectedCode(self.employmentList()[0].code);
+                        
+                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                            return item.code == self.emSelectedCode();
+                        });
+                        self.deleteEnable(!!match);
+                        
                         $('#emCompenManage').focus();
                     }
                 });
