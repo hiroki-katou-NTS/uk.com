@@ -74,5 +74,12 @@ public interface EmploymentHistoryItemRepository {
 	 * @return
 	 */
 	List<EmploymentHistoryItem> getEmploymentByEmpIdAndDate(GeneralDate basedate, String employeeId);
+	
+	/**
+	 * Get employment item by employee ID
+	 * @param employeeId
+	 * @return List EmploymentHistoryOfEmployee
+	 */
+	List<EmploymentHistoryOfEmployee> getEmploymentBySID(String employeeId);
 
 }

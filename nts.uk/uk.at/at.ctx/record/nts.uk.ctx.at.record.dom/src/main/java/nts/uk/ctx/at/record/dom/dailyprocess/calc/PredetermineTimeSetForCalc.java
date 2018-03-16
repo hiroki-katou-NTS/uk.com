@@ -146,11 +146,11 @@ public class PredetermineTimeSetForCalc {
 	public AttendanceTime getpredetermineTime(DailyWork dailyWork) {
 		switch(dailyWork.getAttendanceHolidayAttr()) {
 		case FULL_TIME:
-			return additionSet.getAddTime().getOneDay();
+			return additionSet.getPredTime().getOneDay();
 		case MORNING:
-			return additionSet.getAddTime().getMorning();
+			return additionSet.getPredTime().getMorning();
 		case AFTERNOON:
-			return additionSet.getAddTime().getAfternoon();
+			return additionSet.getPredTime().getAfternoon();
 		default:
 			return new AttendanceTime(0);
 		}
