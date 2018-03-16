@@ -1,5 +1,7 @@
 module nts.uk.at.view.kmk011.b {
     import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export module viewmodel {
 
         export class ScreenModel {
@@ -33,7 +35,7 @@ module nts.uk.at.view.kmk011.b {
             listDivergenceItem: KnockoutObservableArray<viewmodel.model.DivergenceItem>;
             listItemSelected: KnockoutObservableArray<viewmodel.model.DivergenceItem>;
             listItem: KnockoutObservableArray<number>;
-            
+
 
             use: KnockoutObservable<string>;
             notUse: KnockoutObservable<string>;
@@ -43,7 +45,7 @@ module nts.uk.at.view.kmk011.b {
 
             constructor() {
                 var self = this;
-                
+
                 self.check = false;
                 self.listItem = ko.observableArray([]);
                 self.enableUse = ko.observable(false);
@@ -59,7 +61,7 @@ module nts.uk.at.view.kmk011.b {
                     { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") },
                     { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
                 ]);
-                
+
                 self.selectUse = ko.observable(0);
                 self.divergenceTimeName = ko.observable('');
                 self.divTimeName = ko.observable('');
@@ -68,56 +70,62 @@ module nts.uk.at.view.kmk011.b {
                 self.enable = ko.observable(true);
                 self.divergenceTimeId = ko.observable(null);
                 self.itemDivergenceTime = ko.observable(null);
-                
+
                 self.selectSelect = ko.observable(0);
                 self.selectInput = ko.observable(0);
-                
+
                 self.checkErrorInput = ko.observable(false);
                 self.checkErrorSelect = ko.observable(false);
                 self.listDivergenceItem = ko.observableArray([]);
                 self.listItemSelected = ko.observableArray([]);
                 //subscribe currentCode
-//                self.currentCode.subscribe(function(codeChanged) {
-//                    self.clearError();
-//                    if (codeChanged == 0) { return; }
-//                    self.selectUse(0);
-//                    self.itemDivergenceTime(self.findDivTime(codeChanged));
-//                    self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
-//                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
-//                    self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
-//                    self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
-//                    self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
-//                    self.timeItemName('');
-//                    self.listItemSelected();
-////                    service.getItemSelected(self.divergenceTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
-////                        if (lstItem == null || lstItem === undefined || lstItem.length == 0) {
-////                            self.timeItemName();
-////                            self.listItemSelected([]);
-////                        } else {
-////                            var listItemId = [];
-////                            for (let j = 0; j < lstItem.length; j++) {
-////                                listItemId[j] = lstItem[j].attendanceId;
-////                            }
-////                            service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>) {
-////                                self.listItemSelected(lstName);
-////                                self.findTimeName(self.divergenceTimeId());
-////                            });
-////                        }
-////                    });
-//                    if (self.itemDivergenceTime().reasonInput) {
-//                        self.checkErrorInput(true);
-//                    } else {
-//                        self.checkErrorInput(false);
-//                    }
-//                    if (self.itemDivergenceTime().reasonSelect) {
-//                        self.checkErrorSelect(true);
-//                    } else {
-//                        self.checkErrorSelect(false);
-//                    }
-//
-//                    self.check = false;
-//                    $("#itemname").focus();
-//                });
+                self.currentCode.subscribe(function(codeChanged) {
+                    self.clearError();
+                    if (codeChanged == 0) { return; }
+                    self.selectUse(null);
+
+                    self.itemDivergenceTime(self.findDivTime(codeChanged));
+
+                    self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
+                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
+                    self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
+                    self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
+                    self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
+
+                    self.timeItemName('');
+
+                    //set name KDL selected for divergenceTime
+                    self.listItemSelected();
+                    service.getItemSelected(self.divergenceTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
+                        if (lstItem == null || lstItem === undefined || lstItem.length == 0) {
+                            self.timeItemName();
+                            self.listItemSelected([]);
+                        } else {
+                            var listItemId = [];
+                            for (let j = 0; j < lstItem.length; j++) {
+                                listItemId[j] = lstItem[j].attendanceId;
+                            }
+                            service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>) {
+                                self.listItemSelected(lstName);
+                                self.findTimeName(self.divergenceTimeId());
+                            });
+                        }
+                    });
+
+                    if (self.itemDivergenceTime().reasonInput) {
+                        self.checkErrorInput(true);
+                    } else {
+                        self.checkErrorInput(false);
+                    }
+                    if (self.itemDivergenceTime().reasonSelect) {
+                        self.checkErrorSelect(true);
+                    } else {
+                        self.checkErrorSelect(false);
+                    }
+                    //
+                    //                    self.check = false;
+                    //                    $("#itemname").focus();
+                });
                 //subscribe selectUse
                 self.selectUse.subscribe(function(codeChanged) {
                     if (codeChanged == 1) {
@@ -160,10 +168,11 @@ module nts.uk.at.view.kmk011.b {
             }
 
             public start_page(): JQueryPromise<any> {
-                
+
                 var self = this;
                 blockUI.invisible();
                 var dfd = $.Deferred();
+                self.findDivergenceTime(1);
                 service.getAllDivergenceTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                     blockUI.clear();
                     if (lstDivTime === undefined || lstDivTime.length == 0) {
@@ -179,8 +188,8 @@ module nts.uk.at.view.kmk011.b {
                 return dfd.promise();
             }
             /**
-       * find Divergence Time is selected
-       */
+             * find Divergence Time is selected
+             */
             findDivTime(value: number): any {
                 let self = this;
                 var itemModel = null;
@@ -188,8 +197,73 @@ module nts.uk.at.view.kmk011.b {
                     return obj.divergenceTimeNo == value;
                 })
             }
+            findDivergenceTime(divergenceTimeNo: number) {
+                var self = this;
+                service.findDivergenceTime(divergenceTimeNo).done(function(itemDivergenceTime: model.DivergenceTime) {
+                    console.log(itemDivergenceTime);
+                });
+            }
             //create divergence
             Registration() {
+                var self = this;
+                blockUI.invisible();
+                $('.nts-input').trigger("validate");
+                _.defer(() => {
+                    if (nts.uk.ui.errors.hasError() === false) {
+                        var dfd = $.Deferred();
+                        if (self.divergenceTimeId() == null) {
+                            return;
+                        }
+                        //set 4 gia tri boolean
+                        //                        var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
+                        //                        var input = new model.SelectSet(self.selelf.checkErrInput()));
+
+                        //                        var divTime = new model.DivergenceTime(self.divTimeId(), 0, self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
+                        var divergenceType = self.divergenceTimeId();  //temp
+                        var targetItems: number[] = null; //temp
+                        var listIdSelect = [];
+                        for (let i = 0; i < self.listItemSelected().length; i++) {
+                            listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
+                        }
+                        var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divergenceTimeName(),
+                            divergenceType, self.checkErrorInput(), self.checkErrorSelect(),
+                            self.selectInput(), self.selectSelect(), targetItems);
+
+
+                        var listAdd = new Array<model.TimeItemSet>();
+                        if (self.listItem() != null) {
+                            for (let k = 0; k < self.listItem().length; k++) {
+                                let add = new model.TimeItemSet(self.divergenceTimeId(), self.listItem()[k]);
+                                listAdd.push(add);
+                            }
+                        }
+
+                        //                        var Object = new model.ObjectDivergence(divTime, listAdd, self.timeItemName());
+                        service.updateDivTime(divergenceTime).done(function() {
+                            self.getAllDivTimeNew();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.listItem([]);
+                            self.check = false;
+                            $("#itemname").focus();
+                            nts.uk.ui.block.clear();
+
+                        }).fail(function(error) {
+                            nts.uk.ui.block.clear();
+                            self.check = true;
+                            if (error.messageId == 'Msg_82') {
+                                $('#inpAlarmTime').ntsError('set', error);
+                            }
+                            if (error.messageId == 'Msg_32') {
+                                $('#inpDialog').ntsError('set', error);
+                            } else {
+                                $('#inpName').ntsError(error.message);
+                            }
+                        })
+                        dfd.resolve();
+                        return dfd.promise();
+                    }
+                })
+                nts.uk.ui.block.clear();
             }
             clearError(): void {
                 if ($('.nts-validate').ntsError("hasError") == true) {
@@ -198,6 +272,22 @@ module nts.uk.at.view.kmk011.b {
                 if ($('.nts-editor').ntsError("hasError") == true) {
                     $('.nts-input').ntsError('clear');
                 }
+            }
+            //get all divergence time new
+            getAllDivTimeNew() {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                self.dataSource();
+                service.getAllDivergenceTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
+                    self.currentCode('');
+                    self.dataSource(lstDivTime);
+                    self.currentCode(self.divergenceTimeId());
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                })
+                dfd.resolve();
+                return dfd.promise();
             }
             //ghep ten hien thi 
             findTimeName(divTimeId: number) {
@@ -219,12 +309,56 @@ module nts.uk.at.view.kmk011.b {
             }
             //open Diaglog 021
             openDialog021() {
-
+                var self = this;
+                nts.uk.ui.block.grayout();
+                service.getAllAttendanceItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
+                    var listAllId = [];
+                    for (let j = 0; j < lstAllItem.length; j++) {
+                        listAllId[j] = lstAllItem[j].attendanceItemId;
+                    }
+                    var listIdSelect = [];
+                    for (let i = 0; i < self.listItemSelected().length; i++) {
+                        listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
+                    }
+                    setShared('AllAttendanceObj', listAllId, true);
+                    setShared('SelectedAttendanceId', listIdSelect, true);
+                    setShared('Multiple', true, true);
+                    modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                        blockUI.clear();
+                        $("#itemname").focus();
+                        var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                        if (list == null || list === undefined) return;
+                        self.listItem(list);
+                        var listUpdate = new Array<model.DivergenceTimeItem>();
+                        for (let i = 0; i < list.length; i++) {
+                            let itemUpdate = new model.DivergenceTimeItem(self.divergenceTimeId(), list[i]);
+                            listUpdate.push(itemUpdate);
+                        }
+                        service.getNameItemSelected(list).done(function(lstName: Array<model.DivergenceItem>) {
+                            self.listItemSelected(lstName);
+                            self.findTimeName(self.divergenceTimeId());
+                            if (self.timeItemName() != '') {
+                                if ($('#inpName').ntsError("hasError") == true) {
+                                    $('#inpName').ntsError('clear');
+                                }
+                            }
+                        })
+                    })
+                });
             }
 
             //open C dialog
             openCDialog() {
-
+                var self = this;
+                blockUI.grayout();
+                setShared('KMK011_divTimeId', self.divergenceTimeId(), true);
+                nts.uk.ui.windows.sub.modal('/view/kmk/011/c/index.xhtml', { title: '選択肢の設定', }).onClosed(function(): any {
+                    blockUI.clear();
+                    if ($('#inpDialog').ntsError("hasError") == true) {
+                        $('#inpDialog').ntsError('clear');
+                    }
+                    $("#itemname").focus();
+                });
             }
         }
 
@@ -238,11 +372,11 @@ module nts.uk.at.view.kmk011.b {
                 reasonSelect: boolean;
                 divergenceReasonInputed: boolean;
                 divergenceReasonSelected: boolean;
-                targetItems: string[];
+                targetItems: number[];
 
                 constructor(divergenceTimeNo: number, divergenceTimeUseSet: number, divergenceTimeName: string,
                     divergenceType: number, reasonInput: boolean, reasonSelect: boolean,
-                    divergenceReasonInputed: boolean, divergenceReasonSelected: boolean, targetItems: string[]
+                    divergenceReasonInputed: boolean, divergenceReasonSelected: boolean, targetItems: number[]
                 ) {
                     this.divergenceTimeNo = divergenceTimeNo;
                     this.divergenceTimeUseSet = divergenceTimeUseSet;
@@ -255,6 +389,17 @@ module nts.uk.at.view.kmk011.b {
                     this.targetItems = targetItems;
                 }
 
+            }
+            export class AttendanceType {
+                attendanceItemId: number;
+            }
+            export class DivergenceTimeItem {
+                divTimeId: number;
+                attendanceId: number;
+                constructor(divTimeId: number, attendanceId: number) {
+                    this.divTimeId = divTimeId;
+                    this.attendanceId = attendanceId;
+                }
             }
 
             export class DivergenceItem {
