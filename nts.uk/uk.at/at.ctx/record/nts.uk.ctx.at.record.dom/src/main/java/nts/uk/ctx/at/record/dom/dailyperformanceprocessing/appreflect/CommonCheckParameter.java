@@ -24,5 +24,5 @@ public class CommonCheckParameter {
 	 * 予定反映状態
 	 */
 	private ReflectedStateRecord stateReflection;
-
+	
 }

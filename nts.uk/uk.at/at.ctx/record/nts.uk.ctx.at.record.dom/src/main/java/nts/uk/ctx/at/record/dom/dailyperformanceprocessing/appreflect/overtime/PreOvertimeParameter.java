@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 @AllArgsConstructor
 @Getter
 @Setter
@@ -38,8 +39,6 @@ public class PreOvertimeParameter {
 	private boolean autoClearStampFlg;
 	/**
 	 * 予定と実績を同じに変更する区分
-	 * True: 同じ
-	 * false: 同じじゃない
 	 */
 	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
 	/**

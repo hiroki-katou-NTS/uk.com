@@ -1,95 +1,39 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.WorkTimeForm;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private EditStateOfDailyPerformanceRepository dailyReposiroty;
+	private WorkTimeIsFluidWork workTimeService;
 	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
+	private ScheWorkUpdateService workUpdate;
+	@Inject
+	private CommonProcessCheckService commonService;
 	@Override
 	public void workTimeWorkTimeUpdate(PreOvertimeParameter para) {
 		//INPUT．勤種反映フラグ(予定)をチェックする
 		if(!para.isScheReflectFlg()) {
 			return;
 		}
-		this.updateDaily(this.lstItemSche(), para);		
+		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
+				para.getDateInfo(), 
+				para.getOvertimePara().getWorkTimeCode(), 
+				para.getOvertimePara().getWorkTypeCode()); 
+		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstScheWorkTimeType());		
 	}
-	/**
-	 * 予定勤務種類の項目ID
-	 * @return
-	 */
-	private List<Integer> lstItemSche(){
-		List<Integer> lstItem = new ArrayList<>();
-		lstItem.add(3);
-		lstItem.add(4);
-		lstItem.add(5);
-		lstItem.add(6);
-		return lstItem;
-	}
-	/**
-	 * 勤務種類の項目ID
-	 * 就業時間帯の項目ID
-	 * @return
-	 */
-	private List<Integer> lstItemRecord(){
-		List<Integer> lstItem = new ArrayList<>();
-		lstItem.add(1);
-		lstItem.add(2);
-		return lstItem;
-	}
-	/**
-	 * update 日別実績の勤務情報, 日別実績の編集状態
-	 * @param lstItem
-	 * @param para
-	 */
-	private void updateDaily(List<Integer> lstItem, PreOvertimeParameter para) {
-		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateInfo());
-		if(!optDailyPerfor.isPresent()) {
-			return;
-		}
-		//日別実績の勤務情報
-		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkInformation scheInfor = new WorkInformation(para.getOvertimePara().getWorkTimeCode(), para.getOvertimePara().getWorkTypeCode());
-		dailyPerfor.setScheduleWorkInformation(scheInfor);
-		workRepository.updateByKey(dailyPerfor);
-		//日別実績の編集状態
-		List<EditStateOfDailyPerformance> lstDaily = new ArrayList<>();
-		this.lstItemSche().stream().forEach(z -> {
-			Optional<EditStateOfDailyPerformance> optItemData = dailyReposiroty.findByKeyId(para.getEmployeeId(), para.getDateInfo(), z);
-			if(optItemData.isPresent()) {
-				EditStateOfDailyPerformance itemData = optItemData.get();
-				EditStateOfDailyPerformance data = new EditStateOfDailyPerformance(itemData.getEmployeeId(), 
-						itemData.getAttendanceItemId(), itemData.getYmd(), 
-						EditStateSetting.REFLECT_APPLICATION);
-				lstDaily.add(data);
-			}
-		});
-		
-		if(!lstDaily.isEmpty()) {
-			dailyReposiroty.updateByKey(lstDaily);
-		}
-	}
+	
 	@Override
 	public boolean changeFlg(PreOvertimeParameter para) {
 		//INPUT．勤種反映フラグ(実績)をチェックする
@@ -102,7 +46,11 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return false;
 		}
 		//勤種・就時の反映
-		this.updateDaily(lstItemRecord(), para);
+		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
+				para.getDateInfo(), 
+				para.getOvertimePara().getWorkTimeCode(), 
+				para.getOvertimePara().getWorkTypeCode()); 
+		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstItemRecord());
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
@@ -154,37 +102,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return true;
 		}
 		//流動勤務かどうかの判断処理
-		WorkTimeForm workTimeFormCheck = this.workTimeFormCheck(para.getOvertimePara().getWorkTimeCode());
-		if(workTimeFormCheck == WorkTimeForm.FLOW) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	/**
-	 * 流動勤務かどうかの判断処理
-	 * @return
-	 */
-	private WorkTimeForm workTimeFormCheck(String workTimeCode) {
-		String companyId = AppContexts.user().companyId();
-		//就業時間帯の設定
-		Optional<WorkTimeSetting> findByCode = workTimeSettingRepository.findByCode(companyId, workTimeCode);
-		if(!findByCode.isPresent()) {
-			return null;
-		}
-		WorkTimeSetting workTimeData = findByCode.get();
-		if(workTimeData.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
-			return WorkTimeForm.FLEX;
-		} else if (workTimeData.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK) {
-			if(workTimeData.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
-				return WorkTimeForm.FIXED;
-			} else if (workTimeData.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.DIFFTIME_WORK) {
-				return WorkTimeForm.TIMEDIFFERENCE;
-			} else {
-				return WorkTimeForm.FLOW;
-			}
-		}
-		return null;
+		return workTimeService.checkWorkTimeIsFluidWork(para.getOvertimePara().getWorkTimeCode());
+		
 	}
 
 }

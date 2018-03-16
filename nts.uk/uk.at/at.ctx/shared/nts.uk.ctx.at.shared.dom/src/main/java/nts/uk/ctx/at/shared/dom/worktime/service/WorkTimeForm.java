@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
+package nts.uk.ctx.at.shared.dom.worktime.service;
 
 import lombok.AllArgsConstructor;
 /**
- * 就業時間帯の勤務形態
+ * 流動勤務かどうかの判断処理
  * @author do_dt
  *
  */
