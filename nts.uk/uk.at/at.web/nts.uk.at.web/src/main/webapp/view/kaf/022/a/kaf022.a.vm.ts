@@ -927,13 +927,13 @@ module nts.uk.at.view.kmf022 {
 
                 //a12
                 self.itemListA12_5 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_37'))
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_37'))
                 ]);
                 self.selectedIdA12_5 = ko.observable(0);
                 self.itemListA12_6 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_100')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_101'))
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_101'))
                 ]);
                 self.selectedIdA12_6 = ko.observable(0);
                 self.itemListA12_7 = ko.observableArray([
