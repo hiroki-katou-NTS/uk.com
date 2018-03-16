@@ -21,18 +21,21 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         startAppDate: KnockoutObservable<string> = ko.observable('');
          // 申請日付
         endAppDate: KnockoutObservable<string> = ko.observable('');
-        selectedValue: KnockoutObservable<number> = ko.observable(0);
+        selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
         holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);
         holidayTypeCode: KnockoutObservable<number> = ko.observable(0);
         typeOfDutys: KnockoutObservableArray<common.TypeOfDuty> = ko.observableArray([]);
         selectedTypeOfDuty:  KnockoutObservable<number> = ko.observable(null);
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
-        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(true);
+//        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(false);
         displayStartFlg: KnockoutObservable<boolean> = ko.observable(false);
         contentFlg: KnockoutObservable<boolean> = ko.observable(true);
         eblTimeStart1:  KnockoutObservable<boolean> = ko.observable(false);
         eblTimeEnd1:  KnockoutObservable<boolean> = ko.observable(false);
+        workTimeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        workTypecodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        displayWorkTimeName:  KnockoutObservable<string> = ko.observable(null);
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);   
@@ -40,49 +43,28 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         timeStart2: KnockoutObservable<number> = ko.observable(null);
         timeEnd2: KnockoutObservable<number> = ko.observable(null);
         //勤務種類
-        workTypeCd: KnockoutObservable<string> = ko.observable('');
-        workTypeName: KnockoutObservable<string> = ko.observable('');
-        //勤務種類
-        siftCD: KnockoutObservable<string> = ko.observable('');
-        siftName: KnockoutObservable<string> = ko.observable('');
+        workTimeCode: KnockoutObservable<string> = ko.observable('');
+        workTimeName: KnockoutObservable<string> = ko.observable('');
         //comboBox 定型理由
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         //MultilineEditor
         requiredReason : KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
-        //comboBox 定型理由
-        reasonCombo2: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
-        selectedReason2: KnockoutObservable<string> = ko.observable('');
-        //MultilineEditor
-        requiredReason2 : KnockoutObservable<boolean> = ko.observable(false);
-        multilContent2: KnockoutObservable<string> = ko.observable('');
+  
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID : KnockoutObservable<string> = ko.observable('');
-        //休憩時間
-        restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
-        //残業時間
-        overtimeHours: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
-        //休出時間
-        breakTimes: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
-        //加給時間OverTimeInput
-        bonusTimes: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //menu-bar 
         enableSendMail :KnockoutObservable<boolean> = ko.observable(true); 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
         useMulti: KnockoutObservable<boolean> = ko.observable(true);
         
-        displayBonusTime: KnockoutObservable<boolean> = ko.observable(false);
-        displayCaculationTime: KnockoutObservable<boolean> = ko.observable(false);
         displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(true); 
-        displayRestTime: KnockoutObservable<boolean> = ko.observable(false);
         
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(true);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(true);
-        displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
-        displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             
@@ -111,7 +93,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.holidayTypeCode.subscribe(function(value){
-                    if(!nts.uk.util.isNullOrEmpty(self.selectedValue())){
+                    if(!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())){
                          var dfd = $.Deferred();
                         service.getAllAppForLeave({
                             startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -119,12 +101,17 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                             displayHalfDayValue: self.displayHalfDayValue(),
                             holidayType: value,
-                            alldayHalfDay: self.selectedValue()
+                            alldayHalfDay: self.selectedAllDayHalfDayValue()
                         }).done((data) => {
                             self.displayStartFlg(true);
                             self.changeWorkHourValue(data.changeWorkHourFlg);
-                            for(let i = 0;i < data.workTypes.length;i++){
-                                self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode,data.workTypes[i].displayName) );
+                            if(nts.uk.util.isNullOrEmpty(data.workTypes)){
+                                self.typeOfDutys([]);
+                            }else{
+                                for (let i = 0; i < data.workTypes.length; i++) {
+                                    self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
+                                    self.workTypecodes.push(data.workTypes[i].workTypeCode);
+                                }
                             }
                             dfd.resolve(data);
                         }).fail((res) =>{
@@ -132,6 +119,21 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         });
                         return dfd.promise();
                     }
+                });
+                // find changeDate
+                self.startAppDate.subscribe(function(value){
+                    self.findChangeAppDate(value);
+                });
+                //find by change AllDayHalfDay
+                self.selectedAllDayHalfDayValue.subscribe((value) =>{
+                    self.findChangeAllDayHalfDay(value);
+                });
+                // find change value A5_3
+                self.displayHalfDayValue.subscribe((value) =>{
+                   self.findChangeDisplayHalfDay(value); 
+                });
+                self.selectedTypeOfDuty.subscribe((value) =>{
+                   self.findChangeWorkType(value); 
                 });
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);    
@@ -155,7 +157,122 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             return dfd.promise();
             
         }
-        
+        // change by appDate
+        findChangeAppDate(data: any){
+            let self = this;
+            let dfd = $.Deferred();
+            service.findByChangeAppDate({
+                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
+                displayHalfDayValue: self.displayHalfDayValue(),
+                holidayType: self.holidayTypeCode(),
+                prePostAtr: self.prePostSelected(),
+                workTypeCode: self.selectedTypeOfDuty(),
+                alldayHalfDay: self.selectedAllDayHalfDayValue()
+            }).done((result) => {
+                self.changeWorkHourValue(result.changeWorkHourFlg);
+                if( !nts.uk.util.isNullOrEmpty(result.workTypes)){
+                    for (let i = 0; i < result.workTypes.length; i++) {
+                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        self.workTypecodes.push(result.workTypes[i].workTypeCode);
+                    }
+                    self.selectedTypeOfDuty(result.workTypeCode);
+                }
+                self.prePostSelected(result.application.prePostAtr);
+                self.displayPrePostFlg(result.prePostFlg);
+                self.kaf000_a.getAppDataDate(0, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
+                dfd.resolve(result);
+            }).fail((res) => {
+                dfd.reject(res);
+            });
+            return dfd.promise();
+        }
+        // change by switch button AllDayHalfDay(A3_12)
+        findChangeAllDayHalfDay(value: any){
+            let self = this;
+            let dfd = $.Deferred();
+            service.findChangeAllDayHalfDay({
+                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
+                displayHalfDayValue: self.displayHalfDayValue(),
+                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                alldayHalfDay: value
+            }).done((result) =>{
+                self.changeWorkHourValue(result.changeWorkHourFlg);
+                if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
+                    self.typeOfDutys([]);
+                }else{
+                    for (let i = 0; i < result.workTypes.length; i++) {
+                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        self.workTypecodes.push(result.workTypes[i].workTypeCode);
+                    }
+                }
+                if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes(result.workTimeCodes);
+                }
+                 dfd.resolve(result);
+            }).fail((res) =>{
+                dfd.reject(res);
+            });
+             return dfd.promise();
+        }
+        // change by switch button DisplayHalfDay(A5_3)
+        findChangeDisplayHalfDay(value: any){
+            let self = this;
+            let dfd = $.Deferred();
+            service.getChangeDisplayHalfDay({
+                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
+                displayHalfDayValue: self.displayHalfDayValue(),
+                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                workTypeCode: self.selectedTypeOfDuty(),
+                alldayHalfDay: self.selectedAllDayHalfDayValue()
+            }).done((result) =>{
+                self.changeWorkHourValue(result.changeWorkHourFlg);
+                if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
+                    self.typeOfDutys([]);
+                }else{
+                    for (let i = 0; i < result.workTypes.length; i++) {
+                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        self.workTypecodes.push(result.workTypes[i].workTypeCode);
+                    }
+                    self.selectedTypeOfDuty(result.workTypeCode);
+                }
+                if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes(result.workTimeCodes);
+                }
+                 dfd.resolve(result);
+            }).fail((res) =>{
+                dfd.reject(res);
+            });
+             return dfd.promise();
+        }
+        // change by workType
+        findChangeWorkType(value: any){
+            let self = this;
+            let dfd = $.Deferred();
+            service.getChangeWorkType({
+                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
+                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                workTypeCode: self.selectedTypeOfDuty(),
+                workTimeCode: self.workTimeCode()
+            }).done((result) =>{
+                self.changeWorkHourValue(result.changeWorkHourFlg);
+                if(result.startTime1 != null){
+                    self.timeStart1(result.startTime1);    
+                }
+                if(result.endTime1 != null){
+                    self.timeEnd1(result.endTime1);    
+                }
+                dfd.resolve(result);
+            }).fail((res) =>{
+                dfd.reject(res);
+            });
+             return dfd.promise();
+        }
         initData(data: any){
             let self = this;
             self.manualSendMailAtr(data.manualSendMailFlg);
@@ -163,8 +280,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
             self.convertListHolidayType(data.holidayAppTypes);
-            self.holidayTypeCode(10);
+            self.holidayTypeCode(null);
             self.displayPrePostFlg(data.prePostFlg);
+            self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -179,8 +297,53 @@ module nts.uk.at.view.kaf006.a.viewmodel {
          }
         btnSelectWorkTimeZone(){
             let self = this;
-            self.eblTimeStart1(self.changeWorkHourValue() && !nts.uk.util.isNullOrEmpty(self.timeStart1()));
-            self.eblTimeEnd1(self.changeWorkHourValue() && !nts.uk.util.isNullOrEmpty(self.timeEnd1()));
+            self.getListWorkTime().done(() =>{
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    workTypeCodes: self.workTypecodes(),
+                    selectedWorkTypeCode: self.selectedTypeOfDuty(),
+                    workTimeCodes: self.workTimeCodes(),
+                    selectedWorkTimeCode: self.workTimeCode()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+                    //view all code of selected item 
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData) {
+//                        self.selectedWorkTypeCode(childData.selectedWorkTypeCode);
+//                        self.workTypeName(childData.selectedWorkTypeName);
+                        self.workTimeCode(childData.selectedWorkTimeCode);
+                        self.workTimeName(childData.selectedWorkTimeName);
+                        self.displayWorkTimeName(childData.selectedWorkTimeCode +"　"+childData.selectedWorkTimeName);
+                        service.getWorkingHours(
+                            {
+                                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                                workTypeCode: self.selectedTypeOfDuty(),
+                                workTimeCode: self.workTimeCode()
+                            }
+                        ).done(data => {
+                            self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                            self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        });
+                    }
+                });
+            }
+            let displayWorkingHours: boolean = (self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText("KAF006_21")));
+            self.eblTimeStart1(displayWorkingHours);
+            self.eblTimeEnd1(displayWorkingHours);
+        }
+        getListWorkTime(){
+            let self = this;
+            let dfd = $.Deferred();
+            service.getListWorkTime({
+               startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+               employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),    
+            }).done((value) =>{
+                self.workTimeCodes(value);
+                dfd.resolve(value);
+            }).fail((res) =>{
+                dfd.reject(res);
+            })
+            return dfd.promise();
         }
         convertListHolidayType(data: any){
             let self =  this;
@@ -190,31 +353,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }
         }
         
-        /**
-         * KDL003
-         */
-        openDialogKdl003() {
-            let self = this;
-            let workTypeCodes = [];
-            let workTimeCodes = [];
-            nts.uk.ui.windows.setShared('parentCodes', {
-                workTypeCodes: workTypeCodes,
-                selectedWorkTypeCode: self.workTypeCd(),
-                workTimeCodes: workTimeCodes,
-                selectedWorkTimeCode: self.siftCD()
-            }, true);
-
-            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
-                //view all code of selected item 
-                var childData = nts.uk.ui.windows.getShared('childData');
-                if (childData) {
-                    self.workTypeCd(childData.selectedWorkTypeCode);
-                    self.workTypeName(childData.selectedWorkTypeName);
-                    self.siftCD(childData.selectedWorkTimeCode);
-                    self.siftName(childData.selectedWorkTimeName);
-                }
-            })
-        }
         /**
          * Jump to CMM018 Screen
          */
