@@ -44,7 +44,21 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 		
 		List<GrantHdTbl> grantHolidays = command.getGrantHolidayList().stream()
 				.map(x->x.toDomain(companyId)).collect(Collectors.toList());
+		
 //		GrantHdTbl.validateInput(grantHolidays);
+		
+		// 勤続年数が入力されている場合、付与日数を入力すること
+		for (GrantHdTbl item : grantHolidays) {
+			if(item.getGrantDays() == null) {
+				throw new BusinessException("Msg_270");
+			}
+		}
+		
+		// check update/insert limit time in holiday 半日年休上限回数  or not
+		
+		
+		// check update/insert limit day in year 時間年休上限日数 or not
+		
 		
 		// remove all
 		grantYearHolidayRepo.remove(companyId, command.getConditionNo(), command.getYearHolidayCode());

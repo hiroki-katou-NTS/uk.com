@@ -50,15 +50,11 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
-            $.when(self.getDataFromNo1(), self.getDataFromCurrent()).done(function() {
-                if(self.currentData.length > 0 && self.currentData.length == self.no1Data.length) {
+            $.when(self.getLengthOfService(), self.getGrantHdTbl()).done(function() {
+                if(self.getGrantHdTbl.length > 0 && self.getGrantHdTbl.length == self.getLengthOfService.length) {
                     self.bindData(self.currentData, false);
-                } else if(self.currentData.length > 0 && self.currentData.length > self.no1Data.length) {
-                    
-                } else if(self.currentData.length > 0 && self.currentData.length < self.no1Data.length) {
-                    
                 } else {
-                    self.bindData(self.no1Data, true);
+                    self.bindData(self.getLengthOfService, true);
                 }
                 
                 dfd.resolve();
@@ -70,9 +66,9 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         }
         
         /**
-         * Get data from No 1.
+         * Get data from LengthOfServiceTbl.
          */
-        getDataFromNo1(): JQueryPromise<any> {
+        getLengthOfService(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             var conditionNo = 1;
@@ -89,9 +85,9 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         }
         
         /**
-         * Get data from current.
+         * Get data from GrantHdTbl.
          */
-        getDataFromCurrent(): JQueryPromise<any> {
+        getGrantHdTbl(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             
@@ -126,9 +122,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                         grantDays: null,
                         limitedTimeHdDays: null,
                         limitedHalfHdCnt: null,
-                        grantReferenceDate: 0,
-                        grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity : false,
-                        grantDate: "",
                         gdEnable: true,
                         ltdEnable: true,
                         lthEnable: true 
@@ -146,9 +139,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                         grantDays: data[i].grantDays,
                         limitedTimeHdDays: data[i].limitedTimeHdDays,
                         limitedHalfHdCnt: data[i].limitedHalfHdCnt,
-                        grantReferenceDate: data[i].grantReferenceDate,
-                        grantSimultaneity: data[i].grantSimultaneity,
-                        grantDate: data[i].grantDate,
                         gdEnable: true,
                         ltdEnable: true,
                         lthEnable: true
@@ -167,9 +157,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                     grantDays: null,
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
-                    grantReferenceDate: 0,
-                    grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity : false,
-                    grantDate: "",
                     gdEnable: false,
                     ltdEnable: false,
                     lthEnable: false
@@ -192,22 +179,16 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
 
             var grantHolidayTblList = [];
             _.forEach(self.items(), function(item) {
-                if ((item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || 
-                    item.limitedHalfHdCnt() != null) && (item.lengthOfServiceYears().toString() != "" || item.lengthOfServiceMonths().toString() != "" || item.grantDays().toString() != "" || 
-                    item.limitedTimeHdDays().toString() != "" || item.limitedHalfHdCnt().toString() != "")) {
-                    grantHolidayTblList.push({
-                        grantYearHolidayNo: item.grantYearHolidayNo(),
-                        conditionNo: item.conditionNo(),
-                        yearHolidayCode: item.yearHolidayCode(),
-                        lengthOfServiceYears: item.lengthOfServiceYears(),
-                        lengthOfServiceMonths: item.lengthOfServiceMonths(),
-                        grantDays: item.grantDays(),
-                        limitedTimeHdDays: item.limitedTimeHdDays(),
-                        limitedHalfHdCnt: item.limitedHalfHdCnt(),
-                        grantReferenceDate: item.grantReferenceDate(),
-                        grantSimultaneity: item.grantSimultaneity() ? 1 : 0
-                    });
-                }
+                grantHolidayTblList.push({
+                    grantYearHolidayNo: item.grantYearHolidayNo(),
+                    conditionNo: item.conditionNo(),
+                    yearHolidayCode: item.yearHolidayCode(),
+                    lengthOfServiceYears: item.lengthOfServiceYears(),
+                    lengthOfServiceMonths: item.lengthOfServiceMonths(),
+                    grantDays: item.grantDays(),
+                    limitedTimeHdDays: item.limitedTimeHdDays(),
+                    limitedHalfHdCnt: item.limitedHalfHdCnt()
+                });
             });
             
             // if no data then return
@@ -281,9 +262,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         grantDays: KnockoutObservable<number>;
         limitedTimeHdDays: KnockoutObservable<number>;
         limitedHalfHdCnt: KnockoutObservable<number>;
-        grantReferenceDate: KnockoutObservable<number>;
-        grantSimultaneity: KnockoutObservable<boolean>;
-        grantDate: KnockoutObservable<string>;
         gdEnable: KnockoutObservable<boolean>;
         ltdEnable: KnockoutObservable<boolean>;
         lthEnable: KnockoutObservable<boolean>;
@@ -298,12 +276,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
             self.grantDays = ko.observable(param.grantDays);
             self.limitedTimeHdDays = ko.observable(param.limitedTimeHdDays);
             self.limitedHalfHdCnt = ko.observable(param.limitedHalfHdCnt);
-            self.grantReferenceDate = ko.observable(param.grantReferenceDate);
-            self.grantSimultaneity = ko.observable(param.grantSimultaneity);    
-            self.grantDate = ko.observable(param.grantDate);   
-            self.grantSimultaneity.subscribe(function(value){
-                checkAllowPayBelow(self);
-            });
             self.gdEnable = ko.observable(param.gdEnable);  
             self.ltdEnable = ko.observable(param.ltdEnable);  
             self.lthEnable = ko.observable(param.lthEnable);  
@@ -319,9 +291,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         grantDays: number;
         limitedTimeHdDays: number;
         limitedHalfHdCnt: number;
-        grantReferenceDate: number;
-        grantSimultaneity: boolean;   
-        grantDate: string;
         gdEnable: boolean;
         ltdEnable: boolean;
         lthEnable: boolean; 
@@ -336,11 +305,4 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
             this.name = name;
         }
     }
-    
-    function checkAllowPayBelow(item: Item): void {
-        var self = nts.uk.ui._viewModel.content;
-        var index = _.indexOf(self.items(), item);
-        self.checkAllowPayBelow(index, item.grantSimultaneity());
-    }
-
 }

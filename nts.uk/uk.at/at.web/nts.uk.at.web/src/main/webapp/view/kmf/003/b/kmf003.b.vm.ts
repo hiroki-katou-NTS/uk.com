@@ -11,6 +11,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         displayDateSelected: KnockoutObservable<boolean>;
         conditionData: any;
         count: KnockoutObservable<number>;
+        lengthOfServiceData: any;
+        grantHdData: any;
         
         constructor() {
             var self = this;
@@ -56,10 +58,70 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
-            service.findByCode(self.conditionData.conditionNo, self.conditionData.code).done(function(data){
-                let sortedData = _.orderBy(data, ['grantYearHolidayNo'], ['asc']);
-                self.bindData(sortedData);                
+            $.when(self.getLengthOfService(), self.getGrantHdTbl()).done(function() {
+                let combinedData = [];
+                
+                self.lengthOfServiceData;
+                self.grantHdData;
+                
+                for(var i = 0; i < self.lengthOfServiceData.length; i++){
+                    var item : IItem = {
+                        grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
+                        conditionNo: self.grantHdData[i].conditionNo,
+                        yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
+                        lengthOfServiceYears: self.lengthOfServiceData[i].year,
+                        lengthOfServiceMonths: self.lengthOfServiceData[i].month,
+                        grantDays: self.grantHdData[i].grantDays,
+                        limitedTimeHdDays: self.grantHdData[i].limitTimeHd,
+                        limitedHalfHdCnt: self.grantHdData[i].limitDayYear,
+                        grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
+                        grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
+                        grantDate: ""
+                    };
+                    
+                    combinedData.push(new Item(item));
+                }
+                
+                self.bindData(combinedData);
+                
                 dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data from LengthOfServiceTbl.
+         */
+        getLengthOfService(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            
+            service.findByCode(self.conditionData.code).done(function(data){
+                let sortedData = _.orderBy(data, ['grantNum'], ['asc']);
+                self.lengthOfServiceData = sortedData;
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data from GrantHdTbl.
+         */
+        getGrantHdTbl(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            var conditionNo = 1;
+            
+            service.findGrantByCode(conditionNo, self.conditionData.code).done(function(data){
+                let sortedData = _.orderBy(data, ['grantNum'], ['asc']);
+                self.grantHdData = sortedData;
+                dfd.resolve(data);
             }).fail(function(res) {
                 dfd.reject(res);    
             });
@@ -78,17 +140,17 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             //Update case
             for(var i = 0; i < data.length; i++){
                 var item : IItem = {
-                    grantYearHolidayNo: data[i].grantYearHolidayNo,
-                    conditionNo: data[i].conditionNo,
-                    yearHolidayCode: data[i].yearHolidayCode,
-                    lengthOfServiceYears: data[i].lengthOfServiceYears,
-                    lengthOfServiceMonths: data[i].lengthOfServiceMonths,
-                    grantDays: data[i].grantDays,
-                    limitedTimeHdDays: data[i].limitedTimeHdDays,
-                    limitedHalfHdCnt: data[i].limitedHalfHdCnt,
-                    grantReferenceDate: data[i].grantReferenceDate,
-                    grantSimultaneity: data[i].grantSimultaneity,
-                    grantDate: data[i].grantDate
+                    grantYearHolidayNo: data[i].grantYearHolidayNo(),
+                    conditionNo: data[i].conditionNo(),
+                    yearHolidayCode: data[i].yearHolidayCode(),
+                    lengthOfServiceYears: data[i].lengthOfServiceYears(),
+                    lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
+                    grantDays: data[i].grantDays(),
+                    limitedTimeHdDays: data[i].limitedTimeHdDays(),
+                    limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
+                    grantReferenceDate: data[i].grantReferenceDate(),
+                    grantSimultaneity: data[i].grantSimultaneity(),
+                    grantDate: data[i].grantDate()
                 };
                 self.items.push(new Item(item));
             }
@@ -104,7 +166,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
                     grantReferenceDate: 0,
-                    grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity : false,
+                    grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
                     grantDate: ""
                 };
                 self.items.push(new Item(item));    
@@ -179,22 +241,18 @@ module nts.uk.at.view.kmf003.b.viewmodel {
 
             var grantHolidayTblList = [];
             _.forEach(self.items(), function(item) {
-                if ((item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || 
-                    item.limitedHalfHdCnt() != null) && (item.lengthOfServiceYears().toString() != "" || item.lengthOfServiceMonths().toString() != "" || item.grantDays().toString() != "" || 
-                    item.limitedTimeHdDays().toString() != "" || item.limitedHalfHdCnt().toString() != "")) {
-                    grantHolidayTblList.push({
-                        grantYearHolidayNo: item.grantYearHolidayNo(),
-                        conditionNo: item.conditionNo(),
-                        yearHolidayCode: item.yearHolidayCode(),
-                        lengthOfServiceYears: item.lengthOfServiceYears(),
-                        lengthOfServiceMonths: item.lengthOfServiceMonths(),
-                        grantDays: item.grantDays(),
-                        limitedTimeHdDays: item.limitedTimeHdDays(),
-                        limitedHalfHdCnt: item.limitedHalfHdCnt(),
-                        grantReferenceDate: item.grantReferenceDate(),
-                        grantSimultaneity: item.grantSimultaneity() ? 1 : 0
-                    });
-                }
+                grantHolidayTblList.push({
+                    grantNum: item.grantYearHolidayNo(),
+                    conditionNo: item.conditionNo(),
+                    yearHolidayCode: item.yearHolidayCode(),
+                    year: item.lengthOfServiceYears(),
+                    month: item.lengthOfServiceMonths(),
+                    grantDays: item.grantDays(),
+                    limitTimeHd: item.limitedTimeHdDays(),
+                    limitDayYear: item.limitedHalfHdCnt(),
+                    standGrantDay: item.grantReferenceDate(),
+                    allowStatus: item.grantSimultaneity() ? 1 : 0
+                });
             });
             
             // if no data then return
@@ -202,15 +260,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", false);
                 return;
             }
-            
-            // else have data then continue
-            var dataTranfer: any = {
-                conditionNo: self.conditionData.conditionNo,
-                yearHolidayCode: self.code(), 
-                grantHolidayList: grantHolidayTblList, 
-            }
         
-            service.addYearHolidayGrant(dataTranfer).done(function(){
+            service.addYearHolidayGrant(grantHolidayTblList).done(function(){
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error){

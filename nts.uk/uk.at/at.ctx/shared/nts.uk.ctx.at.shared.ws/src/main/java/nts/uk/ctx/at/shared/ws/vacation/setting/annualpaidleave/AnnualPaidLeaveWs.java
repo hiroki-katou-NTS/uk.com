@@ -17,7 +17,9 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave.AnnualPaidLeaveSaveCommand;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave.AnnualPaidLeaveSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.AnnualPaidLeaveFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.CheckAnnualKMF003Finder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto.AnnualPaidLeaveSettingFindDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto.CheckAnnualKMF003Dto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -35,6 +37,9 @@ public class AnnualPaidLeaveWs extends WebService {
     /** The annual finder. */
     @Inject
     private AnnualPaidLeaveFinder annualFinder;
+    
+    @Inject
+    private CheckAnnualKMF003Finder checkKmf003Finder;
 
     /** The annual paid handler. */
     @Inject
@@ -126,5 +131,16 @@ public class AnnualPaidLeaveWs extends WebService {
     @Path("find/setting")
     public AnnualPaidLeaveSettingFindDto findByCompanyId() {
         return this.annualFinder.findByCompanyId();
+    }
+    
+    /**
+     * Find by company id.
+     * @return the annual paid leave setting find dto
+     * @author yennth
+     */
+    @POST
+    @Path("find/checkkmf003")
+    public CheckAnnualKMF003Dto findByCompany() {
+        return this.checkKmf003Finder.findByCom();
     }
 }
