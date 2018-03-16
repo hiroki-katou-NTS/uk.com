@@ -859,7 +859,7 @@ module nts.uk.ui.exTable {
                     td.style.padding = "1px 1px";
                     td.style.textAlign = "center";
                     td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked }));
-                    tr.append(td);
+                    tr.appendChild(td);
                 }
                 _.forEach(Object.keys(data), function(key: any, index: number) {
                     if (!self.visibleColumnsMap[key] && !self.hiddenColumnsMap[key]) return;
@@ -3418,7 +3418,7 @@ module nts.uk.ui.exTable {
                     e.classList.add(CELL_SELECTED_CLS);
                 });
                 return true;
-            } else if (selector.is($cell, "td") {
+            } else if (selector.is($cell, "td")) {
                 let childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                 if (childCells.length > 0) {
                     helper.addClass(childCells, CELL_SELECTED_CLS);
