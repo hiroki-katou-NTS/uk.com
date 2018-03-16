@@ -6,34 +6,53 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 
-public class JpaDivergenceReasonSelectRepositoryGetMemento implements DivergenceReasonSelectGetMemento{
-	
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JpaDivergenceReasonSelectRepositoryGetMemento.
+ */
+public class JpaDivergenceReasonSelectRepositoryGetMemento implements DivergenceReasonSelectGetMemento {
+
+	/** The entity. */
 	private KrcstDvgcReason entity;
-	
-	JpaDivergenceReasonSelectRepositoryGetMemento (){
-		
-	}
-	
-	JpaDivergenceReasonSelectRepositoryGetMemento(KrcstDvgcReason entity){
-		this.entity=entity;
+
+	/**
+	 * Instantiates a new jpa divergence reason select repository get memento.
+	 */
+	JpaDivergenceReasonSelectRepositoryGetMemento() {
+
 	}
 
+	/**
+	 * Instantiates a new jpa divergence reason select repository get memento.
+	 *
+	 * @param entity the entity
+	 */
+	JpaDivergenceReasonSelectRepositoryGetMemento(KrcstDvgcReason entity) {
+		this.entity = entity;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento#getDivergenceReasonCode()
+	 */
 	@Override
 	public DivergenceReasonCode getDivergenceReasonCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DivergenceReasonCode(this.entity.getId().getReasonCode());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento#getReason()
+	 */
 	@Override
 	public DivergenceReason getReason() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DivergenceReason(this.entity.getReason());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento#getReasonRequired()
+	 */
 	@Override
 	public DivergenceInputRequired getReasonRequired() {
-		// TODO Auto-generated method stub
-		return null;
+		return DivergenceInputRequired.valueOf(this.entity.getReasonRequired().intValue());
 	}
 
 }

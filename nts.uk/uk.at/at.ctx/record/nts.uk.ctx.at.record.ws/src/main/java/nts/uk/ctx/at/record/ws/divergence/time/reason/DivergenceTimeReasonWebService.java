@@ -5,12 +5,15 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 
+/**
+ * The Class DivergenceTimeReasonWebService.
+ */
 @Path("at/record/divergencetime/reason")
 @Produces("application/json")
 public class DivergenceTimeReasonWebService extends WebService {
-	
-//	
-//@POST
-//@Path("getreason/{divTimeId}")
+
+	//
+	// @POST
+	// @Path("getreason/{divTimeId}")
 
 }
