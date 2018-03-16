@@ -83,11 +83,12 @@ module nts.uk.at.view.kmk011.b {
                     self.clearError();
                     if (codeChanged == 0) { return; }
                     self.selectUse(null);
-
-                    self.itemDivergenceTime(self.findDivTime(codeChanged));
-
+                    
+                    self.itemDivergenceTime(self.findDivergenceTime(codeChanged));
+                    console.log(self.itemDivergenceTime().divergenceTimeName);
+                    
                     self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
-                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
+                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);//temp
                     self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
                     self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
                     self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
@@ -96,21 +97,16 @@ module nts.uk.at.view.kmk011.b {
 
                     //set name KDL selected for divergenceTime
                     self.listItemSelected();
-                    service.getItemSelected(self.divergenceTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
-                        if (lstItem == null || lstItem === undefined || lstItem.length == 0) {
-                            self.timeItemName();
-                            self.listItemSelected([]);
-                        } else {
-                            var listItemId = [];
-                            for (let j = 0; j < lstItem.length; j++) {
-                                listItemId[j] = lstItem[j].attendanceId;
-                            }
-                            service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>) {
-                                self.listItemSelected(lstName);
-                                self.findTimeName(self.divergenceTimeId());
-                            });
-                        }
-                    });
+                    var listItemAttendanceId = self.itemDivergenceTime().targetItems; //list attendanceId
+                    if (listItemAttendanceId == null || listItemAttendanceId === undefined || listItemAttendanceId.length == 0) {
+                        self.timeItemName();
+                        self.listItemSelected([]);
+                    } else {
+                        service.getNameItemSelected(listItemAttendanceId).done(function(lstName: Array<model.DivergenceItem>) {
+                            self.listItemSelected(lstName);
+                            self.findTimeName(self.divergenceTimeId());
+                        });
+                    }
 
                     if (self.itemDivergenceTime().reasonInput) {
                         self.checkErrorInput(true);
@@ -172,7 +168,7 @@ module nts.uk.at.view.kmk011.b {
                 var self = this;
                 blockUI.invisible();
                 var dfd = $.Deferred();
-                self.findDivergenceTime(1);
+                
                 service.getAllDivergenceTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                     blockUI.clear();
                     if (lstDivTime === undefined || lstDivTime.length == 0) {
@@ -197,10 +193,11 @@ module nts.uk.at.view.kmk011.b {
                     return obj.divergenceTimeNo == value;
                 })
             }
-            findDivergenceTime(divergenceTimeNo: number) {
+            findDivergenceTime(divergenceTimeNo: number):any {
                 var self = this;
-                service.findDivergenceTime(divergenceTimeNo).done(function(itemDivergenceTime: model.DivergenceTime) {
-                    console.log(itemDivergenceTime);
+                return service.findDivergenceTime(divergenceTimeNo).done(function(itemDivergenceTime: model.DivergenceTime) {
+                   
+                    return itemDivergenceTime;
                 });
             }
             //create divergence
@@ -363,6 +360,9 @@ module nts.uk.at.view.kmk011.b {
         }
 
         export module model {
+            export class Demo {
+                attendanceId: number;
+            }
             export class DivergenceTime {
                 divergenceTimeNo: number;
                 divergenceTimeUseSet: number;
