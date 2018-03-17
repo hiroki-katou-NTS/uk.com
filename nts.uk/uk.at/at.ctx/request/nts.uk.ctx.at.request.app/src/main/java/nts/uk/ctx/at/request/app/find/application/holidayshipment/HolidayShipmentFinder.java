@@ -49,7 +49,7 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -61,9 +61,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -111,6 +109,8 @@ public class HolidayShipmentFinder {
 	private RequestOfEachCompanyRepository requestComRepo;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	@Inject
+	private BasicScheduleService basicService;
 
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
@@ -234,13 +234,13 @@ public class HolidayShipmentFinder {
 	private List<TimezoneUse> getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
 		// ドメインモデル「勤務種類」を取得する
 		List<TimezoneUse> result = new ArrayList<TimezoneUse>();
+
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (WkTypeOpt.isPresent()) {
 
 			WorkType wkType = WkTypeOpt.get();
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
-			DailyWork dailyWork = wkType.getDailyWork();
-			getDayAttendance(dailyWork);
+			basicService.checkWorkDay(wkTypeCD);
 			if (!wkType.getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				return getPreTimeZone(companyID, wkTimeCode, wkType);
@@ -280,82 +280,6 @@ public class HolidayShipmentFinder {
 
 		}
 		return result;
-	}
-
-	private WorkStyle getDayAttendance(DailyWork dailyWork) {
-		WorkStyle result = null;
-		switch (dailyWork.getWorkTypeUnit()) {
-		case OneDay:
-			if (isIncludeHoliday(dailyWork.getOneDay(), true)) {
-				result = WorkStyle.ONE_DAY_REST;
-			} else {
-				result = WorkStyle.ONE_DAY_WORK;
-			}
-			break;
-		case MonringAndAfternoon:
-			result = getMonringAndAfternoonWork(dailyWork);
-			break;
-		}
-		return result;
-	}
-
-	private WorkStyle getMonringAndAfternoonWork(DailyWork dailyWork) {
-		WorkTypeClassification morning = dailyWork.getMorning();
-		WorkTypeClassification afternoon = dailyWork.getAfternoon();
-		WorkStyle result;
-		if (isIncludeHoliday(morning, false)) {
-			// 【休日として扱う勤務種類の分類】に含まれていない
-			if (isIncludeHoliday(afternoon, false)) {
-				result = WorkStyle.ONE_DAY_REST;
-			} else {
-				result = WorkStyle.AFTERNOON_WORK;
-			}
-
-		} else {
-			// 【休日として扱う勤務種類の分類】に含まれている
-			if (isIncludeHoliday(afternoon, false)) {
-				result = WorkStyle.MORNING_WORK;
-			} else {
-				result = WorkStyle.ONE_DAY_WORK;
-			}
-		}
-
-		return result;
-	}
-
-	private boolean isIncludeHoliday(WorkTypeClassification worktype, boolean isOneDay) {
-		boolean result;
-		switch (worktype) {
-		case Holiday:
-		case Pause:
-		case AnnualHoliday:
-		case YearlyReserved:
-		case SpecialHoliday:
-		case TimeDigestVacation:
-		case SubstituteHoliday:
-		case ContinuousWork:
-		case LeaveOfAbsence:
-		case Closure:
-			if (isOneDay) {
-				result = true;
-			} else {
-				switch (worktype) {
-				case ContinuousWork:
-				case LeaveOfAbsence:
-				case Closure:
-					result = false;
-				default:
-					result = true;
-					break;
-				}
-			}
-			break;
-		default:
-			result = false;
-			break;
-		}
-		return result;
-
 	}
 
 	private void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate appDate,
@@ -446,7 +370,7 @@ public class HolidayShipmentFinder {
 
 	private List<WorkType> getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD) {
 
-		// TODO - ドメインモデル「勤務種類」を取得する yêu cầu team anh Chình trả về wktypes
+		// ドメインモデル「勤務種類」を取得する yêu cầu team anh Chình trả về wktypes
 
 		List<WorkType> wkTypes = wkTypeRepo.findWorkTypeForPause(companyID);
 		// アルゴリズム「対象勤務種類の抽出」を実行する
