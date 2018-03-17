@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 @Value
 public class OutputDetailCheckDto {
@@ -17,6 +16,8 @@ public class OutputDetailCheckDto {
 		private boolean alternateExpiration;
 		//ドメインモデル「申請」．入力者 == ログイン者社員ID OR ドメインモデル「申請」．申請者 == ログイン者社員ID
 		private boolean loginInputOrApproval;
+		
+		private int screenMode;
 		public static OutputDetailCheckDto fromDomain(DetailedScreenPreBootModeOutput domain) {
 			return new OutputDetailCheckDto(
 					domain.getUser().value,
@@ -24,7 +25,8 @@ public class OutputDetailCheckDto {
 					domain.isAuthorizableFlags(),
 					domain.getApprovalATR().value,
 					domain.isAlternateExpiration(),
-					domain.isLoginInputOrApproval()
+					domain.isLoginInputOrApproval(),
+					domain.getScreenMode().value
 					);
 		}
 }

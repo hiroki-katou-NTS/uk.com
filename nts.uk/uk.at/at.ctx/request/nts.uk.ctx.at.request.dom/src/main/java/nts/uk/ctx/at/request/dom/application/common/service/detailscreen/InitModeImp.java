@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,10 +20,8 @@ public class InitModeImp implements InitMode {
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 
-	private ReflectPlanPerState status;
-
 	@Override
-	public DetailScreenInitModeOutput getDetailScreenInitMode(User user, int reflectPerState) {
+	public DetailScreenInitModeOutput getDetailScreenInitMode(User user, Integer reflectPerState) {
 		String companyID = AppContexts.user().companyId();
 		
 		OutputMode outputMode;
@@ -30,13 +29,13 @@ public class InitModeImp implements InitMode {
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 
-		if (user == User.APPROVER) {
+		if (user.equals(User.APPROVER)) {
 			/**
 			 * Domain model "approval setting". You can change the contents of
 			 * the application at the time of approval but false
 			 */
 			/** 0 = Display Mode */
-			if (applicationSetting.get().getAppContentChangeFlg().value == 0) {
+			if (applicationSetting.get().getAppContentChangeFlg().equals(AppCanAtr.NOTCAN)) {
 
 				outputMode = OutputMode.DISPLAYMODE;
 			} else {
@@ -45,7 +44,10 @@ public class InitModeImp implements InitMode {
 				 * 99:過去申請(passApp)、4:反映済(reflected),3:取消待ち(waiCancellation),2:
 				 * 取消済( canceled) ,
 				 */
-				if (reflectPerState == 99 || reflectPerState == 4 || reflectPerState == 3 || reflectPerState == 2) {
+				if (reflectPerState.equals(ReflectPlanPerState.PASTAPP.value) || 
+						reflectPerState.equals(ReflectPlanPerState.REFLECTED.value) || 
+						reflectPerState.equals(ReflectPlanPerState.WAITCANCEL.value) || 
+						reflectPerState.equals(ReflectPlanPerState.CANCELED.value)) {
 					outputMode = OutputMode.DISPLAYMODE;
 				} else {
 					outputMode = OutputMode.EDITMODE;
@@ -57,7 +59,8 @@ public class InitModeImp implements InitMode {
 			 * ステータスが差し戻し、未反映 Status 0:未反映 (notReflected) 1:差し戻し(remand)
 			 */
 
-			if (reflectPerState == 0 || reflectPerState == 1) {
+			if (reflectPerState.equals(ReflectPlanPerState.NOTREFLECTED.value) || 
+					reflectPerState.equals(ReflectPlanPerState.REMAND.value)) {
 				outputMode = OutputMode.EDITMODE;
 			} else {
 				outputMode = OutputMode.DISPLAYMODE;

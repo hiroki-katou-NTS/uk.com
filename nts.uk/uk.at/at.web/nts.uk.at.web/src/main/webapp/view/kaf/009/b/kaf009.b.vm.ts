@@ -64,11 +64,13 @@ module nts.uk.at.view.kaf009.b {
             reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
             selectedReason: KnockoutObservable<string> = ko.observable('');
             displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
+            enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
             //MultilineEditor
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
             multilContent: KnockoutObservable<string> = ko.observable('');
             multiOption: any;
             displayReason: KnockoutObservable<boolean> = ko.observable(false);
+            enableReason: KnockoutObservable<boolean> = ko.observable(false);
             //Insert command
             command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
             //list Work Location 
@@ -113,7 +115,9 @@ module nts.uk.at.view.kaf009.b {
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
-                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
+                    self.displayReason(self.displayTypicalReason()||
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false));
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -161,6 +165,8 @@ module nts.uk.at.view.kaf009.b {
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
+                        self.isNewScreen(detailData.outMode==1?true:false);
+                        self.enableReason(self.isNewScreen() && self.requiredReason());
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
