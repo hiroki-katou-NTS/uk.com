@@ -255,21 +255,21 @@
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
-								enable: true,
+								enable: enableTypicalReason,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
 		<div class="valign-top control-group"
-			data-bind="if: (isNewScreen() &amp;&amp; displayReason()) &#124;&#124; !isNewScreen()">
+			data-bind="if: displayReason()">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
 				<textarea id="inpReasonTextarea"
 					data-bind="ntsMultilineEditor: { value: multilContent,
 													option: multiOption, 
-													required : requiredReason(), 
+													required : requiredReason, 
 													name: '#[KAF009_29]',
-													enable: displayReason,
+													enable: enableReason,
 													}" />
 			</div>
 		</div>
