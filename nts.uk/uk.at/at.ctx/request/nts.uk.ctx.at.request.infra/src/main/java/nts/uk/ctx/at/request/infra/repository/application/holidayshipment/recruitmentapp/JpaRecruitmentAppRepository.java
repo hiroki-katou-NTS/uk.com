@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidayshipment.recruitmentapp;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.recruitmentapp.KrqdtRecruitmentApp;
 
+@Stateless
 public class JpaRecruitmentAppRepository extends JpaRepository implements RecruitmentAppRepository {
 
 	@Override

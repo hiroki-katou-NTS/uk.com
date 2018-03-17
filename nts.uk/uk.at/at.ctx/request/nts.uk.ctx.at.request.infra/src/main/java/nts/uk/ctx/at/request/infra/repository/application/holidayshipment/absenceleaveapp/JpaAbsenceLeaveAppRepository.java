@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidayshipment.absenceleaveapp;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp.KrqdtAbsenceLeaveApp;
 
+@Stateless
 public class JpaAbsenceLeaveAppRepository extends JpaRepository implements AbsenceLeaveAppRepository {
 
 	@Override
