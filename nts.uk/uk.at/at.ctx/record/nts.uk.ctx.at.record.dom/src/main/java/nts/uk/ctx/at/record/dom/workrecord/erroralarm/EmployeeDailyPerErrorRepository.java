@@ -23,6 +23,8 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate);
 	
+	List<EmployeeDailyPerError> findAll(String employeeID, GeneralDate processingDate);
+	
 	void removeParam(String sid, GeneralDate date);
 	
 }
