@@ -1,9 +1,14 @@
 module nts.uk.at.view.kaf006.shr.service {
     var paths: any = {
         getAppForLeaveStart: "at/request/application/appforleave/getAppForLeaveStart",
-        findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
+        getAllAppForLeave: "at/request/application/appforleave/getAllAppForLeave",
+        findByChangeAppDate: "at/request/application/appforleave/findChangeAppdate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
-        getCaculationResult: "at/request/application/overtime/getCaculationResult",
+        findChangeAllDayHalfDay: "at/request/application/appforleave/getChangeAllDayHalfDay",
+        getChangeDisplayHalfDay: "at/request/application/appforleave/findChangeDisplayHalfDay",
+        getChangeWorkType: "at/request/application/appforleave/findChangeWorkType",
+        getListWorkTime: "at/request/application/appforleave/getListWorkTime",
+        getWorkingHours: "at/request/application/appforleave/getWorkingHours",
         createOvertime: "at/request/application/overtime/create",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
@@ -16,6 +21,9 @@ module nts.uk.at.view.kaf006.shr.service {
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAppForLeaveStart, param);
     }
+    export function getAllAppForLeave(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAllAppForLeave, param);
+    }
     
     export function findByChangeAppDate(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findByChangeAppDate, param);
@@ -25,10 +33,21 @@ module nts.uk.at.view.kaf006.shr.service {
         return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
     }
     
-    export function getCaculationResult(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getCaculationResult, param);
+    export function findChangeAllDayHalfDay(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.findChangeAllDayHalfDay, param);
+     }   
+    export function getChangeDisplayHalfDay(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getChangeDisplayHalfDay, param);
     }
-    
+    export function getChangeWorkType(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getChangeWorkType, param);
+    }
+    export function getListWorkTime(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getListWorkTime, param);
+    }
+    export function getWorkingHours(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getWorkingHours, param);
+    }
     export function createOvertime(overtime: any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.createOvertime,overtime);
     }

@@ -17,6 +17,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * @author loivt
+ * 休暇申請
+ */
 @Getter
 @Setter
 @AllArgsConstructor
