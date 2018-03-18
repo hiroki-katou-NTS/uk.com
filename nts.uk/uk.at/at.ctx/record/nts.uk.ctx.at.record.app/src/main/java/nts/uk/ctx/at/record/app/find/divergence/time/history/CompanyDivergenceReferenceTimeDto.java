@@ -43,8 +43,8 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	@Override
 	public void setDivergenceReferenceTimeValue(Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue) {
 		if (divergenceReferenceTimeValue.isPresent()){
-			this.divergenceReferenceTimeValue = new DivergenceReferenceTimeValueDto(divergenceReferenceTimeValue.get().getAlarmTime().get().hour(),
-														divergenceReferenceTimeValue.get().getErrorTime().get().hour());
+			this.divergenceReferenceTimeValue = new DivergenceReferenceTimeValueDto(divergenceReferenceTimeValue.get().getAlarmTime().get().valueAsMinutes(),
+														divergenceReferenceTimeValue.get().getErrorTime().get().valueAsMinutes());
 		}
 	}
 

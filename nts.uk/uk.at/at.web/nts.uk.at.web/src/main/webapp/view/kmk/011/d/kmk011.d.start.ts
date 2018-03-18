@@ -3,10 +3,10 @@ module nts.uk.at.view.kmk011.d {
     
     __viewContext.ready(function() {
         let mainTab = new viewmodel.ScreenModel();
-
         
         mainTab.start_page(0).done(function(screenModel){
-            __viewContext.bind(mainTab); 
+            __viewContext.bind(screenModel); 
+            screenModel.onSelectTabOne();
         });
     });
 }

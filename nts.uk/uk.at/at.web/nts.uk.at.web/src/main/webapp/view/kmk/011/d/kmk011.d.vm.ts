@@ -18,13 +18,13 @@ module nts.uk.at.view.kmk011.d {
             useUnitSetting: KnockoutObservable<boolean>;
             
             //divergence time setting
-            emailAuth: KnockoutObservable<string>;
-            myMessage: KnockoutObservable<string>;
             roundingRules: KnockoutObservableArray<any>;
             required: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
             mapObj: KnockoutObservable<Map<number, ComDivergenceTimeSettingDto>>;
             mapObj2: KnockoutObservable<Map<number, DivergenceTimeDto>>;
+            
+            enableSwitch: KnockoutObservableArray<any>;
             
             //history screen
             enable_button_creat: KnockoutObservable<boolean>;
@@ -35,20 +35,26 @@ module nts.uk.at.view.kmk011.d {
             selectedHist: KnockoutObservable<string>;
             isEnableListHist: KnockoutObservable<boolean>;
             
+            time2: KnockoutObservable<number>;
+            
             constructor() {
                 var _self = this;
                 _self.screenE = ko.observable(new viewModelScreenE.ScreenModel());
                 _self.useUnitSetting = ko.observable(true);
                 
+                _self.time2 = ko.observable(1200);
+                
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_Use') },
-                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }
+                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') },
+                    { code: 1, name:  nts.uk.resource.getText('Enum_UseAtr_Use')}
                 ]);
-                _self.myMessage = ko.observable("asd");
                 _self.enable = ko.observable(true);
+                _self.required = ko.observable(true);
                 _self.mapObj = new Map<number, ComDivergenceTimeSettingDto>();
                 _self.mapObj2 = new Map<number, DivergenceTimeDto>();
+                
+                _self.enableSwitch = ko.observableArray([]);
                 
                  //history screen
                 _self.enable_button_creat = ko.observable(true);
@@ -58,6 +64,10 @@ module nts.uk.at.view.kmk011.d {
                 _self.histName = ko.observable('');
                 _self.selectedHist = ko.observable(null)
                 _self.isEnableListHist = ko.observable(false);
+                
+                _self.selectedHist.subscribe((value) => {
+                    console.log(value);
+                });
             }
             
             public start_page(typeStart: number) : JQueryPromise<any> {
@@ -70,6 +80,13 @@ module nts.uk.at.view.kmk011.d {
                     blockUI.grayout();
                     $.when(_self.fillListHistory(), _self.findAllManageUseUnit()).done(function() {
                         _self.fillListItemSetting().done(() => {
+                            for (let i = 0; i < 10; i++) {
+                                if(_self.isDisableAllRow(i)){
+                                    _self.enableSwitch.push(false);
+                                }else {
+                                    _self.enableSwitch.push(true);
+                                }
+                            }
                             dfd.resolve(_self);
                             blockUI.clear();
                         });
@@ -83,31 +100,57 @@ module nts.uk.at.view.kmk011.d {
                         blockUI.clear();
                     });
                 }
-                
-                dfd.resolve();
                 return dfd.promise();
             }
             
-            public isDisableAllRow() : boolean {
-                return true;    
+            public isDisableAllRow(diverNo: number) : boolean {
+                let _self = this;
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE){
+                    return false;    
+                }
+                return true;
+            }
+            
+            public checkStatusEnable(diverNo: number) : boolean {
+                let _self = this;
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE){
+                    return false;    
+                } else {
+                    if (_self.mapObj.get(diverNo).notUseAtr() == DivergenceTimeUseSet.NOT_USE) {
+                        return false;    
+                    }
+                     return true;
+                }
             }
             
             private fillListItemSetting(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
+                let objTemp1: ComDivergenceTimeSettingDto;
+                let objTemp2: DivergenceTimeDto;
                 
                 $.when( service.getAllItemSetting(_self.selectedHist()), service.getAllDivergenceTime()).done((response1: any, response2: any) => {
-                    response1.forEach((item: any) => {
-                        _self.mapObj.get(item.divergenceTimeNo).divergenceTimeNo(item.divergenceTimeNo);
-                        _self.mapObj.get(item.divergenceTimeNo).noUseAtr(item.notUseAtr);
-                        _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.alarmTime);
-                        _self.mapObj.get(item.divergenceTimeNo).errorTime(item.errorTime);
-                    });
-//                    response2.forEach((item1: any) => {
+                    if(response1 != null) {
+                         response1.forEach((item: any) => {
+                             objTemp1 = new ComDivergenceTimeSettingDto(item.divergenceTimeNo, item.notUseAtr, item.historyId, 
+                                                    item.divergenceReferenceTimeValue.alarmTime, item.divergenceReferenceTimeValue.errorTime);
+                            _self.mapObj.set(item.divergenceTimeNo, objTemp1);  
+//                            _self.mapObj.get(item.divergenceTimeNo).divergenceTimeNo(item.divergenceTimeNo);
+//                            _self.mapObj.get(item.divergenceTimeNo).noUseAtr(item.notUseAtr);
+//                            _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.alarmTime);
+//                            _self.mapObj.get(item.divergenceTimeNo).errorTime(item.errorTime);
+                        });
+                    }
+                    if (response2 != null) {
+                          response2.forEach((item1: any) => {
+                            objTemp2 = new DivergenceTimeDto(item1.divergenceTimeNo, item1.divergenceTimeName, item1.divergenceTimeUseSet);
+                            _self.mapObj2.set(item1.divergenceTimeNo, objTemp2);  
 //                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeNo(item1.divergenceTimeNo);
 //                        _self.mapObj2.get(item1.divergenceTimeNo).divergenceTimeUseSet(item1.divergenceTimeUseSet);
 //                        _self.mapObj2.get(item1.divergenceTimeNo).alarmTime(item1.divergenceTimeName);
-//                    });
+                         }); 
+                    }
+
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -194,13 +237,27 @@ module nts.uk.at.view.kmk011.d {
                 });
             }
             public deleteMode() : void {
-                
+                let _self = this;
+                var command: any = {};
+                command.historyId = _self.selectedHist()
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.deleteHistory(command).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                              _self.start_page(SideBarTabIndex.FIRST);  
+                        });
+                    });
+                });
             }
         }
         
         export enum SideBarTabIndex {
             FIRST = 0,
             SECOND = 1,
+        }
+        
+        export enum DivergenceTimeUseSet {
+            NOT_USE = 0,
+            USE = 1,
         }
         
         export class HistModel {

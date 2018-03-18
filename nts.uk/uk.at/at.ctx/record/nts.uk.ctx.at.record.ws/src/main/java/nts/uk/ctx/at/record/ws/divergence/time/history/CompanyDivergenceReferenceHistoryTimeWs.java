@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.divergence.time.history.ComDivergenceRefTimeHistDeleteCommand;
+import nts.uk.ctx.at.record.app.command.divergence.time.history.ComDivergenceRefTimeHistDeleteCommandHanlder;
 import nts.uk.ctx.at.record.app.command.divergence.time.history.ComDivergenceRefTimeHistSaveCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.history.ComDivergenceRefTimeHistSaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryDto;
@@ -28,6 +30,10 @@ public class CompanyDivergenceReferenceHistoryTimeWs extends WebService{
 	/** The history save handler. */
 	@Inject
 	private ComDivergenceRefTimeHistSaveCommandHandler historySaveHandler;
+	
+	/** The history delete handler. */
+	@Inject
+	private ComDivergenceRefTimeHistDeleteCommandHanlder historyDeleteHandler;
 	
 	/**
 	 * Gets the all company divergence reference time history.
@@ -61,5 +67,16 @@ public class CompanyDivergenceReferenceHistoryTimeWs extends WebService{
 	@Path("save")
 	public void save(ComDivergenceRefTimeHistSaveCommand command){
 		this.historySaveHandler.handle(command);
+	}
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("remove")
+	public void remove(ComDivergenceRefTimeHistDeleteCommand command){
+		this.historyDeleteHandler.handle(command);
 	}
 }

@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk011.d {
         var path: any = {
             saveAllSetting: "",
             findAllItemSetting:"at/record/divergence/time/companyDivergenceRefTime/find",
-            deleteHist: "",
+            deleteHist: "at/record/divergence/time/history/companyDivergenceRefTime/remove",
             findListHistory: "at/record/divergence/time/history/companyDivergenceRefTime/findAll",
             findUseUnitSetting: "at/record/divergence/time/history/divergenceRefTimeUsageUnit/find",
             findListDivergenceTime: "at/record/divergencetime/setting/getalldivtime"
@@ -24,8 +24,8 @@ module nts.uk.at.view.kmk011.d {
             return nts.uk.request.ajax("at", path.findListHistory);
         }
         
-        export function deleteHistory(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.deleteHist)    
+        export function deleteHistory(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.deleteHist, command)    
         }
         
         export function getUseUnitSetting(): JQueryPromise<any> {
@@ -48,6 +48,13 @@ module nts.uk.at.view.kmk011.d {
             divergenceTimeNo: number;
             divergenceTimeName: string;
             divergenceTimeUseSet:number;
+            
+            constructor(divergenceTimeNo: number, divergenceTimeName: string, divergenceTimeUseSet: number){
+                this.divergenceTimeNo = divergenceTimeNo
+                this.divergenceTimeName = divergenceTimeName
+                this.divergenceTimeUseSet = divergenceTimeUseSet
+            }
+            
         }
         
         export class ComDivergenceTimeSettingSaveCommand {

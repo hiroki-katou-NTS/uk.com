@@ -20,5 +20,14 @@ public class DivergenceReferenceTime extends TimeDurationPrimitiveValue<Divergen
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Gets the in day time with format.
+	 *
+	 * @return the in day time with format
+	 */
+	public String getInDayTimeWithFormat(){
+		return this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+	}
 
 }
