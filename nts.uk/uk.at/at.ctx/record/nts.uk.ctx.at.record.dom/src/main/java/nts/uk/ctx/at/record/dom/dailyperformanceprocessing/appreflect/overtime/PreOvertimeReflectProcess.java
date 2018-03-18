@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
@@ -20,6 +21,20 @@ public interface PreOvertimeReflectProcess {
 	 * False: 反映前後勤就の変更したい
 	 */
 	public boolean changeFlg(PreOvertimeParameter para);
+	/**
+	 * 予定勤種・就時反映後の予定勤種・就時を取得する
+	 * @param employeeId
+	 * @param dataData
+	 * @return
+	 */
+	public WorkTimeTypeOutput getScheWorkTimeType(String employeeId, GeneralDate dataData);
+	/**
+	 * 勤種・就時反映後の実績勤種・就時を取得する
+	 * @param employeeId
+	 * @param dataData
+	 * @return
+	 */
+	public WorkTimeTypeOutput getRecordWorkTimeType(String employeeId, GeneralDate dataData);
 	/**
 	 * 予定開始終了時刻の反映
 	 * @param para

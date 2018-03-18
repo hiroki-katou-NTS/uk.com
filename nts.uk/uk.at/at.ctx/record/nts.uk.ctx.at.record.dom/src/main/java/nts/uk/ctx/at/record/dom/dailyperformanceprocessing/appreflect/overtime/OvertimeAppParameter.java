@@ -24,5 +24,21 @@ public class OvertimeAppParameter {
 			
 	/**就業時間帯コード	 */
 	private String workTimeCode;
+	/**
+	 * 開始時刻１
+	 */
+	private Integer startTime1;
+	/**
+	 * 終了時刻１
+	 */
+	private Integer endTime1;
+	/**
+	 * 開始時刻２
+	 */
+	private Integer startTime2;
+	/**
+	 * 終了時刻２
+	 */
+	private Integer endTime2;
 
 }
