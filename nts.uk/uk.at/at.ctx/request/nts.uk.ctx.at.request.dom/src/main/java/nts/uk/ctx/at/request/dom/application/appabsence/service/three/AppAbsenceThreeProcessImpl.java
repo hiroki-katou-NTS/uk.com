@@ -21,10 +21,10 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	// 1.勤務種類を取得する（新規）
 	@Override
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID, int holidayType, int alldayHalfDay) {
+			String employeeID, int holidayType, int alldayHalfDay, boolean displayHalfDayValue) {
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		// アルゴリズム「勤務種類を取得する（詳細）」を実行する(thực hiện xử lý 「勤務種類を取得する（詳細）」)
-		List<WorkType> workTypes = this.getWorkTypeDetails(appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay);
+		List<WorkType> workTypes = this.getWorkTypeDetails(appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
 		for(WorkType workType : workTypes){
 			AbsenceWorkType absenceWorkType = new AbsenceWorkType(workType.getWorkTypeCode().toString(), workType.getWorkTypeCode().toString() +"　　" + workType.getName().toString());
 			absenceWorkTypes.add(absenceWorkType);
@@ -36,7 +36,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	//  2.勤務種類を取得する（詳細）
 	@Override
 	public List<WorkType> getWorkTypeDetails(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID,int holidayType,int alldayHalfDay) {
+			String employeeID,int holidayType,int alldayHalfDay, boolean displayHalfDayValue) {
 		List<WorkType> result = new ArrayList<>();
 		List<String> lstWorkTypeCodes = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(appEmploymentWorkType)){
@@ -53,12 +53,37 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		}
 		if(CollectionUtil.isEmpty(lstWorkTypeCodes)){
 			// ドメインモデル「勤務種類」を取得(lấy dữ liệu domain 「勤務種類」)
-			result = getWorkTypeByHolidayType(companyID,holidayType);
+			List<WorkType> workTypes = getWorkTypeByHolidayType(companyID,holidayType);
+			for(WorkType workType : workTypes){
+				lstWorkTypeCodes.add(workType.getWorkTypeCode().toString());
+			}
+			
 		}
-		if(alldayHalfDay == 0){
-			// 終日休暇半日休暇区分 = 終日休暇 :TODO
-		}else if(alldayHalfDay == 1){
-			// 終日休暇半日休暇区分 = 半日休暇: TODO
+		if(!CollectionUtil.isEmpty(lstWorkTypeCodes)){
+			if(alldayHalfDay == 0){
+				// 終日休暇半日休暇区分 = 終日休暇 
+				if(displayHalfDayValue){
+					// 勤務種類組み合わせ全表示チェック = ON
+					List<Integer> allDayAtrs = new ArrayList<>();
+					allDayAtrs.add(holidayType);
+					List<Integer> halfDay = new ArrayList<>();
+					halfDay.add(holidayType);
+					result = this.workTypeRepository.findWorkTypeForAllDayAndHalfDay(companyID, halfDay, lstWorkTypeCodes, allDayAtrs);
+				}else{
+					//勤務種類組み合わせ全表示チェック = OFF
+					result = this.workTypeRepository.findWorkTypeByCodes(companyID, lstWorkTypeCodes, 0, 0);
+				}
+				
+			}else if(alldayHalfDay == 1){
+				
+				// 終日休暇半日休暇区分 = 半日休暇
+				List<Integer> halfDay = new ArrayList<>();
+				// 出勤
+				halfDay.add(0);
+				// 振出
+				halfDay.add(7);
+				result = this.workTypeRepository.findWorkTypeForHalfDay(companyID, halfDay, lstWorkTypeCodes);
+			}
 		}
 		return result;
 	}
@@ -68,9 +93,11 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		List<Integer> allDayAtrs = new ArrayList<>();
 		// lấy những worktype dạng làm nửa ngày
 		List<Integer> halfAtrs = new ArrayList<>();
+		Integer morningAndAfternoon = null;
 		switch(holidayType){
 			// 年次有休 - 年休
 			case 0:
+				morningAndAfternoon = 2;
 				// 年休
 				allDayAtrs.add(2);
 				
@@ -93,6 +120,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				break;
 			// 代休
 			case 1:
+				morningAndAfternoon = 6;
 				// 代休
 				allDayAtrs.add(6);
 				
@@ -115,10 +143,10 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				break;
 			// 欠勤
 			case 2:
+				morningAndAfternoon = 5;
 				// 欠勤
 				allDayAtrs.add(5);
-				// 代休
-				allDayAtrs.add(6);
+				
 				
 				// 出勤
 				halfAtrs.add(0);
@@ -139,6 +167,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				break;
 			// 特別休暇
 			case 3:
+				morningAndAfternoon = 4;
 				//特別休暇
 				allDayAtrs.add(4);
 				
@@ -161,6 +190,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				break;
 			// 積立年休
 			case 4:
+				morningAndAfternoon = 3;
 				//積立年休
 				allDayAtrs.add(3);
 				
@@ -175,10 +205,15 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				break;
 			// 休日
 			case 5:
-				
+				morningAndAfternoon = 1;
+				//休日
+				allDayAtrs.add(1);
+				// 振休
+				halfAtrs.add(8);
 				break;
 			// 時間消化
 			case 6:
+				morningAndAfternoon = 9;
 				//時間消化休暇
 				allDayAtrs.add(9);
 				
@@ -200,13 +235,33 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(6);
 				break;
 			// 振休	
-			case 7: 
+			case 7:
+				morningAndAfternoon = 8;
+				// 振休
+				allDayAtrs.add(8);
+				
+				// 出勤
+				halfAtrs.add(0);
+				// 年休
+				halfAtrs.add(2);
+				// 休日
+				halfAtrs.add(1);
+				//特別休暇
+				halfAtrs.add(4);
+				// 欠勤
+				halfAtrs.add(5);
+				// 代休
+				halfAtrs.add(6);
+				//積立年休
+				halfAtrs.add(3);
+				//時間消化休暇
+				halfAtrs.add(9);
 				break;
 			default:
 				break;
 		
 		}
-		result = this.workTypeRepository.findWorkType(companyID, 0,allDayAtrs,halfAtrs);
+		result = this.workTypeRepository.findWorkTypeForAppHolidayAppType(companyID,allDayAtrs,halfAtrs,halfAtrs,morningAndAfternoon,morningAndAfternoon);
 		return result;
 		
 	}
