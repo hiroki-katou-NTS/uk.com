@@ -17,6 +17,9 @@ module nts.uk.at.view.kmk011.d {
         }
         
         export function getAllItemSetting(historyId: string): JQueryPromise<any> {
+            if (nts.uk.text.isNullOrEmpty(historyId)){
+                    historyId = "0";
+            }
             return nts.uk.request.ajax("at", path.findAllItemSetting + "/" + historyId);
         }
         
