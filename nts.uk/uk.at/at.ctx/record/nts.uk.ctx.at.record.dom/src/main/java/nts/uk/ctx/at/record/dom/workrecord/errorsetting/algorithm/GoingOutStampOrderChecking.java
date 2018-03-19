@@ -31,6 +31,11 @@ import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDay
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * 外出系打刻順序不正をチェックする
+ * @author nampt
+ *
+ */
 @Stateless
 public class GoingOutStampOrderChecking {
 

@@ -10,8 +10,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
-import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -29,7 +28,7 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 
 	/** 所属雇用履歴の取得 */
 	@Inject
-	private SyEmploymentAdapter syEmploymentAdapter;
+	private EmploymentHistAdapter employmentHistAdapter;
 	/** 雇用に紐づく就業締めの取得 */
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
@@ -56,6 +55,9 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 		this.closureIdHistories = new ArrayList<>();
 		this.aggrPeriods = new ArrayList<>();
 
+		// ※　Optinal引数の組み合わせ不足等エラーは、throw new RuntimeError...で。
+		//    現時点では、引数の利用が未設計。（2018.3.15 shuichi_ishida）
+		
 		// 集計すべき期間を計算
 		this.calculatePeriodForAggregate(companyId, employeeId, criteriaDate);
 
@@ -94,15 +96,13 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 	private void getClosureIdOfNotClosurePeriod(String companyId, String employeeId){
 		
 		// 「所属雇用履歴」を取得する
-		//*****（未） Requestが必要。（社員IDに該当する所属雇用履歴を開始日順にリスト取得する）
-		//this.syEmploymentAdapter.findByEmployeeId(companyId, employeeId, baseDate);
-		List<SyEmploymentImport> syEmployments = new ArrayList<>();
+		val employmentHists = this.employmentHistAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		
-		for (val syEmployment : syEmployments){
-			val employmentCd = syEmployment.getEmploymentCode();
+		for (val employmentHist : employmentHists){
+			val employmentCd = employmentHist.getEmploymentCode();
 			
 			// 締めIDを取得する
-			val closureEmploymentOpt = this.closureEmploymentRepository.findByEmploymentCD(employeeId, employmentCd);
+			val closureEmploymentOpt = this.closureEmploymentRepository.findByEmploymentCD(companyId, employmentCd);
 			if (!closureEmploymentOpt.isPresent()) continue;
 			val closureEmployment = closureEmploymentOpt.get();
 			
@@ -118,16 +118,16 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 			val closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
 			
 			// 「所属雇用履歴」が「締め期間」より前がチェック
-			val syEmploymentPeriod = syEmployment.getPeriod();
-			if (syEmploymentPeriod.end().before(closurePeriod.start())) continue;
+			val employmentPeriod = employmentHist.getPeriod();
+			if (employmentPeriod.end().before(closurePeriod.start())) continue;
 			
 			// 処理中の「所属雇用履歴」より前が締められたかチェックし、「締めID履歴」を作成
-			if (syEmploymentPeriod.start().after(closurePeriod.start())){
-				this.closureIdHistories.add(ClosureIdHistory.of(closureId, syEmploymentPeriod));
+			if (employmentPeriod.start().after(closurePeriod.start())){
+				this.closureIdHistories.add(ClosureIdHistory.of(closureId, employmentPeriod));
 			}
 			else {
 				this.closureIdHistories.add(ClosureIdHistory.of(closureId,
-						new DatePeriod(closurePeriod.start(), syEmploymentPeriod.end())));
+						new DatePeriod(closurePeriod.start(), employmentPeriod.end())));
 			}
 		}
 	}

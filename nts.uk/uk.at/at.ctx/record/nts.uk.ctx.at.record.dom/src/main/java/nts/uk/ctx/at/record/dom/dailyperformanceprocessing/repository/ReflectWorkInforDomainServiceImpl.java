@@ -1201,9 +1201,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2 && WorkTypeClassification.LeaveOfAbsence == workType.getDailyWork().getOneDay()) {
 						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
 						workTypeNeed = workType;
-					} else if (recStatusOfEmployeeImport.getStatusOfEmployment() == 3 && WorkTypeClassification.Closure == workType.getDailyWork().getOneDay() )  {
+						break;
+					} else if (recStatusOfEmployeeImport.getStatusOfEmployment() == 3 && WorkTypeClassification.Closure == workType.getDailyWork().getOneDay())  {
 						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
 						workTypeNeed = workType;
+						break;
 					}
 				}
 				

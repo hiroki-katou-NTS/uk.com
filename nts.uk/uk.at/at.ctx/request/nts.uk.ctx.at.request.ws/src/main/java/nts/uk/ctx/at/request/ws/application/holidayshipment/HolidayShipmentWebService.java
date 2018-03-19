@@ -34,8 +34,9 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_day")
-	public List<TimezoneUseDto> changeDay(ChangeDateParam param) {
-		return this.finder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType());
+	public HolidayShipmentDto changeDay(ChangeDateParam param) {
+		return this.finder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
+				param.getUiType());
 	}
 
 }
@@ -64,5 +65,6 @@ class ChangeDateParam {
 	 * 申請組み合わせ
 	 */
 	private int comType;
+	private int uiType;
 
 }
