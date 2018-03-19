@@ -18,14 +18,14 @@ import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -100,7 +100,7 @@ public class ActualWorkingTimeOfDaily {
 	/**
 	 * 日別実績の実働時間の計算
 	 */
-	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalculationOfOverTimeWork overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
+	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType workType,
@@ -122,14 +122,7 @@ public class ActualWorkingTimeOfDaily {
 			   RaisingSalaryCalcAtr raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily) {
-		/* 割増時間の計算 */
-		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
-		/*拘束差異時間*/
-		val constraintDifferenceTime = new AttendanceTime(0);
-		/*拘異時間*/
-		val constraintTime = new ConstraintTime(new AttendanceTime(0), new AttendanceTime(0));
-		/* 時差勤務時間*/
-		val timeDifferenceWorkingHours = new AttendanceTime(0);
+
 		/* 総労働時間の計算 */
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				    personalCondition,
@@ -153,9 +146,18 @@ public class ActualWorkingTimeOfDaily {
 					raisingAutoCalcSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily);
+		
+		/*拘束差異時間*/
+		val constraintDifferenceTime = new AttendanceTime(0);
+		/*拘異時間*/
+		val constraintTime = new ConstraintTime(new AttendanceTime(0), new AttendanceTime(0));
+		/* 時差勤務時間*/
+		val timeDifferenceWorkingHours = new AttendanceTime(0);
+		
+		/* 割増時間の計算 */
+		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
 		/* 乖離時間の計算 */
 		val divergenceTimeOfDaily = new DivergenceTimeOfDaily();
-		
 		
 		/*返値*/
 		return new ActualWorkingTimeOfDaily(

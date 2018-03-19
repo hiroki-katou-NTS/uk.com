@@ -74,8 +74,8 @@ import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -91,10 +91,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.PremiumCal
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.PremiumCalcMethodOfHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodOfHoliday;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.AddVacationSet;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndAggregateFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExcessHoliday;
@@ -180,6 +183,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter;
 	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -280,14 +285,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new TimeWithDayAttr(1740));
 		
 		//流動勤務の休憩時間帯
-		FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
-												  true,
-												  new TimezoneOfFixedRestTimeSet(Collections.emptyList()),
-												  new FlowRestTimezone(Collections.emptyList(),false,new FlowRestSetting(new AttendanceTime(0), new AttendanceTime(0)))
-												  );
+		//FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
+		//										  true,
+		//										  new TimezoneOfFixedRestTimeSet(Collections.emptyList()),
+		//										  new FlowRestTimezone(Collections.emptyList(),false,new FlowRestSetting(new AttendanceTime(0), new AttendanceTime(0)))
+		//										  );
 		
 		//流動固定休憩設定
-		FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
+		//FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
 		
 		//0時跨ぎ計算設定
 		OverDayEndCalcSet overDayEndCalcSet = new OverDayEndCalcSet(companyId,
@@ -298,19 +303,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new OverDayEndCalcSetOfExcessSpecialHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
 		//残業時間の自動計算設定
-		AutoCalcSet autoCalSetting = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
-		AutoCalculationOfOverTimeWork autoCalcOverTimeWork = new AutoCalculationOfOverTimeWork(autoCalSetting,
-																									autoCalSetting,
-																									autoCalSetting,
-																									autoCalSetting,
-																									autoCalSetting,
-																									autoCalSetting); 
+		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
+		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
+		
 			/*前日の勤務情報取得  */
-		WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInformationRepository.find(employeeId, targetDate).get());
+		WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInfo);
 		val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
 		//val yesterDay = this.workTypeRepository.findByPK(companyId, "001");//yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		/*翌日の勤務情報取得 */
-		WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInformationRepository.find( employeeId, targetDate).get());
+		WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInfo);
 		val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
 		//val tomorrow = this.workTypeRepository.findByPK(companyId, "001");//tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		
@@ -331,7 +332,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
 											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
-												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
+												personalInfo.getStatutoryWorkTime(),sharedOtSet,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo
 											   );
@@ -360,7 +361,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						tomorrow, 
 						new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 						personalInfo.getStatutoryWorkTime(), 
-						autoCalcOverTimeWork, 
+						sharedOtSet, 
 						fixedWorkSetting.get().getLegalOTSetting(), 
 						StatutoryPrioritySet.priorityNormalOverTimeWork, 
 						workTime.get(),
@@ -400,15 +401,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter.setData(integrationOfDaily).toDomain();
 		
 		//残業の自動計算設定
-		val overTimeSet = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
-		AutoCalculationOfOverTimeWork overTimeAutoCalcSet = new AutoCalculationOfOverTimeWork(overTimeSet, 
-																							  overTimeSet, 
-																							  overTimeSet, 
-																							  overTimeSet, 
-																							  overTimeSet, 
-																							  overTimeSet);
+
 		AutoCalculationSetting aCalcSet = new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS, TimeLimitUpperLimitSetting.NOUPPERLIMIT);
-		AutoCalOfOverTime oTimeSet = new AutoCalOfOverTime(aCalcSet,aCalcSet,aCalcSet,aCalcSet,aCalcSet,aCalcSet); 
+		AutoCalOfOverTime oTimeSet = new AutoCalOfOverTime(aCalcSet,aCalcSet,aCalcSet,aCalcSet,aCalcSet,aCalcSet);
+		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
+		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
 		
 		//休出の自動計算設定
 		AutoCalSetting holidayAutoCalcSetting = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
@@ -508,7 +505,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		
 		/*時間の計算*/
-		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily,overTimeAutoCalcSet,holidayAutoCalcSetting,
+		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily,sharedOtSet,holidayAutoCalcSetting,
 					Optional.empty(),//Optional.of(personalLabor),
 				    vacation,
 				    this.workTypeRepository.findByPK(companyId,oneRange.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTypeCode().v()).get(),
@@ -592,8 +589,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
 												   ,predetermineTimeSet.get().getStartDateClock().forwardByMinutes(predetermineTimeSet.get().getRangeTimeDay().valueAsMinutes()));
 		
-		WorkInfoOfDailyPerformance toDayWorkInfo = workInformationRepository.find(employeeId, targetDate).get();
-		
 		/*ジャストタイムの判断するための設定取得*/
 //		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
 //		boolean justEarlyLeave  = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
@@ -615,7 +610,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											timeLeavingOfDailyPerformance.get(),/*出退勤*/
 											PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet.get())/*所定時間帯(計算用)*/,
 											Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))),
-											toDayWorkInfo);
+											integrationOfDaily.getWorkInformation());
 	}
 	
 	/**
@@ -629,12 +624,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		//Optional<EmploymentContractHistory> employmentContractHistory = this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeId, targetDate);
-		Optional<EmploymentContractHistory> employmentContractHistory = Optional.of(new EmploymentContractHistory(employeeId,WorkingSystem.RegularWork));
-		if(!employmentContractHistory.isPresent()) {
+		Optional<WorkingConditionItem> getWorkingConditionItem = workingConditionItemRepository.getBySidAndStandardDate(employeeId, targetDate);
+		if(!getWorkingConditionItem.isPresent()) {
 			throw new RuntimeException("Can't get WorkingSystem");
 		}
+		
 		// 労働制
-		return getOfStatutoryWorkTime.getDailyTimeFromStaturoyWorkTime(employmentContractHistory.get().getWorkingSystem()
+		return getOfStatutoryWorkTime.getDailyTimeFromStaturoyWorkTime(getWorkingConditionItem.get().getLaborSystem()
 																	, companyId
 																	, placeId
 																	, employmentCd
