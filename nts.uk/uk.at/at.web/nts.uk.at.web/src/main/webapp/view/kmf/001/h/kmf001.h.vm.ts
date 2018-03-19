@@ -243,6 +243,10 @@ module nts.uk.pr.view.kmf001.h {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.messageId);
                 });
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
                 return dfd.promise();
             }
 
@@ -270,7 +274,11 @@ module nts.uk.pr.view.kmf001.h {
                     self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
                     self.loadEmpSettingDetails(self.selectedItem());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                })
+                });
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
             }
             
             public deleteEmpSetting(): void {
@@ -284,7 +292,11 @@ module nts.uk.pr.view.kmf001.h {
                     // Reload setting (empty out fields)
                     self.loadEmpSettingDetails(self.selectedItem());
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                })
+                });
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
             }
 
             private validateComSetting(): boolean {

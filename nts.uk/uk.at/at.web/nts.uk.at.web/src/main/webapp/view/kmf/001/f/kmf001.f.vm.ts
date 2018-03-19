@@ -593,6 +593,10 @@ module nts.uk.pr.view.kmf001.f {
                         });
                     });
                 });
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == employmentCode;
+                });
+                self.deleteEnable(!!match);
             }
             
             //delete employment
@@ -607,6 +611,10 @@ module nts.uk.pr.view.kmf001.f {
                         });
                     });
                 });
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == employmentCode;
+                });
+                self.deleteEnable(!!match);
             }
 
             //default data for employment
@@ -649,6 +657,16 @@ module nts.uk.pr.view.kmf001.f {
             private gotoVacationSetting() {
                 //TODO
             }
+            
+            private clearError() {
+                $('#workOneDay').ntsError('clear');
+                $('#workHalfDay').ntsError('clear');
+                $('#workAll').ntsError('clear');
+                $('#overOneDay').ntsError('clear');
+                $('#overHalfDay').ntsError('clear');
+                $('#overAll').ntsError('clear');
+            }
+            
         }
 
         class ItemModel {

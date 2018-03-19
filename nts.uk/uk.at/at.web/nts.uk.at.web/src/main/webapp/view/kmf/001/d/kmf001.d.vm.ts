@@ -158,6 +158,10 @@ module nts.uk.pr.view.kmf001.d {
                     self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
                     self.selectedManagement(data.managementCategory);
                 }
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
             }
             
             // Initialize wholeCompany Data
@@ -317,6 +321,11 @@ module nts.uk.pr.view.kmf001.d {
                 service.findByEmployment(self.selectedItem()).done(function(data1: EmploymentSettingFindDto) {
                     self.bindEmploymentSettingData(data1);
                 });
+                
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
             }
             
             // Method register By Employment
@@ -341,6 +350,10 @@ module nts.uk.pr.view.kmf001.d {
                     .fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
             }
 
         }
