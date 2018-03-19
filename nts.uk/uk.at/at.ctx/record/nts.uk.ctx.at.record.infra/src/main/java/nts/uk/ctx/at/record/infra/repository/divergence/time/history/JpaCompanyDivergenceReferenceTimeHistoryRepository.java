@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferen
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistorySetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaCompanyDivergenceReferenceTimeHistoryRepository.
@@ -37,9 +39,30 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 * .GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Integer countByPeriodDate(GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer countByDatePeriod(String companyId, DatePeriod datePeriod) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KrcstComDrtHist> root = cq.from(KrcstComDrtHist.class);
+		
+		// Get start date, end Date
+		GeneralDate startDate = datePeriod.start();
+		GeneralDate endDate = datePeriod.end();
+
+		// Build query
+		cq.select(criteriaBuilder.count(root));
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+		predicates.add(criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate));
+		predicates.add(criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query count
+		return em.createQuery(cq).getSingleResult().intValue();
 	}
 
 	/*
@@ -71,7 +94,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	public CompanyDivergenceReferenceTimeHistory findAll(String companyId) {
 
 		// return
-		return this.toDomain(this.findByCompanyId(companyId));
+		return this.toDomain(this.findByCompanyId(companyId, new ArrayList<String>()));
 	}
 
 	/*
@@ -131,7 +154,10 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 * @return the list
 	 */
 	private List<KrcstComDrtHist> toEntities(CompanyDivergenceReferenceTimeHistory domain) {
-		List<KrcstComDrtHist> comDrtHists = this.findByCompanyId(domain.getCId());
+		List<String> histIds = domain.getHistoryItems().stream().map(item -> item.identifier())
+				.collect(Collectors.toList());
+
+		List<KrcstComDrtHist> comDrtHists = this.findByCompanyId(domain.getCId(), histIds);
 
 		CompanyDivergenceReferenceTimeHistorySetMemento memento = new JpaCompanyDivergenceReferenceTimeHistorySetMemento(
 				comDrtHists);
@@ -146,9 +172,11 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 *
 	 * @param companyId
 	 *            the company id
+	 * @param histIds
+	 *            the hist ids
 	 * @return the list
 	 */
-	private List<KrcstComDrtHist> findByCompanyId(String companyId) {
+	private List<KrcstComDrtHist> findByCompanyId(String companyId, List<String> histIds) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstComDrtHist> cq = criteriaBuilder.createQuery(KrcstComDrtHist.class);
@@ -160,6 +188,11 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+
+		// Find by history id
+		if (!histIds.isEmpty()) {
+			predicates.add(root.get(KrcstComDrtHist_.histId).in(histIds));
+		}
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
