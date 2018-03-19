@@ -15,6 +15,12 @@ public interface RoleSetGrantedEmployeePub {
 	 */
 	public List<String> findEmpGrantedInWorkplace(String workplaceId, DatePeriod period);
 	
-	
+	/**
+	 * request [No.305]指定社員が基準日に承認権限を持っているかチェックする 
+	 * @param companyId
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
 	public boolean canApprovalOnBaseDate(String companyId , String employeeID , GeneralDate date);
 }
