@@ -1,9 +1,12 @@
-#table-permission {
-	width: 100%;
-	border-collapse: collapse;
+table {
+	width: 200px;
+	padding: 0px 5px;
 }
 
-#table-permission .description {
-	display: inline-block;
-	white-space: nowrap;
+table tr:first-child td {
+    border-bottom: 1px solid;
+}
+
+table tr::nth-child(2) td, table tr::nth-child(3) td {
+    text-align: center;
 }
