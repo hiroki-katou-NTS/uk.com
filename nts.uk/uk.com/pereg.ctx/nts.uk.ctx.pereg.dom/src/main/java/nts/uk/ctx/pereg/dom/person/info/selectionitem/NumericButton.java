@@ -9,7 +9,7 @@ public class NumericButton extends DataTypeState {
 
 	private NumericButton(String readText) {
 		super();
-		this.dataTypeValue = DataTypeValue.NUMERIC;
+		this.dataTypeValue = DataTypeValue.NUMBERIC_BUTTON;
 		this.readText = new ReadText(readText);
 	}
 
