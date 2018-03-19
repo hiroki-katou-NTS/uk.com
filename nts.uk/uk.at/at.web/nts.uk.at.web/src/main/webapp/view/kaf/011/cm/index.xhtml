@@ -84,7 +84,7 @@
 										options: wkTypes ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: wkCD ,
+										value: wkTypeCD ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -110,7 +110,7 @@
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 				</div>
-				<div class="div_line_col_2 working_hour" data-bind='with: wkTime '>
+				<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
 					<input
 						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false ,option: timeOption }" />
@@ -170,7 +170,7 @@
 										options: wkTypes ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: wkCD ,
+										value: wkTypeCD ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -183,7 +183,7 @@
 			</div>
 			<div class="div_line change_woking_hours">
 				<div class="div_line">
-					<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KAF011_29')}</div>
+					<div data-bind="ntsCheckBox: { checked: changeWorkHoursType }">#{i18n.getText('KAF011_29')}</div>
 				</div>
 				<div class="div_line">
 					<div class="div_line_col_1">
@@ -200,7 +200,7 @@
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 					</div>
-					<div class="div_line_col_2 working_hour" data-bind='with: wkTime '>
+					<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
 						<input
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false,option: timeOption }" />

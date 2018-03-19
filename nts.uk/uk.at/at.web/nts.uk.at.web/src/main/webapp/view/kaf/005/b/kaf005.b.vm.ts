@@ -549,7 +549,10 @@ module nts.uk.at.view.kaf005.b {
                                 appDate: moment(self.appDate()).format("YYYY/MM/DD"),
                                 siftCD: self.siftCD(),
                                 prePostAtr: self.prePostSelected(),
-                                overtimeHours: ko.toJS(self.overtimeHours)
+                                overtimeHours: ko.toJS(self.overtimeHours),
+                                workTypeCode: self.workTypeCd(),
+                                startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
+                                endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime()
                             }
                         ).done(data => {
                             self.timeStart1(data.startTime1 == null ? null : data.startTime1);
@@ -611,7 +614,12 @@ module nts.uk.at.view.kaf005.b {
                         bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
                         prePostAtr : self.prePostSelected(),
                         appDate : moment(self.appDate()).format(self.DATE_FORMAT),
-                        siftCD: self.siftCD()
+                        siftCD: self.siftCD(),
+                        workTypeCode: self.workTypeCd(),
+                        startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
+                        endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime(),
+                        startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
+                        endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()
                     }
                     //setting work content
                      //setting work content
