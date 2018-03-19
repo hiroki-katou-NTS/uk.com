@@ -32,8 +32,8 @@ public class WorkTimeNotRegisterDefault implements WorkTimeNotRegisterService {
 		String companyID = AppContexts.user().companyId();
 		//就業時間帯CDがドメインモデル「就業時間帯の設定」に存在するかをチェックする
 		boolean check = checkExistWorkTimeAdapter.checkExistWorkTimeAdapter(workTimeCD);
-		//ドメインに存在する場合
-		if(check)
+		//ドメインに存在する場合 and 就業時間帯　=　NULLの場合
+		if(check || workTimeCD==null)
 			return null;
 		String errorCode = "S024";
 		List<Integer> listTimeItemID = new ArrayList<>();
@@ -41,13 +41,12 @@ public class WorkTimeNotRegisterDefault implements WorkTimeNotRegisterService {
 		
 		String comment = fixedConditionDataRepository.getAllFixedConditionData().get(1).getMessage().v();
 		
-		ValueExtractAlarmWR valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, errorCode, listTimeItemID);
-		Optional<ValueExtractAlarmWR> data = Optional.ofNullable(valueExtractAlarmWR);
-		if(data.isPresent()) {
-			valueExtractAlarmWR.setAlarmItem(TextResource.localize("KAL010_8"));
-			valueExtractAlarmWR.setAlarmValueMessage(TextResource.localize("KAL010_9",errorCode));
-			valueExtractAlarmWR.setComment(comment);
-			return valueExtractAlarmWR;
+		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, errorCode, listTimeItemID);
+		if(valueExtractAlarmWR.isPresent()) {
+			valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_8"));
+			valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_9",errorCode));
+			valueExtractAlarmWR.get().setComment(comment);
+			return valueExtractAlarmWR.get();
 		}
 		return null;
 	}
