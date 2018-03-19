@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.pub.grant;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface RoleSetGrantedEmployeePub {
@@ -13,4 +14,7 @@ public interface RoleSetGrantedEmployeePub {
 	 * @return List<employee ID>
 	 */
 	public List<String> findEmpGrantedInWorkplace(String workplaceId, DatePeriod period);
+	
+	
+	public boolean canApprovalOnBaseDate(String companyId , String employeeID , GeneralDate date);
 }
