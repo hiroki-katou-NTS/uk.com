@@ -5,6 +5,8 @@ module nts.uk.at.view.kmk011.d {
     import CompanyDivergenceReferenceTimeHistoryDto = nts.uk.at.view.kmk011.d.model.CompanyDivergenceReferenceTimeHistoryDto;
     import ComDivergenceTimeSettingDto = nts.uk.at.view.kmk011.d.model.ComDivergenceTimeSettingDto;
     import DivergenceTimeDto = nts.uk.at.view.kmk011.d.model.DivergenceTimeDto;
+    import ComDivergenceRefTimeSaveCommand = nts.uk.at.view.kmk011.d.model.ComDivergenceRefTimeSaveCommand;
+    import ComDivergenceRefTimeSaveDto =  nts.uk.at.view.kmk011.d.model.ComDivergenceRefTimeSaveDto;
     
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -34,15 +36,12 @@ module nts.uk.at.view.kmk011.d {
             selectedHist: KnockoutObservable<string>;
             isEnableListHist: KnockoutObservable<boolean>;
             
-            time2: KnockoutObservable<number>;
-            
             constructor() {
                 var _self = this;
                 _self.screenE = ko.observable(new viewModelScreenE.ScreenModel());
+                
                 _self.useUnitSetting = ko.observable(true);
                 _self.enableSaveDivergenceRefSetting = ko.observable(true);
-                
-                _self.time2 = ko.observable(1200);
                 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
@@ -51,8 +50,8 @@ module nts.uk.at.view.kmk011.d {
                 ]);
                 _self.enable = ko.observable(true);
                 _self.required = ko.observable(true);
-                _self.mapObj = ko.observable(new Map<number, ComDivergenceTimeSettingDto>());
-                _self.mapObj2 = ko.observable(new Map<number, DivergenceTimeDto>());
+                _self.mapObj = new Map<number, ComDivergenceTimeSettingDto>();
+                _self.mapObj2 = new Map<number, DivergenceTimeDto>();
                 
                  //history screen
                 _self.enable_button_creat = ko.observable(true);
@@ -109,13 +108,35 @@ module nts.uk.at.view.kmk011.d {
             /**
              * save divergence reference setting
              */
-            public saveDivergenceRefSetting(): JQueryPromise<any> {
+            public saveDivergenceRefSetting() {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
-                dfd.resolve();
+                if (_self.hasError()) {
+                    return;
+                }
                 
-                return dfd.promise();
+                let arrDto: any = [];
+                
+                _self.mapObj.forEach((value: ComDivergenceTimeSettingDto, key: number) => {
+                    
+                    if(_self.isDisableAllRow(key)){
+                        let commandDto = new ComDivergenceRefTimeSaveDto(
+                            value.divergenceTimeNo(),
+                            value.notUseAtr(),
+                            _self.selectedHist(),
+                            value.alarmTime(),
+                            value.errorTime()
+                        );
+                        arrDto.push(commandDto); 
+                    } 
+                });
+                
+                var data = new ComDivergenceRefTimeSaveCommand(arrDto);
+                
+                service.save(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                });
             }
             
             /**
@@ -123,7 +144,7 @@ module nts.uk.at.view.kmk011.d {
              */
             public isDisableAllRow(diverNo: number) : boolean {
                 let _self = this;
-                if (_self.mapObj2().get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null){
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null){
                     return false;    
                 }
                 return true;
@@ -134,14 +155,50 @@ module nts.uk.at.view.kmk011.d {
              */
             public checkStatusEnable(diverNo: number) : boolean {
                 let _self = this;
-                if (_self.mapObj2().get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE){
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE){
                     return false;    
                 } else {
-                    if (_self.mapObj().get(diverNo).notUseAtr() == DivergenceTimeUseSet.NOT_USE) {
+                    if (_self.mapObj.get(diverNo).notUseAtr() == DivergenceTimeUseSet.NOT_USE) {
                         return false;    
                     }
                      return true;
                 }
+            }
+            
+            /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                let _self = this;
+                _self.clearErrors();
+                for (let i = 0 ; i < 10; i++) {
+                    if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
+                        $('#alarm_time_' + i).ntsEditor("validate");
+                        $('#error_time_' + i).ntsEditor("validate");    
+                    }
+                        
+                }
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+                let _self = this;
+                 // Clear errors
+                for (let i = 0 ; i < 10; i++) {
+                    if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
+                        $('#alarm_time_' + i).ntsEditor("clear");
+                        $('#error_time_' + i).ntsEditor("clear");    
+                    }    
+                }
+                
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
             }
             
             /**
@@ -150,15 +207,22 @@ module nts.uk.at.view.kmk011.d {
             private fillListItemSetting(value: string): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-                let objTemp1: ComDivergenceTimeSettingDto;
-                
+                let dto: ComDivergenceTimeSettingDto;
                 service.getAllItemSetting(value).done((response: any) => {
                     if(response != null) {
-                         response.forEach((item: any) => {
-                             objTemp1 = new ComDivergenceTimeSettingDto(item.divergenceTimeNo, item.notUseAtr, item.historyId, 
-                                                    item.divergenceReferenceTimeValue.alarmTime, item.divergenceReferenceTimeValue.errorTime);
-                            _self.mapObj().set(item.divergenceTimeNo, objTemp1);
-                        });
+                        if (_self.mapObj.size == 0) {
+                            response.forEach((item: any) => {
+                                dto = new ComDivergenceTimeSettingDto();
+                                dto.updateData(item);
+                                _self.mapObj.set(item.divergenceTimeNo, dto);
+                            });
+                        } else {
+                            response.forEach((item: any) => {
+                                _self.mapObj.get(item.divergenceTimeNo).notUseAtr(item.notUseAtr);
+                                _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                                _self.mapObj.get(item.divergenceTimeNo).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                            });
+                        }
                     } else {
                         _self.fillListItemSettingDefault();    
                     }
@@ -178,7 +242,7 @@ module nts.uk.at.view.kmk011.d {
                     if (response != null) {
                           response.forEach((item1: any) => {
                             objTemp2 = new DivergenceTimeDto(item1.divergenceTimeNo, item1.divergenceTimeName, item1.divergenceTimeUseSet);
-                            _self.mapObj2().set(item1.divergenceTimeNo, objTemp2);  
+                            _self.mapObj2.set(item1.divergenceTimeNo, objTemp2);  
                          }); 
                     }
                     dfd.resolve(); 
@@ -236,7 +300,7 @@ module nts.uk.at.view.kmk011.d {
                 let objTemp1: ComDivergenceTimeSettingDto;
 
                 for(let i = 0; i < 10; i++){
-                     objTemp1 = new ComDivergenceTimeSettingDto(i, 0, null, 0, 0);
+                     objTemp1 = new ComDivergenceTimeSettingDto();
                      _self.mapObj().set(i, objTemp1);     
                 }
                 

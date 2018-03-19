@@ -12,13 +12,11 @@ public class ComDivergenceRefTimeSaveCommand {
 	
 	/** The list data setting. */
 	private List<ComDivergenceRefTimeSaveDto> listDataSetting;
-	
+
 	/**
-	 * Instantiates a new company divergence reference time save command.
-	 *
-	 * @param listDataSetting the list data setting
+	 * Instantiates a new com divergence ref time save command.
 	 */
-	public ComDivergenceRefTimeSaveCommand(List<ComDivergenceRefTimeSaveDto> listDataSetting) {
-		this.listDataSetting = listDataSetting;
+	public ComDivergenceRefTimeSaveCommand() {
+		super();
 	}
 }

@@ -4,7 +4,7 @@ module nts.uk.at.view.kmk011.d {
          * define path to service
          */
         var path: any = {
-            saveAllSetting: "",
+            saveAllSetting: "at/record/divergence/time/companyDivergenceRefTime/save",
             findAllItemSetting:"at/record/divergence/time/companyDivergenceRefTime/find",
             deleteHist: "at/record/divergence/time/history/companyDivergenceRefTime/remove",
             findListHistory: "at/record/divergence/time/history/companyDivergenceRefTime/findAll",
@@ -12,7 +12,7 @@ module nts.uk.at.view.kmk011.d {
             findListDivergenceTime: "at/record/divergencetime/setting/getalldivtime"
         };
         
-        export function save(data: model.ComDivergenceTimeSettingSaveCommand): JQueryPromise<any> {
+        export function save(data: model.ComDivergenceRefTimeSaveCommand): JQueryPromise<any> {
             return nts.uk.request.ajax("at", path.saveAllSetting, data);
         }
         
@@ -60,11 +60,27 @@ module nts.uk.at.view.kmk011.d {
             
         }
         
-        export class ComDivergenceTimeSettingSaveCommand {
-            listComDivergenceTimeSetting: ComDivergenceTimeSettingDto[];
+        export class ComDivergenceRefTimeSaveDto {
+            divergenceTimeNo: number;
+            notUseAtr: number;
+            historyId: string;
+            alarmTime: number;
+            errorTime: number;
             
-            constructor(listComDivergenceTimeSetting: ComDivergenceTimeSettingDto[]) {
-                this.listComDivergenceTimeSetting = listComDivergenceTimeSetting;
+            constructor(divergenceTimeNo: number, notUseAtr: number, historyId: string, alarmTime: number, errorTime: number){
+                this.divergenceTimeNo = divergenceTimeNo
+                this.notUseAtr = notUseAtr;
+                this.historyId = historyId;
+                this.alarmTime = alarmTime;
+                this.errorTime = errorTime;
+            }
+        }
+        
+        export class ComDivergenceRefTimeSaveCommand {
+            listDataSetting: ComDivergenceRefTimeSaveDto[];
+            
+            constructor(listComDivergenceTimeSetting: ComDivergenceRefTimeSaveDto[]) {
+                this.listDataSetting = listComDivergenceTimeSetting;
             }
         }
         
@@ -75,13 +91,21 @@ module nts.uk.at.view.kmk011.d {
             alarmTime: KnockoutObservable<number>;
             errorTime: KnockoutObservable<number>;
             
-            constructor(divergenceTimeNo: number, notUseAtr: number, historyId: string, alarmTime: number, errorTime: number){
-                this.divergenceTimeNo = ko.observable(divergenceTimeNo);
-                this.notUseAtr = ko.observable(notUseAtr);
-                this.historyId = ko.observable(historyId);
-                this.alarmTime = ko.observable(alarmTime);
-                this.errorTime = ko.observable(errorTime);
+            constructor(){
+                this.divergenceTimeNo = ko.observable(0);
+                this.notUseAtr = ko.observable(0);
+                this.historyId = ko.observable(null);
+                this.alarmTime = ko.observable(null);
+                this.errorTime = ko.observable(null);
             }
+            
+            updateData(data: any){
+                this.divergenceTimeNo(data.divergenceTimeNo);
+                this.notUseAtr(data.notUseAtr);
+                this.alarmTime(data.divergenceReferenceTimeValue.alarmTime);
+                this.errorTime(data.divergenceReferenceTimeValue.errorTime); 
+            }
+            
         }
     }
 }

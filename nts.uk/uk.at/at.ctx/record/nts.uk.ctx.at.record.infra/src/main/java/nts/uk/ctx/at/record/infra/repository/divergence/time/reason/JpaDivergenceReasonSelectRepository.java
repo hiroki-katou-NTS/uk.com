@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,10 +20,10 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason_;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaDivergenceReasonSelectRepository.
  */
+@Stateless
 public class JpaDivergenceReasonSelectRepository extends JpaRepository implements DivergenceReasonSelectRepository {
 
 	/*
