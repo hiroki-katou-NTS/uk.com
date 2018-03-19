@@ -156,7 +156,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         private resetFile(): void {
             let self = this;
             self.fileId(null);
-            self.fileName(null);
+            $("#file-upload input.nts-editor.nts-input").val("");
         }
 
         private loadListCondition(sysType): void {
