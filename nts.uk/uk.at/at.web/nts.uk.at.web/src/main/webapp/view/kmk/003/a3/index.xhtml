@@ -9,11 +9,8 @@
 		nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
    	</com:ValidatorScript>
    	
-   	<div>
 	<com:ko tag="ifnot" bind="isFlexMode">
-	
 		<com:ko tag="ifnot" bind="isFlowMode">
-		
 			<com:ko tag="if" bind="isFixedMode">
 				<com:ko tag="if" bind="isDetailMode">
 					<div class="tab-rows">
@@ -37,13 +34,19 @@
 								<label>#{i18n.getText('KMK003_51')}</label>
 							</h3>
 							<div tabindex="-1" class="accordion-content">
-								<div tabindex="56" id="tab3_fixtable_oneday_fixed"
-									data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+								<com:ko tag="ifnot" bind="showSimpleFixed">
+									<div tabindex="56" id="tab3_fixtable_oneday_fixed"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+								</com:ko>
+								<com:ko tag="if" bind="showSimpleFixed">
+									<div tabindex="56" id="tab3_fixtable_oneday_fixed_simple1"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixedSimple}"></div>
+								</com:ko>
 							</div>
 						</div>
 					</com:ko>
 					<com:ko tag="ifnot" bind="isDetailMode">
-						<div tabindex="56" id="tab3_fixtable_oneday_fixed"
+						<div tabindex="56" id="tab3_fixtable_oneday_fixed_simple2"
 							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixedSimple}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDetailMode">
@@ -54,8 +57,14 @@
 								<label>#{i18n.getText('KMK003_60')}</label>
 							</h3>
 							<div tabindex="-1" class="accordion-content">
-								<div tabindex="57" id="tab3_fixtable_morning_fixed"
-									data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFixed}"></div>
+								<com:ko tag="ifnot" bind="showSimpleFixed">
+									<div tabindex="57" id="tab3_fixtable_morning_fixed"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFixed}"></div>
+								</com:ko>
+								<com:ko tag="if" bind="showSimpleFixed">
+									<div tabindex="57" id="tab3_fixtable_morning_fixed_simple"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFixedSimple}"></div>
+								</com:ko>
 							</div>
 						</div>
 						<div tabindex="-1" class="accordion"
@@ -64,8 +73,14 @@
 								<label>#{i18n.getText('KMK003_61')}</label>
 							</h3>
 							<div tabindex="-1" class="accordion-content">
-								<div tabindex="58" id="tab3_fixtable_afternoon_fixed"
-									data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixed}"></div>
+								<com:ko tag="ifnot" bind="showSimpleFixed">
+									<div tabindex="58" id="tab3_fixtable_afternoon_fixed"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixed}"></div>
+								</com:ko>
+								<com:ko tag="if" bind="showSimpleFixed">
+									<div tabindex="58" id="tab3_fixtable_afternoon_fixed_simple"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixedSimple}"></div>
+								</com:ko>
 							</div>
 						</div>
 					</com:ko>
@@ -96,13 +111,19 @@
 								<label>#{i18n.getText('KMK003_51')}</label>
 							</h3>
 							<div tabindex="-1" class="accordion-content">
-								<div tabindex="56" id="tab3_fixtable_oneday_difftime"
-									data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTime}"></div>
+								<com:ko tag="ifnot" bind="showSimpleDifftime">
+									<div tabindex="56" id="tab3_fixtable_oneday_difftime"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTime}"></div>
+								</com:ko>
+								<com:ko tag="if" bind="showSimpleDifftime">
+									<div tabindex="56" id="tab3_fixtable_oneday_difftime_simple1"
+									data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTimeSimple}"></div>
+								</com:ko>
 							</div>
 						</div>
 					</com:ko>
 					<com:ko tag="ifnot" bind="isDetailMode">
-						<div tabindex="56" id="tab3_fixtable_oneday_difftime"
+						<div tabindex="56" id="tab3_fixtable_oneday_difftime_simple2"
 							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTimeSimple}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDetailMode">
@@ -113,8 +134,14 @@
 								<label>#{i18n.getText('KMK003_60')}</label>
 							</h3>
 							<div tabindex="-1" class="accordion-content">
-								<div tabindex="57" id="tab3_fixtable_morning_difftime"
-									data-bind="ntsFixTableCustom: {option: fixTableOptionMorningDiffTime}"></div>
+								<com:ko tag="ifnot" bind="showSimpleDifftime">
+									<div tabindex="57" id="tab3_fixtable_morning_difftime"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionMorningDiffTime}"></div>
+								</com:ko>
+								<com:ko tag="if" bind="showSimpleDifftime">
+									<div tabindex="57" id="tab3_fixtable_morning_difftime_simple"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionMorningDiffTimeSimple}"></div>
+								</com:ko>
 							</div>
 						</div>
 						<div tabindex="-1" class="accordion"
@@ -123,41 +150,45 @@
 								<label>#{i18n.getText('KMK003_61')}</label>
 							</h3>
 							<div tabindex="-1" class="accordion-content">
-								<div tabindex="58" id="tab3_fixtable_afternoon_difftime"
-									data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonDiffTime}"></div>
+								<com:ko tag="ifnot" bind="showSimpleDifftime">
+									<div tabindex="58" id="tab3_fixtable_afternoon_difftime"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonDiffTime}"></div>
+								</com:ko>
+								<com:ko tag="if" bind="showSimpleDifftime">
+									<div tabindex="58" id="tab3_fixtable_afternoon_difftime_simple"
+										data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonDiffTimeSimple}"></div>
+								</com:ko>
 							</div>
 						</div>
 					</com:ko>
 				</com:ko>
 				</div>
 			</com:ko>
-			
 		</com:ko>
 
-			<com:ko tag="if" bind="isFlowMode">
+		<com:ko tag="if" bind="isFlowMode">
 
-				<com:ko tag="if" bind="isDetailMode">
-					<div class="tab-seperator">
-						<div tabindex="59" id="tab3_fixtable_flow"
-							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
-					</div>
-				</com:ko>
-
-
-				<com:ko tag="ifnot" bind="isDetailMode">
-					<div class="tab-seperator">
-						<div tabindex="59" id="tab3_fixtable_flow"
-							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlowSimple}"></div>
-					</div>
-				</com:ko>
+			<com:ko tag="if" bind="isDetailMode">
+				<div class="tab-seperator">
+					<div tabindex="59" id="tab3_fixtable_flow"
+						data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
+				</div>
 			</com:ko>
 
+
+			<com:ko tag="ifnot" bind="isDetailMode">
+				<div class="tab-seperator">
+					<div tabindex="59" id="tab3_fixtable_flow_simple"
+						data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlowSimple}"></div>
+				</div>
+			</com:ko>
 		</com:ko>
+	</com:ko>
 	
 	<com:ko tag="if" bind="isFlexMode">
 			<div class="tab-seperator">
 				<com:ko tag="ifnot" bind="isDetailMode">
-					<div tabindex="56" id="tab3_fixtable_oneday_flex"
+					<div tabindex="56" id="tab3_fixtable_oneday_flex_simple"
 						data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFlex}"></div>
 				</com:ko>
 				<com:ko tag="if" bind="isDetailMode">
@@ -196,5 +227,4 @@
 				</com:ko>
 			</div>
 	</com:ko>
-	</div>
 </ui:composition>
