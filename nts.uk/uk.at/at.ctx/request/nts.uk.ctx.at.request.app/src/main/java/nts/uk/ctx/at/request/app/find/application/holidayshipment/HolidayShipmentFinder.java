@@ -177,7 +177,7 @@ public class HolidayShipmentFinder {
 				? GeneralDate.fromString(holidayDateImput, DATE_FORMAT) : null;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
-		AchievementOutput achievementOutput = getAchievement(companyID, employeeID, baseDate);
+		//AchievementOutput achievementOutput = getAchievement(companyID, employeeID, baseDate);
 
 		changeAppDate(takingOutDate, holidayDate, companyID, employeeID, uiType, output);
 

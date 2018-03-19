@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
@@ -104,6 +105,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private RecruitmentAppRepository recRepo;
+	@Inject
+	private CompltLeaveSimMngRepository CompLeaveRepo;
 
 	String companyID;
 
@@ -121,9 +124,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		companyID = AppContexts.user().companyId();
 
 		SaveHolidayShipmentCommand command = context.getCommand();
-		sID = command.getAppCommand().getEnteredPersonSID();
-		absDate = GeneralDate.fromString(command.getAbsenceLeaveApp().getAppDate(), DATE_FORMAT);
-		recDate = GeneralDate.fromString(command.getRecruitmentApp().getAppDate(), DATE_FORMAT);
+		sID = command.getAppCmd().getEnteredPersonSID();
+		absDate = GeneralDate.fromString(command.getAbsCmd().getAppDate(), DATE_FORMAT);
+		recDate = GeneralDate.fromString(command.getRecCmd().getAppDate(), DATE_FORMAT);
 		// アルゴリズム「振休振出申請の新規登録」を実行する
 		createNewForHolidayBreakge(command);
 		if (true) {
@@ -152,7 +155,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private void RegAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
-		String wkTypeCD = command.getRecruitmentApp().getWkTypeCD();
+		String wkTypeCD = command.getRecCmd().getWkTypeCD();
 		// アルゴリズム「振休消化管理データ更新と消化対象の決定」を実行する
 		updateDigestionTarget(command);
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する
@@ -164,7 +167,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void updateDigestionTarget(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「勤務種類別振休消化数の取得」を実行する
-		BigDecimal day = getByWorkType(command.getAbsenceLeaveApp().getWkTypeCD(), WorkTypeClassification.Pause);
+		BigDecimal day = getByWorkType(command.getAbsCmd().getWkTypeCD(), WorkTypeClassification.Pause);
 		// TODO アルゴリズム「暫定振休管理データの登録と自動相殺」を実行する chưa làm được do không có thông
 		// tin của 暫定振休管理データ
 		// 暫定振出振休紐付け管理の件数分ループ
@@ -173,7 +176,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void RegRecApp(SaveHolidayShipmentCommand command) {
 
-		String wkTypeCD = command.getRecruitmentApp().getWkTypeCD();
+		String wkTypeCD = command.getRecCmd().getWkTypeCD();
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する
 		updateOfSubstitution(command, wkTypeCD);
 		// アルゴリズム「振休発生管理データ更新」を実行する
@@ -215,8 +218,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private void registerBothApp(SaveHolidayShipmentCommand command) {
-		AbsenceLeaveAppCommand absAppCmd = command.getAbsenceLeaveApp();
-		RecruitmentAppCommand recAppCmd = command.getRecruitmentApp();
+		AbsenceLeaveAppCommand absAppCmd = command.getAbsCmd();
+		RecruitmentAppCommand recAppCmd = command.getRecCmd();
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する takingout
 		updateOfSubstitution(command, absAppCmd.getWkTypeCD());
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する holiday
@@ -234,18 +237,19 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void createNewComLeaveSilMng(String recAppID, String absAppID) {
 		CompltLeaveSimMng comMng = new CompltLeaveSimMng(recAppID, absAppID, 1);
+		CompLeaveRepo.insert(comMng);
 
 	}
 
 	private String createNewAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
 		String absAppID = IdentifierUtil.randomUniqueId();
 		Application_New absApplication = Application_New.firstCreate(absAppID,
-				EnumAdaptor.valueOf(command.getAppCommand().getPrePostAtr(), PrePostAtr.class), absDate, appType, sID,
+				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absDate, appType, sID,
 				new AppReason(appReason));
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		CmProcessBeforeReg(command, absApplication);
 		// ドメイン「振出申請」を1件登録する
-		AbsenceLeaveAppCommand absAppCmd = command.getAbsenceLeaveApp();
+		AbsenceLeaveAppCommand absAppCmd = command.getAbsCmd();
 		WkTimeCommand wkTime1Cmd = absAppCmd.getWkTime1();
 		WkTimeCommand wkTime2Cmd = absAppCmd.getWkTime2();
 		AbsenceLeaveWorkingHour workTime1 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
@@ -266,11 +270,11 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		String recAppID = IdentifierUtil.randomUniqueId();
 		Application_New recApplication = Application_New.firstCreate(recAppID,
-				EnumAdaptor.valueOf(command.getAppCommand().getPrePostAtr(), PrePostAtr.class), recDate, appType, sID,
+				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), recDate, appType, sID,
 				new AppReason(appReason));
 		CmProcessBeforeReg(command, recApplication);
 		// ドメイン「振出申請」を1件登録する
-		RecruitmentAppCommand recAppCmd = command.getRecruitmentApp();
+		RecruitmentAppCommand recAppCmd = command.getRecCmd();
 		WkTimeCommand wkTime1Cmd = recAppCmd.getWkTime1();
 		WkTimeCommand wkTime2Cmd = recAppCmd.getWkTime2();
 		RecruitmentApp recApp = new RecruitmentApp(recAppID, recAppCmd.getWkTypeCD(),
@@ -298,16 +302,16 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void RegisterDigestionData(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する takingout
-		BigDecimal takingOutBrkDownDay = getByWorkType(command.getAbsenceLeaveApp().getWkTypeCD(),
+		BigDecimal takingOutBrkDownDay = getByWorkType(command.getAbsCmd().getWkTypeCD(),
 				WorkTypeClassification.Shooting);
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
-		BigDecimal holidayBrkDownDay = getByWorkType(command.getRecruitmentApp().getWkTypeCD(),
+		BigDecimal holidayBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
 				WorkTypeClassification.Shooting);
 		if ((takingOutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
 			// アルゴリズム「振休有効期限の決定」を実行する
 			GeneralDate expDate = DemOfexpDate(recDate);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
-			HolidaySetting holidaySet = getHolidaySetByWkType(command.getAbsenceLeaveApp().getWkTypeCD());
+			HolidaySetting holidaySet = getHolidaySetByWkType(command.getAbsCmd().getWkTypeCD());
 			// アルゴリズム「暫定振出・暫定振休管理データの同時登録」を実行する
 			registerData(command, expDate, holidaySet);
 
@@ -443,10 +447,10 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	private void checkDayConflict(SaveHolidayShipmentCommand command) {
 		if (command.getComType() == ApplicationCombination.TakingOutAndHoliday.value) {
 			// アルゴリズム「勤務種類別振休発生数の取得」を実行する takingout
-			BigDecimal takingoutBrkDownDay = getByWorkType(command.getAbsenceLeaveApp().getWkTypeCD(),
+			BigDecimal takingoutBrkDownDay = getByWorkType(command.getAbsCmd().getWkTypeCD(),
 					WorkTypeClassification.Shooting);
 			// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
-			BigDecimal holidayBrkDownDay = getByWorkType(command.getRecruitmentApp().getWkTypeCD(),
+			BigDecimal holidayBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
 					WorkTypeClassification.Shooting);
 			if (!(takingoutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
 				// TODO
@@ -514,12 +518,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
 		// takingout
 		if (isCreateTakingOut(command.getComType())) {
-			vacationTransferCheck(sID, absDate, command.getAppCommand().getPrePostAtr());
+			vacationTransferCheck(sID, absDate, command.getAppCmd().getPrePostAtr());
 		}
 		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
 		// holiday
 		if (isCreateHoliday(command.getComType())) {
-			vacationTransferCheck(sID, recDate, command.getAppCommand().getPrePostAtr());
+			vacationTransferCheck(sID, recDate, command.getAppCmd().getPrePostAtr());
 		}
 
 	}
@@ -552,7 +556,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		if (recordWorkInfoImport.getWorkTypeCode().equals("")) {
 			// アルゴリズム「予定管理利用チェック」を実行する
 			UseAtr useAtr = ScheMngUseCheck(sID, appDate);
-			if (useAtr.equals(UseAtr.USE)) {
+			if (useAtr != null && useAtr.equals(UseAtr.USE)) {
 				// アルゴリズム「勤務予定を取得する」を実行する
 
 			} else {
@@ -589,13 +593,13 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
 		if (appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)) {
-			typicalReason += command.getAppCommand().getAppReasonID();
+			typicalReason += command.getAppCmd().getAppReasonID();
 		}
 		if (appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)) {
 			if (Strings.isNotBlank(typicalReason)) {
 				displayReason += System.lineSeparator();
 			}
-			displayReason += command.getAppCommand().getApplicationReason();
+			displayReason += command.getAppCmd().getApplicationReason();
 		}
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
