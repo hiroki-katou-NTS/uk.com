@@ -54,7 +54,7 @@ public class ExtractAlarmListService {
 				IdentifierUtil.randomUniqueId(),
 				companyID, GeneralDate.today(), 
 				GeneralDateTime.now().hours()*60 +GeneralDateTime.now().minutes(),
-				employeeId, Optional.ofNullable(null), null);
+				employeeId, null, null);
 		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
 		
 		// 勤務実績のアラームリストの集計処理を行う

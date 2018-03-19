@@ -34,6 +34,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataD
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
@@ -117,9 +118,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("addAndUpdate")
-	public Map<Integer, List<DPItemValue>> addAndUpdate(List<DPItemValue> itemValues) {
+	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		itemValues = itemValues.stream().map(x -> {
+		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
 				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(x.getTypeGroup(),
@@ -134,7 +135,7 @@ public class DailyPerformanceCorrectionWebService {
 			}
 			return item;
 		}).collect(Collectors.toList());
-		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = itemValues.stream()
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = itemValueChild.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 		// check error care item
 		List<DPItemValue> itemErrors = new ArrayList<>();
@@ -165,7 +166,7 @@ public class DailyPerformanceCorrectionWebService {
 								x.getValue().get(0).getDate(), itemCovert));
 				});
 				// insert cell edit
-				dailyModifyCommandFacade.handleEditCell(itemValues);
+				dailyModifyCommandFacade.handleEditCell(itemValueChild);
 			}else{
 				//resultError.put(1, itemInputErors);
 				return resultError;

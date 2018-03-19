@@ -26,12 +26,12 @@ public class AlarmExtraValueWRExportImpl implements MasterListData {
 		List<LinkedHashMap<String, String>> alarmList = (List<LinkedHashMap<String, String>>) query.getData();
 		alarmList.forEach(alarmExtraValueWRPrint -> {
 			Map<String, Object> data = new HashMap<>();
-			data.put("職場名", alarmExtraValueWRPrint.get("workplaceID"));
+			data.put("職場名", alarmExtraValueWRPrint.get("workplaceName"));
 			data.put("個人コード", alarmExtraValueWRPrint.get("employeeCode"));
 			data.put("個人名", alarmExtraValueWRPrint.get("employeeName"));
 			data.put("日付", alarmExtraValueWRPrint.get("alarmValueDate"));	
 			
-			data.put("カテゴリ", alarmExtraValueWRPrint.get("category"));	
+			data.put("カテゴリ", alarmExtraValueWRPrint.get("categoryName"));	
 			data.put("アラーム項目名", alarmExtraValueWRPrint.get("alarmItem"));	
 			data.put("アラーム項目値", alarmExtraValueWRPrint.get("alarmValueMessage"));	
 			data.put("コメント", alarmExtraValueWRPrint.get("comment"));	

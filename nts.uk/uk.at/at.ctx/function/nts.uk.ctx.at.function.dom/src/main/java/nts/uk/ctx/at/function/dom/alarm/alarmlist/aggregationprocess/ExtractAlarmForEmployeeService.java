@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
@@ -27,12 +29,15 @@ public class ExtractAlarmForEmployeeService {
 	
 	@Inject
 	private W4D4AlarmService w4D4AlarmService;
+		
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
 	
 	public List<ValueExtractAlarm> process(List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, EmployeeSearchDto employee){
 		
 		List<ValueExtractAlarm> result = new ArrayList<>();
 		List<Integer> listCategory = listPeriodByCategory.stream().map( x->x.getCategory()).collect(Collectors.toList());
-		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value));
+		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value) || e.isMonthly());
 		
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
@@ -43,6 +48,19 @@ public class ExtractAlarmForEmployeeService {
 				throw new RuntimeException("Can't find category: " + checkCondition.getAlarmCategory().value + " from UI");
 			PeriodByAlarmCategory periodByAlarmCategory = optPeriodByAlarmCategory.get();
 			DatePeriod period = new DatePeriod(periodByAlarmCategory.getStartDate(), periodByAlarmCategory.getEndDate());
+			
+			Optional<WorkplaceImport>  optWorkplaceImport =workplaceAdapter.getWorlkplaceHistory(employee.getId(), periodByAlarmCategory.getEndDate());
+			
+			if(optWorkplaceImport.isPresent()) {
+				WorkplaceImport workplaceImport =optWorkplaceImport.get();
+				employee.setWorkplaceId(workplaceImport.getWorkplaceId());
+				employee.setWorkplaceCode(workplaceImport.getWorkplaceCode());
+				employee.setWorkplaceName(workplaceImport.getWkpDisplayName());
+			}else {
+				employee.setWorkplaceId(null);
+				employee.setWorkplaceCode(null);
+				employee.setWorkplaceName(null);
+			}
 			
 			// カテゴリ：日次のチェック条件(daily)
 			if (checkCondition.isDaily()) {
