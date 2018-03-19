@@ -622,6 +622,81 @@ module cmm045.a.viewmodel {
             return a;
         }
         /**
+         * 休暇申請
+         * kaf006 - appType = 1
+         * DOING
+         */
+        formatAbsence(app: vmbase.ApplicationDto_New, absence: vmbase.AppAbsenceFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+            let self = this;
+            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
+            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
+            let appContent006 = '';
+            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == null){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+                appContent006 = self.convertAbsenceAllDay(absence, reason);
+            }
+            if(absence.relationshipCode != null){//特別休暇申請.続柄コード　＝　入力ありの場合
+                appContent006 = self.convertAbsenceSpecial(absence, reason);
+            }
+            if(absence.allDayHalfDayLeaveAtr == 0){//休暇申請.終日半日休暇区分　＝　半日休暇
+                appContent006 = self.convertAbsenceHalfDay(absence, reason);
+            }
+            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
+            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
+            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
+                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent006, self.convertDateTime(app.inputDate),
+                self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
+                masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
+            return a;
+        }
+        //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+        convertAbsenceAllDay(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+            let self = this;
+            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
+            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]) + reason;
+        }
+        //※特別休暇申請.続柄コード　＝　入力ありの場合
+        convertAbsenceSpecial(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+            let hdAppSet = null;
+            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
+            let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
+            let result = getText('CMM045_279') + getText('CMM045_248') + hdAppSet.specialVaca  
+            + absence.relationshipName + day + reason;
+            return result;
+        }
+        //※休暇申請.終日半日休暇区分　＝　半日休暇
+        convertAbsenceHalfDay(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+            let self = this;
+            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
+            let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
+            let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2 + reason;
+            return result;
+        }
+        convertNameHoliday(holidayType: number): string{
+            let hdAppSet = null;
+            switch(holidayType){
+                case 0:// 年休名称 - 0
+                    return hdAppSet.yearHdName;
+                case 1:// 代表者名 - 1
+                    return hdAppSet.obstacleName;
+                case 2:// 欠勤名称 - 2
+                    return hdAppSet.absenteeism;
+                case 3:// 特別休暇名称 - 3
+                    return hdAppSet.specialVaca;
+                case 4:// 積立年休名称  - 4
+                    return hdAppSet.yearResig;
+                case 5:// 休日名称 - 5
+                    return hdAppSet.hdName;
+                case 6:// 時間消化名称 - 6
+                    return hdAppSet.timeDigest;
+                case 7:// 振休名称 - 7
+                    return hdAppSet.furikyuName;
+                default:
+                    return "";
+            }
+        }
+        /**
          * map data -> fill in grid list
          */
         mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,
