@@ -439,7 +439,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 objDetailHeaderDs['_' + time.yearMonthDay] = '';
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-19:00", max: "71:59", visible: true
                 });
 
                 currentDay.setDate(currentDay.getDate() + 1);
@@ -716,7 +716,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //define the new detailColumns
             _.each(self.arrDay, (x: Time) => {
                 newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
+                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-19:00", max: "71:59", visible: true
                 });
             });
 
@@ -881,7 +881,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 //define the new detailColumns
                 newDetailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-19:00", max: "71:59", visible: true
                 });
                 //create new detailHeaderDs
                 newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
@@ -1128,6 +1128,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataBasicSchedule(obj).done(function(data) {
                 //set dataSource for mode shortName
+                self.dataSource([]);
                 _.each(data.listDataShortName, (itemData: BasicSchedule) => {
                     let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
                     if (itemDataSource) {
@@ -1146,6 +1147,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }));
                     }
                 });
+
                 //set dataSource for mode timeZone
                 _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
                     let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
