@@ -3,17 +3,48 @@ module nts.uk.at.view.kmk011.c {
         /**
          * define path to service
          */
-        var path: any = {
+        var paths: any = {
             save: "",
-            find: "",            
+            find: "",
+ 
+            getAllDivReason: "at/record/divergencetime/getalldivreason/",
+            addDivReason: "at/record/divergencetime/adddivreason",
+            updateDivReason: "at/record/divergencetime/updatedivreason",
+            deleteDivReason: "at/record/divergencetime/deletedivreason"
         };
-        
+
         export function save(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.save);
+            return nts.uk.request.ajax("at", paths.save);
         }
-        
+
         export function find(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.findAll);
-        }  
+            return nts.uk.request.ajax("at", paths.findAll);
+        }
+
+        /**
+            * get all divergence reason
+        */
+        export function getAllDivReason(divTimeId: string): JQueryPromise<Array<viewmodel.model.Item>> {
+            return nts.uk.request.ajax("at", paths.getAllDivReason + divTimeId);
+        }
+        /**
+        * add divergence reason
+        */
+        export function addDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
+            return nts.uk.request.ajax("at", paths.addDivReason, divReason);
+        }
+        /**
+        * update divergence reason
+        */
+        export function updateDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
+            return nts.uk.request.ajax("at", paths.updateDivReason, divReason);
+        }
+        /**
+        * delete divergence reason
+        */
+        export function deleteDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
+            return nts.uk.request.ajax("at", paths.deleteDivReason, divReason);
+        }
+
     }
 }

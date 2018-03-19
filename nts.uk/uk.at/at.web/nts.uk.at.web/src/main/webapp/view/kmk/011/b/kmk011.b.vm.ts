@@ -83,41 +83,13 @@ module nts.uk.at.view.kmk011.b {
                     self.clearError();
                     if (codeChanged == 0) { return; }
                     self.selectUse(null);
-                    
-                    self.itemDivergenceTime(self.findDivergenceTime(codeChanged));
-                    console.log(self.itemDivergenceTime().divergenceTimeName);
-                    
-                    self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
-                    self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);//temp
-                    self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
-                    self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
-                    self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
 
-                    self.timeItemName('');
+                    self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
+                        self.itemDivergenceTime(itemDivTime);
+                        self.setValueDivergenceTimeDisplay();
 
-                    //set name KDL selected for divergenceTime
-                    self.listItemSelected();
-                    var listItemAttendanceId = self.itemDivergenceTime().targetItems; //list attendanceId
-                    if (listItemAttendanceId == null || listItemAttendanceId === undefined || listItemAttendanceId.length == 0) {
-                        self.timeItemName();
-                        self.listItemSelected([]);
-                    } else {
-                        service.getNameItemSelected(listItemAttendanceId).done(function(lstName: Array<model.DivergenceItem>) {
-                            self.listItemSelected(lstName);
-                            self.findTimeName(self.divergenceTimeId());
-                        });
-                    }
+                    });
 
-                    if (self.itemDivergenceTime().reasonInput) {
-                        self.checkErrorInput(true);
-                    } else {
-                        self.checkErrorInput(false);
-                    }
-                    if (self.itemDivergenceTime().reasonSelect) {
-                        self.checkErrorSelect(true);
-                    } else {
-                        self.checkErrorSelect(false);
-                    }
                     //
                     //                    self.check = false;
                     //                    $("#itemname").focus();
@@ -168,16 +140,20 @@ module nts.uk.at.view.kmk011.b {
                 var self = this;
                 blockUI.invisible();
                 var dfd = $.Deferred();
-                
+
                 service.getAllDivergenceTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                     blockUI.clear();
                     if (lstDivTime === undefined || lstDivTime.length == 0) {
                         self.dataSource();
                     } else {
-                        self.currentCode(0);
                         self.dataSource(lstDivTime);
                         let rdivTimeFirst = _.first(lstDivTime);
                         self.currentCode(rdivTimeFirst.divergenceTimeNo);
+                        self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
+                            self.itemDivergenceTime(itemDivTime);
+                            self.setValueDivergenceTimeDisplay();
+
+                        });
                     }
                     dfd.resolve();
                 })
@@ -186,22 +162,53 @@ module nts.uk.at.view.kmk011.b {
             /**
              * find Divergence Time is selected
              */
-            findDivTime(value: number): any {
-                let self = this;
-                var itemModel = null;
-                return _.find(self.dataSource(), function(obj: model.DivergenceTime) {
-                    return obj.divergenceTimeNo == value;
-                })
-            }
-            findDivergenceTime(divergenceTimeNo: number):any {
+            private findDivergenceTime(divergenceTimeNo: number): JQueryPromise<any> {
                 var self = this;
-                return service.findDivergenceTime(divergenceTimeNo).done(function(itemDivergenceTime: model.DivergenceTime) {
-                   
-                    return itemDivergenceTime;
+                var dfd = $.Deferred();
+                service.findDivergenceTime(divergenceTimeNo).done(function(itemDivergenceTime: model.DivergenceTime) {
+                    dfd.resolve(itemDivergenceTime);
                 });
+                return dfd.promise();
+            }
+            /**
+             * set display value divergence item
+             */
+            private setValueDivergenceTimeDisplay() {
+                var self = this;
+                self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
+                self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
+                self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
+                self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
+                self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
+
+                self.timeItemName('');
+
+                //set name KDL selected for divergenceTime
+                self.listItemSelected();
+                var listItemAttendanceId = self.itemDivergenceTime().targetItems; //list attendanceId
+                if (listItemAttendanceId == null || listItemAttendanceId === undefined || listItemAttendanceId.length == 0) {
+                    self.timeItemName();
+                    self.listItemSelected([]);
+                } else {
+                    service.getNameItemSelected(listItemAttendanceId).done(function(lstName: Array<model.DivergenceItem>) {
+                        self.listItemSelected(lstName);
+                        self.findTimeName(self.divergenceTimeId());
+                    });
+                }
+
+                if (self.itemDivergenceTime().reasonInput) {
+                    self.checkErrorInput(true);
+                } else {
+                    self.checkErrorInput(false);
+                }
+                if (self.itemDivergenceTime().reasonSelect) {
+                    self.checkErrorSelect(true);
+                } else {
+                    self.checkErrorSelect(false);
+                }
             }
             //create divergence
-            Registration() {
+            public Registration() {
                 var self = this;
                 blockUI.invisible();
                 $('.nts-input').trigger("validate");
@@ -262,7 +269,7 @@ module nts.uk.at.view.kmk011.b {
                 })
                 nts.uk.ui.block.clear();
             }
-            clearError(): void {
+            private clearError(): void {
                 if ($('.nts-validate').ntsError("hasError") == true) {
                     $('.nts-validate').ntsError('clear');
                 }
@@ -271,7 +278,7 @@ module nts.uk.at.view.kmk011.b {
                 }
             }
             //get all divergence time new
-            getAllDivTimeNew() {
+            private getAllDivTimeNew() {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 self.dataSource();
@@ -305,7 +312,7 @@ module nts.uk.at.view.kmk011.b {
                 }
             }
             //open Diaglog 021
-            openDialog021() {
+            public openDialog021() {
                 var self = this;
                 nts.uk.ui.block.grayout();
                 service.getAllAttendanceItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
@@ -345,7 +352,7 @@ module nts.uk.at.view.kmk011.b {
             }
 
             //open C dialog
-            openCDialog() {
+            public openCDialog() {
                 var self = this;
                 blockUI.grayout();
                 setShared('KMK011_divTimeId', self.divergenceTimeId(), true);

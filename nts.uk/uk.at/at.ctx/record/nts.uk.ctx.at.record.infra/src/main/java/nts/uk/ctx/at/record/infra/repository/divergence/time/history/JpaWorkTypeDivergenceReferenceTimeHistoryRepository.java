@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceRefere
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist_;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkTypeDivergenceReferenceTimeHistoryRepository.
@@ -24,6 +26,41 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Stateless
 public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepository
 		implements WorkTypeDivergenceReferenceTimeHistoryRepository {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeHistoryRepository#countByPeriodDate(nts.arc.
+	 * time.GeneralDate, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Integer countByDatePeriod(String companyId, WorkTypeCode workTypeCode, DatePeriod datePeriod) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KrcstWorktypeDrtHist> root = cq.from(KrcstWorktypeDrtHist.class);
+
+		// Get start date, end Date
+		GeneralDate startDate = datePeriod.start();
+		GeneralDate endDate = datePeriod.end();
+
+		// Build query
+		cq.select(criteriaBuilder.count(root));
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode.v()));
+		predicates.add(criteriaBuilder.between(root.get(KrcstWorktypeDrtHist_.strD.getName()), startDate, endDate));
+		predicates.add(criteriaBuilder.between(root.get(KrcstWorktypeDrtHist_.endD.getName()), startDate, endDate));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query count
+		return em.createQuery(cq).getSingleResult().intValue();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -53,7 +90,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	@Override
 	public WorkTypeDivergenceReferenceTimeHistory findAll(String companyId, WorkTypeCode workTypeCode) {
 
-		return this.toDomain(this.findByCompanyIdAndWorkType(companyId, workTypeCode.v()));
+		return this.toDomain(this.findByCompanyIdAndWorkType(companyId, workTypeCode.v(), new ArrayList<String>()));
 	}
 
 	/*
@@ -113,8 +150,11 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 * @return the list
 	 */
 	private List<KrcstWorktypeDrtHist> toEntities(WorkTypeDivergenceReferenceTimeHistory domain) {
+		List<String> histIds = domain.getHistoryItems().stream().map(item -> item.identifier())
+				.collect(Collectors.toList());
+
 		List<KrcstWorktypeDrtHist> worktypeDrtHists = this.findByCompanyIdAndWorkType(domain.getCId(),
-				domain.getWorkTypeCode().v());
+				domain.getWorkTypeCode().v(), histIds);
 
 		JpaWorkTypeDivergenceReferenceTimeHistorySetMemento memento = new JpaWorkTypeDivergenceReferenceTimeHistorySetMemento(
 				worktypeDrtHists);
@@ -129,11 +169,14 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 *
 	 * @param companyId
 	 *            the company id
-	 * @param workType
-	 *            the work type
+	 * @param workTypeCode
+	 *            the work type code
+	 * @param histIds
+	 *            the hist ids
 	 * @return the list
 	 */
-	private List<KrcstWorktypeDrtHist> findByCompanyIdAndWorkType(String companyId, String workTypeCode) {
+	private List<KrcstWorktypeDrtHist> findByCompanyIdAndWorkType(String companyId, String workTypeCode,
+			List<String> histIds) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstWorktypeDrtHist> cq = criteriaBuilder.createQuery(KrcstWorktypeDrtHist.class);
@@ -154,11 +197,5 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		List<KrcstWorktypeDrtHist> worktypeDrtHists = em.createQuery(cq).getResultList();
 
 		return worktypeDrtHists;
-	}
-
-	@Override
-	public Integer countByPeriodDate(GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

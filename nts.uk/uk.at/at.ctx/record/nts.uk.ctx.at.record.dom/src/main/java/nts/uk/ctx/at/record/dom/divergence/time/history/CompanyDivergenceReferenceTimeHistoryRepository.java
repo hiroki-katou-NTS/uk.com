@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface CompanyDivergenceReferenceTimeHistoryRepository.
@@ -8,13 +8,13 @@ import nts.arc.time.GeneralDate;
 public interface CompanyDivergenceReferenceTimeHistoryRepository {
 
 	/**
-	 * Count by period date.
+	 * Count by date period.
 	 *
-	 * @param startDate the start date
-	 * @param endDate the end date
+	 * @param companyId the company id
+	 * @param datePeriod the date period
 	 * @return the integer
 	 */
-	Integer countByPeriodDate(GeneralDate startDate, GeneralDate endDate);
+	Integer countByDatePeriod(String companyId, DatePeriod datePeriod);
 	
 	/**
 	 * Find by hist id.

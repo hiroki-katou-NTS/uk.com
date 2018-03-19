@@ -11,10 +11,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMet
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DivergenceReasonInputMethodFinder.
- */
 @Stateless
 public class DivergenceReasonInputMethodFinder {
 
