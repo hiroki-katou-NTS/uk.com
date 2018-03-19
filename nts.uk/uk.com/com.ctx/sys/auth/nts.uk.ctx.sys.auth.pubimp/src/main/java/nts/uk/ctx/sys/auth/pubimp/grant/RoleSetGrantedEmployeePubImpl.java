@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
@@ -80,9 +81,9 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 		}
 		//Acquire domain model "Roll set"
 		Optional<RoleSet> roleSet =  roleSetRepo.findByCidRollSetCDAuthor(companyId, roleSetCode.toString(), ApprovalAuthority.HasRight.value);
-		RoleSetCode resultRoleSetCD = roleSetGrand.get().getRoleSetCd();
-		if(roleSet.isPresent()){
-			return true;
+		RoleSetCode resultRoleSetCD = roleSet.get().getRoleSetCd();
+		if(!StringUtil.isNullOrEmpty(resultRoleSetCD.toString(), true)){
+			return false;
 		}
 		else{
 			return false;
