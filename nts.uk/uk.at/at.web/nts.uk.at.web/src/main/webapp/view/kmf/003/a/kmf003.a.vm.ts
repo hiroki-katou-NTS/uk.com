@@ -568,7 +568,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 afterValue = $('.a7_24').text();
             }
             
-            if(self.A7_4SelectedRuleCode() === 0) {
+            if(Number(self.A7_4SelectedRuleCode()) === 0) {
                 optionValue = nts.uk.resource.getText("KMF003_21");
             } else {
                 optionValue = nts.uk.resource.getText("KMF003_22");
