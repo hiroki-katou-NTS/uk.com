@@ -393,7 +393,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	private final String FIND_WORKTYPE_BY_ATR_AND_ONEDAY = "SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = :abolishAtr AND c.worktypeAtr = :worktypeAtr AND c.oneDayAtr = :oneDayAtr"
+			+ " AND c.deprecateAtr = :abolishAtr AND c.worktypeAtr = :worktypeAtr AND c.oneDayAtr = :oneDayAtr "
 			+ "ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
 	@Override
 	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay) {
