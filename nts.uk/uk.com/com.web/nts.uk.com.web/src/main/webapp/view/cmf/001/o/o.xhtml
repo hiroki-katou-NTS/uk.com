@@ -108,13 +108,12 @@
 													name: '#[CMF001_446]', 
 													text: '#{i18n.getText('CMF001_447')}',
 													filename: fileName,
-													accept: ['.csv'],
-													stereoType: 'csvfile',
+													accept: ['.csv'],			
 													aslink: false,
 													enable: true,
 													required: true,
-													immediateUpload: true,
-													uploadFinished: uploadFileFinish}">
+													immediateUpload: false,
+													onchange: uploadFile.bind($data)}">
 											</div>
 										</td>
 									</tr>

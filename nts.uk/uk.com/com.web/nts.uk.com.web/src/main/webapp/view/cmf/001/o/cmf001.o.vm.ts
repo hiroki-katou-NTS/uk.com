@@ -131,24 +131,33 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $("#grd_Condition tr[aria-selected='true']").focus();
         }
 
-        private uploadFileFinish(fileInfo: any): void {
+        private uploadFile(): void {
             let self = this;
-            service.getNumberOfLine(fileInfo.id).done(function(totalLine: any) {
-                self.totalLine(totalLine);
-                //アップロードCSVが取込開始行に満たない場合                   
-                if (totalLine < self.selectedConditionStartLine()) {
+            block.invisible();
+            $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
+                service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
+                    self.totalLine(totalLine);
+                    //アップロードCSVが取込開始行に満たない場合                   
+                    if (totalLine < self.selectedConditionStartLine()) {
+                        self.resetFile();
+                        alertError({ messageId: "Msg_1059" });
+                    }
+                    //アップロードCSVが取込開始行以上ある
+                    else {
+                        //基盤からファイルIDを取得する
+                        self.fileId(res[0].id);
+                    }
+                }).fail(function(err) {
                     self.resetFile();
-                    alertError({ messageId: "Msg_1059" });
-                }
-                //アップロードCSVが取込開始行以上ある
-                else {
-                    //基盤からファイルIDを取得する
-                    self.fileId(fileInfo.id);
-                }
+                    alertError({ messageId: "Msg_910" });
+                }).always(() => {
+                    block.clear();
+                    $("#file-upload").focus();
+                });
             }).fail(function(err) {
                 self.resetFile();
-                alertError({ messageId: "Msg_1059" });
-            }).always(() => {
+                block.clear();
+                alertError({ messageId: "Msg_910" });
                 $("#file-upload").focus();
             });
         }
