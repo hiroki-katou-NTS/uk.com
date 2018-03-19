@@ -28,6 +28,8 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
+import nts.uk.ctx.at.record.dom.adapter.statusofemployee.RecStatusOfEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.statusofemployee.RecStatusOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
@@ -38,6 +40,10 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDa
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
@@ -93,6 +99,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -102,12 +109,22 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -210,6 +227,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private CPBonusPaySettingRepository cPBonusPaySettingRepository;
+
+	@Inject
+	private AutoCalculationSetService autoCalculationSetService;
+	
+	@Inject
+	private GetCommonSet getCommonSet;
+	
+	@Inject
+	private RecStatusOfEmployeeAdapter recStatusOfEmployeeAdapter;
 
 	@Override
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
@@ -597,12 +623,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// reflectSpecificDate(companyId, employeeID,
 				// day, affiliationInforOfDailyPerfor.getWplID());
 				//
-				// //加給設定を日別実績に反映する
+				// // 加給設定を日別実績に反映する
 				// Optional<BonusPaySetting> bonusPaySetting =
 				// this.reflectBonusSetting(companyId, employeeID, day, null);
 				// if (bonusPaySetting.isPresent()) {
 				// affiliationInforOfDailyPerfor = new
-				// AffiliationInforOfDailyPerfor(affiliationInforOfDailyPerfor.getEmploymentCode(),
+				// AffiliationInforOfDailyPerfor(
+				// affiliationInforOfDailyPerfor.getEmploymentCode(),
 				// affiliationInforOfDailyPerfor.getEmployeeId(),
 				// affiliationInforOfDailyPerfor.getJobTitleID(),
 				// affiliationInforOfDailyPerfor.getWplID(),
@@ -610,12 +637,34 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// affiliationInforOfDailyPerfor.getClsCode(),
 				// bonusPaySetting.get().getCode());
 				// }
-				//
-				// // 計算区分を日別実績に反映する
-				//
-				//
-				//
-				// // end -----
+
+				// 計算区分を日別実績に反映する
+				// 自動計算設定の取得(get auto calculation setting)
+//				BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService
+//						.getAutoCalculationSetting(companyId, employeeID, day);
+//
+//				AutoCalculationSetting flexExcessTime = new AutoCalculationSetting(
+//						baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getCalAtr(),
+//						baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getUpLimitORtSet());
+//				
+//				// number 3
+//				AutoCalHolidaySetting holidayTimeSetting = new AutoCalHolidaySetting(
+//						new AutoCalculationSetting(baseAutoCalSetting.getRestTime().getRestTime().getCalAtr(), baseAutoCalSetting.getRestTime().getRestTime().getUpLimitORtSet()),
+//						new AutoCalculationSetting(baseAutoCalSetting.getRestTime().getLateNightTime().getCalAtr(), baseAutoCalSetting.getRestTime().getLateNightTime().getUpLimitORtSet()));
+//
+//				//number 4
+//				AutoCalOfOverTime overtimeSetting = new AutoCalOfOverTime(new AutoCalculationSetting(baseAutoCalSetting.getNormalOTTime().getEarlyOtTime().getCalAtr(), baseAutoCalSetting.getNormalOTTime().getEarlyOtTime().getUpLimitORtSet()),
+//						new AutoCalculationSetting(baseAutoCalSetting.getNormalOTTime().getEarlyMidOtTime().getCalAtr(), baseAutoCalSetting.getNormalOTTime().getEarlyMidOtTime().getUpLimitORtSet()),
+//						new AutoCalculationSetting(baseAutoCalSetting.getNormalOTTime().getNormalOtTime().getCalAtr(), baseAutoCalSetting.getNormalOTTime().getNormalOtTime().getUpLimitORtSet()),
+//						new AutoCalculationSetting(baseAutoCalSetting.getNormalOTTime().getNormalMidOtTime().getCalAtr(), baseAutoCalSetting.getNormalOTTime().getNormalMidOtTime().getUpLimitORtSet()),
+//						new AutoCalculationSetting(baseAutoCalSetting.getNormalOTTime().getLegalOtTime().getCalAtr(), baseAutoCalSetting.getNormalOTTime().getLegalOtTime().getUpLimitORtSet()),
+//						new AutoCalculationSetting(baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr(), baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getUpLimitORtSet()));
+//				
+//				CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeID, day,
+//						flexExcessTime, null, holidayTimeSetting, overtimeSetting, null, null);
+				
+
+				// end -----
 				// 1日半日出勤・1日休日系の判定
 				WorkStyle workStyle = basicScheduleService.checkWorkDay(
 						workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
@@ -727,7 +776,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * @param workPlaceID
 	 * @return SpecificDateAttrOfDailyPerfor
 	 */
-	private SpecificDateAttrOfDailyPerfor reflectSpecificDate(String companyId, String employeeId, GeneralDate day,
+	@Override
+	public SpecificDateAttrOfDailyPerfor reflectSpecificDate(String companyId, String employeeId, GeneralDate day,
 			String workPlaceID) {
 		RecSpecificDateSettingImport specificDateSettingImport = this.recSpecificDateSettingAdapter
 				.specificDateSettingService(companyId, workPlaceID, day);
@@ -805,6 +855,16 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						timeLeavingWorkOutput.setWorkNo(sheet.getWorkNo());
 
 						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
+						Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTimeCode().v());
+						if (workTimezoneCommonSet.isPresent()) {
+							WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
+							// 出勤
+							RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream().filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get();
+							// 退勤
+							RoundingSet roundingSet = stampSet.getRoundingSets().stream().filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();
+						}
+						
+						
 						// param : int workTimeMethodSet, String companyId,
 						// String siftCode, int superitory
 						// param : 0, companyId,
@@ -1123,6 +1183,37 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 		return daysBetween;
+	}
+
+	@Override
+	public Optional<WorkInfoOfDailyPerformance> reflectHolidayOfDailyPerfor(String companyId, String employeeId, GeneralDate day) {
+		RecStatusOfEmployeeImport recStatusOfEmployeeImport = this.recStatusOfEmployeeAdapter.getStatusOfEmployeeService(employeeId, day);
+		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = Optional.empty();
+		if (recStatusOfEmployeeImport != null) {
+			if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2 || recStatusOfEmployeeImport.getStatusOfEmployment() == 3) {
+				List<WorkType> workTypeList = this.workTypeRepository.findByCompanyId(companyId);
+				List<WorkType> workTypeOneDayList =  workTypeList.stream()
+						.filter(x -> x.isOneDay())
+						.collect(Collectors.toList());
+				WorkType workTypeNeed = null;
+				for (WorkType workType : workTypeOneDayList) {
+					WorkTypeSet workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay) ;
+					if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2 && WorkTypeClassification.LeaveOfAbsence == workType.getDailyWork().getOneDay()) {
+						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
+						workTypeNeed = workType;
+						break;
+					} else if (recStatusOfEmployeeImport.getStatusOfEmployment() == 3 && WorkTypeClassification.Closure == workType.getDailyWork().getOneDay())  {
+						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
+						workTypeNeed = workType;
+						break;
+					}
+				}
+				
+				
+				
+			}
+		}
+		return workInfoOfDailyPerformance;
 	}
 
 	// private void lateCorrection(TimeActualStamp timeActualStamp) {

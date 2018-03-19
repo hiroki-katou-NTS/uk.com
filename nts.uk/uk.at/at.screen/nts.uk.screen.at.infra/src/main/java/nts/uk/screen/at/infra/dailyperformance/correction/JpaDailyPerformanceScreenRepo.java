@@ -994,7 +994,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId) {
 		Optional<KrcstDailyRecOpeFun> krcstDailyRecOpeFunOpt = this.queryProxy().find(companyId.toString(),
 				KrcstDailyRecOpeFun.class);
-		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty() : Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr, krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError));
+		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty()
+				: Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr,
+						krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError,
+						krcstDailyRecOpeFunOpt.get().confirmBySupervisorAtr,
+						krcstDailyRecOpeFunOpt.get().supervisorConfirmWhenError));
 	}
 
 	@Override

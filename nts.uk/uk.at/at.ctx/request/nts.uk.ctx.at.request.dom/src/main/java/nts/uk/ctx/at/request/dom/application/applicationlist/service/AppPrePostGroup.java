@@ -19,4 +19,5 @@ public class AppPrePostGroup {
 	
 	private AppOverTimeInfoFull appPre;
 	private String reasonAppPre;
+	private AppHolidayWorkFull appPreHd;
 }

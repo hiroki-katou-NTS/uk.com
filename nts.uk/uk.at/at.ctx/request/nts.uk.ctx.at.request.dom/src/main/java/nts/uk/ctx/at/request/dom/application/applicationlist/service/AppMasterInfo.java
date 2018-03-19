@@ -13,6 +13,7 @@ public class AppMasterInfo {
 	private int appType;
 	private String dispName;
 	private String empName;
+	private String inpEmpName;
 	private String workplaceName;
 	@Setter
 	private boolean statusFrameAtr;

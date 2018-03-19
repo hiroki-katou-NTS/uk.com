@@ -138,3 +138,7 @@ button {
 #linkButton1 {
 	margin-left: 19px;
 }
+
+.nts-wizard>.content>.body {
+ padding: 0;
+}

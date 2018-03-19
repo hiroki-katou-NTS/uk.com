@@ -25,7 +25,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	@Override
 	public List<Identification> findByEmployeeID(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(GET_BY_EMPLOYEE_ID,KrcdtIdentificationStatus.class)
-			.setParameter("employeeID", employeeID)
+			.setParameter("employeeId", employeeID)
 			.setParameter("startDate", startDate)
 			.setParameter("endDate", endDate).getList(c->c.toDomain());
 	}
@@ -39,6 +39,9 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 				.getSingle(c->c.toDomain());
 	}
 
-	
+	@Override
+	public void insert(Identification identification) {
+		this.commandProxy().insert(KrcdtIdentificationStatus.toEntity(identification));
+	}
 	
 }

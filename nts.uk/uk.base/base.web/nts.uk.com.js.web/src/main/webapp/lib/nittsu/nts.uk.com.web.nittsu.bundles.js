@@ -3832,7 +3832,7 @@ var nts;
                                     }
                                     var nameToShow = item.displayName || item.defaultName;
                                     var $item = $("<li class='title-item'/>")
-                                        .data("path", item.url)
+                                        .data("path", !uk.util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
                                         .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
                                         .data(DATA_TITLEITEM_PGNAME, nameToShow)
                                         .text(nameToShow);
@@ -23168,7 +23168,10 @@ var nts;
                         var flatCols = validation.scanValidators($self, options.columns);
                         // Cell color
                         var cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
-                        $self.addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
+                        $self.addClass('compact-grid nts-grid');
+                        if ($self.closest(".nts-grid-wrapper").length === 0) {
+                            $self.wrap($("<div class='nts-grid-wrapper'/>"));
+                        }
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
                         var bounceCombos = {};
@@ -23780,7 +23783,8 @@ var nts;
                          * Notify update.
                          */
                         function notifyUpdate($grid, rowId, columnKey, value, origData) {
-                            if (origData && origData[columnKey] === value) {
+                            if (origData && (origData[columnKey] === value
+                                || (uk.util.isNullOrUndefined(origData[columnKey]) && _.isEmpty(value)))) {
                                 var updatedCells_1 = $grid.data(internal.UPDATED_CELLS);
                                 if (updatedCells_1) {
                                     _.remove(updatedCells_1, function (c, i) {
@@ -26069,7 +26073,6 @@ var nts;
                                         processor.copyHandler();
                                     }
                                     else if (evt.ctrlKey && utils.isCutKey(evt)) {
-                                        processor.cutHandler();
                                     }
                                 });
                                 return this;
@@ -26516,8 +26519,10 @@ var nts;
                                 return;
                             var sheets = $grid.data(internal.SHEETS);
                             var sheetErrors = errorsLog[sheets.currentSheet];
-                            if (uk.util.isNullOrUndefined(sheetErrors))
+                            if (uk.util.isNullOrUndefined(sheetErrors)) {
+                                removeErrorBasedOtherSheet(sheets, errorsLog, cell);
                                 return;
+                            }
                             var cellErrorIdx;
                             _.forEach(sheetErrors, function (errorCell, i) {
                                 if (cellEquals(errorCell, cell)) {
@@ -26528,6 +26533,22 @@ var nts;
                             if (!uk.util.isNullOrUndefined(cellErrorIdx)) {
                                 errorsLog[sheets.currentSheet].splice(cellErrorIdx, 1);
                             }
+                            else {
+                                removeErrorBasedOtherSheet(sheets, errorsLog, cell);
+                            }
+                        }
+                        function removeErrorBasedOtherSheet(sheets, errorsLog, cell) {
+                            var sheetsIn = sheets.columnsInSheetImme[cell.columnKey];
+                            if (sheetsIn && sheetsIn.size > 1) {
+                                _.forEach(Array.from(sheetsIn), function (s, i) {
+                                    if (s !== sheets.currentSheet) {
+                                        var oErrs = errorsLog[s];
+                                        if (oErrs) {
+                                            _.remove(oErrs, function (e) { return cellEquals(e, cell); });
+                                        }
+                                    }
+                                });
+                            }
                         }
                         function markIfError($grid, cell) {
                             var errorsLog = $grid.data(internal.ERRORS_LOG);
@@ -26535,16 +26556,42 @@ var nts;
                                 return;
                             var sheets = $grid.data(internal.SHEETS);
                             var sheetErrors = errorsLog[sheets.currentSheet];
-                            if (uk.util.isNullOrUndefined(sheetErrors))
+                            if (uk.util.isNullOrUndefined(sheetErrors)) {
+                                markBasedOtherSheet(sheets, errorsLog, cell);
                                 return;
+                            }
+                            var marked = false;
                             _.forEach(sheetErrors, function (c) {
                                 if (cellEquals(c, cell)) {
                                     decorate($(cell.element));
+                                    marked = true;
                                     return false;
                                 }
                             });
+                            if (!marked) {
+                                markBasedOtherSheet(sheets, errorsLog, cell);
+                            }
                         }
                         errors.markIfError = markIfError;
+                        function markBasedOtherSheet(sheets, errorsLog, cell) {
+                            var sheetsIn = sheets.columnsInSheetImme[cell.columnKey];
+                            if (sheetsIn && sheetsIn.size > 1) {
+                                _.forEach(Array.from(sheetsIn), function (s, i) {
+                                    if (s !== sheets.currentSheet) {
+                                        var marked_1 = false;
+                                        _.forEach(errorsLog[s], function (c) {
+                                            if (cellEquals(c, cell)) {
+                                                decorate($(cell.element));
+                                                marked_1 = true;
+                                                return false;
+                                            }
+                                        });
+                                        if (marked_1)
+                                            return false;
+                                    }
+                                });
+                            }
+                        }
                         function cellEquals(one, other) {
                             if (one.columnKey !== other.columnKey)
                                 return false;
@@ -26666,7 +26713,11 @@ var nts;
                                                 var groupSeparator = constraint.groupSeparator || ",";
                                                 var rawValue = uk.text.replaceAll(value, groupSeparator, "");
                                                 var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                                value = formatter.format(Number(rawValue));
+                                                var numVal = Number(rawValue);
+                                                if (!isNaN(numVal))
+                                                    value = formatter.format(numVal);
+                                                else
+                                                    value = rawValue;
                                             }
                                         }
                                     }
@@ -26965,6 +27016,8 @@ var nts;
                             function Configurator(currentSheet, sheets) {
                                 this.currentSheet = currentSheet;
                                 this.sheets = sheets;
+                                this.columnsInSheetImme = {};
+                                this.columnsInSheet = {};
                             }
                             /**
                              * Load
@@ -27109,7 +27162,7 @@ var nts;
                                 }
                                 columns = sheetMng.sheetColumns[sheet[0].name];
                                 if (!columns) {
-                                    columns = getSheetColumns(options.columns, sheet[0], options.features);
+                                    columns = getSheetColumns(options.columns, sheet[0], options.features, sheetMng);
                                     sheetMng.sheetColumns[sheet[0].name] = columns.all;
                                     var idxes_2 = {};
                                     utils.analyzeColumns(columns.unfixed)
@@ -27155,7 +27208,7 @@ var nts;
                                         var settings = $grid.data(internal.SETTINGS);
                                         columns = sheetMng.sheetColumns[sheet.name];
                                         if (!columns) {
-                                            columns = getSheetColumns(options.columns, sheet, options.features);
+                                            columns = getSheetColumns(options.columns, sheet, options.features, sheetMng);
                                             sheetMng.sheetColumns[sheet.name] = columns.all;
                                             var idxes_3 = {};
                                             utils.analyzeColumns(columns.unfixed)
@@ -27205,21 +27258,46 @@ var nts;
                             /**
                              * Get sheet columns
                              */
-                            function getSheetColumns(allColumns, displaySheet, features) {
+                            function getSheetColumns(allColumns, displaySheet, features, sheetMng) {
                                 var fixedColumns = [];
                                 var columns = [];
                                 _.forEach(allColumns, function (column) {
-                                    if (column.group !== undefined && _.find(displaySheet.columns, function (col) {
-                                        return col === column.group[0].key;
+                                    var index;
+                                    if (column.group !== undefined && _.find(displaySheet.columns, function (col, i) {
+                                        if (col === column.group[0].key) {
+                                            index = i;
+                                            return true;
+                                        }
                                     }) !== undefined) {
-                                        columns.push(column);
+                                        columns[index] = column;
+                                        column.group.forEach(function (sc) {
+                                            if (!sheetMng.columnsInSheetImme[sc.key]) {
+                                                var mSet = new Set();
+                                                mSet.add(displaySheet.name);
+                                                sheetMng.columnsInSheetImme[sc.key] = mSet;
+                                            }
+                                            else {
+                                                sheetMng.columnsInSheetImme[sc.key].add(displaySheet.name);
+                                            }
+                                        });
                                         return;
                                     }
-                                    var belongToSheet = _.find(displaySheet.columns, function (col) {
-                                        return col === column.key;
+                                    var belongToSheet = _.find(displaySheet.columns, function (col, i) {
+                                        if (col === column.key) {
+                                            index = i;
+                                            return true;
+                                        }
                                     }) !== undefined;
                                     if (belongToSheet) {
-                                        columns.push(column);
+                                        columns[index] = column;
+                                        if (!sheetMng.columnsInSheetImme[column.key]) {
+                                            var mSet = new Set();
+                                            mSet.add(displaySheet.name);
+                                            sheetMng.columnsInSheetImme[column.key] = mSet;
+                                        }
+                                        else {
+                                            sheetMng.columnsInSheetImme[column.key].add(displaySheet.name);
+                                        }
                                         return;
                                     }
                                     var columnFixFeature = feature.find(features, feature.COLUMN_FIX);
@@ -27233,6 +27311,7 @@ var nts;
                                         }
                                     }
                                 });
+                                _.remove(columns, function (c) { return uk.util.isNullOrUndefined(c); });
                                 return { fixed: fixedColumns,
                                     unfixed: columns,
                                     all: _.concat(fixedColumns, columns) };
