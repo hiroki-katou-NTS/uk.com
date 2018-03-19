@@ -138,6 +138,7 @@ module nts.uk.com.view.ccg027.a.viewmodel {
 
 
         decision() {
+            //console.time('decision');
             var self = this;
             if (self.checkContenListMail() && !$(".nts-input").ntsError("hasError")) {
                 var MailSettings = ({
@@ -151,11 +152,15 @@ module nts.uk.com.view.ccg027.a.viewmodel {
                 nts.uk.ui.windows.setShared("MailSettings", MailSettings);
                 nts.uk.ui.windows.close();
             }
+          //console.timeEnd('decision');
+            
         }
 
         cancel_Dialog(): any {
+            //console.time('cancel_Dialog');
             nts.uk.ui.windows.setShared("MailSettings", null);
             nts.uk.ui.windows.close();
+            //console.timeEnd('cancel_Dialog');
         }
 
     }

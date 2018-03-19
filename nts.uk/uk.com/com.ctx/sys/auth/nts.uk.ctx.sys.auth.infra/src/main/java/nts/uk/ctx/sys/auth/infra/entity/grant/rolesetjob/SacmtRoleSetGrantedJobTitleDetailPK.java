@@ -23,10 +23,6 @@ public class SacmtRoleSetGrantedJobTitleDetailPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
-	@Column(name = "ROLESET_CD")
-	public String roleSetCd;
-
-	@Basic(optional = false)
 	@Column(name = "JOB_ID")
 	public String jobTitleId;
 
@@ -35,7 +31,6 @@ public class SacmtRoleSetGrantedJobTitleDetailPK implements Serializable {
 	public String companyId;
 
 	public boolean equals(SacmtRoleSetGrantedJobTitleDetailPK pk) {
-		return (this.companyId.equals(pk.companyId) && this.jobTitleId.equals(pk.jobTitleId)
-				&& this.roleSetCd.equals(pk.roleSetCd));
+		return (this.companyId.equals(pk.companyId) && this.jobTitleId.equals(pk.jobTitleId));
 	}
 }

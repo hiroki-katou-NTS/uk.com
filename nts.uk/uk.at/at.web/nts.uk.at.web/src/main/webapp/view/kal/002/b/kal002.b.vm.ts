@@ -108,7 +108,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
                 new MailSettingsCommand(dto.mailSettingAutomaticDto.mailSettingAdmins),dto.mailSettingAutomaticDto.senderAddress);
             
             var command = new MailAutoAndNormalCommand(mailSettingAutomatic, mailSettingNormal);
-            console.log(command);
+            //console.log(command);
             new service.Service().addMailSet(command).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });

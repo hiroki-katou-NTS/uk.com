@@ -38,18 +38,19 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	
 	@Override
 	public ValueExtractAlarmWRPubExport checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
-		Optional<ValueExtractAlarmWRPubExport> data = Optional.of(convertToExport(workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD)));
+		Optional<ValueExtractAlarmWR> data = Optional.ofNullable(workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD));
 		if(data.isPresent()) {
-			return data.get();
+			return convertToExport(data.get());
 		}
 		return null;
 	}
 
 	@Override
 	public ValueExtractAlarmWRPubExport checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
-		Optional<ValueExtractAlarmWRPubExport> data = Optional.of(convertToExport(workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD)));
+		Optional<ValueExtractAlarmWR> data = Optional.ofNullable(workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD));
+
 		if(data.isPresent()) {
-			return data.get();
+			return convertToExport(data.get());
 		}
 		return null;
 	}

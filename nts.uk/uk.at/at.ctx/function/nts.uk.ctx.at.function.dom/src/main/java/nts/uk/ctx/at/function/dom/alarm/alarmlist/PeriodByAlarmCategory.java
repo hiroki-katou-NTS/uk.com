@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,9 +21,11 @@ public class PeriodByAlarmCategory {
 	GeneralDate endDate;
 	
 	public List<GeneralDate> getListDate() {
-		List<GeneralDate> result = Collections.emptyList();
-		for(GeneralDate date = GeneralDate.localDate(startDate.localDate()); date.after(endDate); date.addDays(1)) {
+		List<GeneralDate> result = new ArrayList<GeneralDate>();
+		GeneralDate date = GeneralDate.localDate(startDate.localDate());
+		while (date.before(endDate)) {
 			result.add(date);
+			date = date.addDays(1);
 		}
 		return result;
 	}
