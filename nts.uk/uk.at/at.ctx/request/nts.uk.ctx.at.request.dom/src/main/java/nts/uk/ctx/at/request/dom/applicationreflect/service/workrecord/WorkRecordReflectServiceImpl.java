@@ -29,7 +29,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類
 			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
-				
+				return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor());
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
 				return reflectRecord.gobackReflectRecord(gobackpara, true);

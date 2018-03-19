@@ -21,4 +21,9 @@ public interface AppReflectProcessRecord {
 	 * @return
 	 */
 	public ReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre);
+	/**
+	 * 残業申請：　 事前申請の処理   
+	 * @return
+	 */
+	public ReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para);
 }

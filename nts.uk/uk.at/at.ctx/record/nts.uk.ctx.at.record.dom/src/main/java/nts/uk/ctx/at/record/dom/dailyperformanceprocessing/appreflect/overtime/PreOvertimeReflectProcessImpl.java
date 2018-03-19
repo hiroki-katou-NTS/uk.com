@@ -23,6 +23,9 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	private ScheWorkUpdateService workUpdate;
 	@Inject
 	private CommonProcessCheckService commonService;
+	@Inject
+	private ScheStartEndTimeReflect scheStartEndTimeReflect;
+	
 	@Override
 	public void workTimeWorkTimeUpdate(PreOvertimeParameter para) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
@@ -73,22 +76,15 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		
 	}
 	@Override
-	public boolean startAndEndTimeReflectSche(PreOvertimeParameter para, boolean changeFlg,
+	public void startAndEndTimeReflectSche(PreOvertimeParameter para, boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData) {
 		//設定による予定開始終了時刻を反映できるかチェックする
 		if(!this.timeReflectCheck(para, changeFlg, dailyData)) {
-			return false;
+			return;
 		}
 		//予定開始終了時刻の反映(事前事後共通部分)
 		WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
-		
-		
-		
-		
-		
-		
-		
-		return false;
+		scheStartEndTimeReflect.reflectScheStartEndTime(para, timeTypeData);
 	}
 	@Override
 	public boolean timeReflectCheck(PreOvertimeParameter para, boolean changeFlg,

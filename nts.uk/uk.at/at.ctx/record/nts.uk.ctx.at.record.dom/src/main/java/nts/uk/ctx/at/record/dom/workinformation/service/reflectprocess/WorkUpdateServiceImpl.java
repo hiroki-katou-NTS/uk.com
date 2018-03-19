@@ -112,11 +112,14 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		dailyReposiroty.updateByKey(lstData);
 	}
 	@Override
-	public void updateReflectStartEndTime(TimeReflectParameter para, List<Integer> lstItem) {
+	public void updateReflectStartEndTime(TimeReflectParameter para) {
 		//開始時刻を反映する 
 		//TODO khong hieu, chua lam duoc
 		//開始時刻の編集状態を更新する
 		List<EditStateOfDailyPerformance> lstDaily = new ArrayList<>();
+		List<Integer> lstItem = new ArrayList();
+		lstItem.add(3);
+		lstItem.add(5);
 		lstItem.stream().forEach(z -> {
 			Optional<EditStateOfDailyPerformance> optItemData = dailyReposiroty.findByKeyId(para.getEmployeeId(), para.getDateData(), z);
 			if(optItemData.isPresent()) {

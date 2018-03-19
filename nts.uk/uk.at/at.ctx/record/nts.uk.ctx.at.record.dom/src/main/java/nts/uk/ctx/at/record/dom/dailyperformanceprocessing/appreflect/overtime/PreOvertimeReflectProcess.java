@@ -42,7 +42,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param dailyData
 	 * @return
 	 */
-	public boolean startAndEndTimeReflectSche(PreOvertimeParameter para,
+	public void startAndEndTimeReflectSche(PreOvertimeParameter para,
 			boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData);
 	/**

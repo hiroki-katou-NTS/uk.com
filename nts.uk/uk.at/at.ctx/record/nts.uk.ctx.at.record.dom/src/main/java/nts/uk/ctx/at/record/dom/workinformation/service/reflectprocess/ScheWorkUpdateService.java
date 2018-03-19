@@ -24,6 +24,6 @@ public interface ScheWorkUpdateService {
 	 * 開始時刻の反映
 	 * @param data
 	 */
-	public void updateReflectStartEndTime(TimeReflectParameter para,List<Integer> lstItem);
+	public void updateReflectStartEndTime(TimeReflectParameter para);
 
 }
