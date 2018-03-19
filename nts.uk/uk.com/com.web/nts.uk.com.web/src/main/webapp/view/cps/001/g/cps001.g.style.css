@@ -188,10 +188,6 @@
 .grid-container{
     margin: 15px 0 0 0px;
 }
-.cls-detail{
-	display: block;	
-	padding-top: 20px;
-}
 
 .resize_Edittor{
 	width: 80px !important;
@@ -199,4 +195,33 @@
 #fixed_table td {
     padding-bottom: 10px;
     padding-left: 10px;
+}
+
+#tbl-detail tr>td:NTH-CHILD(1) {
+	width: 120px !important;
+}
+
+#tbl-detail{
+	padding-top: 20px;
+}
+#tbl-detail td {
+    padding-bottom: 10px;
+    padding-left: 10px;
+    float: left;
+}
+
+#fixed_table tr>td:NTH-CHILD(1) {
+	width: 120px !important;
+}
+#fixed_table tr>td:NTH-CHILD(2) {
+	width:100px !important;
+}
+#fixed_table tr>td:NTH-CHILD(3) {
+	width:100px !important;
+}
+#fixed_table tr>td:NTH-CHILD(4) {
+	width:100px !important;
+}
+#fixed_table tr>td:NTH-CHILD(5) {
+	width:100px !important;
 }

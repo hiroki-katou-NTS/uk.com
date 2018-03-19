@@ -1,43 +1,44 @@
 module nts.uk.com.view.cps001.g.vm {
         import getText = nts.uk.resource.getText;
+        import info = nts.uk.ui.dialog.info;
+        import alert = nts.uk.ui.dialog.alert;
         export class ScreenModel {
 
             // Store create/update mode
             createMode: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<any>;
-            currentCode: KnockoutObservable<any>;
+            currentValue: KnockoutObservable<Date>;
             date: KnockoutObservable<string>;   
-            roundingRules: KnockoutObservableArray<any>;
+            expirationStatus: KnockoutObservableArray<any>;
             value: KnockoutObservable<number>;
-            selectedRuleCode: any;
+            listAnnualLeaveGrantRemainData: KnockoutObservableArray<AnnualLeaveGrantRemainingData> = ko.observableArray([]);
+            currentItem: KnockoutObservable<AnnualLeaveGrantRemainingData> = ko.observable(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
+            
             constructor() {
                 let _self = this;
-                _self.date = ko.observable('20000101');
-                _self.value= ko.observable(1200);
+                
                 _self.createMode = ko.observable(null);
                 
-                _self.roundingRules = ko.observableArray([
-                    { code: '1', name: '四捨五入' },
-                    { code: '2', name: '切り上げ' }
+                
+                _self.expirationStatus = ko.observableArray([
+                    { code: '0', name: '使用可能' },
+                    { code: '1', name: '期限切れ' }
                 ]);
-                _self.selectedRuleCode = ko.observable(1);
                 _self.createMode.subscribe((newValue) => {
                 });
                 this.columns = ko.observableArray([
-                    { headerText:  '', dataType: 'string',width: 30 },
-                    { headerText:  getText('CPS001_110'), dataType: 'string', prop: 'code', width: 50 },
-                    { headerText: getText('CPS001_111'), dataType: 'string', prop: 'name', width: 50 },
-                    { headerText: getText('CPS001_120'), dataType: 'string', prop: 'description', width: 50 },
-                    { headerText: getText('CPS001_128'), dataType: 'string', prop: 'other1', width: 50 },
-                    { headerText: getText('CPS001_121'), dataType: 'string', prop: 'other2', width: 50 },
-                    { headerText: getText('CPS001_122'), dataType: 'string', prop: 'other2', width: 50 },
-                    { headerText: getText('CPS001_123'), dataType: 'string', prop: 'other2', width: 50 },
-                    { headerText: getText('CPS001_124'), dataType: 'string', prop: 'other2', width: 50 },
-                     { headerText: getText('CPS001_129'), dataType: 'string', prop: 'other2', width: 50 }
+                    { headerText:  getText('CPS001_110'), prop: 'grantDate', width: 100 },
+                    { headerText: getText('CPS001_111'), prop: 'deadline', width: 100 },
+                    { headerText: getText('CPS001_120'), prop: 'expirationStatus', width: 50 },
+                    { headerText: getText('CPS001_128'), prop: 'grantDays', width: 50 },
+                    { headerText: getText('CPS001_121'), prop: 'grantMinutes', width: 50 },
+                    { headerText: getText('CPS001_122'), prop: 'usedDays', width: 50 },
+                    { headerText: getText('CPS001_123'), prop: 'usedMinutes', width: 50 },
+                    { headerText: getText('CPS001_124'), prop: 'remainingDays', width: 50 },
+                     { headerText: getText('CPS001_129'),prop: 'remainingMinutes', width: 50 }
                 ]);
-
-                this.items = ko.observableArray([]);
+                _self.items = ko.observableArray([]);
                 let str = ['a0', 'b0', 'c0', 'd0'];
                 for (let j = 0; j < 4; j++) {
                     for (let i = 1; i < 51; i++) {
@@ -45,12 +46,18 @@ module nts.uk.com.view.cps001.g.vm {
                         this.items.push(new ItemModel(code, code, code, code));
                     }
                 }
-                this.currentCode = ko.observable();
+                _self.currentValue = ko.observable(moment().toDate());
+                _self.currentValue.subscribe(value =>{
+                    service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData)=>{
+                        if(result){
+                            _self.currentItem(new AnnualLeaveGrantRemainingData(result));
+                        }
+                    });
+                   
+                });
             }
 
 
-
-            // BEGIN PAGE BEHAVIOUR
 
             /**
              * Run after page loaded
@@ -58,7 +65,17 @@ module nts.uk.com.view.cps001.g.vm {
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-
+                service.getAllList().done((data: Array<IAnnualLeaveGrantRemainingData>) => {
+                    if (data && data.length > 0 ){
+                        _.each(data, (item)=>{
+                            _self.listAnnualLeaveGrantRemainData.push(item);
+                            });
+//                        data.forEach(item=>_self.listAnnualLeaveGrantRemainData.push(item));
+                        // Set focus
+                        _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
+                    }
+                    
+                });
                 // Load sequence data list
                 return dfd.promise();
             }
@@ -70,13 +87,24 @@ module nts.uk.com.view.cps001.g.vm {
                 let _self = this;
                 _self.createMode(true);
             }
-
+            
+            public create(): void {
+                let _self = this;
+                _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{})); 
+            }
             /**
              * Save sequence
              */
             public save(): void {
-                let _self = this;
-
+                let _self = this,
+                command = ko.toJS(_self.currentItem());
+                service.register(command).done((message: string)=>{
+                        info({ messageId: "Msg_15" }).then(function() {
+                        self.startPage();
+                    });
+                }).fail((message) => {
+                    alert(message.message);
+                });
                 if (_self.createMode()) {
                 } else {
                 }
@@ -104,7 +132,7 @@ module nts.uk.com.view.cps001.g.vm {
             }
         }
         
-        class ItemModel {
+        export class ItemModel {
             code: string;
             name: string;
             description: string;
@@ -116,6 +144,62 @@ module nts.uk.com.view.cps001.g.vm {
                 this.description = description;
                 this.other1 = other1;
                 this.other2 = other2 || other1;
+            }
+        }
+    
+        export interface IAnnualLeaveGrantRemainingData{
+            grantDate: Date;
+            deadline: Date;
+            expirationStatus: number; 
+            grantDays: number;
+            grantMinutes: number;
+            usedDays: number;
+            usedMinutes: number; 
+            remainingDays: number;
+            remainingMinutes: number;
+        }
+                
+        export interface AnnualLeaveNumberInfo{
+            grantNumber: AnnualLeaveGrantNumber;
+            usedNumber: AnnualLeaveUsedNumber;
+            remainNumber: AnnualLeaveRemainingNumber;
+        }
+    
+        export interface AnnualLeaveGrantNumber{
+            
+        }
+    
+        export interface AnnualLeaveUsedNumber{
+               
+        }
+        
+        export interface AnnualLeaveRemainingNumber {
+                
+        }
+    
+        export class AnnualLeaveGrantRemainingData{
+            grantDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
+            deadline: KnockoutObservable<Date> = ko.observable(moment().toDate());
+            expirationStatus: KnockoutObservable<number> = ko.observable(0);
+            grantDays: KnockoutObservable<number> = ko.observable(0);
+            grantMinutes: KnockoutObservable<number> = ko.observable(0);
+            usedDays: KnockoutObservable<number> = ko.observable(0);
+            usedMinutes: KnockoutObservable<number> = ko.observable(0);
+            remainingDays: KnockoutObservable<number> = ko.observable(0);
+            remainingMinutes: KnockoutObservable<number> = ko.observable(0);
+            constructor(param? : IAnnualLeaveGrantRemainingData){
+                let self = this;
+                if (param){
+                    self.grantDate(param.grantDate || moment().toDate());
+                    self.deadline(param.deadline|| moment().toDate());
+                    self.expirationStatus(param.expirationStatus || 0);
+                    self.grantDays(param.grantDays || 0);
+                    self.grantMinutes(param.grantMinutes || 0);
+                    self.usedDays(param.usedDays || 0);
+                    self.usedMinutes(param.usedMinutes || 0);
+                    self.remainingDays(param.remainingDays || 0);
+                    self.remainingMinutes(param.remainingMinutes || 0); 
+                }
             }
         }
 
