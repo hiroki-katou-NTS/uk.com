@@ -129,6 +129,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_EMP_NAME = "employeeName";
 	private static final String LOCK_ERROR = "error";
 	private static final String LOCK_SIGN = "sign";
+	private static final String LOCK_APPROVAL = "approval";
 	private static final String LOCK_PIC = "picture-person";
 	private static final String SCREEN_KDW003 = "KDW/003/a";
 	private static final String ADD_CHARACTER = "A";
@@ -190,6 +191,12 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
+		
+		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
+		getHolidaySettingData(screenDto);
+		
+		//<<Public>> パラメータに初期値を設定する
+		///期間を変更する
 		if (dateRange == null) {
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, GeneralDate.today()), sId));
@@ -210,16 +217,16 @@ public class DailyPerformanceCorrectionProcessor {
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
 		screenDto.setDateRange(dateRange);
-
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
 		screenDto.setAuthorityDto(getAuthority(screenDto));
 		// get employmentCode
 		screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
-		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
-		getHolidaySettingData(screenDto);
-
+		///TODO 表示形式を変更する -- get from Characteristic - Chưa biết lấy Characteristic ở đâu
+		
+		///TODO 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
+		
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
 		 * display format"
@@ -237,7 +244,10 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(getListData(lstEmployeeData, dateRange, displayFormat));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
 		List<String> listEmployeeId = lstEmployeeData.stream().map(e -> e.getId()).collect(Collectors.toList());
-
+        
+		//パラメータ「表示形式」をチェックする - Đã thiết lập truyền từ UI nên không cần check lấy theo định dạng nào , nhân viên đã được truyền
+		
+		// Lấy thành tích nhân viên theo ngày 
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
@@ -268,6 +278,7 @@ public class DailyPerformanceCorrectionProcessor {
 		// tích theo ngày")
 
 		// check show column 本人
+		// check show column 承認
 		DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId).orElse(null);
 
 		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
@@ -607,14 +618,24 @@ public class DailyPerformanceCorrectionProcessor {
 		if (dailyRecOpeFun != null) {
 			if (!sId.equals(data.getEmployeeId())) {
 				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 			} else {
 				if (data.getError().contains("ER")) {
 					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
+					int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
+					//lock sign
 					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
 						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 						// thieu check khi co data
 					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// thieu tra ve message khi dang ky
+						// co the dang ky data nhưng ko đăng ký được check box
+					}
+					//lock approval
+					if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+						// thieu check khi co data
+					} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+						// co the dang ky data nhưng ko đăng ký được check box
 					}
 				}
 			}
@@ -673,9 +694,12 @@ public class DailyPerformanceCorrectionProcessor {
 		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(companyId);
 		if (findDailyRecOpeFun.isPresent()) {
 			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
+			screenDto.setShowSupervisor(findDailyRecOpeFun.get().getUseSupervisorConfirm() == 0 ? false : true);
 		} else {
 			screenDto.setShowPrincipal(false);
+			screenDto.setShowSupervisor(false);
 		}
+		
 		return findDailyRecOpeFun;
 	}
 

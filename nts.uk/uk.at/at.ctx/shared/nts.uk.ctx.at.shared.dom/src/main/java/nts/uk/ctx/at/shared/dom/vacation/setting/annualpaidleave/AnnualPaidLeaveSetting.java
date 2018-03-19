@@ -10,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
+ * 年休設定
  * The Class AnnualVacationSetting.
  */
 @Getter
