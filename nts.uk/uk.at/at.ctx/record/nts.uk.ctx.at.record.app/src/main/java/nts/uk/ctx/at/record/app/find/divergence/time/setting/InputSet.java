@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class InputSet {
-	
+
 	/** The select use set. */
 	private int selectUseSet;
 
@@ -18,8 +18,10 @@ public class InputSet {
 	/**
 	 * Convert type.
 	 *
-	 * @param selectUseSet the select use set
-	 * @param cancelErrSelReason the cancel err sel reason
+	 * @param selectUseSet
+	 *            the select use set
+	 * @param cancelErrSelReason
+	 *            the cancel err sel reason
 	 * @return the input set
 	 */
 	public static InputSet convertType(int selectUseSet, int cancelErrSelReason) {

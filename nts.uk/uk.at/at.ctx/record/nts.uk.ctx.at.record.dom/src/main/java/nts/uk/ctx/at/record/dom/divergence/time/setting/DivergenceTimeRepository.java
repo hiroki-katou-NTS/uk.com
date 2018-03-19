@@ -33,8 +33,12 @@ public interface DivergenceTimeRepository {
 	 * @return the list
 	 */
 	List<Integer> findAttendanceId(String companyId, int divTimeNo);
-	
+
+	/**
+	 * Update.
+	 *
+	 * @param divTimeDomain the div time domain
+	 */
 	void update (DivergenceTime divTimeDomain);
-	
 
 }

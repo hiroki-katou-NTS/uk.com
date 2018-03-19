@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMet
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
 
+
 @Stateless
 public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<DivergenceTimeInputMethodSaveCommand> {
 
@@ -19,6 +20,7 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
 
+	/** The div reason input repo. */
 	@Inject
 	private DivergenceReasonInputMethodRepository divReasonInputRepo;
 

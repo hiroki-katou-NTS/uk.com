@@ -22,40 +22,55 @@ public class DivergenceReasonInputMethodSaveCommand implements DivergenceReasonI
 	/** The divergence reason selected. */
 	private boolean divergenceReasonSelected;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento#getDivergenceTimeNo()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodGetMemento#getDivergenceTimeNo()
 	 */
 	@Override
 	public int getDivergenceTimeNo() {
 		return this.divergenceTimeNo;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
 		return AppContexts.user().companyId();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento#getDivergenceReasonInputed()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodGetMemento#getDivergenceReasonInputed()
 	 */
 	@Override
 	public boolean getDivergenceReasonInputed() {
 		return this.divergenceReasonInputed;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento#getDivergenceReasonSelected()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodGetMemento#getDivergenceReasonSelected()
 	 */
 	@Override
 	public boolean getDivergenceReasonSelected() {
 		return this.divergenceReasonSelected;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento#getReasons()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonInputMethodGetMemento#getReasons()
 	 */
 	@Override
 	public List<DivergenceReasonSelect> getReasons() {

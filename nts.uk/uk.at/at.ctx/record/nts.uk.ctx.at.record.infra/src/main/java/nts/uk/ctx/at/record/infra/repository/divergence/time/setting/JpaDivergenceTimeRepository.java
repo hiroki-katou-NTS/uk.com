@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.*;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
@@ -42,6 +43,15 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		return this.findByCompanyId(companyId);
 	}
 
+	/**
+	 * Gets the div time info.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param divTimeNo
+	 *            the div time no
+	 * @return the div time info
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -65,6 +75,73 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	private DivergenceTime toDomain(KrcstDvgcTime entities) {
 		DivergenceTimeGetMemento memento = new JpaDivergenceTimeRepositoryGetMemento(entities);
 		return new DivergenceTime(memento);
+	}
+
+	/**
+	 * To entity attendance.
+	 *
+	 * @param divTimeNo
+	 *            the div time no
+	 * @param companyId
+	 *            the company id
+	 * @param attendanceId
+	 *            the attendance id
+	 * @return the krcst dvgc attendance
+	 */
+	private KrcstDvgcAttendance toEntityAttendance(int divTimeNo, String companyId, Integer attendanceId) {
+
+		KrcstDvgcAttendancePK PK = toEntityAttendancePK(divTimeNo, companyId, attendanceId);
+
+		KrcstDvgcAttendance entity = this.queryProxy().find(PK, KrcstDvgcAttendance.class)
+				.orElse(new KrcstDvgcAttendance());
+
+		return entity;
+	}
+
+	/**
+	 * Delete all attendance.
+	 *
+	 * @param divTimeNo
+	 *            the div time no
+	 * @param companyId
+	 *            the company id
+	 */
+	private void deleteAllAttendance(int divTimeNo, String companyId) {
+
+		// Get List entity
+		List<KrcstDvgcAttendance> attendanceList = findAttendanceEntity(companyId, divTimeNo);
+
+		// Remove List
+		this.commandProxy().removeAll(KrcstDvgcAttendance.class, attendanceList);
+		this.getEntityManager().flush();
+
+	}
+
+	/**
+	 * Adds the attendance.
+	 *
+	 * @param attendanceList
+	 *            the attendance list
+	 */
+	private void addAttendance(List<KrcstDvgcAttendance> attendanceList) {
+
+		this.commandProxy().insertAll(attendanceList);
+
+	}
+
+	/**
+	 * To entity attendance PK.
+	 *
+	 * @param divTimeNo
+	 *            the div time no
+	 * @param companyId
+	 *            the company id
+	 * @param attendanceId
+	 *            the attendance id
+	 * @return the krcst dvgc attendance PK
+	 */
+	private KrcstDvgcAttendancePK toEntityAttendancePK(int divTimeNo, String companyId, Integer attendanceId) {
+		return new KrcstDvgcAttendancePK(divTimeNo, companyId, attendanceId);
 	}
 
 	/**
@@ -134,6 +211,15 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 
+	/**
+	 * Find attendance id.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param divTimeNo
+	 *            the div time no
+	 * @return the list
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -170,6 +256,13 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the krcst dvgc time
+	 */
 	private KrcstDvgcTime toEntity(DivergenceTime domain) {
 		KrcstDvgcTime entity = this.queryProxy().find(domain.getCompanyId(), KrcstDvgcTime.class)
 				.orElse(new KrcstDvgcTime());
@@ -180,10 +273,65 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param divTimeDomain
+	 *            the div time domain
+	 */
 	@Override
 	public void update(DivergenceTime divTimeDomain) {
 
+		// Update Divergence Time Information
 		this.commandProxy().update(this.toEntity(divTimeDomain));
+
+		// Delete Divergence Attendance List
+		this.deleteAllAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId());
+
+		// Get Divergence Attendance Entity List
+		List<KrcstDvgcAttendance> attendanceList = divTimeDomain.getTargetItems().stream()
+				.map(e -> toEntityAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId(),
+						(int) e.doubleValue()))
+				.collect(Collectors.toList());
+
+		// Add new Divergence Attendance List
+		this.addAttendance(attendanceList);
+	}
+
+	/**
+	 * Find attendance entity.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param divTimeNo
+	 *            the div time no
+	 * @return the list
+	 */
+	private List<KrcstDvgcAttendance> findAttendanceEntity(String companyId, int divTimeNo) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDvgcAttendance> cq = criteriaBuilder.createQuery(KrcstDvgcAttendance.class);
+		Root<KrcstDvgcAttendance> root = cq.from(KrcstDvgcAttendance.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.cid), companyId));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.no), divTimeNo));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KrcstDvgcAttendance> KrcstDvgcAttendance = em.createQuery(cq).getResultList();
+
+		// return
+		return KrcstDvgcAttendance.isEmpty() ? new ArrayList<KrcstDvgcAttendance>() : KrcstDvgcAttendance;
+
 	}
 
 }

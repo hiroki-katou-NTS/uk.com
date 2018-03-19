@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.record.dom.divergence.time.setting;
 
 import lombok.*;
+import nts.arc.layer.dom.DomainObject;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class DivergenceReasonSelect {
+public class DivergenceReasonSelect extends DomainObject{
 
 	/**  The reason code. */
 	// 乖離理由コード

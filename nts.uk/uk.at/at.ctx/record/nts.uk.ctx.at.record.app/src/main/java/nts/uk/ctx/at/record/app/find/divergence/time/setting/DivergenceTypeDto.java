@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 
-
 public enum DivergenceTypeDto {
 	/** The arbitrary divergence time. */
 	ARBITRARY_DIVERGENCE_TIME(0, "Enum_DivergenceType_ARBITRARY_DIVERGENCE_TIME"),

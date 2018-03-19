@@ -6,10 +6,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMet
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class DivergenceReasonInputMethodDto.
- */
+
 public class DivergenceReasonInputMethodDto
 		implements DivergenceReasonInputMethodSetMemento, DivergenceReasonInputMethodGetMemento {
 
@@ -36,7 +33,8 @@ public class DivergenceReasonInputMethodDto
 	/**
 	 * Instantiates a new divergence reason input method dto.
 	 *
-	 * @param DivergenceTimeNo the new divergence time no
+	 * @param DivergenceTimeNo
+	 *            the new divergence time no
 	 */
 
 	/*
