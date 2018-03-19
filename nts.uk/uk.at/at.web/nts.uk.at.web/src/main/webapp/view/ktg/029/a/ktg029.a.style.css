@@ -1,0 +1,8 @@
+#master-content #contents-area{padding: 5px;}
+.widget-table{width:100%; min-width:268px; max-width:1200px; margin: 0 auto; table-layout: fixed;}
+.widget-table>tbody>tr{border-bottom: 1px dotted #000;}
+.widget-table>tbody>tr>td{padding:3px 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+.widget-table>tbody>tr>td:nth-child(1).tab{padding-left: 20px;}
+
+.widget-table>tbody>tr>td:nth-child(2){width:120px;}
+.widget-table>tbody>tr>td:nth-child(2) table{width:100%;}
