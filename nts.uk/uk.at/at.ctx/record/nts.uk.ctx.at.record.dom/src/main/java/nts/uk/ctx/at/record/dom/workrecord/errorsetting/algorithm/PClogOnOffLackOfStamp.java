@@ -31,7 +31,8 @@ public class PClogOnOffLackOfStamp {
 				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
 				for (LogOnInfo logOnInfo : logOnInfos) {
 					// ログオフのみ存在している(only has Logoff time)
-					if (logOnInfo.getLogOff().getTimeWithDay() != null && logOnInfo.getLogOn().getTimeWithDay() == null) {
+					if (logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get().getTimeWithDay() != null 
+							&& logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get().getTimeWithDay() == null) {
 						if (logOnInfo.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(794);
 						} else if (logOnInfo.getWorkNo().v() == 2) {
