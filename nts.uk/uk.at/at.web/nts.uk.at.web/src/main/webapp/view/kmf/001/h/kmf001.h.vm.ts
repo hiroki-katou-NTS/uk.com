@@ -122,7 +122,9 @@ module nts.uk.pr.view.kmf001.h {
                 let dfd = $.Deferred();
                 $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
                     if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] }).then(function() {
+                            $('a[role="tab-navigator"][href="#tabpanel-1"]').click();
+                        });
                         self.hasEmp(false);
                         dfd.resolve();
                     }

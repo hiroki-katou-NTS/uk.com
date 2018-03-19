@@ -233,7 +233,9 @@ module nts.uk.pr.view.kmf001.d {
                     // Get Data List
                     if (($('#left-content').getDataList() == undefined) || ($('#left-content').getDataList().length <= 0)) {
                         //                        self.hasSelectedEmp(false);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146" }).then(function() {
+                            $('a[role="tab-navigator"][href="#whole-company-tab"]').click();
+                        });
                     }
                     else {
                         // Get Employment List after Load Component
