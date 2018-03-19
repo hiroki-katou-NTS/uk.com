@@ -29,7 +29,6 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
 			List<OvertimeInputCaculation> overtimeInputCaculations, int prePostAtr, GeneralDateTime inputDate,
 			GeneralDate appDate, int appType, String employeeID, String companyID) {
-		overtimeInputCaculations = initOvertimeInputCaculation();
 		for(CaculationTime overtimeInput : overTimeInputs ){
 			for(OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations){
 					if(overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()){
@@ -45,7 +44,9 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 								overtimeInput.setErrorCode(overtimeCheckResult.getErrorCode());
 							}
 							//04-01_計算実績超過チェック(一覧)
-							overtimeInput.setErrorCode(checkCalculationActualExcess(prePostAtr,appType,employeeID,companyID,appDate,overtimeInput).getErrorCode());
+							List<OvertimeInputCaculation> cal= new ArrayList<>();
+							cal.add(overtimeInputCaculation);
+							overtimeInput.setErrorCode(checkCalculationActualExcess(prePostAtr,appType,employeeID,companyID,appDate,overtimeInput,cal).getErrorCode());
 						}
 					}
 			}
@@ -56,14 +57,13 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 	@Override
 	public CaculationTime checkCalculationActualExcess(int prePostAtr, int appType, String employeeID,
 			String companyID, GeneralDate appDate,
-			CaculationTime overTimeInputs) {
+			CaculationTime overTimeInputs,List<OvertimeInputCaculation> overtimeInputCaculations) {
 		CaculationTime caculation = new CaculationTime();
 		boolean condition = overtimeSixProcess.checkCondition(prePostAtr,appType,companyID);
 		if(condition){
 			//Imported(申請承認)「勤務実績」を取得する
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
-			// Imported(申請承認)「計算残業時間」を取得する :TODO
-			List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
+			// Imported(申請承認)「計算残業時間」を取得する 
 			caculation = printColor(overTimeInputs,overtimeInputCaculations);
 			
 		}
@@ -82,15 +82,6 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 		return overtimeHour;
 	}
 	
-	private List<OvertimeInputCaculation> initOvertimeInputCaculation(){
-		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-		for(int i = 0; i < 13 ;i++){
-			OvertimeInputCaculation overtimeInputCaculation = new  OvertimeInputCaculation(1,i, 0);
-			overtimeInputCaculations.add(overtimeInputCaculation);
-		}
-		
-		return overtimeInputCaculations;
-	}
 	private List<OverTimeInput> convert(CaculationTime caculationTime){
 		List<OverTimeInput> overTimeInputs = new ArrayList<>();
 			if(caculationTime .getApplicationTime() != null){
