@@ -549,12 +549,14 @@ module nts.uk.at.view.kaf005.b {
                                 appDate: moment(self.appDate()).format("YYYY/MM/DD"),
                                 siftCD: self.siftCD(),
                                 prePostAtr: self.prePostSelected(),
-                                overtimeHours: ko.toJS(self.overtimeHours),
+                                overtimeHours:  _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                                 workTypeCode: self.workTypeCd(),
                                 startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
                                 endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime()
                             }
                         ).done(data => {
+                            $("#inpStartTime1").ntsError("clear"); 
+                            $("#inpEndTime1").ntsError("clear");
                             self.timeStart1(data.startTime1 == null ? null : data.startTime1);
                             self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
                             self.timeStart2(data.startTime2 == null ? null : data.startTime2);
@@ -725,7 +727,7 @@ module nts.uk.at.view.kaf005.b {
                 if(nts.uk.util.isNullOrEmpty(self.workClockFrom2To2Reference())){
                     self.displayWorkClockFrom2To2Reference(false);
                 }
-                self.overtimeHoursPre.removeAll();
+                self.overtimeHoursReference.removeAll();
                 if(data.appOvertimeReference.overTimeInputsRefer != null){
                     for (let i = 0; i < data.appOvertimeReference.overTimeInputsRefer.length; i++) {
                         self.changeColor( 1 , data.appOvertimeReference.overTimeInputsRefer[i].frameNo,data.appOvertimeReference.overTimeInputsRefer[i].errorCode);
@@ -736,7 +738,7 @@ module nts.uk.at.view.kaf005.b {
                             0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
                             data.appOvertimeReference.overTimeInputsRefer[i].applicationTime,
                             data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                            self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
+                            data.appOvertimeReference.overTimeInputsRefer[i].applicationTime == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].applicationTime) ,null));
                             }
                     }
                 }
