@@ -7,6 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.I18NErrorMessage;
+import nts.arc.error.RawErrorMessage;
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -68,10 +71,12 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 			condSet.updateCheckComplete(NotUseAtr.USE.value);
 			acceptCondRepo.update(condSet);
 		} else {
+			String msg = TextResource.localize("Msg_904");
 			for (String s: errorList) {
-				System.out.println(s);
+				msg = msg + "\n\t" + s;
 			}
-			throw new BusinessException("Msg_904");
+			RawErrorMessage errorMsg = new RawErrorMessage(msg);
+			throw new BusinessException(errorMsg);
 		}
 	}
 

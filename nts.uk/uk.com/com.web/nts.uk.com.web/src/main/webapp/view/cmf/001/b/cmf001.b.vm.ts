@@ -70,7 +70,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         private openCMF001d() {
             let self = this;
             nts.uk.request.jump("/view/cmf/001/d/index.xhtml", {
-                conditionSetting: ko.toJS(self.selectedStandardImportSetting)
+                systemType: self.systemType(),
+                conditionCode: self.selectedStandardImportSetting().conditionSettingCode()
             });
         }
         
