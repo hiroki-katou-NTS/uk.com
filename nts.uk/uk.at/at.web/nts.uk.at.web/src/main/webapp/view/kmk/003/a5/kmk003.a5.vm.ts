@@ -240,11 +240,11 @@ module a5 {
             self.afternoonFlexTimezoneOption.dataSource = self.afternoonFlexTimezones;
 
             // difftime timezone option
-            self.oneDayDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.oneDayDiffTimezoneOption = self.getDiffTimezoneOption();
             self.oneDayDiffTimezoneOption.dataSource = self.oneDayDiffTimezones;
-            self.morningDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.morningDiffTimezoneOption = self.getDiffTimezoneOption();
             self.morningDiffTimezoneOption.dataSource = self.morningDiffTimezones;
-            self.afternoonDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.afternoonDiffTimezoneOption = self.getDiffTimezoneOption();
             self.afternoonDiffTimezoneOption.dataSource = self.afternoonDiffTimezones;
 
             // fixed timezone option
@@ -283,6 +283,29 @@ module a5 {
                 dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getTimezoneColumns(),
+                tabindex: 1,
+            };
+        }
+
+        private getDiffTimezoneOption(): FixTableOption {
+            let self = this;
+            let columns = self.getTimezoneColumns();
+            columns.push({
+                headerText: nts.uk.resource.getText("KMK003_129"),
+                key: "isUpdateStartTime",
+                defaultValue: ko.observable(false),
+                width: 50,
+                template: `<div data-bind="ntsCheckBox: { enable: true }">`
+            });
+
+            return {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
+                isShowButton: true,
+                dataSource: ko.observableArray([]),
+                isMultipleSelect: true,
+                columns: columns,
                 tabindex: 1,
             };
         }

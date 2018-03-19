@@ -20,6 +20,8 @@ module a3 {
 
         // fixed table options Fixed Simple
         fixTableOptionOnedayFixedSimple: any;
+        fixTableOptionMorningFixedSimple: any;
+        fixTableOptionAfternoonFixedSimple: any;
 
         // fixed table options DiffTime Detail
         fixTableOptionOnedayDiffTime: any;
@@ -28,6 +30,8 @@ module a3 {
 
         // fixed table options DiffTime Simple
         fixTableOptionOnedayDiffTimeSimple: any;
+        fixTableOptionMorningDiffTimeSimple: any;
+        fixTableOptionAfternoonDiffTimeSimple: any;
 
         // fixed table options Flex
         fixTableOptionOnedayFlex: any;
@@ -45,6 +49,8 @@ module a3 {
         isDiffTimeMode: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
+        showSimpleFixed: KnockoutComputed<boolean>;
+        showSimpleDifftime: KnockoutComputed<boolean>;
 
         // fixed table datasource
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
@@ -63,7 +69,6 @@ module a3 {
 
         // miscellaneous
         autoCalUseAttrs: KnockoutObservableArray<any>;
-        selectedCodeAutoCalUse: KnockoutObservable<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
         lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
@@ -104,8 +109,13 @@ module a3 {
                 });
             }
 
-            self.selectedCodeAutoCalUse = ko.observable('1');
-            
+            self.showSimpleFixed = ko.computed(() => {
+                return self.mainSettingModel.fixedWorkSetting.legalOTSetting() == 0;
+            });
+            self.showSimpleDifftime = ko.computed(() => {
+                return self.mainSettingModel.diffWorkSetting.overtimeSetting() == 0;
+            });
+
             self.isNewMode.subscribe((v) => {
                 if (v) {
                     self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.valueHasMutated();
@@ -154,7 +164,7 @@ module a3 {
             // fixed one day detail
             self.fixTableOptionOnedayFixed = self.getDefaultFixedTableOption();
             self.fixTableOptionOnedayFixed.dataSource = self.dataSourceOnedayFixed;
-            self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+            self.fixTableOptionOnedayFixed.columns = self.getColumnSettingFixed();
             self.fixTableOptionOnedayFixed.tabindex = 56;
 
             // fixed one day simple
@@ -166,38 +176,62 @@ module a3 {
             // fixed morning detail
             self.fixTableOptionMorningFixed = self.getDefaultFixedTableOption();
             self.fixTableOptionMorningFixed.dataSource = self.dataSourceMorningFixed;
-            self.fixTableOptionMorningFixed.columns = self.columnSettingFixedAndDiffTime();
+            self.fixTableOptionMorningFixed.columns = self.getColumnSettingFixed();
             self.fixTableOptionMorningFixed.tabindex = 57;
+
+            // fixed morning simple
+            self.fixTableOptionMorningFixedSimple = self.getDefaultFixedTableOption();
+            self.fixTableOptionMorningFixedSimple.dataSource = self.dataSourceMorningFixed;
+            self.fixTableOptionMorningFixedSimple.columns = self.columnSettingFlex();
+            self.fixTableOptionMorningFixedSimple.tabindex = 57;
 
             // fixed afternoon detail
             self.fixTableOptionAfternoonFixed = self.getDefaultFixedTableOption();
             self.fixTableOptionAfternoonFixed.dataSource = self.dataSourceAfternoonFixed;
-            self.fixTableOptionAfternoonFixed.columns = self.columnSettingFixedAndDiffTime();
+            self.fixTableOptionAfternoonFixed.columns = self.getColumnSettingFixed();
             self.fixTableOptionAfternoonFixed.tabindex = 58;
+
+            // fixed afternoon simple
+            self.fixTableOptionAfternoonFixedSimple = self.getDefaultFixedTableOption();
+            self.fixTableOptionAfternoonFixedSimple.dataSource = self.dataSourceAfternoonFixed;
+            self.fixTableOptionAfternoonFixedSimple.columns = self.columnSettingFlex();
+            self.fixTableOptionAfternoonFixedSimple.tabindex = 58;
 
             // difftime one day detail
             self.fixTableOptionOnedayDiffTime = self.getDefaultFixedTableOption();
             self.fixTableOptionOnedayDiffTime.dataSource = self.dataSourceOnedayDiffTime;
-            self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+            self.fixTableOptionOnedayDiffTime.columns = self.getColumnSettingDiffTimeDetail();
             self.fixTableOptionOnedayDiffTime.tabindex = 56;
 
             // difftime one day simple
             self.fixTableOptionOnedayDiffTimeSimple = self.getDefaultFixedTableOption();
             self.fixTableOptionOnedayDiffTimeSimple.dataSource = self.dataSourceOnedayDiffTime;
-            self.fixTableOptionOnedayDiffTimeSimple.columns = self.columnSettingFlex();
+            self.fixTableOptionOnedayDiffTimeSimple.columns = self.getColumnSettingDiffTimeSimple();
             self.fixTableOptionOnedayDiffTimeSimple.tabindex = 56;
 
             // difftime morning detail
             self.fixTableOptionMorningDiffTime = self.getDefaultFixedTableOption();
             self.fixTableOptionMorningDiffTime.dataSource = self.dataSourceMorningDiffTime;
-            self.fixTableOptionMorningDiffTime.columns = self.columnSettingFixedAndDiffTime();
+            self.fixTableOptionMorningDiffTime.columns = self.getColumnSettingDiffTimeDetail();
             self.fixTableOptionMorningDiffTime.tabindex = 57;
+
+            // difftime morning simple
+            self.fixTableOptionMorningDiffTimeSimple = self.getDefaultFixedTableOption();
+            self.fixTableOptionMorningDiffTimeSimple.dataSource = self.dataSourceMorningDiffTime;
+            self.fixTableOptionMorningDiffTimeSimple.columns = self.getColumnSettingDiffTimeSimple();
+            self.fixTableOptionMorningDiffTimeSimple.tabindex = 57;
 
             // difftime afternoon detail
             self.fixTableOptionAfternoonDiffTime = self.getDefaultFixedTableOption();
             self.fixTableOptionAfternoonDiffTime.dataSource = self.dataSourceAfternoonDiffTime;
-            self.fixTableOptionAfternoonDiffTime.columns = self.columnSettingFixedAndDiffTime();
+            self.fixTableOptionAfternoonDiffTime.columns = self.getColumnSettingDiffTimeDetail();
             self.fixTableOptionAfternoonDiffTime.tabindex = 58;
+
+            // difftime afternoon simple
+            self.fixTableOptionAfternoonDiffTimeSimple = self.getDefaultFixedTableOption();
+            self.fixTableOptionAfternoonDiffTimeSimple.dataSource = self.dataSourceAfternoonDiffTime;
+            self.fixTableOptionAfternoonDiffTimeSimple.columns = self.getColumnSettingDiffTimeSimple();
+            self.fixTableOptionAfternoonDiffTimeSimple.tabindex = 58;
 
             // flex one day
             self.fixTableOptionOnedayFlex = self.getDefaultFixedTableOption();
@@ -385,10 +419,43 @@ module a3 {
                                 </div>`
                  }];
             }
+
         /**
-         * function get column setting fixed and diff time
+         * Get column setting diff time simple
          */
-         private columnSettingFixedAndDiffTime(): Array<any> {
+        private getColumnSettingDiffTimeSimple(): Array<any> {
+            let self = this;
+            let setting = self.columnSettingFlex();
+            setting.splice(5, 0, {
+                    headerText: nts.uk.resource.getText("KMK003_129"),
+                    key: "isUpdateStartTime",
+                    defaultValue: ko.observable(false),
+                    width: 50,
+                    template: `<div data-bind="ntsCheckBox: { enable: true }">`
+                });
+            return setting;
+        }
+
+        /**
+         * Get column setting diff time detail
+         */
+        private getColumnSettingDiffTimeDetail(): Array<any> {
+            let self = this;
+            let setting = self.getColumnSettingFixed();
+            setting.splice(5, 0, {
+                    headerText: nts.uk.resource.getText("KMK003_129"),
+                    key: "isUpdateStartTime",
+                    defaultValue: ko.observable(false),
+                    width: 50,
+                    template: `<div data-bind="ntsCheckBox: { enable: true }">`
+                });
+            return setting;
+        }
+
+        /**
+         * Get column setting fixed
+         */
+         private getColumnSettingFixed(): Array<any> {
             let self = this;
              var arraySettingFlex : Array<any> = self.columnSettingFlex();
              arraySettingFlex.push({

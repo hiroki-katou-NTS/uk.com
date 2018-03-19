@@ -28,32 +28,32 @@
 					<hr/>
 					<span class="margin-first-child ntsControl">
 						<label class="ntsRadioBox control-group">
-							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: value7, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: wtf, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_241')"></span>
 						</label>
 						<br/>
 						<label class="ntsRadioBox control-group">
-							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: value1, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: wtf, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_242')"></span>
 						</label>
 					</span>
 					<div class="margin-second-child">
-						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value2 }">#{i18n.getText('KMK003_293')}
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: isCalcFromSchedule }">#{i18n.getText('KMK003_293')}
 						</div>
-						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value3 }">#{i18n.getText('KMK003_294')}
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: isReferRestTime }">#{i18n.getText('KMK003_294')}
 						</div>
 					</div>
 					<span class="margin-first-child ntsControl control-group">
 						<label class="ntsRadioBox">
-							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: value4, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: wtf, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_243')"></span>
 						</label>
 					</span>
 					<div class="margin-second-child">
-						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value5 }">#{i18n.getText('KMK003_250')}
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: usePrivateGoOutRest }">#{i18n.getText('KMK003_250')}
 						</div>
 						<br/>
-						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: value6 }">#{i18n.getText('KMK003_251')}
+						<div class="checkbox_display control-group" tabindex="7" data-bind="ntsCheckBox: { checked: useAssoGoOutRest }">#{i18n.getText('KMK003_251')}
 						</div>
 					</div>
 				</div>
