@@ -10,9 +10,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 public class DivergenceReferenceTimeUsageUnitDto implements DivergenceReferenceTimeUsageUnitGetMemento{
-
-	/** The company id */
-	private String cId;
 	
 	/** The work type usage set */
 	private BigDecimal workTypeUseSet;

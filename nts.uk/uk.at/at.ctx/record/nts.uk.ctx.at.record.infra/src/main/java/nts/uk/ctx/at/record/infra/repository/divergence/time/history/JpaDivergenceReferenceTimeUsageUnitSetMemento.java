@@ -9,22 +9,15 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 
 	/** The entity. */
 	private KrcstDrtUseUnit krcstDrtUseUnit;
-	
-	/**
-	 * Instantiates a new jpa divergence reference time usage unit set memento.
-	 */
-	public JpaDivergenceReferenceTimeUsageUnitSetMemento() {
-		// TODO Auto-generated constructor stub
-	}
-	
+		
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit set memento.
 	 *
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReferenceTimeUsageUnitSetMemento(KrcstDrtUseUnit krcstDrtUseUnit) {
-		// TODO Auto-generated constructor stub
+	public JpaDivergenceReferenceTimeUsageUnitSetMemento(KrcstDrtUseUnit entity) {
+		this.krcstDrtUseUnit = entity;
 	}	
 	
 	/*
@@ -36,7 +29,6 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
 		this.krcstDrtUseUnit.setCid(companyId);
 	}
 
@@ -49,7 +41,6 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 */
 	@Override
 	public void setWorkTypeUseSet(BigDecimal workTypeUseSet) {
-		// TODO Auto-generated method stub
 		this.krcstDrtUseUnit.setWorktypeUseSet(workTypeUseSet);
 	}
 

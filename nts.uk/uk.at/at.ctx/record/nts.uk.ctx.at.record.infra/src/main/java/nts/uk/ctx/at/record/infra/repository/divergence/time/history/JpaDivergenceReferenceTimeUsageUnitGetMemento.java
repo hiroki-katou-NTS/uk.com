@@ -13,7 +13,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	private KrcstDrtUseUnit krcstDrtUseUnit;
 	
 	public JpaDivergenceReferenceTimeUsageUnitGetMemento() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcstDrtUseUnit krcstDrtUseUnit){

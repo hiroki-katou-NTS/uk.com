@@ -1,20 +1,24 @@
 package nts.uk.ctx.at.record.app.command.divergence.time.history;
 
-import lombok.Getter;
+import java.math.BigDecimal;
 
-@Getter
+import lombok.Data;
+
+@Data
 public class DivergenceReferenceTimeUsageUnitCommand{
 	
-	/*The divergence reference time usage unit*/
-	private DivergenceReferenceTimeUsageUnitDto divergenceReferenceTimeUsageUnitDto;
+	private BigDecimal workTypeUseSet;
 	
+	public DivergenceReferenceTimeUsageUnitCommand() {
+		super();
+	}
 	
 	/**
 	 * Instantiates a new divergence divergence reference time usage unit command.
 	 *
 	 * @param listDataSetting the list data setting
 	 */
-	public DivergenceReferenceTimeUsageUnitCommand(DivergenceReferenceTimeUsageUnitDto divergenceReferenceTimeUsageUnitDto){
-		this.divergenceReferenceTimeUsageUnitDto = divergenceReferenceTimeUsageUnitDto;
+	public DivergenceReferenceTimeUsageUnitCommand(BigDecimal workTypeUseSet){
+		this.workTypeUseSet = workTypeUseSet;
 	}
 }
