@@ -18,12 +18,10 @@ public class DeleteAlarmListExtraProcessStatusCmdHandler extends CommandHandler<
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAlarmListExtraProcessStatusCmd> context) {
 		DeleteAlarmListExtraProcessStatusCmd command = context.getCommand();
-		Optional<AlarmListExtraProcessStatus> data = this.repo.getAlListExtaProcess(command.getCompanyID(), command.getStartDate(), command.getStartTime());
+		Optional<AlarmListExtraProcessStatus> data = this.repo.getAlListExtaProcessByID(command.getExtraProcessStatusID());
 		if(data.isPresent()) {
-			this.repo.deleteAlListExtaProcess(command.getCompanyID(), command.getStartDate(), command.getStartTime());
+			this.repo.deleteAlListExtaProcess(command.getExtraProcessStatusID());
 		}
-			
-		
 	}
 	
 }

@@ -43,6 +43,8 @@ public class AppOvertimeSettingDto {
     
     public int useOt;
     
+    public int restAtr;
+    
     public static AppOvertimeSettingDto convertToDto(AppOvertimeSetting domain){
     	return new AppOvertimeSettingDto(domain.getCompanyID(), domain.getFlexJExcessUseSetAtr().value, 
     			domain.getPreTypeSiftReflectFlg().value, domain.getPreOvertimeReflectFlg().value, 
@@ -51,6 +53,6 @@ public class AppOvertimeSettingDto {
     			domain.getEarlyOvertimeUseAtr().value, domain.getInstructExcessOTAtr().value, 
     			domain.getPriorityStampSetAtr().value, domain.getUnitAssignmentOvertime().value, 
     			domain.getNormalOvertimeUseAtr().value, domain.getOtHour().getAttendanceId().value, 
-    			domain.getOtHour().getUseOt().value);
+    			domain.getOtHour().getUseOt().value, domain.getRestAtr().value);
     }
 }

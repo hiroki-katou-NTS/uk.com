@@ -44,10 +44,10 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		}
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = opTimeLeavingOfDailyPerformance.get();
 		
-		Integer attendanceStampTimeFirst = -1;
-		Integer leaveStampTimeFirst = -1;
-		Integer attendanceStampTimeSecond = -1;
-		Integer leaveStampTimeSecond = -1; 
+		Integer attendanceStampTimeFirst = null;
+		Integer leaveStampTimeFirst = null;
+		Integer attendanceStampTimeSecond = null;
+		Integer leaveStampTimeSecond = null; 
 		if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().size()>1){
 			// nampt : check null case
 			if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent() &&
@@ -113,18 +113,18 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	}
 
 	@Override
-	public InfoCheckNotRegisterPubExport getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
+	public Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
 		 Optional<InfoCheckNotRegisterPubExport> data = workInformationRepository.find(employeeId, ymd).map(c->convertToExport(c));
 		if(data.isPresent()) {
-			return data.get();
+			return data;
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordWorkInformation().getWorkTimeCode().v(),
+				domain.getRecordWorkInformation().getWorkTimeCode()==null?"":domain.getRecordWorkInformation().getWorkTimeCode().v(),
 				domain.getRecordWorkInformation().getWorkTypeCode().v()
 				);
 	}

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 /**
- * 予定時刻の反映
+ * 事前申請の処理: 予定時刻の反映
  * 時刻の反映
  * @author do_dt
  *

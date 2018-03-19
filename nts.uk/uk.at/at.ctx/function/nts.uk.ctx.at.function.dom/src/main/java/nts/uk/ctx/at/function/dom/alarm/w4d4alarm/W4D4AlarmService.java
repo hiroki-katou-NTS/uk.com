@@ -7,8 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
@@ -23,10 +21,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class W4D4AlarmService {
 	
 	@Inject
-	private AlarmCheckConditionByCategoryRepository alarmCheckConditionByCategoryRepository;
-	
-	@Inject
-	private WorkplaceAdapter workplaceAdapter;
+	private AlarmCheckConditionByCategoryRepository alarmCheckConditionByCategoryRepository;	
 	
 	@Inject
 	private W4D4CheckAdapter w4D4CheckAdapter;
@@ -40,9 +35,7 @@ public class W4D4AlarmService {
 			throw new RuntimeException("Can't find AlarmCheckConditionByCategory with category: 4W4D and code: " + checkConditionCode);
 		
 		// TODO: Narrow down the target audience
-		
-		// Acquire company employee's work place history
-		WorkplaceImport workplaceImport = workplaceAdapter.getWorlkplaceHistory(employee.getId(), period.end());
+
 		
 		AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
 		AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
