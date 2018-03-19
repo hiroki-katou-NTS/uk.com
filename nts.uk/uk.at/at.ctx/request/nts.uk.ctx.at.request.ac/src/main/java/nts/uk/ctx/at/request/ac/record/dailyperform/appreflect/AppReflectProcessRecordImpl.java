@@ -85,7 +85,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.getOvertimePara().getEndTime1(),
 				para.getOvertimePara().getStartTime2(),
 				para.getOvertimePara().getEndTime2());
-		PreOvertimePubParameter preOvertimePara = new PreOvertimePubParameter(para.getEmployeeId(), 
+		/*PreOvertimePubParameter preOvertimePara = new PreOvertimePubParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.isActualReflectFlg(), 
 				para.isScheReflectFlg(), 
@@ -93,7 +93,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isAutoClearStampFlg(), 
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class), 
 				para.isScheTimeOutFlg(), 
-				overtimePara);
+				overtimePara);*/
+		PreOvertimePubParameter preOvertimePara = null;
 		AppReflectPubOutput appReflect = recordPub.preOvertimeReflect(preOvertimePara);
 		ReflectedStatesInfo overtimeReflect = new ReflectedStatesInfo(EnumAdaptor.valueOf(appReflect.getReflectedState().value, ReflectedState_New.class), 
 				EnumAdaptor.valueOf(appReflect.getReasonNotReflect().value, ReasonNotReflect_New.class));

@@ -118,8 +118,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		//開始時刻の編集状態を更新する
 		List<EditStateOfDailyPerformance> lstDaily = new ArrayList<>();
 		List<Integer> lstItem = new ArrayList();
-		lstItem.add(3);
-		lstItem.add(5);
+		lstItem.add(28);
+		lstItem.add(29);
 		lstItem.stream().forEach(z -> {
 			Optional<EditStateOfDailyPerformance> optItemData = dailyReposiroty.findByKeyId(para.getEmployeeId(), para.getDateData(), z);
 			if(optItemData.isPresent()) {
