@@ -63,6 +63,8 @@ public class HolidayShipmentDto {
 
 	List<ApplicationReasonDto> appReasons;
 
+	ChangeWorkTypeDto changeWkType;
+
 	/**
 	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null
 	 */

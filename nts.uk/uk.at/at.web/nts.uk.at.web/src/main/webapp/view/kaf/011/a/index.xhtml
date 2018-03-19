@@ -35,11 +35,12 @@
 					data-bind="enable: $root.errors.isEmpty, click: register"
 					tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<!-- A.A1_3 -->
-				<button data-bind=" click: register" tabindex="1">#{i18n.getText('KAF011_7')}</button>
+				<button data-bind=" click: openKDL009" tabindex="1">#{i18n.getText('KAF011_7')}</button>
 				<!-- A.A2_1 -->
-				<button data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_9')}</button>
+				<button tabindex="1">#{i18n.getText('KAF011_9')}</button>
 				<!-- A.A3_1 -->
-				<div id="ckbSendMail" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KAF011_10')}</div>
+				<div id="ckbSendMail"
+					data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>
 			</div>
 
 			<div id="contents-area" class="cf">
