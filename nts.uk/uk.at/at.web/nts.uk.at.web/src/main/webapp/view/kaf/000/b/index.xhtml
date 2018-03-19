@@ -140,17 +140,21 @@
 			</div>
 			<div id="contents-area">
 				<!-- row1 -->
-				<div id="message-area" data-bind =  "visible: !displayButtonControl().displayMessageArea()"> 
+				<div id="message-area" data-bind="visible : messageArea">
 					<table >
-						<tr >
+						<tr>
 							<!-- A1_1 -->
 							<!-- A1_2 -->
-							<td class="message-td"><div data-bind="text:messageDeadlineTop" ></div></td>
-						</tr >
+							<td class="message-td" data-bind="visible : reasonOutputMessFull() != null">
+								<div data-bind="text: reasonOutputMessFull()" ></div>
+							</td>
+						</tr>
 						<tr>
 							<!-- A1_3 -->
 							<!-- A1_4 -->
-							<td class="message-td"><div data-bind="text:messageDeadlineBottom, enable: displayButtonControl().enableMessageComment()" ></div></td>
+							<td class="message-td" data-bind="visible:  reasonOutputMessDealineFull() != null ">
+								<div data-bind="text: reasonOutputMessDealineFull()" ></div>
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -172,7 +176,7 @@
 					<div style=" margin-top: 16px;">
 						<textarea style="width: 628px;height: 50px" data-bind="ntsMultilineEditor: { value: reasonToApprover, 
 																									constraint: 'ApproverReason',
-																									enable: enableApprovalReason() &amp;&amp; $root.errors.isEmpty()}" />
+																									enable: enableApprovalReason() }" />
 						
 					</div>
 				</div>

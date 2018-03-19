@@ -44,10 +44,10 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		}
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = opTimeLeavingOfDailyPerformance.get();
 		
-		Integer attendanceStampTimeFirst = -1;
-		Integer leaveStampTimeFirst = -1;
-		Integer attendanceStampTimeSecond = -1;
-		Integer leaveStampTimeSecond = -1; 
+		Integer attendanceStampTimeFirst = null;
+		Integer leaveStampTimeFirst = null;
+		Integer attendanceStampTimeSecond = null;
+		Integer leaveStampTimeSecond = null; 
 		if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().size()>1){
 			// nampt : check null case
 			if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent() &&

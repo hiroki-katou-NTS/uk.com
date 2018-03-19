@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectedStatesInfo;
 @Stateless
 public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectService {
 	private ApplicationReflectProcessSche appReflectProcess;
