@@ -1,61 +1,34 @@
 module nts.uk.at.view.kdw006 {
     export module viewmodel {
         export class ScreenModel {
-
             constructor() {
             }
 
-            openB() {
+            startPage(): JQueryPromise<any> {
                 let self = this;
-                self.checkMode();
-                nts.uk.request.jump("/view/kdw/006/b/index.xhtml");
+                let dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
             }
 
-            openC() {
-                let self = this;
-                self.checkMode();
-                nts.uk.request.jump("/view/kdw/006/c/index.xhtml");
+            opendScreenA() {
+                nts.uk.request.jump("/view/kdw/002/d/index.xhtml");
             }
 
-            openD() {
-                let self = this;
-                self.checkMode();
-                nts.uk.request.jump("/view/kdw/006/d/index.xhtml");
-            }
-
-            open002Setting() {
-                let self = this;
-                self.checkMode();
+            opendScreenB() {
                 nts.uk.request.jump("/view/kdw/002/a/index.xhtml");
             }
-
-            open002Control() {
-                let self = this;
-                self.checkMode();
-                nts.uk.request.jump("/view/kdw/002/b/index.xhtml");
-            }
-            open007() {
-                let self = this;
-                self.checkMode();
+            
+            opendScreenC() {
                 nts.uk.request.jump("/view/kdw/007/a/index.xhtml");
             }
-            open008() {
-                let self = this;
-                self.checkMode();
-                nts.uk.request.jump("/view/kdw/008/a/index.xhtml");
+            
+            opendScreenD() {
+                nts.uk.request.jump("/view/kdw/008/d/index.xhtml");
             }
-
-            // set params
-            checkMode() {
-                let self = this;
-                let mode = $("#sidebar").ntsSideBar("getCurrent");
-                if (mode == 1) {
-                    nts.uk.ui.windows.setShared('mode', "DAILY");
-                } else if (mode == 2) {
-                    nts.uk.ui.windows.setShared('mode', "MONTHLY");
-                } else {
-                    nts.uk.ui.windows.setShared('mode', "COMMON");
-                }
+            
+            opendOperationSetting() {
+                nts.uk.request.jump("/view/kdw/006/b/index.xhtml");
             }
         }
     }
