@@ -280,7 +280,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		String categoryParentCode = (perInfoCtg.getCategoryParentCode() == null
 				|| perInfoCtg.getCategoryParentCode().v().isEmpty()) ? null : perInfoCtg.getCategoryParentCode().v();
 		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, categoryParentCode, perInfoCtg.getCategoryType().value,
-				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value);
+				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value, 
+				perInfoCtg.getAddItemCls() == null? 1: perInfoCtg.getAddItemCls().value, perInfoCtg.getInitValMasterCls() == null ? 1: perInfoCtg.getInitValMasterCls().value);
 	}
 
 	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
