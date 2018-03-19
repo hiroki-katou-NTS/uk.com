@@ -615,12 +615,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			lstLogOnInfo.set(indexPCLogOnInfo,
 					new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
-							logOnInfo.getLogOff(), logonOrLogoff));
+							logOnInfo.getLogOff().orElse(null), logonOrLogoff));
 			return pcLogOnInfoOfDaily;
 		}
 		lstLogOnInfo.set(indexPCLogOnInfo,
 				new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
-						logonOrLogoff, logOnInfo.getLogOn()));
+						logonOrLogoff, logOnInfo.getLogOn().orElse(null)));
 		return pcLogOnInfoOfDaily;
 	}
 

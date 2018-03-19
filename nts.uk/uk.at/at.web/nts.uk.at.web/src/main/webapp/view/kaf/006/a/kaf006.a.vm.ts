@@ -326,10 +326,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         });
                     }
                 });
-            }
-            let displayWorkingHours: boolean = (self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText("KAF006_21")));
-            self.eblTimeStart1(displayWorkingHours);
-            self.eblTimeEnd1(displayWorkingHours);
+            });
+            
+            self.eblTimeStart1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
+            self.eblTimeEnd1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
         }
         getListWorkTime(){
             let self = this;
@@ -347,7 +347,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         convertListHolidayType(data: any){
             let self =  this;
-            let nameHolidayType :[] = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
+            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
             for(let i = 0; i < data.length ; i++){
                 self.holidayTypes.push(new common.HolidayType(i,nameHolidayType[i]));
             }

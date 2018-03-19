@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -23,10 +25,14 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	private CommonProcessCheckService commonService;
 	@Override
 	public void workTimeWorkTimeUpdate(PreOvertimeParameter para) {
+		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
 		//INPUT．勤種反映フラグ(予定)をチェックする
-		if(!para.isScheReflectFlg()) {
+		if(para.getOvertimePara().getWorkTimeCode() != null
+				|| para.getOvertimePara().getWorkTypeCode() != null
+				|| !para.isScheReflectFlg()) {
 			return;
 		}
+				
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
@@ -36,8 +42,11 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	
 	@Override
 	public boolean changeFlg(PreOvertimeParameter para) {
+		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
-		if(!para.isActualReflectFlg()) {
+		if(para.getOvertimePara().getWorkTimeCode() != null
+				|| para.getOvertimePara().getWorkTypeCode() != null
+				|| !para.isActualReflectFlg()) {
 			return false;
 		}
 		//ドメインモデル「日別実績の勤務情報」を取得する
@@ -70,9 +79,9 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		if(!this.timeReflectCheck(para, changeFlg, dailyData)) {
 			return false;
 		}
-
 		//予定開始終了時刻の反映(事前事後共通部分)
-		//@@
+		WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
+		
 		
 		
 		
@@ -104,6 +113,30 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//流動勤務かどうかの判断処理
 		return workTimeService.checkWorkTimeIsFluidWork(para.getOvertimePara().getWorkTimeCode());
 		
+	}
+
+	@Override
+	public WorkTimeTypeOutput getScheWorkTimeType(String employeeId, GeneralDate dataData) {
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dataData);
+		if (!optDailyPerfor.isPresent()) {
+			return null;
+		}
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getScheduleWorkInformation().getWorkTimeCode().v(),
+				dailyPerfor.getScheduleWorkInformation().getWorkTypeCode().v());
+		return dataOut;
+	}
+
+	@Override
+	public WorkTimeTypeOutput getRecordWorkTimeType(String employeeId, GeneralDate dataData) {
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dataData);
+		if (!optDailyPerfor.isPresent()) {
+			return null;
+		}
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v(),
+				dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v());
+		return dataOut;
 	}
 
 }
