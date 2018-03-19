@@ -28,6 +28,11 @@ public class ParamCaculationOvertime {
 	private String siftCD;
 	
 	private String inputDate;
+	private String workTypeCode;
+	private Integer startTime;
+	private Integer endTime;
+	private Integer startTimeRest;
+	private Integer endTimeRest;
 	
 
 }
