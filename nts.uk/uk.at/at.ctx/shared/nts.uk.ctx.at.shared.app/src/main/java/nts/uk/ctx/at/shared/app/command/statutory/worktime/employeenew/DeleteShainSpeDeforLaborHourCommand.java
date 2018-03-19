@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborHourGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class DeleteShainSpeDeforLaborHourCommand.
  */
 @Stateless
-public class DeleteShainSpeDeforLaborHourCommand implements ShainSpeDeforLaborHourGetMemento {
+public class DeleteShainSpeDeforLaborHourCommand implements ShainSpeDeforLaborTimeGetMemento {
 
 	/** The employee id. */
 	/* 社員ID. */

@@ -6,14 +6,14 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborHourSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
  * The Class CompanyRegularLaborHourDto.
  */
 @Getter
-public class ComRegularLaborHourDto implements ComRegularLaborHourSetMemento {
+public class ComRegularLaborHourDto implements ComRegularLaborTimeSetMemento {
 
 
 	/** The working time setting new. */

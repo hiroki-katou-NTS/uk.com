@@ -9,7 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkHourGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-public class SaveWkpDeforLaborWorkHourCommand implements WkpDeforLaborWorkHourGetMemento {
+public class SaveWkpDeforLaborWorkHourCommand implements WkpDeforLaborWorkTimeGetMemento {
 
 	/** The workplace id. */
 	/* 職場ID. */

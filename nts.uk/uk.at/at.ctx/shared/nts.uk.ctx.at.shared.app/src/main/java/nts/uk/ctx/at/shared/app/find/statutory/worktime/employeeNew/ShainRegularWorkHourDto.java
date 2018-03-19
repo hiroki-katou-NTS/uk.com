@@ -7,14 +7,14 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkHourSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
  * The Class EmployeeRegularWorkHourDto.
  */
 @Getter
-public class ShainRegularWorkHourDto implements ShainRegularWorkHourSetMemento {
+public class ShainRegularWorkHourDto implements ShainRegularWorkTimeSetMemento {
 
 	/** The employee id. */
 	/** 社員ID. */

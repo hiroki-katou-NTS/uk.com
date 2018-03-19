@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.command.statutory.worktime.employmentnew;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborWorkingHourGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborWorkingTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-public class SaveEmpDeforLaborWorkingHourCommand implements EmpDeforLaborWorkingHourGetMemento {
+public class SaveEmpDeforLaborWorkingHourCommand implements EmpDeforLaborWorkingTimeGetMemento {
 
 	/** The employment code. */
 	/* 雇用コード. */

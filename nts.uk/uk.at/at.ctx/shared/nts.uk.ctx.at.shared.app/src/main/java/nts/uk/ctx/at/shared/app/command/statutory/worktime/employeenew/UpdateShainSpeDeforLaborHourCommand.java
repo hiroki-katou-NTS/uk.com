@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborHourGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-public class UpdateShainSpeDeforLaborHourCommand implements ShainSpeDeforLaborHourGetMemento{
+public class UpdateShainSpeDeforLaborHourCommand implements ShainSpeDeforLaborTimeGetMemento{
 	
 	/** The employee id. */
 	/* 社員ID. */

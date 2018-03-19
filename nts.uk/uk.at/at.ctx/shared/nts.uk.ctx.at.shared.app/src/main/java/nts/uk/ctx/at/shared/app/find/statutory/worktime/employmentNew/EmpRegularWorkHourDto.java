@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkHourSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  * The Class EmploymentRegularWorkHourDto.
  */
 @Getter
-public class EmpRegularWorkHourDto implements EmpRegularWorkHourSetMemento {
+public class EmpRegularWorkHourDto implements EmpRegularWorkTimeSetMemento {
 
 	/** The employment code. */
 	/** 雇用コード. */
