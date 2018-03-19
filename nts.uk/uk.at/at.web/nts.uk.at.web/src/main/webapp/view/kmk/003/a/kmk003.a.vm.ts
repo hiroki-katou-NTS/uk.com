@@ -718,6 +718,7 @@ module nts.uk.at.view.kmk003.a {
                 this.flexWorkSetting = new FlexWorkSettingModel();
                 this.workTimeSetting.worktimeCode.subscribe(worktimeCode => {
                     this.predetemineTimeSetting.workTimeCode(worktimeCode);
+                    this.displayMode.worktimeCode(worktimeCode);
                     this.fixedWorkSetting.workTimeCode(worktimeCode);
                     this.flowWorkSetting.workingCode(worktimeCode);
                     this.diffWorkSetting.workTimeCode(worktimeCode);

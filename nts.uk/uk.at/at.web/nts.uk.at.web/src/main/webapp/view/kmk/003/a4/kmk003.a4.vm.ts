@@ -8,7 +8,7 @@ module a4 {
     class ScreenModel {
 
         selectedTab: KnockoutObservable<string>;
-        
+                
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -34,6 +34,7 @@ module a4 {
         afternoon: KnockoutObservable<number>;
         
         mainSettingModel: MainSettingModel;
+        enumSetting: WorkTimeSettingEnumDto;
         /**
         * Constructor.
         */
@@ -50,6 +51,7 @@ module a4 {
             
             //main model
             self.mainSettingModel = mainSettingModel;
+            self.enumSetting = enumSetting;
             
             self.priorityOptions = ko.observableArray([
                 new Item(0, nts.uk.resource.getText("KMK003_69")),
@@ -120,17 +122,43 @@ module a4 {
             let _self = this;
 
             nts.uk.ui.block.grayout();
+            let isLinked: boolean = false;
             
+            let isFlow: boolean = _self.mainSettingModel.workTimeSetting.isFlow(); 
+            let isFixedAndUseTime2: boolean = _self.mainSettingModel.workTimeSetting.isFixed() && _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr();          
+            // Add common param
             let dataObject: any = {
-                isFlow: _self.mainSettingModel.workTimeSetting.isFlow(),
-//                delFromEmTime: _self.model.commonSetting.lateEarlySet.commonSet.delFromEmTime(),       
-//                lateStampExactlyTimeIsLateEarly: _self.model.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(),
-//                lateGraceTime: _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.graceTime(),
-//                lateIncludeWorkingHour: _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.includeWorkingHour(),
-//                leaveEarlyStampExactlyTimeIsLateEarly: _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(),
-//                leaveEarlyGraceTime: _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.graceTime(),
-//                leaveEarlyIncludeWorkingHour: _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.includeWorkingHour()
+                isFlow: isFlow,
+                isFixedAndUseTime2: isFixedAndUseTime2,
+                listRoundingTimeUnit: _self.enumSetting.roundingTimeUnit,
+                
+                prioritySettingEntering: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().stampAtr(),
+                prioritySettingExit: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().stampAtr(),
+                prioritySettingPcLogin: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().stampAtr(),
+                prioritySettingPcLogout: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().stampAtr(),
+                goOutRoundingUnit: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.roundingTimeUnit(),
+                goOutFontRearSection: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(),
+                turnBackRoundingUnit: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(),
+                turnBackFontRearSection: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.fontRearSection()
             };
+            // Add worktime mode param 
+            if (_self.mainSettingModel.workTimeSetting.isFlow()) {
+                dataObject.stampGoWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime();
+                dataObject.stampGoWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime();
+                dataObject.stampTwoTimeReflect = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.twoTimesWorkReflectBasicTime();
+                dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime();
+                dataObject.stampLeavingWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime();
+            } 
+            if (_self.mainSettingModel.workTimeSetting.isFixed()) {
+                
+            }
+            if (_self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                
+            } 
+            if (_self.mainSettingModel.workTimeSetting.isFlex()) {
+                
+            } 
+            // Set object
             nts.uk.ui.windows.setShared("KMK003_DIALOG_J_INPUT_DATA", dataObject);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/j/index.xhtml").onClosed(() => {
                 let outputDataObject: any = nts.uk.ui.windows.getShared("KMK003_DIALOG_J_OUTPUT_DATA");               

@@ -1385,7 +1385,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor(priorityAtr: number) {
                     this.priorityAtr = ko.observable(priorityAtr);
-                    this.stampAtr = ko.observable(0);
+                    this.stampAtr = ko.observable((this.priorityAtr() == 1 || this.priorityAtr() == 3 || this.priorityAtr() == 5) ? 1 : 0);
                 }
 
                 updateData(data: PrioritySettingDto) {
@@ -1402,7 +1402,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.stampAtr(this.priorityAtr() == 1 ? 1 : 0);
+                    this.stampAtr((this.priorityAtr() == 1 || this.priorityAtr() == 3 || this.priorityAtr() == 5) ? 1 : 0);
                 }
             }
 
@@ -1420,22 +1420,32 @@ module nts.uk.at.view.kmk003.a {
                 initPrioritySets() {
                     var dataPriorityModel1: PrioritySettingModel = new PrioritySettingModel(0);
                     var dataPriorityModel2: PrioritySettingModel = new PrioritySettingModel(1);
+                    var dataPriorityModel3: PrioritySettingModel = new PrioritySettingModel(2);
+                    var dataPriorityModel4: PrioritySettingModel = new PrioritySettingModel(3);
+                    var dataPriorityModel5: PrioritySettingModel = new PrioritySettingModel(4);
+                    var dataPriorityModel6: PrioritySettingModel = new PrioritySettingModel(5);
                     this.prioritySets.push(dataPriorityModel1);
                     this.prioritySets.push(dataPriorityModel2);
+                    this.prioritySets.push(dataPriorityModel3);
+                    this.prioritySets.push(dataPriorityModel4);
+                    this.prioritySets.push(dataPriorityModel5);
+                    this.prioritySets.push(dataPriorityModel6);                  
                 }
 
                 initRoundingSets() {
                     var dataRoundingModel1: RoundingSetModel = new RoundingSetModel(0);
                     var dataRoundingModel2: RoundingSetModel = new RoundingSetModel(1);
+                    var dataRoundingModel3: RoundingSetModel = new RoundingSetModel(2);
+                    var dataRoundingModel4: RoundingSetModel = new RoundingSetModel(3);
                     this.roundingSets.push(dataRoundingModel1);
                     this.roundingSets.push(dataRoundingModel2);
+                    this.roundingSets.push(dataRoundingModel3);
+                    this.roundingSets.push(dataRoundingModel4);
                 }
 
                 updateData(data: WorkTimezoneStampSetDto) {
                     var self = this;
                     data.roundingSets.forEach(function(dataRoundingDTO, index) {
-                        //                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
-                        //                        dataRoundingModel.updateData(dataRoundingDTO);
                         self.roundingSets[dataRoundingDTO.section].updateData(dataRoundingDTO);
                     });
 
@@ -1470,6 +1480,18 @@ module nts.uk.at.view.kmk003.a {
                         item.resetData();
                     });
                 }
+                
+                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 0) }                
+                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 1) }              
+                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 2) }              
+                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 3) }             
+                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 4) }           
+                getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 5) }
+                
+                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 0) }               
+                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 1) }               
+                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 2) }             
+                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 3) }
             }
 
             export class WorkTimezoneLateNightTimeSetModel {
@@ -1888,6 +1910,11 @@ module nts.uk.at.view.kmk003.a {
                         startTime: this.startTime()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.endTime(0);
+                    this.startTime(0);
                 }
             }
 

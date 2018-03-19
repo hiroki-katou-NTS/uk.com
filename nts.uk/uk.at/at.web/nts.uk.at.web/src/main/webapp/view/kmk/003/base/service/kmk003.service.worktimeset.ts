@@ -64,6 +64,7 @@ module nts.uk.at.view.kmk003.a {
                     notUseAtr: EnumConstantDto[];
                     calcMethodNoBreak: EnumConstantDto[];
                     calcMethodExceededPredAddVacation: EnumConstantDto[];
+                    roundingTimeUnit: EnumConstantDto[];
                 }
 
 

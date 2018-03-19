@@ -80,10 +80,15 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 		});
 
 		if (opGoWork1Stamp.isPresent()) {
-			// Msg_1028
+			//	「区分＝出勤&&勤務NO=1 の場合の 開始時刻」　　　　　　　　　　　　　
+			//	開始時刻 ＞ 勤務NO=1の場合の所定時間帯設定.時間帯.開始
+			//	#Msg_1028
 			if (opGoWork1Stamp.get().getStartTime().greaterThan(timezone.getTimezoneShiftOne().getStart())) {
 				be.addMessage("Msg_1028");
 			}
+			//	「区分＝出勤&&勤務NO=1 の場合の 終了時刻」　　　　　　　　　　　　　　　　　　
+			//	所定時間帯設定.所定時間帯.時間帯.勤務No＝2 && 所定時間帯設定.所定時間帯.時間帯.使用区分 ＝ するの場合
+			//	終了時刻 ＞＝ 勤務NO=2の場合の所定時間帯設定.時間帯.開始
 			// #Msg_1030
 			if (timezone.isUseShiftTwo() && (opGoWork1Stamp.get().getEndTime().greaterThanOrEqualTo(timezone.getTimezoneShiftTwo().getStart()))) {
 				be.addMessage("Msg_1030");
@@ -91,35 +96,49 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 		}
 		
 		if (opLeavingWork1Stamp.isPresent()) {
-			// Msg_1029
+			//	「区分＝退勤&&勤務NO=1 の場合の 終了時刻」　　　　　　　　　　　　　
+			//	終了時刻 ＜ 勤務NO=1の場合の所定時間帯設定.時間帯.終了
+			//	#Msg_1029
 			if (opLeavingWork1Stamp.get().getEndTime().lessThan(timezone.getTimezoneShiftOne().getEnd())) {
 				be.addMessage("Msg_1029");
 			}
 		}
 		
 		if (opGoWork2Stamp.isPresent()) {
-			// #Msg_1031
+			//	「区分＝出勤&&勤務NO=2 の場合の 開始時刻」
+			//	所定時間帯設定.所定時間帯.時間帯.勤務No＝2 && 所定時間帯設定.所定時間帯.時間帯.使用区分 ＝ するの場合
+			//	開始時刻 ＞ 勤務NO=2の場合の所定時間帯設定.時間帯.開始
+			//	#Msg_1031
 			if (timezone.isUseShiftTwo() && (opGoWork2Stamp.get().getStartTime().greaterThan(timezone.getTimezoneShiftTwo().getStart()))) {
 				be.addMessage("Msg_1031");
 			}
 		}
 		
 		if (opLeavingWork2Stamp.isPresent()) {
-			// #Msg_1032
+			//	「区分＝退勤&&勤務NO=2 の場合の 終了時刻」　　　　　　　　　　　　　　　　　　　　
+			//	所定時間帯設定.所定時間帯.時間帯.勤務No＝2 && 所定時間帯設定.所定時間帯.時間帯.使用区分 ＝ するの場合
+			//	終了時刻 ＜ 勤務NO=2の場合の所定時間帯設定.時間帯.終了
+			//	#Msg_1032
 			if (timezone.isUseShiftTwo() && (opLeavingWork2Stamp.get().getEndTime().lessThan(timezone.getTimezoneShiftTwo().getEnd()))) {
 				be.addMessage("Msg_1032");
 			}
 		}
 		
 		if (opGoWork1Stamp.isPresent() && opGoWork2Stamp.isPresent()) {
-			// #Msg_1033
+			//	「区分＝出勤&&勤務NO=1 の場合の 終了時刻、勤務NO=2 の場合の 開始時刻」　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+			//	所定時間帯設定.所定時間帯.時間帯.勤務No＝2 && 所定時間帯設定.所定時間帯.時間帯.使用区分 ＝ するの場合
+			//	勤務NO=1 の場合の 終了時刻 ＞＝ 勤務NO=2 の場合の 開始時刻
+			//	#Msg_1033
 			if (timezone.isUseShiftTwo() && (opGoWork1Stamp.get().getEndTime().greaterThanOrEqualTo(opGoWork2Stamp.get().getStartTime()))) {
 				be.addMessage("Msg_1033");
 			}
 		}
 		
 		if (opLeavingWork1Stamp.isPresent() && opLeavingWork2Stamp.isPresent()) {		
-			// #Msg_1034
+			//	「区分＝退勤&&勤務NO=1 の場合の 終了時刻、勤務NO=2 の場合の 開始時刻」　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+			//	所定時間帯設定.所定時間帯.時間帯.勤務No＝2 && 所定時間帯設定.所定時間帯.時間帯.使用区分 ＝ するの場合
+			//	勤務NO=1 の場合の 終了時刻 ＞＝ 勤務NO=2 の場合の 開始時刻
+			//	#Msg_1034
 			if (timezone.isUseShiftTwo() && (opLeavingWork1Stamp.get().getEndTime().greaterThanOrEqualTo(opLeavingWork2Stamp.get().getStartTime()))) {
 				be.addMessage("Msg_1034");
 			}

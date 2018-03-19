@@ -446,18 +446,34 @@ module nts.uk.at.view.kmk003.a {
                 stampReflectTimezones: StampReflectTimezoneModel[];
 
                 constructor() {
-                    this.twoTimesWorkReflectBasicTime = ko.observable(0);
+                    this.twoTimesWorkReflectBasicTime = ko.observable(60);
                     this.stampReflectTimezones = [];
+                    this.initStampSets();
                 }
 
+                initStampSets() {
+                    let goWorkFlowStamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWorkFlowStamp.workNo(1);
+                    goWorkFlowStamp.classification(0);
+                    let leaveWorkFlowStamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWorkFlowStamp.workNo(1);
+                    leaveWorkFlowStamp.classification(1);
+                    this.stampReflectTimezones.push(goWorkFlowStamp);
+                    this.stampReflectTimezones.push(leaveWorkFlowStamp);              
+                }
+                
                 updateData(data: FlStampReflectTzDto) {
                     this.twoTimesWorkReflectBasicTime(data.twoTimesWorkReflectBasicTime);
-                    this.stampReflectTimezones = []
-                    for (var dataDTO of data.stampReflectTimezones) {
-                        var dataModel: StampReflectTimezoneModel = new StampReflectTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        this.stampReflectTimezones.push(dataModel);
-                    }
+                    
+                    let self = this;
+                    _.forEach(data.stampReflectTimezones, item => {
+                        if (item.workNo == 1 && item.classification == 0) {
+                            this.getGoWorkFlowStamp().updateData(item);
+                        }                        
+                        if (item.workNo == 1 && item.classification == 1) {
+                            this.getLeaveWorkFlowStamp().updateData(item);
+                        }
+                    });
                 }
 
                 toDto(): FlStampReflectTzDto {
@@ -473,9 +489,14 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.twoTimesWorkReflectBasicTime(0);
-                    this.stampReflectTimezones = [];
-                }
+                    this.twoTimesWorkReflectBasicTime(60);
+                    this.stampReflectTimezones.forEach(function(item, index) {
+                        item.resetData();
+                    });
+                }              
+                
+                getGoWorkFlowStamp(): StampReflectTimezoneModel { let self = this; return _.find(self.stampReflectTimezones, p => p.workNo() == 1 && p.classification() == 0) }
+                getLeaveWorkFlowStamp(): StampReflectTimezoneModel { let self = this; return _.find(self.stampReflectTimezones, p => p.workNo() == 1 && p.classification() == 1) }
             }
 
             export class FlowWorkDedSettingModel {

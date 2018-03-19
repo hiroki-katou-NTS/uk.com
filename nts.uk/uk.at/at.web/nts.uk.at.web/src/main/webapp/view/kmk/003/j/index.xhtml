@@ -9,6 +9,9 @@
 	
 		<ui:define name="htmlHead">
 	
+		   	<com:ValidatorScript>
+				nts.uk.shr.com.time.TimeWithDayAttr
+		   	</com:ValidatorScript>
 		   	
 			<script>
 				var dialogSize = {
@@ -36,27 +39,27 @@
 							<div>
 								<input tabindex="9" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_270]',		
-										value: classificationGetStart,
+										value: stampGoWorkFlowStart,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
 								<input tabindex="10" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_270]',		
-										value: classificationGetStart,
+										value: stampGoWorkFlowEnd,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 							</div>	
 						</div>
 						<div class="dialog-rows">
 							<span class="label">#{i18n.getText('KMK003_276')}</span>	
 							<input tabindex="11" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_277]',		
-										value: classificationGetStart,
+										value: stampTwoTimeReflect,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 							<span class="label">#{i18n.getText('KMK003_278')}</span>				
 						</div>
 						<div class="dialog-rows">
@@ -64,17 +67,17 @@
 							<div>
 								<input tabindex="12" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_273]',		
-										value: classificationGetStart,
+										value: stampLeavingWorkFlowStart,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
 								<input tabindex="13" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_273]',		
-										value: classificationGetStart,
+										value: stampLeavingWorkFlowEnd,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 							</div>		
 						</div>
 					</com:ko>
@@ -86,17 +89,17 @@
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
 								<input tabindex="1" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_271]',		
-										value: classificationGetStart,
+										value: stampGoWork1Start,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
 								<input tabindex="2" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_271]',		
-										value: classificationGetStart,
+										value: stampGoWork1End,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 							</div>		
 						</div>					
 						<div class="dialog-rows">
@@ -105,17 +108,19 @@
 								<span class="label">#{i18n.getText('KMK003_37')}</span>		
 								<input tabindex="3" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_272]',		
-										value: classificationGetStart,
+										value: stampGoWork2Start,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr',
+										enable: isFixedAndUseTime2 }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
 								<input tabindex="4" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_272]',		
-										value: classificationGetStart,
+										value: stampGoWork2End,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr',
+										enable: isFixedAndUseTime2 }" />
 							</div>			
 						</div>
 						<div class="dialog-rows">
@@ -124,17 +129,17 @@
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
 								<input tabindex="5" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_274]',		
-										value: classificationGetStart,
+										value: stampLeavingWork1Start,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
 								<input tabindex="6" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_274]',		
-										value: classificationGetStart,
+										value: stampLeavingWork1End,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr' }" />
 							</div>			
 						</div>					
 						<div class="dialog-rows">
@@ -143,17 +148,19 @@
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
 								<input tabindex="7" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_275]',		
-										value: classificationGetStart,
+										value: stampLeavingWork2Start,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr',
+										enable: isFixedAndUseTime2 }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
 								<input tabindex="8" class="input-warp" data-bind="ntsTimeEditor: {
 										name: '#[KMK003_275]',		
-										value: classificationGetStart,
+										value: stampLeavingWork2End,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint:'LateEarlyGraceTime' }" />
+										constraint: 'TimeWithDayAttr',
+										enable: isFixedAndUseTime2 }" />
 							</div>		
 						</div>
 					</com:ko>			
@@ -175,7 +182,7 @@
 									options: listPriorityClassification,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: classificationGetStart }"></div>
+									value: prioritySettingEntering }"></div>
 						</div>	
 						<div class="dialog-rows">
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_68')}</span></div>
@@ -184,7 +191,7 @@
 									options: listPriorityClassification,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: classificationGetStart }"></div>
+									value: prioritySettingExit }"></div>
 						</div>
 						<div class="dialog-rows">
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_281')}</span></div>
@@ -193,7 +200,7 @@
 									options: listPriorityClassification,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: classificationGetStart }"></div>
+									value: prioritySettingPcLogin }"></div>
 						</div>	
 						<div class="dialog-rows">
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_282')}</span></div>
@@ -202,7 +209,7 @@
 									options: listPriorityClassification,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: classificationGetStart }"></div>
+									value: prioritySettingPcLogout }"></div>
 						</div>	
 					</div>				
 					<!-- END setting items -  -->
@@ -221,39 +228,39 @@
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_200')}</span></div>
 							<div class="control-warp" style="width: 100px; margin-right: 0px;">
 								<div tabindex="19" style="width: 100px;" data-bind="ntsComboBox: {
-										options: listPriorityClassification,
+										options: listRoundingTimeUnit,
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										visibleItemsCount: 8,
 										dropDownAttachedToBody: true,
-										value: classificationGetStart,
+										value: goOutRoundingUnit,
 										editable: false}"></div>
 							</div>	
 							<div tabindex="20" class="cf control-warp" data-bind="ntsSwitchButton: {
 									name: '#[KMK003_169]',
-									options: listRounding,
+									options: listFontRearSection,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: classificationGetStart }"></div>
+									value: goOutFontRearSection }"></div>
 						</div>	
 						<div class="dialog-rows">
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_286')}</span></div>
 							<div class="control-warp" style="width: 100px; margin-right: 0px;">
 								<div tabindex="21" style="width: 100px;" data-bind="ntsComboBox: {
-										options: listPriorityClassification,
+										options: listRoundingTimeUnit,
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										visibleItemsCount: 8,
 										dropDownAttachedToBody: true,
-										value: classificationGetStart,
+										value: turnBackRoundingUnit,
 										editable: false}"></div>
 							</div>	
 							<div tabindex="22" class="cf control-warp" data-bind="ntsSwitchButton: {
 									name: '#[KMK003_169]',
-									options: listRounding,
+									options: listFontRearSection,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: classificationGetStart }"></div>
+									value: turnBackFontRearSection }"></div>
 						</div>	
 					</div>				
 					<!-- END setting items -  -->
