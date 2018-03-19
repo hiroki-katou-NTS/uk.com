@@ -6,20 +6,39 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
-
 /**
- * The Interface ComDeformationLaborSettingRepository.
+ * The Interface ComDeforLaborSettingRepository.
  */
 public interface ComDeforLaborSettingRepository {
 
 	/**
-	 * Gets the com deformation labor setting by cid and year.
+	 * Creates the.
+	 *
+	 * @param setting the setting
+	 */
+	void create(ComDeforLaborSetting setting);
+
+	/**
+	 * Update.
+	 *
+	 * @param setting the setting
+	 */
+	void update(ComDeforLaborSetting setting);
+
+	/**
+	 * Removes the.
 	 *
 	 * @param companyId the company id
 	 * @param year the year
-	 * @return the com deformation labor setting by cid and year
 	 */
-	Optional<ComDeforLaborSetting> getComDeformationLaborSettingByCidAndYear(String companyId, Year year);
+	void remove(String companyId, int year);
 
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 * @return the optional
+	 */
+	Optional<ComDeforLaborSetting> find(String companyId, int year);
 }

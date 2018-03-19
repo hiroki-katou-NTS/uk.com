@@ -7,30 +7,39 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew;
 import java.util.Optional;
 
 /**
- * The Interface CompanyRegularLaborHourRepository.
+ * The Interface ComRegularLaborTimeRepository.
  */
 public interface ComRegularLaborTimeRepository {
 
 	/**
-	 * Find by company id.
+	 * Creates the.
 	 *
-	 * @param companyId the company id
-	 * @return the optional
+	 * @param setting the setting
 	 */
-	Optional<ComRegularLaborTime> findByCompanyId(String companyId);
-
-	/**
-	 * Adds the.
-	 *
-	 * @param companyRegularLaborHour the company regular labor hour
-	 */
-	void add(ComRegularLaborTime companyRegularLaborHour);
+	void create(ComRegularLaborTime setting);
 
 	/**
 	 * Update.
 	 *
-	 * @param companyRegularLaborHour the company regular labor hour
+	 * @param setting the setting
 	 */
-	void update(ComRegularLaborTime companyRegularLaborHour);
+	void update(ComRegularLaborTime setting);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 */
+	void remove(String companyId, int year);
+
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 * @return the optional
+	 */
+	Optional<ComRegularLaborTime> find(String companyId, int year);
 
 }

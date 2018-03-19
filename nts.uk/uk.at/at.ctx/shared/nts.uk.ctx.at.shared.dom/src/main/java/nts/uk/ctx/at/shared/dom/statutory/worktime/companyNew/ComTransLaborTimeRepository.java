@@ -7,29 +7,38 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew;
 import java.util.Optional;
 
 /**
- * The Interface CompanyTransLaborHourRepository.
+ * The Interface ComTransLaborTimeRepository.
  */
 public interface ComTransLaborTimeRepository {
 
 	/**
-	 * Gets the company trans labor hour by cid.
+	 * Creates the.
 	 *
-	 * @param companyId the company id
-	 * @return the company trans labor hour by cid
+	 * @param setting the setting
 	 */
-	Optional<ComTransLaborTime> getCompanyTransLaborHourByCid(String companyId);
-
-	/**
-	 * Adds the.
-	 *
-	 * @param companyTransLaborHour the company trans labor hour
-	 */
-	void add(ComTransLaborTime companyTransLaborHour);
+	void create(ComTransLaborTime setting);
 
 	/**
 	 * Update.
 	 *
-	 * @param companyTransLaborHour the company trans labor hour
+	 * @param setting the setting
 	 */
-	void update(ComTransLaborTime companyTransLaborHour);
+	void update(ComTransLaborTime setting);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 */
+	void remove(String companyId, int year);
+
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 * @return the optional
+	 */
+	Optional<ComTransLaborTime> find(String companyId, int year);
 }
