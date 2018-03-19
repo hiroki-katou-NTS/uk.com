@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
 @Stateless
-public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect{
+public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
@@ -47,28 +48,29 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect{
 		}
 		//INPUT．予定反映区分をチェックする
 		if(para.isScheReflectAtr()) {
-			return this.checkOutRes(para);			
+			return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());			
 		} else {
 			//INPUT．予定と実績を同じに変更する区分をチェックする
 			if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY) {
-				return this.checkOutRes(para);
+				return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());
 			} else if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK
 					&& workTimeService.checkWorkTimeIsFluidWork(para.getGobackData().getWorkTimeCode())){
 				//流動勤務かどうかの判断処理
-				return this.checkOutRes(para);
+				return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());
 			} else {
 				return false;
 			}
 		}
 	}
-	
-	private boolean checkOutRes(GobackReflectParameter para) {
+
+	@Override
+	public boolean checkScheAndRecordSamseChange(String employeeId, GeneralDate dateData, boolean isOutResReflectAtr) {
 		//INPUT．振出・休出時反映する区分をチェックする
-		if(para.isOutResReflectAtr()) {
+		if(isOutResReflectAtr) {
 			return true;
 		}
 		//ドメインモデル「日別実績の勤務情報」を取得する
-		Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(para.getEmployeeId(), para.getDateData());
+		Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(employeeId, dateData);
 		if(!optDailyData.isPresent()) {
 			return false;
 		} 
@@ -80,6 +82,4 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect{
 			return true;
 		}
 	}
-
-
 }
