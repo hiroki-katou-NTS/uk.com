@@ -3490,7 +3490,7 @@ module nts.uk.ui.jqueryExtentions {
                         if (s !== sheets.currentSheet) {
                             let marked = false;
                             _.forEach(errorsLog[s], function(c) {
-                                if (cellEquals(c, cell) {
+                                if (cellEquals(c, cell)) {
                                     decorate($(cell.element));
                                     marked = true;
                                     return false;
