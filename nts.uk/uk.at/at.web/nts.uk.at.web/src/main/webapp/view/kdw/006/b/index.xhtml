@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw006.b.main.css" />
+			<com:scriptfile path="kdw006.b.start.js" />
+			<com:scriptfile path="kdw006.b.vm.js" />
+			<com:scriptfile path="kdw006.b.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW006_25')}</a>
+				<button id="register-button" class="proceed" tabindex="2" data-bind="click: register" style="margin-left:  85px;">#{i18n.getText('KDW006_26')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="screen-b">
+					<div id="setting-unit">
+						<div class="item-name">#{i18n.getText('KDW006_27')}</div>
+						<div id="switchBtn1" class="cf" tabindex="3"
+							data-bind="ntsSwitchButton: {
+ 		                    options: roundingRules, 
+ 		                    optionsValue: 'code', 
+		                    optionsText: 'name', 
+ 		                    value: settingUnit, 
+ 		                    enable: true }"> 
+						</div>
+					</div>
+
+                    <div id="comment-title"><div class="item-name">#{i18n.getText('KDW006_28')}</div></div>
+					<div id="comment">
+						<div class="item-name">#{i18n.getText('KDW006_62')}</div>
+						<textarea id="comment-text" tabindex="4"
+							data-bind="ntsMultilineEditor: { name: '#[KDW006_62]',constraint: 'RegisterTotaltimeCheer',value: comment }" />
+					</div>
+					
+					<div id="comment">
+                        <div class="item-name">#{i18n.getText('KDW006_63')}</div>
+                        <textarea id="comment-text" tabindex="5"
+                            data-bind="ntsMultilineEditor: { name: '#[KDW006_63]',constraint: 'RegisterTotaltimeCheer',value: comment }" />
+                    </div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
