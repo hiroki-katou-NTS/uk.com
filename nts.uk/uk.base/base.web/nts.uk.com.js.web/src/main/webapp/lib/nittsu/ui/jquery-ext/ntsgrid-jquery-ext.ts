@@ -3718,7 +3718,7 @@ module nts.uk.ui.jqueryExtentions {
                     if (!setting) return;
                     if (!setting.disableStates) {
                         setting.disableStates = {};
-                        Set cs = new Set();
+                        let cs = new Set();
                         cs.add(key);
                         setting.disableStates[id] = cs;
                         return;
@@ -3726,7 +3726,7 @@ module nts.uk.ui.jqueryExtentions {
                     
                     let cols = setting.disableStates[id];
                     if (!cols) {
-                        Set cs = new Set();
+                        let cs = new Set();
                         cs.add(key);
                         setting.disableStates[id] = cs;
                     } else {
