@@ -51,8 +51,8 @@ public class KrcmtMonPerformanceFun extends UkJpaEntity implements Serializable
         return monPerformanceFunPk;
     }
 
-    public MonPerformanceFun toDomain(KrcmtMonPerformanceFun entity) {
-        return new MonPerformanceFun(entity.monPerformanceFunPk.cid, new Comment(comment), entity.isConfirmDaily);
+    public MonPerformanceFun toDomain() {
+        return new MonPerformanceFun(this.monPerformanceFunPk.cid, new Comment(comment), this.isConfirmDaily);
     }
     public static KrcmtMonPerformanceFun toEntity(MonPerformanceFun domain) {
         return new KrcmtMonPerformanceFun(new KrcmtMonPerformanceFunPk(domain.getCid()), domain.getComment().toString(), domain.getIsConfirmDaily());

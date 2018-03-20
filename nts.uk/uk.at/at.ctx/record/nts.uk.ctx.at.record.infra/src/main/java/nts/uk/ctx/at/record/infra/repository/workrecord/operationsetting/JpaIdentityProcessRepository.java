@@ -21,14 +21,14 @@ public class JpaIdentityProcessRepository extends JpaRepository implements Ident
     @Override
     public List<IdentityProcess> getAllIdentityProcess(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtIdentityProcess.class)
-                .getList(item -> item.toDomain(item));
+                .getList(item -> item.toDomain());
     }
 
     @Override
     public Optional<IdentityProcess> getIdentityProcessById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtIdentityProcess.class)
         .setParameter("cid", cid)
-        .getSingle(c->c.toDomain(c));
+        .getSingle(c->c.toDomain());
     }
 
     @Override

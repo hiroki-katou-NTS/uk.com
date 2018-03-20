@@ -45,8 +45,8 @@ public class KrcmtFormatPerformance extends UkJpaEntity implements Serializable
         return formatPerformancePk;
     }
 
-    public FormatPerformance toDomain(KrcmtFormatPerformance entity) {
-        return new FormatPerformance(entity.formatPerformancePk.cid, EnumAdaptor.valueOf(entity.settingUnitType, SettingUnitType.class));
+    public FormatPerformance toDomain() {
+        return new FormatPerformance(this.formatPerformancePk.cid, EnumAdaptor.valueOf(this.settingUnitType, SettingUnitType.class));
     }
     public static KrcmtFormatPerformance toEntity(FormatPerformance domain) {
         return new KrcmtFormatPerformance(new KrcmtFormatPerformancePk(domain.getCid()), domain.getSettingUnitType().value);

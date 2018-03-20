@@ -21,7 +21,7 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
     @Override
     public List<ApprovalProcess> getAllApprovalProcess(){
     	List<ApprovalProcess> data = this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtApprovalProcess.class)
-    			.getList(c -> c.toDomain(c));
+    			.getList(c -> c.toDomain());
     	
         return data;
     }
@@ -30,7 +30,7 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
     public Optional<ApprovalProcess> getApprovalProcessById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtApprovalProcess.class)
         .setParameter("cid", cid)
-        .getSingle(c->c.toDomain(c));
+        .getSingle(c->c.toDomain());
     }
 
     @Override

@@ -59,8 +59,8 @@ public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
         return identityProcessPk;
     }
 
-    public IdentityProcess toDomain(KrcmtIdentityProcess entity) {
-        return new IdentityProcess(entity.identityProcessPk.cid, entity.useConfirmByYourself, entity.useIdentityOfMonth, EnumAdaptor.valueOf(entity.yourselfConfirmError, YourselfConfirmError.class));
+    public IdentityProcess toDomain() {
+        return new IdentityProcess(this.identityProcessPk.cid, this.useConfirmByYourself, this.useIdentityOfMonth, EnumAdaptor.valueOf(this.yourselfConfirmError, YourselfConfirmError.class));
     }
     public static KrcmtIdentityProcess toEntity(IdentityProcess domain) {
         return new KrcmtIdentityProcess(new KrcmtIdentityProcessPk(domain.getCid()), domain.getUseConfirmByYourself(), domain.getUseIdentityOfMonth(), domain.getYourselfConfirmError().value);

@@ -21,14 +21,14 @@ public class JpaMonPerformanceFunRepository extends JpaRepository implements Mon
     @Override
     public List<MonPerformanceFun> getAllMonPerformanceFun(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtMonPerformanceFun.class)
-                .getList(item -> item.toDomain(item));
+                .getList(item -> item.toDomain());
     }
 
     @Override
     public Optional<MonPerformanceFun> getMonPerformanceFunById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtMonPerformanceFun.class)
         .setParameter("cid", cid)
-        .getSingle(c->c.toDomain(c));
+        .getSingle(c->c.toDomain());
     }
 
     @Override

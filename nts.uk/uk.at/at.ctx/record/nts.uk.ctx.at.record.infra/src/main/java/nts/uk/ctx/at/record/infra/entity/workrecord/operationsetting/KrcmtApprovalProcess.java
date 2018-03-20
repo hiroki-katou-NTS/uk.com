@@ -66,8 +66,8 @@ public class KrcmtApprovalProcess extends UkJpaEntity implements Serializable
         return approvalProcessPk;
     }
 
-    public ApprovalProcess toDomain(KrcmtApprovalProcess entity) {
-        return new ApprovalProcess(entity.approvalProcessPk.cid, entity.jobTitleId, entity.useDayApproverConfirm, entity.useMonthApproverComfirm, EnumAdaptor.valueOf(entity.supervisorConfirmError, YourselfConfirmError.class));
+    public ApprovalProcess toDomain() {
+        return new ApprovalProcess(this.approvalProcessPk.cid, this.jobTitleId, this.useDayApproverConfirm, this.useMonthApproverComfirm, EnumAdaptor.valueOf(this.supervisorConfirmError, YourselfConfirmError.class));
     }
     public static KrcmtApprovalProcess toEntity(ApprovalProcess domain) {
         return new KrcmtApprovalProcess(new KrcmtApprovalProcessPk(domain.getCid()), domain.getJobTitleId(), domain.getUseDayApproverConfirm(), domain.getUseMonthApproverComfirm(), domain.getSupervisorConfirmError().value);
