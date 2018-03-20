@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk003.h {
             useStamp: KnockoutObservable<boolean>;
             useStampCalcMethod: KnockoutObservable<number>;
             timeManagerSetAtr: KnockoutObservable<number>;
-            wtf: KnockoutObservable<number>;
+            calculationMethod: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
@@ -22,18 +22,17 @@ module nts.uk.at.view.kmk003.h {
                 self.useStamp = ko.observable(false);
                 self.useStampCalcMethod = ko.observable(0);
                 self.timeManagerSetAtr = ko.observable(0);
-                self.wtf = ko.observable(0);
+                self.calculationMethod = ko.observable(0);
             }
 
             /**
              * Start page
              */
             public startPage(): JQueryPromise<any> {
-                let _self = this;
+                let self = this;
                 let dfd = $.Deferred<any>();
 
-                let dto: any = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_DTO");
-                _self.bindingData(dto);
+                self.bindingData();
 
                 dfd.resolve();
                 return dfd.promise();
@@ -42,12 +41,11 @@ module nts.uk.at.view.kmk003.h {
             /**
              * Binding data
              */
-            private bindingData(dataObject: any) {
-                let _self = this;
+            private bindingData() {
+                let self = this;
+                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_DTO");
 
-                if (nts.uk.util.isNullOrUndefined(dataObject)) {
-                    return;
-                }
+                
 
                 //TODO
             }
@@ -65,7 +63,8 @@ module nts.uk.at.view.kmk003.h {
                     useAssoGoOutRest: self.useAssoGoOutRest(),
                     useStamp: self.useStamp(),
                     useStampCalcMethod: self.useStampCalcMethod(),
-                    timeManagerSetAtr: self.timeManagerSetAtr()
+                    timeManagerSetAtr: self.timeManagerSetAtr(),
+                    calculationMethod: self.calculationMethod()
                 };
 
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_H_DTO", dto);
@@ -82,6 +81,7 @@ module nts.uk.at.view.kmk003.h {
         }
 
         export interface DialogHParam {
+            calculationMethod: number;
             isCalcFromSchedule: boolean;
             isReferRestTime: boolean;
             usePrivateGoOutRest: boolean;
