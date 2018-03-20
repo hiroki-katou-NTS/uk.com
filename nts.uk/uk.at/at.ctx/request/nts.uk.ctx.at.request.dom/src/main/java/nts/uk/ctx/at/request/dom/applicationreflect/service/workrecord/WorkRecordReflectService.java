@@ -12,5 +12,7 @@ public interface WorkRecordReflectService {
 	 * @return
 	 */
 	public ReflectedStatesInfo workRecordreflect(AppReflectRecordPara recordInfor);
+	
+	
 
 }

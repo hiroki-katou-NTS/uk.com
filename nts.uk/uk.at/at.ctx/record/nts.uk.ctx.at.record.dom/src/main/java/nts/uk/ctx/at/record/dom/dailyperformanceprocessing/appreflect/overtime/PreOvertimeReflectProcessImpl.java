@@ -1,17 +1,20 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
@@ -133,6 +136,48 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v(),
 				dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v());
 		return dataOut;
+	}
+
+	@Override
+	public void getReflectOfOvertime(PreOvertimeParameter para) {
+		//INPUT．残業時間反映フラグをチェックする
+		if(!para.isTimeReflectFlg()) {
+			return;
+		}
+		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
+			//INPUT．残業時間のループ中の番をチェックする
+			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
+			if(entry.getValue() < 0) {
+				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
+			}			
+		}
+		//残業時間の反映
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame());
+	}
+
+	@Override
+	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg,
+			Integer overShiftNight) {
+		// INPUT．残業時間反映フラグをチェックする
+		//INPUT．外深夜時間をチェックする
+		if(!timeReflectFlg || overShiftNight < 0) {
+			return;
+		}
+		//所定外深夜時間の反映
+		workUpdate.updateBreakNight(employeeId, dateData);
+	}
+
+	@Override
+	public void reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, Integer flexExessTime) {
+		//INPUT．残業時間反映フラグをチェックする
+		//INPUT．フレックス時間をチェックする
+		if(!timeReflectFlg
+				|| flexExessTime < 0) {
+			return;
+		}
+		//フレックス時間を反映する
+		//日別実績の残業時間
+		workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime);
 	}
 
 }

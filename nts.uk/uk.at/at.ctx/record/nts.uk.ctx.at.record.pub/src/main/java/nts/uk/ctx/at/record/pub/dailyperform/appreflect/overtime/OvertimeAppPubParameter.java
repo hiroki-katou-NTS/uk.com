@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,4 +42,17 @@ public class OvertimeAppPubParameter {
 	 * 終了時刻２
 	 */
 	private Integer endTime2;
+	/**
+	 * 残業申請．残業時間（10枠）
+	 */
+	Map<Integer, Integer> mapOvertimeFrame;
+	
+	/**
+	 * 就業時間外深夜時間
+	 */
+	private Integer overTimeShiftNight;
+	/**
+	 * フレックス超過時間
+	 */
+	private Integer flexExessTime;
 }
