@@ -37,22 +37,22 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	
 	
 	@Override
-	public ValueExtractAlarmWRPubExport checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
-		Optional<ValueExtractAlarmWR> data = Optional.ofNullable(workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD));
+	public Optional<ValueExtractAlarmWRPubExport> checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
+		Optional<ValueExtractAlarmWR> data = workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD);
 		if(data.isPresent()) {
-			return convertToExport(data.get());
+			return Optional.of(convertToExport(data.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
-	public ValueExtractAlarmWRPubExport checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
-		Optional<ValueExtractAlarmWR> data = Optional.ofNullable(workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD));
+	public Optional<ValueExtractAlarmWRPubExport> checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
+		Optional<ValueExtractAlarmWR> data = workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD);
 
 		if(data.isPresent()) {
-			return convertToExport(data.get());
+			return Optional.of(convertToExport(data.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
