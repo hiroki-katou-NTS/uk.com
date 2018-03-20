@@ -15,6 +15,8 @@ public interface StdAcceptCondSetRepository {
 	void add(StdAcceptCondSet domain);
 
 	void update(StdAcceptCondSet domain);
+	
+	void updateFromD(StdAcceptCondSet domain);
 
 	void remove(String cid, int sysType, String conditionSetCd);
 

@@ -7,9 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.I18NErrorMessage;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.i18n.I18NText;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -39,7 +37,7 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 				conditionSetting.getConditionSetCd().v());
 		acceptItemRepo.addList(listItem);
 		condSet.updateCheckComplete(NotUseAtr.NOT_USE.value);
-		acceptCondRepo.update(condSet);
+		acceptCondRepo.updateFromD(condSet);
 	}
 
 	@Override
@@ -48,7 +46,7 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
 		condSet.updateWhenSettingItems(conditionSetting.getCategoryId().get(),
 				conditionSetting.getCsvDataLineNumber().get().v(), conditionSetting.getCsvDataStartLine().get().v());
-		acceptCondRepo.update(condSet);
+		acceptCondRepo.updateFromD(condSet);
 		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
 				conditionSetting.getConditionSetCd().v());
 		acceptItemRepo.addList(listItem);
@@ -69,7 +67,7 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 		}
 		if (errorList.isEmpty()) {
 			condSet.updateCheckComplete(NotUseAtr.USE.value);
-			acceptCondRepo.update(condSet);
+			acceptCondRepo.updateFromD(condSet);
 		} else {
 			String msg = TextResource.localize("Msg_904");
 			for (String s: errorList) {

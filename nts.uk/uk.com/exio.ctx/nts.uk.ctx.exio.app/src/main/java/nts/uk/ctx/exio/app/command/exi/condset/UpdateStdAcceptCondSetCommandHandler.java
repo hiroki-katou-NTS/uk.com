@@ -9,7 +9,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 @Transactional
@@ -25,7 +24,7 @@ public class UpdateStdAcceptCondSetCommandHandler extends CommandHandler<StdAcce
         String companyId = AppContexts.user().companyId();
 		StdAcceptCondSet domain = new StdAcceptCondSet(companyId, updateCommand.getSystemType(),
 				updateCommand.getConditionSettingCode(), updateCommand.getConditionSettingName(),
-				updateCommand.getDeleteExistData(), updateCommand.getAcceptMode(), NotUseAtr.USE.value,
+				updateCommand.getDeleteExistData(), updateCommand.getAcceptMode(), null,
 				updateCommand.getCategoryId(), updateCommand.getCsvDataItemLineNumber(), updateCommand.getCsvDataStartLine(),
 				updateCommand.getDeleteExistDataMethod());
 		this.repository.update(domain);  

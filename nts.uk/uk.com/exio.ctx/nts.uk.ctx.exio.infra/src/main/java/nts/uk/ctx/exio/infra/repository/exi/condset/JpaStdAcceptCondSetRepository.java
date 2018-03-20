@@ -46,12 +46,6 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 			OiomtStdAcceptCondSet entity = entityOpt.get();
 			entity.conditionSetName = domain.getConditionSetName().v();
 			entity.acceptMode = domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null;
-			entity.categoryId = domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null;
-			entity.checkCompleted = domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value : null;
-			entity.csvDataLineNumber = domain.getCsvDataLineNumber().isPresent()
-					? domain.getCsvDataLineNumber().get().v() : null;
-			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v()
-					: null;
 			entity.deleteExistData = domain.getDeleteExistData().value;
 			entity.deleteExtDataMethod = domain.getDeleteExtDataMethod().isPresent()
 					? domain.getDeleteExtDataMethod().get().value : null;
@@ -73,6 +67,23 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	@Override
+	public void updateFromD(StdAcceptCondSet domain) {
+		Optional<OiomtStdAcceptCondSet> entityOpt = this.queryProxy().find(new OiomtStdAcceptCondSetPk(domain.getCid(),
+				domain.getSystemType().value, domain.getConditionSetCd().v()), OiomtStdAcceptCondSet.class);
+		if (entityOpt.isPresent()) {
+			OiomtStdAcceptCondSet entity = entityOpt.get();
+			entity.categoryId = domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null;
+			entity.checkCompleted = domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value
+					: null;
+			entity.csvDataLineNumber = domain.getCsvDataLineNumber().isPresent()
+					? domain.getCsvDataLineNumber().get().v() : null;
+			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v()
+					: null;
+			this.commandProxy().update(entity);
 		}
 	}
 
