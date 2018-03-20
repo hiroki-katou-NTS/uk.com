@@ -5,7 +5,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento;
 
-public class DivergenceReasonSelectSaveCommand implements DivergenceReasonSelectGetMemento{
+public class DivergenceReasonSelectDeleteCommand implements DivergenceReasonSelectGetMemento  {
 	/** The divergence time no. */
 	private int divergenceTimeNo;
 
@@ -41,6 +41,4 @@ public class DivergenceReasonSelectSaveCommand implements DivergenceReasonSelect
 	public DivergenceInputRequired getReasonRequired() {
 		return DivergenceInputRequired.valueOf(reasonRequired);
 	}
-
-
 }

@@ -71,7 +71,7 @@ public class DivergenceReasonSelectDto implements DivergenceReasonSelectSetMemen
 	 */
 	@Override
 	public void setReason(DivergenceReason reason) {
-		this.divergenceReasonCode = reason.toString();
+		this.reason = reason.toString();
 
 	}
 

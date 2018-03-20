@@ -29,7 +29,7 @@ public class DivergenceTimeInputMethodDto {
 
 	/** The divergence type. */
 
-	private int divergenceType;
+	private String divergenceType;
 
 	/** The divergence time error cancel method. */
 
@@ -77,7 +77,7 @@ public class DivergenceTimeInputMethodDto {
 		super();
 	}
 	public DivergenceTimeInputMethodDto(int divergenceTimeNo, String companyId, int divTimeUseSet,
-			String divergenceTimeName, int divType, boolean reasonInput, boolean reasonSelect,
+			String divergenceTimeName, String divType, boolean reasonInput, boolean reasonSelect,
 			boolean divergenceReasonInputed, boolean divergenceReasonSelected, List<Integer> attendanceId) {
 		super();
 		this.divergenceTimeNo = divergenceTimeNo;
