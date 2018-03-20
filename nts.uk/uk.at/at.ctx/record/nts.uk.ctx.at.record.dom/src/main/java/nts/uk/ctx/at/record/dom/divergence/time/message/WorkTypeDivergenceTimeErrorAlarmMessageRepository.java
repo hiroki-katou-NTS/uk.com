@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.divergence.time.message;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+
 /**
  * The Interface WorkTypeDivergenceTimeErrorAlarmMessageRepository.
  */
@@ -8,11 +11,13 @@ public interface WorkTypeDivergenceTimeErrorAlarmMessageRepository {
 	/**
 	 * Gets the by divergence time no.
 	 *
-	 * @param divergenceTimeNo
-	 *            the divergence time no
+	 * @param divergenceTimeNo the divergence time no
+	 * @param cId the c id
+	 * @param workTypeCode the work type code
 	 * @return the by divergence time no
 	 */
-	public WorkTypeDivergenceTimeErrorAlarmMessage getByDivergenceTimeNo(Integer divergenceTimeNo);
+	public WorkTypeDivergenceTimeErrorAlarmMessage getByDivergenceTimeNo(Integer divergenceTimeNo, CompanyId cId,
+			WorkTypeCode workTypeCode);
 
 	/**
 	 * Adds the.
