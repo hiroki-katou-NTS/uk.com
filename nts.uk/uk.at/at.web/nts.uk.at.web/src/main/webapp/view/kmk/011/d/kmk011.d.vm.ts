@@ -301,7 +301,7 @@ module nts.uk.at.view.kmk011.d {
 
                 for(let i = 0; i < 10; i++){
                      objTemp1 = new ComDivergenceTimeSettingDto();
-                     _self.mapObj().set(i, objTemp1);     
+                     _self.mapObj.set(i, objTemp1);     
                 }
                 
             }
