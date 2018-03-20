@@ -1,7 +1,5 @@
 @CHARSET "UTF-8";
 
-#daterangepicker{
-	display: inline-block;
-    float: left;
+#start_date{
     margin-left: 85px
 }

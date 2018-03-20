@@ -23,10 +23,10 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 	private String historyId;
 	
 	/** The start date. */
-	private String startDate;
+	private GeneralDate startDate;
 	
 	/** The end date. */
-	private String endDate;
+	private GeneralDate endDate;
 	
 	/**
 	 * Instantiates a new company divergence reference time history command.
@@ -57,7 +57,7 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 		
 		List<DateHistoryItem> list = new ArrayList<DateHistoryItem>();
 		
-		DatePeriod period = new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"), GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
+		DatePeriod period = new DatePeriod(this.startDate, this.endDate);
 		list.add(new DateHistoryItem(histId, period));
 		return list;
 	}

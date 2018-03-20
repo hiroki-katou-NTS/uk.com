@@ -8,11 +8,8 @@ module nts.uk.at.view.kmk011.f {
     export module viewmodel {
         export class ScreenModel {
             //date range
-            enableDateRange: KnockoutObservable<boolean>;
-            requiredDateRange: KnockoutObservable<boolean>;
-            dateValue: KnockoutObservable<any>;
-            startDateString: KnockoutObservable<string>;
-            endDateString: KnockoutObservable<string>;
+            startDate: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
             
             // radio group
             itemListRadio: KnockoutObservableArray<any>;
@@ -23,22 +20,8 @@ module nts.uk.at.view.kmk011.f {
                 let _self = this;
                 
                 //date range
-                _self.enableDateRange = ko.observable(true);
-                _self.requiredDateRange = ko.observable(true);
-                
-                _self.startDateString = ko.observable("");
-                _self.endDateString = ko.observable("");
-                _self.dateValue = ko.observable({});
-                
-                _self.startDateString.subscribe(function(value){
-                    _self.dateValue().startDate = value;
-                    _self.dateValue.valueHasMutated();        
-                });
-                
-                _self.endDateString.subscribe(function(value){
-                    _self.dateValue().endDate = value;   
-                    _self.dateValue.valueHasMutated();      
-                });
+                _self.startDate = ko.observable(null);
+                _self.endDate = ko.observable(null);
                 
                 //radio group
                 _self.itemListRadio = ko.observableArray([
@@ -62,19 +45,29 @@ module nts.uk.at.view.kmk011.f {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
-                var data = new CreateHistoryCommand(null,_self.dateValue().startDate, _self.dateValue().endDate);
+                if(_self.hasError()){
+                    return;    
+                }
+                
+                var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate());
                 
                 if (_self.selectedId() == CreateMode.NEW){
                     service.add(data).done(() => {
                          nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             dfd.resolve();
+                            nts.uk.ui.windows.close();
                          });
+                    }).fail((res: any) => {
+                          _self.showMessageError(res);  
                     });
                 } else {
                     service.copy(data).done(() => {
                          nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             dfd.resolve();
+                            nts.uk.ui.windows.close();
                          });
+                    }).fail((res: any) => {
+                          _self.showMessageError(res);  
                     });
                 }
               
@@ -84,6 +77,55 @@ module nts.uk.at.view.kmk011.f {
             // close modal
             public close() : void {
                 nts.uk.ui.windows.close();    
+            }
+            
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }
+            
+            /**
+             * Check Errors all input.
+             */
+            private hasError(): boolean {
+                let _self = this;
+                _self.clearErrors();
+                
+                $('#end_date').ntsEditor("validate");
+                $('#start_date').ntsEditor("validate");    
+          
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Clear Errors
+             */
+            private clearErrors(): void {
+                let _self = this;
+                
+                // Clear error
+                $('#start_date').ntsEditor("clear");
+                $('#end_date').ntsEditor("clear");    
+           
+                // Clear error inputs
+                $('.nts-input').ntsError('clear');
             }
         }
         

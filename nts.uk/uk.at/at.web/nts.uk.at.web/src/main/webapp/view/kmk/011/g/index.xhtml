@@ -30,15 +30,12 @@
 				<div style="margin: 20px 0;">
 					<div style="float: left"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_58')}</div>
-					<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: {
-						name: '#[KMK011_58]',
-						required: requiredDateRange, 
-						enable: enableDateRange,
-						showNextPrevious: false, 
-						value: dateValue, 
-						maxRange: 'none',
-						startName: '#[KMK011_59]',
-						endName: '#[KMK011_61]'}"/>
+					
+					<div id="start_date"
+						data-bind="ntsDatePicker: {name: '#[KMK011_59]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD', option: {width: '70px'}}"></div>
+					<span style="margin: 0 20px 0 20px;">#{i18n.getText('CMM011_26')}</span>
+					<div id = "end_date" 
+						data-bind="ntsDatePicker: {name: '#[KMK011_61]', required: true, value: endDate, dateFormat: 'YYYY/MM/DD', option: {width: '70px'}}"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

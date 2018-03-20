@@ -136,6 +136,8 @@ module nts.uk.at.view.kmk011.d {
                 
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail((res: any) => {
+                      _self.showMessageError(res);
                 });
             }
             
@@ -162,6 +164,25 @@ module nts.uk.at.view.kmk011.d {
                         return false;    
                     }
                      return true;
+                }
+            }
+            
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }
             
