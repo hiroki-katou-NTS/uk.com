@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.divergence.time.message;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -14,7 +16,7 @@ public interface DivergenceTimeErrorAlarmMessageRepository {
 	 * @param divergenceTimeNo the divergence time no
 	 * @return the divergence time error alarm message
 	 */
-	public DivergenceTimeErrorAlarmMessage findByDivergenceTimeNo(CompanyId cId, Integer divergenceTimeNo);
+	public Optional<DivergenceTimeErrorAlarmMessage> findByDivergenceTimeNo(CompanyId cId, Integer divergenceTimeNo);
 	
 	/**
 	 * Adds the.
