@@ -36,6 +36,7 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
 
         employeeID: KnockoutObservable<string> = ko.observable('');
+        employeeName: KnockoutObservable<string> = ko.observable('');
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(0);
 
@@ -106,6 +107,7 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         setDataFromStart(data: IHolidayShipment) {
             let self = this;
             if (data) {
+                self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
                 self.takingOutWk().wkTypes(data.takingOutWkTypes || []);
                 self.holidayWk().wkTypes(data.holidayWkTypes || []);
@@ -204,6 +206,7 @@ module nts.uk.at.view.kaf011.shr.screenModel {
         preOrPostType: any;
         appReasons: Array<any>;
         employeeID: string;
+        employeeName: string;
     }
     interface IWorkType {
         /* 勤務種類コード */
