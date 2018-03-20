@@ -49,6 +49,6 @@ public class DivergenceTimeInputMethodSaveCommand {
 	private boolean divergenceReasonSelected;
 
 	/** The attendance id. */
-	private List<Integer> attendanceId;
+	private List<Integer> targetItems;
 
 }

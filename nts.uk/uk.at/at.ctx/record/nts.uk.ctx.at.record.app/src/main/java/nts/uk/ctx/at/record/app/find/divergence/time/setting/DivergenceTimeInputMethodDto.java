@@ -47,7 +47,7 @@ public class DivergenceTimeInputMethodDto {
 	private boolean divergenceReasonSelected;
 
 	/** Attendance Item list. */
-	private List<Integer> attendanceId;
+	private List<Integer> targetItems;
 
 	/**
 	 * Instantiates a new divergence time input method dto.
@@ -89,7 +89,7 @@ public class DivergenceTimeInputMethodDto {
 		this.reasonSelect = reasonSelect;
 		this.divergenceReasonInputed = divergenceReasonInputed;
 		this.divergenceReasonSelected = divergenceReasonSelected;
-		this.attendanceId = attendanceId;
+		this.targetItems = attendanceId;
 	}
 
 }

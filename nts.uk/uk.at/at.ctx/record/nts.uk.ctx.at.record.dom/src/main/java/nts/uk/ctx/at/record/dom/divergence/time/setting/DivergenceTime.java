@@ -2,10 +2,14 @@ package nts.uk.ctx.at.record.dom.divergence.time.setting;
 
 
 import java.util.List;
+
+import com.zaxxer.hikari.metrics.CodaHaleMetricsTracker.Context;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeName;
+import nts.uk.shr.com.context.AppContexts;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,7 +57,7 @@ public class DivergenceTime extends AggregateRoot {
 	public DivergenceTime(DivergenceTimeGetMemento memento) {
 		super();
 		this.divergenceTimeNo = memento.getDivergenceTimeNo();
-		this.companyId = memento.getCompanyId();
+		this.companyId = AppContexts.user().companyId();
 		this.divTimeUseSet = memento.getDivTimeUseSet();
 		this.divTimeName = memento.getDivTimeName();
 		this.divType = memento.getDivType();
@@ -70,7 +74,7 @@ public class DivergenceTime extends AggregateRoot {
 	public void saveToMemento(DivergenceTimeSetMemento memento) {
 
 		memento.setDivergenceTimeNo(this.divergenceTimeNo);
-		memento.setCompanyId(this.companyId);
+		memento.setCompanyId(AppContexts.user().companyId());
 		memento.setDivTimeName(this.divTimeName);
 		memento.setDivTimeUseSet(this.divTimeUseSet);
 		memento.setDivType(this.divType);

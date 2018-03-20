@@ -15,6 +15,8 @@ module nts.uk.at.view.kmk011.b {
             selectUse: KnockoutObservable<any>;//value of B3_2
             enableUse: KnockoutObservable<boolean>; // for define enable for elements behind
 
+            divergenceTypeName: KnockoutObservable<string>; // B4_1 show
+
             divTimeName: KnockoutObservable<string>;//divergence name B3_4
             timeItemName: KnockoutObservable<string>;//list name KDL021 - B3_7
 
@@ -28,7 +30,6 @@ module nts.uk.at.view.kmk011.b {
             enableInput: KnockoutObservable<boolean>;
             checkErrorInput: KnockoutObservable<boolean>;
 
-            divergenceTimeName: KnockoutObservable<string>;
             enable: KnockoutObservable<boolean>;
             divergenceTimeId: KnockoutObservable<number>;
             itemDivergenceTime: KnockoutObservable<viewmodel.model.DivergenceTime>;
@@ -63,6 +64,7 @@ module nts.uk.at.view.kmk011.b {
                 ]);
 
                 self.selectUse = ko.observable(0);
+                self.divergenceTypeName = ko.observable('');
                 self.divergenceTimeName = ko.observable('');
                 self.divTimeName = ko.observable('');
                 self.timeItemName = ko.observable('');
@@ -151,6 +153,7 @@ module nts.uk.at.view.kmk011.b {
                         self.currentCode(rdivTimeFirst.divergenceTimeNo);
                         self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
                             self.itemDivergenceTime(itemDivTime);
+                            //get divergenceTypeName method this
                             self.setValueDivergenceTimeDisplay();
 
                         });
@@ -170,6 +173,7 @@ module nts.uk.at.view.kmk011.b {
                 });
                 return dfd.promise();
             }
+           
             /**
              * set display value divergence item
              */
@@ -180,6 +184,7 @@ module nts.uk.at.view.kmk011.b {
                 self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
                 self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
                 self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
+                self.divergenceTypeName(self.itemDivergenceTime().divergenceType);
 
                 self.timeItemName('');
 
@@ -218,20 +223,14 @@ module nts.uk.at.view.kmk011.b {
                         if (self.divergenceTimeId() == null) {
                             return;
                         }
-                        //set 4 gia tri boolean
-                        //                        var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
-                        //                        var input = new model.SelectSet(self.selelf.checkErrInput()));
-
-                        //                        var divTime = new model.DivergenceTime(self.divTimeId(), 0, self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
-                        var divergenceType = self.divergenceTimeId();  //temp
-                        var targetItems: number[] = null; //temp
+                        
                         var listIdSelect = [];
                         for (let i = 0; i < self.listItemSelected().length; i++) {
                             listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
                         }
-                        var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divergenceTimeName(),
-                            divergenceType, self.checkErrorInput(), self.checkErrorSelect(),
-                            self.selectInput(), self.selectSelect(), targetItems);
+                        var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divTimeName(),
+                            self.divergenceTypeName(), self.checkErrorInput(), self.checkErrorSelect(),
+                            self.selectInput(), self.selectSelect(), listIdSelect);
 
 
                         var listAdd = new Array<model.TimeItemSet>();
@@ -277,6 +276,7 @@ module nts.uk.at.view.kmk011.b {
                     $('.nts-input').ntsError('clear');
                 }
             }
+         
             //get all divergence time new
             private getAllDivTimeNew() {
                 var self = this;
@@ -374,7 +374,7 @@ module nts.uk.at.view.kmk011.b {
                 divergenceTimeNo: number;
                 divergenceTimeUseSet: number;
                 divergenceTimeName: string;
-                divergenceType: number;
+                divergenceType: string;
                 reasonInput: boolean;
                 reasonSelect: boolean;
                 divergenceReasonInputed: boolean;
@@ -382,7 +382,7 @@ module nts.uk.at.view.kmk011.b {
                 targetItems: number[];
 
                 constructor(divergenceTimeNo: number, divergenceTimeUseSet: number, divergenceTimeName: string,
-                    divergenceType: number, reasonInput: boolean, reasonSelect: boolean,
+                    divergenceType: string, reasonInput: boolean, reasonSelect: boolean,
                     divergenceReasonInputed: boolean, divergenceReasonSelected: boolean, targetItems: number[]
                 ) {
                     this.divergenceTimeNo = divergenceTimeNo;
