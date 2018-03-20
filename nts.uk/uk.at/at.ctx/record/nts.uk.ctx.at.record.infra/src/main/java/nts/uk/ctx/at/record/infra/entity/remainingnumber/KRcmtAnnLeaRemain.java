@@ -13,6 +13,12 @@ public class KRcmtAnnLeaRemain extends UkJpaEntity{
 	@Embedded
     public KRcmtAnnLeaRemainPK key;
 
+	@Column(name = "EMPLOYEE_ID")
+    public String employeeId;
+	
+	@Column(name = "GRANT_DATE")
+    public GeneralDate grantDate;
+	
 	@Column(name = "DEADLINE")
     public GeneralDate deadline;
 

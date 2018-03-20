@@ -5,17 +5,11 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 public class KRcmtAnnLeaRemainPK {
-	
-	@Column(name = "EMPLOYEE_ID")
-    public String employeeId;
-	
-	@Column(name = "GRANT_DATE")
-    public GeneralDate grantDate;
-
+	@Column(name = "ANNLEAV_ID")
+    public String annLeavID;
 }
