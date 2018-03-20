@@ -54,6 +54,7 @@ module cmm045.a.viewmodel {
             let url = $(location).attr('search');
             let urlParam: number = url.split("=")[1];
             let characterData = null;
+            let appCHeck = null;
             character.restore("AppListExtractCondition").done((obj) => {
                 console.log(obj);
                 characterData = obj;
@@ -80,6 +81,8 @@ module cmm045.a.viewmodel {
                         self.selectedIds.push(6);
                     }
                     self.selectedRuleCode(obj.appDisplayAtr);
+                    //combo box
+                    appCHeck = obj.appType;
                 }
                 if (urlParam === undefined) {
                     self.mode(characterData.appListAtr);
@@ -88,7 +91,7 @@ module cmm045.a.viewmodel {
                 }
 
                 let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                    null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
 
                 service.getApplicationDisplayAtr().done(function(data1) {
@@ -105,7 +108,7 @@ module cmm045.a.viewmodel {
                             self.dateValue(date);
                         }
                         let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                            null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                            self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                             self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
                         character.save('AppListExtractCondition', paramSave);
                         console.log(data);
@@ -176,6 +179,9 @@ module cmm045.a.viewmodel {
                              self.reloadGridApproval(lstHidden);
                         } else {
                             self.reloadGridApplicaion()
+                        }
+                        if(appCHeck != null){
+                            self.selectedCode(appCHeck);
                         }
                         dfd.resolve();
                     });
@@ -664,7 +670,7 @@ module cmm045.a.viewmodel {
                 return;
             }
             let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                 self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
             service.getApplicationList(param).done(function(data) {
                 console.log(data);
@@ -806,6 +812,22 @@ module cmm045.a.viewmodel {
          */
         filterByAppType(appType: number) {
             let self = this;
+            let paramOld = null;
+            let paramNew = null;
+            character.restore("AppListExtractCondition").done((obj) => {
+                 if (obj !== undefined) {
+                    paramOld = obj;
+                }
+            });
+            if(paramOld != null){
+                paramNew = paramOld.setAppType(appType);
+            }else{
+                paramNew = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+                self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+            }
+            //luu
+                character.save('AppListExtractCondition', paramNew);
             if (appType == -1) {//全件表示
                 self.items(vmbase.ProcessHandler.orderByList(self.lstApp()));
             } else {
@@ -817,11 +839,15 @@ module cmm045.a.viewmodel {
             }
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
-                $("#grid1").ntsGrid("destroy");
+                if($("#grid1").data("igGrid") !== undefined){
+                    $("#grid1").ntsGrid("destroy");
+                }
                  let lstHidden: Array<any> = self.findRowHidden(self.items());
                  self.reloadGridApproval(lstHidden);
             } else {
-                $("#grid2").ntsGrid("destroy");
+                if($("#grid2").data("igGrid") !== undefined){
+                    $("#grid2").ntsGrid("destroy");
+                }
                 self.reloadGridApplicaion();
             }
         }
