@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMet
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 
@@ -140,7 +141,8 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 
 	private KrcstDvgcTime toEntity(DivergenceReasonInputMethod domain) {
 
-		KrcstDvgcTime entity = this.queryProxy().find(domain.getCompanyId(), KrcstDvgcTime.class)
+		KrcstDvgcTimePK PK= new KrcstDvgcTimePK(domain.getDivergenceTimeNo(), domain.getCompanyId());
+		KrcstDvgcTime entity = this.queryProxy().find(PK, KrcstDvgcTime.class)
 				.orElse(new KrcstDvgcTime());
 
 		domain.saveToMemento(new JpaDivergenceReasonInputMethodRepositorySetMemento(entity));

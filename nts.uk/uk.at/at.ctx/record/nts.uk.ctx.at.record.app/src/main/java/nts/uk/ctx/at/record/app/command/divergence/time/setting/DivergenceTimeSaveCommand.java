@@ -126,7 +126,7 @@ public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public Integer getDivergenceTimeNo() {
-		return this.getDivergenceTimeNo();
+		return this.divergenceTimeNo;
 	}
 
 	/*

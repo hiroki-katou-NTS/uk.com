@@ -55,7 +55,6 @@ public class DivergenceTime extends AggregateRoot {
 	 *            the memento
 	 */
 	public DivergenceTime(DivergenceTimeGetMemento memento) {
-		super();
 		this.divergenceTimeNo = memento.getDivergenceTimeNo();
 		this.companyId = AppContexts.user().companyId();
 		this.divTimeUseSet = memento.getDivTimeUseSet();
