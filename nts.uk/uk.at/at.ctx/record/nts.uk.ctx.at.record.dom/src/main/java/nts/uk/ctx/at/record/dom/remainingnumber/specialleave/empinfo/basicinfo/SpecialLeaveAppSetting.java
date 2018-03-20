@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 public enum SpecialLeaveAppSetting {
 
 	//個人
-	PERSON(0),
+	PERSONAL(0),
 
 	//所定
 	PRESCRIBED(1);

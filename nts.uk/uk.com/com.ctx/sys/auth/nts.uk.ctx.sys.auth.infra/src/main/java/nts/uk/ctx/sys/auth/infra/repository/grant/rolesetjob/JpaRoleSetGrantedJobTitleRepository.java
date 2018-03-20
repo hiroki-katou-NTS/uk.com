@@ -96,11 +96,11 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	@Override
 	public Optional<String> getRoleSetCd(String companyId, String jobTitleId) {
 		
-		/*return this.queryProxy().query(SELECT_BY_JOBTITLECD ,SacmtRoleSetGrantedJobTitleDetail.class )
+		return this.queryProxy().query(SELECT_BY_JOBTITLECD ,SacmtRoleSetGrantedJobTitleDetail.class )
 				.setParameter("companyId", companyId)
 				.setParameter("jobTitleId", jobTitleId)
-				.getSingle( c -> c.roleSetGrantedJobTitleDetailPK.roleSetCd);*/
-		return null;
+				.getSingle( c -> c.roleSetCd);
+		
 	}
 
 

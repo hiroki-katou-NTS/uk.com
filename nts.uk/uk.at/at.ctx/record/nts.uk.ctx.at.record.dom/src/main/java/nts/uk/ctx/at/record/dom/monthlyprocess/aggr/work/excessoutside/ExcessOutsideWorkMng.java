@@ -12,6 +12,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByM
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
+import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
@@ -97,6 +99,11 @@ public class ExcessOutsideWorkMng {
 	/** 月間所定労働時間 */
 	private AttendanceTimeMonth prescribedWorkingTimeMonth;
 	
+	/** 年度 */
+	private Year year;
+	/** 管理期間の36協定時間 */
+	private AgreementTimeOfManagePeriod agreementTimeOfManagePeriod;
+	
 	/** 時間外超過設定 */
 	private Optional<OutsideOTSetting> outsideOTSetOpt;
 	/** 月別実績の丸め設定 */
@@ -139,6 +146,9 @@ public class ExcessOutsideWorkMng {
 		this.statutoryWorkingTimeMonth = monthlyCalculation.getStatutoryWorkingTimeMonth();
 		this.prescribedWorkingTimeWeek = monthlyCalculation.getPrescribedWorkingTimeWeek();
 		this.prescribedWorkingTimeMonth = monthlyCalculation.getPrescribedWorkingTimeMonth();
+		
+		this.year = monthlyCalculation.getYear();
+		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		
 		this.outsideOTSetOpt = Optional.empty();
 		this.roundingSet = new RoundingSetOfMonthly(this.companyId);
@@ -281,6 +291,11 @@ public class ExcessOutsideWorkMng {
 			
 			// 時間外超過内訳に割り当てる　（集計後）
 			this.assignExcessOutsideWorkBreakdownForAfterAggregate();
+			
+			// 管理期間の36協定時間の作成
+			this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, this.procPeriod.end(),
+					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, this.monthlyCalculation,
+					this.excessOutsideWorkDetail.getTotalTimeAfterRound(), repositories);
 		}
 	}
 	
@@ -355,6 +370,11 @@ public class ExcessOutsideWorkMng {
 			
 			// 時間外超過内訳に割り当てる
 			this.assignExcessOutsideWorkBreakdownForReverseTimeSeries();
+			
+			// 管理期間の36協定時間の作成
+			this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, this.procPeriod.end(),
+					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, this.monthlyCalculation,
+					this.excessOutsideWorkDetail.getTotalTimeAfterRound(), repositories);
 		}
 	}
 	
