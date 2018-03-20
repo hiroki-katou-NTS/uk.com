@@ -78,6 +78,10 @@ module nts.uk.at.view.kmk004.a {
             workplaceFlexMonthlySet: WorkplaceFlexMonthlySet;
             // Deform labor Setting
             workplaceDeformMonthlySet: WorkplaceDeformMonthlySet;
+            
+            //=========================NEWEST===========================
+            // Tab 1: Company
+            companyWorktimeSetting: CompanyWorktimeSetting;
 
             constructor() {
                 let self = this;
@@ -1836,6 +1840,175 @@ module nts.uk.at.view.kmk004.a {
                 self.includeLegal = ko.observable(false);
                 self.includeHoliday = ko.observable(false);
                 self.includeExtra = ko.observable(false);
+            }
+        }
+        //=============NEWEST===================================
+        /**
+         * Company Worktime Setting (Tab 1)
+         */
+        export class CompanyWorktimeSetting {
+            // Selected Tab
+            selectedTab: KnockoutObservable<string>;
+            // 会社別通常勤務労働時間
+            normalWorktime: KnockoutObservable<NormalWorktime>;
+            // 会社別変形労働労働時間
+            deformLaborWorktime: KnockoutObservable<NormalWorktime>;
+            
+            // 会社別通常勤務月間労働時間
+            normalSetting: KnockoutObservable<CompanyWTNormalDeformSetting>;
+            // 会社別フレックス勤務月間労働時間
+            flexSetting: KnockoutObservable<CompanyWTFlexSetting>;
+            // 会社別変形労働月間労働時間
+            deformLaborSetting: KnockoutObservable<CompanyWTNormalDeformSetting>;
+            
+            
+            // Details
+            // 通常勤務労働会社別月別実績集計設定
+            normalAggrSetting: KnockoutObservable<NormalWorktimeAggrSetting>;
+            // 変形労働会社別月別実績集計設定
+            deformAggrSetting: KnockoutObservable<DeformWorktimeAggrSetting>;
+            // フレックス会社別月別実績集計設定
+            flexAggrSetting: KnockoutObservable<FlexWorktimeAggrSetting>;
+            
+            constructor() {
+                let self = this;
+                self.selectedTab = ko.observable('tab-1');
+                self.normalWorktime = ko.observable(new NormalWorktime());
+                self.deformLaborWorktime = ko.observable(new NormalWorktime());
+                
+                self.normalSetting = ko.observable(new CompanyWTNormalDeformSetting());
+                self.flexSetting = ko.observable(new CompanyWTFlexSetting());
+                self.deformLaborSetting = ko.observable(new CompanyWTNormalDeformSetting());
+                
+                self.normalAggrSetting = ko.observable(new NormalWorktimeAggrSetting());
+                self.deformAggrSetting = ko.observable(new DeformWorktimeAggrSetting());
+                self.flexAggrSetting = ko.observable(new FlexWorktimeAggrSetting());
+                
+            }
+        }
+        
+        
+        
+        export class NormalWorktime {
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            
+            constructor() {
+                let self = this;
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+            }
+        }
+        
+        /**
+         * 会社別通常勤務月間労働時間
+         * 会社別変形労働月間労働時間
+         */
+        export class CompanyWTNormalDeformSetting {
+            year: KnockoutObservable<number>;
+            // 法定時間: 月単位
+            statutorySetting: KnockoutObservableArray<MonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                self.statutorySetting = ko.observableArray([]);
+                for (let i = 1; i < 13; i++) {
+                    let m = new MonthlyTime();
+                    m.month(i);
+                    m.time(0);
+                    self.statutorySetting.push(m);
+                }
+            }
+        }
+        /**
+         * 会社別フレックス勤務月間労働時間
+         */
+        export class CompanyWTFlexSetting {
+            year: KnockoutObservable<number>;
+            // 法定時間: 月単位
+            statutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // 所定時間: 月単位
+            specifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                self.statutorySetting = ko.observableArray([]);
+                self.specifiedSetting = ko.observableArray([]);
+                for (let i = 1; i < 13; i++) {
+                    let m = new MonthlyTime();
+                    m.month(i);
+                    m.time(0);
+                    self.statutorySetting.push(m);
+                    self.statutorySetting.push(m);
+                }
+            }
+        }
+        
+        /**
+         * 通常勤務の法定内集計設定
+         */
+        export class NormalWorktimeAggrSetting {
+            // 時間外超過設定: 割増集計方法
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            // 集計時間設定: 割増集計方法
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            constructor() {
+                let self = this;
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+            }
+        }
+        
+        /**
+         * 変形労働時間勤務の法定内集計設定
+         */
+        export class DeformWorktimeAggrSetting {
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            isDeformedOT: KnockoutObservable<boolean>;
+            period: KnockoutObservable<number>;
+            repeatCls: KnockoutObservable<boolean>;
+            startMonth: KnockoutObservable<number>;
+            
+            constructor() {
+                let self = this;
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+                
+                self.isDeformedOT = ko.observable(false);
+                self.period = ko.observable(1);
+                self.repeatCls = ko.observable(false);
+                self.startMonth = ko.observable(new Date().getMonth());
+            }
+        }
+        
+        /**
+         * フレックス時間勤務の月の集計設定
+         */
+        export class FlexWorktimeAggrSetting {
+            // 不足設定: フレックス不足設定//
+            shortageSetting: KnockoutObservable<ShortageSetting>;
+            // 残業時間を含める: するしない区分//
+            includeOT: KnockoutObservable<boolean>;
+            // 法定内集計設定: 法定内フレックス時間集計
+            legalAggrSet: KnockoutObservable<AggrregateSetting>;
+            // 集計方法: フレックス集計方法//
+            aggregateMethod: KnockoutObservable<FlexAggregateMethod>;
+            
+            constructor() {
+                let self = this;
+                self.shortageSetting = ko.observable(ShortageSetting.CURRENT_MONTH_INTEGRATION);
+                self.includeOT = ko.observable(false);
+                self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);
+                self.aggregateMethod = ko.observable(FlexAggregateMethod.PRINCIPLE);
             }
         }
     }
