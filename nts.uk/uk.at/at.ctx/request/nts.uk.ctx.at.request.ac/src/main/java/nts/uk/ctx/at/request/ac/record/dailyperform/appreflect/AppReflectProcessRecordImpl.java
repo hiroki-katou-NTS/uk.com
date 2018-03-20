@@ -18,13 +18,13 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.PriorStampPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ScheTimeReflectPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectedStatesInfo;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectInfor;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkReflectedStatesInfo;
 
 @Stateless
 public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
@@ -41,7 +41,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	}
 
 	@Override
-	public ReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre) {
+	public WorkReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre) {
 		GobackAppPubParameter gobackPra = new GobackAppPubParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value,
 				ChangeAppGobackPubAtr.class), para.getGobackData().getWorkTimeCode(),
 				para.getGobackData().getWorkTypeCode(), 
@@ -67,13 +67,13 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 		}
 		
 		
-		ReflectedStatesInfo preGobackData = new ReflectedStatesInfo(EnumAdaptor.valueOf(gobackReflect.getReflectedState().value, ReflectedState_New.class), 
-				EnumAdaptor.valueOf(gobackReflect.getReasonNotReflect().value, ReasonNotReflect_New.class));
+		WorkReflectedStatesInfo preGobackData = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(gobackReflect.getReflectedState().value, ReflectedState_New.class), 
+				EnumAdaptor.valueOf(gobackReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
 		return preGobackData;
 	}
 
 	@Override
-	public ReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para) {
+	public WorkReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para) {
 		OvertimeAppPubParameter overtimePara = new OvertimeAppPubParameter(EnumAdaptor.valueOf(para.getOvertimePara().getReflectedState().value, ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(para.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
 				para.getOvertimePara().getWorkTimeCode(),
@@ -95,8 +95,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isScheTimeOutFlg(), 
 				overtimePara);
 		AppReflectPubOutput appReflect = recordPub.preOvertimeReflect(preOvertimePara);
-		ReflectedStatesInfo overtimeReflect = new ReflectedStatesInfo(EnumAdaptor.valueOf(appReflect.getReflectedState().value, ReflectedState_New.class), 
-				EnumAdaptor.valueOf(appReflect.getReasonNotReflect().value, ReasonNotReflect_New.class));
+		WorkReflectedStatesInfo overtimeReflect = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(appReflect.getReflectedState().value, ReflectedState_New.class), 
+				EnumAdaptor.valueOf(appReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
 		return overtimeReflect;
 	}
 	

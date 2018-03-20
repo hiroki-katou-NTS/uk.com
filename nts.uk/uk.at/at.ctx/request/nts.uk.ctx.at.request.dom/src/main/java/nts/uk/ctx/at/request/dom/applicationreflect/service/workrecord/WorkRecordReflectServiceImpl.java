@@ -4,8 +4,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectedStatesInfo;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 
 @Stateless
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
@@ -13,10 +12,10 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	private AppReflectProcessRecord reflectRecord;
 
 	@Override
-	public ReflectedStatesInfo workRecordreflect(AppReflectRecordPara appRecordInfor) {
+	public WorkReflectedStatesInfo workRecordreflect(AppReflectRecordPara appRecordInfor) {
 		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
-		ReflectedStatesInfo statesInfor = new ReflectedStatesInfo(recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),
-				recordInfor.getAppInfor().getReflectionInformation().getNotReason().isPresent() ? recordInfor.getAppInfor().getReflectionInformation().getNotReason().get() : ReasonNotReflect_New.NOT_PROBLEM);
+		WorkReflectedStatesInfo statesInfor = new WorkReflectedStatesInfo(recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),
+				recordInfor.getAppInfor().getReflectionInformation().getNotReason().isPresent() ? recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().get() : ReasonNotReflectDaily_New.NOT_PROBLEM);
 		AppReflectInfor reflectInfor = new AppReflectInfor(recordInfor.getDegressAtr(),
 				recordInfor.getExecutiontype(),
 				recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),

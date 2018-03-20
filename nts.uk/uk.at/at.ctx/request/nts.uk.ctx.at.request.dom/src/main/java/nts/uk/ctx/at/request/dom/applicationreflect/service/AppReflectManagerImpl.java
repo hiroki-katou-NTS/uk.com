@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackRef
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeAppParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ReflectRecordInfor;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkReflectedStatesInfo;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordSameRequestChangeFlg;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkRecordReflectService;
 
@@ -56,8 +57,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				mapOvertimeFrame.put(x.getFrameNo(), x.getStartTime().v());
 			}
 		});
-		OvertimeAppParameter overtimePara = new OvertimeAppParameter(appInfor.getReflectionInformation().getStateReflection(), //can xac nhan lai
-				appInfor.getReflectionInformation().getNotReason().isPresent() ? appInfor.getReflectionInformation().getNotReason().get() : null,
+		OvertimeAppParameter overtimePara = new OvertimeAppParameter(appInfor.getReflectionInformation().getStateReflectionReal(), //can xac nhan lai
+				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
 				appOvertimeData.getWorkTypeCode().v(),
 				appOvertimeData.getSiftCode().v(),
 				appOvertimeData.getWorkClockFrom1(),
@@ -77,9 +78,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				true, 
 				overtimePara); 
 		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, appGobackTmp, overTimeTmp);
-		ReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
+		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
 		appInfor.getReflectionInformation().setStateReflection(workRecordreflect.getReflectedSate());
-		appInfor.getReflectionInformation().setNotReason(Optional.of(workRecordreflect.getNotReflectReson()));
+		appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
 		appRepo.update(appInfor);
 	}
 
