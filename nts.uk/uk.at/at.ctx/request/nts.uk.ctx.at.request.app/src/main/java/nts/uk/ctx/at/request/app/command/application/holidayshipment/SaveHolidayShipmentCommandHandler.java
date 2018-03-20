@@ -452,11 +452,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 			// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
 			BigDecimal holidayBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
 					WorkTypeClassification.Shooting);
-			if (!(takingoutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
-				// TODO
-				throw new BusinessException("Msg_698", "");
+			if (takingoutBrkDownDay != BigDecimal.valueOf(0) && holidayBrkDownDay != BigDecimal.valueOf(0)) {
+				if (!(takingoutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
+					// TODO param msg
+					throw new BusinessException("Msg_698", "");
+				}
 			}
-
 		}
 
 	}

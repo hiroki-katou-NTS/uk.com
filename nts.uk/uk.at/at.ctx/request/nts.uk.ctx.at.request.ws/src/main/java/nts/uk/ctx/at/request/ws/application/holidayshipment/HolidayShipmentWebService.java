@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,8 +10,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimezoneUseDto;
 
 @Path("at/request/application/holidayshipment")
 @Produces("application/json")
@@ -32,7 +30,7 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_work_type")
-	public List<TimezoneUseDto> changeWorkType(ChangeWorkTypeParam param) {
+	public ChangeWorkTypeDto changeWorkType(ChangeWorkTypeParam param) {
 		return this.finder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
 	}
 

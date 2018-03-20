@@ -9,10 +9,14 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
+/**
+ * @author sonnlb
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -59,12 +63,24 @@ public class HolidayShipmentDto {
 	 */
 	String employeeID;
 
+	/**
+	 * 社員名
+	 */
+	String employeeName;
+
 	private boolean manualSendMailAtr;
 
 	List<ApplicationReasonDto> appReasons;
 
+	ChangeWorkTypeDto changeWkType;
+
 	/**
 	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null
 	 */
+
+	/**
+	 * 振休振出申請設定
+	 */
+	WithDrawalReqSetDto drawalReqSet;
 
 }

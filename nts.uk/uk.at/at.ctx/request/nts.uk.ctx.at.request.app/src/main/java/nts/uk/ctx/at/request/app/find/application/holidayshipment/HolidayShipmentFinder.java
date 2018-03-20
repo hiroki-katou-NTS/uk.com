@@ -16,9 +16,11 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimezoneUseDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -38,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -152,17 +155,17 @@ public class HolidayShipmentFinder {
 			// アルゴリズム「勤務時間初期値の取得」を実行する
 			String wkTypeCD = output.getTakingOutWkTypes().size() > 0
 					? output.getTakingOutWkTypes().get(0).getWorkTypeCode() : "";
-			getWkTimeInitValue(companyID, wkTypeCD, wkTimeCD);
+			if (!wkTypeCD.equals("")) {
+				output.setChangeWkType(getWkTimeInitValue(companyID, wkTypeCD, wkTimeCD));
+			}
 		}
 
 		return output;
 	}
 
-	public List<TimezoneUseDto> changeWorkType(String workTypeCD, String wkTimeCD) {
+	public ChangeWorkTypeDto changeWorkType(String workTypeCD, String wkTimeCD) {
 		String companyID = AppContexts.user().companyId();
-		return getWkTimeInitValue(companyID, workTypeCD, wkTimeCD).stream()
-				.map(x -> new TimezoneUseDto(x.getUseAtr().value, x.getWorkNo(), x.getStart().v(), x.getEnd().v()))
-				.collect(Collectors.toList());
+		return getWkTimeInitValue(companyID, workTypeCD, wkTimeCD);
 
 	}
 
@@ -177,7 +180,8 @@ public class HolidayShipmentFinder {
 				? GeneralDate.fromString(holidayDateImput, DATE_FORMAT) : null;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
-		//AchievementOutput achievementOutput = getAchievement(companyID, employeeID, baseDate);
+		// AchievementOutput achievementOutput = getAchievement(companyID,
+		// employeeID, baseDate);
 
 		changeAppDate(takingOutDate, holidayDate, companyID, employeeID, uiType, output);
 
@@ -231,19 +235,22 @@ public class HolidayShipmentFinder {
 
 	}
 
-	private List<TimezoneUse> getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
+	private ChangeWorkTypeDto getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
 		// ドメインモデル「勤務種類」を取得する
-		List<TimezoneUse> result = new ArrayList<TimezoneUse>();
+		ChangeWorkTypeDto result = new ChangeWorkTypeDto();
 
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (WkTypeOpt.isPresent()) {
 
 			WorkType wkType = WkTypeOpt.get();
+			result.setWkType(WorkTypeDto.fromDomain(wkType));
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
 			basicService.checkWorkDay(wkTypeCD);
 			if (!wkType.getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
-				return getPreTimeZone(companyID, wkTimeCode, wkType);
+				result.setTimezoneUseDtos(getPreTimeZone(companyID, wkTimeCode, wkType).stream()
+						.map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList()));
+
 			}
 
 		}
@@ -286,7 +293,10 @@ public class HolidayShipmentFinder {
 			String takingOutWkTypeCD, String takingOutWkTimeCD, GeneralDate deadDate, String holidayWkTypeCD,
 			String holidayWkTimeCD, HolidayShipmentDto output) {
 		// アルゴリズム「振休振出申請設定の取得」を実行する
-		withDrawRepo.getWithDrawalReqSet();
+		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
+		if (withDrawalReqSetOpt.isPresent()) {
+			output.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
+		}
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
 		output.setAppReasons(appResonRepo.getReasonByCompanyId(companyID).stream()
@@ -435,11 +445,12 @@ public class HolidayShipmentFinder {
 			GeneralDate baseDate) {
 		HolidayShipmentDto result = new HolidayShipmentDto();
 		int rootAtr = 1;
-
+		result.setEmployeeID(employeeID);
+		result.setEmployeeName(empAdaptor.getEmployeeName(employeeID));
 		// 1-1.新規画面起動前申請共通設定を取得する
 		appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID,
 				rootAtr, appType, baseDate);
-		result.setEmployeeID(employeeID);
+
 		result.setRefDate(appCommonSettingOutput.generalDate);
 
 		result.setApplicationSetting(ApplicationSettingDto.convertToDto(appCommonSettingOutput.applicationSetting));
