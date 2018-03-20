@@ -320,7 +320,7 @@ module a6 {
             let input = valueAccessor();
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
-            nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data) {
+            nts.uk.at.view.kmk003.a6.service.findAllUsedWorkDayoffFrame().done(function(data) {
                 let screenModel = new ScreenModel(settingEnum, mainSettingModel);
                 screenModel.lstWorkDayOffFrame = data;
                 screenModel.initDataModel();

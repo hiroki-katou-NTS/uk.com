@@ -21,6 +21,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK_;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame_;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK_;
@@ -164,5 +167,38 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<WorkdayoffFrame> findByUseAtr(String companyId, int useAtr) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshstWorkdayoffFrame> cq = criteriaBuilder.createQuery(KshstWorkdayoffFrame.class);
+
+		// root data
+		Root<KshstWorkdayoffFrame> root = cq.from(KshstWorkdayoffFrame.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK).get(KshstWorkdayoffFramePK_.cid), companyId));
+		// useAtr condition
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshstWorkdayoffFrame_.useAtr), useAtr));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// creat query
+		TypedQuery<KshstWorkdayoffFrame> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 }

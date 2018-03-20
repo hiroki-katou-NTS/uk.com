@@ -150,7 +150,7 @@ module a3 {
         public startPage(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(data => {
+            nts.uk.at.view.kmk003.a3.service.findAllUsedOvertimeWorkFrame().done(data => {
                 self.lstOvertimeWorkFrame = data;
                 self.setFixedTableOption();
                 dfd.resolve();

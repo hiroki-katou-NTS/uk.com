@@ -5,14 +5,14 @@ module nts.uk.at.view.kmk003.a3 {
          *  Service paths
          */
         let servicePath: any = {
-            findAllOvertimeWorkFrame: "at/shared/overtimeworkframe/findAll"
+            findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used"
         };
 
         /**
          * function find all overtime work frame
          */
-        export function findAllOvertimeWorkFrame(): JQueryPromise<model.OvertimeWorkFrameFindDto[]> {
-            return nts.uk.request.ajax(servicePath.findAllOvertimeWorkFrame);
+        export function findAllUsedOvertimeWorkFrame(): JQueryPromise<model.OvertimeWorkFrameFindDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllUsedOvertimeWorkFrame);
         }
 
         /**
