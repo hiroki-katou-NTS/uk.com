@@ -6131,6 +6131,7 @@ var nts;
                 var EDIT = "edit";
                 var STICK = "stick";
                 var Connector = {};
+                var _scrollWidth;
                 var ExTable = (function () {
                     function ExTable($container, options) {
                         // dynamic or fixed
@@ -6296,6 +6297,10 @@ var nts;
                                 self.headers[i].isHeader = true;
                                 self.setWrapperWidth(self.headers[i], widthParts);
                                 var $headerWrapper = render.createWrapper("0px", left, self.headers[i]);
+                                if (!uk.util.isNullOrUndefined($headerWrapper.style.maxWidth)
+                                    && parseFloat(self.headers[i].width) > parseFloat($headerWrapper.style.maxWidth)) {
+                                    self.headers[i].width = $headerWrapper.style.maxWidth;
+                                }
                                 pTable.owner.headers.push($headerWrapper);
                                 $headerWrapper.classList.add(HEADER);
                                 self.$container.appendChild($headerWrapper);
@@ -6320,9 +6325,11 @@ var nts;
                                     self.bodies[i].overflow = "scroll";
                                     self.bodies[i].width = (parseFloat($bodyWrapper.style.width) + scrollWidth) + "px";
                                     self.bodies[i].height = (parseFloat($bodyWrapper.style.height) + scrollWidth) + "px";
-                                    if (!uk.util.isNullOrUndefined($bodyWrapper.style.maxWidth))
+                                    if (!uk.util.isNullOrUndefined($bodyWrapper.style.maxWidth)) {
                                         $bodyWrapper.style.maxWidth = (parseFloat($bodyWrapper.style.maxWidth) + scrollWidth) + "px";
+                                    }
                                     scroll.syncDoubDirVerticalScrolls(_.concat(bodyWrappers, $bodyWrapper));
+                                    scroll.bindVertWheel($bodyWrapper, true);
                                 }
                                 else if (i > 0 && i < self.bodies.length - 1) {
                                     self.bodies[i].overflowX = "scroll";
@@ -6399,7 +6406,11 @@ var nts;
                         if (self.horizontalSumContent) {
                             self.horizontalSumContent.rowHeight = self.horzSumBodyRowHeight;
                             self.horizontalSumContent.height = parseInt(self.horzSumBodyHeight) + helper.getScrollWidth() + "px";
-                            self.horizontalSumContent.width = $detailContent.style.width;
+                            var detailOverflow = $detailContent.style.overflow;
+                            var horzSumWidth = parseFloat($detailContent.style.width)
+                                + ((!uk.util.isNullOrUndefined(detailOverflow) && !_.isEmpty(detailOverflow) && detailOverflow !== "hidden")
+                                    ? 0 : helper.getScrollWidth());
+                            self.horizontalSumContent.width = horzSumWidth + "px";
                             $sumContentWrapper = render.createWrapper(bodyTop, sumPosLeft, self.horizontalSumContent);
                             table.owner.bodies.push($sumContentWrapper);
                             self.horizontalSumContent.overflow = "scroll";
@@ -6407,6 +6418,7 @@ var nts;
                             render.process($sumContentWrapper, self.horizontalSumContent);
                             scroll.syncHorizontalScroll($leftSumHeaderWrapper, $leftSumContentWrapper);
                             scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper]);
+                            scroll.bindVertWheel($sumContentWrapper, true);
                         }
                         if (self.$commander) {
                             self.$commander.addXEventListener(events.MOUSEIN_COLUMN, function (evt) {
@@ -6822,36 +6834,33 @@ var nts;
                             var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
                             var td = document.createElement("td");
                             $.data(td, internal.VIEW, rowIdx + "-" + key);
-                            td.style.borderWidth = "1px";
-                            td.style.overflow = "hidden";
-                            td.style.whiteSpace = ws;
-                            td.style.position = "relative";
+                            var tdStyle = "";
+                            tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
+                                + ws + "; position: relative;";
                             self.highlight(td);
                             if (!self.visibleColumnsMap[key])
-                                td.style.display = "none";
+                                tdStyle += "; display: none;"; //td.style.display = "none";
                             if (!uk.util.isNullOrUndefined(data) && data.constructor === Array) {
                                 var incellHeight_1 = parseInt(self.options.rowHeight) / 2 - 3;
                                 var borderStyle_1 = "solid 1px transparent";
                                 _.forEach(data, function (item, idx) {
+                                    var divStyle = "";
                                     var div = document.createElement("div");
                                     div.classList.add(render.CHILD_CELL_CLS);
                                     div.innerText = uk.util.isNullOrUndefined(item) ? "" : item;
                                     if (idx < data.length - 1) {
-                                        div.style.borderTop = borderStyle_1;
-                                        div.style.borderLeft = borderStyle_1;
-                                        div.style.borderRight = borderStyle_1;
-                                        div.style.borderBottom = "dashed 1px #AAB7B8";
-                                        div.style.top = "0px";
+                                        divStyle += "; border-top: " + borderStyle_1 + "; border-left: "
+                                            + borderStyle_1 + "; border-right: " + borderStyle_1
+                                            + "; border-bottom: dashed 1px #AAB7B8; top: 0px";
                                     }
                                     else {
-                                        div.style.border = borderStyle_1;
-                                        div.style.top = (incellHeight_1 + 2) + "px";
+                                        divStyle += "; border: " + borderStyle_1 + "; top: "
+                                            + (incellHeight_1 + 2) + "px";
                                     }
-                                    div.style.position = "absolute";
-                                    div.style.left = "0px";
-                                    div.style.height = incellHeight_1 + "px";
-                                    div.style.width = "98%";
-                                    div.style.textAlign = "center";
+                                    divStyle += "; position: absolute; left: 0px; height: "
+                                        + incellHeight_1
+                                        + "px; width: 98%; text-align: center;";
+                                    div.style.cssText += divStyle;
                                     td.appendChild(div);
                                     if (column.handlerType) {
                                         var handler = cellHandler.get(column.handlerType);
@@ -6862,7 +6871,8 @@ var nts;
                                     //                       spread.bindSticker(div, rowIdx, key, self.options);
                                 });
                                 style.detCell(self.$container, td, rowIdx, key);
-                                td.style.padding = "0px";
+                                tdStyle += "; padding: 0px;";
+                                td.style.cssText += tdStyle;
                                 return td;
                             }
                             if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
@@ -6875,7 +6885,7 @@ var nts;
                                 if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "header") {
                                     var icon = document.createElement("span");
                                     icon.className = render.COL_ICON_CLS + " " + column.icon.class;
-                                    td.style.paddingLeft = column.icon.width;
+                                    tdStyle += "; padding-left: " + column.icon.width + ";";
                                     td.appendChild(icon);
                                     if (column.icon.popup && typeof column.icon.popup === "function") {
                                         icon.style.cursor = "pointer";
@@ -6896,7 +6906,7 @@ var nts;
                                 if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "body") {
                                     var icon = document.createElement("span");
                                     icon.className = render.COL_ICON_CLS + " " + column.icon.class;
-                                    td.style.paddingLeft = column.icon.width;
+                                    tdStyle += "; padding-left: " + column.icon.width + ";";
                                     td.appendChild(icon);
                                 }
                                 else if (!column.control) {
@@ -6907,6 +6917,7 @@ var nts;
                             }
                             //                spread.bindSticker(td, rowIdx , key, self.options);
                             style.detCell(self.$container, td, rowIdx, key);
+                            td.style.cssText += tdStyle;
                             return td;
                         };
                         Painter.prototype.row = function (data, config, rowIdx) {
@@ -6932,7 +6943,7 @@ var nts;
                                 td.style.padding = "1px 1px";
                                 td.style.textAlign = "center";
                                 td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked }));
-                                tr.append(td);
+                                tr.appendChild(td);
                             }
                             _.forEach(Object.keys(data), function (key, index) {
                                 if (!self.visibleColumnsMap[key] && !self.hiddenColumnsMap[key])
@@ -7132,21 +7143,18 @@ var nts;
                             var self = this;
                             var $td = document.createElement("td");
                             $.data($td, internal.VIEW, rowIdx + "-" + cell.key);
-                            $td.style.borderWidth = "1px";
-                            $td.style.overflow = "hidden";
-                            $td.style.whiteSpace = "nowrap";
-                            $td.style.borderCollapse = "collapse";
+                            var tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
                             if (!uk.util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1)
                                 $td.setAttribute("rowspan", cell.rowspan);
                             if (!uk.util.isNullOrUndefined(cell.colspan) && cell.colspan > 1)
                                 $td.setAttribute("colspan", cell.colspan);
                             else if (!self.visibleColumnsMap[cell.key])
-                                $td.style.display = "none";
+                                tdStyle += "; display: none;";
                             if (!uk.util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
                                 var $icon = document.createElement("span");
                                 $icon.className = render.COL_ICON_CLS + " " + cell.icon.class;
                                 $icon.style.top = "20%";
-                                $td.style.paddingLeft = cell.icon.width;
+                                tdStyle += "; padding-left: " + cell.icon.width + ";";
                                 $td.appendChild($icon);
                                 if (cell.icon.popup && typeof cell.icon.popup === "function") {
                                     $icon.style.cursor = "pointer";
@@ -7162,6 +7170,7 @@ var nts;
                             else {
                                 $td.textContent = text;
                             }
+                            $td.style.cssText += tdStyle;
                             return $td;
                         };
                         /**
@@ -7234,6 +7243,8 @@ var nts;
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
+                            if (parseFloat(maxWidth) < parseFloat(width))
+                                style.width = maxWidth;
                         }
                         return style;
                     }
@@ -9240,7 +9251,7 @@ var nts;
                                     || which(innerIdx, dataType, internal.NUMBER)
                                     || which(innerIdx, dataType, internal.TEXT);
                                 var constraints = ui.validation.getConstraint(col.primitiveValue);
-                                if (constraints && constraints.valueType === "Time") {
+                                if (constraints && (constraints.valueType === "Time" || constraints.valueType === "Clock")) {
                                     max = constraints.max ? constraints.max : col.max;
                                     min = constraints.min ? constraints.min : col.min;
                                     required = constraints.required ? constraints.required : col.required;
@@ -10341,7 +10352,9 @@ var nts;
                                 for (var i = 0; i < size; i++) {
                                     leftAreaMaxWidth += (parseFloat(leftAreaColGroup[i].style.width) + 1);
                                 }
-                                if (leftWidth >= leftAreaMaxWidth)
+                                var maxWidth = parseFloat(self.actionDetails.$leftArea.style.maxWidth);
+                                if (leftWidth >= leftAreaMaxWidth
+                                    || (!isNaN(maxWidth) && leftWidth >= maxWidth))
                                     return false;
                             }
                             if (self.actionDetails.$rightArea) {
@@ -10350,7 +10363,9 @@ var nts;
                                 for (var i = 0; i < size; i++) {
                                     rightAreaMaxWidth += (parseFloat(rightAreaColGroup[i].style.width) + 1);
                                 }
-                                if (rightWidth >= rightAreaMaxWidth)
+                                var maxWidth = parseFloat(self.actionDetails.$rightArea.style.maxWidth);
+                                if (rightWidth >= rightAreaMaxWidth
+                                    || (!isNaN(maxWidth) && rightWidth >= maxWidth))
                                     return false;
                             }
                             return true;
@@ -10466,11 +10481,20 @@ var nts;
                         var $sup = table.$follower;
                         if ($vertSumHeader && $vertSumHeader.style.display !== "none") {
                             width = width - parseFloat($.data($container, internal.X_OCCUPY)) - parseFloat($vertSumContent.style.width);
+                            if (!uk.util.isNullOrUndefined($detailHeader.style.maxWidth)
+                                && width >= parseFloat($detailHeader.style.maxWidth))
+                                return;
                             $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
-                            $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM).style.width = width + "px";
-                            $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM).style.width = (width + helper.getScrollWidth()) + "px";
+                            var $horzSumHeader_1 = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
+                            if ($horzSumHeader_1) {
+                                $horzSumHeader_1.style.width = width + "px";
+                            }
+                            var $horzSumContent_1 = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                            if ($horzSumContent_1) {
+                                $horzSumContent_1.style.width = (width + helper.getScrollWidth()) + "px";
+                            }
                             repositionVertSum($container, $vertSumHeader, $vertSumContent);
                             syncDetailAreaLine($container, $detailHeader, $detailBody);
                             if ($sup) {
@@ -10485,6 +10509,9 @@ var nts;
                         var $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                         var $horzSumContent = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
                         width = width - parseFloat($.data($container, internal.X_OCCUPY));
+                        if (!uk.util.isNullOrUndefined($detailHeader.style.maxWidth)
+                            && width >= parseFloat($detailHeader.style.maxWidth))
+                            return;
                         $detailHeader.style.width = (width - scrollWidth) + "px";
                         $container.style.width = (parseFloat($container.style.width)
                             + (width - parseFloat($detailBody.style.width))) + "px";
@@ -10791,17 +10818,19 @@ var nts;
                     /**
                      * Bind vertWheel.
                      */
-                    function bindVertWheel($container) {
+                    function bindVertWheel($container, showY) {
+                        var $_container = $($container);
                         $container.addXEventListener(events.MOUSE_WHEEL, function (event) {
-                            var delta = event.wheelDeltaY;
+                            var delta = event.deltaY;
                             var direction = delta > 0 ? -1 : 1;
-                            var value = $container.scrollTop + event.deltaY;
+                            var value = $_container.scrollTop() + Math.round(event.deltaY);
                             //                $container.stop().animate({ scrollTop: value }, 10);
-                            $container.scrollTop = value;
+                            var os = helper.isIE() ? 110 : 50;
+                            $_container.scrollTop(value + direction * os);
                             event.preventDefault();
                             event.stopImmediatePropagation();
                         });
-                        if ($container.style.overflowY !== "hidden") {
+                        if (!showY && $container.style.overflowY !== "hidden") {
                             $container.style.overflowY = "hidden";
                         }
                     }
@@ -11502,6 +11531,9 @@ var nts;
                                 return setUpdateMode(self, params[0], params[1]);
                             case "viewMode":
                                 return setViewMode(self, params[0], params[1]);
+                            case "mode":
+                                setMode(self, params[0], params[1], params[2]);
+                                break;
                             case "pasteOverWrite":
                                 setPasteOverWrite(self, params[0]);
                                 break;
@@ -11813,9 +11845,9 @@ var nts;
                         }
                         if (exTable.viewMode === mode)
                             return;
+                        var table = helper.getMainTable($container[0]);
                         if (exTable.updateMode === EDIT) {
-                            if (errors.occurred($container[0]))
-                                return;
+                            //                if (errors.occurred($container[0])) return;
                             var editor = $container.data(update.EDITOR);
                             if (editor) {
                                 var $editor = editor.$editor;
@@ -11825,10 +11857,71 @@ var nts;
                                 update.triggerStopEdit($container[0], $editingCell, editor.land, $input.value);
                                 $container.data(update.EDITOR, null);
                             }
+                            $.data(table, internal.EDIT_HISTORY, null);
                         }
+                        else if (exTable.updateMode === COPY_PASTE) {
+                            $.data(table, internal.COPY_HISTORY, null);
+                        }
+                        else if (exTable.updateMode === STICK) {
+                            $.data(table, internal.STICK_HISTORY, null);
+                        }
+                        $.data(table, internal.DET, null);
+                        $container.data(errors.ERRORS, null);
                         exTable.setViewMode(mode);
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        render.begin($grid[0], internal.getDataSource($grid[0]), exTable.detailContent);
+                        var ds = helper.getOrigDS(table);
+                        render.begin(table, _.cloneDeep(ds), exTable.detailContent);
+                    }
+                    /**
+                     * Set mode.
+                     */
+                    function setMode($container, viewMode, updateMode, occupation) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (occupation) {
+                            events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
+                        }
+                        var table = helper.getMainTable($container[0]), updateViewMode = false;
+                        var ds = helper.getOrigDS(table);
+                        if (viewMode && exTable.viewMode !== viewMode) {
+                            if (exTable.updateMode === EDIT) {
+                                //                if (errors.occurred($container[0])) return;
+                                var editor = $container.data(update.EDITOR);
+                                if (editor) {
+                                    var $editor = editor.$editor;
+                                    var $input = $editor.querySelector("input");
+                                    var $editingCell = helper.closest($editor, "." + update.EDIT_CELL_CLS);
+                                    $editingCell.classList.remove(update.EDIT_CELL_CLS);
+                                    update.triggerStopEdit($container[0], $editingCell, editor.land, $input.value);
+                                    $container.data(update.EDITOR, null);
+                                }
+                                $.data(table, internal.EDIT_HISTORY, null);
+                            }
+                            else if (exTable.updateMode === COPY_PASTE) {
+                                $.data(table, internal.COPY_HISTORY, null);
+                            }
+                            else if (exTable.updateMode === STICK) {
+                                $.data(table, internal.STICK_HISTORY, null);
+                            }
+                            $.data(table, internal.DET, null);
+                            $container.data(errors.ERRORS, null);
+                            exTable.setViewMode(viewMode);
+                            var $grid = $container.find("." + BODY_PRF + DETAIL);
+                            updateViewMode = true;
+                        }
+                        if (updateMode && exTable.updateMode !== updateMode) {
+                            exTable.setUpdateMode(updateMode);
+                            render.begin(table, ds, exTable.detailContent);
+                            selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+                            if (updateMode === COPY_PASTE) {
+                                selection.checkUp($container[0]);
+                                copy.on(table, updateMode);
+                                return;
+                            }
+                            selection.off($container[0]);
+                            copy.off(table, updateMode);
+                        }
+                        else if (updateViewMode) {
+                            render.begin(table, ds, exTable.detailContent);
+                        }
                     }
                     /**
                      * Set paste overwrite.
@@ -12459,15 +12552,39 @@ var nts;
                 var helper;
                 (function (helper) {
                     /**
+                     * Is IE.
+                     */
+                    function isIE() {
+                        return window.navigator.userAgent.indexOf("MSIE") > -1 || window.navigator.userAgent.match(/trident/i);
+                    }
+                    helper.isIE = isIE;
+                    /**
+                     * Is Chrome.
+                     */
+                    function isChrome() {
+                        return window.chrome;
+                    }
+                    helper.isChrome = isChrome;
+                    /**
+                     * Is Edge.
+                     */
+                    function isEdge() {
+                        return window.navigator.userAgent.indexOf("Edge") > -1;
+                    }
+                    helper.isEdge = isEdge;
+                    /**
                      * Get scroll width.
                      */
                     function getScrollWidth() {
+                        if (_scrollWidth)
+                            return _scrollWidth;
                         var $outer = document.body.appendChild(selector.create("div").css({ visibility: 'hidden', width: "100px", overflow: 'scroll' }).getSingle());
                         var $inner = selector.create("div").css({ width: '100%' }).getSingle();
                         $outer.appendChild($inner);
                         var widthWithScroll = $inner.offsetWidth;
                         $outer.parentNode.removeChild($outer);
-                        return 100 - widthWithScroll;
+                        _scrollWidth = 100 - widthWithScroll;
+                        return _scrollWidth;
                     }
                     helper.getScrollWidth = getScrollWidth;
                     /**
@@ -14259,6 +14376,7 @@ var nts;
                         var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
+                        $input.data("required", required);
                         var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
@@ -14294,10 +14412,11 @@ var nts;
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || ""));
                         name = nts.uk.resource.getControlName(name);
-                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
-                            outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                         $input.on("change", function (e) {
                             var newText = $input.val();
+                            var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
+                                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
@@ -14318,6 +14437,9 @@ var nts;
                         });
                         $input.on("blur", function () {
                             var newText = $input.val();
+                            var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
+                                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                             var result = validator.validate(newText);
                             if (!result.isValid) {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -14337,6 +14459,9 @@ var nts;
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
+                            var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
+                                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                             var result = validator.validate(newText);
                             $input.ntsError('clearKibanError');
                             if (!result.isValid) {
@@ -14375,6 +14500,7 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var container = $(element);
                         var dateNormalizer = container.find("input").data("dateNormalizer");
                         if (dateNormalizer) {
@@ -14398,6 +14524,7 @@ var nts;
                                 $label.text("");
                             }
                         }
+                        $input.data("required", required);
                         // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
