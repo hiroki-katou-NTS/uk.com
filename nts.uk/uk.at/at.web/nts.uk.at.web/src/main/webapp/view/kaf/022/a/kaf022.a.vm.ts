@@ -1073,8 +1073,8 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdI4 = ko.observable(0);
                 //c
                 self.itemListC27 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_99')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_101')),
                     new ItemModel(2, nts.uk.resource.getText('KAF022_171')),
                 ]);
                 self.itemListC28 = ko.observableArray([
