@@ -1087,8 +1087,8 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
                 ]);
                 self.itemListC30 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
                 ]);
                 self.selectedIdC27 = ko.observable(0);
                 self.selectedIdC28 = ko.observable(0);
@@ -2039,12 +2039,12 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdK14(data.lettleSuperLeave);
                     self.selectedIdK15(data.useAtr);
                     self.selectedIdK16(data.checkUpLimitHalfDayHD);
-                    self.texteditorK17.value(data.pickUpComment);
-                    self.valueK18(data.pickUpLettleColor);
-                    self.enableK19(data.pickUpBold);
-                    self.texteditorK20.value(data.deferredComment);
-                    self.valueK18_1(data.deferredLettleColor);
-                    self.enableK19_1(data.deferredBold);
+                    self.texteditorK17.value(data.deferredComment);
+                    self.valueK18(data.deferredLettleColor);
+                    self.enableK19(data.deferredBold);
+                    self.texteditorK20.value(data.pickUpComment);
+                    self.valueK18_1(data.pickUpLettleColor);
+                    self.enableK19_1(data.pickUpBold);
                     self.selectedIdK21(data.permissionDivision);
                     self.selectedIdK22(data.appliDateContrac);
                 }
@@ -2297,12 +2297,12 @@ module nts.uk.at.view.kmf022 {
                     lettleSuperLeave: self.selectedIdK14(),
                     useAtr: self.selectedIdK15(),
                     checkUpLimitHalfDayHD: self.selectedIdK16(),
-                    pickUpComment: self.texteditorK17.value(),
-                    pickUpLettleColor: self.valueK18(),
-                    pickUpBold: self.enableK19() ? 1 : 0,
-                    deferredComment: self.texteditorK20.value(),
-                    deferredLettleColor: self.valueK18_1(),
-                    deferredBold: self.enableK19_1() ? 1 : 0,
+                    deferredComment: self.texteditorK17.value(),
+                    deferredLettleColor: self.valueK18(),
+                    deferredBold: self.enableK19() ? 1 : 0,
+                    pickUpComment: self.texteditorK20.value(),
+                    pickUpLettleColor: self.valueK18_1(),
+                    pickUpBold: self.enableK19_1() ? 1 : 0,
                     permissionDivision: self.selectedIdK21(),
                     appliDateContrac: self.selectedIdK22(),
                                          
