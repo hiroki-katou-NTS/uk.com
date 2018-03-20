@@ -865,11 +865,11 @@ module nts.uk.at.view.kmf022 {
                 self.enableA8_34_18 = ko.observable(false);
                 self.enableA8_34_19 = ko.observable(false);
                 self.enableA8_34_20 = ko.observable(false);
-
-                self.itemListA8_33 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_76')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75'))
-                ]);
+                let listPrePostInitialAtr = __viewContext.enums.PrePostInitialAtr;
+                self.itemListA8_33 = ko.observableArray([]);
+                _.forEach(listPrePostInitialAtr,(obj)=>{
+                    self.itemListA8_33.push(new ItemModel(obj.value, obj.name));   
+                }); 
                 self.selectedCodeA8_33 = ko.observable(0);
                 self.selectedCodeA8_33_1 = ko.observable(0);
                 self.selectedCodeA8_33_2 = ko.observable(0);
