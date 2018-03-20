@@ -39,7 +39,7 @@ public class KrqdtAppForLeave extends UkJpaEntity implements Serializable{
      * 休暇種類
      */
     @Column(name = "HOLIDAY_APP_TYPE")
-    private String holidayAppType;
+    private Integer holidayAppType;
     
     /**
      * 勤務種類コード

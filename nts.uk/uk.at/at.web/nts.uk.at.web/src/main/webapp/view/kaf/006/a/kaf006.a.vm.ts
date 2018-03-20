@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
     import common = nts.uk.at.view.kaf006.share.common;
     import service = nts.uk.at.view.kaf006.shr.service;
     import dialog = nts.uk.ui.dialog;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
         //kaf000
@@ -293,8 +294,64 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }
         }
          registerClick(){
-             
+             let self = this;
+             if (nts.uk.ui.errors.hasError()){return;} 
+             nts.uk.ui.block.invisible();
+             let appReason: string;
+             appReason = self.getReason(
+                self.selectedReason(),
+                self.reasonCombo(),
+                self.multilContent()
+            );
+             let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+             if (appReasonError) {
+                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
+                 return;
+             }
+             if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
+                 return;
+             }
+             let paramInsert = {
+                prePostAtr: self.prePostSelected(),
+                startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : self.startAppDate(),
+                endDate:  nts.uk.util.isNullOrEmpty(self.endAppDate()) ? self.startAppDate() : self.endAppDate(),
+                employeeID: self.employeeID(),
+                applicationReason: appReason,
+                holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                workTypeCode: self.selectedTypeOfDuty(),
+                workTimeCode: self.workTimeCode(),
+                halfDayFlg: self.displayHalfDayValue(),
+                changeWorkHour: self.changeWorkHourValue(),
+                allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
+                startTime1: self.timeStart1(),
+                endTime1: self.timeEnd1(),
+                startTime2: self.timeStart2(),
+                endTime2: self.timeEnd2()
+             };
+             service.createAbsence(paramInsert).done((data) =>{
+                  dialog.info({ messageId: "Msg_15" }).then(function() {         
+                        location.reload();   
+                });
+             }).fail((res) =>{
+                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });
+             });
          }
+        getReason(inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReason: string): string{
+            let appReason = '';
+            let inputReason: string = '';
+            if(!nts.uk.util.isNullOrEmpty(inputReasonID)){
+                inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;    
+            }    
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }                
+            return appReason;
+        }
         btnSelectWorkTimeZone(){
             let self = this;
             self.getListWorkTime().done(() =>{

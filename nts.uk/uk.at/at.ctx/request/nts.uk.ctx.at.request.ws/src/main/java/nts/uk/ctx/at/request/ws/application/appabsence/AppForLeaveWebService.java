@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.ws.application.appforleave;
+package nts.uk.ctx.at.request.ws.application.appabsence;
 
 import java.util.List;
 
@@ -8,7 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
+import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 
@@ -17,6 +20,8 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 public class AppForLeaveWebService extends WebService{
 	@Inject
 	private AppAbsenceFinder appForLeaveFinder;
+	@Inject
+	private CreatAppAbsenceCommandHandler creatAppAbsenceCommandHandler;
 	
 	@POST
 	@Path("getAppForLeaveStart")
@@ -58,6 +63,13 @@ public class AppForLeaveWebService extends WebService{
 	public AppAbsenceDto getWorkingHours(ParamGetALL param) {
 		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType());
 	}
+	@POST
+	@Path("insert")
+	public JavaTypeResult<String> insert(CreatAppAbsenceCommand param) {
+		JavaTypeResult<String> result  =  new JavaTypeResult<String>(creatAppAbsenceCommandHandler.handle(param));
+		return result;
+	}
+	
 }
 
 @Value

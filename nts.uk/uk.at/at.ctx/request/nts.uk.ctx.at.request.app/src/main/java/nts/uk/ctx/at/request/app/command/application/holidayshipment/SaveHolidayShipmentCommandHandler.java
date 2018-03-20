@@ -529,7 +529,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	private void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
+	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
 		List<Application_New> apps = appRepo.getApp(sID, appDate, prePostAtr, ApplicationType.ABSENCE_APPLICATION.value)
 				.stream()
 				.filter(x -> x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED)
