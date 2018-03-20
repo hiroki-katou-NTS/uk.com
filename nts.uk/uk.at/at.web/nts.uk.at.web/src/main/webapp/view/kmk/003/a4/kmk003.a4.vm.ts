@@ -143,20 +143,49 @@ module a4 {
             };
             // Add worktime mode param 
             if (_self.mainSettingModel.workTimeSetting.isFlow()) {
-                dataObject.stampGoWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime();
-                dataObject.stampGoWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime();
                 dataObject.stampTwoTimeReflect = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.twoTimesWorkReflectBasicTime();
-                dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime();
-                dataObject.stampLeavingWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime();
+                if (_self.mainSettingModel.isInterlockDialogJ()) {
+                    let oneDayEndTime: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + _self.mainSettingModel.predetemineTimeSetting.rangeTimeDay();
+                    dataObject.stampGoWorkFlowStart = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampGoWorkFlowEnd = oneDayEndTime;                    
+                    dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
+                    dataObject.stampLeavingWorkFlowEnd = oneDayEndTime;
+                } else {                   
+                    dataObject.stampGoWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime();
+                    dataObject.stampGoWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime();                    
+                    dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime();
+                    dataObject.stampLeavingWorkFlowEnd = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime();
+                }
             } 
             if (_self.mainSettingModel.workTimeSetting.isFixed()) {
-                
+                dataObject.stampGoWork1Start = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().startTime();
+                dataObject.stampGoWork1End = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().endTime();
+                dataObject.stampLeavingWork1Start = _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().startTime();
+                dataObject.stampLeavingWork1End = _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().endTime();
+                dataObject.stampGoWork2Start = _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().startTime();
+                dataObject.stampGoWork2End = _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().endTime();
+                dataObject.stampLeavingWork2Start = _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().startTime();
+                dataObject.stampLeavingWork2End = _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().endTime();
             }
             if (_self.mainSettingModel.workTimeSetting.isDiffTime()) {
-                
+                dataObject.stampGoWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime();
+                dataObject.stampGoWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime();
+                dataObject.stampLeavingWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime();
+                dataObject.stampLeavingWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime();
+                dataObject.stampGoWork2Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().startTime();
+                dataObject.stampGoWork2End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().endTime();
+                dataObject.stampLeavingWork2Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().startTime();
+                dataObject.stampLeavingWork2End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().endTime();
             } 
             if (_self.mainSettingModel.workTimeSetting.isFlex()) {
-                
+                dataObject.stampGoWork1Start = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().startTime();
+                dataObject.stampGoWork1End = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().endTime();
+                dataObject.stampLeavingWork1Start = _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().startTime();
+                dataObject.stampLeavingWork1End = _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().endTime();
+                dataObject.stampGoWork2Start = _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().startTime();
+                dataObject.stampGoWork2End = _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().endTime();
+                dataObject.stampLeavingWork2Start = _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime();
+                dataObject.stampLeavingWork2End = _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime();
             } 
             // Set object
             nts.uk.ui.windows.setShared("KMK003_DIALOG_J_INPUT_DATA", dataObject);
@@ -165,15 +194,56 @@ module a4 {
                 if (nts.uk.util.isNullOrUndefined(outputDataObject)) {
                     return;    
                 }
+                // Update common data
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().stampAtr(outputDataObject.prioritySettingEntering);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().stampAtr(outputDataObject.prioritySettingExit);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().stampAtr(outputDataObject.prioritySettingPcLogin);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().stampAtr(outputDataObject.prioritySettingPcLogout);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.roundingTimeUnit(outputDataObject.goOutRoundingUnit);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(outputDataObject.goOutFontRearSection);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(outputDataObject.turnBackRoundingUnit);
+                _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.fontRearSection(outputDataObject.turnBackFontRearSection);
+                // Update worktime mode data 
+                if (_self.mainSettingModel.workTimeSetting.isFlow()) {
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime(outputDataObject.stampGoWorkFlowStart);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime(outputDataObject.stampGoWorkFlowEnd);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.twoTimesWorkReflectBasicTime(outputDataObject.stampTwoTimeReflect);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime(outputDataObject.stampLeavingWorkFlowStart);
+                    _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime(outputDataObject.stampLeavingWorkFlowEnd);
+                } 
+                if (_self.mainSettingModel.workTimeSetting.isFixed()) {
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().startTime(outputDataObject.stampGoWork1Start);
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().endTime(outputDataObject.stampGoWork1End);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().startTime(outputDataObject.stampLeavingWork1Start);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().endTime(outputDataObject.stampLeavingWork1End);
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().startTime(outputDataObject.stampGoWork2Start);
+                    _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().endTime(outputDataObject.stampGoWork2End);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().startTime(outputDataObject.stampLeavingWork2Start);
+                    _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().endTime(outputDataObject.stampLeavingWork2End);
+                }
+                if (_self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime(outputDataObject.stampGoWork1Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime(outputDataObject.stampGoWork1End);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime(outputDataObject.stampLeavingWork1Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime(outputDataObject.stampLeavingWork1End);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().startTime(outputDataObject.stampGoWork2Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().endTime(outputDataObject.stampGoWork2End);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().startTime(outputDataObject.stampLeavingWork2Start);
+                    _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().endTime(outputDataObject.stampLeavingWork2End);
+                } 
+                if (_self.mainSettingModel.workTimeSetting.isFlex()) {
+                    _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().startTime(outputDataObject.stampGoWork1Start);
+                    _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().endTime(outputDataObject.stampGoWork1End);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().startTime(outputDataObject.stampLeavingWork1Start);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().endTime(outputDataObject.stampLeavingWork1End);
+                    _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().startTime(outputDataObject.stampGoWork2Start);
+                    _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().endTime(outputDataObject.stampGoWork2End);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime(outputDataObject.stampLeavingWork2Start);
+                    _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime(outputDataObject.stampLeavingWork2End);
+                } 
                 
-//                _self.model.commonSetting.lateEarlySet.commonSet.delFromEmTime(outputDataObject.delFromEmTime);       
-//                _self.model.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(outputDataObject.lateStampExactlyTimeIsLateEarly);
-//                _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.graceTime(outputDataObject.lateGraceTime);
-//                _self.model.commonSetting.lateEarlySet.getLateSet().graceTimeSet.includeWorkingHour(outputDataObject.lateIncludeWorkingHour);
-//                _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(outputDataObject.leaveEarlyStampExactlyTimeIsLateEarly);
-//                _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.graceTime(outputDataObject.leaveEarlyGraceTime);
-//                _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().graceTimeSet.includeWorkingHour(outputDataObject.leaveEarlyIncludeWorkingHour);
-                
+                // Update interlock 
+                _self.mainSettingModel.updateInterlockDialogJ();
                 nts.uk.ui.block.clear();
             });
         }

@@ -96,6 +96,13 @@ module a1 {
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.settingEnum = settingEnum;
             self.useHalfDay = data.useHalfDay;
+                                                   
+            // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14
+            self.predseting.startDateClock.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.predseting.rangeTimeDay.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.timeZoneModelOne.end.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });                
+            self.timeZoneModelTwo.start.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.timeZoneModelTwo.useAtr.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
         }
 
         public collectData(oldData: any) {

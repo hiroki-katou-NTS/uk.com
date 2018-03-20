@@ -37,47 +37,52 @@
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK003_270')}</div>		
 							<div>
-								<input tabindex="9" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="9" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_270]',		
 										value: stampGoWorkFlowStart,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="10" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="10" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_270]',		
 										value: stampGoWorkFlowEnd,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 							</div>	
 						</div>
 						<div class="dialog-rows">
 							<span class="label">#{i18n.getText('KMK003_276')}</span>	
-							<input tabindex="11" class="input-warp" data-bind="ntsTimeEditor: {
+							<input tabindex="11" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_277]',		
 										value: stampTwoTimeReflect,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 							<span class="label">#{i18n.getText('KMK003_278')}</span>				
 						</div>
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK003_273')}</div>		
 							<div>
-								<input tabindex="12" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="12" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_273]',		
 										value: stampLeavingWorkFlowStart,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="13" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="13" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_273]',		
 										value: stampLeavingWorkFlowEnd,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 							</div>		
 						</div>
 					</com:ko>
@@ -87,39 +92,43 @@
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_270')}</div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
-								<input tabindex="1" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="1" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_271]',		
 										value: stampGoWork1Start,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="2" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="2" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_271]',		
 										value: stampGoWork1End,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 							</div>		
 						</div>					
 						<div class="dialog-rows">
 							<div style="width: 150px;"></div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_37')}</span>		
-								<input tabindex="3" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="3" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_272]',		
 										value: stampGoWork2Start,
 										inputFormat: 'time',
 										mode: 'time',
 										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption,
 										enable: isFixedAndUseTime2 }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="4" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="4" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_272]',		
 										value: stampGoWork2End,
 										inputFormat: 'time',
 										mode: 'time',
 										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption,
 										enable: isFixedAndUseTime2 }" />
 							</div>			
 						</div>
@@ -127,39 +136,43 @@
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_273')}</div>		
 							<div>
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
-								<input tabindex="5" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="5" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_274]',		
 										value: stampLeavingWork1Start,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="6" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="6" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_274]',		
 										value: stampLeavingWork1End,
 										inputFormat: 'time',
 										mode: 'time',
-										constraint: 'TimeWithDayAttr' }" />
+										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption }" />
 							</div>			
 						</div>					
 						<div class="dialog-rows">
 							<div style="width: 150px;"></div>	
 							<div>
-								<span class="label">#{i18n.getText('KMK003_36')}</span>		
-								<input tabindex="7" class="input-warp" data-bind="ntsTimeEditor: {
+								<span class="label">#{i18n.getText('KMK003_37')}</span>		
+								<input tabindex="7" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_275]',		
 										value: stampLeavingWork2Start,
 										inputFormat: 'time',
 										mode: 'time',
 										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption,
 										enable: isFixedAndUseTime2 }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="8" class="input-warp" data-bind="ntsTimeEditor: {
+								<input tabindex="8" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_275]',		
 										value: stampLeavingWork2End,
 										inputFormat: 'time',
 										mode: 'time',
 										constraint: 'TimeWithDayAttr',
+										option: timeEditorOption,
 										enable: isFixedAndUseTime2 }" />
 							</div>		
 						</div>

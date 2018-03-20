@@ -395,15 +395,51 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.stampReflectTimezone = ko.observableArray([]);
                     this.isUpdateStartTime = ko.observable(false);
+                    this.initStampSets();
+                }
+                
+                initStampSets() {
+                    let goWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWork1Stamp.workNo(1);
+                    goWork1Stamp.classification(0);
+                    let goWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWork2Stamp.workNo(2);
+                    goWork2Stamp.classification(0);
+                    let leaveWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWork1Stamp.workNo(1);
+                    leaveWork1Stamp.classification(1);
+                    let leaveWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWork2Stamp.workNo(2);
+                    leaveWork2Stamp.classification(1);
+                    this.stampReflectTimezone.push(goWork1Stamp);
+                    this.stampReflectTimezone.push(leaveWork1Stamp);   
+                    this.stampReflectTimezone.push(goWork2Stamp);
+                    this.stampReflectTimezone.push(leaveWork2Stamp);                         
                 }
 
                 updateData(data: DiffTimeWorkStampReflectTimezoneDto) {
-                    this.stampReflectTimezone().forEach(function(item, index) {
-                        item.updateData(data.stampReflectTimezone[index]);
-                    })
+                    this.updateListStamp(data.stampReflectTimezone);
                     this.isUpdateStartTime(data.updateStartTime);
                 }
 
+                updateListStamp(lstStampReflectTimezone: StampReflectTimezoneDto[]) {
+                    let self = this;
+                    _.forEach(lstStampReflectTimezone, item => {
+                        if (item.workNo == 1 && item.classification == 0) {
+                            this.getGoWork1Stamp().updateData(item);
+                        }                        
+                        if (item.workNo == 1 && item.classification == 1) {
+                            this.getLeaveWork1Stamp().updateData(item);
+                        }
+                        if (item.workNo == 2 && item.classification == 0) {
+                            this.getGoWork2Stamp().updateData(item);
+                        }                        
+                        if (item.workNo == 2 && item.classification == 1) {
+                            this.getLeaveWork2Stamp().updateData(item);
+                        }
+                    });    
+                }
+                
                 toDto(): DiffTimeWorkStampReflectTimezoneDto {
                     var lstStamp: any = [];
                     this.stampReflectTimezone().forEach(function(item, index) {
@@ -418,8 +454,15 @@ module nts.uk.at.view.kmk003.a {
                 
                 resetData(){
                     this.isUpdateStartTime(false);
-                    this.stampReflectTimezone([]);
+                    this.stampReflectTimezone().forEach(function(item, index) {
+                        item.resetData();
+                    });
                 }
+                
+                getGoWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.stampReflectTimezone(), p => p.workNo() == 1 && p.classification() == 0) }
+                getLeaveWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.stampReflectTimezone(), p => p.workNo() == 1 && p.classification() == 1) }
+                getGoWork2Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.stampReflectTimezone(), p => p.workNo() == 2 && p.classification() == 0) }
+                getLeaveWork2Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.stampReflectTimezone(), p => p.workNo() == 2 && p.classification() == 1) }
             }
 
             export class EmTimezoneChangeExtentModel {

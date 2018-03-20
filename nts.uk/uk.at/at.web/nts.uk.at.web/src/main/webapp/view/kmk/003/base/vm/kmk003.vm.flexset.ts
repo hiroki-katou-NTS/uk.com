@@ -234,7 +234,28 @@ module nts.uk.at.view.kmk003.a {
                     self.fixRestTime = ko.observable(true); // initial value = lead
                     self.lstHalfDayWorkTimezone = self.initListHalfDay();
                     self.lstStampReflectTimezone = [];
-                    self.calculateSetting = new FlexCalcSettingModel();
+                    self.initStampSets();
+                    self.calculateSetting = new FlexCalcSettingModel();                   
+                }
+                
+                initStampSets() {
+                    let self = this;
+                    let goWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWork1Stamp.workNo(1);
+                    goWork1Stamp.classification(0);
+                    let goWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWork2Stamp.workNo(2);
+                    goWork2Stamp.classification(0);
+                    let leaveWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWork1Stamp.workNo(1);
+                    leaveWork1Stamp.classification(1);
+                    let leaveWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWork2Stamp.workNo(2);
+                    leaveWork2Stamp.classification(1);
+                    self.lstStampReflectTimezone.push(goWork1Stamp);
+                    self.lstStampReflectTimezone.push(leaveWork1Stamp);   
+                    self.lstStampReflectTimezone.push(goWork2Stamp);
+                    self.lstStampReflectTimezone.push(leaveWork2Stamp);                         
                 }
 
                 private initListHalfDay(): Array<FlexHalfDayWorkTimeModel> {
@@ -266,7 +287,9 @@ module nts.uk.at.view.kmk003.a {
                     self.getHDWtzMorning().resetData();
                     self.getHDWtzAfternoon().resetData();
                     self.calculateSetting.resetData();
-                    self.lstStampReflectTimezone = [];
+                    self.lstStampReflectTimezone.forEach(function(item, index) {
+                        item.resetData();
+                    });
                 }
 
                 public getHDWtzOneday(): FlexHalfDayWorkTimeModel {
@@ -309,13 +332,26 @@ module nts.uk.at.view.kmk003.a {
                     this.offdayWorkTime.updateData(data.offdayWorkTime);
                     this.commonSetting.updateData(data.commonSetting);
                     this.updateListHalfDay(data.lstHalfDayWorkTimezone);
-                    this.lstStampReflectTimezone = [];
-                    for (var dataStampDTO of data.lstStampReflectTimezone) {
-                        var dataStampModel: StampReflectTimezoneModel = new StampReflectTimezoneModel();
-                        dataStampModel.updateData(dataStampDTO);
-                        this.lstStampReflectTimezone.push(dataStampModel);
-                    }
+                    this.updateListStamp(data.lstStampReflectTimezone);
                     this.calculateSetting.updateData(data.calculateSetting);
+                }
+                
+                updateListStamp(lstStampReflectTimezone: StampReflectTimezoneDto[]) {
+                    let self = this;
+                    _.forEach(lstStampReflectTimezone, item => {
+                        if (item.workNo == 1 && item.classification == 0) {
+                            this.getGoWork1Stamp().updateData(item);
+                        }                        
+                        if (item.workNo == 1 && item.classification == 1) {
+                            this.getLeaveWork1Stamp().updateData(item);
+                        }
+                        if (item.workNo == 2 && item.classification == 0) {
+                            this.getGoWork2Stamp().updateData(item);
+                        }                        
+                        if (item.workNo == 2 && item.classification == 1) {
+                            this.getLeaveWork2Stamp().updateData(item);
+                        }
+                    });    
                 }
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
@@ -340,6 +376,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;    
                 }
+                
+                getGoWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 1 && p.classification() == 0) }
+                getLeaveWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 1 && p.classification() == 1) }
+                getGoWork2Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 2 && p.classification() == 0) }
+                getLeaveWork2Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 2 && p.classification() == 1) }
             }
         }
     }

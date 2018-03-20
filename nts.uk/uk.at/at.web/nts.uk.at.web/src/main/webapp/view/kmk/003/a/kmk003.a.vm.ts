@@ -707,25 +707,30 @@ module nts.uk.at.view.kmk003.a {
             isChangeItemTable: KnockoutObservable<boolean>;
             useHalfDay: KnockoutObservable<boolean>;
             
+            // Interlock dialog J
+            isInterlockDialogJ: KnockoutObservable<boolean>;
+            
             constructor(useHalfDay: KnockoutObservable<boolean>) {
-                this.isChangeItemTable = ko.observable(false);
-                this.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
+                let self = this;
+                self.isChangeItemTable = ko.observable(false);
+                self.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
+                self.isInterlockDialogJ = ko.observable(true);
                 
-                this.workTimeSetting = new WorkTimeSettingModel();
-                this.predetemineTimeSetting = new PredetemineTimeSettingModel();
-                this.displayMode = new WorkTimeDisplayModeModel();
-                this.commonSetting = new WorkTimezoneCommonSetModel();
-                this.fixedWorkSetting = new FixedWorkSettingModel();
-                this.flowWorkSetting = new FlowWorkSettingModel();
-                this.diffWorkSetting = new DiffTimeWorkSettingModel();
-                this.flexWorkSetting = new FlexWorkSettingModel();
-                this.workTimeSetting.worktimeCode.subscribe(worktimeCode => {
-                    this.predetemineTimeSetting.workTimeCode(worktimeCode);
-                    this.displayMode.worktimeCode(worktimeCode);
-                    this.fixedWorkSetting.workTimeCode(worktimeCode);
-                    this.flowWorkSetting.workingCode(worktimeCode);
-                    this.diffWorkSetting.workTimeCode(worktimeCode);
-                    this.flexWorkSetting.workTimeCode(worktimeCode);
+                self.workTimeSetting = new WorkTimeSettingModel();
+                self.predetemineTimeSetting = new PredetemineTimeSettingModel();
+                self.displayMode = new WorkTimeDisplayModeModel();
+                self.commonSetting = new WorkTimezoneCommonSetModel();
+                self.fixedWorkSetting = new FixedWorkSettingModel();
+                self.flowWorkSetting = new FlowWorkSettingModel();
+                self.diffWorkSetting = new DiffTimeWorkSettingModel();
+                self.flexWorkSetting = new FlexWorkSettingModel();
+                self.workTimeSetting.worktimeCode.subscribe(worktimeCode => {
+                    self.predetemineTimeSetting.workTimeCode(worktimeCode);
+                    self.displayMode.worktimeCode(worktimeCode);
+                    self.fixedWorkSetting.workTimeCode(worktimeCode);
+                    self.flowWorkSetting.workingCode(worktimeCode);
+                    self.diffWorkSetting.workTimeCode(worktimeCode);
+                    self.flexWorkSetting.workTimeCode(worktimeCode);
                 });
             }
 
@@ -835,8 +840,9 @@ module nts.uk.at.view.kmk003.a {
 
             updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
                 let self = this;
+                self.isInterlockDialogJ(true);   
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
-                self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
+                self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);                              
                 
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
@@ -863,12 +869,12 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
-                }
+                }                            
             }
             
             resetData(isNewMode?: boolean) {
                 let self = this;
-                self.useHalfDay(false);
+                self.useHalfDay(false);                
                 self.fixedWorkSetting.resetData();
                 self.flowWorkSetting.resetData();
                 self.flexWorkSetting.resetData();
@@ -880,6 +886,138 @@ module nts.uk.at.view.kmk003.a {
                     self.workTimeSetting.resetData();
                     self.workTimeSetting.resetWorkTimeDivision();
                 }
+                self.isInterlockDialogJ(true);
+            }
+            
+            updateStampValue() {
+                let _self = this;   
+                
+                // Update stamp data
+                if (_self.isInterlockDialogJ()) {
+                    if (_self.workTimeSetting.isFixed()) {                     
+                        let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
+                        let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
+                        
+                        if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr()) {
+                            _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
+                            _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(workEnd);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(workEnd);
+                                                                                   
+                            _self.fixedWorkSetting.getGoWork1Stamp().endTime(endWork1);
+                            _self.fixedWorkSetting.getGoWork2Stamp().startTime(endWork1 + 1);
+                            _self.fixedWorkSetting.getLeaveWork1Stamp().endTime(startWork2);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().startTime(startWork2 + 1);
+                        } else {                           
+                            _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
+                            _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(workEnd);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(workEnd);
+                        }
+                    }   
+                    if (_self.workTimeSetting.isFlex()) {
+                        let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        _self.flexWorkSetting.getGoWork1Stamp().startTime(workStart);
+                        _self.flexWorkSetting.getGoWork1Stamp().endTime(workEnd);
+                        _self.flexWorkSetting.getLeaveWork1Stamp().startTime(workStart);
+                        _self.flexWorkSetting.getLeaveWork1Stamp().endTime(workEnd);
+                    }  
+                    if (_self.workTimeSetting.isFlow()) {
+                        let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        _self.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime(workStart);
+                        _self.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime(workEnd);
+                        _self.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime(workStart);
+                        _self.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime(workEnd);
+                    } 
+                    if (_self.workTimeSetting.isDiffTime()) {
+                        let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        _self.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime(workStart);
+                        _self.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime(workEnd);
+                        _self.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime(workStart);
+                        _self.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime(workEnd);
+                    }  
+                }             
+            }
+            
+            updateInterlockDialogJ() {
+                let _self = this;   
+                             
+                // Update interlock value
+                if (_self.workTimeSetting.isFixed()) {
+                    let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                    let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                    let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
+                    let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
+                    
+                    if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr()) {
+                        if ((_self.fixedWorkSetting.getGoWork1Stamp().startTime() == workStart) 
+                            && (_self.fixedWorkSetting.getGoWork1Stamp().endTime() == endWork1)
+                            && (_self.fixedWorkSetting.getLeaveWork1Stamp().startTime() == workStart)
+                            && (_self.fixedWorkSetting.getLeaveWork1Stamp().endTime() == startWork2)
+                            && (_self.fixedWorkSetting.getGoWork2Stamp().startTime() == endWork1 + 1)
+                            && (_self.fixedWorkSetting.getGoWork2Stamp().endTime() == workEnd)
+                            && (_self.fixedWorkSetting.getLeaveWork2Stamp().startTime() == startWork2 + 1)
+                            && (_self.fixedWorkSetting.getLeaveWork2Stamp().endTime() == workEnd)) {
+                            _self.isInterlockDialogJ(true);
+                        } else {
+                            _self.isInterlockDialogJ(false);    
+                        }
+                    } else {                                                   
+                        if ((_self.fixedWorkSetting.getGoWork1Stamp().startTime() == workStart) 
+                            && (_self.fixedWorkSetting.getGoWork1Stamp().endTime() == workEnd)
+                            && (_self.fixedWorkSetting.getLeaveWork1Stamp().startTime() == workStart)
+                            && (_self.fixedWorkSetting.getLeaveWork1Stamp().endTime() == workEnd)) {
+                            _self.isInterlockDialogJ(true);
+                        } else {
+                            _self.isInterlockDialogJ(false);    
+                        }
+                    }                    
+                    return;
+                }              
+                if (_self.workTimeSetting.isFlex()) {    
+                    let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                    let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();               
+                    if ((_self.flexWorkSetting.getGoWork1Stamp().startTime() == workStart) 
+                        && (_self.flexWorkSetting.getGoWork1Stamp().endTime() == workEnd)
+                        && (_self.flexWorkSetting.getLeaveWork1Stamp().startTime() == workStart)
+                        && (_self.flexWorkSetting.getLeaveWork1Stamp().endTime() == workEnd)) {
+                        _self.isInterlockDialogJ(true);
+                    } else {
+                        _self.isInterlockDialogJ(false);    
+                    }
+                    return;
+                }
+                if (_self.workTimeSetting.isFlow()) {
+                    let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                    let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();  
+                    if ((_self.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime() == workStart) 
+                        && (_self.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime() == workEnd)
+                        && (_self.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime() == workStart)
+                        && (_self.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().endTime() == workEnd)) {
+                        _self.isInterlockDialogJ(true);
+                    } else {
+                        _self.isInterlockDialogJ(false);    
+                    }
+                    return;
+                }                            
+                if (_self.workTimeSetting.isDiffTime()) {
+                    let workStart: number = _self.predetemineTimeSetting.startDateClock();
+                    let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();  
+                    if ((_self.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime() == workStart) 
+                        && (_self.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime() == workEnd)
+                        && (_self.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime() == workStart)
+                        && (_self.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime() == workEnd)) {
+                        _self.isInterlockDialogJ(true);
+                    } else {
+                        _self.isInterlockDialogJ(false);    
+                    }
+                    return;
+                }               
             }
         }
 

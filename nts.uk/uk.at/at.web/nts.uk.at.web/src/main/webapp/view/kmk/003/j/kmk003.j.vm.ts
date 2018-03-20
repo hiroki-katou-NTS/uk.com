@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk003.j {
         
         export class ScreenModel {        
             
+            timeEditorOption: KnockoutObservable<any>;
+            
             // Screen data 
             dataObject: any;
             
@@ -45,6 +47,10 @@ module nts.uk.at.view.kmk003.j {
             constructor() {
                 let _self = this;
                 
+                _self.timeEditorOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
+                    width: "50"
+                }));
+                
                 _self.dataObject = null;
                 _self.isFlow = ko.observable(null);
                 _self.isFixedAndUseTime2 = ko.observable(null);
@@ -63,7 +69,7 @@ module nts.uk.at.view.kmk003.j {
                 _self.stampGoWork1End = ko.observable(0);
                 _self.stampGoWork2Start = ko.observable(0);
                 _self.stampGoWork2End = ko.observable(0);
-                _self.stampLeavingWork1Start = ko.observable(0);;
+                _self.stampLeavingWork1Start = ko.observable(0);
                 _self.stampLeavingWork1End = ko.observable(0);
                 _self.stampLeavingWork2Start = ko.observable(0);
                 _self.stampLeavingWork2End = ko.observable(0);
@@ -107,7 +113,6 @@ module nts.uk.at.view.kmk003.j {
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {                                   
                     return;
                 }
-                console.log(dataObject);
                 _self.dataObject = dataObject;
                 _self.isFlow(dataObject.isFlow);
                 _self.isFixedAndUseTime2(dataObject.isFixedAndUseTime2);
@@ -122,7 +127,23 @@ module nts.uk.at.view.kmk003.j {
                 _self.goOutFontRearSection(dataObject.goOutFontRearSection);
                 _self.turnBackRoundingUnit(dataObject.turnBackRoundingUnit);
                 _self.turnBackFontRearSection(dataObject.turnBackFontRearSection);
-                //TODO
+                // Add worktime mode param 
+                if (_self.isFlow()) {
+                    _self.stampGoWorkFlowStart(dataObject.stampGoWorkFlowStart);
+                    _self.stampGoWorkFlowEnd(dataObject.stampGoWorkFlowEnd);
+                    _self.stampTwoTimeReflect(dataObject.stampTwoTimeReflect);
+                    _self.stampLeavingWorkFlowStart(dataObject.stampLeavingWorkFlowStart);
+                    _self.stampLeavingWorkFlowEnd(dataObject.stampLeavingWorkFlowEnd);
+                } else {
+                    _self.stampGoWork1Start(dataObject.stampGoWork1Start);
+                    _self.stampGoWork1End(dataObject.stampGoWork1End);
+                    _self.stampGoWork2Start(dataObject.stampGoWork2Start);
+                    _self.stampGoWork2End(dataObject.stampGoWork2End);
+                    _self.stampLeavingWork1Start(dataObject.stampLeavingWork1Start);
+                    _self.stampLeavingWork1End(dataObject.stampLeavingWork1End);
+                    _self.stampLeavingWork2Start(dataObject.stampLeavingWork2Start);
+                    _self.stampLeavingWork2End(dataObject.stampLeavingWork2End);
+                }
             }   
             
             /**
@@ -131,18 +152,35 @@ module nts.uk.at.view.kmk003.j {
             public save(): void {
                 let _self = this;
                 
-                //TODO
-//                let dataObject: any = {
-//                    delFromEmTime: _self.delFromEmTime(),       
-//                    lateStampExactlyTimeIsLateEarly: _self.lateStampExactlyTimeIsLateEarly(),
-//                    lateGraceTime: _self.lateGraceTime(),
-//                    lateIncludeWorkingHour: _self.lateIncludeWorkingHour(),
-//                    leaveEarlyStampExactlyTimeIsLateEarly: _self.leaveEarlyStampExactlyTimeIsLateEarly(),
-//                    leaveEarlyGraceTime: _self.leaveEarlyGraceTime(),
-//                    leaveEarlyIncludeWorkingHour: _self.leaveEarlyIncludeWorkingHour()
-//                };
-//                nts.uk.ui.windows.setShared("KMK003_DIALOG_J_OUTPUT_DATA", dataObject);
-//                _self.close();
+                let dataObject: any = {
+                    prioritySettingEntering: _self.prioritySettingEntering(),
+                    prioritySettingExit: _self.prioritySettingExit(),
+                    prioritySettingPcLogin: _self.prioritySettingPcLogin(),
+                    prioritySettingPcLogout: _self.prioritySettingPcLogout(),
+                    goOutRoundingUnit: _self.goOutRoundingUnit(),
+                    goOutFontRearSection: _self.goOutFontRearSection(),
+                    turnBackRoundingUnit: _self.turnBackRoundingUnit(),
+                    turnBackFontRearSection: _self.turnBackFontRearSection()
+                };
+                // Add worktime mode param 
+                if (_self.isFlow()) {
+                    dataObject.stampGoWorkFlowStart = _self.stampGoWorkFlowStart();
+                    dataObject.stampGoWorkFlowEnd = _self.stampGoWorkFlowEnd();
+                    dataObject.stampTwoTimeReflect = _self.stampTwoTimeReflect();
+                    dataObject.stampLeavingWorkFlowStart = _self.stampLeavingWorkFlowStart();
+                    dataObject.stampLeavingWorkFlowEnd = _self.stampLeavingWorkFlowEnd();
+                } else {
+                    dataObject.stampGoWork1Start = _self.stampGoWork1Start();
+                    dataObject.stampGoWork1End = _self.stampGoWork1End();
+                    dataObject.stampLeavingWork1Start = _self.stampLeavingWork1Start();
+                    dataObject.stampLeavingWork1End = _self.stampLeavingWork1End();
+                    dataObject.stampGoWork2Start = _self.stampGoWork2Start();
+                    dataObject.stampGoWork2End = _self.stampGoWork2End();
+                    dataObject.stampLeavingWork2Start = _self.stampLeavingWork2Start();
+                    dataObject.stampLeavingWork2End = _self.stampLeavingWork2End();
+                }
+                nts.uk.ui.windows.setShared("KMK003_DIALOG_J_OUTPUT_DATA", dataObject);
+                _self.close();
             }
             
             /**

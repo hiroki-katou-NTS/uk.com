@@ -142,8 +142,28 @@ module nts.uk.at.view.kmk003.a {
                     this.legalOTSetting = ko.observable(0);
                     // Update phase 2
                     this.calculationSetting = new FixedWorkCalcSettingModel();
+                    this.initStampSets();
                 }
 
+                initStampSets() {
+                    let goWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWork1Stamp.workNo(1);
+                    goWork1Stamp.classification(0);
+                    let goWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    goWork2Stamp.workNo(2);
+                    goWork2Stamp.classification(0);
+                    let leaveWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWork1Stamp.workNo(1);
+                    leaveWork1Stamp.classification(1);
+                    let leaveWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
+                    leaveWork2Stamp.workNo(2);
+                    leaveWork2Stamp.classification(1);
+                    this.lstStampReflectTimezone.push(goWork1Stamp);
+                    this.lstStampReflectTimezone.push(leaveWork1Stamp);   
+                    this.lstStampReflectTimezone.push(goWork2Stamp);
+                    this.lstStampReflectTimezone.push(leaveWork2Stamp);                         
+                }
+                
                 public getHDWtzOneday(): FixHalfDayWorkTimezoneModel {
                     let self = this;
                     return _.find(self.lstHalfDayWorkTimezone, time => time.dayAtr() == 0);
@@ -164,11 +184,7 @@ module nts.uk.at.view.kmk003.a {
                     this.useHalfDayShift(data.useHalfDayShift);                    
                     this.fixedWorkRestSetting.updateData(data.fixedWorkRestSetting);                                       
                     this.updateListHalfDay(data.lstHalfDayWorkTimezone);
-                    this.lstStampReflectTimezone = _.map(data.lstStampReflectTimezone, (dataDTO) => {
-                        let dataModel: StampReflectTimezoneModel = new StampReflectTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        return dataModel;
-                    });                                    
+                    this.updateListStamp(data.lstStampReflectTimezone);
                     this.legalOTSetting(data.legalOTSetting);
                     // Update phase 2
                     this.calculationSetting.updateData(data.calculationSetting);
@@ -189,6 +205,24 @@ module nts.uk.at.view.kmk003.a {
                                 break;
                         }
                     });
+                }
+                
+                updateListStamp(lstStampReflectTimezone: StampReflectTimezoneDto[]) {
+                    let self = this;
+                    _.forEach(lstStampReflectTimezone, item => {
+                        if (item.workNo == 1 && item.classification == 0) {
+                            this.getGoWork1Stamp().updateData(item);
+                        }                        
+                        if (item.workNo == 1 && item.classification == 1) {
+                            this.getLeaveWork1Stamp().updateData(item);
+                        }
+                        if (item.workNo == 2 && item.classification == 0) {
+                            this.getGoWork2Stamp().updateData(item);
+                        }                        
+                        if (item.workNo == 2 && item.classification == 1) {
+                            this.getLeaveWork2Stamp().updateData(item);
+                        }
+                    });    
                 }
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
@@ -218,12 +252,19 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzOneday().resetData();
                     this.getHDWtzMorning().resetData();
                     this.getHDWtzAfternoon().resetData();
-                    this.lstStampReflectTimezone = [];
+                    this.lstStampReflectTimezone.forEach(function(item, index) {
+                        item.resetData();
+                    });
                     //update ver7.2 
                     this.legalOTSetting(0);
                     // Update phase 2
                     this.calculationSetting.resetData();
                 }
+                
+                getGoWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 1 && p.classification() == 0) }
+                getLeaveWork1Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 1 && p.classification() == 1) }
+                getGoWork2Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 2 && p.classification() == 0) }
+                getLeaveWork2Stamp(): StampReflectTimezoneModel { let self = this; return _.find(self.lstStampReflectTimezone, p => p.workNo() == 2 && p.classification() == 1) }
             }
         }
     }
