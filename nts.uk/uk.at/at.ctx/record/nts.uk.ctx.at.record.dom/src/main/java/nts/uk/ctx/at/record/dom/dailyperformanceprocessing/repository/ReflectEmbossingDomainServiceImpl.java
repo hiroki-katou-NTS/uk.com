@@ -348,7 +348,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 				}
 
-				// todo
 				break;
 			case 8:
 			case 9://臨時開始・終了を反映する
@@ -601,26 +600,35 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private PCLogOnInfoOfDaily refect(PCLogOnInfoOfDaily pcLogOnInfoOfDaily, int indexPCLogOnInfo, StampItem x,
 			List<StampItem> lstStamp, int worktNo, String inOrOutClass) {
 		List<LogOnInfo> lstLogOnInfo = pcLogOnInfoOfDaily.getLogOnInfo();
-		LogOnInfo logOnInfo = lstLogOnInfo.get(indexPCLogOnInfo);
 		// TimeWithDayAttr logonOrLogoff = new
 		// TimeWithDayAttr(x.getAttendanceTime().v());
 		// logonOrLogoff dang nhe TimeWithDayAttr nhung hien tai workStamp
 		// fixed
-		WorkStamp logonOrLogoff = null;
+		WorkStamp logonOrLogoff = new WorkStamp(new TimeWithDayAttr(x.getAttendanceTime().v()) , new TimeWithDayAttr(x.getAttendanceTime().v()) ,null, null);
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
+		if(indexPCLogOnInfo == -1){
+			if ("PCログオン".equals(inOrOutClass)) {
+				lstLogOnInfo.add(new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), null, logonOrLogoff));
+			}else{
+				lstLogOnInfo.add(new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), logonOrLogoff,null));
+			}
+			return pcLogOnInfoOfDaily;
+		}
+		
+		LogOnInfo logOnInfo = lstLogOnInfo.get(indexPCLogOnInfo);
 		if ("PCログオン".equals(inOrOutClass)) {
 			lstLogOnInfo.set(indexPCLogOnInfo,
 					new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
-							logOnInfo.getLogOff().orElse(null), logonOrLogoff));
+							(logOnInfo.getLogOff()!=null && logOnInfo.getLogOff().isPresent())?logOnInfo.getLogOff().get():null, logonOrLogoff));
 			return pcLogOnInfoOfDaily;
 		}
 		lstLogOnInfo.set(indexPCLogOnInfo,
 				new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
-						logonOrLogoff, logOnInfo.getLogOn().orElse(null)));
+						logonOrLogoff, (logOnInfo.getLogOn()!=null&& logOnInfo.getLogOn().isPresent())?logOnInfo.getLogOn().get():null));
 		return pcLogOnInfoOfDaily;
 	}
 
@@ -647,14 +655,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null) {
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent()) {
 					return i;
 				}
 			}
 		} else {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null) {
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()) {
 					return i;
 				}
 			}
@@ -670,8 +678,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null) {
-					inOrOutWork = null; // fixed logOnInfo.getLogOn();
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() ) {
+					inOrOutWork = logOnInfo.getLogOn().get().getTimeWithDay(); // fixed logOnInfo.getLogOn();
 					PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput = new PCLogonLogoffReflectOuput();
 					pcLogonLogoffReflectOuput.setTimeOfDay(inOrOutWork);
 					return pcLogonLogoffReflectOuput;
@@ -680,8 +688,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		} else {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null) {
-					inOrOutWork = null; // fixed logOnInfo.getLogOff();
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()) {
+					inOrOutWork = logOnInfo.getLogOff().get().getTimeWithDay(); // fixed logOnInfo.getLogOff();
 					PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput = new PCLogonLogoffReflectOuput();
 					pcLogonLogoffReflectOuput.setTimeOfDay(inOrOutWork);
 					return pcLogonLogoffReflectOuput;
@@ -798,6 +806,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		lstStamp.add(stampItem);
 		List<AttendanceLeavingGate> attendanceLeavingGates = attendanceLeavingGateOfDaily.getAttendanceLeavingGates();
 		AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(indexAttendanceLeavingGate);
+		if(indexAttendanceLeavingGate==-1){
+			if ("入門".equals(inOrOutClass)) {
+				attendanceLeavingGates.add(new AttendanceLeavingGate(
+					new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), inorOutStamp,null));	
+			}else{
+				attendanceLeavingGates.add(new AttendanceLeavingGate(
+						new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo),null ,inorOutStamp));
+			}
+			return attendanceLeavingGateOfDaily;
+		}
 		if ("入門".equals(inOrOutClass)) {
 			attendanceLeavingGates.set(indexAttendanceLeavingGate, new AttendanceLeavingGate(
 					attendanceLeavingGate.getWorkNo(), inorOutStamp,( attendanceLeavingGate.getLeaving() !=null && attendanceLeavingGate.getLeaving().isPresent())?attendanceLeavingGate.getLeaving().get():null));
@@ -1633,6 +1651,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					}
 				}
+			}
 				if (!isBreak) {
 					newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 				}
@@ -1642,7 +1661,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					return new OutingTimeOfDailyPerformance(employeeId, date, newOutingTimeSheets);
 				}
 
-			}
+			
 
 		}
 		return outDailyPer;
