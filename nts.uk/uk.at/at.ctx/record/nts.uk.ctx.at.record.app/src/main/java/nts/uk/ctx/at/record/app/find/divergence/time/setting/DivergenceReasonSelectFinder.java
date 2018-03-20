@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
 import java.util.Collections;
@@ -11,17 +14,20 @@ import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class DivergenceReasonSelectFinder.
+ */
 @Stateless
 public class DivergenceReasonSelectFinder {
 
+	/** The div reason select repo. */
 	@Inject
 	DivergenceReasonSelectRepository divReasonSelectRepo;
-	
+
 	/**
 	 * Gets the all reason.
 	 *
-	 * @param divTimeId
-	 *            the div time id
+	 * @param divTimeNo the div time no
 	 * @return the all reason
 	 */
 	public List<DivergenceReasonSelectDto> getAllReason(int divTimeNo) {
@@ -30,7 +36,7 @@ public class DivergenceReasonSelectFinder {
 
 		// Get list divergence reason
 		List<DivergenceReasonSelect> reasonList = divReasonSelectRepo.findAllReason(divTimeNo, companyId);
-		
+
 		// Check list empty
 		if (reasonList.isEmpty()) {
 			return Collections.emptyList();
@@ -43,21 +49,35 @@ public class DivergenceReasonSelectFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
-	
-	public DivergenceReasonSelectDto getReasonInfo(DivergenceReasonSelectDto dto){
-		
+
+	/**
+	 * Gets the reason info.
+	 *
+	 * @param dto the dto
+	 * @return the reason info
+	 */
+	public DivergenceReasonSelectDto getReasonInfo(DivergenceReasonSelectDto dto) {
+
 		// Get company id
 		String companyId = AppContexts.user().companyId();
-		
+
 		// Get divergence reason
-		DivergenceReasonSelect reason = divReasonSelectRepo.findReasonInfo(dto.getDivergenceTimeNo(), companyId, dto.getDivergenceReasonCode());
-		
-		if(reason != null){
-			DivergenceReasonSelectDto reasonDto= new DivergenceReasonSelectDto();
+		DivergenceReasonSelect reason = divReasonSelectRepo.findReasonInfo(dto.getDivergenceTimeNo(), companyId,
+				dto.getDivergenceReasonCode());
+
+		if (reason != null) {
+			DivergenceReasonSelectDto reasonDto = new DivergenceReasonSelectDto();
 			reason.saveToMemento(reasonDto);
 			return reasonDto;
 		}
-		return null;
-		
+
+		// convert to Dto
+		DivergenceReasonSelectDto divReasonSelectDto = new DivergenceReasonSelectDto(dto.getDivergenceTimeNo(),
+				reason.getDivergenceReasonCode().toString(), reason.getReason().toString(),
+				reason.getReasonRequired().value);
+
+		// Return
+		return divReasonSelectDto;
+
 	}
 }
