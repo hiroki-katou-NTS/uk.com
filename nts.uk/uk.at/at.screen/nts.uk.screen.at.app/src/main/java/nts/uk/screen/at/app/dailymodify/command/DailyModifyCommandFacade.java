@@ -15,8 +15,12 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,15 +35,18 @@ public class DailyModifyCommandFacade {
 
 	@Inject
 	private DailyRecordWorkCommandHandler handler;
-	
+
 	@Inject
 	private EditStateColorOfDailyPerformCommandAddHandler editStateHandler;
+
+	@Inject
+	private RegisterIdentityConfirmDay registerIdentityConfirmDay;
 
 	public void handleAdd(DailyModifyQuery query) {
 		DailyRecordDto dto = toDto(query);
 		this.handler.handleAdd(createCommand(dto, query));
 	}
-	
+
 	public void handleUpdate(DailyModifyQuery query) {
 		String sid = AppContexts.user().employeeId();
 		List<EditStateOfDailyPerformance> editData = query.getItemValues().stream().map(x -> {
@@ -53,18 +60,17 @@ public class DailyModifyCommandFacade {
 		this.handler.handleUpdate(comand);
 	}
 
-
 	private DailyRecordDto toDto(DailyModifyQuery query) {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
 		return AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
 	}
 
-	private DailyRecordWorkCommand createCommand(DailyRecordDto dto, DailyModifyQuery query){
-		return DailyRecordWorkCommand.open().forEmployeeId(query.getEmployeeId())
-				.withWokingDate(query.getBaseDate()).withData(dto).fromItems(query.getItemValues());
+	private DailyRecordWorkCommand createCommand(DailyRecordDto dto, DailyModifyQuery query) {
+		return DailyRecordWorkCommand.open().forEmployeeId(query.getEmployeeId()).withWokingDate(query.getBaseDate())
+				.withData(dto).fromItems(query.getItemValues());
 	}
-	
-	public void handleEditCell(List<DPItemValue> data){
+
+	public void handleEditCell(List<DPItemValue> data) {
 		String sid = AppContexts.user().employeeId();
 		List<EditStateOfDailyPerformance> editData = data.stream().map(x -> {
 			return new EditStateOfDailyPerformance(x.getEmployeeId(), x.getItemId(), x.getDate(),
@@ -75,5 +81,10 @@ public class DailyModifyCommandFacade {
 		command.getData().addAll(editData);
 		editStateHandler.handle(command);
 	}
-	
+
+	public void insertSign(List<DPItemCheckBox> dataCheckSign) {
+		ParamIdentityConfirmDay day = new ParamIdentityConfirmDay(AppContexts.user().employeeId(), dataCheckSign
+				.stream().map(x -> new SelfConfirmDay(x.getDate(), x.isValue())).collect(Collectors.toList()));
+		registerIdentityConfirmDay.registerIdentity(day);
+	}
 }
