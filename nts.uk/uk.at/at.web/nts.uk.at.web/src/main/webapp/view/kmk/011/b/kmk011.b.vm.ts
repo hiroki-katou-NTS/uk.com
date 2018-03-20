@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk011.b {
         export class ScreenModel {
             columns: KnockoutObservableArray<any>;
             dataSource: KnockoutObservableArray<viewmodel.model.DivergenceTime>;
-            currentCode: KnockoutObservable<any>;
+            currentCode: KnockoutObservable<number>;
 
             useSet: KnockoutObservableArray<any>;//list value swith button
 
@@ -29,6 +29,8 @@ module nts.uk.at.view.kmk011.b {
             selectInput: KnockoutObservable<any>; //value B3_17
             enableInput: KnockoutObservable<boolean>;
             checkErrorInput: KnockoutObservable<boolean>;
+
+            existedDivergenceReason: KnockoutObservable<boolean>; //defile view for B3_19, B3_20
 
             enable: KnockoutObservable<boolean>;
             divergenceTimeId: KnockoutObservable<number>;
@@ -79,15 +81,16 @@ module nts.uk.at.view.kmk011.b {
                 self.checkErrorSelect = ko.observable(false);
                 self.listDivergenceItem = ko.observableArray([]);
                 self.listItemSelected = ko.observableArray([]);
+                self.existedDivergenceReason = ko.observable(false);
                 //subscribe currentCode
                 self.currentCode.subscribe(function(codeChanged) {
-                    console.log(codeChanged);
                     self.clearError();
                     self.selectUse(null);
 
                     self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
                         self.itemDivergenceTime(itemDivTime);
                         self.setValueDivergenceTimeDisplay();
+                        console.log(self.existedDivergenceReason());
 
                     });
 
@@ -154,7 +157,6 @@ module nts.uk.at.view.kmk011.b {
                             self.itemDivergenceTime(itemDivTime);
                             //get divergenceTypeName method this
                             self.setValueDivergenceTimeDisplay();
-
                         });
                     }
                     dfd.resolve();
@@ -184,6 +186,13 @@ module nts.uk.at.view.kmk011.b {
                 self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);
                 self.divTimeName(self.itemDivergenceTime().divergenceTimeName);
                 self.divergenceTypeName(self.itemDivergenceTime().divergenceType);
+                service.getAllDivReason(self.itemDivergenceTime().divergenceTimeNo).done((data) => {
+                    if (data.length != 0) {
+                        self.existedDivergenceReason(true);
+                    } else {
+                        self.existedDivergenceReason(false);
+                    }
+                });
 
                 self.timeItemName('');
 
@@ -422,6 +431,18 @@ module nts.uk.at.view.kmk011.b {
                 constructor(divTimeId: number, attendanceId: number) {
                     this.divTimeId = divTimeId;
                     this.attendanceId = attendanceId;
+                }
+            }
+            export class DivergenceReason {
+                divergenceTimeNo: number;
+                divergenceReasonCode: string;
+                reason: string;
+                reasonRequired: number;
+                constructor(divTimeId: number, divReasonCode: string, divReasonContent: string, requiredAtr: number) {
+                    this.divergenceTimeNo = divTimeId;
+                    this.divergenceReasonCode = divReasonCode;
+                    this.reason = divReasonContent;
+                    this.reasonRequired = requiredAtr;
                 }
             }
         }

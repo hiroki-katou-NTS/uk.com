@@ -8,9 +8,9 @@ module nts.uk.at.view.kmk011.c {
             find: "",
  
             getAllDivReason: "at/record/divergencetime/setting/getalldivreason/",
-            addDivReason: "at/record/divergencetime/adddivreason",
-            updateDivReason: "at/record/divergencetime/updatedivreason",
-            deleteDivReason: "at/record/divergencetime/deletedivreason"
+            addDivReason: "at/record/divergencetime/setting/adddivreason",
+            updateDivReason: "at/record/divergencetime/setting/updatedivreason",
+            deleteDivReason: "at/record/divergencetime/setting/deletedivreason"
         };
 
         export function save(): JQueryPromise<any> {
