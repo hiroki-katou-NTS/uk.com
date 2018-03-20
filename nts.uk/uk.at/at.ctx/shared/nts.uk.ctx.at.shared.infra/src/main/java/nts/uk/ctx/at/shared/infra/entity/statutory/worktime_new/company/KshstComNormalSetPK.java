@@ -1,84 +1,110 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package entities;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshstComNormalSetPK.
  */
 @Embeddable
 public class KshstComNormalSetPK implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "YEAR")
-    private short year;
+	
+	/** The cid. */
+	@Size(min = 1, max = 17)
+	@Column(name = "CID")
+	private String cid;
 
-    public KshstComNormalSetPK() {
-    }
+	/** The year. */
+	@Column(name = "YEAR")
+	private short year;
 
-    public KshstComNormalSetPK(String cid, short year) {
-        this.cid = cid;
-        this.year = year;
-    }
+	/**
+	 * Instantiates a new kshst com normal set PK.
+	 */
+	public KshstComNormalSetPK() {
+	}
 
-    public String getCid() {
-        return cid;
-    }
+	/**
+	 * Instantiates a new kshst com normal set PK.
+	 *
+	 * @param cid the cid
+	 * @param year the year
+	 */
+	public KshstComNormalSetPK(String cid, short year) {
+		this.cid = cid;
+		this.year = year;
+	}
 
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
+	/**
+	 * Gets the cid.
+	 *
+	 * @return the cid
+	 */
+	public String getCid() {
+		return cid;
+	}
 
-    public short getYear() {
-        return year;
-    }
+	/**
+	 * Sets the cid.
+	 *
+	 * @param cid the new cid
+	 */
+	public void setCid(String cid) {
+		this.cid = cid;
+	}
 
-    public void setYear(short year) {
-        this.year = year;
-    }
+	/**
+	 * Gets the year.
+	 *
+	 * @return the year
+	 */
+	public short getYear() {
+		return year;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (int) year;
-        return hash;
-    }
+	/**
+	 * Sets the year.
+	 *
+	 * @param year the new year
+	 */
+	public void setYear(short year) {
+		this.year = year;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstComNormalSetPK)) {
-            return false;
-        }
-        KshstComNormalSetPK other = (KshstComNormalSetPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if (this.year != other.year) {
-            return false;
-        }
-        return true;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (int) year;
+		return hash;
+	}
 
-    @Override
-    public String toString() {
-        return "entities.KshstComNormalSetPK[ cid=" + cid + ", year=" + year + " ]";
-    }
-    
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KshstComNormalSetPK)) {
+			return false;
+		}
+		KshstComNormalSetPK other = (KshstComNormalSetPK) object;
+		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if (this.year != other.year) {
+			return false;
+		}
+		return true;
+	}
+
 }

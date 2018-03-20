@@ -41,7 +41,7 @@ public class KshstComTransLabTime extends UkJpaEntity implements Serializable {
 
 	/** The week str. */
 	@Column(name = "WEEK_STR")
-	private short weekStr;
+	private int weekStr;
 
 	/** The daily time. */
 	@Column(name = "DAILY_TIME")
