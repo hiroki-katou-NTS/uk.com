@@ -165,7 +165,8 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		};
 		
 		// 申請する開始日(input)から申請する終了日(input)までループする
-		for(GeneralDate loopDate = appStartDate; loopDate.beforeOrEquals(appEndDate); loopDate.addDays(1)){
+		for(int i = 0; appStartDate.compareTo(appEndDate) + i <= 0; i++){
+			GeneralDate loopDate = appStartDate.addDays(i);
 			if(loopDate.after(deadlineEndDate)){
 				continue;
 			}
