@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -96,11 +97,15 @@ public class DailyAggregationProcessService {
 					break;
 				case 1 :
 					for(GeneralDate date : period.getListDate()) {
-						String workTime = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).get().getWorkTimeCode();
+						String workTime = null;
+						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfoFunAdapterDto = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
+						if(recordWorkInfoFunAdapterDto.isPresent()) {
+							workTime = recordWorkInfoFunAdapterDto.get().getWorkTimeCode();
+						}
 						Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 						if(checkWorkTime.isPresent()) {
 							listValueExtractAlarm.add(checkWorkTime.get());
-						}
+						} 
 					}
 					break;
 				case 2 : 
