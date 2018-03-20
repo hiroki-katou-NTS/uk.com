@@ -37,7 +37,7 @@
 				<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									width: 350,
-									height: 280,
+									height: 255,
 									options: dataSource,
 									optionsValue: 'divergenceTimeNo',
 									columns: columns,
@@ -79,7 +79,7 @@
 							</td>
 							<td style="padding-left: 5px">
 								<!-- B4_2: Divergence Time Name --> <span
-								data-bind="text:divTimeName"></span>
+								data-bind="text:divergenceTypeName"></span>
 							</td>
 						</tr>
 						<tr class="row">
@@ -120,11 +120,11 @@
 
 						<tr class="row">
 							<td>
-								<!-- A3_12: Label -->
+								<!-- B3_12: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_14')}</div>
 							</td>
 							<td>
-								<!-- A3_13: Set use select -->
+								<!-- B3_13: Set use select -->
 								<div tabindex="8" id="inpUseSet" style="padding-left: 5px"
 									data-bind="ntsSwitchButton: {
 									options: useSet,

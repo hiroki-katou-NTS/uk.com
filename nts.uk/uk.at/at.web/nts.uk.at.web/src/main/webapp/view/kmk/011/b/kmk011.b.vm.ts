@@ -14,6 +14,9 @@ module nts.uk.at.view.kmk011.b {
             //B3_2
             selectUse: KnockoutObservable<any>;//value of B3_2
             enableUse: KnockoutObservable<boolean>; // for define enable for elements behind
+            
+            divergenceTypeId: KnockoutObservable<number>;//id divergenceTypeId;
+            divergenceTypeName: KnockoutObservable<string>; // B4_1 show
 
             divTimeName: KnockoutObservable<string>;//divergence name B3_4
             timeItemName: KnockoutObservable<string>;//list name KDL021 - B3_7
@@ -63,6 +66,7 @@ module nts.uk.at.view.kmk011.b {
                 ]);
 
                 self.selectUse = ko.observable(0);
+                self.divergenceTypeName = ko.observable('');
                 self.divergenceTimeName = ko.observable('');
                 self.divTimeName = ko.observable('');
                 self.timeItemName = ko.observable('');
@@ -218,20 +222,14 @@ module nts.uk.at.view.kmk011.b {
                         if (self.divergenceTimeId() == null) {
                             return;
                         }
-                        //set 4 gia tri boolean
-                        //                        var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
-                        //                        var input = new model.SelectSet(self.selelf.checkErrInput()));
-
-                        //                        var divTime = new model.DivergenceTime(self.divTimeId(), 0, self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
-                        var divergenceType = self.divergenceTimeId();  //temp
-                        var targetItems: number[] = null; //temp
+                        var divergenceType = 1;
                         var listIdSelect = [];
                         for (let i = 0; i < self.listItemSelected().length; i++) {
                             listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
                         }
                         var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divergenceTimeName(),
                             divergenceType, self.checkErrorInput(), self.checkErrorSelect(),
-                            self.selectInput(), self.selectSelect(), targetItems);
+                            self.selectInput(), self.selectSelect(), listIdSelect);
 
 
                         var listAdd = new Array<model.TimeItemSet>();
@@ -276,6 +274,13 @@ module nts.uk.at.view.kmk011.b {
                 if ($('.nts-editor').ntsError("hasError") == true) {
                     $('.nts-input').ntsError('clear');
                 }
+            }
+            //find divergenceTypeName by divergenceTypeId  - //temp - method will be fail
+            private findDivergenceTypeName(divergenceTypeId:number) {
+                let self = this;
+                return _.find(self.dataSource(), function(obj: model.DivergenceTime) {
+                    return obj.divergenceType == divergenceTypeId;
+                })
             }
             //get all divergence time new
             private getAllDivTimeNew() {
