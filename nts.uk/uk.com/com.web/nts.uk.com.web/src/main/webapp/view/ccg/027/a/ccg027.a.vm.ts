@@ -81,11 +81,9 @@ module nts.uk.com.view.ccg027.a.viewmodel {
             self.ListReturnCC(self.ListReturnCC.remove(function(item) { return item.length > 0; }));
             self.ListReturnBCC(self.ListReturnBCC.remove(function(item) { return item.length > 0; }));
 
-            var re = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-            $('#mailAddressCC').ntsError('clear');
-            $('#mailAddressBCC').ntsError('clear');
-            $('#senderAddress').ntsError('clear');
-            $('#mailRely').ntsError('clear');
+            //var re = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
+            $('.nts-input').ntsError('clear');
             
             if (self.ListReturnCC().length > 0) {
                 for (let entry of self.ListReturnCC()) {
@@ -139,8 +137,6 @@ module nts.uk.com.view.ccg027.a.viewmodel {
                 //nts.uk.ui.dialog.alertError({ messageId: "Msg_1114" });
                 kt = false;
             }
-            $('#mailRely').ntsError('check');
-            $('senderAddress').ntsError('check');
             return kt;
         }
         clean(arr: string[]): string[]{
