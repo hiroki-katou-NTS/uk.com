@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(80)
-@StringCharType(CharType.ANY_HALF_WIDTH)
+//@StringCharType(CharType.ANY_HALF_WIDTH)
 public class SelectionName extends StringPrimitiveValue<SelectionName>{
 
 	/**
