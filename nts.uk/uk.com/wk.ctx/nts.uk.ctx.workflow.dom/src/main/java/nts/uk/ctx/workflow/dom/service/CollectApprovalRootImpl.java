@@ -173,10 +173,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			// ドメインモデル「承認フェーズ」．承認形態をメモリ上保持する(luu thong tin 「承認フェーズ」．承認形態 vao cache) ??
 			
 			List<Approver> listApprover = new ArrayList<>();
+			approvalPhase.getApprovers().sort(Comparator.comparing(Approver::getOrderNumber));
 			approvalPhase.getApprovers().forEach(approver -> {
+				
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
 				
 				if(approver.getApprovalAtr().equals(ApprovalAtr.PERSON)){
+					if(listApprover.stream().filter(x -> x.getEmployeeId().equals(approver.getEmployeeId())).findAny().isPresent()){
+						return;
+					}
 					listApprover.add(approver);
 					return;
 				}
@@ -195,7 +200,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				if(CollectionUtil.isEmpty(listApproverJob)){
 					return;
 				}
-				listApprover.addAll(listApproverJob);
+				listApproverJob.forEach(x -> {
+					if(listApprover.stream().filter(y -> y.getEmployeeId().equals(x.getEmployeeId())).findAny().isPresent()){
+						return;
+					}
+					listApprover.add(x);
+				});
 			});
 			approvalPhase.getApprovers().clear();
 			if(CollectionUtil.isEmpty(listApprover)){

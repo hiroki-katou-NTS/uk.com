@@ -33,4 +33,6 @@ public class AppOvertimeSettingCommand {
     private int attendanceId;
     
     private int useOt;
+    
+    private int restAtr;
 }

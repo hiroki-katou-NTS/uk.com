@@ -6,7 +6,7 @@ module nts.uk.at.view.kmf003.b.service {
         findByCode: "at/share/lengthofservice/findByCode/{0}",
         findGrantByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
         addGrantHdTbl: "at/share/lengthofservice/add",
-        calculateGrantDate: "at/share/lengthofservice/calculateGrantDate"
+        calculateGrantDate: "at/share/grantholidaytbl/calculateGrantDate"
     }  
     
     /**

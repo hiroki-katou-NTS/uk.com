@@ -22,10 +22,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          * value obj 
          */
         reasonToApprover: KnockoutObservable<string> = ko.observable('');
-        reasonAppMess: string = nts.uk.resource.getText('KAF000_1');
-        reasonAppMessDealine: string = nts.uk.resource.getText('KAF000_2');
-        messageDeadlineTop: KnockoutObservable<string> = ko.observable('');
-        messageDeadlineBottom: KnockoutObservable<string> = ko.observable('');
+        reasonOutputMess : string = nts.uk.resource.getText('KAF000_1');
+        reasonOutputMessFull: KnockoutObservable<string> = ko.observable('');
+        reasonOutputMessDealine : string = nts.uk.resource.getText('KAF000_2');
+        reasonOutputMessDealineFull: KnockoutObservable<string> = ko.observable('');
+        messageArea : KnockoutObservable<boolean> = ko.observable(true);
         reasonApp: KnockoutObservable<string> = ko.observable('');
         inputCommonData: KnockoutObservable<model.InputCommonData> = ko.observable(null);
         dataApplication: KnockoutObservable<model.ApplicationDto> = ko.observable(null);
@@ -115,17 +116,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 let deadlineMsg = data.outputMessageDeadline;
-                if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
-                    self.messageDeadlineTop(self.reasonAppMess + deadlineMsg.message);
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
+                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    
                 }
-                if (!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)) {
-                    self.messageDeadlineBottom(self.reasonAppMessDealine + deadlineMsg.deadline);
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
-                if (nts.uk.text.isNullOrEmpty(deadlineMsg.message) && nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)) {
-                    self.displayButtonControl().displayMessageArea(true);
-                } else {
-                    self.displayButtonControl().displayMessageArea(false);
-                }
+                self.messageArea(deadlineMsg.chkShow);
                 self.getDetailCheck(self.inputDetail());
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -197,17 +194,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 && canApprove
                 && !expired);
         }
-
-        //補足1
-        //条件：「申請利用設定」．備考に内容なし &&  「申請締切設定」．利用区分が利用しない  &&  「事前の受付制限」．利用区分が利用しない  &&  「事後の受付制限」．未来日許可しないがfalse
-        isShowMessage() {
-            let self = this;
-            if (nts.uk.text.isNullOrEmpty(self.messageDeadlineTop) || nts.uk.text.isNullOrEmpty(self.messageDeadlineBottom)) {
-
-            } else {
-                this.displayButtonControl().displayMessageArea(false);
-            }
-        }
+        
         //get all reason by app ID
         getAllReasonByAppID(appID: string) {
             let self = this;

@@ -10,6 +10,11 @@ public interface ErAlWorkRecordCheckServicePub {
 
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, String EACheckID);
+	
+	public Map<String, List<RegulationInfoEmployeeQueryResult>> filterEmployees(GeneralDate workingDate,
+			Collection<String> employeeIds, List<String> EACheckIDs);
 
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds, String EACheckID);
+
+	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds, List<String> EACheckIDs);
 }

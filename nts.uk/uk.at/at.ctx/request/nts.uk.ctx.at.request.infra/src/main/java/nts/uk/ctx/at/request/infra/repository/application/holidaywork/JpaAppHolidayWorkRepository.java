@@ -109,4 +109,21 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		}
 		this.commandProxy().remove(KrqdtAppHolidayWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
 	}
+	/**
+	 * get Application Holiday Work and Frame
+	 * @author hoatt
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public Optional<AppHolidayWork> getAppHolidayWorkFrame(String companyID, String appID) {
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		if(!opKrqdtAppHolidayWork.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
+		return Optional.of(appHolidayWork);
+	}
 }

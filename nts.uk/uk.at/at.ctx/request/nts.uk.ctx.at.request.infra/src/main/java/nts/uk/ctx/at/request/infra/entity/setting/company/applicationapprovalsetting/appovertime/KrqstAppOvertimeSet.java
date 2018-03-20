@@ -73,6 +73,9 @@ public class KrqstAppOvertimeSet extends UkJpaEntity implements Serializable {
     @Column(name = "USE_OT_WORK")
     private int useOt;
     
+    @Column(name = "REST_ATR")
+    private int restAtr;
+    
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
