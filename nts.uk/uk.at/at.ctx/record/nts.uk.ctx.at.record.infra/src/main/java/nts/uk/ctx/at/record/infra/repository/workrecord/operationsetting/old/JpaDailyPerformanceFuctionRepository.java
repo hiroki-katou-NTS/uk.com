@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformFuncRepo;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceFun;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceFunOld;
 
 /**
  * @author danpv
@@ -25,8 +25,8 @@ public class JpaDailyPerformanceFuctionRepository extends JpaRepository
 
 	@Override
 	public List<DailyPerformanceFunction> getAll() {
-		List<KrcmtDaiPerformanceFun> entities = this.queryProxy()
-				.query(GET_ALL_DAI_PER_FUNC, KrcmtDaiPerformanceFun.class).getList();
+		List<KrcmtDaiPerformanceFunOld> entities = this.queryProxy()
+				.query(GET_ALL_DAI_PER_FUNC, KrcmtDaiPerformanceFunOld.class).getList();
 		List<DailyPerformanceFunction> results = new ArrayList<>();
 		entities.forEach(ent -> results.add(
 				new DailyPerformanceFunction(ent.functionNo, ent.displayNameOfFunction, ent.descriptionOfFunction)));
