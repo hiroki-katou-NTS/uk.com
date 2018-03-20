@@ -1532,8 +1532,21 @@ module nts.uk.ui.jqueryExtentions {
                 let ds = $grid.igGrid("option", "dataSource");
                 let primaryKey = $grid.igGrid("option", "primaryKey");
                 if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX) return;
+                let setting = $grid.data(internal.SETTINGS);
+                let states = setting.disableStates;
                 for (let i = 0; i < ds.length; i++) {
                     let id = ds[i][primaryKey];
+                    let cols;
+                    if (states && (cols = states[id])) {
+                        let found = false;
+                        cols.forEach(function(c, i) {
+                            if (c === key) {
+                                found = true;
+                                return false;
+                            }
+                        });
+                        if (found) continue;
+                    }
                     updating.updateCell($grid, id, key, true, undefined, true);
                 }
             }
@@ -1545,8 +1558,21 @@ module nts.uk.ui.jqueryExtentions {
                 let ds = $grid.igGrid("option", "dataSource");
                 let primaryKey = $grid.igGrid("option", "primaryKey");
                 if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX) return;
+                let setting = $grid.data(internal.SETTINGS);
+                let states = setting.disableStates;
                 for (let i = 0; i < ds.length; i++) {
                     let id = ds[i][primaryKey];
+                    let cols;
+                    if (states && (cols = states[id])) {
+                        let found = false;
+                        cols.forEach(function(c, i) {
+                            if (c === key) {
+                                found = true;
+                                return false;
+                            }
+                        });
+                        if (found) continue;
+                    }
                     updating.updateCell($grid, id, key, false, undefined, true);
                 }
             }
@@ -3661,8 +3687,10 @@ module nts.uk.ui.jqueryExtentions {
                             // Disable row
                             if (!util.isNullOrUndefined(self.disableRows)) {
                                 let disableRow = self.disableRows[cell.id];
-                                if (!util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable)
+                                if (!util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                     $gridCell.addClass(color.Disable);
+                                    self.addDisableState(cell.id, cell.columnKey);
+                                }
                             }
                             // Set cell states
                             if (!util.isNullOrUndefined(statesTable) && !util.isNullOrUndefined(rowIdName) 
@@ -3672,6 +3700,7 @@ module nts.uk.ui.jqueryExtentions {
                                 if (util.isNullOrUndefined(cellState) || cellState.length === 0) return;
                                 _.forEach(cellState[0][stateName], function(stt: any) {
                                     $gridCell.addClass(stt);
+                                    if (stt === color.Disable) self.addDisableState(cell.id, cell.columnKey);
                                 });
                             }
                         }, 0);
@@ -3681,9 +3710,35 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 /**
+                 * Add disable state.
+                 */
+                addDisableState(id: any, key: any) {
+                    let self = this;
+                    let setting = self.$grid.data(internal.SETTINGS);
+                    if (!setting) return;
+                    if (!setting.disableStates) {
+                        setting.disableStates = {};
+                        Set cs = new Set();
+                        cs.add(key);
+                        setting.disableStates[id] = cs;
+                        return;
+                    }
+                    
+                    let cols = setting.disableStates[id];
+                    if (!cols) {
+                        Set cs = new Set();
+                        cs.add(key);
+                        setting.disableStates[id] = cs;
+                    } else {
+                        setting.disableStates[id].add(key);
+                    }
+                }
+                
+                /**
                  * Style common controls.
                  */
                 style($grid: JQuery, cell: any) {
+                    let self = this;
                     if (util.isNullOrUndefined(this.cellStateFeatureDef)) return;
                     let rowIdName: string = this.cellStateFeatureDef.rowId;
                     let columnKeyName: string = this.cellStateFeatureDef.columnKey;
@@ -3697,6 +3752,7 @@ module nts.uk.ui.jqueryExtentions {
                         if (!util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                             cell.$element.addClass(color.Disable);
                             utils.disableNtsControl($grid, cell, controlType);
+                            self.addDisableState(cell.id, cell.columnKey);
                         }
                     }
                     // Set cell states
@@ -3708,6 +3764,7 @@ module nts.uk.ui.jqueryExtentions {
                         _.forEach(cellState[0][stateName], function(stt: any) {
                             if (stt === Disable && !cell.$element.hasClass(Disable)) {
                                 utils.disableNtsControl($grid, cell, controlType);
+                                self.addDisableState(cell.id, cell.columnKey);
                             }
                             cell.$element.addClass(stt);
                         });
@@ -4284,6 +4341,7 @@ module nts.uk.ui.jqueryExtentions {
                     _.forEach(data, function(rData, index) {
                         for (let i = startIndex; i < endIndex; i++) {
                             if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
+                                rData = _.merge(rData, dataSource[i]);
                                 rData.loaded = true;
                                 dataSource.splice(i, 1, rData); 
                                 if (add) origDs[i] = _.cloneDeep(rData);
@@ -4969,6 +5027,7 @@ module nts.uk.ui.jqueryExtentions {
             export function outsideGrid($grid: JQuery, target) {
                 return !$grid.is(target) && $grid.has(target).length === 0;
             }
+            
         }
     }
 }
