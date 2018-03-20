@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeQueryResult;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
 
@@ -23,16 +24,36 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, String EACheckID) {
 		return this.checkService.filterEmployees(workingDate, employeeIds, EACheckID).stream()
-				.map(r -> RegulationInfoEmployeeQueryResult.builder().employeeCode(r.getEmployeeCode())
-						.employeeId(r.getEmployeeId()).employeeName(r.getEmployeeName())
-						.workplaceCode(r.getWorkplaceCode()).workplaceId(r.getWorkplaceId())
-						.workplaceName(r.getWorkplaceName()).build())
+				.map(r -> mapTo(r))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds, String EACheckID) {
 		return this.checkService.check(workingDate, employeeIds, EACheckID);
+	}
+
+	@Override
+	public Map<String, List<RegulationInfoEmployeeQueryResult>> filterEmployees(GeneralDate workingDate,
+			Collection<String> employeeIds, List<String> EACheckIDs) {
+		
+		return this.checkService.filterEmployees(workingDate, employeeIds, EACheckIDs)
+									.entrySet().stream().collect(Collectors.toMap(
+											c -> c.getKey(), 
+											c -> c.getValue().stream().map(r -> mapTo(r)).collect(Collectors.toList())));
+	}
+
+	@Override
+	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
+			List<String> EACheckIDs) {
+		return this.checkService.check(workingDate, employeeIds, EACheckIDs);
+	}
+
+	private RegulationInfoEmployeeQueryResult mapTo(RegulationInfoEmployeeQueryR r) {
+		return RegulationInfoEmployeeQueryResult.builder().employeeCode(r.getEmployeeCode())
+				.employeeId(r.getEmployeeId()).employeeName(r.getEmployeeName())
+				.workplaceCode(r.getWorkplaceCode()).workplaceId(r.getWorkplaceId())
+				.workplaceName(r.getWorkplaceName()).build();
 	}
 
 }

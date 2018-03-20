@@ -47,7 +47,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		//休憩時間帯の作成
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		//-----------
-		if(imp.getBreakStartTime().equals(null) || imp.getBreakEndTime().equals(null)) {
+		if(imp.getBreakStartTime() != null && imp.getBreakEndTime() != null) {
 			breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(1),
 							new TimeWithDayAttr(imp.getBreakStartTime().valueAsMinutes()),
 							new TimeWithDayAttr(imp.getBreakEndTime().valueAsMinutes()),

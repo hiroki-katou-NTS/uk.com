@@ -24,6 +24,8 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.DoubleStampAlgorithm;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.ExitStampCheck;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.ExitStampIncorrectOrderCheck;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.GoingOutStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.GoingOutStampOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.LackOfStampingAlgorithm;
@@ -99,6 +101,12 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
+	
+	@Inject
+	private ExitStampCheck exitStampCheck;
+	
+	@Inject
+	private ExitStampIncorrectOrderCheck exitStampIncorrectOrderCheck;
 
 	@Override
 	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
@@ -498,6 +506,21 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// 休憩系打刻順序不正をチェックする
 		// breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
+		UseAtr useAtr2 = UseAtr.USE;
+		if (useAtr2 == UseAtr.USE) {
+			// 入退門の打刻漏れをチェックする
+			// TODO - has not attendanceLeavingGateOfDaily
+//			exitStampCheck.exitStampCheck(companyID, employeeID, processingDate, attendanceLeavingGateOfDaily, workInfoOfDailyPerformance);
+			// 入退門の打刻順序不正をチェックする
+			// TODO - has not attendanceLeavingGateOfDaily
+//			exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyID, employeeID, processingDate, attendanceLeavingGateOfDaily, timeLeavingOfDailyPerformance);
+		}
+		
+		UseAtr useAtr3 = UseAtr.USE;
+		if (useAtr3 == UseAtr.USE) {
+			// PCログオンログオフの打刻漏れをチェックする
+			// TODO
+		}
 	}
 
 	/*

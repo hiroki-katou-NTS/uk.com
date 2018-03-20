@@ -12,7 +12,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapte
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -32,12 +34,15 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 	
+	@Inject
+	private InitMode initMode;
+	
 	@Override
 	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(String companyID, String employeeID, String appID, GeneralDate baseDate) {
 		
 		Application_New applicationData = applicationRepository.findByID(companyID, appID).get();
 		// Output variables
-		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
+		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false, OutputMode.DISPLAYMODE);
 		if(applicationData.getEmployeeID().equals(employeeID)||applicationData.getEnteredPersonID().equals(employeeID)) {
 			outputData.setLoginInputOrApproval(true);
 		}
@@ -78,6 +83,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			outputData.setApprovalATR(EnumAdaptor.valueOf(approverPersonImport.getApprovalAtr().value, ApprovalAtr.class));
 			outputData.setAlternateExpiration(approverPersonImport.getExpirationAgentFlag());
 		}
+		outputData.setScreenMode(initMode.getDetailScreenInitMode(outputData.getUser(), outputData.getReflectPlanState().value).getOutputMode());
 		return outputData;
 	}
 }

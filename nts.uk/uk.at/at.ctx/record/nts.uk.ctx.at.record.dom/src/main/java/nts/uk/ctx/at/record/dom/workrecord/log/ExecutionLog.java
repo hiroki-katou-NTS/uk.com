@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
  *
  */
 @Getter
-public class ExecutionLog {
+public class ExecutionLog extends AggregateRoot {
 	
 	/** 就業計算と集計実行ログID */
 	private String empCalAndSumExecLogID;
