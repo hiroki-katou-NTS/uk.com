@@ -11,7 +11,8 @@ module nts.uk.at.view.kmk003.h {
             useStamp: KnockoutObservable<boolean>;
             useStampCalcMethod: KnockoutObservable<number>;
             timeManagerSetAtr: KnockoutObservable<number>;
-            calculationMethod: KnockoutObservable<number>;
+            calcMethodFixed: KnockoutObservable<number>;
+            calcMethodFluctuation: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
@@ -22,7 +23,8 @@ module nts.uk.at.view.kmk003.h {
                 self.useStamp = ko.observable(false);
                 self.useStampCalcMethod = ko.observable(0);
                 self.timeManagerSetAtr = ko.observable(0);
-                self.calculationMethod = ko.observable(0);
+                self.calcMethodFixed = ko.observable(0);
+                self.calcMethodFluctuation = ko.observable(0);
             }
 
             /**
@@ -43,11 +45,18 @@ module nts.uk.at.view.kmk003.h {
              */
             private bindingData() {
                 let self = this;
-                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_DTO");
-
+                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_INPUT");
                 
+                self.isCalcFromSchedule(dto.isCalcFromSchedule ? dto.isCalcFromSchedule : false);
+                self.isReferRestTime(dto.isReferRestTime ? dto.isReferRestTime : false);
+                self.usePrivateGoOutRest(dto.usePrivateGoOutRest ? dto.usePrivateGoOutRest : false);
+                self.useAssoGoOutRest(dto.useAssoGoOutRest ? dto.useAssoGoOutRest : false);
+                self.useStamp(dto.useStamp ? dto.useStamp : false);
+                self.useStampCalcMethod(dto.useStampCalcMethod ? dto.useStampCalcMethod : 0);
+                self.timeManagerSetAtr(dto.timeManagerSetAtr ? dto.timeManagerSetAtr : 0);
+                self.calcMethodFixed(dto.calcMethodFixed ? dto.calcMethodFixed : 0);
+                self.calcMethodFluctuation(dto.calcMethodFluctuation ? dto.calcMethodFluctuation : 0);
 
-                //TODO
             }
 
             /**
@@ -56,7 +65,7 @@ module nts.uk.at.view.kmk003.h {
             public save(): void {
                 let self = this;
 
-                let dto: any = {
+                let dto: DialogHParam = {
                     isCalcFromSchedule: self.isCalcFromSchedule(),
                     isReferRestTime: self.isReferRestTime(),
                     usePrivateGoOutRest: self.usePrivateGoOutRest(),
@@ -64,10 +73,11 @@ module nts.uk.at.view.kmk003.h {
                     useStamp: self.useStamp(),
                     useStampCalcMethod: self.useStampCalcMethod(),
                     timeManagerSetAtr: self.timeManagerSetAtr(),
-                    calculationMethod: self.calculationMethod()
+                    calcMethodFixed: self.calcMethodFixed(),
+                    calcMethodFluctuation: self.calcMethodFluctuation()
                 };
 
-                nts.uk.ui.windows.setShared("KMK003_DIALOG_H_DTO", dto);
+                nts.uk.ui.windows.setShared("KMK003_DIALOG_H_OUTPUT", dto);
                 self.close();
             }
 
@@ -81,7 +91,8 @@ module nts.uk.at.view.kmk003.h {
         }
 
         export interface DialogHParam {
-            calculationMethod: number;
+            calcMethodFixed: number;
+            calcMethodFluctuation;
             isCalcFromSchedule: boolean;
             isReferRestTime: boolean;
             usePrivateGoOutRest: boolean;

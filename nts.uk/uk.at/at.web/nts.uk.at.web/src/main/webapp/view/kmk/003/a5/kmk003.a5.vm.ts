@@ -105,6 +105,23 @@ module a5 {
 
         }
 
+        public openFixedBreakSetting(): void {
+            let self = this;
+            let input = {};
+            nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
+            nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index2.xhtml").onClosed(() => {
+                // TODO: output
+            });
+        }
+        public openFlowBreakSetting(): void {
+            let self = this;
+            let input = {};
+            nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
+            nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index.xhtml").onClosed(() => {
+                //TODO: output
+            });
+        }
+
         /**
          * Load data from main screen
          */

@@ -1,5 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<div class="pull-right">
+		<button tabindex="69"  data-bind="click: openDialogG">#{i18n.getText('KMK003_192')}</button>
+		<com:ko tag="if" bind="isFlowTimezone() || isFlexTimezone()">
+			<button tabindex="69" data-bind="click: openFixedBreakSetting">#{i18n.getText('KMK003_225')}</button>
+		</com:ko>
+		<com:ko tag="if" bind="isFlowRestTime() || isFlexRestTime()">
+			<button tabindex="69" data-bind="click: openFlowBreakSetting">#{i18n.getText('KMK003_227')}</button>
+		</com:ko>
+	</div>
+	<div class="cf"></div>
 	<!-- Begin Fixed rest time switch button -->
 	<com:ko tag="if" bind="isFlex">
 		<div class="tab-rows">
