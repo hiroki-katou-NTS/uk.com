@@ -12,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
 
 @Path("at/record/remainnumber/resvLea")
 @Produces("application/json")
@@ -30,7 +30,7 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	
 	@POST
 	@Path("getResvLea/{empId}")
-	public List<AnnLeaGrantRemnNumDto> findResvLeaGrantRemnNum(@PathParam("empId") String employeeId) {
+	public List<ResvLeaGrantRemNumDto> findResvLeaGrantRemnNum(@PathParam("empId") String employeeId) {
 		return null;
 	}
 	
