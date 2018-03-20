@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * The Class SubmitLoginFormTwoCommand.
  */
@@ -27,6 +29,9 @@ public class SubmitLoginFormTwoCommand {
 	
 	/** The is sign on. */
 	private boolean signOn;
+	
+	/** The request. */
+	private HttpServletRequest request;
 	
 	/**
 	 * Gets the company code.
@@ -135,4 +140,22 @@ public class SubmitLoginFormTwoCommand {
     public void setSignOn(boolean signOn) {
         this.signOn = signOn;
     }
+
+	/**
+	 * Gets the request.
+	 *
+	 * @return the request
+	 */
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	/**
+	 * Sets the request.
+	 *
+	 * @param request the new request
+	 */
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
 }

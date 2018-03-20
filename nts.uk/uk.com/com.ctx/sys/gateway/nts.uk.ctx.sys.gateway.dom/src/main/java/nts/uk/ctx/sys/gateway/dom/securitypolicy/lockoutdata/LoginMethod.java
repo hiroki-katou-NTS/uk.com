@@ -2,18 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
 /**
- * The Enum LogType.
+ * The Enum LoginMethod.
  */
-public enum LogType {
+public enum LoginMethod {
 	
-	/** The auto lock. */
-	AUTO_LOCK(0, "Enum_Auto_Lock", "自動ロック"),
+	/** The normal login. */
+	NORMAL_LOGIN(0, "Enum_Normal_Login", "通常ログイン"),
 
-	/** The enforcement lock. */
-	ENFORCEMENT_LOCK(1, "Enum_Enforcement_Lock", "強制ロック");
+	/** The single sign on. */
+	SINGLE_SIGN_ON(1, "Enum_Single_Sign-on", "シングルサインオン");
 
 	/** The value. */
 	public int value;
@@ -25,7 +25,7 @@ public enum LogType {
 	public String description;
 
 	/** The Constant values. */
-	private final static LogType[] values = LogType.values();
+	private final static LoginMethod[] values = LoginMethod.values();
 
 	/**
 	 * Instantiates a new manage distinct.
@@ -34,7 +34,7 @@ public enum LogType {
 	 * @param nameId the name id
 	 * @param description            the description
 	 */
-	private LogType(int value, String nameId, String description) {
+	private LoginMethod(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -47,14 +47,14 @@ public enum LogType {
 	 *            the value
 	 * @return the manage distinct
 	 */
-	public static LogType valueOf(Integer value) {
+	public static LoginMethod valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (LogType val : LogType.values) {
+		for (LoginMethod val : LoginMethod.values) {
 			if (val.value == value) {
 				return val;
 			}

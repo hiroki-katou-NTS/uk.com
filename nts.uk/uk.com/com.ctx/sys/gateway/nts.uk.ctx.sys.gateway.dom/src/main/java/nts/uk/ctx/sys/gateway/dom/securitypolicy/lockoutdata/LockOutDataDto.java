@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
 import lombok.Builder;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 
 /**
@@ -14,16 +14,16 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
  */
 @Builder
 @Value
-public class LogoutDataDto implements LogoutDataGetMemento {
+public class LockOutDataDto implements LockOutDataGetMemento {
 
 	/** The user id. */
 	private String userId;
 
 	/** The logout date time. */
-	private GeneralDate logoutDateTime;
+	private GeneralDateTime logoutDateTime;
 
 	/** The log type. */
-	private Integer logType;
+	private Integer lockType;
 
 	/** The contract code. */
 	private String contractCode;
@@ -43,7 +43,7 @@ public class LogoutDataDto implements LogoutDataGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutDataGetMemento#getLogoutDateTime()
 	 */
 	@Override
-	public GeneralDate getLogoutDateTime() {
+	public GeneralDateTime getLockOutDateTime() {
 		return this.logoutDateTime;
 	}
 
@@ -51,8 +51,8 @@ public class LogoutDataDto implements LogoutDataGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutDataGetMemento#getLogType()
 	 */
 	@Override
-	public LogType getLogType() {
-		return LogType.valueOf(this.logType);
+	public LockType getLogType() {
+		return LockType.valueOf(this.lockType);
 	}
 
 	/* (non-Javadoc)

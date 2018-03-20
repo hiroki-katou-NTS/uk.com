@@ -1,15 +1,15 @@
 package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.logoutdata;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogType;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LoginMethod;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutDataSetMemento;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataSetMemento;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.logoutdata.SgwmtLogoutData;
 
-public class JpaLogoutDataSetMemento implements LogoutDataSetMemento {
+public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 
-	public JpaLogoutDataSetMemento(SgwmtLogoutData entity) {
+	public JpaLockOutDataSetMemento(SgwmtLogoutData entity) {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -20,13 +20,13 @@ public class JpaLogoutDataSetMemento implements LogoutDataSetMemento {
 	}
 
 	@Override
-	public void setLogoutDateTime(GeneralDate logoutDateTime) {
+	public void setLogoutDateTime(GeneralDateTime logoutDateTime) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setLogType(LogType logType) {
+	public void setLogType(LockType logType) {
 		// TODO Auto-generated method stub
 		
 	}

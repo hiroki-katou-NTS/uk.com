@@ -3,6 +3,7 @@ module nts.uk.pr.view.ccg007.b {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
         import blockUI = nts.uk.ui.block;
+        import SubmitData = service.SubmitData;
         export class ScreenModel {
             loginId: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -80,31 +81,29 @@ module nts.uk.pr.view.ccg007.b {
 
             private submitLogin() {
                 var self = this;
-                var submitData: any = {};
+                var submitData = <SubmitData>{};
                 submitData.loginId = nts.uk.text.padRight(_.escape(self.loginId()), " ", 12);
                 submitData.password = _.escape(self.password());
                 submitData.contractCode = _.escape(self.contractCode());
                 submitData.contractPassword = _.escape(self.contractPassword());
                 
                 blockUI.invisible();
-                if (!nts.uk.ui.errors.hasError()) {
-                    service.submitLogin(submitData).done(function() {
-                        nts.uk.request.login.keepUsedLoginPage();
-                        nts.uk.characteristics.remove("form1LoginInfo").done(function() {
-                            if (self.isSaveLoginInfo()) {
-                                nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
-                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
-                                });
-                            } else {
+                service.submitLogin(submitData).done(function() {
+                    nts.uk.request.login.keepUsedLoginPage();
+                    nts.uk.characteristics.remove("form1LoginInfo").done(function() {
+                        if (self.isSaveLoginInfo()) {
+                            nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
                                 nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
-                            }
-                        });
-                        blockUI.clear();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                        blockUI.clear();
+                            });
+                        } else {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
+                        }
                     });
-                }
+                    blockUI.clear();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    blockUI.clear();
+                });
             }
         }
     }

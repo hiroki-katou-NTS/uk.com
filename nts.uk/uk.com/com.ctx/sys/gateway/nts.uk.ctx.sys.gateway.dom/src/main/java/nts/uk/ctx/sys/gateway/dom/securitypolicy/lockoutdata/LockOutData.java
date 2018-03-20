@@ -2,26 +2,26 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 
 /**
  * The Class LogoutData.
  */
 @Getter
-public class LogoutData {
+public class LockOutData {
 
 	/** The user id. */
 	private String userId;
 	
 	/** The logout date time. */
-	private GeneralDate logoutDateTime;
+	private GeneralDateTime lockOutDateTime;
 	
 	/** The log type. */
-	private LogType logType;
+	private LockType logType;
 	
 	/** The contract code. */
 	private ContractCode contractCode;
@@ -34,9 +34,9 @@ public class LogoutData {
 	 *
 	 * @param memento the memento
 	 */
-	public LogoutData(LogoutDataGetMemento memento) {
+	public LockOutData(LockOutDataGetMemento memento) {
 		this.userId = memento.getUserId();
-		this.logoutDateTime = memento.getLogoutDateTime();
+		this.lockOutDateTime = memento.getLockOutDateTime();
 		this.logType = memento.getLogType();
 		this.contractCode = memento.getContractCode();
 		this.loginMethod = memento.getLoginMethod();
@@ -47,9 +47,9 @@ public class LogoutData {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(LogoutDataSetMemento memento) {
+	public void saveToMemento(LockOutDataSetMemento memento) {
 		memento.setUserId(this.userId);
-		memento.setLogoutDateTime(this.logoutDateTime);
+		memento.setLogoutDateTime(this.lockOutDateTime);
 		memento.setLogType(this.logType);
 		memento.setContractCode(this.contractCode);
 		memento.setLoginMethod(this.loginMethod);

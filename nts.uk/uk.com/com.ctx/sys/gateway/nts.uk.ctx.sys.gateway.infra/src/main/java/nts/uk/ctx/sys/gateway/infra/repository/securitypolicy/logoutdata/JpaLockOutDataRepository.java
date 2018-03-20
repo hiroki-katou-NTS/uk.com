@@ -16,8 +16,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutData;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutDataRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.logoutdata.SgwmtLogoutData;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.logoutdata.SgwmtLogoutDataPK_;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.logoutdata.SgwmtLogoutData_;
@@ -26,7 +26,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.logoutdata.SgwmtLogout
  * The Class JpaLogoutDataRepository.
  */
 @Stateless
-public class JpaLogoutDataRepository extends JpaRepository implements LogoutDataRepository {
+public class JpaLockOutDataRepository extends JpaRepository implements LockOutDataRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaLogoutDataRepository extends JpaRepository implements LogoutData
 	 * #findByUserId(java.lang.String)
 	 */
 	@Override
-	public Optional<LogoutData> findByUserId(String userId) {
+	public Optional<LockOutData> findByUserId(String userId) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -55,14 +55,14 @@ public class JpaLogoutDataRepository extends JpaRepository implements LogoutData
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {
-			return Optional.of(new LogoutData(new JpaLogoutDataGetMemento(result.get(0))));
+			return Optional.of(new LockOutData(new JpaLockOutDataGetMemento(result.get(0))));
 		}
 	}
 
 	@Override
-	public void add(LogoutData logoutData) {
+	public void add(LockOutData lockOutData) {
 		SgwmtLogoutData entity = new SgwmtLogoutData();
-		logoutData.saveToMemento(new JpaLogoutDataSetMemento(entity));
+		lockOutData.saveToMemento(new JpaLockOutDataSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
 }

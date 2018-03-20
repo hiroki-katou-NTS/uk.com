@@ -2,15 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata;
+package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 
 /**
  * The Interface LogoutDataSetMemento.
  */
-public interface LogoutDataSetMemento {
+public interface LockOutDataSetMemento {
 	
 	/**
 	 * Sets the user id.
@@ -24,14 +24,14 @@ public interface LogoutDataSetMemento {
 	 *
 	 * @param logoutDateTime the new logout date time
 	 */
-	public void setLogoutDateTime(GeneralDate logoutDateTime);
+	public void setLogoutDateTime(GeneralDateTime logoutDateTime);
 
 	/**
 	 * Sets the log type.
 	 *
 	 * @param logType the new log type
 	 */
-	public void setLogType(LogType logType);
+	public void setLogType(LockType logType);
 
 	/**
 	 * Sets the contract code.

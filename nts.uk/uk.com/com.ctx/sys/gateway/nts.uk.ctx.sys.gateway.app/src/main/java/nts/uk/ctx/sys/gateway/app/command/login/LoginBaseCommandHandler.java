@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
@@ -35,12 +37,19 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogType;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutData;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.logoutdata.LogoutDataDto;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataDto;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLog;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogDto;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
@@ -80,17 +89,26 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	@Inject
 	private RoleFromUserIdAdapter roleFromUserIdAdapter;
 
+	/** The window account repository. */
 	@Inject
 	private WindowAccountRepository windowAccountRepository;
-	
+
+	/** The user adapter. */
 	@Inject
 	private UserAdapter userAdapter;
-	
+
+	/** The account lock policy repository. */
 	@Inject
 	private AccountLockPolicyRepository accountLockPolicyRepository;
-	
-//	@Inject
-//	private LogoutDataRepository logoutDataRepository;
+
+	/** The login log repository. */
+	@Inject
+	private LoginLogRepository loginLogRepository;
+
+	/** The lock out data repository. */
+	@Inject
+	private LockOutDataRepository lockOutDataRepository;
+
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
 
@@ -113,6 +131,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	protected abstract void internalHanler(CommandHandlerContext<T> context);
 
+	/**
+	 * Re check contract.
+	 *
+	 * @param contractCode
+	 *            the contract code
+	 * @param contractPassword
+	 *            the contract password
+	 */
 	protected void reCheckContract(String contractCode, String contractPassword) {
 		SystemConfig systemConfig = this.getSystemConfig();
 		// case Cloud
@@ -128,8 +154,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/**
 	 * Check contract input.
 	 *
-	 * @param command
-	 *            the command
+	 * @param contractCode
+	 *            the contract code
+	 * @param contractPassword
+	 *            the contract password
 	 */
 	private void checkContractInput(String contractCode, String contractPassword) {
 		if (StringUtil.isNullOrEmpty(contractCode, true)) {
@@ -143,14 +171,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/**
 	 * Check employee del status.
 	 *
-	 * @param sId the s id
+	 * @param sid
+	 *            the sid
 	 */
 	protected void checkEmployeeDelStatus(String sid) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
 
-		if (!optMngInfo.isPresent()
-				|| !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
+		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
 			throw new BusinessException("Msg_301");
 		}
 	}
@@ -158,8 +186,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/**
 	 * Contract acc auth.
 	 *
-	 * @param command
-	 *            the command
+	 * @param contractCode
+	 *            the contract code
+	 * @param contractPassword
+	 *            the contract password
 	 */
 	private void contractAccAuth(String contractCode, String contractPassword) {
 		Optional<Contract> contract = contractRepository.getContract(contractCode);
@@ -191,8 +221,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	protected void setLoggedInfo(UserImport user, EmployeeImport em, String companyCode) {
 		// set info to session
-		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(),
-				em.getCompanyId(), companyCode, em.getEmployeeId(), em.getEmployeeCode());
+		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
+				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
 
 	/**
@@ -203,11 +233,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	// init session
 	protected void initSession(UserImport user) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
-				user.getAssociatePersonId());
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(),
-					user.getContractCode(), null, null, null, null);
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
+					null, null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
@@ -294,8 +323,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @return the role id
 	 */
 	protected String getRoleId(String userId, RoleType roleType) {
-		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value,
-				GeneralDate.today());
+		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today());
 		if (roleId == null || roleId.isEmpty()) {
 			return null;
 		}
@@ -314,64 +342,90 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Compare hash password.
 	 *
-	 * @param user the user
-	 * @param password the password
+	 * @param user
+	 *            the user
+	 * @param password
+	 *            the password
 	 */
 	protected void compareHashPassword(UserImport user, String password) {
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
-			//アルゴリズム「ロックアウト」を実行する　※２次対応
-			this.logoutExecuted(user);
+			// アルゴリズム「ロックアウト」を実行する ※２次対応
+			this.lockOutExecuted(user);
 			throw new BusinessException("Msg_302");
 		}
 	}
-	
-	private void logoutExecuted(UserImport user)
-	{
-		//TODO get count failure
-		Integer countFailure = 0;
-		
-		//ドメインモデル「アカウントロックポリシー」を取得する
-		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(user.getContractCode())).get();
+
+	/**
+	 * Lock out executed.
+	 *
+	 * @param user the user
+	 */
+	private void lockOutExecuted(UserImport user) {
+		// ドメインモデル「アカウントロックポリシー」を取得する
+		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
+				.getAccountLockPolicy(new ContractCode(user.getContractCode())).get();
 		if (accountLockPolicy.isUse()) {
-			// ロックアウト条件に満たしているかをチェックする
-			if (countFailure < accountLockPolicy.getErrorCount().v().intValue()) {
-				return;
-			} else {
-				// ドメインモデル「ロックアウトデータ」に１件レコードを追加する
-				LogoutDataDto dto = LogoutDataDto.builder().contractCode(user.getContractCode())
-						.userId(user.getUserId()).logoutDateTime(GeneralDate.today()).logType(LogType.AUTO_LOCK.value)
-						.build();
-				LogoutData logoutData = new LogoutData(dto);
-//				this.logoutDataRepository.add(logoutData);
-
-				// エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する
-				throw new BusinessException(accountLockPolicy.getLockOutMessage().v());
+			// ロックアウト条件に満たしているかをチェックする (Check whether the lockout condition is satisfied)
+			if(this.checkLoginLog(user.getUserId(), accountLockPolicy)){
+				//Add to domain model LockOutData
+				LockOutDataDto dto = LockOutDataDto.builder().userId(user.getUserId()).contractCode(accountLockPolicy.getContractCode().v())
+						.logoutDateTime(GeneralDateTime.now()).lockType(LockType.AUTO_LOCK.value).build();
+				LockOutData lockOutData = new LockOutData(dto);
+				this.lockOutDataRepository.add(lockOutData);
 			}
+		}
+		//Add to the domain model LoginLog
+		LoginLogDto dto = LoginLogDto.builder().userId(user.getUserId()).contractCode(accountLockPolicy.getContractCode().v())
+				.processDateTime(GeneralDateTime.now()).successOrFail(SuccessFailureClassification.Failure.value).operation(OperationSection.Login.value).build();
+		LoginLog loginLog = new LoginLog(dto);
+		this.loginLogRepository.add(loginLog);
+	}
 
+	/**
+	 * Check login log.
+	 *
+	 * @param userId the user id
+	 * @param accountLockPolicy the account lock policy
+	 * @return true, if successful
+	 */
+	private boolean checkLoginLog(String userId, AccountLockPolicy accountLockPolicy) {
+		GeneralDateTime startTime = GeneralDateTime.now();
+		// Check the domain model [Account lock policy. Error interval]
+		if (accountLockPolicy.getErrorCount().lessThanOrEqualTo(BigDecimal.ZERO)) {
+			startTime = GeneralDateTime.fromString("1901/01/01", "yyyy/MM/dd HH:mm:ss");
+		}
+		// Search the domain model [LoginLog] and acquire [number of failed
+		// logs] → [failed times]
+		Integer countFailure = this.loginLogRepository.getLoginLogByConditions(userId, startTime);
+
+		// Return LockOut
+		if (countFailure < accountLockPolicy.getErrorCount().v().intValue()) {
+			return false;
+		} else {
+			return true;
 		}
 	}
-	
-	//アルゴリズム「アカウント照合」を実行する
-	protected void compareAccount()
-	{
+
+	/**
+	 * Compare account.
+	 */
+	// アルゴリズム「アカウント照合」を実行する
+	protected void compareAccount() {
 		// Windowsログイン時のアカウントを取得する
-		//TODO get UserName and HostName
-		//need confirm kiban
-		
-		String username = "";
-		String hostname = "";
-		String userId = "";
-		
-		//ドメインモデル「Windowsアカウント情報」を取得する
-		
-		//ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from 「Windowsアカウント」
-		//TODO chuyen tu List<WindowAccount> sang 1 object WindowAccount sau khi update cmm021
-		Optional<WindowAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username, hostname);
-		
+		// get UserName and HostName
+		String username = AppContexts.windowsAccount().getUserName();
+		String hostname = AppContexts.windowsAccount().getDomain();
+
+		// ドメインモデル「Windowsアカウント情報」を取得する
+		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from
+		// 「Windowsアカウント」
+		Optional<WindowAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username,
+				hostname);
+
 		if (opWindowAccount.isPresent()) {
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
@@ -383,7 +437,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 			}
 		}
 	}
-	
+
+	/**
+	 * Gets the user and check limit time.
+	 *
+	 * @param windowAccount
+	 *            the window account
+	 * @return the user and check limit time
+	 */
 	private void getUserAndCheckLimitTime(WindowAccount windowAccount) {
 		// get user
 		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
@@ -393,10 +454,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 			if (optUserImport.get().getExpirationDate().after(GeneralDate.today())) {
 				throw new BusinessException("Msg_316");
 			}
-		}
-		else
-		{
-			//TODO
+			// set info to session
+			this.initSession(optUserImport.get());
 		}
 	}
 }

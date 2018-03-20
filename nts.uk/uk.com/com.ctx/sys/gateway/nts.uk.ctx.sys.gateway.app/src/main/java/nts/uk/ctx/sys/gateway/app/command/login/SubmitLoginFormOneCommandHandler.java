@@ -37,27 +37,27 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			//アルゴリズム「アカウント照合」を実行する
 			this.compareAccount();
 		} else {
-		String loginId = command.getLoginId();
-		String password = command.getPassword();
-		// check validate input
-		this.checkInput(command);
-
-		this.reCheckContract(command.getContractCode(), command.getContractPassword());
-		
-		// find user by login id
-		Optional<UserImport> user = userAdapter.findUserByContractAndLoginId(command.getContractCode(), loginId);
-		if (!user.isPresent()) {
-			throw new BusinessException("Msg_301");
-		}
-
-		// check password
-		this.compareHashPassword(user.get(), password);
-
-		// check time limit
-		this.checkLimitTime(user);
-		
-		//set info to session
-		this.initSession(user.get());
+			String loginId = command.getLoginId();
+			String password = command.getPassword();
+			// check validate input
+			this.checkInput(command);
+	
+			this.reCheckContract(command.getContractCode(), command.getContractPassword());
+			
+			// find user by login id
+			Optional<UserImport> user = userAdapter.findUserByContractAndLoginId(command.getContractCode(), loginId);
+			if (!user.isPresent()) {
+				throw new BusinessException("Msg_301");
+			}
+	
+			// check password
+			this.compareHashPassword(user.get(), password);
+	
+			// check time limit
+			this.checkLimitTime(user);
+			
+			//set info to session
+			this.initSession(user.get());
 		}
 	}
 
