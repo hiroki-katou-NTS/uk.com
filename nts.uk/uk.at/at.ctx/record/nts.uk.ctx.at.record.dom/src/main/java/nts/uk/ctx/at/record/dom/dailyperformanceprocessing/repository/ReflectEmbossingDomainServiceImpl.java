@@ -1632,6 +1632,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					}
 				}
+			}
 				if (!isBreak) {
 					newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 				}
@@ -1641,7 +1642,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					return new OutingTimeOfDailyPerformance(employeeId, date, newOutingTimeSheets);
 				}
 
-			}
+			
 
 		}
 		return outDailyPer;
