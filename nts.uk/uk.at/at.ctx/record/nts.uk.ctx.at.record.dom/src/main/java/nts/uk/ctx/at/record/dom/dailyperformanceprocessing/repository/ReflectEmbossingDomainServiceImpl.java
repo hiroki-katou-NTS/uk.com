@@ -348,7 +348,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 				}
 
-				// todo
 				break;
 			case 8:
 			case 9://臨時開始・終了を反映する
@@ -647,14 +646,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null) {
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent()) {
 					return i;
 				}
 			}
 		} else {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null) {
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()) {
 					return i;
 				}
 			}
@@ -670,8 +669,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null) {
-					inOrOutWork = null; // fixed logOnInfo.getLogOn();
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() ) {
+					inOrOutWork = logOnInfo.getLogOn().get().getTimeWithDay(); // fixed logOnInfo.getLogOn();
 					PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput = new PCLogonLogoffReflectOuput();
 					pcLogonLogoffReflectOuput.setTimeOfDay(inOrOutWork);
 					return pcLogonLogoffReflectOuput;
@@ -680,8 +679,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		} else {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
-				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null) {
-					inOrOutWork = null; // fixed logOnInfo.getLogOff();
+				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()) {
+					inOrOutWork = logOnInfo.getLogOff().get().getTimeWithDay(); // fixed logOnInfo.getLogOff();
 					PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput = new PCLogonLogoffReflectOuput();
 					pcLogonLogoffReflectOuput.setTimeOfDay(inOrOutWork);
 					return pcLogonLogoffReflectOuput;
