@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;

@@ -8,10 +8,10 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -52,7 +52,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setDate(workInfo.getYmd());
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordWorkInformation()));
 			result.setBackStraightAtr(workInfo.getBackStraightAtr() == null ? 0 : workInfo.getBackStraightAtr().value);
-			result.setCalculationState(workInfo.getCalculationState() == null ? 01 : workInfo.getCalculationState().value);
+			result.setCalculationState(workInfo.getCalculationState() == null ? 0 : workInfo.getCalculationState().value);
 			result.setGoStraightAtr(workInfo.getGoStraightAtr() == null ? 0 : workInfo.getGoStraightAtr().value);
 			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleWorkInformation()));
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
@@ -100,7 +100,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 							new ScheduleTimeSheet(
 									c.getWorkNo(), 
 									c.getWorking() == null ?  0 : c.getWorking(), 
-									c.getLeave() == null ? 0: c.getLeave())));
+									c.getLeave() == null ? 0 : c.getLeave())));
 	}
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {

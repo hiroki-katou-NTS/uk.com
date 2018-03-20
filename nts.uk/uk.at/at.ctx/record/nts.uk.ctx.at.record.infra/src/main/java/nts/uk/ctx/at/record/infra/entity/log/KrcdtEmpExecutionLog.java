@@ -61,9 +61,9 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "OPERATION_CASE_ID")
 	public String caseSpecExeContentID;
 
-	@OneToMany(mappedBy="empexecutionlog", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCDT_EXECUTION_LOG")
-	public List<KrcdtExecutionLog> executionLogs;
+//	@OneToMany(mappedBy="empexecutionlog", cascade = CascadeType.ALL)
+//	@JoinTable(name = "KRCDT_EXECUTION_LOG")
+//	public List<KrcdtExecutionLog> executionLogs;
 	
 	@Override
 	protected Object getKey() {
@@ -80,13 +80,13 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				domain.getExecutionStatus().value,
 				domain.getEmployeeID(),
 				domain.getClosureID(),
-				domain.getCaseSpecExeContentID(),
-				domain.getExecutionLogs().stream().map(c->KrcdtExecutionLog.toEntity(c)).collect(Collectors.toList())
+				domain.getCaseSpecExeContentID()
+				//domain.getExecutionLogs().stream().map(c->KrcdtExecutionLog.toEntity(c)).collect(Collectors.toList())
 				);
 	}
 	
 	public EmpCalAndSumExeLog toDomain() {
-		List<ExecutionLog> executionLogs = this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+		//List<ExecutionLog> executionLogs = this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 		return EmpCalAndSumExeLog.createFromJavaType(
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,
@@ -96,7 +96,6 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				this.executedStatus,
 				this.employeeID,
 				this.closureID, 
-				this.caseSpecExeContentID, 
-				executionLogs);
+				this.caseSpecExeContentID);
 	}
 }

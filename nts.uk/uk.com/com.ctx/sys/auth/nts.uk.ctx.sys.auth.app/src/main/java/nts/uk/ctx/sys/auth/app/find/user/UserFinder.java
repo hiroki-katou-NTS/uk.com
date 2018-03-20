@@ -38,7 +38,7 @@ public class UserFinder {
 		if (userNameID == null) {
 			throw new BusinessException("Msg_438");
 		}
-		List<UserDto> listUserDto = userRepo.searchUser(userNameID, date).stream().map(c -> UserDto.fromDomain(c))
+		List<UserDto> listUserDto = userRepo.searchUser(userNameID, date).stream().map(c-> UserDto.objDomain(c))
 				.collect(Collectors.toList());
 		// Sort
 		listUserDto = listUserDto.stream().sorted(Comparator.comparing(UserDto::getLoginID))

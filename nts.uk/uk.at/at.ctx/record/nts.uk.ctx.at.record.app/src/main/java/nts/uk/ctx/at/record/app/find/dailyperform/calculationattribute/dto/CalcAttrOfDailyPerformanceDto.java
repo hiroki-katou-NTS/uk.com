@@ -75,7 +75,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	private static int getDivergence(AutoCalcSetOfDivergenceTime domain) {
-		return domain == null || domain.getDivergenceTime() == null ? null : domain.getDivergenceTime().value;
+		return domain == null || domain.getDivergenceTime() == null ? 0 : domain.getDivergenceTime().value;
 	}
 
 	private static AutoCalRaisingSalarySettingDto newAutoCalcSalarySetting(AutoCalRaisingSalarySetting domain) {

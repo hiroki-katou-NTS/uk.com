@@ -311,8 +311,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @return
 	 */
 	public TimeSheetOfDeductionItem reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
-			List<TimeSheetOfDeductionItem>  recorddeductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
-			List<TimeSheetOfDeductionItem>  deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
+			List<TimeSheetOfDeductionItem>  recorddeductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore,DeductionAtr.Appropriate);
+			List<TimeSheetOfDeductionItem>  deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore,DeductionAtr.Deduction);
 			List<BonusPayTimeSheetForCalc>         bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
 			List<SpecBonusPayTimeSheetForCalc>specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
 			Optional<MidNightTimeSheetForCalc>     midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
@@ -406,7 +406,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		else if(this.deductionAtr.isGoOut() && this.goOutReason.isPresent() && this.goOutReason.get().equalReason(atr)) {
 			return true;
 		}
-		else if(this.deductionAtr.isChildCare() && false/*育児介護区分追加後作成*/) {
+		else if(this.deductionAtr.isChildCare() ) {//&& false/*育児介護区分追加後作成*/) {
 			return false;
 		}
 		return false;

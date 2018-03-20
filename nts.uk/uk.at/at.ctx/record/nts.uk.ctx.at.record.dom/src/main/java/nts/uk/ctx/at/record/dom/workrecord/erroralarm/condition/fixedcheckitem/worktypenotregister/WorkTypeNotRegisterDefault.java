@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -39,11 +40,14 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 		listTimeItemID.add(12);
 		String comment = fixedConditionDataRepository.getAllFixedConditionData().get(0).getMessage().v();
 		
-		ValueExtractAlarmWR valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, errorCode, listTimeItemID);
-		valueExtractAlarmWR.setAlarmItem(TextResource.localize("KAL010_6"));
-		valueExtractAlarmWR.setAlarmValueMessage(TextResource.localize("KAL010_7",errorCode));
-		valueExtractAlarmWR.setComment(comment);
-		return valueExtractAlarmWR;
+		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, errorCode, listTimeItemID);
+		if(valueExtractAlarmWR.isPresent()) {
+		valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_6"));
+		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7",errorCode));
+		valueExtractAlarmWR.get().setComment(comment);
+		return valueExtractAlarmWR.get();
+		}
+		return null;
 		
 	}
 

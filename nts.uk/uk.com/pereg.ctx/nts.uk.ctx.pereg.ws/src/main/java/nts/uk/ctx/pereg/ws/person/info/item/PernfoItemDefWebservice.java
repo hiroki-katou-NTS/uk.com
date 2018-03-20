@@ -107,7 +107,7 @@ public class PernfoItemDefWebservice extends WebService {
 	//test hieu nang Layout
 	@POST
 	@Path("layout/findby/listItemIdv2")
-	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutTest(List<String> listItemDefId) {
+	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutV2(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByIds(listItemDefId);
 	}
 
@@ -159,8 +159,14 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@POST
 	@Path("layout/findAll/required")
-	public List<ItemRequiredBackGroud> getAllRequiredIds() {
-		return itemDefFinder.getAllRequiredIds();
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCid() {
+		return itemDefFinder.getAllRequiredIdsByCompanyID();
+	}
+	
+	@POST
+	@Path("layout/findAll/required/{ctgId}")
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCtgId(@PathParam("ctgId") String ctgId) {
+		return itemDefFinder.getAllItemRequiredIdsByCtgId(ctgId);
 	}
 	
 	@POST

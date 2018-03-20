@@ -33,7 +33,7 @@ module cps001.a.vm {
             showQuickSearchTab: true, // クイック検索
             showAdvancedSearchTab: true, // 詳細検索
             showBaseDate: false, // 基準日利用
-            showClosure: true, // 就業締め日利用
+            showClosure: false, // 就業締め日利用
             showAllClosure: true, // 全締め表示
             showPeriod: false, // 対象期間利用
             periodFormatYM: true, // 対象期間精度
@@ -42,10 +42,10 @@ module cps001.a.vm {
             baseDate: moment.utc().toISOString(), // 基準日
             periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
             periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
-            inService: false, // 在職区分
-            leaveOfAbsence: false, // 休職区分
+            inService: true, // 在職区分
+            leaveOfAbsence: true, // 休職区分
             closed: true, // 休業区分
-            retirement: true, // 退職区分
+            retirement: false, // 退職区分
 
             /** Quick search tab options */
             showAllReferableEmployee: true, // 参照可能な社員すべて
@@ -58,7 +58,7 @@ module cps001.a.vm {
             showWorkplace: true, // 職場条件
             showClassification: true, // 分類条件
             showJobTitle: true, // 職位条件
-            showWorktype: true, // 勤種条件
+            showWorktype: false, // 勤種条件
             isMutipleCheck: true, // 選択モード
 
             /** Return data */

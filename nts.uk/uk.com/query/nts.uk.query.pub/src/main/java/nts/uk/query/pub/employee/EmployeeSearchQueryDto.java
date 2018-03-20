@@ -101,9 +101,10 @@ public class EmployeeSearchQueryDto implements Serializable {
 	/** The name type. */
 	private String nameType; //氏名の種類
 
-	/** The system type. */
+	/** The system type.
+	 *  Note: 
+	 *  With Algorithm: <<Public>> 個人情報条件で社員を検索して並び替える. please set to 1.
+	 *  With Algorithm: <<Public>> 就業条件で社員を検索して並び替える. please set to 2.
+	 *  */
 	private Integer systemType;
-	
-	/** The role id. */
-	private String roleId;
 }

@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class AlarmExtraValueWkReDto {
-
+	
+	private String guid;
 	/**職場ID*/
 	private String workplaceID;
+	
+	/**  階層コード*/
+	private String hierarchyCd;
 	
 	/**職場名*/
 	private String workplaceName;
@@ -24,10 +26,12 @@ public class AlarmExtraValueWkReDto {
 	private String employeeName;
 	
 	/**アラーム値日付*/
-	private GeneralDate alarmValueDate;
+	private String alarmValueDate;
 
 	/**カテゴリ*/
-	private String category;
+	private int category;
+	
+	private String categoryName;
 	
 	/**アラーム項目*/
 	private String alarmItem;
@@ -38,12 +42,24 @@ public class AlarmExtraValueWkReDto {
 	/**コメント*/
 	private String comment;
 
-
-
+	public AlarmExtraValueWkReDto(String workplaceID, String hierarchyCd, String workplaceName, String employeeID,
+			String employeeCode, String employeeName, String alarmValueDate, int category, String categoryName,
+			String alarmItem, String alarmValueMessage, String comment) {
+		super();
+		this.guid= IdentifierUtil.randomUniqueId();
+		this.workplaceID = workplaceID;
+		this.hierarchyCd = hierarchyCd;
+		this.workplaceName = workplaceName;
+		this.employeeID = employeeID;
+		this.employeeCode = employeeCode;
+		this.employeeName = employeeName;
+		this.alarmValueDate = alarmValueDate;
+		this.category = category;
+		this.categoryName = categoryName;
+		this.alarmItem = alarmItem;
+		this.alarmValueMessage = alarmValueMessage;
+		this.comment = comment;
+	}
 	
 
-
-
-	
-	
 }

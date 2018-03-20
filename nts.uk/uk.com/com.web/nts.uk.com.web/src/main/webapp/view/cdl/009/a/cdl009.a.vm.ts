@@ -120,6 +120,9 @@ module nts.uk.com.view.cdl009.a {
                 if (self.isRetirement()) {
                     empStatusList.push(EnrollmentStatus.RETIREMENT);
                 } 
+//                let selectedRow = $('#workplace-component').getRowSelected();
+//                let wkpIds = selectedRow.map(item => item.workplaceId);
+//                self.multiSelectedTree(selectedRow);
                 var query = {
                     workplaceIdList: self.multiSelectedTree(),
                     referenceDate: self.baseDate(),

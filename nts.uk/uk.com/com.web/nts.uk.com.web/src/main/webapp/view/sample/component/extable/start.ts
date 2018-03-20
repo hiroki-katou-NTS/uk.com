@@ -16,14 +16,14 @@ __viewContext.ready(function () {
         symbol: string;
         startTime: any;
         endTime: any;
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string) {
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
             this.symbol = parseInt(workTypeCode) % 3 === 0 ? "通" : "◯";
-            this.startTime = "8:30";
-            this.endTime = "17:30";
+            this.startTime = startTime !== undefined ? startTime : "8:30";
+            this.endTime = endTime !== undefined ? endTime : "17:30";
         }
     }
     class ExItem {
@@ -91,7 +91,7 @@ __viewContext.ready(function () {
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
-                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null);
+                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null, null, null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
         }
@@ -181,15 +181,15 @@ __viewContext.ready(function () {
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00"
+            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
             key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
             key: "_3", width: "100px", handlerType: "Input", dataType: "duration/duration", required: true, min: "-12:00", max: "71:59"
         }, {
-            key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_4", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_5", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr"
         }, {
             key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
@@ -350,7 +350,8 @@ __viewContext.ready(function () {
         },
         fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
         upperInput: "startTime",
-        lowerInput: "endTime"
+        lowerInput: "endTime",
+        banEmptyInput: [ "time" ]
     };
     
     let leftHorzColumns = [
@@ -420,10 +421,10 @@ __viewContext.ready(function () {
             bodyHeightMode: "dynamic",
             windowXOccupation: 170,
             windowYOccupation: 300,
-            updateMode: "stick",
+            updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "shortName",
+            viewMode: "time",
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -442,7 +443,6 @@ __viewContext.ready(function () {
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
         .create();
-    
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },

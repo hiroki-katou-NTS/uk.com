@@ -320,11 +320,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
-            $("#inpStartTime1").trigger("validate");
-            $("#inpEndTime1").trigger("validate");
+            if(self.displayCaculationTime()){
+                $("#inpStartTime1").trigger("validate");
+                $("#inpEndTime1").trigger("validate");
+                if(!self.validate()){return;}
+            }
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   
-            if(!self.validate()){return;}
+            
             
             //block screen
             nts.uk.ui.block.invisible();
@@ -577,6 +580,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
                     self.calculateFlag(0);
                 }
+                //Check work content Changed
+                self.checkWorkContentChanged();
                 dfd.resolve(data);
             }).fail(function(res){
                 dfd.reject(res);

@@ -85,12 +85,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
-																					,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
+																					,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
 			val duplicateTimeSpan = holidayWorkTime.getTimezone().timeSpan().getDuplicatedWith(attendanceLeave.getTimespan()); 
 			if(duplicateTimeSpan.isPresent()) {
-				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonusPaySetting,midNightTimeSheet));
+				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonusPaySetting,midNightTimeSheet,deductionTimeSheet));
 			}
 		}
 		return returnList;
@@ -111,9 +111,11 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
-																					  ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
+																					  ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
 
 		//時間帯跨いだ控除時間帯分割
+		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
+		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Appropriate);
 		//控除時間帯を保持させる(継承先に)
 		//控除の丸め
 		//休出枠No
@@ -140,8 +142,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		
 		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
 													timeSpan,
-													Collections.emptyList(),
-													Collections.emptyList(),
+													dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
+													recordTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 													duplibonusPayTimeSheet,
 													duplispecifiedBonusPayTimeSheet,
 													duplicatemidNightTimeSheet,
@@ -178,22 +180,44 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param forceCalcTime 強制時間区分
 	 * @param autoCalcSet 
 	 */
-	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet) {
-		AttendanceTime calcTime = this.calcTotalTime();
+	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet,DeductionAtr dedAtr) {
+		
 		//区分をみて、計算設定を設定
 		//一旦、打刻から計算する場合　を入れとく
-		//if(){
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
-		//}
-		//	else {
-		//		autoCalcSet.
-		//	}
 		
-		if(!forceAtr.isApplyOrManuallyEnter()) {
-			//calcTime = new AttendanceTime(0);
+		AttendanceTime calcTime = holidayWorkTimeCalculationByAdjustTime(dedAtr);
+		
+		if(!forceAtr.isCalculateEmbossing()) {
+			calcTime = new AttendanceTime(0);
 		}
 		return calcTime;
 	}
+	
+	/**
+	 * 調整時間を考慮した時間の計算
+	 * @param autoCalcSet 時間外の自動計算区分
+	 * @return 残業時間枠時間帯クラス
+	 */
+	public AttendanceTime holidayWorkTimeCalculationByAdjustTime(DeductionAtr dedAtr) {
+		//休憩時間
+		AttendanceTime calcBreakTime = calcDedTimeByAtr(dedAtr,ConditionAtr.BREAK);
+		//組合外出時間
+		AttendanceTime calcUnionGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.UnionGoOut);
+		//私用外出時間
+		AttendanceTime calcPrivateGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.PrivateGoOut);
+		//介護
+		AttendanceTime calcCareTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Care);
+		//育児時間
+		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
+		return new AttendanceTime(this.calcrange.lengthAsMinutes()
+								 -calcBreakTime.valueAsMinutes()
+								 -calcUnionGoOutTime.valueAsMinutes()
+								 -calcPrivateGoOutTime.valueAsMinutes()
+								 -calcCareTime.valueAsMinutes()
+								 -calcChildTime.valueAsMinutes());
+	}
+	
 	
 	/**
 	 *　指定条件の控除項目だけの控除時間
@@ -203,10 +227,10 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
 		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
 		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
 			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
 			}
 		}
 		return dedTotalTime;

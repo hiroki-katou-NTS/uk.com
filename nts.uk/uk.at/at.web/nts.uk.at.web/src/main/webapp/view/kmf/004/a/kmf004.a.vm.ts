@@ -803,6 +803,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     $('#hidden-lbl01').addClass('disabled');
                 } else {
                     $('#hidden-lbl01').removeClass('disabled');
+                    $('#fixNumberDays').ntsError('clear');
                 }
             });
         }
@@ -845,9 +846,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
     }
 
     class ItemModelSpecialHoliday {
-        specialHolidayCode: string;
+        specialHolidayCode: number;
         specialHolidayName: string;
-        constructor(specialHolidayCode: string, specialHolidayName: string) {
+        constructor(specialHolidayCode: number, specialHolidayName: string) {
             this.specialHolidayCode = specialHolidayCode;
             this.specialHolidayName = specialHolidayName;
         }
@@ -915,7 +916,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
     export module model {
         export interface ISpecialHolidayDto {
-            specialHolidayCode?: string;
+            specialHolidayCode?: number;
             specialHolidayName?: string;
             grantMethod?: number;
             memo?: string;
@@ -927,7 +928,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             grantSingle?: IGrantSingleDto;
         }
         export class SpecialHolidayDto {
-            specialHolidayCode: KnockoutObservable<any>;
+            specialHolidayCode: KnockoutObservable<number>;
             specialHolidayName: KnockoutObservable<string>;
             grantMethod: KnockoutObservable<number>;
             memo: KnockoutObservable<string>;
@@ -939,7 +940,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             grantSingle: KnockoutObservable<GrantSingleDto>;
 
             constructor(param: ISpecialHolidayDto) {
-                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
                 this.specialHolidayName = ko.observable(param.specialHolidayName || '');
                 this.grantMethod = ko.observable(param.grantMethod || 0);
                 this.memo = ko.observable(param.memo || '');
@@ -953,20 +954,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
 
         export interface IGrantRegularDto {
-            specialHolidayCode?: string;
+            specialHolidayCode?: number;
             grantStartDate?: string;
             months?: number;
             years?: number;
             grantRegularMethod?: number;
         }
         export class GrantRegularDto {
-            specialHolidayCode: KnockoutObservable<any>;
+            specialHolidayCode: KnockoutObservable<number>;
             grantStartDate: KnockoutObservable<string>;
             months: KnockoutObservable<number>;
             years: KnockoutObservable<number>;
             grantRegularMethod: KnockoutObservable<number>;
             constructor(param: IGrantRegularDto) {
-                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || 0);
                 this.grantStartDate = ko.observable(param.grantStartDate || null); //TODO PENDING KIBAN FIX
                 this.months = ko.observable(param.months || null);
                 this.years = ko.observable(param.years || null);
@@ -977,18 +978,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
 
         export interface IGrantPeriodic {
-            specialHolidayCode?: string;
+            specialHolidayCode?: number;
             grantDay?: number;
             splitAcquisition?: number;
             grantPeriodicMethod?: number;
         }
         export class GrantPeriodicDto {
-            specialHolidayCode: KnockoutObservable<any>;
+            specialHolidayCode: KnockoutObservable<number>;
             grantDay: KnockoutObservable<number>;
             splitAcquisition: KnockoutObservable<number>;
             grantPeriodicMethod: KnockoutObservable<number>;
             constructor(param: IGrantPeriodic) {
-                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || 0);
                 this.grantDay = ko.observable(param.grantDay || null);
                 this.splitAcquisition = ko.observable(param.splitAcquisition || 0);
                 this.grantPeriodicMethod = ko.observable(param.grantPeriodicMethod || 0);
@@ -997,7 +998,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
 
         export interface ISphdLimitDto {
-            specialHolidayCode?: string;
+            specialHolidayCode?: number;
             specialVacationMonths?: number;
             specialVacationYears?: number;
             grantCarryForward?: number;
@@ -1005,14 +1006,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             specialVacationMethod?: number;
         }
         export class SphdLimitDto {
-            specialHolidayCode: KnockoutObservable<any>;
+            specialHolidayCode: KnockoutObservable<number>;
             specialVacationMonths: KnockoutObservable<number>;
             specialVacationYears: KnockoutObservable<number>;
             grantCarryForward: KnockoutObservable<number>;
             limitCarryoverDays: KnockoutObservable<number>;
             specialVacationMethod: KnockoutObservable<number>;
             constructor(param: ISphdLimitDto) {
-                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || 0);
                 this.specialVacationMonths = ko.observable(param.specialVacationMonths || null);
                 this.specialVacationYears = ko.observable(param.specialVacationYears || null);
                 this.grantCarryForward = ko.observable(param.grantCarryForward || 0);
@@ -1022,7 +1023,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
 
         export interface ISubConditionDto {
-            specialHolidayCode?: string;
+            specialHolidayCode?: number;
             useGender?: boolean;
             useEmployee?: boolean;
             useCls?: boolean;
@@ -1039,7 +1040,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             classificationList?: Array<string>;
         }
         export class SubConditionDto {
-            specialHolidayCode: KnockoutObservable<string>;
+            specialHolidayCode: KnockoutObservable<number>;
             useGender: KnockoutObservable<boolean>;
             useEmployee: KnockoutObservable<boolean>;
             useCls: KnockoutObservable<boolean>;
@@ -1056,7 +1057,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             classificationList: KnockoutObservableArray<any>;
 
             constructor(param: ISubConditionDto) {
-                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || 0);
                 this.useGender = ko.observable(param.useGender || false);
                 this.useEmployee = ko.observable(param.useEmployee || false);
                 this.useCls = ko.observable(param.useCls || false);
@@ -1075,20 +1076,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
 
         export interface IGrantSingleDto {
-            specialHolidayCode?: string;
+            specialHolidayCode?: number;
             grantDaySingleType?: number;
             fixNumberDays?: number;
             makeInvitation?: number;
             holidayExclusionAtr?: number;
         }
         export class GrantSingleDto {
-            specialHolidayCode: KnockoutObservable<string>;
+            specialHolidayCode: KnockoutObservable<number>;
             grantDaySingleType: KnockoutObservable<number>;
             fixNumberDays: KnockoutObservable<number>;
             makeInvitation: KnockoutObservable<number>;
             holidayExclusionAtr: KnockoutObservable<number>;
             constructor(param: IGrantSingleDto) {
-                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || 0);
                 this.grantDaySingleType = ko.observable(param.grantDaySingleType || 0);
                 this.fixNumberDays = ko.observable(param.fixNumberDays || null);
                 this.makeInvitation = ko.observable(param.makeInvitation || 0);

@@ -19,7 +19,7 @@ public class Classfication extends DomainObject{
 	/** 勤務種類コード */
 	private String classficationCode;
 	
-	public static Classfication createFromJavaType(String companyId, String specialHolidayCode, String classficationCode){
+	public static Classfication createFromJavaType(String companyId, int specialHolidayCode, String classficationCode){
 		return new Classfication(companyId, new SpecialHolidayCode(specialHolidayCode), classficationCode);
 	}
 }

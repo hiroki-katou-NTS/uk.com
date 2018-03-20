@@ -43,6 +43,11 @@ public class AttendanceItemCondition extends DomainObject {
 				group2UseAtr);
 	}
 
+	/** Init from Java type. */
+	public static AttendanceItemCondition init(LogicalOperator operatorBetweenGroups, boolean group2UseAtr) {
+		return new AttendanceItemCondition(operatorBetweenGroups, group2UseAtr);
+	}
+
 	public void setGroup1(ErAlConditionsAttendanceItem group) {
 		this.group1 = group;
 	}

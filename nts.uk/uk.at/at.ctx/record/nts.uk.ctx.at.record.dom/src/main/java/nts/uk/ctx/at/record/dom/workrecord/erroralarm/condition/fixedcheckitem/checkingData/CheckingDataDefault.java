@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkingData;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -11,11 +12,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.c
 public class CheckingDataDefault implements CheckingDataService {
 
 	@Override
-	public List<ValueExtractAlarmWR> checkingData(List<ValueExtractAlarmWR> listValue,String workplaceID,String employeeID, GeneralDate startDate, GeneralDate endDate) {
+	public List<ValueExtractAlarmWR> checkingData(String workplaceID,String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		
 		
 		
-		return null;
+		return Collections.emptyList();
 	}
 
 }

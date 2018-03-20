@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class RemoveGrantDatePerCommand {
 	/*付与日のID*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*特別休暇コード*/
 	private String personalGrantDateCode;

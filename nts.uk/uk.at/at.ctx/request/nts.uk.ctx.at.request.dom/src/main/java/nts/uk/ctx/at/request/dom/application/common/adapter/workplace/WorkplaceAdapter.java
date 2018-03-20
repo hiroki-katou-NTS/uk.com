@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workplace;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 /**
  * 
@@ -15,5 +17,7 @@ public interface WorkplaceAdapter {
 	 * @return
 	 */
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date);
+
+	Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 	
 }

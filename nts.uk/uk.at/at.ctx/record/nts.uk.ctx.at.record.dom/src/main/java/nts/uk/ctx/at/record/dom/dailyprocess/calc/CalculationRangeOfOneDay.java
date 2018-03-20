@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.json.DupDetector;
+
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
@@ -38,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
@@ -71,6 +75,7 @@ public class CalculationRangeOfOneDay {
 
 	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
 
+	@Setter
 	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
 
 	private TimeSpanForCalc oneDayOfRange;
@@ -149,7 +154,7 @@ public class CalculationRangeOfOneDay {
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet, WorkTimeSetting workTime,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList
-			,MidNightTimeSheet midNightTimeSheet) {
+			,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo) {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
@@ -161,7 +166,7 @@ public class CalculationRangeOfOneDay {
 		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonusPaySetting,
 				overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
 				breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, deductionTimeSheet,
-				workTime,midNightTimeSheet);
+				workTime,midNightTimeSheet,personalInfo);
 	}
 
 	/**
@@ -213,38 +218,52 @@ public class CalculationRangeOfOneDay {
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
-			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,MidNightTimeSheet midNightTimeSheet) {
+			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,MidNightTimeSheet midNightTimeSheet,
+			DailyCalculationPersonalInformation personalInfo) {
 		if (workingSystem.isExcludedWorkingCalculate()) {
 			/* 計算対象外の処理 */
 			return;
 		}
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
-			if(workNumber <=1) {
-				/* 就業内の時間帯作成 */
-				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSetForCalc, 
-																					lstHalfDayWorkTimezone,workTimeCommonSet, deductionTimeSheet, bonusPaySetting,midNightTimeSheet);
-				if(withinWorkingTimeSheet.isPresent()) {
-					withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
+			/* 就業内の時間帯作成 */
+			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSetForCalc, 
+																				lstHalfDayWorkTimezone,workTimeCommonSet, deductionTimeSheet, bonusPaySetting,midNightTimeSheet);
+			if(withinWorkingTimeSheet.isPresent()) {
+				withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
+			}
+			else {
+				withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
+			}
+			/* 就業外の時間帯作成 */
+			val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
+					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
+					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
+					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
+					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet);
+			if(!outsideWorkTimeSheet.isPresent()) {
+				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
+				this.outsideWorkTimeSheet = Finally.of(createOutSideWorkTimeSheet);
+			}
+			else {
+				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
+					List<OverTimeFrameTimeSheetForCalc> addOverList = createOutSideWorkTimeSheet.getOverTimeWorkSheet().isPresent()? createOutSideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets():Collections.emptyList();
+					outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets().addAll(addOverList);
 				}
 				else {
-					withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(createOutSideWorkTimeSheet.getOverTimeWorkSheet(),this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()));
 				}
-				/* 就業外の時間帯作成 */
-				val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
-						attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
-						workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
-						workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
-						,bonusPaySetting,midNightTimeSheet);
-				if(!outsideWorkTimeSheet.isPresent()) {
-					outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
+				if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+					List<HolidayWorkFrameTimeSheetForCalc> addHolList = createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()? createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime():Collections.emptyList();
+					outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().getWorkHolidayTime().addAll(addHolList);
 				}
 				else {
-					
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet(),createOutSideWorkTimeSheet.getHolidayWorkTimeSheet()));
 				}
 			}
 		}
+}
 
-	}
+
 
 
 	
@@ -271,9 +290,13 @@ public class CalculationRangeOfOneDay {
 	 */
 	public List<BonusPayTime> calcBonusPayTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 											   CalAttrOfDailyPerformance calcAtrOfDaily, BonusPayAtr bonusPayAtr) {
-		val withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
+		List<BonusPayTime> withinBonusPay = new ArrayList<>();
+		if(withinWorkingTimeSheet.isPresent())
+			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		
 		if(outsideWorkTimeSheet.isPresent())
 		{
 			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
@@ -292,9 +315,13 @@ public class CalculationRangeOfOneDay {
 	 */
 	public List<BonusPayTime> calcSpecBonusPayTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 												   CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr){
-		List<BonusPayTime> withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
+		List<BonusPayTime> withinBonusPay = new ArrayList<>();
+		
+		if(withinWorkingTimeSheet.isPresent())
+				withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+
 		if(outsideWorkTimeSheet.isPresent())
 		{
 			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
@@ -388,12 +415,16 @@ public class CalculationRangeOfOneDay {
 	 */
 	public TimeWithCalculation calcWithinTotalTime(ConditionAtr dedClassification, DeductionAtr dedAtr,StatutoryAtr statutoryAtr,TimeSheetRoundingAtr pertimesheet) {
 		if(statutoryAtr.isStatutory()) {
-			return TimeWithCalculation.sameTime(this.withinWorkingTimeSheet.get().calculationAllFrameDeductionTime(dedAtr, dedClassification));
+			if(this.withinWorkingTimeSheet.isPresent()) {
+				return TimeWithCalculation.sameTime(this.withinWorkingTimeSheet.get().calculationAllFrameDeductionTime(dedAtr, dedClassification));
+			}
 		}
 		else if(statutoryAtr.isExcess()) {
-			AttendanceTime overTime = this.getOutsideWorkTimeSheet().get().caluclationAllOverTimeFrameTime(dedAtr, dedClassification);
-			AttendanceTime holidaytime = this.getOutsideWorkTimeSheet().get().caluclationAllHolidayFrameTime(dedAtr, dedClassification);
-			return TimeWithCalculation.sameTime(overTime.addMinutes(holidaytime.valueAsMinutes()));
+			if(this.getOutsideWorkTimeSheet().isPresent()) {
+				AttendanceTime overTime = this.getOutsideWorkTimeSheet().get().caluclationAllOverTimeFrameTime(dedAtr, dedClassification);
+				AttendanceTime holidaytime = this.getOutsideWorkTimeSheet().get().caluclationAllHolidayFrameTime(dedAtr, dedClassification);
+				return TimeWithCalculation.sameTime(overTime.addMinutes(holidaytime.valueAsMinutes()));
+			}
 		}
 		return TimeWithCalculation.sameTime(new AttendanceTime(0));
 	}
@@ -411,7 +442,7 @@ public class CalculationRangeOfOneDay {
 					WorkTimeSetting workTime,
 					FlexWorkSetting flexWorkSetting,OutingTimeOfDailyPerformance outingTimeSheetofDaily,
 					TimeSpanForCalc oneDayTimeSpan,TimeLeavingOfDailyPerformance attendanceLeaveWork,WorkTimeDivision workTimeDivision
-					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet){
+					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo){
 		 //if(!flexTimeSet.getUseFixedRestTime()){
 			// predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
 			 /*遅刻早退処理*/
@@ -434,9 +465,10 @@ public class CalculationRangeOfOneDay {
 					holidayTimeWorkItem,  beforeDay,  toDay,  afterDay,
 					 breakdownTimeDay,  dailyTime,  autoCalculationSet,
 					 statutorySet,  prioritySet,
-					 deductionTimeSheet,  workTime,midNightTimeSheet);
+					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo);
 		 /*コアタイムのセット*/
-		 this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+		 //this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 	 }
 	
 //	 /**

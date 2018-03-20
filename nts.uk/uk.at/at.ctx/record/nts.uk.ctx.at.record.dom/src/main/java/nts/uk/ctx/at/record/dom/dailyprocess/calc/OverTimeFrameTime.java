@@ -38,8 +38,8 @@ public class OverTimeFrameTime {
 	}
 	
 	
-	public void addOverTime(AttendanceTime overTime) {
-		this.OverTimeWork = this.OverTimeWork.addMinutes(overTime, overTime);
+	public void addOverTime(AttendanceTime time,AttendanceTime calcTime) {
+		this.OverTimeWork = this.OverTimeWork.addMinutes(time, calcTime);
 	}
 
 

@@ -70,9 +70,9 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
                 });
             } else {
                 self.isVisibleWkpName(true);
-                nts.uk.ui.windows.getSelf().setSize(400, 845);
                 $.when(self.getDataWkpPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
+                    nts.uk.ui.windows.getSelf().setSize(400, 845);
                 });
             }
         }

@@ -101,6 +101,4 @@ public class EmployeeSearchQuery implements Serializable {
 	/** The system type. */
 	private Integer systemType;
 	
-	/** The role id. */
-	private String roleId;
 }

@@ -37,7 +37,7 @@ module nts.uk.at.view.kal001.a.model {
         constructor() {
             let self = this;
             
-            //search component
+        //search component
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
@@ -80,10 +80,9 @@ module nts.uk.at.view.kal001.a.model {
                   
             
             
-            // employee list component
-           // self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('1');
-            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+          // employee list component
+            self.selectedCode = ko.observable('');
+            self.multiSelectedCode = ko.observableArray([]);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
                 {code: '1', isAlreadySetting: true},
@@ -118,6 +117,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let dfd = $.Deferred<any>();
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
+            block.invisible();
             service.getAlarmByUser().done((alarmData)=>{
                 
                 self.alarmCombobox(alarmData);
@@ -133,6 +133,8 @@ module nts.uk.at.view.kal001.a.model {
                         dfd.resolve();
                     }).fail((errorCheckTime) =>{
                         alertError(errorCheckTime);
+                    }).always(()=>{
+                        block.clear();    
                     });
                                         
                 }else{
@@ -142,6 +144,7 @@ module nts.uk.at.view.kal001.a.model {
                 
             }).fail((errorAlarm)=>{
                  alertError(errorAlarm);
+                 block.clear();
             });
             
 
@@ -154,8 +157,12 @@ module nts.uk.at.view.kal001.a.model {
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));
-                    });    
+                        }));                        
+                    }).fail((errorTime)=>{
+                        alertError(errorTime);
+                    });
+                    
+                    self.checkAll(false);
             });
         }
         
@@ -192,10 +199,36 @@ module nts.uk.at.view.kal001.a.model {
         
         public open_Dialog(): any {
             let self = this;
-            nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
-            modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+            let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
+            let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
+            if(self.currentAlarmCode()=='' ) return;
+          
+            if(listSelectedEmpployee.length==0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
+                return;
+            }
+            block.invisible();
+            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
+                if(dataExtractAlarm.extracting) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
+                    return;
+                }
+                if(dataExtractAlarm.nullData){
+                      nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
+                      return;
+                }
+                
+                nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
+                modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                    
+                });
+            }).fail((errorExtractAlarm)=>{
+                alertError(errorExtractAlarm);
+            }).always(()=>{
+                block.clear();    
             });
+
         }
 
     }

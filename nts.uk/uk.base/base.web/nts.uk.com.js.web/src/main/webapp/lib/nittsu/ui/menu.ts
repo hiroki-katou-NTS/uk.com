@@ -321,7 +321,7 @@ module nts.uk.ui.menu {
                         }
                         let nameToShow = item.displayName || item.defaultName;
                         let $item = $("<li class='title-item'/>")
-                            .data("path", item.url)
+                            .data("path", !util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
                             .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
                             .data(DATA_TITLEITEM_PGNAME, nameToShow)
                             .text(nameToShow);

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -23,4 +25,6 @@ public class ReflectStampOutput {
 	TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
 	List<StampItem> lstStamp;
 	TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance;
+	AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily;
+	PCLogOnInfoOfDaily pcLogOnInfoOfDaily;
 }

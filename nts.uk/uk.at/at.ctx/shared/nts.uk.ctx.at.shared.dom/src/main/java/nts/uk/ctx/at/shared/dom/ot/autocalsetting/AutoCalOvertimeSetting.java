@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 /// 残業時間の自動計算設定
 @Getter
+@NoArgsConstructor
 public class AutoCalOvertimeSetting extends DomainObject {
 
 	/** The early ot time. */
@@ -69,6 +71,18 @@ public class AutoCalOvertimeSetting extends DomainObject {
 		memento.setLegalOtTime(this.legalOtTime);
 		memento.setNormalMidOtTime(this.normalMidOtTime);
 		memento.setNormalOtTime(this.normalOtTime);
+	}
+
+	public AutoCalOvertimeSetting(AutoCalSetting earlyOtTime, AutoCalSetting earlyMidOtTime,
+			AutoCalSetting normalOtTime, AutoCalSetting normalMidOtTime, AutoCalSetting legalOtTime,
+			AutoCalSetting legalMidOtTime) {
+		super();
+		this.earlyOtTime = earlyOtTime;
+		this.earlyMidOtTime = earlyMidOtTime;
+		this.normalOtTime = normalOtTime;
+		this.normalMidOtTime = normalMidOtTime;
+		this.legalOtTime = legalOtTime;
+		this.legalMidOtTime = legalMidOtTime;
 	}
 
 

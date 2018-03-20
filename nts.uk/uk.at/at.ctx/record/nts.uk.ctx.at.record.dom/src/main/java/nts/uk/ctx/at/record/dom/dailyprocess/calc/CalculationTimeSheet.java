@@ -147,6 +147,47 @@ public abstract class CalculationTimeSheet {
 	
 	
 	/**
+	 * 控除時間の合計を算出する
+	 * @param dedAtr
+	 * @param conditionAtr
+	 * @return
+	 */
+	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
+		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
+		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+	}
+	
+	/**
+	 * 条件、控除区分に従って控除項目の時間帯取得
+	 * @param dedAtr 控除区分
+	 * @param conditionAtr　条件
+	 * @return　控除項目の時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
+		val returnList = (dedAtr.isDeduction())?this.deductionTimeSheet:this.recordedTimeSheet;
+		switch(conditionAtr) {
+			case BREAK:
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList());
+			case Care:
+			case Child:
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
+			case CompesationGoOut:
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut() 
+													 && tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList());
+			case PrivateGoOut:
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut() 
+													 && tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList());
+			case PublicGoOut:
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()).collect(Collectors.toList());
+			case UnionGoOut:
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()).collect(Collectors.toList());
+			default:
+				throw new RuntimeException("unknown condition Atr");
+		}
+	}
+
+
+	/**
 	 * 時間の計算
 	 * @return 
 	 */
@@ -310,11 +351,14 @@ public abstract class CalculationTimeSheet {
 	 * @return 切り出したl控除時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> recreateDeductionItemBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore, DeductionAtr dedAtr){
+		
 		List<TimeSheetOfDeductionItem> deductionList = new ArrayList<>();
 		if(dedAtr.isDeduction()) {
+			
 			deductionList = this.deductionTimeSheet;
 		}
 		else {
+			
 			deductionList = this.recordedTimeSheet;
 		}
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
@@ -323,6 +367,7 @@ public abstract class CalculationTimeSheet {
 			
 			if(deductionItem.contains(baseTime)) {
 				returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
+				returnList.add(deductionItem);
 			}
 			else if(deductionItem.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				returnList.add(deductionItem);
@@ -344,7 +389,8 @@ public abstract class CalculationTimeSheet {
 	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
-				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				//return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				return midNightTimeSheet;
 			}
 			else if(midNightTimeSheet.get().calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				return midNightTimeSheet;
@@ -489,4 +535,22 @@ public abstract class CalculationTimeSheet {
 			return new AttendanceTime(0);
 		}
 	}
+	
+//	/**
+//	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)
+//	 * @param dedAtr
+//	 * @param conAtr
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getDedTimeSheetByDedAtr(DeductionAtr dedAtr,ConditionAtr conAtr){
+//		switch(dedAtr) {
+//		case Appropriate:
+//			return this.recordedTimeSheet.stream().filter(tc -> tc.getBreakAtr().get().isBreak()).collect(Collectors.toList());
+//		case Deduction:
+//			return this.deductionTimeSheet.stream().filter(tc -> tc.getBreakAtr().get().isBreak()).collect(Collectors.toList());
+//		default:
+//			throw new RuntimeException("unknown DedAtr:" + dedAtr);
+//		}
+//		
+//	}
 }

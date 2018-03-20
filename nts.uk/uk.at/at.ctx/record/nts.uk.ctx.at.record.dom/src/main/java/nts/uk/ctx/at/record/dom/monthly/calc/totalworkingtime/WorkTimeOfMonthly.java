@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
@@ -78,7 +80,15 @@ public class WorkTimeOfMonthly {
 			// ドメインモデル「日別実績の所定内時間」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			val withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+			if (withinPrescribedTimeOfDaily == null){
+				withinPrescribedTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+						new AttendanceTime(0),
+						new AttendanceTime(0),
+						new AttendanceTime(0),
+						new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						new AttendanceTime(0));
+			}
 	
 			// 取得した就業時間・所定内割増時間を確認する
 			AttendanceTime workTime = new AttendanceTime(withinPrescribedTimeOfDaily.getWorkTime().v());

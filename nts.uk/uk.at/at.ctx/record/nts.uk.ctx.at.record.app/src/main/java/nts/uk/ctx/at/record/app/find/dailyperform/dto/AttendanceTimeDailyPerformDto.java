@@ -8,7 +8,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -56,16 +55,20 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setDate(domain.getYmd());
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
-			items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setBudgetTimeVariance(getAttendanceTime(domain.getBudgetTimeVariance()));
 			items.setDate(domain.getYmd());
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
 			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
 			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
-			items.setUnemployedTime(domain.getUnEmployedTime() == null ? null : domain.getUnEmployedTime().valueAsMinutes());
+			items.setUnemployedTime(getAttendanceTime(domain.getUnEmployedTime()));
 			items.exsistData();
 		}
 		return items;
+	}
+	private static Integer getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
 	}
 
 	@Override

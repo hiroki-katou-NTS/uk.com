@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:stylefile path="kdw.004.a.style.css" />
+				<com:scriptfile path="kdw.004.a.vm.js" />
+				<com:scriptfile path="kdw.004.a.service.js" />
+				<com:scriptfile path="kdw.004.a.start.js" />
+				<com:scriptfile set="IGNITE" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area" class="content-wrap">
+					<div class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW004_2')}</div>
+					<div id="combo-box" data-bind="ntsComboBox: {
+						options: lstClosure,
+						optionsValue: 'closureId',
+						visibleItemsCount: 5,
+						value: selectedClosure,
+						optionsText: 'closureName',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'id', length: 1 },
+							{ prop: 'name', length: 10 },
+						]}"></div>
+					<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+						required: true, 
+						enable: true, 
+						showNextPrevious: true, 
+						value: datePeriod, 
+						maxRange: 'none'}"/>
+					<button id="extractBtn" data-bind="click: extract">#{i18n.getText('KDW004_6')}</button><br/>
+					<button id="colorBtn" data-bind="ntsLegendButton: legendOptions"></button><br/>
+					<table id="approvalSttGrid"></table>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

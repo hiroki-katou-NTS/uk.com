@@ -20,12 +20,20 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 
 	@Override
 	public Optional<ValueExtractAlarm>  checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
-		return Optional.ofNullable(convertToExport(fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD)));
+		Optional<ValueExtractAlarmWRPubExport> data =Optional.ofNullable(fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD));
+		
+		if(data.isPresent())
+			return Optional.of(convertToExport(data.get()));
+		return Optional.empty();
+		
 	}
 
 	@Override
 	public Optional<ValueExtractAlarm> checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
-		return Optional.ofNullable(convertToExport(fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD)));
+		Optional<ValueExtractAlarmWRPubExport> data =Optional.ofNullable(fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD));
+		if(data.isPresent())
+			return Optional.of(convertToExport(data.get()));
+		return Optional.empty();
 	}
 
 	@Override
@@ -43,10 +51,9 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 	}
 
 	@Override
-	public List<ValueExtractAlarm> checkingData(List<ValueExtractAlarm> listValue,String workplaceID,String employeeID, GeneralDate startDate,
+	public List<ValueExtractAlarm> checkingData(String workplaceID,String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<ValueExtractAlarmWRPubExport> listExport = listValue.stream().map(c->convertToImport(c)).collect(Collectors.toList());
-		return fixedCheckItemPub.checkingData(listExport,workplaceID,employeeID, startDate, endDate)
+		return fixedCheckItemPub.checkingData(workplaceID,employeeID, startDate, endDate)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
 	
@@ -54,7 +61,7 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 		return new ValueExtractAlarm(
 				export.getWorkplaceID(),
 				export.getEmployeeID(),
-				export.getAlarmValueDate(),
+				export.getAlarmValueDate().toString(),
 				export.getClassification(),
 				export.getAlarmItem(),
 				export.getAlarmValueMessage(),
@@ -66,7 +73,7 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 		return new ValueExtractAlarmWRPubExport(
 				importDto.getWorkplaceID(),
 				importDto.getEmployeeID(),
-				importDto.getAlarmValueDate(),
+				GeneralDate.fromString(importDto.getAlarmValueDate(), "yyyy/MM/dd"),
 				importDto.getClassification(),
 				importDto.getAlarmItem(),
 				importDto.getAlarmValueMessage(),

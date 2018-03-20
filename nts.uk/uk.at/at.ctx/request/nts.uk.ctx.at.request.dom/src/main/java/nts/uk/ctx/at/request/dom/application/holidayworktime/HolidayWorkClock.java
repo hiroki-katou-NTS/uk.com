@@ -39,18 +39,11 @@ public class HolidayWorkClock {
 		this.backAtr = EnumAdaptor.valueOf(backAtr, GoBackAtr.class);
 	}
 	
-	
-	public static HolidayWorkClock validateTime(Integer startTime, Integer endTime,int goAtr,int backAtr){
-		if(startTime >= endTime){
-			throw new BusinessException("Msg_307");
-		}
-		return new HolidayWorkClock(new HolidayAppPrimitiveTime(startTime), new HolidayAppPrimitiveTime(endTime),EnumAdaptor.valueOf(goAtr, GoBackAtr.class),EnumAdaptor.valueOf(backAtr, GoBackAtr.class));
-	}
 	public HolidayWorkClock(Integer startTime, Integer endTime){
 		this.startTime = new HolidayAppPrimitiveTime(startTime);
 		this.endTime = new HolidayAppPrimitiveTime(endTime);
 	}
-	public static HolidayWorkClock validateTime2(Integer startTime, Integer endTime,int goAtr,int backAtr){
+	public static HolidayWorkClock validateTime(Integer startTime, Integer endTime,int goAtr,int backAtr){
 		if(startTime != null && endTime != null){
 			if(startTime >= endTime){
 				throw new BusinessException("Msg_307");

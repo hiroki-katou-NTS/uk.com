@@ -71,9 +71,9 @@ module nts.uk.ui.gridlist {
             }
         }
         
-        var comboItems = [ new ItemModel('1', '基本給'),
-                            new ItemModel('2', '役職手当'),
-                            new ItemModel('3', '基本給2') ];
+        var comboItems = [ new ItemModel(1, '基本給'),
+                            new ItemModel(2, '役職手当'),
+                            new ItemModel(3, '基本給2') ];
         var comboColumns = [{ prop: 'code', length: 1 },
                             { prop: 'name', length: 4 }];
         var comboItems2 = [ new ItemModel('4', '基本給'),
@@ -182,7 +182,7 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Inbound time', key: 'time', width: '140px', columnCssClass: "halign-right", headerCssClass: "center-align",
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
-                                                                cDisplayType: "Clock",
+                                                                cDisplayType: "TimeWithDay",
                                                                 min: "10:00", max: "30:00",
                                                                 required: true
                                                             }
@@ -370,8 +370,8 @@ module nts.uk.ui.gridlist {
                                             { name: "Sheet", 
                                               initialDisplay: "sheet1",
                                               sheets: [ 
-                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "addressCode2", "address1", "address2", "comboCode1", "combo", "header0", "comboCode2", "header01", "header02"] }, 
-                                                        { name: "sheet2", text: "Sheet 2", columns: ["header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
+                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "address1" , "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
+                                                        { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
                                             },
                                             {

@@ -239,7 +239,7 @@ module nts.uk.at.view.kmf002.a {
                         $( "#scrD #datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIFTH) {
-                    nts.uk.ui.errors.clearAll()
+                    nts.uk.ui.errors.clearAll();
                     blockUI.grayout();
                     $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);

@@ -30,6 +30,11 @@ public class CompareRange<V> extends CheckedCondition {
         super();
         this.compareOperator = EnumAdaptor.valueOf(compareOperator, RangeCompareType.class);
     }
+    
+    public CompareRange(RangeCompareType compareOperator) {
+        super();
+        this.compareOperator = compareOperator;
+    }
 
     /**
      * @return the startValue
@@ -66,13 +71,13 @@ public class CompareRange<V> extends CheckedCondition {
         Integer endV = value.apply(endValue);
         switch (this.compareOperator) {
             case BETWEEN_RANGE_CLOSED:
-                return targetV.compareTo(startV) > 0 && targetV.compareTo(endV) < 0;
-            case BETWEEN_RANGE_OPEN:
                 return targetV.compareTo(startV) >= 0 && targetV.compareTo(endV) <= 0;
+            case BETWEEN_RANGE_OPEN:
+                return targetV.compareTo(startV) > 0 && targetV.compareTo(endV) < 0;
             case OUTSIDE_RANGE_CLOSED:
-                return targetV.compareTo(startV) < 0 || targetV.compareTo(endV) > 0;
-            case OUTSIDE_RANGE_OPEN:
                 return targetV.compareTo(startV) <= 0 || targetV.compareTo(endV) >= 0;
+            case OUTSIDE_RANGE_OPEN:
+                return targetV.compareTo(startV) < 0 || targetV.compareTo(endV) > 0;
             default:
                 return false;
         }

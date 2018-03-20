@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -89,7 +90,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withWorkInfo(domain.getWorkInformation());
 		this.withCalcAttr(domain.getCalAttr());
 		this.withAffiliationInfo(domain.getAffiliationInfor());
-		if(!domain.getEmployeeError().isEmpty()) {
+		if(!CollectionUtil.isEmpty(domain.getEmployeeError())) {
 			this.withEmployeeErrors(domain.getEmployeeError().get(0));
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
@@ -141,7 +142,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 	
 	public DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyPerformance> domain) {
-		this.dailyRecord.addBreakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList()));
+		this.dailyRecord.breakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList()));
 		return this;
 	}
 
@@ -186,7 +187,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain) {
-		this.dailyRecord.addEditStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
+//		List<Integer> current = this.dailyRecord.getEditStates().stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
+		this.dailyRecord.editStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
 		return this;
 	}
 
