@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk011.c {
             save: "",
             find: "",
  
-            getAllDivReason: "at/record/divergencetime/getalldivreason/",
+            getAllDivReason: "at/record/divergencetime/setting/getalldivreason/",
             addDivReason: "at/record/divergencetime/adddivreason",
             updateDivReason: "at/record/divergencetime/updatedivreason",
             deleteDivReason: "at/record/divergencetime/deletedivreason"
@@ -24,25 +24,25 @@ module nts.uk.at.view.kmk011.c {
         /**
             * get all divergence reason
         */
-        export function getAllDivReason(divTimeId: string): JQueryPromise<Array<viewmodel.model.Item>> {
+        export function getAllDivReason(divTimeId: string): JQueryPromise<Array<viewmodel.model.DivergenceReason>> {
             return nts.uk.request.ajax("at", paths.getAllDivReason + divTimeId);
         }
         /**
         * add divergence reason
         */
-        export function addDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
+        export function addDivReason(divReason: viewmodel.model.DivergenceReason): JQueryPromise<Array<viewmodel.model.DivergenceReason>> {
             return nts.uk.request.ajax("at", paths.addDivReason, divReason);
         }
         /**
         * update divergence reason
         */
-        export function updateDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
+        export function updateDivReason(divReason: viewmodel.model.DivergenceReason): JQueryPromise<Array<viewmodel.model.DivergenceReason>> {
             return nts.uk.request.ajax("at", paths.updateDivReason, divReason);
         }
         /**
         * delete divergence reason
         */
-        export function deleteDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
+        export function deleteDivReason(divReason: viewmodel.model.DivergenceReason): JQueryPromise<Array<viewmodel.model.DivergenceReason>> {
             return nts.uk.request.ajax("at", paths.deleteDivReason, divReason);
         }
 

@@ -65,7 +65,6 @@ module nts.uk.at.view.kmk011.b {
 
                 self.selectUse = ko.observable(0);
                 self.divergenceTypeName = ko.observable('');
-                self.divergenceTimeName = ko.observable('');
                 self.divTimeName = ko.observable('');
                 self.timeItemName = ko.observable('');
                 self.checkErrorSelect = ko.observable(true);
@@ -82,8 +81,8 @@ module nts.uk.at.view.kmk011.b {
                 self.listItemSelected = ko.observableArray([]);
                 //subscribe currentCode
                 self.currentCode.subscribe(function(codeChanged) {
+                    console.log(codeChanged);
                     self.clearError();
-                    if (codeChanged == 0) { return; }
                     self.selectUse(null);
 
                     self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
@@ -173,7 +172,7 @@ module nts.uk.at.view.kmk011.b {
                 });
                 return dfd.promise();
             }
-           
+
             /**
              * set display value divergence item
              */
@@ -223,7 +222,7 @@ module nts.uk.at.view.kmk011.b {
                         if (self.divergenceTimeId() == null) {
                             return;
                         }
-                        
+
                         var listIdSelect = [];
                         for (let i = 0; i < self.listItemSelected().length; i++) {
                             listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
@@ -276,7 +275,7 @@ module nts.uk.at.view.kmk011.b {
                     $('.nts-input').ntsError('clear');
                 }
             }
-         
+
             //get all divergence time new
             private getAllDivTimeNew() {
                 var self = this;

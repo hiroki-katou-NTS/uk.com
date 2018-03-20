@@ -4,14 +4,14 @@ module nts.uk.at.view.kmk011.c.viewmodel {
     export class ScreenModel {
         //A_label_x
         columns: KnockoutObservableArray<any>; //define C2_1
-        dataSource: KnockoutObservableArray<model.Item>;// list C2_1
+        dataSource: KnockoutObservableArray<model.DivergenceReason>;// list C2_1
         currentCode: KnockoutObservable<string>; // currentCode
         switchUSe3: KnockoutObservableArray<any>; //list value swithButton c3_5
         requiredAtr: KnockoutObservable<any>; //value C3_5
         divReasonCode: KnockoutObservable<string>; // show value divergenceReasonCode in C3_2
         divReasonContent: KnockoutObservable<string>; //show value C3_3 input tex
         enableCode: KnockoutObservable<boolean>; //define for enable code (=true with NEW_MODE)
-        itemDivReason: KnockoutObservable<model.Item>; 
+        itemDivReason: KnockoutObservable<model.DivergenceReason>; 
         divTimeId: KnockoutObservable<number>; 
         index_of_itemDelete: any;
         objectOld: any; 
@@ -21,8 +21,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             var self = this;
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK011_22'), key: 'divReasonCode', formatter: _.escape, width: 100 },
-                { headerText: nts.uk.resource.getText('KMK011_23'), key: 'divReasonContent', formatter: _.escape, width: 200 }
+                { headerText: nts.uk.resource.getText('KMK011_22'), key: 'divergenceReasonCode', formatter: _.escape, width: 100 },
+                { headerText: nts.uk.resource.getText('KMK011_23'), key: 'reason', formatter: _.escape, width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
@@ -47,9 +47,9 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                 }
                 // self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
                 self.enableCode(false);
-                self.divReasonCode(self.itemDivReason().divReasonCode);
-                self.divReasonContent(self.itemDivReason().divReasonContent);
-                self.requiredAtr(self.itemDivReason().requiredAtr);
+                self.divReasonCode(self.itemDivReason().divergenceReasonCode);
+                self.divReasonContent(self.itemDivReason().reason);
+                self.requiredAtr(self.itemDivReason().reasonRequired);
                 self.enableDel(true);
                 $("#inpReason").focus();
                 // var t1 = performance.now();
@@ -72,7 +72,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             } else {
                 self.divTimeId(id);
             }
-            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
+            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.DivergenceReason>) {
                 blockUI.clear();
                 self.currentCode(null);
                 if (id == null || lstDivReason === undefined || lstDivReason.length == 0) {
@@ -83,7 +83,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                 } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
-                    self.currentCode(reasonFirst.divReasonCode);
+                    self.currentCode(reasonFirst.divergenceReasonCode);
                     self.checkModel(true);
                 }
                 dfd.resolve();
@@ -96,8 +96,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         findItemDivTime(value: string): any {
             let self = this;
             var itemModel = null;
-            return _.find(self.dataSource(), function(obj: model.Item) {
-                return obj.divReasonCode == value;
+            return _.find(self.dataSource(), function(obj: model.DivergenceReason) {
+                return obj.divergenceReasonCode == value;
             })
         }
         refreshData() {
@@ -139,7 +139,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             self.convertCode(self.divReasonCode());
-            var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
+            var divReason = new model.DivergenceReason(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.addDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getAllDivReasonNew();
@@ -161,7 +161,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         updateDivReason() {
             var self = this;
             var dfd = $.Deferred();
-            var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
+            var divReason = new model.DivergenceReason(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.updateDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.getAllDivReasonNew();
@@ -178,7 +178,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
-            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
+            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.DivergenceReason>) {
                 self.currentCode('');
                 self.dataSource(lstDivReason);
                 self.enableCode(false);
@@ -215,14 +215,14 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
-            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
+            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.DivergenceReason>) {
                 self.dataSource(lstDivReason);
 
                 if (self.dataSource().length > 0) {
                     if (self.index_of_itemDelete === self.dataSource().length) {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].divReasonCode)
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].divergenceReasonCode)
                     } else {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete].divReasonCode)
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete].divergenceReasonCode)
                     }
                 } else {
                     self.refreshData();
@@ -239,16 +239,16 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         }
     }
     export module model {
-        export class Item {
-            divTimeId: number;
-            divReasonCode: string;
-            divReasonContent: string;
-            requiredAtr: number;
+        export class DivergenceReason {
+            divergenceTimeNo: number;
+            divergenceReasonCode: string;
+            reason: string;
+            reasonRequired: number;
             constructor(divTimeId: number, divReasonCode: string, divReasonContent: string, requiredAtr: number) {
-                this.divTimeId = divTimeId;
-                this.divReasonCode = divReasonCode;
-                this.divReasonContent = divReasonContent;
-                this.requiredAtr = requiredAtr;
+                this.divergenceTimeNo = divTimeId;
+                this.divergenceReasonCode = divReasonCode;
+                this.reason = divReasonContent;
+                this.reasonRequired = requiredAtr;
             }
         }
     }

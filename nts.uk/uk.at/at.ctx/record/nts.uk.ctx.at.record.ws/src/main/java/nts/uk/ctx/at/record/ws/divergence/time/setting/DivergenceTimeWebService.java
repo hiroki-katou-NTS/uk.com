@@ -118,7 +118,8 @@ public class DivergenceTimeWebService extends WebService {
 	@POST
 	@Path("getalldivreason/{divTimeId}")
 	public List<DivergenceReasonSelectDto> getAllDivReason(@PathParam("divTimeId") String divTimeNo) {
-		return this.divReasonselectFinder.getAllReason(Integer.parseInt(divTimeNo));
+		List<DivergenceReasonSelectDto> result = this.divReasonselectFinder.getAllReason(Integer.parseInt(divTimeNo));
+		return result;
 		
 	}
 
