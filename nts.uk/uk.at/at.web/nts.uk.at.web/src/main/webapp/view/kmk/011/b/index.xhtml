@@ -26,7 +26,7 @@
 				<!--B1_2: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration,enable: $root.errors.isEmpty"
+					data-bind="click: Registration"
 					tabindex="1">#{i18n.getText('KMK011_3')}</button>
 			</div>
 
@@ -112,7 +112,7 @@
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: timeItemName,
-										required: true,
+										required: enableUse,
 										readonly: true,
 										enable: enableUse}" />
 							</td>

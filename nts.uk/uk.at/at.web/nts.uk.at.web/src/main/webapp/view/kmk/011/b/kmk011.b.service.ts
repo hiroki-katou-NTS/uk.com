@@ -8,8 +8,8 @@ module nts.uk.at.view.kmk011.b {
             getAllDivergenceTime: "at/record/divergencetime/setting/getalldivtime",
             updateDivergenceTime: "at/record/divergencetime/setting/updatedivtime",
             getAllAttendanceItem: "at/record/divergencetime/setting/getAttendanceDivergenceItem",
-            getAllNameAttendance: "at/record/divergencetime/setting/AttendanceDivergenceName",
-            
+            getAllNameAttendance: "at/record/divergencetime/setting/AttendanceDivergenceName"
+
         };
 
         /**
@@ -44,6 +44,7 @@ module nts.uk.at.view.kmk011.b {
         export function updateDivTime(divergenceTime: viewmodel.model.DivergenceTime): JQueryPromise<Array<viewmodel.model.DivergenceTimeItem>> {
             return nts.uk.request.ajax("at", path.updateDivergenceTime, divergenceTime);
         }
+
 
     }
 
