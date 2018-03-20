@@ -49,10 +49,9 @@ module nts.uk.at.view.kmk011.f {
                     return;    
                 }
                 
-                var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate());
-                
                 if (_self.selectedId() == CreateMode.NEW){
-                    service.add(data).done(() => {
+                    var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), false);
+                    service.save(data).done(() => {
                          nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             dfd.resolve();
                             nts.uk.ui.windows.close();
@@ -61,7 +60,8 @@ module nts.uk.at.view.kmk011.f {
                           _self.showMessageError(res);  
                     });
                 } else {
-                    service.copy(data).done(() => {
+                    var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), true);
+                    service.save(data).done(() => {
                          nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             dfd.resolve();
                             nts.uk.ui.windows.close();
