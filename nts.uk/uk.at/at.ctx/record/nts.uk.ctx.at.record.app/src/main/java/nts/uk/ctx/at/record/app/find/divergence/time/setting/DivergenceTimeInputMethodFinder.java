@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeUseSet;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -51,9 +53,10 @@ public class DivergenceTimeInputMethodFinder {
 			// DivergenceReasonInputMethodDto
 			DivergenceReasonInputMethodDto object = (DivergenceReasonInputMethodDto) listDivReason.stream()
 					.filter(a -> a.getDivergenceTimeNo() == e.getDivergenceTimeNo()).findFirst().get();
+			String type = DivergenceType.valueOf(e.getDivType()).name().toString();
 			listDivTimeInput.add(
 					new DivergenceTimeInputMethodDto(e.getDivergenceTimeNo(), companyId, e.getDivergenceTimeUseSet(),
-							e.getDivergenceTimeName(), e.getDivType(), e.isReasonInput(), e.isReasonSelect(),
+							e.getDivergenceTimeName(), type, e.isReasonInput(), e.isReasonSelect(),
 							object.getDivergenceReasonInputed(), object.getDivergenceReasonSelected(), null));
 		});
 		
@@ -80,10 +83,13 @@ public class DivergenceTimeInputMethodFinder {
 		// get DivergenceAttendanceId list
 		List<Integer> attendanceIdList = this.getAttendanceIds(divTimeNo);
 
+		String type = DivergenceType.valueOf(divTimeInfo.getDivType()).name().toString();
+		
 		// Convert DivergenceReasonInputMethodDto, DivergenceTimeDto and
 		// DivergenceAttendanceId list to DivergenceTimeInputMethodDto
+		
 		DivergenceTimeInputMethodDto result = new DivergenceTimeInputMethodDto(divTimeInfo.getDivergenceTimeNo(), AppContexts.user().companyId(),
-				divTimeInfo.getDivergenceTimeUseSet(), divTimeInfo.getDivergenceTimeName(), divTimeInfo.getDivType(),
+				divTimeInfo.getDivergenceTimeUseSet(), divTimeInfo.getDivergenceTimeName(), type,
 				divTimeInfo.isReasonInput(), divTimeInfo.isReasonSelect(),
 				divReasonInputMethodInfo.getDivergenceReasonInputed(),
 				divReasonInputMethodInfo.getDivergenceReasonSelected(), attendanceIdList);
