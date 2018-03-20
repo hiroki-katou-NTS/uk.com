@@ -41,7 +41,7 @@ public interface WorkTypeDivergenceTimeErrorAlarmMessageSetMemento {
 	/**
 	 * Sets the error message.
 	 *
-	 * @param errprMessage the new error message
+	 * @param errorMessage the new error message
 	 */
-	public void setErrorMessage(Optional<ErrorAlarmMessage> errprMessage);
+	public void setErrorMessage(Optional<ErrorAlarmMessage> errorMessage);
 }
