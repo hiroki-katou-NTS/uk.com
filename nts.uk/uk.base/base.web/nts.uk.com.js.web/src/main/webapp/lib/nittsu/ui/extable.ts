@@ -4181,7 +4181,7 @@ module nts.uk.ui.exTable {
                     }
                     let maxWidth = parseFloat(self.actionDetails.$rightArea.style.maxWidth);
                     if (rightWidth >= rightAreaMaxWidth
-                        ||(!isNaN(maxWidth) && rightWidth >= maxWidth) return false;
+                        ||(!isNaN(maxWidth) && rightWidth >= maxWidth)) return false;
                 }
                 return true;
             }

@@ -546,8 +546,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			}
 		}
 		ReflectStampOutput reflectStampOutput = new ReflectStampOutput();
-		// todo add attendanceLeavingGateOfDaily
-		//todo add pcLogOnInfoOfDaily
+		reflectStampOutput.setAttendanceLeavingGateOfDaily(attendanceLeavingGateOfDaily);
+		reflectStampOutput.setPcLogOnInfoOfDaily(pcLogOnInfoOfDaily);
 		reflectStampOutput.setOutingTimeOfDailyPerformance(outingDailyPerformance);
 		reflectStampOutput.setLstStamp(lstStamp);
 		reflectStampOutput.setTemporaryTimeOfDailyPerformance(temporaryPerformance);
