@@ -825,7 +825,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
 			String wkpID = "";
 			if(displaySet.equals(ShowName.SHOW) && wkp != null){
-				wkp.getWorkplaceId();
+				wkpID = wkp.getWorkplaceId();
 			}
 //			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
