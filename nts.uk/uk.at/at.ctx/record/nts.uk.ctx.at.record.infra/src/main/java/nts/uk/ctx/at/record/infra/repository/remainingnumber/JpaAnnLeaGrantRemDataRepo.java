@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -18,14 +17,14 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.KRcmtAnnLeaRemainPK;
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {
 
-	private String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.key.employeeId = :employeeId";
+	private String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.employeeId = :employeeId";
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream()
-				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.employeeId, ent.key.grantDate,
+				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.annLeavID,ent.employeeId, ent.grantDate,
 						ent.deadline, ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays,
 						ent.usedMinutes, ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent,
 						ent.perscribedDays, ent.deductedDays, ent.workingDays))
@@ -35,8 +34,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void add(AnnualLeaveGrantRemainingData data) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();
-		entity.key.employeeId = data.getEmployeeId();
-		entity.key.grantDate = data.getGrantDate();
+		entity.employeeId = data.getEmployeeId();
+		entity.grantDate = data.getGrantDate();
 		updateValue(entity, data);
 
 		this.commandProxy().insert(entity);
@@ -45,7 +44,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void update(AnnualLeaveGrantRemainingData data) {
 		Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy()
-				.find(new KRcmtAnnLeaRemainPK(data.getEmployeeId(), data.getGrantDate()), KRcmtAnnLeaRemain.class);
+				.find(new KRcmtAnnLeaRemainPK(data.getAnnLeavID()), KRcmtAnnLeaRemain.class);
 		if (entityOpt.isPresent()) {
 			KRcmtAnnLeaRemain entity = entityOpt.get();
 			updateValue(entity, data);
@@ -92,8 +91,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public void delete(String employeeId, GeneralDate grantDate) {
-		Optional<KRcmtAnnLeaRemain> dataOpt = this.queryProxy().find(new KRcmtAnnLeaRemainPK(employeeId, grantDate),
+	public void delete(String annLeavId) {
+		Optional<KRcmtAnnLeaRemain> dataOpt = this.queryProxy().find(new KRcmtAnnLeaRemainPK(annLeavId),
 				KRcmtAnnLeaRemain.class);
 		if (dataOpt.isPresent()) {
 			this.commandProxy().remove(dataOpt.get());
