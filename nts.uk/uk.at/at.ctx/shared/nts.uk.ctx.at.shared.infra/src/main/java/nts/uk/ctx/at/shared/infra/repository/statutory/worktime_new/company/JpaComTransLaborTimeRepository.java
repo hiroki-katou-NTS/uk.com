@@ -19,6 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime_;
 
 /**
  * The Class JpaCompanyWtSettingRepository.
@@ -29,7 +30,6 @@ public class JpaComTransLaborTimeRepository extends JpaRepository implements Com
 	@Override
 	public void create(ComTransLaborTime setting) {
 		commandProxy().insert(this.toEntity(setting));
-		
 	}
 
 	@Override
@@ -38,19 +38,19 @@ public class JpaComTransLaborTimeRepository extends JpaRepository implements Com
 	}
 
 	@Override
-	public void remove(String companyId, int year) {
-//		commandProxy().remove(entityClass, primaryKey);
-		
+	public void remove(String companyId) {
+		commandProxy().remove(KshstComTransLabTime.class, companyId);
 	}
 
 	@Override
-	public Optional<ComTransLaborTime> find(String companyId, int year) {
+	public Optional<ComTransLaborTime> find(String companyId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstComTransLabTime> cq = cb.createQuery(KshstComTransLabTime.class);
 		Root<KshstComTransLabTime> root = cq.from(KshstComTransLabTime.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
+		predicateList.add(cb.equal(root.get(KshstComTransLabTime_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));

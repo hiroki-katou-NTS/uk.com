@@ -33,7 +33,7 @@ public class MonthlyUnit extends ValueObject {
 	 * @param monthlyTime
 	 *            the monthly time
 	 */
-	private MonthlyUnit(Month month, MonthlyEstimateTime monthlyTime) {
+	public MonthlyUnit(Month month, MonthlyEstimateTime monthlyTime) {
 		super();
 		this.month = month;
 		this.monthlyTime = monthlyTime;

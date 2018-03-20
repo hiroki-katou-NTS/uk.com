@@ -4,13 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.company;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime_;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
  * The Class JpaCompanyWtSettingRepository.
@@ -21,26 +31,43 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 
 	@Override
 	public void create(ComRegularLaborTime setting) {
-		// TODO Auto-generated method stub
-
+		commandProxy().insert(this.toEntity(setting));
 	}
 
 	@Override
 	public void update(ComRegularLaborTime setting) {
-		// TODO Auto-generated method stub
-
+		commandProxy().update(this.toEntity(setting));
 	}
 
 	@Override
-	public void remove(String companyId, int year) {
-		// TODO Auto-generated method stub
-
+	public void remove(String companyId) {
+		commandProxy().remove(KshstComTransLabTime.class, companyId);
 	}
 
 	@Override
-	public Optional<ComRegularLaborTime> find(String companyId, int year) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<ComRegularLaborTime> find(String companyId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<KshstComRegLaborTime> cq = cb.createQuery(KshstComRegLaborTime.class);
+		Root<KshstComRegLaborTime> root = cq.from(KshstComRegLaborTime.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		predicateList.add(cb.equal(root.get(KshstComRegLaborTime_.cid), companyId));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
 
+	private KshstComRegLaborTime toEntity(ComRegularLaborTime domain) {
+		JpaComRegularLaborTimeSetMemento memento = new JpaComRegularLaborTimeSetMemento();
+		domain.saveToMemento(memento);
+		return memento.getEntity();
+	}
+	
+	private ComRegularLaborTime toDomain(List<KshstComRegLaborTime> entities) {
+		if (entities.isEmpty()) {
+			return null;
+		}
+		return new ComRegularLaborTime(new JpaComRegularLaborTimeGetMemento(entities.get(0)));
+	}
 }

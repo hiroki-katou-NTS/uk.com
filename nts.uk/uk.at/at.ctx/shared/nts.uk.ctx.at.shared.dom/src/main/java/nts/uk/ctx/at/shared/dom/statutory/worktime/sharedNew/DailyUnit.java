@@ -28,7 +28,7 @@ public class DailyUnit extends DomainObject {
 	 * @param dailyTime
 	 *            the daily time
 	 */
-	private DailyUnit(TimeOfDay dailyTime) {
+	public DailyUnit(TimeOfDay dailyTime) {
 		super();
 		this.dailyTime = dailyTime;
 	}

@@ -36,7 +36,7 @@ public class WeeklyUnit extends ValueObject {
 	 * @param start
 	 *            the start
 	 */
-	private WeeklyUnit(WeeklyTime time, WeekStart start) {
+	public WeeklyUnit(WeeklyTime time, WeekStart start) {
 		super();
 		this.time = time;
 		this.start = start;

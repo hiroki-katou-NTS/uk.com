@@ -33,6 +33,11 @@ public class WorkingTimeSetting extends DomainObject {
 		this.weeklyTime = memento.getWeeklyTime();
 	}
 
+	public WorkingTimeSetting(WeeklyUnit weeklyTime, DailyUnit dailyTime) {
+		this.weeklyTime = weeklyTime;
+		this.dailyTime = dailyTime;
+	}
+
 	/**
 	 * Save to memento.
 	 *

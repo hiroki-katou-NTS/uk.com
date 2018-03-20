@@ -29,7 +29,7 @@ public class KshstComFlexSetPK implements Serializable {
     
     /** The year. */
     @Column(name = "YEAR")
-    private short year;
+    private int year;
 
     /**
      * Instantiates a new kshst com flex set PK.
