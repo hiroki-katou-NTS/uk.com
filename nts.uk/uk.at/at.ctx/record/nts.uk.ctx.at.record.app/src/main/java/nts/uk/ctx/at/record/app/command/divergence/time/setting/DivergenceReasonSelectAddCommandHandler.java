@@ -33,7 +33,7 @@ public class DivergenceReasonSelectAddCommandHandler extends CommandHandler<Dive
 
 		// add
 
-		divReasonSelectRepo.add(domain);
+		this.divReasonSelectRepo.add(command.getDivergenceTimeNo(),domain);
 
 	}
 

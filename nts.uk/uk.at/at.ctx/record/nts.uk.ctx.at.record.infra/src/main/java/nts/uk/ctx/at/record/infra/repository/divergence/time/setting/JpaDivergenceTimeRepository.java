@@ -179,9 +179,10 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 		// Get List entity
 		List<KrcstDvgcAttendance> attendanceList = findAttendanceEntity(companyId, divTimeNo);
-
+		
 		// Remove List
-		this.commandProxy().removeAll(KrcstDvgcAttendance.class, attendanceList);
+//		this.commandProxy().removeAll(KrcstDvgcAttendance.class, attendanceList);
+		this.commandProxy().removeAll(attendanceList);
 		this.getEntityManager().flush();
 
 	}

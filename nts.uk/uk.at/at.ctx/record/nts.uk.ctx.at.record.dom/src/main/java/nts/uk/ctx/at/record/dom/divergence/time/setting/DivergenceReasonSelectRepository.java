@@ -35,12 +35,12 @@ public interface DivergenceReasonSelectRepository {
 	 *
 	 * @param divergenceReasonSelect the divergence reason select
 	 */
-	void add(DivergenceReasonSelect divergenceReasonSelect);
+	void add(Integer divTimeNo, DivergenceReasonSelect divergenceReasonSelect);
 
 	/**
 	 * Update.
 	 *
 	 * @param divergenceReasonSelect the divergence reason select
 	 */
-	void update(DivergenceReasonSelect divergenceReasonSelect);
+	void update(int divTimeNo,DivergenceReasonSelect divergenceReasonSelect);
 }

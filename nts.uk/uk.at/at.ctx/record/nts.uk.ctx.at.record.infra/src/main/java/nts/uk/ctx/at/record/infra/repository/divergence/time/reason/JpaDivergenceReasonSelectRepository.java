@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaDivergenceReasonSelectRepository.
@@ -65,6 +66,39 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonSelectRepository#findReasonInfo(int, java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public DivergenceReasonSelect findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
+
+		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, companyId, reasonCode);
+
+		KrcstDvgcReason entity = this.queryProxy().find(PK, KrcstDvgcReason.class).orElse(new KrcstDvgcReason());
+
+		if (entity != null)
+			return this.toDomain(entity);
+		else
+			return new DivergenceReasonSelect(null);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
+	 * DivergenceReasonSelectRepository#update(nts.uk.ctx.at.record.dom.
+	 * divergence.time.setting.DivergenceReasonSelect)
+	 */
+	@Override
+	public void update(int divTimeNo, DivergenceReasonSelect divergenceReasonSelect) {
+		this.commandProxy().update(this.toEntity(divTimeNo, divergenceReasonSelect));
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
 	 * DivergenceReasonSelectRepository#delete(nts.uk.ctx.at.record.dom.
 	 * divergence.time.setting.DivergenceReasonSelect)
 	 */
@@ -83,8 +117,9 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	 * time.setting.DivergenceReasonSelect)
 	 */
 	@Override
-	public void add(DivergenceReasonSelect divReasonSelect) {
-		this.commandProxy().insert(divReasonSelect);
+	public void add(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
+
+		this.commandProxy().insert(toEntity(divTimeNo, divReasonSelect));
 
 	}
 
@@ -95,11 +130,12 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	 *            the domain
 	 * @return the krcst dvgc reason
 	 */
-	private KrcstDvgcReason toEntity(DivergenceReasonSelect domain) {
+	private KrcstDvgcReason toEntity(int divTimeNo, DivergenceReasonSelect domain) {
 
 		KrcstDvgcReason entity = new KrcstDvgcReason();
 		domain.saveToMemento(new JpaDivergenceReasonSelectRepositorySetMemento(entity));
-
+		entity.getId().setNo(divTimeNo);
+		entity.getId().setCid(AppContexts.user().companyId());
 		return entity;
 	}
 
@@ -117,28 +153,4 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectRepository#findReasonInfo(int, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public DivergenceReasonSelect findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
-
-		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, companyId, reasonCode);
-
-		KrcstDvgcReason entity = this.queryProxy().find(PK, KrcstDvgcReason.class).orElse(new KrcstDvgcReason());
-
-		if (entity != null)
-			return this.toDomain(entity);
-		else
-			return new DivergenceReasonSelect(null);
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectRepository#update(nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect)
-	 */
-	@Override
-	public void update(DivergenceReasonSelect divergenceReasonSelect) {
-		this.commandProxy().update(this.toEntity(divergenceReasonSelect));
-
-	}
 }

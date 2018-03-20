@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -19,8 +20,12 @@ public class DivergenceReasonSelectSaveCommandHandler extends CommandHandler<Div
 	@Inject
 	DivergenceReasonSelectRepository divReasonSelectRepo;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DivergenceReasonSelectSaveCommand> context) {
@@ -31,9 +36,14 @@ public class DivergenceReasonSelectSaveCommandHandler extends CommandHandler<Div
 		// convert to domain
 		DivergenceReasonSelect domain = new DivergenceReasonSelect(command);
 
-		// Save
-
-		this.divReasonSelectRepo.update(domain);
+		try {
+			DivergenceReasonSelect domainFound = this.divReasonSelectRepo.findReasonInfo(command.getDivergenceTimeNo(),
+					AppContexts.user().companyId(), command.getDivergenceReasonCode().toString());
+			// Save
+			this.divReasonSelectRepo.update(command.getDivergenceTimeNo(), domain);
+		} catch (Exception ex) {
+			this.divReasonSelectRepo.add(command.getDivergenceTimeNo(), domain);
+		}
 
 	}
 

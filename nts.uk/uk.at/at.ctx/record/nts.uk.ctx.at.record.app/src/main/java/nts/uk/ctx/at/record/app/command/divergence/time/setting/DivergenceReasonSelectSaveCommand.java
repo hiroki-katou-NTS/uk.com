@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.record.app.command.divergence.time.setting;
 
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceInputRequired;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento;
-
+@Getter
 public class DivergenceReasonSelectSaveCommand implements DivergenceReasonSelectGetMemento{
 	/** The divergence time no. */
 	private int divergenceTimeNo;

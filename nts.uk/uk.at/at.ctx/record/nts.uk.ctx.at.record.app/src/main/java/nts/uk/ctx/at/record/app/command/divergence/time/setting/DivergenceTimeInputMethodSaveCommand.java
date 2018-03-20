@@ -30,7 +30,7 @@ public class DivergenceTimeInputMethodSaveCommand {
 
 	/** The divergence type. */
 
-	private int divergenceType;
+	private String divergenceType;
 
 	/** The divergence time error cancel method. */
 
