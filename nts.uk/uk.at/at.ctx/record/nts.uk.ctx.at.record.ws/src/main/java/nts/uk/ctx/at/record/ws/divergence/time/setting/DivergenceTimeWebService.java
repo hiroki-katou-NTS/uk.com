@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCom
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceItemSetCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceAttendanceItemFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceReasonSelectDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceReasonSelectFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeAttendanceFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeSettingFinder;
@@ -48,6 +50,9 @@ public class DivergenceTimeWebService extends WebService {
 
 	@Inject
 	private DivergenceAttendanceItemFinder divTimeAttendanceFinder;
+	
+	@Inject
+	private DivergenceReasonSelectFinder divReasonselectFinder;
 
 	/**
 	 * get all divergence time.
@@ -112,9 +117,9 @@ public class DivergenceTimeWebService extends WebService {
 	 */
 	@POST
 	@Path("getalldivreason/{divTimeId}")
-	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId) {
-		// return this.divReasonselectFinder.getAllDivReasonByCode(divTimeId);
-		return null;
+	public List<DivergenceReasonSelectDto> getAllDivReason(@PathParam("divTimeId") String divTimeNo) {
+		return this.divReasonselectFinder.getAllReason(Integer.parseInt(divTimeNo));
+		
 	}
 
 	/**
