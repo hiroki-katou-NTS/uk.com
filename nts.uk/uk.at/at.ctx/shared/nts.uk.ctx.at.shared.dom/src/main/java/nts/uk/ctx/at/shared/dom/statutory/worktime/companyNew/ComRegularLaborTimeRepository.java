@@ -31,7 +31,7 @@ public interface ComRegularLaborTimeRepository {
 	 * @param companyId the company id
 	 * @param year the year
 	 */
-	void remove(String companyId, int year);
+	void remove(String companyId);
 
 	/**
 	 * Find.
@@ -40,6 +40,6 @@ public interface ComRegularLaborTimeRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<ComRegularLaborTime> find(String companyId, int year);
+	Optional<ComRegularLaborTime> find(String companyId);
 
 }

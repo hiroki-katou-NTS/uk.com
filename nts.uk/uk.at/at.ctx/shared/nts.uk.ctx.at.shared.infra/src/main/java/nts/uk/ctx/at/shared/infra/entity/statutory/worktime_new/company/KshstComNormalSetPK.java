@@ -1,84 +1,70 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package entities;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshstComNormalSetPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KshstComNormalSetPK implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "YEAR")
-    private short year;
+	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    public KshstComNormalSetPK() {
-    }
+	/** The cid. */
+	@Column(name = "CID")
+	private String cid;
 
-    public KshstComNormalSetPK(String cid, short year) {
-        this.cid = cid;
-        this.year = year;
-    }
+	/** The year. */
+	@Column(name = "YEAR")
+	private short year;
 
-    public String getCid() {
-        return cid;
-    }
+	/**
+	 * Instantiates a new kshst com normal set PK.
+	 */
+	public KshstComNormalSetPK() {
+		super();
+	}
 
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (int) year;
+		return hash;
+	}
 
-    public short getYear() {
-        return year;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KshstComNormalSetPK)) {
+			return false;
+		}
+		KshstComNormalSetPK other = (KshstComNormalSetPK) object;
+		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if (this.year != other.year) {
+			return false;
+		}
+		return true;
+	}
 
-    public void setYear(short year) {
-        this.year = year;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (int) year;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstComNormalSetPK)) {
-            return false;
-        }
-        KshstComNormalSetPK other = (KshstComNormalSetPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if (this.year != other.year) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entities.KshstComNormalSetPK[ cid=" + cid + ", year=" + year + " ]";
-    }
-    
 }

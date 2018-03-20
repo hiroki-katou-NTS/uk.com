@@ -28,7 +28,7 @@ public class WorkingTimeSetting extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public WorkingTimeSetting(WorkingTimeSetting memento) {
+	public WorkingTimeSetting(WorkingTimeSettingGetMemento memento) {
 		this.dailyTime = memento.getDailyTime();
 		this.weeklyTime = memento.getWeeklyTime();
 	}

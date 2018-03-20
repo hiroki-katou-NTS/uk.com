@@ -19,4 +19,5 @@ public class DeforLaborSetting extends AggregateRoot {
 	// 法定時間
 	/** The statutory setting. */
 	protected List<MonthlyUnit> statutorySetting;
+
 }

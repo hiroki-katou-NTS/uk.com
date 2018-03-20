@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstTransLabTime;
 
 /**
  * The Class KshstComTransLabTime.
@@ -22,30 +22,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHST_COM_TRANS_LAB_TIME")
-public class KshstComTransLabTime extends UkJpaEntity implements Serializable {
+public class KshstComTransLabTime extends KshstTransLabTime implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	/** The exclus ver. */
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
 
 	/** The cid. */
 	@Id
 	@Column(name = "CID")
 	private String cid;
-
-	/** The weekly time. */
-	@Column(name = "WEEKLY_TIME")
-	private int weeklyTime;
-
-	/** The week str. */
-	@Column(name = "WEEK_STR")
-	private short weekStr;
-
-	/** The daily time. */
-	@Column(name = "DAILY_TIME")
-	private int dailyTime;
 
 	/**
 	 * Instantiates a new kshst com trans lab time.
@@ -84,6 +68,9 @@ public class KshstComTransLabTime extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.cid;
