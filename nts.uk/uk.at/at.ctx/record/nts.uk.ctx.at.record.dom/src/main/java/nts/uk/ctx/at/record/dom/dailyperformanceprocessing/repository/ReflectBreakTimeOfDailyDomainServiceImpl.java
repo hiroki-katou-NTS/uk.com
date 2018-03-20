@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -137,9 +138,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			// 出退勤と重複する休憩時間帯のみ追加する
 			boolean checkAddBreakTime = checkAddBreakTime(timeLeavingWorks, timeZone, frameNo);
 			if(checkAddBreakTime){
-				//fixed 休憩時間(削除予定) =null
-				//breakTime = null
-				lstBreakTime.add(new BreakTimeSheet(new BreakFrameNo(frameNo), timeZone.getStart(), timeZone.getEnd(), null));
+				lstBreakTime.add(new BreakTimeSheet(new BreakFrameNo(frameNo), timeZone.getStart(), timeZone.getEnd(), new AttendanceTime(0)));
 			}
 		}
 		//休憩種類　←　「就業時間帯から参照」
@@ -208,7 +207,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			// this.workingConditionItemService.getHolidayWorkSchedule(companyId,
 			// WorkInfo.getEmployeeId(), WorkInfo.getYmd(),
 			// WorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
-
+			//休日出勤時の勤務情報を取得する
 			// 1* Lấy 休日出勤時の勤務情報 trả về 勤務情報なし , 公休出勤時 ....
 			// (fixed)
 			String result = "勤務情報なし";

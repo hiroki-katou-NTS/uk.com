@@ -291,11 +291,6 @@ public class ExcessOutsideWorkMng {
 			
 			// 時間外超過内訳に割り当てる　（集計後）
 			this.assignExcessOutsideWorkBreakdownForAfterAggregate();
-			
-			// 管理期間の36協定時間の作成
-			this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, this.procPeriod.end(),
-					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, this.monthlyCalculation,
-					this.excessOutsideWorkDetail.getTotalTimeAfterRound(), repositories);
 		}
 	}
 	
@@ -370,11 +365,6 @@ public class ExcessOutsideWorkMng {
 			
 			// 時間外超過内訳に割り当てる
 			this.assignExcessOutsideWorkBreakdownForReverseTimeSeries();
-			
-			// 管理期間の36協定時間の作成
-			this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, this.procPeriod.end(),
-					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, this.monthlyCalculation,
-					this.excessOutsideWorkDetail.getTotalTimeAfterRound(), repositories);
 		}
 	}
 	

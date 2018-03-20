@@ -24,38 +24,41 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class RegisterIdentityConfirmDay {
-	
+
 	@Inject
 	private IdentityProcessUseSetRepository identityProcessUseSetRepository;
-	
+
 	@Inject
 	private CheckIdentityVerification checkIdentityVerification;
-	
+
 	@Inject
 	private IdentificationRepository identificationRepository;
-	
+
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
-	
+
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
-	
-	public void registerIdentity(List<GeneralDate> dates) {
+
+	public void registerIdentity(ParamIdentityConfirmDay param) {
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
 		GeneralDate processingYmd = GeneralDate.today();
-		Optional<IdentityProcessUseSet>  identityProcessOpt= identityProcessUseSetRepository.findByKey(companyId);
-		if(identityProcessOpt.isPresent()){
+		Optional<IdentityProcessUseSet> identityProcessOpt = identityProcessUseSetRepository.findByKey(companyId);
+		if (identityProcessOpt.isPresent()) {
 			Optional<SelfConfirmError> canRegist = checkIdentityVerification.check(identityProcessOpt.get());
-			if(canRegist.isPresent()){
-				if(canRegist.get() == SelfConfirmError.CAN_CONFIRM_WHEN_ERROR){
-					dates.forEach(date -> {
-						identificationRepository.insert(new Identification(companyId, employeeId, processingYmd, date));
-					});
-				}else{
-					dates.forEach(date -> {
+			param.getSelfConfirmDay().forEach(data -> {
+				String employeeId = AppContexts.user().employeeId();
+				if (canRegist.isPresent()) {
+					if (canRegist.get() == SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
+						if (data.getValue()) {
+							identificationRepository
+									.insert(new Identification(companyId, employeeId, data.getDate(), processingYmd));
+						} else {
+							identificationRepository.remove(companyId, employeeId, processingYmd);
+						}
+					} else {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.findAll(employeeId, date);
+								.findAll(employeeId, data.getDate());
 						if (!employeeDailyPerErrors.isEmpty()) {
 							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 									.getListErAlByListCodeError(companyId,
@@ -63,13 +66,17 @@ public class RegisterIdentityConfirmDay {
 													.map(x -> x.getErrorAlarmWorkRecordCode().v())
 													.collect(Collectors.toList()));
 							if (errorAlarmWorkRecords.isEmpty()) {
-								identificationRepository
-										.insert(new Identification(companyId, employeeId, processingYmd, date));
+								if (data.getValue()) {
+									identificationRepository.insert(
+											new Identification(companyId, employeeId, data.getDate(), processingYmd));
+								} else {
+									identificationRepository.remove(companyId, employeeId, processingYmd);
+								}
 							}
 						}
-					});
+					}
 				}
-			}
+			});
 		}
 	}
 }
