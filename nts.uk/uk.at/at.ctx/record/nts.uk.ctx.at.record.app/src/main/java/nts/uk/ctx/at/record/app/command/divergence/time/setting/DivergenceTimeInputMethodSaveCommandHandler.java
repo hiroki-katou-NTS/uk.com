@@ -40,7 +40,7 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 		DivergenceTimeSaveCommand divTimeCommand = new DivergenceTimeSaveCommand(command.getDivergenceTimeNo(),
 				command.getCompanyId(), command.getDivergenceTimeUseSet(), command.getDivergenceTimeName(),
 				command.getDivergenceType(), command.isReasonInput(), command.isReasonSelect(),
-				command.getAttendanceId().stream().map(e -> e.doubleValue()).collect(Collectors.toList()));
+				command.getTargetItems().stream().map(e -> e.doubleValue()).collect(Collectors.toList()));
 
 		// Convert to DivergenceReasonInputMethosSaveCommand
 
