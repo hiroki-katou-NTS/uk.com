@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -259,9 +258,11 @@ public class MonthlyCalculation {
 	/**
 	 * 履歴ごとに月別実績を集計する
 	 * @param aggrPeriod 集計期間
+	 * @param aggrAtr 集計区分
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(DatePeriod aggrPeriod, RepositoriesRequiredByMonthlyAggr repositories){
+	public void aggregate(DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果　初期化
 		this.actualWorkingTime = new RegularAndIrregularTimeOfMonthly();
@@ -279,7 +280,7 @@ public class MonthlyCalculation {
 			
 			// 通常・変形労働勤務の月別実績を集計する
 			val aggrValue = this.actualWorkingTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, MonthlyAggregateAtr.MONTHLY,
+					this.yearMonth, aggrPeriod, this.workingSystem, aggrAtr,
 					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
 					this.statutoryWorkingTimeWeek, this.totalWorkingTime, null, repositories);
@@ -288,7 +289,7 @@ public class MonthlyCalculation {
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(this.companyId, this.employeeId,
 					this.yearMonth, this.closureId, this.closureDate, aggrPeriod, this.workingSystem,
-					MonthlyAggregateAtr.MONTHLY, this.isRetireMonth, this.workplaceId, this.employmentCd,
+					aggrAtr, this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.aggrSettingMonthly, this.holidayAdditionOpt, this.totalWorkingTime,
 					this.statutoryWorkingTimeMonth, repositories);
 		}
@@ -301,13 +302,14 @@ public class MonthlyCalculation {
 
 			// フレックス勤務の月別実績を集計する
 			val aggrValue = this.flexTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, MonthlyAggregateAtr.MONTHLY, flexAggrMethod,
+					this.yearMonth, aggrPeriod, this.workingSystem, aggrAtr, flexAggrMethod,
 					aggrSetOfFlex, this.attendanceTimeOfDailyMap, this.totalWorkingTime, null,
 					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			this.totalWorkingTime = aggrValue.getAggregateTotalWorkingTime();
 			
 			// フレックス勤務の月単位の時間を集計する
-			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, aggrPeriod, flexAggrMethod,
+			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId,
+					this.yearMonth, aggrPeriod, flexAggrMethod,
 					this.workplaceId, this.employmentCd, aggrSetOfFlex, this.holidayAdditionOpt,
 					this.totalWorkingTime, this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth,
 					repositories);
@@ -320,7 +322,7 @@ public class MonthlyCalculation {
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, aggrPeriod.end(),
-				MonthlyAggregateAtr.MONTHLY, this, null, repositories);
+				aggrAtr, this, null, repositories);
 		
 		// 月別実績の36協定へ値を移送
 		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime();
@@ -352,12 +354,11 @@ public class MonthlyCalculation {
 		// 集計期間を取得
 		val aggrPeriod = agreementOperationSet.getAggregatePeriod(procPeriod);
 		
-		// 時間外超過を集計する
+		// 履歴ごとに月別実績を集計する
 		this.prepareAggregation(companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
 				aggrPeriod.getPeriod(), workingSystem, isRetireMonth, repositories);
 		this.year = aggrPeriod.getYear();
-		ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(this);
-		excessOutsideWorkMng.aggregate(repositories);
+		this.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, repositories);
 
 		// 管理時間の36協定時間を返す
 		return Optional.of(this.agreementTimeOfManagePeriod);
