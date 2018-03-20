@@ -47,7 +47,7 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 		if(valueExtractAlarmWR.isPresent()) {
 		valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_6"));
 		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7",ERROR_CODE));
-		valueExtractAlarmWR.get().setComment(comment);
+		valueExtractAlarmWR.get().setComment(Optional.ofNullable(comment));
 		return valueExtractAlarmWR;
 		}
 		return Optional.empty();

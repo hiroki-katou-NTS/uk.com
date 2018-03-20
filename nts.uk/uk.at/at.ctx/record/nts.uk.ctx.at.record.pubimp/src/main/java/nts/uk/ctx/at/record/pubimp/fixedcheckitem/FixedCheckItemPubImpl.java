@@ -78,13 +78,13 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	
 	private ValueExtractAlarmWRPubExport convertToExport(ValueExtractAlarmWR valueExtractAlarmWR) {
 		return new ValueExtractAlarmWRPubExport(
-				valueExtractAlarmWR.getWorkplaceID(),
+				valueExtractAlarmWR.getWorkplaceID().orElse(null),
 				valueExtractAlarmWR.getEmployeeID(),
 				valueExtractAlarmWR.getAlarmValueDate(),
 				valueExtractAlarmWR.getClassification(),
 				valueExtractAlarmWR.getAlarmItem(),
 				valueExtractAlarmWR.getAlarmValueMessage(),
-				valueExtractAlarmWR.getComment()
+				valueExtractAlarmWR.getComment().orElse(null)
 				);
 	}
 	
