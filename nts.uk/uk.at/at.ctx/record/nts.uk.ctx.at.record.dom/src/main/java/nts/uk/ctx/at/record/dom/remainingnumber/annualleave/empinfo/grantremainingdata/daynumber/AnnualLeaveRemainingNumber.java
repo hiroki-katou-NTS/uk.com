@@ -1,11 +1,29 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber;
 
-import nts.uk.ctx.at.record.dom.remainingnumber.base.DayNumber;
+import java.util.Optional;
 
-public class AnnualLeaveRemainingNumber extends DayNumber{
+import lombok.Getter;
+
+@Getter
+public class AnnualLeaveRemainingNumber {
+
+	/**
+	 * 日数
+	 */
+	private AnnualLeaveRemainingDayNumber days;
+
+	/**
+	 * 時間
+	 */
+	private Optional<AnnualLeaveRemainingTime> minutes;
+
+	private AnnualLeaveRemainingNumber(double days, Integer minutes) {
+		this.days = new AnnualLeaveRemainingDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new AnnualLeaveRemainingTime(minutes)) : Optional.empty();
+	}
 	
-	public AnnualLeaveRemainingNumber(int days, Integer hours) {
-		super(days, hours);
+	public static AnnualLeaveRemainingNumber createFromJavaType(double days, Integer minutes) {
+		return new AnnualLeaveRemainingNumber(days, minutes);
 	}
 
 }

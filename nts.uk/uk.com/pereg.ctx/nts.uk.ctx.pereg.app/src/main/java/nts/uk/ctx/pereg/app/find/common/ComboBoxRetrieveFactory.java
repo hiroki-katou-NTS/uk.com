@@ -128,7 +128,15 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00010", HourlyPaymentAtr.class);
 		// するしない区分
 		aMap.put("E00011", NotUseAtr.class);
-
+		// 特別休暇適用設定
+		//aMap.put("E00012", SpecialLeaveAppSetting.class);
+		// 60H超過時の精算方法
+		//aMap.put("E00013", PaymentMethod.class);
+		// 子の看護・介護休暇上限設定
+		//aMap.put("E00014", UpperLimitSetting.class);
+		// 休暇期限切れ状態
+		//aMap.put("E00015", LeaveExpirationStatus.class);
+		
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
 

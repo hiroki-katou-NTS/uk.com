@@ -261,6 +261,12 @@ public class ProgramsManager {
 	public static final Program CPS001F  = new Program(WebAppId.COM, ProgramIdConsts.CPS001F, "CPS001_96",
 			"/view/cps/001/f/index.xhtml");
 	
+	/**
+	 * CPS001H
+	 */
+	public static final Program CPS001H  = new Program(WebAppId.COM, ProgramIdConsts.CPS001H, "CPS001_112",
+			"/view/cps/001/h/index.xhtml");
+	
 	
 	/**
 	 * KMK011A
@@ -1511,6 +1517,11 @@ public class ProgramsManager {
 			"/view/cmm/045/a/index.xhtml");
 	public static final Program CMM045B= new Program(WebAppId.AT, ProgramIdConsts.CMM045B, "CMM045_2",
 			"/view/cmm/045/b/index.xhtml");
+	
+	
+	public static final Program CPS001G= new Program(WebAppId.COM, ProgramIdConsts.CPS001G, "CPS001_97",
+			"/view/cps/001/g/index.xhtml");
+	
 	/**
 	 * All programs map.
 	 */
