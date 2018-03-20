@@ -59,8 +59,13 @@ public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<C
 		if(find.getHistoryItems().isEmpty()){
 			//create history
 			this.historyRepo.add(domain);
-			//make default data for Company DivergenceReference Time
-			this.itemRepo.addDefaultDataWhenCreateHistory(domain.getHistoryItems().get(0).identifier());
+			if(!command.isCopyData()){
+				//make default data for Company DivergenceReference Time
+				this.itemRepo.addDefaultDataWhenCreateHistory(domain.getHistoryItems().get(0).identifier());
+			}else {
+				CompanyDivergenceReferenceTimeHistory latestHist = this.historyRepo.findLatestHist();
+				this.itemRepo.copyDataFromLatestHistory(domain.getHistoryItems().get(0).identifier(), latestHist.getHistoryItems().get(0).identifier());
+			}
 		} else {
 			//update history
 			this.historyRepo.update(domain);

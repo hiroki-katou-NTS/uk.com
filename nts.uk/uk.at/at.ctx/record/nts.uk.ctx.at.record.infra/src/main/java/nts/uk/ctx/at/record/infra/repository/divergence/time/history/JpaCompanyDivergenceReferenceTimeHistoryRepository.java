@@ -202,4 +202,10 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 
 		return comDrtHists;
 	}
+
+	@Override
+	public CompanyDivergenceReferenceTimeHistory findLatestHist() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

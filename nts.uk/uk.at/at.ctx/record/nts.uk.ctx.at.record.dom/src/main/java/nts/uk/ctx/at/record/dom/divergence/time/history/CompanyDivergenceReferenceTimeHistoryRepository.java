@@ -17,6 +17,13 @@ public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	Integer countByDatePeriod(String companyId, DatePeriod datePeriod);
 	
 	/**
+	 * Find latest hist.
+	 *
+	 * @return the company divergence reference time history
+	 */
+	CompanyDivergenceReferenceTimeHistory findLatestHist();
+	
+	/**
 	 * Find by hist id.
 	 *
 	 * @param histId the hist id

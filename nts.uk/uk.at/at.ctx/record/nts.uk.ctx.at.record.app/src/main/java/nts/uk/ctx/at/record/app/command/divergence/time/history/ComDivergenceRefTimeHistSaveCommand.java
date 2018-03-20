@@ -28,6 +28,9 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 	/** The end date. */
 	private GeneralDate endDate;
 	
+	/** The is copy data. */
+	private boolean isCopyData;
+	
 	/**
 	 * Instantiates a new company divergence reference time history command.
 	 */
