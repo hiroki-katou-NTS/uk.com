@@ -16,15 +16,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.company.CompanyWtSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime.company.KcwstCompanyWtSet;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime.company.KcwstCompanyWtSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime.company.KcwstCompanyWtSet_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
-import nts.uk.ctx.at.shared.infra.repository.statutory.worktime.company.JpaCompanyWtSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.repository.statutory.worktime.company.JpaCompanyWtSettingSetMemento;
 
 /**
  * The Class JpaCompanyWtSettingRepository.
