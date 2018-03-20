@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
+package nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OperationOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OpOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.SettingUnit;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
+package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting.old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformFuncRepo;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceFun;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceFun;
 
 /**
  * @author danpv

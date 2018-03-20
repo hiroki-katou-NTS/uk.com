@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
-import nts.uk.ctx.at.record..dom.workrecord.operationsetting.ApprovalProcessRepository;
-import nts.uk.ctx.at.record..dom.workrecord.operationsetting.ApprovalProcess;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
@@ -21,24 +21,24 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
     @Override
     public List<ApprovalProcess> getAllApprovalProcess(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtApprovalProcess.class)
-                .getList(item -> toDomain(item));
+                .getList(item -> item.toDomain(item));
     }
 
     @Override
     public Optional<ApprovalProcess> getApprovalProcessById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtApprovalProcess.class)
         .setParameter("cid", cid)
-        .getSingle(c->toDomain(c));
+        .getSingle(c->c.toDomain(c));
     }
 
     @Override
     public void add(ApprovalProcess domain){
-        this.commandProxy().insert(toEntity(domain));
+        this.commandProxy().insert(KrcmtApprovalProcess.toEntity(domain));
     }
 
     @Override
     public void update(ApprovalProcess domain){
-        KrcmtApprovalProcess newApprovalProcess = toEntity(domain);
+        KrcmtApprovalProcess newApprovalProcess = KrcmtApprovalProcess.toEntity(domain);
         KrcmtApprovalProcess updateApprovalProcess = this.queryProxy().find(newApprovalProcess.approvalProcessPk, KrcmtApprovalProcess.class).get();
         if (null == updateApprovalProcess) {
             return;

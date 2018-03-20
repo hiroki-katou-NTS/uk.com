@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.ws.workrecord.operationsetting;
+package nts.uk.ctx.at.record.ws.workrecord.operationsetting.old;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -10,19 +10,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.DisplayRestrictionCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.DisplayRestrictionCommandHandler;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.FunctionalRestrictionCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.FunctionalRestrictionCommandHandler;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.OperationSettingCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.OperationSettingCommandHandler;
-import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.DisplayRestrictionDto;
-import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FunctionalRestrictionDto;
-import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.OperationSettingDto;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DisplayRestriction;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old.DisplayRestrictionCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old.DisplayRestrictionCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old.FunctionalRestrictionCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old.FunctionalRestrictionCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old.OperationSettingCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old.OperationSettingCommandHandler;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.old.DisplayRestrictionDto;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.old.FunctionalRestrictionDto;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.old.OperationSettingDto;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.DisplayRestriction;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.FunctionalRestriction;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OperationOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OpOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 

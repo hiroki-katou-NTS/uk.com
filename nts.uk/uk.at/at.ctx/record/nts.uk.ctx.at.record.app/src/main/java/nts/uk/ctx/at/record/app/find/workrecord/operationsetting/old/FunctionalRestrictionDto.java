@@ -1,12 +1,12 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.app.find.workrecord.operationsetting;
+package nts.uk.ctx.at.record.app.find.workrecord.operationsetting.old;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.ConfirmOfManagerOrYouself;
 
 /**
  * @author danpv

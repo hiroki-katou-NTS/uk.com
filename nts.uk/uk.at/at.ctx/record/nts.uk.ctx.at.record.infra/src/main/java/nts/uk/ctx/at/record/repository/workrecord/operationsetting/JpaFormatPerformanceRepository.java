@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.record.repository.workrecord.operationsetting;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
-import nts.uk.ctx.at.record..dom.workrecord.operationsetting.FormatPerformanceRepository;
-import nts.uk.ctx.at.record..dom.workrecord.operationsetting.FormatPerformance;
-import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
 public class JpaFormatPerformanceRepository extends JpaRepository implements FormatPerformanceRepository
@@ -21,24 +21,24 @@ public class JpaFormatPerformanceRepository extends JpaRepository implements For
     @Override
     public List<FormatPerformance> getAllFormatPerformance(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtFormatPerformance.class)
-                .getList(item -> toDomain(item));
+                .getList(item -> item.toDomain(item));
     }
 
     @Override
     public Optional<FormatPerformance> getFormatPerformanceById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtFormatPerformance.class)
         .setParameter("cid", cid)
-        .getSingle(c->toDomain(c));
+        .getSingle(c->c.toDomain(c));
     }
 
     @Override
     public void add(FormatPerformance domain){
-        this.commandProxy().insert(toEntity(domain));
+        this.commandProxy().insert(KrcmtFormatPerformance.toEntity(domain));
     }
 
     @Override
     public void update(FormatPerformance domain){
-        KrcmtFormatPerformance newFormatPerformance = toEntity(domain);
+        KrcmtFormatPerformance newFormatPerformance = KrcmtFormatPerformance.toEntity(domain);
         KrcmtFormatPerformance updateFormatPerformance = this.queryProxy().find(newFormatPerformance.formatPerformancePk, KrcmtFormatPerformance.class).get();
         if (null == updateFormatPerformance) {
             return;

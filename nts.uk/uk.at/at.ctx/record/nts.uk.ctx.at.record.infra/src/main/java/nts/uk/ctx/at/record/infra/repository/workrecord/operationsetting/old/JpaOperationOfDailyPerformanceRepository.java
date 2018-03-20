@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
+package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting.old;
 
 import java.util.Optional;
 
@@ -9,14 +9,14 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DisplayRestriction;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpeDisp;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpeFun;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.DisplayRestriction;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.FunctionalRestriction;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OpOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OperationOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.SettingUnit;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcstDailyRecOpe;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcstDailyRecOpeDisp;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcstDailyRecOpeFun;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

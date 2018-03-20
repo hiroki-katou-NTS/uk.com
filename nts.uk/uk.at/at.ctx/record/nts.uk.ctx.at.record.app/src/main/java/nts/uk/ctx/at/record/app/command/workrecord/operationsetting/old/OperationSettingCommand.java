@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
+package nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old;
 
 import lombok.Data;
 

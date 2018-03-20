@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.record.repository.workrecord.operationsetting;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtMonPerformanceFun;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtMonPerformanceFunPk;
-import nts.uk.ctx.at.record..dom.workrecord.operationsetting.MonPerformanceFunRepository;
-import nts.uk.ctx.at.record..dom.workrecord.operationsetting.MonPerformanceFun;
-import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
 public class JpaMonPerformanceFunRepository extends JpaRepository implements MonPerformanceFunRepository
@@ -21,24 +21,24 @@ public class JpaMonPerformanceFunRepository extends JpaRepository implements Mon
     @Override
     public List<MonPerformanceFun> getAllMonPerformanceFun(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtMonPerformanceFun.class)
-                .getList(item -> toDomain(item));
+                .getList(item -> item.toDomain(item));
     }
 
     @Override
     public Optional<MonPerformanceFun> getMonPerformanceFunById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtMonPerformanceFun.class)
         .setParameter("cid", cid)
-        .getSingle(c->toDomain(c));
+        .getSingle(c->c.toDomain(c));
     }
 
     @Override
     public void add(MonPerformanceFun domain){
-        this.commandProxy().insert(toEntity(domain));
+        this.commandProxy().insert(KrcmtMonPerformanceFun.toEntity(domain));
     }
 
     @Override
     public void update(MonPerformanceFun domain){
-        KrcmtMonPerformanceFun newMonPerformanceFun = toEntity(domain);
+        KrcmtMonPerformanceFun newMonPerformanceFun = KrcmtMonPerformanceFun.toEntity(domain);
         KrcmtMonPerformanceFun updateMonPerformanceFun = this.queryProxy().find(newMonPerformanceFun.monPerformanceFunPk, KrcmtMonPerformanceFun.class).get();
         if (null == updateMonPerformanceFun) {
             return;
