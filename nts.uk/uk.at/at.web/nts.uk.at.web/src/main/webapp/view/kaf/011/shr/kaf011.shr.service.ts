@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf011.shr.service {
 
         return ajax(paths.changeDay, changeDayParam);
     }
-    export function save(saveCmd: screenModel.ISaveHolidayShipmentCommand) {
+    export function save(saveCmd: common.ISaveHolidayShipmentCommand) {
         return ajax(paths.save, saveCmd);
     }
 
