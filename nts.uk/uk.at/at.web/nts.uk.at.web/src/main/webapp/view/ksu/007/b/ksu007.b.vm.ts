@@ -144,7 +144,7 @@ module nts.uk.at.view.ksu007.b {
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled || res.status == "REQUESTED_CANCEL") {
                             self.errorLogs.sort(function(a,b) {
-                                return (a.employeeId - b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
+                                return a.employeeId.localeCompare(b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
                             });
                             
                             self.executionState('完了');
