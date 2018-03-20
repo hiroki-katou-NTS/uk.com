@@ -164,10 +164,9 @@ module nts.uk.com.view.cmf001.share.model {
             this.conditionSettingName = ko.observable(name);
             this.dispConditionSettingName = name;
             this.deleteExistData = ko.observable(deleteExistData);
-            if (deleteExistDataMethod) {
+            if (deleteExistDataMethod) 
                 this.deleteExistDataMethod(deleteExistDataMethod);
-            }
-            if (acceptMode)
+            if (!nts.uk.util.isNullOrUndefined(acceptMode))
                 this.acceptMode(acceptMode);
             if (csvDataItemLineNumber)
                 this.csvDataItemLineNumber(csvDataItemLineNumber);

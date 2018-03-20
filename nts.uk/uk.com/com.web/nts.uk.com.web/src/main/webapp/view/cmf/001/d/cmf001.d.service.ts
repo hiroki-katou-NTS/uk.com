@@ -4,7 +4,6 @@ module nts.uk.com.view.cmf001.d.service {
     
     var paths = {
         getAllData: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
-        getOneStdData: "exio/exi/condset/getOneStdCondSet/{0}/{1}",
         registerData: "exio/exi/item/register",
         registerDataAndReturn: "exio/exi/item/registerReturn",
         getAllCategory: "exio/exi/condset/getAllCategory",
@@ -51,8 +50,4 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax('com', _path);
     };
     
-    export function getOneStdData(sysType: number, code: string): JQueryPromise<any> {
-        let _path = format(paths.getOneStdData, sysType, code);
-        return ajax("com", _path);
-    };
 }
