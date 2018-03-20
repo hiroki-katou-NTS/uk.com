@@ -51,6 +51,7 @@ import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -153,9 +154,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
-	//@Inject
-	//private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
-	
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepository;
 
@@ -185,6 +183,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	
+	@Inject
+	private CalculationErrorCheckService calculationErrorCheckService;
 	
 	/**
 	 * 勤務情報を取得して計算
