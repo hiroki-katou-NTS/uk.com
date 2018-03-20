@@ -606,7 +606,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// TimeWithDayAttr(x.getAttendanceTime().v());
 		// logonOrLogoff dang nhe TimeWithDayAttr nhung hien tai workStamp
 		// fixed
-		WorkStamp logonOrLogoff = null;
+		WorkStamp logonOrLogoff = new WorkStamp(new TimeWithDayAttr(x.getAttendanceTime().v()) , new TimeWithDayAttr(x.getAttendanceTime().v()) ,null, null);
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
@@ -615,12 +615,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			lstLogOnInfo.set(indexPCLogOnInfo,
 					new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
-							logOnInfo.getLogOff().orElse(null), logonOrLogoff));
+							(logOnInfo.getLogOff()!=null && logOnInfo.getLogOff().isPresent())?logOnInfo.getLogOff().get():null, logonOrLogoff));
 			return pcLogOnInfoOfDaily;
 		}
 		lstLogOnInfo.set(indexPCLogOnInfo,
 				new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
-						logonOrLogoff, logOnInfo.getLogOn().orElse(null)));
+						logonOrLogoff, (logOnInfo.getLogOn()!=null&& logOnInfo.getLogOn().isPresent())?logOnInfo.getLogOn().get():null));
 		return pcLogOnInfoOfDaily;
 	}
 
