@@ -9,10 +9,9 @@
 			<button tabindex="69" data-bind="click: openFlowBreakSetting">#{i18n.getText('KMK003_227')}</button>
 		</com:ko>
 	</div>
-	<div class="cf"></div>
 	<!-- Begin Fixed rest time switch button -->
 	<com:ko tag="if" bind="isFlex">
-		<div class="tab-rows">
+		<div class="pull-left">
 			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
 			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
@@ -24,7 +23,7 @@
 		</div>	
 	</com:ko>
 	<com:ko tag="if" bind="isFlow">
-		<div class="tab-rows">
+		<div class="pull-left">
 			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
 			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
@@ -35,6 +34,7 @@
 					enable: true }"></div>
 		</div>	
 	</com:ko>
+	<div class="cf"></div>
 	<!-- End of Fixed rest time switch button -->
 	
 	<div class="tab-seperator">	
