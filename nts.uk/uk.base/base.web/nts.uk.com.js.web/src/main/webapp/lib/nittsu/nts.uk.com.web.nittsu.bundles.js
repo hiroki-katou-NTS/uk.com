@@ -14376,6 +14376,7 @@ var nts;
                         var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
+                        $input.data("required", required);
                         var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
@@ -14411,10 +14412,11 @@ var nts;
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || ""));
                         name = nts.uk.resource.getControlName(name);
-                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
-                            outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                         $input.on("change", function (e) {
                             var newText = $input.val();
+                            var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
+                                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
@@ -14435,6 +14437,9 @@ var nts;
                         });
                         $input.on("blur", function () {
                             var newText = $input.val();
+                            var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
+                                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                             var result = validator.validate(newText);
                             if (!result.isValid) {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -14454,6 +14459,9 @@ var nts;
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
+                            var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
+                                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                             var result = validator.validate(newText);
                             $input.ntsError('clearKibanError');
                             if (!result.isValid) {
@@ -14492,6 +14500,7 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var container = $(element);
                         var dateNormalizer = container.find("input").data("dateNormalizer");
                         if (dateNormalizer) {
@@ -14515,6 +14524,7 @@ var nts;
                                 $label.text("");
                             }
                         }
+                        $input.data("required", required);
                         // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
