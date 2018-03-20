@@ -411,7 +411,7 @@ module cmm045.a.viewmodel {
             }
             _.each(lstSort, function(item) {
                 if (item.frameNo != 11 && item.frameNo != 12 && item.applicationTime != 0) {//時間外深夜時間
-                    if (count <= 3) {
+                    if (count < 3) {
                         framName += item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
@@ -1097,9 +1097,9 @@ module cmm045.a.viewmodel {
         }
         convertTime_Short_HM(time: number): string {
             let hh = Math.floor(time / 60);
-            let min1: string = Math.floor(time % 60);
+            let min1 = Math.floor(time % 60);
             let min = '';
-            if (min1.length == 2) {
+            if (min1 >= 10) {
                 min = min1;
             } else {
                 min = '0' + min1;
