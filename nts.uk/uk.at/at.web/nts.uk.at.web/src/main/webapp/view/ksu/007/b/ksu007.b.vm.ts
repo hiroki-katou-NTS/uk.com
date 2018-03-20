@@ -161,11 +161,10 @@ module nts.uk.at.view.ksu007.b {
                             self.numberFail(self.errorLogs().length);
                             self.readIndex.removeAll();
                             self.isFinish(true);
-                            break;
                         }
                     });
                 }).while(infor => {
-                    return infor.pending || infor.running;
+                    return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
                 }).pause(1000));
             }
 
