@@ -600,7 +600,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private PCLogOnInfoOfDaily refect(PCLogOnInfoOfDaily pcLogOnInfoOfDaily, int indexPCLogOnInfo, StampItem x,
 			List<StampItem> lstStamp, int worktNo, String inOrOutClass) {
 		List<LogOnInfo> lstLogOnInfo = pcLogOnInfoOfDaily.getLogOnInfo();
-		LogOnInfo logOnInfo = lstLogOnInfo.get(indexPCLogOnInfo);
 		// TimeWithDayAttr logonOrLogoff = new
 		// TimeWithDayAttr(x.getAttendanceTime().v());
 		// logonOrLogoff dang nhe TimeWithDayAttr nhung hien tai workStamp
@@ -611,6 +610,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
+		if(indexPCLogOnInfo == -1){
+			if ("PCログオン".equals(inOrOutClass)) {
+				lstLogOnInfo.add(new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), null, logonOrLogoff));
+			}else{
+				lstLogOnInfo.add(new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), logonOrLogoff,null));
+			}
+			return pcLogOnInfoOfDaily;
+		}
+		
+		LogOnInfo logOnInfo = lstLogOnInfo.get(indexPCLogOnInfo);
 		if ("PCログオン".equals(inOrOutClass)) {
 			lstLogOnInfo.set(indexPCLogOnInfo,
 					new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
@@ -797,6 +806,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		lstStamp.add(stampItem);
 		List<AttendanceLeavingGate> attendanceLeavingGates = attendanceLeavingGateOfDaily.getAttendanceLeavingGates();
 		AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(indexAttendanceLeavingGate);
+		if(indexAttendanceLeavingGate==-1){
+			if ("入門".equals(inOrOutClass)) {
+				attendanceLeavingGates.add(new AttendanceLeavingGate(
+					new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), inorOutStamp,null));	
+			}else{
+				attendanceLeavingGates.add(new AttendanceLeavingGate(
+						new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo),null ,inorOutStamp));
+			}
+			return attendanceLeavingGateOfDaily;
+		}
 		if ("入門".equals(inOrOutClass)) {
 			attendanceLeavingGates.set(indexAttendanceLeavingGate, new AttendanceLeavingGate(
 					attendanceLeavingGate.getWorkNo(), inorOutStamp,( attendanceLeavingGate.getLeaving() !=null && attendanceLeavingGate.getLeaving().isPresent())?attendanceLeavingGate.getLeaving().get():null));
