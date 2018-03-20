@@ -6,8 +6,7 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.CalcSettingOfIrregular;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrg;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.DeforLaborCalSetting;
 
 /**
  * The Class LegalAggrSetOfIrgNew.
@@ -26,18 +25,18 @@ public class DeforWorkTimeAggrSet extends DomainObject {
 
 	/** The calc set of irregular. */
 	// 変形労働計算の設定
-	private CalcSettingOfIrregular calcSetOfIrregular;
+	private DeforLaborCalSetting deforLaborCalSetting;
 
 	/** The settlement period. */
 	// 精算期間
-	private SettlementPeriodOfIrg settlementPeriod;
+	private DeforLaborSettlementPeriod settlementPeriod;
 
 	/**
 	 * Gets the acqui of defor labor acc period.
 	 *
 	 * @return the acqui of defor labor acc period
 	 */
-	public SettlementPeriodOfIrg getDeforLaborAccPeriod() {
+	public DeforLaborSettlementPeriod getDeforLaborAccPeriod() {
 		return this.settlementPeriod;
 	}
 

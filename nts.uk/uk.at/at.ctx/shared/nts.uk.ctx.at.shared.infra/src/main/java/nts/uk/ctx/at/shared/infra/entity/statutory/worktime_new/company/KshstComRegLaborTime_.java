@@ -3,13 +3,11 @@ package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@StaticMetamodel(KshstComRegLaborTime.class)
-public class KshstComRegLaborTime_ { 
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstRegLaborTime_;
 
-    public static volatile SingularAttribute<KshstComRegLaborTime, Integer> dailyTime;
-    public static volatile SingularAttribute<KshstComRegLaborTime, Short> weekStr;
-    public static volatile SingularAttribute<KshstComRegLaborTime, Integer> exclusVer;
+@StaticMetamodel(KshstComRegLaborTime.class)
+public class KshstComRegLaborTime_ extends KshstRegLaborTime_ { 
+
     public static volatile SingularAttribute<KshstComRegLaborTime, String> cid;
-    public static volatile SingularAttribute<KshstComRegLaborTime, Integer> weeklyTime;
 
 }

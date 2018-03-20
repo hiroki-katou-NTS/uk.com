@@ -24,7 +24,7 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 	/** The shortage set. */
 	// 不足設定
 	private ShortageFlexSetting insufficSet;
-
+	
 	/** The legal aggregate set. */
 	// 法定内集計設定
 	private LegalAggFlexTime legalAggrSet;
