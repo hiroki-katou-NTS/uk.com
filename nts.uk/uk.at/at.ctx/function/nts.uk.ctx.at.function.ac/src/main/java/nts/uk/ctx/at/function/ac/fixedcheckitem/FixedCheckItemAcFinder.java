@@ -20,12 +20,20 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 
 	@Override
 	public Optional<ValueExtractAlarm>  checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
-		return Optional.ofNullable(convertToExport(fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD)));
+		Optional<ValueExtractAlarmWRPubExport> data =Optional.ofNullable(fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD));
+		
+		if(data.isPresent())
+			return Optional.of(convertToExport(data.get()));
+		return Optional.empty();
+		
 	}
 
 	@Override
 	public Optional<ValueExtractAlarm> checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
-		return Optional.ofNullable(convertToExport(fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD)));
+		Optional<ValueExtractAlarmWRPubExport> data =Optional.ofNullable(fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD));
+		if(data.isPresent())
+			return Optional.of(convertToExport(data.get()));
+		return Optional.empty();
 	}
 
 	@Override

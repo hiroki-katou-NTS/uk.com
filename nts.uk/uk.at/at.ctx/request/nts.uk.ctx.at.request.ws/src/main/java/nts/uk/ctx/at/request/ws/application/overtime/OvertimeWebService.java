@@ -49,17 +49,33 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("findByChangeAppDate")
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
-		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours());
+		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), 
+				param.getPrePostAtr(),
+				param.getSiftCD(),
+				param.getOvertimeHours(),
+				param.getWorkTypeCode(),
+				param.getStartTime(),
+				param.getEndTime(),
+				param.getStartTimeRest(),
+				param.getEndTimeRest());
 	}
 	@POST
 	@Path("checkConvertPrePost")
 	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
-		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours());
+		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours(),param.getWorkTypeCode(),
+				param.getStartTime(),
+				param.getEndTime(),
+				param.getStartTimeRest(),
+				param.getEndTimeRest());
 	}
 	@POST
 	@Path("getCaculationResult")
 	public List<CaculationTime> getCaculationResult(ParamCaculationOvertime param) {
-		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD());
+		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD(),param.getWorkTypeCode(),
+				param.getStartTime(),
+				param.getEndTime(),
+				param.getStartTimeRest(),
+				param.getEndTimeRest());
 	}
 	
 	@POST
@@ -95,7 +111,9 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParam param) {
-		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours());
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours(),param.getWorkTypeCode(),
+				param.getStartTimeRest(),
+				param.getEndTimeRest());
 	}
 }
 
@@ -112,4 +130,7 @@ class RecordWorkParam {
 	public String siftCD;
 	public int prePostAtr;
 	public List<CaculationTime> overtimeHours;
+	private String workTypeCode;
+	private Integer startTimeRest;
+	private Integer endTimeRest;
 }

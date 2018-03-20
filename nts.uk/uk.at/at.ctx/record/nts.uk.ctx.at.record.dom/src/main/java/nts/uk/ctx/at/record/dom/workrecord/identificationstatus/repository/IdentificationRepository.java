@@ -11,5 +11,7 @@ public interface IdentificationRepository {
 	List<Identification> findByEmployeeID(String employeeID,GeneralDate startDate,GeneralDate endDate);
 	
 	Optional<Identification> findByCode(String employeeID,GeneralDate processingYmd);
+	
+	void insert(Identification identification);
 
 }

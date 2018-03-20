@@ -100,7 +100,10 @@ module nts.uk.ui.jqueryExtentions {
             // Cell color
             let cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
             
-            $self.addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
+            $self.addClass('compact-grid nts-grid');
+            if ($self.closest(".nts-grid-wrapper").length === 0) {
+                $self.wrap($("<div class='nts-grid-wrapper'/>"));
+            }
             
             let columnControlTypes = {};
             let columnSpecialTypes = {};
@@ -704,7 +707,8 @@ module nts.uk.ui.jqueryExtentions {
              * Notify update.
              */
             function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any, origData: any) {
-                if (origData && origData[columnKey] === value) {
+                if (origData && (origData[columnKey] === value
+                    || (util.isNullOrUndefined(origData[columnKey]) && _.isEmpty(value)))) {
                     let updatedCells = $grid.data(internal.UPDATED_CELLS);
                     if (updatedCells) {
                         _.remove(updatedCells, function(c, i) {
@@ -2971,7 +2975,7 @@ module nts.uk.ui.jqueryExtentions {
                         } else if (evt.ctrlKey && utils.isCopyKey(evt)) {
                             processor.copyHandler();
                         } else if (evt.ctrlKey && utils.isCutKey(evt)) {
-                            processor.cutHandler();   
+//                            processor.cutHandler();   
                         }
                     });
                     return this;
@@ -3422,7 +3426,11 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(errorsLog)) return;
                 let sheets: any = $grid.data(internal.SHEETS);
                 let sheetErrors = errorsLog[sheets.currentSheet];
-                if (util.isNullOrUndefined(sheetErrors)) return;
+                if (util.isNullOrUndefined(sheetErrors)) {
+                    removeErrorBasedOtherSheet(sheets, errorsLog, cell);
+                    return;
+                }
+                
                 let cellErrorIdx;
                 _.forEach(sheetErrors, function(errorCell: any, i: number) {
                     if (cellEquals(errorCell, cell)) {
@@ -3432,6 +3440,22 @@ module nts.uk.ui.jqueryExtentions {
                 });
                 if (!util.isNullOrUndefined(cellErrorIdx)) {
                     errorsLog[sheets.currentSheet].splice(cellErrorIdx, 1);
+                } else {
+                    removeErrorBasedOtherSheet(sheets, errorsLog, cell);
+                }
+            }
+            
+            function removeErrorBasedOtherSheet(sheets: any, errorsLog: any, cell: any) {
+                let sheetsIn = sheets.columnsInSheetImme[cell.columnKey];
+                if (sheetsIn && sheetsIn.size > 1) {
+                    _.forEach(Array.from(sheetsIn), function(s, i) {
+                        if (s !== sheets.currentSheet) {
+                            let oErrs = errorsLog[s];
+                            if (oErrs) {
+                                _.remove(oErrs, e => cellEquals(e, cell));
+                            }
+                        } 
+                    });
                 }
             }
             
@@ -3440,13 +3464,42 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(errorsLog)) return;
                 let sheets: any = $grid.data(internal.SHEETS);
                 let sheetErrors = errorsLog[sheets.currentSheet];
-                if (util.isNullOrUndefined(sheetErrors)) return;
+                if (util.isNullOrUndefined(sheetErrors)) {
+                    markBasedOtherSheet(sheets, errorsLog, cell);
+                    return;
+                }
+                
+                let marked = false;
                 _.forEach(sheetErrors, function(c: any) {
                     if (cellEquals(c, cell)) {
                         decorate($(cell.element));
+                        marked = true;
                         return false;
                     }
                 });
+                
+                if (!marked) {
+                    markBasedOtherSheet(sheets, errorsLog, cell);
+                }
+            }
+            
+            function markBasedOtherSheet(sheets: any, errorsLog: any, cell: any) {
+                let sheetsIn = sheets.columnsInSheetImme[cell.columnKey];
+                if (sheetsIn && sheetsIn.size > 1) {
+                    _.forEach(Array.from(sheetsIn), function(s, i) {
+                        if (s !== sheets.currentSheet) {
+                            let marked = false;
+                            _.forEach(errorsLog[s], function(c) {
+                                if (cellEquals(c, cell) {
+                                    decorate($(cell.element));
+                                    marked = true;
+                                    return false;
+                                }
+                            });
+                            if (marked) return false;
+                        }
+                    });
+                }
             }
             
             function cellEquals(one: any, other: any) {
@@ -3575,7 +3628,9 @@ module nts.uk.ui.jqueryExtentions {
                                     let groupSeparator = constraint.groupSeparator || ",";
                                     let rawValue = text.replaceAll(value, groupSeparator, "");
                                     let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                    value = formatter.format(Number(rawValue));
+                                    let numVal = Number(rawValue);
+                                    if (!isNaN(numVal)) value = formatter.format(numVal);
+                                    else value = rawValue;
                                 }
                             }
                         }
@@ -3866,10 +3921,14 @@ module nts.uk.ui.jqueryExtentions {
                 displayScrollTop: any;
                 sheets: any;
                 sheetColumns: any;
+                columnsInSheetImme: any;
+                columnsInSheet: any;
                 
                 constructor(currentSheet: string, sheets: any) {
                     this.currentSheet = currentSheet;
                     this.sheets = sheets;
+                    this.columnsInSheetImme = {};
+                    this.columnsInSheet = {};
                 }
                 
                 /**
@@ -4012,7 +4071,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     columns = sheetMng.sheetColumns[sheet[0].name];
                     if (!columns) {
-                        columns = getSheetColumns(options.columns, sheet[0], options.features);
+                        columns = getSheetColumns(options.columns, sheet[0], options.features, sheetMng);
                         sheetMng.sheetColumns[sheet[0].name] = columns.all;
                         let idxes = {};
                         utils.analyzeColumns(columns.unfixed)
@@ -4055,7 +4114,7 @@ module nts.uk.ui.jqueryExtentions {
                             let settings = $grid.data(internal.SETTINGS);
                             columns = sheetMng.sheetColumns[sheet.name];
                             if (!columns) {
-                                columns = getSheetColumns(options.columns, sheet, options.features);
+                                columns = getSheetColumns(options.columns, sheet, options.features, sheetMng);
                                 sheetMng.sheetColumns[sheet.name] = columns.all;
                                 let idxes = {};
                                 utils.analyzeColumns(columns.unfixed)
@@ -4107,22 +4166,46 @@ module nts.uk.ui.jqueryExtentions {
                 /**
                  * Get sheet columns
                  */
-                function getSheetColumns(allColumns: any, displaySheet: any, features: any) {
+                function getSheetColumns(allColumns: any, displaySheet: any, features: any, sheetMng: any) {
                     let fixedColumns = [];
                     let columns = [];
                     _.forEach(allColumns, function(column: any) {
-                        if (column.group !== undefined && _.find(displaySheet.columns, function(col) {
-                                return col === column.group[0].key;
+                        let index;
+                        if (column.group !== undefined && _.find(displaySheet.columns, function(col, i) {
+                                if (col === column.group[0].key) {
+                                    index = i;
+                                    return true;
+                                }
                             }) !== undefined) {
-                            columns.push(column);
+                            columns[index] = column;
+                            
+                            column.group.forEach(function(sc) {
+                                if (!sheetMng.columnsInSheetImme[sc.key]) {
+                                    let mSet = new Set();
+                                    mSet.add(displaySheet.name);
+                                    sheetMng.columnsInSheetImme[sc.key] = mSet;
+                                } else {
+                                    sheetMng.columnsInSheetImme[sc.key].add(displaySheet.name);
+                                }
+                            });
                             return;
                         }
                         
-                        let belongToSheet = _.find(displaySheet.columns, function(col) {
-                            return col === column.key;
+                        let belongToSheet = _.find(displaySheet.columns, function(col, i) {
+                            if (col === column.key) {
+                                index = i;
+                                return true;
+                            }
                         }) !== undefined;
                         if (belongToSheet) {
-                            columns.push(column);
+                            columns[index] = column;
+                            if (!sheetMng.columnsInSheetImme[column.key]) {
+                                let mSet = new Set();
+                                mSet.add(displaySheet.name);
+                                sheetMng.columnsInSheetImme[column.key] = mSet;
+                            } else {
+                                sheetMng.columnsInSheetImme[column.key].add(displaySheet.name);
+                            }
                             return;
                         }
                         
@@ -4137,6 +4220,8 @@ module nts.uk.ui.jqueryExtentions {
                             }
                         }
                     });
+                    
+                    _.remove(columns, c => util.isNullOrUndefined(c));
                     return { fixed: fixedColumns,
                              unfixed: columns,
                              all: _.concat(fixedColumns, columns) };

@@ -24,5 +24,10 @@ public class ParamChangeAppDate {
 	 * overtimeHours
 	 */
 	private List<CaculationTime> overtimeHours;
+	private String workTypeCode;
+	private Integer startTime;
+	private Integer endTime;
+	private Integer startTimeRest;
+	private Integer endTimeRest;
 
 }
