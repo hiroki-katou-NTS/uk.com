@@ -25,8 +25,12 @@ import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.CodeNameReferenceType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.EnumReferenceCondition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.MasterReferenceCondition;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
@@ -473,7 +477,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		BigDecimal numericItemDecimalPart = i[23] == null ? null : new BigDecimal(String.valueOf(i[23]));
 		BigDecimal numericItemIntegerPart = i[24] == null ? null : new BigDecimal(String.valueOf(i[24]));
 		BigDecimal selectionItemRefType = i[25] == null ? null : new BigDecimal(String.valueOf(i[25]));
-		String selectionItemRefCode = String.valueOf(i[26]);
+		String selectionItemRefCode = i[26] == null ? "" :  String.valueOf(i[26]);
 		String perInfoCategoryId = String.valueOf(i[27]);
 
 		PersonInfoItemDefinition item = PersonInfoItemDefinition.createFromEntity(perInfoItemDefId, perInfoCategoryId,
@@ -517,6 +521,21 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			case 8: // button
 				dataTypeState = createSelectionItem(selectionItemRefType, selectionItemRefCode,
 						DataTypeValue.SELECTION_BUTTON);
+				break;
+			case 9:
+				dataTypeState = DataTypeState.createReadonly(selectionItemRefCode);
+				break;
+			
+			case 10:
+				dataTypeState = DataTypeState.createRelatedCategory(selectionItemRefCode);
+				break;
+			
+			case 11:
+				dataTypeState = DataTypeState.createNumbericButton(selectionItemRefCode);
+				break;
+			
+			case 12:
+				dataTypeState = DataTypeState.createReadonlyButton(selectionItemRefCode);
 				break;
 			}
 			item.setItemTypeState(ItemTypeState.createSingleItem(dataTypeState));
@@ -656,6 +675,29 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 			case 8:
 				SelectionButton selectionButton = (SelectionButton) dataTypeState;
+				break;
+				
+			case 9:
+				
+				ReadOnly readOnly = (ReadOnly) dataTypeState;
+				selectionItemRefCode = readOnly.getReadText().v();
+				
+				break;
+				
+			case 10:
+				RelatedCategory relatedCtg = (RelatedCategory) dataTypeState;
+				selectionItemRefCode = relatedCtg.getRelatedCtgCode().v();
+				break;
+				
+			case 11:
+				
+				NumericButton numbericButton = (NumericButton) dataTypeState;
+				selectionItemRefCode = numbericButton.getReadText().v();
+				break;
+				
+			case 12:
+				ReadOnlyButton readOnlyButton = (ReadOnlyButton) dataTypeState;
+				selectionItemRefCode = readOnlyButton.getReadText().v();
 				break;
 			}
 		}

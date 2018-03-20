@@ -20,7 +20,7 @@ public interface AppAbsenceThreeProcess {
 	 * @param alldayHalfDay
 	 * @return
 	 */
-	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType,String companyID,String employeeID,int holidayType,int alldayHalfDay);
+	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType,String companyID,String employeeID,int holidayType,int alldayHalfDay, boolean displayHalfDayValue);
 	/**
 	 * 2.勤務種類を取得する（詳細）
 	 * @param appEmploymentWorkType
@@ -28,6 +28,6 @@ public interface AppAbsenceThreeProcess {
 	 * @param employeeID
 	 * @return list workType
 	 */
-	public List<WorkType> getWorkTypeDetails(List<AppEmploymentSetting> appEmploymentWorkType,String companyID,String employeeID,int holidayType,int alldayHalfDay);
+	public List<WorkType> getWorkTypeDetails(List<AppEmploymentSetting> appEmploymentWorkType,String companyID,String employeeID,int holidayType,int alldayHalfDay, boolean displayHalfDayValue);
 
 }

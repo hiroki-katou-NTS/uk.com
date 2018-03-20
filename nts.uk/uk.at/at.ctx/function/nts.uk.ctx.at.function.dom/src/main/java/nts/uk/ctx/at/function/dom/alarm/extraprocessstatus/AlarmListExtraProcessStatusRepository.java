@@ -9,13 +9,15 @@ public interface AlarmListExtraProcessStatusRepository {
 	
 	List<AlarmListExtraProcessStatus> getAllAlListExtaProcess(String companyID);
 	
+	Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByID(String extraProcessStatusID);
+	
 	Optional<AlarmListExtraProcessStatus> getAlListExtaProcess(String companyID,GeneralDate startDate,int startTime);
 	
 	Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID, String employeeID);
 	
-	void addAlListExtaProcess (AlarmListExtraProcessStatus alarmListExtraProcessStatus);
+	String addAlListExtaProcess (AlarmListExtraProcessStatus alarmListExtraProcessStatus);
 	
 	void updateAlListExtaProcess (AlarmListExtraProcessStatus alarmListExtraProcessStatus);
 	
-	void deleteAlListExtaProcess (String companyID,GeneralDate startDate,int startTime);
+	void deleteAlListExtaProcess (String extraProcessStatusID);
 }

@@ -39,6 +39,9 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 				.getSingle(c->c.toDomain());
 	}
 
-	
+	@Override
+	public void insert(Identification identification) {
+		this.commandProxy().insert(KrcdtIdentificationStatus.toEntity(identification));
+	}
 	
 }

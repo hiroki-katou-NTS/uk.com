@@ -136,17 +136,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 													y.getFrameOrder(), 
 													EnumAdaptor.valueOf(y.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
 													y.getListApproverState().stream().map(z -> { 
-														String approverName = "";
-														String representerID = "";
-														String representerName = "";
-														ApprovalRepresenterOutput approvalRepresenterOutput = 
-																collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
-														if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
-															if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
-																representerID = approvalRepresenterOutput.getListAgent().get(0);
-															}
-														}
-														return new ApproverStateExport(z.getApproverID(), approverName, representerID, representerName);
+														return new ApproverStateExport(z.getApproverID(), "", "", "");
 													}).collect(Collectors.toList()), 
 													y.getApproverID(),
 													"", 

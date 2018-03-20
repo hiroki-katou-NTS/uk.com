@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
@@ -52,6 +53,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
+	@Inject
+	private ExecutionLogRepository executionLogRepository;
 	
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
@@ -96,7 +99,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		ProcessState finalStatus = ProcessState.SUCCESS;
 
 		// 実行ログを確認する
-		val executionLogs = empCalAndSumExeLog.get().getExecutionLogs();
+		
+		//val executionLogs = empCalAndSumExeLog.get().getExecutionLogs();
+		val executionLogs = this.executionLogRepository.getExecutionLogs(empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
 		Map<ExecutionContent, ExecutionLog> logsMap = new HashMap<>();
 		for (val executionLog : executionLogs){
 			logsMap.put(executionLog.getExecutionContent(), executionLog);

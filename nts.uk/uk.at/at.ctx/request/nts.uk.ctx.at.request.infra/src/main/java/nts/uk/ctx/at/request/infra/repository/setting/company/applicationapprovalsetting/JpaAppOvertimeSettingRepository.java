@@ -35,6 +35,7 @@ public class JpaAppOvertimeSettingRepository extends JpaRepository implements Ap
 		entity.setPriorityStampSetAtr(domain.getPriorityStampSetAtr().value);
 		entity.setUnitAssignmentOvertime(domain.getUnitAssignmentOvertime().value);
 		entity.setUseOt(domain.getOtHour().getUseOt().value);
+		entity.setRestAtr(domain.getRestAtr().value);
 		return entity;
 	}
 	/**
@@ -50,7 +51,7 @@ public class JpaAppOvertimeSettingRepository extends JpaRepository implements Ap
 				entity.getPostBreakReflectFlg(), entity.getPostWorktimeReflectFlg(), 
 				entity.getCalendarDispAtr(), entity.getEarlyOverTimeUseAtr(), entity.getInstructExcessOtAtr(), 
 				entity.getPriorityStampSetAtr(), entity.getUnitAssignmentOvertime(), 
-				entity.getNormalOvertimeUseAtr(), entity.getAttendanceId(), entity.getUseOt());
+				entity.getNormalOvertimeUseAtr(), entity.getAttendanceId(), entity.getUseOt(), entity.getRestAtr());
 		return domain;
 	}
 	/**
@@ -84,6 +85,7 @@ public class JpaAppOvertimeSettingRepository extends JpaRepository implements Ap
 		oldEntity.setPriorityStampSetAtr(entity.getPriorityStampSetAtr());
 		oldEntity.setUnitAssignmentOvertime(entity.getUnitAssignmentOvertime());
 		oldEntity.setUseOt(entity.getUseOt());
+		oldEntity.setRestAtr(entity.getRestAtr());
 		this.commandProxy().update(oldEntity);
 	}
 	/**

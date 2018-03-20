@@ -29,7 +29,11 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
@@ -437,6 +441,23 @@ public class PerInfoItemDefFinder {
 		case 8:
 			SelectionButton bItem = (SelectionButton) dataTypeState;
 			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
+	
+		case 9: 
+			ReadOnly rOnlyItem = (ReadOnly) dataTypeState;
+			return DataTypeStateDto.createReadOnly(rOnlyItem.getReadText().v());
+		
+		case 10: 
+			RelatedCategory reCtgDto = (RelatedCategory) dataTypeState;
+			return DataTypeStateDto.createReadOnly(reCtgDto.getRelatedCtgCode().v());
+
+		case 11: 
+			NumericButton numbtnItem = (NumericButton) dataTypeState;
+			return DataTypeStateDto.createNumericButtonDto(numbtnItem.getReadText().v());
+			
+		case 12: 
+			ReadOnlyButton rOnlyButton = (ReadOnlyButton) dataTypeState;
+			return DataTypeStateDto.createReadOnly(rOnlyButton.getReadText().v());
+			
 		default:
 			return null;
 		}
