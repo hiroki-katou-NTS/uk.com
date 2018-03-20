@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 1000
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk003.g.style.css" />
+			<com:scriptfile path="kmk003.g.vm.js" />
+			<com:scriptfile path="kmk003.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="main-container">
+					<div>
+						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_234')}</div>
+						<div>
+							<hr />
+						</div>
+					</div>
+					<div class = "pad-left-20">
+						<div class="margin-first-child ntsControl">
+							<label class="ntsRadioBox control-group"> <input
+								type="radio" name="textRadio"
+								data-bind="checkedValue: 1, checked: true, enable: true" /> <span
+								class="box"></span><span class="label"
+								data-bind="text: nts.uk.resource.getText('KMK003_235')"></span>
+							</label> 
+							<br /> 
+							<label class="ntsRadioBox control-group"> <input
+								type="radio" name="textRadio"
+								data-bind="checkedValue: 1, checked: false, enable: true" /> <span
+								class="box"></span><span class="label"
+								data-bind="text: nts.uk.resource.getText('KMK003_236')"></span>
+							</label>
+							<br />
+							<label class="ntsRadioBox control-group"> <input
+								type="radio" name="textRadio"
+								data-bind="checkedValue: 1, checked: false, enable: true" /> <span
+								class="box"></span><span class="label"
+								data-bind="text: nts.uk.resource.getText('KMK003_237')"></span>
+							</label>
+						</div>
+					</div>
+					<div>
+						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_230')}</div>
+						<div>
+							<hr />
+						</div>
+					</div>
+					<div class = "pad-left-10">
+						<label>#{i18n.getText('KMK003_231')}</label>
+					</div>
+					<div class = "pad-left-10">
+						<table>
+							<tr>
+								<td class="td-cell-set"><span tabindex="1" class="cf"
+									data-bind="ntsSwitchButton: {
+									name: '#[KMK003_230]',
+									options: switchOptions,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: switchValue,
+									enable: true }"></span>
+								</td>
+								<td class="td-cell-set"><span tabindex="2" style="width: 100px;"
+									data-bind="ntsComboBox: {
+									options: unitComboBoxOptions,
+									optionsValue: 'code',
+									visibleItemsCount: 8,
+									value: unitValue,
+									optionsText: 'name',
+									dropDownAttachedToBody: true,
+									editable: false,
+									enable: true }"></span></td>
+								<td class="td-cell-set"><span tabindex="3" style="width: 100px;"
+									data-bind="ntsComboBox: {
+									options: roundingComboBoxOptions,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: roundingValue,
+									optionsText: 'name',
+									dropDownAttachedToBody: true,
+									editable: false,
+									enable: true }"></span>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div id="functions-area-bottom">
+				<button tabindex="4" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="5" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

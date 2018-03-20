@@ -660,6 +660,9 @@ module nts.uk.at.view.kmk003.a {
                 });
                 return dfd.promise();
             }
+           
+            //end view model
+            
         }
 
         /**

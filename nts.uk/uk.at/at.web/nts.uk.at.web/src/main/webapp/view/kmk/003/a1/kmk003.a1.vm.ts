@@ -113,6 +113,18 @@ module a1 {
             }
         }
 
+        public openDetailSetting() {
+            //open dialog F 
+             var self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml", {
+                    height: 500,
+                    width: 400,
+                    title: nts.uk.resource.getText("KMK003_287"),
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    var returnParam = nts.uk.ui.windows.getShared('');
+                });
+        }
     }
     export class Item {
         code: string;

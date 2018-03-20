@@ -11,19 +11,32 @@
 					optionsText: 'name',
 					value: flexFixedRestTime,
 					enable: true }"></div>
+			<div class="pad-flex-flow">
+				<button data-bind="click: openDialogG">#{i18n.getText('KMK003_192')}</button>
+			</div>
 		</div>	
 	</com:ko>
 	<com:ko tag="if" bind="isFlow">
 		<div class="tab-rows">
-			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
-			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
+			<div style="width: 150px;"
+				data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>
+			<div tabindex="69" class="cf"
+				data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
 					options: switchDs,
 					optionsValue: 'code',
 					optionsText: 'name',
 					value: flowFixedRestTime,
 					enable: true }"></div>
-		</div>	
+			<div class="pad-flex-flow">
+				<button data-bind="click: openDialogG">#{i18n.getText('KMK003_192')}</button>
+			</div>
+		</div>
+	</com:ko>
+	<com:ko tag="if" bind="isDiffTime()||isFixed()">
+		<div class="button-detail">
+			<button data-bind="click: openDialogG">#{i18n.getText('KMK003_192')}</button>
+		</div>
 	</com:ko>
 	<!-- End of Fixed rest time switch button -->
 	

@@ -362,7 +362,33 @@ module a5 {
                 }
             ];
         }
-
+        
+        public openDialogG() {
+            //open dialog G 
+            var self = this;
+            //if flex or flow
+            if (self.isFlex() || self.isFlow()) {
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml", {
+                    height: 500,
+                    width: 400,
+                    title: nts.uk.resource.getText("KMK003_287"),
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    var returnParam = nts.uk.ui.windows.getShared('');
+                });
+            }
+            else//difftime or fixed
+            {
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml", {
+                    height: 500,
+                    width: 400,
+                    title: nts.uk.resource.getText("KMK003_287"),
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    var returnParam = nts.uk.ui.windows.getShared('');
+                });
+            }
+        }
     }
 
     class KMK003A5BindingHandler implements KnockoutBindingHandler {
