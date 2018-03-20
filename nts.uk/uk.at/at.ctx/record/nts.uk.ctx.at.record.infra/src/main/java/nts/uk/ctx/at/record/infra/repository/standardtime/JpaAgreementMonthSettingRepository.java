@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
@@ -60,6 +61,14 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 				.getList(f -> toDomain(f));
 	}
 
+	@Override
+	public Optional<AgreementMonthSetting> findByKey(String employeeId, YearMonth yearMonth) {
+		return this.queryProxy().query(FIND_BY_KEY, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearmonthValue", yearMonth.v())
+				.getSingle(f -> toDomain(f));
+	}
+	
 	@Override
 	public void add(AgreementMonthSetting agreementMonthSetting) {
 		this.commandProxy().insert(toEntity(agreementMonthSetting));

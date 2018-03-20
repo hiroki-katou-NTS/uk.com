@@ -28,10 +28,10 @@ public class ApplicationListDto {
 //	private List<String> lstTimeColor; 
 //	private List<String> lstFramStatus;
 	private List<AppPrePostGroup> lstAppGroup;
-	private List<Integer> lstAppType;
+//	private List<Integer> lstAppType;
 	//phuc vu cho viec loc theo aptype, dem lai trang thai don
 	private List<ApproveAgent> lstAgent;
 	private List<AppHolidayWorkFull> lstAppHdWork;
 	private List<AppWorkChangeFull> lstAppWorkChange;
-	
+	private List<AppInfor> lstAppInfor;
 }

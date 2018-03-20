@@ -61,9 +61,13 @@ public class DailyPerformanceCorrectionDto {
 
 	private Boolean showPrincipal;
 	
+	private Boolean showSupervisor;
+	
 	private Map<String, String > data;
 	
 	private List<DPErrorDto> dPErrorDto;
+	
+	private IdentityProcessUseSetDto identityProcessDto;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

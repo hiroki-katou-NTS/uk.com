@@ -61,7 +61,7 @@ module nts.uk.at.view.kal001.a.service {
         }
         
         export interface ValueExtractAlarmDto{
-            gUID : string;
+            guid : string;
             workplaceID : string;
             hierarchyCd : string;
             workplaceName : string;

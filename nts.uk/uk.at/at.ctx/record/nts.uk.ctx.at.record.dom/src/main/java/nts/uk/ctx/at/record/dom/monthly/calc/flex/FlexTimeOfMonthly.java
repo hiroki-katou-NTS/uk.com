@@ -160,7 +160,7 @@ public class FlexTimeOfMonthly {
 				this.flexTime.aggregate(attendanceTimeOfDaily);
 			}
 			
-			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 			
 				// 時間外超過の時、フレックス超過時間を割り当てる
 				excessOutsideWorkMng.assignFlexExcessTime(datePeriod, flexAggregateMethod,

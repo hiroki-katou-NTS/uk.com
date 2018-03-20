@@ -2,14 +2,21 @@ package nts.uk.ctx.pereg.app.find.person.setting.init.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.app.find.person.info.item.ItemRequiredBackGroud;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.CategoryStateDto;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,6 +29,10 @@ public class PerInfoInitValueSetItemFinder {
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFactory;
+	@Inject
+	private PerInfoItemDefFinder itemDefFinder;
+	@Inject
+	private PerInfoCtgByCompanyRepositoty ctgRepo;
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 
@@ -58,18 +69,58 @@ public class PerInfoInitValueSetItemFinder {
 		return new ArrayList<>();
 	}
 
-	
-	public List<ItemDto> getAllItemRequired(String settingId, String perInfoCtgId) {
+	public CategoryStateDto getAllItemRequired(String settingId, String perInfoCtgId) {
+		CategoryStateDto ctgState = new CategoryStateDto();
+		String companyId = AppContexts.user().companyId(), contract = AppContexts.user().contractCode();
+		PersonInfoCategory ctg = this.ctgRepo.getDetailCategoryInfo(companyId, perInfoCtgId, contract)
+				.orElseThrow(null);
 
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
+		List<ItemDto> itemDto = new ArrayList<>();
 		if (item != null) {
-			List<ItemDto> itemDto = item.stream().map(c -> {
-				return new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), c.getIsRequired().value);
-			}).collect(Collectors.toList());
+			item.stream().forEach(c -> {
+				itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
+				boolean checkDisable = c.getItemName().equals("終了日")
+						&& (ctg != null ? (ctg.getCategoryType().value == 3 ? true : false) : false);
+				ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
+				ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
+				itemNamebackGroud.setColumnKey("itemName");
+				itemNamebackGroud.setRowId(c.getPerInfoItemDefId());
+				disablebackGroud.setColumnKey("disabled");
+				disablebackGroud.setRowId(c.getPerInfoItemDefId());
+				if (checkDisable) {
+					
+					disablebackGroud.setState(toList("ntsgrid-disable"));
+					if (c.getIsRequired().value == 1) {
+						itemNamebackGroud.setState(toList("requiredCell"));
+					} else {
+						itemNamebackGroud.setState(toList("notrequiredCell"));
+					}
+					
+				} else {
+					
+					if (c.getIsRequired().value == 1) {
+						itemNamebackGroud.setState(toList("requiredCell"));
+						disablebackGroud.setState(toList("requiredCell"));
+					} else {
+						itemNamebackGroud.setState(toList("notrequiredCell"));
+						disablebackGroud.setState(toList("notrequiredCell"));
 
-			return itemDto;
+					}
+
+				}
+				itemRequired.add(itemNamebackGroud);
+				itemRequired.add(disablebackGroud);
+			});
+
+			ctgState.setItemLst(itemDto);
+			ctgState.setItemRequired(itemRequired);
 		}
+		return ctgState;
+	}
 
-		return new ArrayList<>();
+	private List<String> toList(String... item) {
+		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
 	}
 }
