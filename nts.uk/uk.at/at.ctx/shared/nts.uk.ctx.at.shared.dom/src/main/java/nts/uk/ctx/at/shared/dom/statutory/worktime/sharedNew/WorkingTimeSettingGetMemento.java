@@ -14,12 +14,12 @@ public interface WorkingTimeSettingGetMemento {
 	 *
 	 * @return the daily time new
 	 */
-	DailyUnit getDailyTimeNew();
+	DailyUnit getDailyTime();
 
 	/**
 	 * Gets the weekly time new.
 	 *
 	 * @return the weekly time new
 	 */
-	WeeklyUnit getWeeklyTimeNew();
+	WeeklyUnit getWeeklyTime();
 }

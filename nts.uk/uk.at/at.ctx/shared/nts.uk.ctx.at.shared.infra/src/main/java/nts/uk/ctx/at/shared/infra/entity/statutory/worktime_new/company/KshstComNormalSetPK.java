@@ -8,16 +8,22 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class KshstComNormalSetPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KshstComNormalSetPK implements Serializable {
 	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
 	/** The cid. */
-	@Size(min = 1, max = 17)
 	@Column(name = "CID")
 	private String cid;
 
@@ -29,53 +35,7 @@ public class KshstComNormalSetPK implements Serializable {
 	 * Instantiates a new kshst com normal set PK.
 	 */
 	public KshstComNormalSetPK() {
-	}
-
-	/**
-	 * Instantiates a new kshst com normal set PK.
-	 *
-	 * @param cid the cid
-	 * @param year the year
-	 */
-	public KshstComNormalSetPK(String cid, short year) {
-		this.cid = cid;
-		this.year = year;
-	}
-
-	/**
-	 * Gets the cid.
-	 *
-	 * @return the cid
-	 */
-	public String getCid() {
-		return cid;
-	}
-
-	/**
-	 * Sets the cid.
-	 *
-	 * @param cid the new cid
-	 */
-	public void setCid(String cid) {
-		this.cid = cid;
-	}
-
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	public short getYear() {
-		return year;
-	}
-
-	/**
-	 * Sets the year.
-	 *
-	 * @param year the new year
-	 */
-	public void setYear(short year) {
-		this.year = year;
+		super();
 	}
 
 	/* (non-Javadoc)

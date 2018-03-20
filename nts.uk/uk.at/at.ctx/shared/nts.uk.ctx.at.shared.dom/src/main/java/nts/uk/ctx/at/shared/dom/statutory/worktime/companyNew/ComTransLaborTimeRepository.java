@@ -31,7 +31,7 @@ public interface ComTransLaborTimeRepository {
 	 * @param companyId the company id
 	 * @param year the year
 	 */
-	void remove(String companyId, int year);
+	void remove(String companyId);
 
 	/**
 	 * Find.
@@ -40,5 +40,5 @@ public interface ComTransLaborTimeRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<ComTransLaborTime> find(String companyId, int year);
+	Optional<ComTransLaborTime> find(String companyId);
 }

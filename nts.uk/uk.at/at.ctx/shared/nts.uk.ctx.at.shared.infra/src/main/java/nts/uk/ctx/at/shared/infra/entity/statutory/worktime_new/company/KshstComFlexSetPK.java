@@ -1,48 +1,46 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshstComFlexSetPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KshstComFlexSetPK implements Serializable {
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
+    
+    /** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
+	/** The cid. */
+	@Column(name = "CID")
     private String cid;
     
+    /** The year. */
     @Column(name = "YEAR")
     private short year;
 
+    /**
+     * Instantiates a new kshst com flex set PK.
+     */
     public KshstComFlexSetPK() {
+    	super();
     }
 
-    public KshstComFlexSetPK(String cid, short year) {
-        this.cid = cid;
-        this.year = year;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public short getYear() {
-        return year;
-    }
-
-    public void setYear(short year) {
-        this.year = year;
-    }
-
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -51,6 +49,9 @@ public class KshstComFlexSetPK implements Serializable {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof KshstComFlexSetPK)) {
