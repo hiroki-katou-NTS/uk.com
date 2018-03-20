@@ -129,6 +129,31 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		this.commandProxy().removeAll(this.toEntities(domain));
 	}
 
+	@Override
+	public WorkTypeDivergenceReferenceTimeHistory findLatestHist(String companyId, WorkTypeCode workTypeCode) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstWorktypeDrtHist> cq = criteriaBuilder.createQuery(KrcstWorktypeDrtHist.class);
+		Root<KrcstWorktypeDrtHist> root = cq.from(KrcstWorktypeDrtHist.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.endD)));
+
+		// query data
+		List<KrcstWorktypeDrtHist> comDrtHists = em.createQuery(cq).setMaxResults(1).getResultList();
+
+		return this.toDomain(comDrtHists);
+	}
+
 	/**
 	 * To domain.
 	 *

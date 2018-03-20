@@ -19,9 +19,10 @@ public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	/**
 	 * Find latest hist.
 	 *
+	 * @param companyId the company id
 	 * @return the company divergence reference time history
 	 */
-	CompanyDivergenceReferenceTimeHistory findLatestHist();
+	CompanyDivergenceReferenceTimeHistory findLatestHist(String companyId);
 	
 	/**
 	 * Find by hist id.

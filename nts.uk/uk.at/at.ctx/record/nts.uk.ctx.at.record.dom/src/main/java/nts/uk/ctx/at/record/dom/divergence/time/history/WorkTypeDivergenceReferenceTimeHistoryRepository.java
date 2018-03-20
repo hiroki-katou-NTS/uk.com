@@ -64,4 +64,15 @@ public interface WorkTypeDivergenceReferenceTimeHistoryRepository {
 	 *            the domain
 	 */
 	void delete(WorkTypeDivergenceReferenceTimeHistory domain);
+
+	/**
+	 * Find latest hist.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param workTypeCode
+	 *            the work type code
+	 * @return the work type divergence reference time history
+	 */
+	WorkTypeDivergenceReferenceTimeHistory findLatestHist(String companyId, WorkTypeCode workTypeCode);
 }

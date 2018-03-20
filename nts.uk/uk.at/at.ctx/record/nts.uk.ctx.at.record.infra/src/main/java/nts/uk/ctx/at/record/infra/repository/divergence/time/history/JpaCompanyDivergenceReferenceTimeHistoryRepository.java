@@ -44,7 +44,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
 		Root<KrcstComDrtHist> root = cq.from(KrcstComDrtHist.class);
-		
+
 		// Get start date, end Date
 		GeneralDate startDate = datePeriod.start();
 		GeneralDate endDate = datePeriod.end();
@@ -133,6 +133,37 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		this.commandProxy().removeAll(this.toEntities(domain));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * CompanyDivergenceReferenceTimeHistoryRepository#findLatestHist(java.lang.
+	 * String)
+	 */
+	@Override
+	public CompanyDivergenceReferenceTimeHistory findLatestHist(String companyId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstComDrtHist> cq = criteriaBuilder.createQuery(KrcstComDrtHist.class);
+		Root<KrcstComDrtHist> root = cq.from(KrcstComDrtHist.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstComDrtHist_.endD)));
+
+		// query data
+		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).setMaxResults(1).getResultList();
+
+		return this.toDomain(comDrtHists);
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -201,11 +232,5 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).getResultList();
 
 		return comDrtHists;
-	}
-
-	@Override
-	public CompanyDivergenceReferenceTimeHistory findLatestHist() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
