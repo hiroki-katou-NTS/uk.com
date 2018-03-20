@@ -34,15 +34,8 @@ public class TimeLeavingWork extends DomainObject{
 	
 	private TimeSpanForCalc timespan;
 	
-//	private TimeLeavingType timeLeavingType;
-//	
-//	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp, TimeLeavingType timeLeavingType) {
-//		super();
-//		this.workNo = workNo;
-//		this.attendanceStamp = attendanceStamp;
-//		this.leaveStamp = leaveStamp;
-//		this.timeLeavingType = timeLeavingType;
-//	}
+
+
 	
 	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp) {
 		super();
