@@ -12,8 +12,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KRcmtAnnLeaRemain;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KRcmtAnnLeaRemainPK;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemain;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemainPK;
 
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {

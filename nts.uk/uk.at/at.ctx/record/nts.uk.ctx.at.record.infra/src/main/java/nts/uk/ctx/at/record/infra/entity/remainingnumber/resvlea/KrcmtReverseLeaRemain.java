@@ -1,16 +1,18 @@
-package nts.uk.ctx.at.record.infra.entity.remainingnumber;
+package nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+@Entity
 @Table(name = "KRCMT_RVSLEA_REMAIN")
 public class KrcmtReverseLeaRemain extends UkJpaEntity {
 	
-	@Embedded
+	@EmbeddedId
 	public KrcmtReverseLeaRemainPK key;
 
 	@Column(name = "DEADLINE")
