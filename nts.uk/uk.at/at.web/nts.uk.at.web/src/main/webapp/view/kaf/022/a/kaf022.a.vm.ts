@@ -1558,8 +1558,8 @@ module nts.uk.at.view.kmf022 {
                 self.enableJ31_1 = ko.observable(false);
                 //k
                 self.itemListK12 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_100')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_101')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_101')),
                     new ItemModel(2, nts.uk.resource.getText('KAF022_270')),
                 ]);
                 self.selectedIdK12 = ko.observable(0);
