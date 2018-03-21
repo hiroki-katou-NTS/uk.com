@@ -32,4 +32,11 @@ public interface ComFlexMonthActCalSetRepository {
 	 * @param companyCalMonthlyFlex the company cal monthly flex
 	 */
 	void update(ComFlexMonthActCalSet companyCalMonthlyFlex);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 */
+	void remove(String companyId);
 }

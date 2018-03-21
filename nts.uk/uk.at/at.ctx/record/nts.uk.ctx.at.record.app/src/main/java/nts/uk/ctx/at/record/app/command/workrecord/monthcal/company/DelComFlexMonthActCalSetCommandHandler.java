@@ -10,15 +10,15 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 
 /**
- * The Class UpdateCompanyLaborRegSetMonthlyActualCommandHandler.
+ * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
  */
 @Stateless
-public class UpdateCompanyLaborRegSetMonthlyActualCommandHandler
-		extends CommandHandler<UpdateCompanyLaborRegSetMonthlyActualCommand> {
+public class DelComFlexMonthActCalSetCommandHandler
+		extends CommandHandler<DelComFlexMonthActCalSetCommand> {
 
-	/** The com labor reg set monthly actual repo. */
-	//@Inject
-	//private CompanyLaborRegSetMonthlyActualRepository comLaborRegSetMonthlyActualRepo;
+	/** The com cal monthly flex repo. */
+	// @Inject
+	// private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -28,9 +28,8 @@ public class UpdateCompanyLaborRegSetMonthlyActualCommandHandler
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<UpdateCompanyLaborRegSetMonthlyActualCommand> context) {
-		// TODO Auto-generated method stub
-
+	protected void handle(CommandHandlerContext<DelComFlexMonthActCalSetCommand> context) {
+		// this.comFlexMonthActCalSetRepo.remove(AppContexts.user().companyId());
 	}
 
 }
