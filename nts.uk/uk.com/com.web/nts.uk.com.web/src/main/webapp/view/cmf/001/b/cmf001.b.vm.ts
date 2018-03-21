@@ -47,7 +47,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                             let item = new model.StandardAcceptanceConditionSetting(result.systemType, result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
-                            $("#B4_4").focus();
+                            $("#B3_4").focus();
                             _.defer(() => {nts.uk.ui.errors.clearAll()});
                         }
                         if (rs && rs.length) {
@@ -198,7 +198,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     self.getAllData(data.conditionSettingCode()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                $("#B4_4").focus();
+                                $("#B3_4").focus();
                             } else {
                                 $("#B4_3").focus();
                             }
@@ -235,7 +235,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                         }
                         info({ messageId: "Msg_16" }).then(() => {
                             if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                $("#B4_4").focus();
+                                $("#B3_4").focus();
                             } else {
                                 $("#B4_3").focus();
                             }
