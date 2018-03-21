@@ -143,7 +143,7 @@ public class PerInfoCategoryFinder {
 					if (!lstItemDfInCat.isEmpty()) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
-								p.getInitValMasterCls().value , p.getAddItemCls().value);
+								p.getInitValMasterCls() == null? 1: p.getInitValMasterCls().value , p.getAddItemCls() == null? 1: p.getAddItemCls().value);
 					}
 					return null;
 				}).filter(m -> m != null).filter(m -> m.getIsAbolition() == 0).collect(Collectors.toList());
