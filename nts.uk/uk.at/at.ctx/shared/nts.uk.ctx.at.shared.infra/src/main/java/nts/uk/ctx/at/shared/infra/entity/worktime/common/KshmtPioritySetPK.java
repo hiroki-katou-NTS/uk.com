@@ -43,6 +43,9 @@ public class KshmtPioritySetPK implements Serializable {
 	@Column(name = "PIORITY_ATR")
 	private int piorityAtr;
 	
+	/** The stamp atr. */
+	@Column(name = "STAMP_ATR")
+	private int stampAtr;
 
 	/**
 	 * Instantiates a new kshmt piority set PK.

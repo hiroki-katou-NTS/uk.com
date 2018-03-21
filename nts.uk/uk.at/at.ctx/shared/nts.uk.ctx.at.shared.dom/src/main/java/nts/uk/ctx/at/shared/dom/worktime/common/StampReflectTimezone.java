@@ -65,10 +65,6 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 */
 	@Override
 	public void validate() {
-		// Validate Msg_770
-		if (this.startTime.greaterThanOrEqualTo(this.endTime)) {
-			this.bundledBusinessExceptions.addMessage("Msg_770");
-		}
 		super.validate();
 	}
 

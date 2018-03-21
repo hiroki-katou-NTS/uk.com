@@ -41,7 +41,7 @@ public class JpaStampReflectTimezoneGetMemento implements StampReflectTimezoneGe
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getAttendAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtFlowStampReflectPK().getAttendAtr());
 	}
 
 	/* (non-Javadoc)

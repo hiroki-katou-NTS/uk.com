@@ -13,5 +13,6 @@ public class KshmtPioritySetPK_ {
     public static volatile SingularAttribute<KshmtPioritySetPK, Integer> piorityAtr;
     public static volatile SingularAttribute<KshmtPioritySetPK, String> cid;
     public static volatile SingularAttribute<KshmtPioritySetPK, Integer> workFormAtr;
+    public static volatile SingularAttribute<KshmtPioritySetPK, Integer> stampAtr;
 
 }

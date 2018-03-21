@@ -5,9 +5,11 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset.internal;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexStampReflectTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -19,6 +21,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Stateless
 public class FlexStampReflectTimezonePolicyImpl implements FlexStampReflectTimezonePolicy {
+
+	/** The stamp reflect timezone policy. */
+	@Inject
+	private StampReflectTimezonePolicy stampReflectTimezonePolicy;
 	
 	private static final Integer WORK_NO_1 = 1;
 	
@@ -54,6 +60,9 @@ public class FlexStampReflectTimezonePolicyImpl implements FlexStampReflectTimez
 		TimeWithDayAttr endTime = startTime.forwardByMinutes(predetemineTimeSetting.getRangeTimeDay().valueAsMinutes());
 		PrescribedTimezoneSetting timezone = predetemineTimeSetting.getPrescribedTimezoneSetting();
 		flexWorkSetting.getLstStampReflectTimezone().forEach(stampReflectTz -> {
+			
+			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz);
+			
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {
 				be.addMessage("Msg_516");
 			}

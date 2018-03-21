@@ -51,7 +51,7 @@ public class JpaStampReflectTimezoneSetMemento implements StampReflectTimezoneSe
 	 */
 	@Override
 	public void setClassification(GoLeavingWorkAtr classification) {
-		this.entity.setAttendAtr(classification.value);
+		this.entity.getKshmtFlowStampReflectPK().setAttendAtr(classification.value);
 	}
 
 	/*

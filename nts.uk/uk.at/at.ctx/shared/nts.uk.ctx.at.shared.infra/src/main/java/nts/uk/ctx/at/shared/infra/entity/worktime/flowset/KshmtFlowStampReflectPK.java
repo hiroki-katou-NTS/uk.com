@@ -34,6 +34,10 @@ public class KshmtFlowStampReflectPK implements Serializable {
 	/** The work no. */
 	@Column(name = "WORK_NO")
 	private int workNo;
+	
+	/** The attend atr. */
+	@Column(name = "ATTEND_ATR")
+	private int attendAtr;
 
 	/**
 	 * Instantiates a new kshmt flow stamp reflect PK.
