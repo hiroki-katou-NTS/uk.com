@@ -9,7 +9,7 @@ public class NumericButtonDto extends DataTypeStateDto{
 	
 	private NumericButtonDto( String readText) {
 		super();
-		this.dataTypeValue = DataTypeValue.NUMERIC.value;
+		this.dataTypeValue = DataTypeValue.NUMBERIC_BUTTON.value;
 		this.readText = readText;
 	}
 
