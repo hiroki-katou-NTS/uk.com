@@ -106,19 +106,21 @@ module cmm045.shr {
             appType: number;
             dispName: string;
             empName: string;
+            inpEmpName: string;
             workplaceName: string;
             statusFrameAtr: boolean;
             phaseStatus: string;
             //事前、事後の後ろに#CMM045_101(※)を追加
             checkAddNote: boolean;
             checkTimecolor: boolean;
-            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, 
-            statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: boolean)
+            constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: boolean)
             {
                 this.appID = appID;
                 this.appType = appType;
                 this.dispName = dispName;
                 this.empName = empName;
+                this.inpEmpName = inpEmpName;
                 this.workplaceName = workplaceName;
                 this.statusFrameAtr = statusFrameAtr;
                 this.phaseStatus = phaseStatus;
@@ -323,12 +325,6 @@ module cmm045.shr {
                 approvalAgentNumber: number, cancelNumber: number,
                 remandNumner: number,denialNumber: number)
             {
-//                this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
-//                this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
-//                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [denialNumber]);
-//                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
-//                this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
-//                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [cancelNumber]); 
                 this.unApprovalNumber = getText('CMM045_18', [unApprovalNumber]); 
                 this.approvalNumber = getText('CMM045_18', [approvalNumber]);
                 this.approvalAgentNumber = getText('CMM045_18', [denialNumber]);

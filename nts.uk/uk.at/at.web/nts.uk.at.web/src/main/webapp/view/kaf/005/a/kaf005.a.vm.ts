@@ -158,6 +158,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
+                    if (nts.uk.ui.errors.hasError()){return;} 
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
                         service.findByChangeAppDate({
@@ -192,6 +193,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                 self.prePostSelected.subscribe(function(value){
                     let dfd =$.Deferred();
+                    if (nts.uk.ui.errors.hasError()){return;} 
                         service.checkConvertPrePost({
                             prePostAtr: value,
                             appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
@@ -640,7 +642,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
          */
         openDialogKdl003() {
             let self = this;
-            
+            if (nts.uk.ui.errors.hasError()){return;} 
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: self.workTypecodes(),
                 selectedWorkTypeCode: self.workTypeCd(),
