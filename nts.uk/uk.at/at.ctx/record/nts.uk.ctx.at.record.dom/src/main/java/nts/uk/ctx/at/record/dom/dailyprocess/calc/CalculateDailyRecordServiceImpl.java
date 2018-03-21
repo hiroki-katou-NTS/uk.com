@@ -229,7 +229,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		if(workInfo.getRecordWorkInformation().getWorkTimeCode() == null)
+		if(workInfo == null || workInfo.getRecordWorkInformation() == null || workInfo.getRecordWorkInformation().getWorkTimeCode() == null)
 			return oneRange;
 		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return oneRange;
@@ -306,11 +306,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																									autoCalSetting,
 																									autoCalSetting); 
 			/*前日の勤務情報取得  */
-		WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInformationRepository.find(employeeId, targetDate).get());
+		WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(integrationOfDaily.getWorkInformation());
 		val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
 		//val yesterDay = this.workTypeRepository.findByPK(companyId, "001");//yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		/*翌日の勤務情報取得 */
-		WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInformationRepository.find( employeeId, targetDate).get());
+		WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(integrationOfDaily.getWorkInformation());
 		val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
 		//val tomorrow = this.workTypeRepository.findByPK(companyId, "001");//tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		
@@ -592,7 +592,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
 												   ,predetermineTimeSet.get().getStartDateClock().forwardByMinutes(predetermineTimeSet.get().getRangeTimeDay().valueAsMinutes()));
 		
-		WorkInfoOfDailyPerformance toDayWorkInfo = workInformationRepository.find(employeeId, targetDate).get();
+		WorkInfoOfDailyPerformance toDayWorkInfo = integrationOfDaily.getWorkInformation();
 		
 		/*ジャストタイムの判断するための設定取得*/
 //		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
