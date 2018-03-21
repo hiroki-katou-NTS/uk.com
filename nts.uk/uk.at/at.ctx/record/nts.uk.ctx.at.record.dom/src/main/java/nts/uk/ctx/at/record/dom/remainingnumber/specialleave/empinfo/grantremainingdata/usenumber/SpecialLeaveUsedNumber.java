@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremai
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,16 +9,32 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 // 特別休暇使用数
-public class SpecialLeaveUsedNumber{
+public class SpecialLeaveUsedNumber {
 
 	public DayNumberOfUse dayNumberOfUse;
 
 	public Optional<TimeOfUse> timeOfUse;
 
-	public Optional<DayNumberOfUse> dayNumberOfUsed;
+	public Optional<DayNumberOfUse> numberOfDayUseToLose;
 
 	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
+
+	private SpecialLeaveUsedNumber(Double dayNumberOfUse, Integer timeOfUse, Double dayNumberOfUsed,
+			int dayNumberOfExeeded, Integer timeOfExeeded) {
+		this.dayNumberOfUse = new DayNumberOfUse(dayNumberOfUse);
+		this.timeOfUse = timeOfUse != null ? Optional.of(new TimeOfUse(timeOfUse)) : Optional.empty();
+		this.numberOfDayUseToLose = dayNumberOfUsed != null ? Optional.of(new DayNumberOfUse(dayNumberOfUsed))
+				: Optional.empty();
+		this.specialLeaveOverLimitNumber = Optional
+				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded, timeOfExeeded));
+
+	}
+
+	public static SpecialLeaveUsedNumber createFromJavaType(Double dayNumberOfUse, Integer timeOfUse,
+			Double dayNumberOfUsed, int dayNumberOfExeeded, Integer timeOfExeeded) {
+		return new SpecialLeaveUsedNumber(dayNumberOfUse, timeOfUse, dayNumberOfUsed, dayNumberOfExeeded,
+				timeOfExeeded);
+	}
 
 }

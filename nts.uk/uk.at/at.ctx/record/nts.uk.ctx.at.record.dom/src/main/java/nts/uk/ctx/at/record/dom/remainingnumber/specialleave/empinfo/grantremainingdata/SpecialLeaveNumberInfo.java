@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +10,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 //特別休暇数情報
 public class SpecialLeaveNumberInfo {
 	//付与数
@@ -20,5 +18,12 @@ public class SpecialLeaveNumberInfo {
 	private SpecialLeaveUsedNumber usedNumber;
 	//残数
 	private SpecialLeaveRemainingNumber remainingNumber;
+	
+	public SpecialLeaveNumberInfo(int dayNumberOfGrant, Integer timeOfGrant,Double dayNumberOfUse, Integer timeOfUse,
+			Double dayNumberOfUsed, int dayNumberOfExeeded, Integer timeOfExeeded, Double dayNumberOfRemain, Integer timeOfRemain) {
+		this.grantNumber = SpecialLeaveGrantNumber.createFromJavaType(dayNumberOfGrant, timeOfGrant);
+		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(dayNumberOfUse,timeOfUse,dayNumberOfUsed,dayNumberOfExeeded,timeOfExeeded);
+		this.remainingNumber = SpecialLeaveRemainingNumber.createFromJavaType(dayNumberOfRemain, timeOfRemain);
+	}
 
 }

@@ -13,7 +13,6 @@ public class DayNumberOfRemain extends HalfIntegerPrimitiveValue<DayNumberOfRema
 
 	public DayNumberOfRemain(Double rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }
