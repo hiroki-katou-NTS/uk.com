@@ -2,7 +2,6 @@ module nts.uk.at.view.kmk004.g {
     export module viewmodel {
 
         export class ScreenModel {
-            //***********
             isIncludeOverTime: KnockoutObservable<boolean>;// G1_2
             includeOverTimeOpt: KnockoutObservableArray<any>;// Opt for G1_2 (G1_3, G1_4)
             
@@ -11,26 +10,31 @@ module nts.uk.at.view.kmk004.g {
 
             constructor() {
                 let self = this;
-//                let params: NormalSetParams = nts.uk.ui.windows.getShared("FlexSetParams");
-                let params: FlexSetParams = new FlexSetParams();
+                let params: FlexSetParams = nts.uk.ui.windows.getShared("FLEX_SET_PARAM");
                 
                 self.includeOverTimeOpt = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("KMK004_72")),
-                    new ItemModel(0, nts.uk.resource.getText("KMK004_73"))]);
+                    new ItemModelBoolean(true, nts.uk.resource.getText("KMK004_72")),
+                    new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_73"))]);
                 
                 self.shortageSettingOpt = ko.observableArray([
                     new ItemModel(1, "当月精算"),
                     new ItemModel(2, "翌月繰越")]);
                 
-                self.isIncludeOverTime = ko.observable(params.isIncludeOverTime ? params.isIncludeOverTime : false);
-                self.shortageSetting = ko.observable(params.shortageSetting ? params.shortageSetting : 1);
+                self.isIncludeOverTime = ko.observable(params && params.isIncludeOverTime ? params.isIncludeOverTime : false);
+                self.shortageSetting = ko.observable(params && params.shortageSetting ? params.shortageSetting : 1);
             }
 
+            /**
+             * Decide Data
+             */
             public decideData(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared("Flex_Set_Output", {
-                    isIncludeExtraAggr: self.isIncludeOverTime(),
-                } , true);
+                let flexSetOutput: FlexSetParams = new FlexSetParams();
+                flexSetOutput.isIncludeOverTime = self.isIncludeOverTime();
+                flexSetOutput.shortageSetting = self.shortageSetting();
+                
+                nts.uk.ui.windows.setShared("FLEX_SET_OUTPUT", flexSetOutput , true);
+                nts.uk.ui.windows.close();
             }
 
             /**
@@ -41,11 +45,26 @@ module nts.uk.at.view.kmk004.g {
             }
         }
 
+        /**
+         * Class ItemModel
+         */
         export class ItemModel {
             code: number;
             name: string;
 
             constructor(code: number, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+        /**
+         * Class ItemModel boolean
+         */
+        export class ItemModelBoolean {
+            code: boolean;
+            name: string;
+
+            constructor(code: boolean, name: string) {
                 this.code = code;
                 this.name = name;
             }

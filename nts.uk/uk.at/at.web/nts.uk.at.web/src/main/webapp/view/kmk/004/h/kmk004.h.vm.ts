@@ -25,10 +25,7 @@ module nts.uk.at.view.kmk004.h {
 
             constructor() {
                 let self = this;
-//                let params: NormalSetParams = nts.uk.ui.windows.getShared("DeformSetParams");
-                let params: DeformSetParams = new DeformSetParams();
-                
-                
+                let params: DeformSetParams = nts.uk.ui.windows.getShared("DEFORM_SET_PARAM");
                 
                 self.startWeekList = ko.observableArray([new ItemModel(2, '月曜日'),
                     new ItemModel(3, '火曜日'),
@@ -40,24 +37,24 @@ module nts.uk.at.view.kmk004.h {
                     new ItemModel(1, '締め開始日')]);
                 
                 self.includeExtraAggrOpt = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("KMK004_58")),
-                    new ItemModel(0, nts.uk.resource.getText("KMK004_59"))]);
+                    new ItemModelBoolean(true, nts.uk.resource.getText("KMK004_58")),
+                    new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_59"))]);
                 
                 self.includeAggrOpt = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("KMK004_63")),
-                    new ItemModel(0, nts.uk.resource.getText("KMK004_64"))]);
+                    new ItemModelBoolean(true, nts.uk.resource.getText("KMK004_63")),
+                    new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_64"))]);
                 
-                // Initialize vars
-                self.strMonth = ko.observable(params.strMonth ? params.strMonth : (moment(new Date()).toDate().getMonth()));
-                self.period = ko.observable(params.period ? params.period : 1);
-                self.repeatCls = ko.observable(params.repeatCls ? params.repeatCls : false);
-                self.startWeek = ko.observable(params.startWeek ? params.startWeek : StartWeek.MONDAY);
-                self.isIncludeExtraAggr = ko.observable(params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
-                self.isIncludeLegalAggr = ko.observable(params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);
-                self.isIncludeHolidayAggr = ko.observable(params.isIncludeHolidayAggr ? params.isIncludeHolidayAggr : false);
-                self.isIncludeExtraExcessOutside = ko.observable(params.isIncludeExtraExcessOutside ? params.isIncludeExtraExcessOutside : false);
-                self.isIncludeLegalExcessOutside = ko.observable(params.isIncludeLegalExcessOutside ? params.isIncludeLegalExcessOutside : false);
-                self.isIncludeHolidayExcessOutside = ko.observable(params.isIncludeHolidayExcessOutside ? params.isIncludeHolidayExcessOutside : false);
+                // Initialize variables
+                self.strMonth = ko.observable(params && params.strMonth ? params.strMonth : (moment(new Date()).toDate().getMonth()));
+                self.period = ko.observable(params && params.period ? params.period : 1);
+                self.repeatCls = ko.observable(params && params.repeatCls ? params.repeatCls : false);
+                self.startWeek = ko.observable(params && params.startWeek ? params.startWeek : StartWeek.MONDAY);
+                self.isIncludeExtraAggr = ko.observable(params && params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
+                self.isIncludeLegalAggr = ko.observable(params && params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);
+                self.isIncludeHolidayAggr = ko.observable(params && params.isIncludeHolidayAggr ? params.isIncludeHolidayAggr : false);
+                self.isIncludeExtraExcessOutside = ko.observable(params && params.isIncludeExtraExcessOutside ? params.isIncludeExtraExcessOutside : false);
+                self.isIncludeLegalExcessOutside = ko.observable(params && params.isIncludeLegalExcessOutside ? params.isIncludeLegalExcessOutside : false);
+                self.isIncludeHolidayExcessOutside = ko.observable(params && params.isIncludeHolidayExcessOutside ? params.isIncludeHolidayExcessOutside : false);
                 
                 // Initialize Enable/Disable variables
                 // Enable/Disable Var Depend on F2_3
@@ -80,20 +77,25 @@ module nts.uk.at.view.kmk004.h {
                 });
             }
 
+            /**
+             * Decide Data
+             */
             public decideData(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared("Deform_Set_Output", {
-                    startWeek: self.startWeek(),
-                    isIncludeExtraAggr: self.isIncludeExtraAggr(),
-                    isIncludeLegalAggr: self.isIncludeLegalAggr(),
-                    isIncludeHolidayAggr: self.isIncludeHolidayAggr(),
-                    isIncludeExtraExcessOutside: self.isIncludeExtraExcessOutside(),
-                    isIncludeLegalExcessOutside: self.isIncludeLegalExcessOutside(),
-                    isIncludeHolidayExcessOutside: self.isIncludeHolidayExcessOutside(),
-                    strMonth: self.strMonth(),
-                    period: self.period(),
-                    repeatCls: self.repeatCls()
-                } , true);
+                let deformParams: DeformSetParams = new DeformSetParams();
+                deformParams.startWeek = self.startWeek();
+                deformParams.isIncludeExtraAggr = self.isIncludeExtraAggr();
+                deformParams.isIncludeLegalAggr = self.isIncludeLegalAggr();
+                deformParams.isIncludeHolidayAggr = self.isIncludeHolidayAggr();
+                deformParams.isIncludeExtraExcessOutside = self.isIncludeExtraExcessOutside();
+                deformParams.isIncludeLegalExcessOutside = self.isIncludeLegalExcessOutside();
+                deformParams.isIncludeHolidayExcessOutside = self.isIncludeHolidayExcessOutside();
+                deformParams.strMonth = self.strMonth();
+                deformParams.period = self.period();
+                deformParams.repeatCls = self.repeatCls();
+                
+                nts.uk.ui.windows.setShared("DEFORM_SET_OUTPUT", deformParams , true);
+                nts.uk.ui.windows.close();
             }
 
             /**
@@ -119,11 +121,24 @@ module nts.uk.at.view.kmk004.h {
             static CLOSURE_STR_DATE = 1;
         }
         
+        /**
+         * Item Model
+         */
         export class ItemModel {
             code: number;
             name: string;
 
             constructor(code: number, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+        
+        export class ItemModelBoolean {
+            code: boolean;
+            name: string;
+
+            constructor(code: boolean, name: string) {
                 this.code = code;
                 this.name = name;
             }

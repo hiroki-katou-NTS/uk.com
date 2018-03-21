@@ -2,7 +2,6 @@ module nts.uk.at.view.kmk004.f {
     export module viewmodel {
 
         export class ScreenModel {
-            //***********
             startWeekList: KnockoutObservableArray<any>;
             startWeek: KnockoutObservable<number>;// F1_2
             isIncludeExtraAggr: KnockoutObservable<boolean>;// F2_3////
@@ -21,8 +20,8 @@ module nts.uk.at.view.kmk004.f {
 
             constructor() {
                 let self = this;
-//                let params: NormalSetParams = nts.uk.ui.windows.getShared("NormalSetParams");
-                let params: NormalSetParams = new NormalSetParams();
+                let params: NormalSetParams = nts.uk.ui.windows.getShared("NORMAL_SET_PARAM");
+                
                 self.startWeekList = ko.observableArray([new ItemModel(2, '月曜日'),
                     new ItemModel(3, '火曜日'),
                     new ItemModel(4, '水曜日'),
@@ -33,20 +32,20 @@ module nts.uk.at.view.kmk004.f {
                     new ItemModel(1, '締め開始日')]);
                 
                 self.includeExtraAggrOpt = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("KMK004_58")),
-                    new ItemModel(0, nts.uk.resource.getText("KMK004_59"))]);
+                    new ItemModelBoolean(true, nts.uk.resource.getText("KMK004_58")),
+                    new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_59"))]);
                 
                 self.includeAggrOpt = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("KMK004_63")),
-                    new ItemModel(0, nts.uk.resource.getText("KMK004_64"))]);
+                    new ItemModelBoolean(true, nts.uk.resource.getText("KMK004_63")),
+                    new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_64"))]);
                 
-                self.startWeek = ko.observable(params.startWeek ? params.startWeek : StartWeek.MONDAY);
-                self.isIncludeExtraAggr = ko.observable(params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
-                self.isIncludeLegalAggr = ko.observable(params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);
-                self.isIncludeHolidayAggr = ko.observable(params.isIncludeHolidayAggr ? params.isIncludeHolidayAggr : false);
-                self.isIncludeExtraExcessOutside = ko.observable(params.isIncludeExtraExcessOutside ? params.isIncludeExtraExcessOutside : false);
-                self.isIncludeLegalExcessOutside = ko.observable(params.isIncludeLegalExcessOutside ? params.isIncludeLegalExcessOutside : false);
-                self.isIncludeHolidayExcessOutside = ko.observable(params.isIncludeHolidayExcessOutside ? params.isIncludeHolidayExcessOutside : false);
+                self.startWeek = ko.observable(params && params.startWeek ? params.startWeek : StartWeek.MONDAY);
+                self.isIncludeExtraAggr = ko.observable(params && params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
+                self.isIncludeLegalAggr = ko.observable(params && params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);
+                self.isIncludeHolidayAggr = ko.observable(params && params.isIncludeHolidayAggr ? params.isIncludeHolidayAggr : false);
+                self.isIncludeExtraExcessOutside = ko.observable(params && params.isIncludeExtraExcessOutside ? params.isIncludeExtraExcessOutside : false);
+                self.isIncludeLegalExcessOutside = ko.observable(params && params.isIncludeLegalExcessOutside ? params.isIncludeLegalExcessOutside : false);
+                self.isIncludeHolidayExcessOutside = ko.observable(params && params.isIncludeHolidayExcessOutside ? params.isIncludeHolidayExcessOutside : false);
                 
                 // Initialize Enable/Disable variables
                 // Enable/Disable Var Depend on F2_3
@@ -69,17 +68,21 @@ module nts.uk.at.view.kmk004.f {
                 });
             }
 
+            /**
+             * Decide Data
+             */
             public decideData(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared("Normal_Set_Output", {
-                    startWeek: self.startWeek(),
-                    isIncludeExtraAggr: self.isIncludeExtraAggr(),
-                    isIncludeLegalAggr: self.isIncludeLegalAggr(),
-                    isIncludeHolidayAggr: self.isIncludeHolidayAggr(),
-                    isIncludeExtraExcessOutside: self.isIncludeExtraExcessOutside(),
-                    isIncludeLegalExcessOutside: self.isIncludeLegalExcessOutside(),
-                    isIncludeHolidayExcessOutside: self.isIncludeHolidayExcessOutside()
-                } , true);
+                let normalSetOutput: NormalSetParams = new NormalSetParams();
+                normalSetOutput.startWeek = self.startWeek();
+                normalSetOutput.isIncludeExtraAggr = self.isIncludeExtraAggr();
+                normalSetOutput.isIncludeLegalAggr = self.isIncludeLegalAggr();
+                normalSetOutput.isIncludeHolidayAggr = self.isIncludeHolidayAggr();
+                normalSetOutput.isIncludeExtraExcessOutside = self.isIncludeExtraExcessOutside();
+                normalSetOutput.isIncludeLegalExcessOutside = self.isIncludeLegalExcessOutside();
+                normalSetOutput.isIncludeHolidayExcessOutside = self.isIncludeHolidayExcessOutside();
+                nts.uk.ui.windows.setShared("NORMAL_SET_OUTPUT", normalSetOutput , true);
+                nts.uk.ui.windows.close();
             }
 
             /**
@@ -103,6 +106,16 @@ module nts.uk.at.view.kmk004.f {
             static SATURDAY = 7;
             static SUNDAY = 0;
             static CLOSURE_STR_DATE = 1;
+        }
+        
+        export class ItemModelBoolean {
+            code: boolean;
+            name: string;
+
+            constructor(code: boolean, name: string) {
+                this.code = code;
+                this.name = name;
+            }
         }
         
         export class ItemModel {

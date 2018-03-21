@@ -12,18 +12,18 @@
 			<button tabindex="2" data-bind="click: saveCompanySetting, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
 			<button tabindex="4" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
 			<button tabindex="5" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
-			<!-- <button class="" data-bind="click: gotoF">#{i18n.getText('KMK004_30')}</button>
+			<button class="" data-bind="click: gotoF">#{i18n.getText('KMK004_30')}</button>
 			<button class="" data-bind="click: gotoG">#{i18n.getText('KMK004_30')}</button>
-			<button class="" data-bind="click: gotoH">#{i18n.getText('KMK004_30')}</button> -->
+			<button class="" data-bind="click: gotoH">#{i18n.getText('KMK004_30')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
-			<com:ko tag="with" bind="companyWorktimeSetting">
+			<com:ko tag="with" bind="companyWTDetailSetting">
 				<!-- YEAR -->
 				<div class="control-group ">
 					<div tabindex="6" id="companyYearPicker" 
 						data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
-												value: normalSetting().year, 
+												value: year, 
 												dateFormat: 'YYYY', 
 												valueFormat: 'YYYY', 
 												fiscalYear: true, 
@@ -45,7 +45,7 @@
 									<td>#{i18n.getText('KMK004_13')}</td>
 									<td>#{i18n.getText('KMK004_8')}</td>
 								</tr>
-								<com:ko tag="foreach" bind="normalSetting().statutorySetting">
+								<com:ko tag="foreach" bind="normalStatutorySetting">
 									<tr>
 										<td class="bg-green">
 											<div data-bind="text: month()+'月度'"></div>
@@ -70,7 +70,7 @@
 									<td>#{i18n.getText('KMK004_17')}</td>
 									<td>#{i18n.getText('KMK004_8')}</td>
 								</tr>
-								<com:ko tag="foreach" bind="flexSetting().flexSettingDetail">
+								<com:ko tag="foreach" bind="flexSetting">
 									<tr>
 										<td class="bg-green">
 											<div data-bind="text: month()+'月度'"></div>
@@ -98,7 +98,7 @@
 									<td>#{i18n.getText('KMK004_13')}</td>
 									<td>#{i18n.getText('KMK004_8')}</td>
 								</tr>
-								<com:ko tag="foreach" bind="deformLaborSetting().statutorySetting">
+								<com:ko tag="foreach" bind="deformStatutorySetting">
 									<tr>
 										<td class="bg-green">
 											<div data-bind="text: month()+'月度'"></div>
@@ -121,9 +121,9 @@
 					<!-- Normal Setting -->
 					<div class="panel panel-frame setting-panel">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_46')}</div>
-						<button class="open-Detail" data-bind="click: gotoF">#{i18n.getText('KMK004_47')}</button>
+						<button class="open-Detail" data-bind="click: $parent.gotoF">#{i18n.getText('KMK004_47')}</button>
 
-						<!-- <com:ko tag="with" bind=normalWorktime> -->
+						<com:ko tag="with" bind="$parent.companyNormalMonthlySet">
 							<table class="border-all">
 								<tr class="bg-dark-green">
 									<td></td>
@@ -132,36 +132,36 @@
 								<tr>
 									<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 									<td><input tabindex="9"
-										data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: normalWorktime().dailyTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: dailyTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 									</td>
 								</tr>
 								<tr>
 									<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
 									<td><input tabindex="10"
-										data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: normalWorktime().weeklyTime, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weeklyTime, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 									</td>
 								</tr>
 							</table>
-						<!-- </com:ko> -->
+						</com:ko>
 					</div>
 					<!-- Flex Setting -->
 					<div class="panel panel-frame setting-panel">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_48')}</div>
-						<BUTTON class="open-Detail" data-bind="click: gotoG">#{i18n.getText('KMK004_47')}</BUTTON>
+						<BUTTON class="open-Detail" data-bind="click: $parent.gotoG">#{i18n.getText('KMK004_47')}</BUTTON>
 						<div id="radio-box-content" data-bind="ntsRadioBoxGroup: {
 										name: '#[KMK004_50]',
 										options: $parent.aggrSelectionItemList,
 										optionsValue: 'id',
 										optionsText: 'name',
-										value: flexAggrSetting().aggregateMethod,
+										value: $parent.companyFlexMonthlySet.aggregateMethod,
 										enable: true}"></div>
 					</div>
 					<!-- Deformed Labor Setting -->
 					<div class="panel panel-frame setting-panel">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_49')}</div>
-						<button class="open-Detail" data-bind="click: gotoH">#{i18n.getText('KMK004_47')}</button>
+						<button class="open-Detail" data-bind="click: $parent.gotoH">#{i18n.getText('KMK004_47')}</button>
 
-						<com:ko tag="with" bind="deformLaborWorktime">
+						<com:ko tag="with" bind="$parent.companyDeformMonthlySet">
 							<table class="border-all">
 								<tr class="bg-dark-green">
 									<td></td>

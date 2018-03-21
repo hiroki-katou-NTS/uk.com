@@ -2,9 +2,9 @@ module nts.uk.at.view.kmk004.a {
     export module viewmodel {
 
         import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
-        import NormalSetParams = nts.uk.at.view.kmk004.f.viewmodel.NormalSetParams;
-        import FlexSetParams = nts.uk.at.view.kmk004.g.viewmodel.FlexSetParams;
-        import DeformSetParams = nts.uk.at.view.kmk004.h.viewmodel.DeformSetParams;
+//        import NormalSetParams = nts.uk.at.view.kmk004.f.viewmodel.NormalSetParams;
+//        import FlexSetParams = nts.uk.at.view.kmk004.g.viewmodel.FlexSetParams;
+//        import DeformSetParams = nts.uk.at.view.kmk004.h.viewmodel.DeformSetParams;
 
         export class ScreenModel {
             // =============OLD===================
@@ -235,6 +235,8 @@ module nts.uk.at.view.kmk004.a {
                         self.loadCompanySetting();
                     }
                 });
+                //=================================NEWEST===============================
+                self.companyWorktimeSetting = new CompanyWorktimeSetting();
             }
 
             /**
@@ -434,26 +436,9 @@ module nts.uk.at.view.kmk004.a {
                 });
             }
             
-            public gotoF(): void {
-                let self = this;
-                nts.uk.ui.windows.sub.modal("/view/kmk/004/f/index.xhtml").onClosed(() => {
-                    $('#companyYearPicker').focus();
-                });
-            }
             
-            public gotoG(): void {
-                let self = this;
-                nts.uk.ui.windows.sub.modal("/view/kmk/004/g/index.xhtml").onClosed(() => {
-                    $('#companyYearPicker').focus();
-                });
-            }
             
-            public gotoH(): void {
-                let self = this;
-                nts.uk.ui.windows.sub.modal("/view/kmk/004/h/index.xhtml").onClosed(() => {
-                    $('#companyYearPicker').focus();
-                });
-            }
+            
 
             /**
              * Save company setting.
@@ -1500,7 +1485,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1519,7 +1504,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1574,7 +1559,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1595,7 +1580,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1649,7 +1634,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1670,7 +1655,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1725,7 +1710,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1746,7 +1731,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             // 通常勤務労働会社別月別実績集計設定
             excessOutsideTimeSet: ExcessOutsideTimeSet;
             aggregateOutsideTimeSet: ExcessOutsideTimeSet;
@@ -1857,7 +1842,8 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務月間労働時間
             normalSetting: KnockoutObservable<CompanyWTNormalDeformSetting>;
             // 会社別フレックス勤務月間労働時間
-            flexSetting: KnockoutObservable<CompanyWTFlexSetting>;
+//            flexSetting: KnockoutObservable<CompanyWTFlexSetting>;
+            flexSetting: KnockoutObservable<CompanyWTFlexSetting1>;
             // 会社別変形労働月間労働時間
             deformLaborSetting: KnockoutObservable<CompanyWTNormalDeformSetting>;
             
@@ -1877,13 +1863,133 @@ module nts.uk.at.view.kmk004.a {
                 self.deformLaborWorktime = ko.observable(new NormalWorktime());
                 
                 self.normalSetting = ko.observable(new CompanyWTNormalDeformSetting());
-                self.flexSetting = ko.observable(new CompanyWTFlexSetting());
+                self.flexSetting = ko.observable(new CompanyWTFlexSetting1());
                 self.deformLaborSetting = ko.observable(new CompanyWTNormalDeformSetting());
                 
                 self.normalAggrSetting = ko.observable(new NormalWorktimeAggrSetting());
                 self.deformAggrSetting = ko.observable(new DeformWorktimeAggrSetting());
                 self.flexAggrSetting = ko.observable(new FlexWorktimeAggrSetting());
                 
+            }
+            public gotoF(): void {
+                let self = this;
+                let params: NormalSetParams = new NormalSetParams();
+                // F1_2
+                params.startWeek = self.normalWorktime().startWeek();
+                // F2_3
+                params.isIncludeExtraAggr = self.normalAggrSetting().aggregateOutsideTimeSet.includeExtra();
+                // F2_8
+                params.isIncludeLegalAggr = self.normalAggrSetting().aggregateOutsideTimeSet.includeLegal();
+                // F2_12
+                params.isIncludeHolidayAggr = self.normalAggrSetting().aggregateOutsideTimeSet.includeHoliday();
+
+                // F2_16
+                params.isIncludeExtraExcessOutside = self.normalAggrSetting().excessOutsideTimeSet.includeExtra();
+                // F2_21
+                params.isIncludeLegalExcessOutside = self.normalAggrSetting().excessOutsideTimeSet.includeLegal();
+                // F2_25
+                params.isIncludeHolidayExcessOutside = self.normalAggrSetting().excessOutsideTimeSet.includeHoliday();
+
+                nts.uk.ui.windows.setShared('NORMAL_SET_PARAM', params, true);
+                
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/f/index.xhtml").onClosed(() => {
+                    $('#companyYearPicker').focus();
+                    
+                    // Get params
+                    var normalSetOutput: NormalSetParams = nts.uk.ui.windows.getShared('NORMAL_SET_OUTPUT');
+                    // If normalSetOutput is undefined
+                    if (!normalSetOutput) {
+                        return;
+                    } else {
+                        self.normalWorktime().startWeek(normalSetOutput.startWeek);
+                        self.normalAggrSetting().aggregateOutsideTimeSet.includeExtra(normalSetOutput.isIncludeExtraAggr);
+                        self.normalAggrSetting().aggregateOutsideTimeSet.includeLegal(normalSetOutput.isIncludeLegalAggr);
+                        self.normalAggrSetting().aggregateOutsideTimeSet.includeHoliday(normalSetOutput.isIncludeHolidayAggr);
+
+                        // F2_16
+                        self.normalAggrSetting().excessOutsideTimeSet.includeExtra(normalSetOutput.isIncludeExtraExcessOutside);
+                        // F2_21
+                        self.normalAggrSetting().excessOutsideTimeSet.includeLegal(normalSetOutput.isIncludeLegalExcessOutside);
+                        // F2_25
+                        self.normalAggrSetting().excessOutsideTimeSet.includeHoliday(normalSetOutput.isIncludeHolidayExcessOutside);
+                    }
+                });
+            }
+            
+            public gotoG(): void {
+                let self = this;
+                let params: FlexSetParams = new FlexSetParams();
+                params.isIncludeOverTime = self.flexAggrSetting().includeOT(); // G1_2
+                params.shortageSetting = self.flexAggrSetting().shortageSetting();// G2_2
+                
+                nts.uk.ui.windows.setShared('FLEX_SET_PARAM', params, true);
+                
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/g/index.xhtml").onClosed(() => {
+                    $('#companyYearPicker').focus();
+                    
+                    // get params from dialog 
+                    var flexSetOutput: FlexSetParams = nts.uk.ui.windows.getShared('FLEX_SET_OUTPUT');
+                    // If FLEXSetOutput is undefined
+                    if (!flexSetOutput) {
+                        return;
+                    } else {
+                        self.flexAggrSetting().includeOT(flexSetOutput.isIncludeOverTime);
+                        self.flexAggrSetting().shortageSetting(flexSetOutput.shortageSetting);
+                    }
+                    
+                });
+            }
+            
+            
+            public gotoH(): void {
+                
+                let self = this;
+                let params: DeformSetParams = new DeformSetParams();
+                
+                params.strMonth = self.deformAggrSetting().startMonth();
+                params.period = self.deformAggrSetting().period();
+                params.repeatCls = self.deformAggrSetting().repeatCls();
+                // H1_1
+                params.startWeek = self.deformLaborWorktime().startWeek();
+                // // H3_3
+                params.isIncludeExtraAggr = self.deformAggrSetting().aggregateOutsideTimeSet.includeExtra();
+                // H3_8
+                params.isIncludeLegalAggr = self.deformAggrSetting().aggregateOutsideTimeSet.includeLegal();
+                // H3_12
+                params.isIncludeHolidayAggr = self.deformAggrSetting().aggregateOutsideTimeSet.includeHoliday();
+
+                // H3_16
+                params.isIncludeExtraExcessOutside = self.deformAggrSetting().excessOutsideTimeSet.includeExtra();
+                // H3_21
+                params.isIncludeLegalExcessOutside = self.deformAggrSetting().excessOutsideTimeSet.includeLegal();
+                // H3_25
+                params.isIncludeHolidayExcessOutside = self.deformAggrSetting().excessOutsideTimeSet.includeHoliday();
+
+                nts.uk.ui.windows.setShared('DEFORM_SET_PARAM', params, true);
+                
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/h/index.xhtml").onClosed(() => {
+                    $('#companyYearPicker').focus();
+                    
+                    // Get params
+                    var deformSetOutput: DeformSetParams = nts.uk.ui.windows.getShared('DEFORM_SET_OUTPUT');
+                    // If deformSetOutput is undefined
+                    if (!deformSetOutput) {
+                        return;
+                    } else {
+                        self.deformAggrSetting().startMonth(deformSetOutput.strMonth);
+                        self.deformAggrSetting().period(deformSetOutput.period);
+                        self.deformAggrSetting().repeatCls(deformSetOutput.repeatCls);
+                        //
+                        self.deformLaborWorktime().startWeek(deformSetOutput.startWeek);
+                        self.deformAggrSetting().aggregateOutsideTimeSet.includeExtra(deformSetOutput.isIncludeExtraAggr);
+                        self.deformAggrSetting().aggregateOutsideTimeSet.includeLegal(deformSetOutput.isIncludeLegalAggr);
+                        self.deformAggrSetting().aggregateOutsideTimeSet.includeHoliday(deformSetOutput.isIncludeHolidayAggr);
+
+                        self.deformAggrSetting().excessOutsideTimeSet.includeExtra(deformSetOutput.isIncludeExtraExcessOutside);
+                        self.deformAggrSetting().excessOutsideTimeSet.includeLegal(deformSetOutput.isIncludeLegalExcessOutside);
+                        self.deformAggrSetting().excessOutsideTimeSet.includeHoliday(deformSetOutput.isIncludeHolidayExcessOutside);
+                    }
+                });
             }
         }
         
@@ -1893,7 +1999,7 @@ module nts.uk.at.view.kmk004.a {
             // 会社別通常勤務労働時間
             dailyTime: KnockoutObservable<number>;
             weeklyTime: KnockoutObservable<number>;
-            startWeek: KnockoutObservable<StartWeek>;
+            startWeek: KnockoutObservable<number>;
             
             constructor() {
                 let self = this;
@@ -1923,6 +2029,22 @@ module nts.uk.at.view.kmk004.a {
                     self.statutorySetting.push(m);
                 }
             }
+            
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let sortedList: Array<any> = new Array<any>();
+                let flexSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let value = self.statutorySetting().filter(m => startMonth == m.month())[0];
+                    sortedList.push(value);
+                    startMonth++;
+                }
+                self.statutorySetting(sortedList);
+            }
         }
         /**
          * 会社別フレックス勤務月間労働時間
@@ -1946,6 +2068,66 @@ module nts.uk.at.view.kmk004.a {
                     self.statutorySetting.push(m);
                     self.statutorySetting.push(m);
                 }
+            }
+            
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let statutorySortedList: Array<any> = new Array<any>();
+                let specifiedSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let statutoryValue = self.statutorySetting().filter(m => startMonth == m.month())[0];
+                    let specifiedValue = self.specifiedSetting().filter(m => startMonth == m.month())[0];
+                    statutorySortedList.push(statutoryValue);
+                    specifiedSortedList.push(specifiedValue);
+                    startMonth++;
+                }
+                self.statutorySetting(statutorySortedList);
+                self.specifiedSetting(specifiedSortedList);
+            }
+        }
+        
+        /**
+         * 会社別フレックス勤務月間労働時間
+         */
+        export class CompanyWTFlexSetting1 {
+            year: KnockoutObservable<number>;
+//            // 法定時間: 月単位
+//            statutorySetting: KnockoutObservableArray<MonthlyTime>;
+//            // 所定時間: 月単位
+//            specifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            
+            flexSettingDetail: KnockoutObservableArray<FlexMonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                self.flexSettingDetail = ko.observableArray([]);
+                for (let i = 1; i < 13; i++) {
+                    let mFlex = new FlexMonthlyTime();
+                    mFlex.month(i);
+                    mFlex.statutoryTime(0);
+                    mFlex.specifiedTime(0);
+                    self.flexSettingDetail.push(mFlex);
+                }
+            }
+            public sortMonth(startMonth: number): void {
+                let self = this;
+                let sortedList: Array<any> = new Array<any>();
+                let flexSortedList: Array<any> = new Array<any>();
+                for (let i = 0; i < 12; i++) {
+                    if (startMonth > 12) {
+                        // reset month.
+                        startMonth = 1;
+                    }
+                    let flexValue = self.flexSettingDetail().filter(m => startMonth == m.month())[0];
+                    flexSortedList.push(flexValue);
+                    startMonth++;
+                }
+                self.flexSettingDetail(flexSortedList);
             }
         }
         
@@ -1994,14 +2176,14 @@ module nts.uk.at.view.kmk004.a {
          * フレックス時間勤務の月の集計設定
          */
         export class FlexWorktimeAggrSetting {
-            // 不足設定: フレックス不足設定//
-            shortageSetting: KnockoutObservable<ShortageSetting>;
-            // 残業時間を含める: するしない区分//
+            // 不足設定: フレックス不足設定// G2_2
+            shortageSetting: KnockoutObservable<number>;
+            // 残業時間を含める: するしない区分//// G1_2
             includeOT: KnockoutObservable<boolean>;
             // 法定内集計設定: 法定内フレックス時間集計
-            legalAggrSet: KnockoutObservable<AggrregateSetting>;
+            legalAggrSet: KnockoutObservable<number>;
             // 集計方法: フレックス集計方法//
-            aggregateMethod: KnockoutObservable<FlexAggregateMethod>;
+            aggregateMethod: KnockoutObservable<number>;
             
             constructor() {
                 let self = this;
@@ -2009,6 +2191,74 @@ module nts.uk.at.view.kmk004.a {
                 self.includeOT = ko.observable(false);
                 self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);
                 self.aggregateMethod = ko.observable(FlexAggregateMethod.PRINCIPLE);
+            }
+        }
+        
+        /**
+         * Normal Setting Params Model (Screen F)
+         */
+        export class NormalSetParams {
+            startWeek: number;
+            isIncludeExtraAggr: boolean;
+            isIncludeLegalAggr: boolean;
+            isIncludeHolidayAggr: boolean;
+            isIncludeExtraExcessOutside: boolean;
+            isIncludeLegalExcessOutside: boolean;
+            isIncludeHolidayExcessOutside: boolean;
+            
+            constructor() {
+                let self = this;
+                self.startWeek = 0;
+                self.isIncludeExtraAggr = false;
+                self.isIncludeLegalAggr = false;
+                self.isIncludeHolidayAggr = false;
+                self.isIncludeExtraExcessOutside = false;
+                self.isIncludeLegalExcessOutside = false;
+                self.isIncludeHolidayExcessOutside = false;
+            }
+        }
+        
+        /**
+         * Flex Setting Params Model
+         */
+        export class FlexSetParams {
+            isIncludeOverTime: boolean;
+            shortageSetting: number;
+            
+            constructor() {
+                let self = this;
+                self.isIncludeOverTime = false;
+                self.shortageSetting = 1;
+            }
+        }
+        
+        /**
+         * Deformed Labor Setting Params Model
+         */
+        export class DeformSetParams {
+            strMonth: number;
+            period: number;
+            repeatCls: boolean;
+            startWeek: number;
+            isIncludeExtraAggr: boolean;
+            isIncludeLegalAggr: boolean;
+            isIncludeHolidayAggr: boolean;
+            isIncludeExtraExcessOutside: boolean;
+            isIncludeLegalExcessOutside: boolean;
+            isIncludeHolidayExcessOutside: boolean;
+            
+            constructor() {
+                let self = this;
+                self.strMonth = moment(new Date()).toDate().getMonth();
+                self.period = 1;
+                self.repeatCls = false;
+                self.startWeek = 0;
+                self.isIncludeExtraAggr = false;
+                self.isIncludeLegalAggr = false;
+                self.isIncludeHolidayAggr = false;
+                self.isIncludeExtraExcessOutside = false;
+                self.isIncludeLegalExcessOutside = false;
+                self.isIncludeHolidayExcessOutside = false;
             }
         }
     }
