@@ -13,19 +13,14 @@ module nts.uk.at.view.kmk003.g {
             roundingValue: KnockoutObservable<number>;
             constructor() {
                 let self = this;
-
+ 
                 self.switchOptions = ko.observableArray([
                     new Item(1, nts.uk.resource.getText("KMK003_113")),
                     new Item(0, nts.uk.resource.getText("KMK003_114"))
                 ]);
-                self.unitComboBoxOptions = ko.observableArray([
-                    new Item(1, nts.uk.resource.getText("KMK003_113")),
-                    new Item(0, nts.uk.resource.getText("KMK003_114"))
-                ]);
-                self.roundingComboBoxOptions = ko.observableArray([
-                    new Item(1, nts.uk.resource.getText("KMK003_113")),
-                    new Item(0, nts.uk.resource.getText("KMK003_114"))
-                ]);
+                
+                self.unitComboBoxOptions = ko.observableArray([]);
+                self.roundingComboBoxOptions = ko.observableArray([]);
 
                 self.switchValue = ko.observable(1);
                 self.unitValue = ko.observable(1);
@@ -57,6 +52,17 @@ module nts.uk.at.view.kmk003.g {
                 }
 
                 //TODO
+                //get list enum
+                let arrayUnit:any =[]; 
+                dataObject.lstEnum.roundingTimeUnit.forEach(function(item,index){
+                    arrayUnit.push(new Item(index, item.localizedName));
+                });
+                _self.unitComboBoxOptions(arrayUnit);
+                let arrayRounding:any = [];
+                dataObject.lstEnum.rounding.forEach(function(item, index) {
+                    arrayRounding.push(new Item(index, item.localizedName));
+                });
+                _self.roundingComboBoxOptions(arrayRounding);
             }
 
             /**

@@ -43,7 +43,10 @@ module nts.uk.at.view.kmk003.f {
                     return;
                 }
                 
-                //TODO
+                //bind data to screen
+                _self.oneDay(dataObject.oneDayDialog);
+                _self.morning(dataObject.morningDialog);
+                _self.afternoon(dataObject.afternoonDialog);
             }   
             
             /**
@@ -51,6 +54,13 @@ module nts.uk.at.view.kmk003.f {
              */
             public save(): void {
                 let _self = this;
+                let outputObject = {
+                    oneDayDialog: _self.oneDay(),
+                    morningDialog: _self.morning(),
+                    afternoonDialog: _self.afternoon()
+                };
+                nts.uk.ui.windows.setShared("KMK003_DIALOG_F_OUTPUT_DATA",outputObject);
+                _self.close();
             }
             
             /**
