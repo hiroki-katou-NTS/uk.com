@@ -1383,9 +1383,9 @@ module nts.uk.at.view.kmk003.a {
                 stampAtr: KnockoutObservable<number>;
 
 
-                constructor(priorityAtr: number) {
-                    this.priorityAtr = ko.observable(priorityAtr);
-                    this.stampAtr = ko.observable((this.priorityAtr() == 1 || this.priorityAtr() == 3 || this.priorityAtr() == 5) ? 1 : 0);
+                constructor(stampAtr: number) {
+                    this.stampAtr = ko.observable(stampAtr);
+                    this.priorityAtr = ko.observable((this.stampAtr() == 1 || this.stampAtr() == 3 || this.stampAtr() == 5) ? 1 : 0);
                 }
 
                 updateData(data: PrioritySettingDto) {
@@ -1402,7 +1402,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.stampAtr((this.priorityAtr() == 1 || this.priorityAtr() == 3 || this.priorityAtr() == 5) ? 1 : 0);
+                    this.priorityAtr = ko.observable((this.stampAtr() == 1 || this.stampAtr() == 3 || this.stampAtr() == 5) ? 1 : 0);
                 }
             }
 
