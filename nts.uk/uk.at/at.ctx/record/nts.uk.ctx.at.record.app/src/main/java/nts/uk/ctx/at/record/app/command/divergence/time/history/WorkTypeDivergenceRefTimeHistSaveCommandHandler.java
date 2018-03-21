@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.command.divergence.time.history;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -36,19 +36,23 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 		//get company Id
 		String companyId = AppContexts.user().companyId();
 		
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+		
 		//get command
 		WorkTypeDivergenceRefTimeHistSaveCommand command = context.getCommand();
 		
 		// validate start date , end date
 		if (GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd").compareTo(GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd")) > 0) {
-			throw new BusinessException("Msg_917");
+			exceptions.addMessage("Msg_917");
+			exceptions.throwExceptions();
 		}
 		
 		//validate duplicate history
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"));
 		Integer count = this.historyRepo.countByDatePeriod(companyId, new BusinessTypeCode(command.getWorkTypeCodes()) ,period);
 		if (count.intValue() > 0){
-			throw new BusinessException("106");
+			exceptions.addMessage("Msg_106");
+			exceptions.throwExceptions();
 		}
 		
 		//convert to domain

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
@@ -35,11 +35,21 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 		//get command
 		ComDivergenceRefTimeSaveCommand command = context.getCommand();
 		
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+		
 		//validate
 		command.getListDataSetting().stream().forEach(item -> {
 			if(item.getNotUseAtr().value == USE){
-				if(item.getAlarmTime() < item.getErrorTime()){
-					throw new BusinessException("Msg_82");
+				if(item.getAlarmTime() == 0 && item.getErrorTime() == 0){
+					exceptions.addMessage("Msg_913");
+					// show error list
+					exceptions.throwExceptions();
+				} else {
+					if(item.getAlarmTime() < item.getErrorTime()){
+						exceptions.addMessage("Msg_82");
+						// show error list
+						exceptions.throwExceptions();
+					}
 				}
 			}
 		});
