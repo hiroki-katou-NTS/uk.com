@@ -13,6 +13,7 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         count: KnockoutObservable<number>;
         lengthServiceData: any;
         GrantHdData: any;
+        checkDataExisted: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -30,6 +31,8 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
             } else {
                 self.displayDateSelected = ko.observable(true);
             }
+            
+            self.checkDataExisted = ko.observable(false);
             
             self.referenceDate = ko.observable("");
             self.items = ko.observableArray([]);
@@ -72,6 +75,7 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                     self.bindData(combinedData, true);
                 } else {
                     self.bindData(combinedData, false);
+                    self.checkDataExisted(true);
                 }
                 
                 dfd.resolve();
@@ -261,8 +265,8 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
          * Close dialog.
          */
         cancel() {
-            var calcelData = nts.uk.ui.windows.getShared("KMF003_CANCEL_DATA");
-            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", calcelData);
+            var self = this;
+            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", self.checkDataExisted());
             nts.uk.ui.windows.close();
         }
         
