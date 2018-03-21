@@ -25,7 +25,7 @@ module nts.uk.com.view.cps001.g {
         }
         
         export function lostFocus(grantDate: Date): JQueryPromise<any> {
-            return ajax(servicePath.lostFocus, moment.utc(grantDate,"YYYY/MM/DD");
+            return ajax(servicePath.lostFocus, moment.utc(grantDate,"YYYY/MM/DD"));
         }
         
         export function getDetail(grantDate: Date) {

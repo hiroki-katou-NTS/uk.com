@@ -28,9 +28,9 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: create" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
+				<button tabindex="1" data-bind="click: create, enable: createMode() == false" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
 				<button tabindex="2" data-bind="click: save" class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
-				<button tabindex="3" data-bind="click: remove" class="danger btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="3" data-bind="click: remove, enable: createMode() == false" class="danger btnStyle">#{i18n.getText('CPS001_110')}</button>
 				<button tabindex="4" data-bind="click : close" class="btnStyle">#{i18n.getText('CPS001_111')}</button>
 			</div>
 
@@ -50,7 +50,7 @@
 				</div>
 				<table id="tbl-detail" data-bind="with: currentItem">
 					<tr>
-						<td>年休付与日</td>
+						<td><div data-bind="ntsFormLabel: {required: true }">年休付与日</div></td>
 
 						<td>
 							<div  tabindex="7" id="idGrantDate"
@@ -58,16 +58,14 @@
 						</td>
 					</tr>
 					<tr>
-						<td>年休期限日</td>
-
+						<td><div data-bind="ntsFormLabel: {required: false }">年休期限日</div></td>
 						<td>
 							<div tabindex="8"
 								data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
 					<tr >
-						<td>年休期限切れ状態</td>
-
+						<td><div data-bind="ntsFormLabel: {required: true }">年休期限切れ状態</div></td>
 						<td>
 							<div class="cf" tabindex="9"
 								data-bind="ntsSwitchButton: {
@@ -99,7 +97,7 @@
 							<table id="fixed_table">
 								<tr>
 									<td></td>
-									<td data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</td>
+									<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
 									<td>付与日数</td>
 									<td><input class="resize_Edittor" tabindex="10"
 										data-bind="ntsNumberEditor: {
@@ -126,7 +124,7 @@
 								</tr>
 								<tr>
 									<td></td>
-									<td data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</td>
+									<td> <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div></td>
 									<td>使用日数</td>
 									<td><input tabindex="12" class="resize_Edittor"
 										data-bind="ntsNumberEditor: {
@@ -153,7 +151,7 @@
 								</tr>
 								<tr>
 									<td></td>
-									<td data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</td>
+									<td> <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div></td>
 									<td>残日数</td>
 									<td><input class="resize_Edittor" tabindex="14"
 										data-bind="ntsNumberEditor: {

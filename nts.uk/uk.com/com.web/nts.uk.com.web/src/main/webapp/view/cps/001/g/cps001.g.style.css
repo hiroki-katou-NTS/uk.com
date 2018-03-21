@@ -198,7 +198,7 @@
 }
 
 #tbl-detail tr>td:NTH-CHILD(1) {
-	width: 120px !important;
+	width: 140px !important;
 }
 
 #tbl-detail{
@@ -211,7 +211,7 @@
 }
 
 #fixed_table tr>td:NTH-CHILD(1) {
-	width: 120px !important;
+	width: 140px !important;
 }
 #fixed_table tr>td:NTH-CHILD(2) {
 	width:80px !important;
