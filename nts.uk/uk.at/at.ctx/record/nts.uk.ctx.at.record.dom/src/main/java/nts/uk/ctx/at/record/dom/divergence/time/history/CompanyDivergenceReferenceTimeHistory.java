@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class CompanyDivergenceReferenceTimeHistory extends AggregateRoot impleme
 
 	/** The history item. */
 	// 履歴項目
-	private List<DateHistoryItem> historyItems;
+	private List<DateHistoryItem> historyItems = new ArrayList<>();
 	
 	/**
 	 * Instantiates a new company divergence reference time history.
@@ -81,10 +82,7 @@ public class CompanyDivergenceReferenceTimeHistory extends AggregateRoot impleme
 				return false;
 		} else if (!cId.equals(other.cId))
 			return false;
-		if (historyItems == null) {
-			if (other.historyItems != null)
-				return false;
-		} else if (!historyItems.equals(other.historyItems))
+		if (!historyItems.equals(other.historyItems))
 			return false;
 		return true;
 	}
