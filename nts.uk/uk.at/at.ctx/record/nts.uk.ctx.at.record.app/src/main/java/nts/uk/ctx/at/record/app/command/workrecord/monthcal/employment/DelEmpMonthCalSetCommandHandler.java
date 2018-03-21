@@ -2,34 +2,35 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
+package nts.uk.ctx.at.record.app.command.workrecord.monthcal.employment;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetRepository;
 
 /**
  * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
  */
 @Stateless
-public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthCalSetCommand> {
+public class DelEmpMonthCalSetCommandHandler
+		extends CommandHandler<DelEmpMonthCalSetCommand> {
 
 	/** The com defor labor month act cal set repo. */
 	@Inject
-	private ComDeforLaborMonthActCalSetRepository comDeforLaborMonthActCalSetRepo;
+	private EmpDeforLaborMonthActCalSetRepository deforLaborMonthActCalSetRepo;
 
 	/** The com flex month act cal set repo. */
 	@Inject
-	private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
+	private EmpFlexMonthActCalSetRepository flexMonthActCalSetRepo;
 
 	/** The com regula month act cal set repo. */
 	@Inject
-	private ComRegulaMonthActCalSetRepository comRegulaMonthActCalSetRepo;
+	private EmpRegulaMonthActCalSetRepository regulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -39,8 +40,8 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
-		// TODO Auto-generated method stub
+	protected void handle(CommandHandlerContext<DelEmpMonthCalSetCommand> context) {
+		// this.comFlexMonthActCalSetRepo.remove(AppContexts.user().companyId());
 	}
 
 }

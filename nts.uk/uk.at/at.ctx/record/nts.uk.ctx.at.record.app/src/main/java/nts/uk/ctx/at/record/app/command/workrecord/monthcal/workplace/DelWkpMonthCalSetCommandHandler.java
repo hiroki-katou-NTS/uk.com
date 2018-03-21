@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
+package nts.uk.ctx.at.record.app.command.workrecord.monthcal.workplace;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,19 +17,20 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCal
  * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
  */
 @Stateless
-public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthCalSetCommand> {
+public class DelWkpMonthCalSetCommandHandler
+		extends CommandHandler<DelWkpMonthCalSetCommand> {
 
 	/** The com defor labor month act cal set repo. */
 	@Inject
-	private ComDeforLaborMonthActCalSetRepository comDeforLaborMonthActCalSetRepo;
+	private ComDeforLaborMonthActCalSetRepository deforLaborMonthActCalSetRepo;
 
 	/** The com flex month act cal set repo. */
 	@Inject
-	private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
+	private ComFlexMonthActCalSetRepository flexMonthActCalSetRepo;
 
 	/** The com regula month act cal set repo. */
 	@Inject
-	private ComRegulaMonthActCalSetRepository comRegulaMonthActCalSetRepo;
+	private ComRegulaMonthActCalSetRepository regulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -39,8 +40,8 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
-		// TODO Auto-generated method stub
+	protected void handle(CommandHandlerContext<DelWkpMonthCalSetCommand> context) {
+		// this.comFlexMonthActCalSetRepo.remove(AppContexts.user().companyId());
 	}
 
 }

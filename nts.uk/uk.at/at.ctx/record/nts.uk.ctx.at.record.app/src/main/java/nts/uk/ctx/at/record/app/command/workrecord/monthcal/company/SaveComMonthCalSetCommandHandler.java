@@ -12,12 +12,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
+ * The Class SaveComMonthCalSetCommandHandler.
  */
 @Stateless
-public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthCalSetCommand> {
+public class SaveComMonthCalSetCommandHandler extends CommandHandler<SaveComMonthCalSetCommand> {
 
 	/** The com defor labor month act cal set repo. */
 	@Inject
@@ -39,8 +40,8 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
-		// TODO Auto-generated method stub
+	protected void handle(CommandHandlerContext<SaveComMonthCalSetCommand> context) {
+		String cid = AppContexts.user().companyId();
 	}
 
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
  */
 @Getter
 @Setter
-public class SaveComStatWorkTimeSetCommand {
+public class SaveComStatWorkTimeSetCommand{
 
 	/** The year. */
 	private int year;

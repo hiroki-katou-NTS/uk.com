@@ -2,31 +2,31 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace;
+package nts.uk.ctx.at.record.dom.workrecord.monthcal.employee;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Class WkpCalSetMonthlyActualFlex.
+ * The Class ShainFlexMonthActCalSet.
  */
 @Getter
-// フレックス職場別月別実績集計設定.
-public class WkpFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet {
+// フレックス月別実績集計設定.
+public class ShaFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet {
 
 	/** The company id. */
 	// 会社ID
 	private CompanyId companyId;
 
-	/** The workplace id. */
-	// 職場ID
-	private WorkplaceId workplaceId;
+	/** The employee id. */
+	// 社員ID
+	private EmployeeId employeeId;
 
-	/** The aggr setting monthly of flx new. */
+	/** The aggr setting. */
 	// 集計設定
 	private FlexMonthWorkTimeAggrSet aggrSetting;
 
@@ -42,14 +42,14 @@ public class WkpFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	}
 
 	/**
-	 * Instantiates a new wkp cal set monthly actual flex.
+	 * Instantiates a new shain flex month act cal set.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public WkpFlexMonthActCalSet(WkpFlexMonthActCalSetGetMemento memento) {
+	public ShaFlexMonthActCalSet(ShaFlexMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.workplaceId = memento.getWorkplaceId();
+		this.employeeId = memento.getEmployeeId();
 		this.aggrSetting = memento.getAggrSetting();
 	}
 
@@ -59,9 +59,9 @@ public class WkpFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(WkpFlexMonthActCalSetSetMemento memento) {
+	public void saveToMemento(ShaFlexMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setWorkplaceId(this.workplaceId);
+		memento.setEmployeeId(this.employeeId);
 		memento.setAggrSetting(this.aggrSetting);
 	}
 
