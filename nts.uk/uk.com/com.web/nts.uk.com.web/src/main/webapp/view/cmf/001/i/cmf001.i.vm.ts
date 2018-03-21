@@ -46,7 +46,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
                     params.formatSetting.valueOfFixedValue));
             }
             else {
-                self.setting(new model.DateDataFormatSetting(1, 0, null));
+                self.setting(new model.DateDataFormatSetting(0, 0, null));
             }
 
             self.checkRequired1.subscribe(function(data: any) {
@@ -87,7 +87,8 @@ module nts.uk.com.view.cmf001.i.viewmodel {
         }
         
         private hasError(): boolean{
-            $('#I4_5').ntsError('check');
+            if (this.setting().fixedValue())
+                $('#I4_5').ntsError('check');
             return nts.uk.ui.errors.hasError()
         }
     }

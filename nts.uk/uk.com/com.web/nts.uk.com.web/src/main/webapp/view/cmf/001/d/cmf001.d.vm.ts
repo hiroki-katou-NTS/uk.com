@@ -196,45 +196,94 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     let fs = output.formatSetting; 
                     switch (data.itemType()) {
                         case model.ITEM_TYPE.NUMERIC:
-                            data.numberFormatSetting(new model.NumericDataFormatSetting(
-                                                        fs.effectiveDigitLength, fs.startDigit, fs.endDigit, 
-                                                        fs.decimalDivision, fs.decimalDigitNumber, fs.decimalPointClassification, 
-                                                        fs.decimalFraction, fs.codeConvertCode, fs.fixedValue, fs.valueOfFixedValue));
+                            data.numberFormatSetting().fixedValue(fs.fixedValue);
+                            if (fs.fixedValue) {
+                                data.numberFormatSetting().valueOfFixedValue(fs.valueOfFixedValue);
+                            } else {
+                                data.numberFormatSetting().effectiveDigitLength(fs.effectiveDigitLength);
+                                if (fs.effectiveDigitLength) {
+                                    data.numberFormatSetting().startDigit(fs.startDigit);
+                                    data.numberFormatSetting().endDigit(fs.endDigit);
+                                }
+                                data.numberFormatSetting().decimalDivision(fs.decimalDivision);
+                                if (fs.decimalDivision) {
+                                    data.numberFormatSetting().decimalDigitNumber(fs.decimalDigitNumber);
+                                    data.numberFormatSetting().decimalPointClassification(fs.decimalPointClassification);
+                                } else {
+                                    data.numberFormatSetting().decimalFraction(fs.decimalFraction);
+                                }
+                                data.numberFormatSetting().codeConvertCode(fs.codeConvertCode);
+                            }
                             break;
                         case model.ITEM_TYPE.CHARACTER:
-                            data.charFormatSetting(new model.CharacterDataFormatSetting(
-                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                fs.codeEditing, fs.codeEditDigit, fs.codeEditingMethod,
-                                                fs.codeConvertCode, fs.fixedValue, fs.fixedVal));
+                            data.charFormatSetting().fixedValue(fs.fixedValue);
+                            if (fs.fixedValue) {
+                                data.charFormatSetting().fixedVal(fs.fixedVal);
+                            } else {
+                                data.charFormatSetting().effectiveDigitLength(fs.effectiveDigitLength);
+                                if (fs.effectiveDigitLength) {
+                                    data.charFormatSetting().startDigit(fs.startDigit);
+                                    data.charFormatSetting().endDigit(fs.endDigit);
+                                }
+                                data.charFormatSetting().codeEditing(fs.codeEditing);
+                                if (fs.codeEditing) {
+                                    data.charFormatSetting().codeEditDigit(fs.codeEditDigit);
+                                    data.charFormatSetting().codeEditingMethod(fs.codeEditingMethod);
+                                }
+                                data.charFormatSetting().codeConvertCode(fs.codeConvertCode);
+                            }
                             break;
                         case model.ITEM_TYPE.DATE:
-                            data.dateFormatSetting(new model.DateDataFormatSetting(fs.formatSelection, fs.fixedValue, fs.valueOfFixedValue));
+                            data.dateFormatSetting().fixedValue(fs.fixedValue);
+                            if (fs.fixedValue) {
+                                data.dateFormatSetting().valueOfFixedValue(fs.valueOfFixedValue);
+                            } else {
+                                data.dateFormatSetting().formatSelection(fs.formatSelection);
+                            }
                             break;
                         case model.ITEM_TYPE.INS_TIME:
-                            data.instTimeFormatSetting(new model.InstantTimeDataFormatSetting(
-                                                fs.effectiveDigitLength,
-                                                fs.startDigit,
-                                                fs.endDigit,
-                                                fs.decimalSelect,
-                                                fs.hourMinSelect,
-                                                fs.delimiterSet,
-                                                fs.roundProc,
-                                                fs.roundProcCls,
-                                                fs.fixedValue,
-                                                fs.valueOfFixedValue));
+                            data.instTimeFormatSetting().fixedValue(fs.fixedValue);
+                            if (fs.fixedValue) {
+                                data.instTimeFormatSetting().valueOfFixedValue(fs.valueOfFixedValue);
+                            } else {
+                                data.instTimeFormatSetting().effectiveDigitLength(fs.effectiveDigitLength);
+                                if (fs.effectiveDigitLength) {
+                                    data.instTimeFormatSetting().startDigit(fs.startDigit);
+                                    data.instTimeFormatSetting().endDigit(fs.endDigit);
+                                }
+                                data.instTimeFormatSetting().decimalSelect(fs.decimalSelect);
+                                if (fs.decimalSelect) {
+                                    data.instTimeFormatSetting().roundProc(fs.roundProc);
+                                    if (fs.roundProc) {
+                                        data.instTimeFormatSetting().roundProcCls(fs.roundProcCls);
+                                    }
+                                } else {
+                                    data.instTimeFormatSetting().hourMinSelect(fs.effectiveDigitLength);
+                                }
+                                data.instTimeFormatSetting().delimiterSet(fs.delimiterSet);
+                            }
                             break;
                         case model.ITEM_TYPE.TIME:
-                            data.timeFormatSetting(new model.TimeDataFormatSetting(
-                                                fs.effectiveDigitLength,
-                                                fs.startDigit,
-                                                fs.endDigit,
-                                                fs.decimalSelect,
-                                                fs.hourMinSelect,
-                                                fs.delimiterSet,
-                                                fs.roundProc,
-                                                fs.roundProcCls,
-                                                fs.fixedValue,
-                                                fs.valueOfFixedValue));
+                            data.timeFormatSetting().fixedValue(fs.fixedValue);
+                            if (fs.fixedValue) {
+                                data.timeFormatSetting().valueOfFixedValue(fs.valueOfFixedValue);
+                            } else {
+                                data.timeFormatSetting().effectiveDigitLength(fs.effectiveDigitLength);
+                                if (fs.effectiveDigitLength) {
+                                    data.timeFormatSetting().startDigit(fs.startDigit);
+                                    data.timeFormatSetting().endDigit(fs.endDigit);
+                                }
+                                data.timeFormatSetting().decimalSelect(fs.decimalSelect);
+                                if (fs.decimalSelect) {
+                                    data.timeFormatSetting().roundProc(fs.roundProc);
+                                    if (fs.roundProc) {
+                                        data.timeFormatSetting().roundProcCls(fs.roundProcCls);
+                                    }
+                                } else {
+                                    data.timeFormatSetting().hourMinSelect(fs.effectiveDigitLength);
+                                }
+                                data.timeFormatSetting().delimiterSet(fs.delimiterSet);
+                            }
                             break;
                     }
                 }
@@ -303,9 +352,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerDataAndReturn(command).done(() => {
                     self.enableCategory(false);
-                    nts.uk.request.jump("/view/cmf/001/b/index.xhtml", {
-                        conditionCode: self.stdCondSet().conditionSettingCode(),
-                        sysType: self.systemType.code
+                    info({ messageId: "Msg_15" }).then(() => {
+                        nts.uk.request.jump("/view/cmf/001/b/index.xhtml", {
+                            conditionCode: self.stdCondSet().conditionSettingCode(),
+                            sysType: self.systemType.code
+                        });
                     });
                 }).fail(function(error) {
                     alertError(error);
