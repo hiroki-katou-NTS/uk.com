@@ -72,7 +72,7 @@
 					<!--A3_13  終日休暇-->
 					<label class="ntsRadioBox"> <input type="radio"
 						name="textRadio"
-						data-bind="checkedValue: 0, checked: selectedValue" /> <span
+						data-bind="checkedValue: 0, checked: selectedAllDayHalfDayValue" /> <span
 						class="box"></span><span class="label"
 						data-bind="text: '#{i18n.getText('KAF006_13')}'"></span>
 					</label>
@@ -81,7 +81,7 @@
 					<!--A3_14  半日休暇-->
 					<label class="ntsRadioBox"> <input type="radio"
 						name="textRadio"
-						data-bind="checkedValue: 1, checked: selectedValue" /> <span
+						data-bind="checkedValue: 1, checked: selectedAllDayHalfDayValue" /> <span
 						class="box"></span><span class="label"
 						data-bind="text: '#{i18n.getText('KAF006_14')}'"></span>
 					</label>
@@ -118,9 +118,9 @@
 				</div>
 				<!--A5_3 半日の組み合わせを表示-->
 				<div class=""
-					data-bind="ntsCheckBox: { checked: displayHalfDayValue, enable: selectedValue() == 0, text: '#{i18n.getText('KAF006_17')}'}"></div>
+					data-bind="ntsCheckBox: { checked: displayHalfDayValue, enable: selectedAllDayHalfDayValue() == 0, text: '#{i18n.getText('KAF006_17')}'}"></div>
 			</div>
-			<div data-bind="visible:displayChangeWorkHour">
+			<div data-bind="visible:changeWorkHourValue">
 				<div class="valign-center-kaf006 control-group-kaf006">
 					<!--A6_1 就業時間帯を変更する-->
 					<div class=""
@@ -143,7 +143,7 @@
 						</div>
 						<div class="cell valign-center-kaf006">
 							<!--A6_5 就業時間帯選択対象-->
-							<label class="row-cell-margin" data-bind="">#{i18n.getText('KAF006_21')}</label>
+							<label class="row-cell-margin" data-bind="text: displayWorkTimeName"></label>
 						</div>
 					</div>
 				</div>

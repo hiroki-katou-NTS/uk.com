@@ -568,7 +568,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 afterValue = $('.a7_24').text();
             }
             
-            if(self.A7_4SelectedRuleCode() === 0) {
+            if(Number(self.A7_4SelectedRuleCode()) === 0) {
                 optionValue = nts.uk.resource.getText("KMF003_21");
             } else {
                 optionValue = nts.uk.resource.getText("KMF003_22");
@@ -820,11 +820,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 var result = Number(value) - 1;
                 
                 if(self.A7_4SelectedRuleCode() == 0){
-                    if(self.useCls02() && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)) {
+                    if((Number(value) > (Number(self.limitedValue03())) || Number(self.conditionValue03()) < 0)) {
                         $('#cond03').ntsError('set', {messageId:"Msg_262"});
                     }                    
                 } else if(self.A7_4SelectedRuleCode() == 1){
-                    if(self.useCls02() && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)) {
+                    if((Number(value) > (Number(self.limitedValue03())) || Number(self.conditionValue03()) < 0)) {
                         $('#cond03').ntsError('set', {messageId:"Msg_263"});
                     }
                 } else {
@@ -844,11 +844,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 var result = Number(value) - 1;
                 
                 if(self.A7_4SelectedRuleCode() == 0){
-                    if(self.useCls03() && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)) {
+                    if((Number(value) > (Number(self.limitedValue04())) || Number(self.conditionValue04()) < 0)) {
                         $('#cond04').ntsError('set', {messageId:"Msg_262"});
                     }  
                 } else if(self.A7_4SelectedRuleCode() == 1){
-                    if(self.useCls03() && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)) {
+                    if((Number(value) > (Number(self.limitedValue04())) || Number(self.conditionValue04()) < 0)) {
                         $('#cond04').ntsError('set', {messageId:"Msg_263"});
                     }
                 } else {
@@ -874,17 +874,20 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 }
                 
                 if(self.A7_4SelectedRuleCode() == 0){
-                    if(self.useCls04() && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)) {
+                    if((Number(value) > (Number(self.limitedValue05())) || Number(self.conditionValue05()) < 0)) {
                         $('#cond05').ntsError('set', {messageId:"Msg_262"});
                     }
                 } else if(self.A7_4SelectedRuleCode() == 1){
-                    if(self.useCls04() && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)) {
+                    if((Number(value) > (Number(self.limitedValue05())) || Number(self.conditionValue05()) < 0)) {
                         $('#cond05').ntsError('set', {messageId:"Msg_263"});
                     }
                 }
             });
             
             self.useCls02.subscribe(function(value) {
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
                 if(value == true){
                     self.conditionValue02Enable(true);
                     self.btnSetting02Enable(!self.editMode());
@@ -939,6 +942,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             self.useCls03.subscribe(function(value) {
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
                 if(value == true){
                     self.conditionValue03Enable(true);
                     self.btnSetting03Enable(true);
@@ -1006,6 +1012,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             self.useCls04.subscribe(function(value) {
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
                 if(value == true){
                     self.conditionValue04Enable(true);
                     self.btnSetting04Enable(true);
@@ -1069,6 +1078,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             self.useCls05.subscribe(function(value) {
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
                 if(value == true){
                     self.conditionValue05Enable(true);
                     self.btnSetting05Enable(true);

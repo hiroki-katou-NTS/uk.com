@@ -260,8 +260,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.selectedErrorAlarm().errorDisplayItem()]);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
                     let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
-                    if (output) {
+                    if (!nts.uk.util.isNullOrUndefined(output) && output !== "") {
                         self.selectedErrorAlarm().errorDisplayItem(parseInt(output));
+                    } else if (!nts.uk.util.isNullOrUndefined(output) && output == "") {
+                        self.selectedErrorAlarm().errorDisplayItem(null);
                     }
                 });
             });

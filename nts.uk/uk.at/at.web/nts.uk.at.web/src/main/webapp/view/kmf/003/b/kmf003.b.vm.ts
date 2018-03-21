@@ -236,10 +236,22 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     
                     self.bindData(results);
                 }).fail(function(error){
-                    nts.uk.ui.dialog.alertError({messageId: error.messageId});    
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                        if(error.messageId === "Msg_266") {
+                        
+                        } else if(error.messageId === "Msg_268") {
+                            
+                        } else if(error.messageId === "Msg_269") {
+                            
+                        } else if(error.messageId === "Msg_270") {
+                            $('#b2_1').focus();
+                        }
+                    }); 
                 });
             } else {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_272" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_272" }).then(() => {
+                    $('#reference-date').focus();
+                });
             }
         }
         
@@ -281,7 +293,17 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error){
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });    
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                    if(error.messageId === "Msg_266") {
+                    
+                    } else if(error.messageId === "Msg_268") {
+                        
+                    } else if(error.messageId === "Msg_269") {
+                        
+                    } else if(error.messageId === "Msg_270") {
+                        $('#b2_1').focus();
+                    }
+                }); 
             });
         }
         
@@ -313,8 +335,10 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             if (!checkMonths) {
                 self.count(1);
                 self.items()[index].grantSimultaneity(false);   
-                nts.uk.ui.dialog.alert({ messageId: "Msg_267" });             
-                return;
+                nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
+                    $('.year-input').focus();
+                    return;
+                });
             }
             
             if (value) {

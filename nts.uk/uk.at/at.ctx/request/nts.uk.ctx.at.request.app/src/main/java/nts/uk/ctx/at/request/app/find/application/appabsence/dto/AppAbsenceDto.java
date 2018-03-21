@@ -122,4 +122,9 @@ public class AppAbsenceDto {
 	 * workTypes
 	 */
 	private List<AbsenceWorkType> workTypes;
+	
+	/**
+	 * workTimeCodes
+	 */
+	private List<String> workTimeCodes;
 }

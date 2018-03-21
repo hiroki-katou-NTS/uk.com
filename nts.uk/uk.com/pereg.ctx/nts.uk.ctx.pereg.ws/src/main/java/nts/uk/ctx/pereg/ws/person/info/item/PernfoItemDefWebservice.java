@@ -159,8 +159,14 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@POST
 	@Path("layout/findAll/required")
-	public List<ItemRequiredBackGroud> getAllRequiredIds() {
-		return itemDefFinder.getAllRequiredIds();
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCid() {
+		return itemDefFinder.getAllRequiredIdsByCompanyID();
+	}
+	
+	@POST
+	@Path("layout/findAll/required/{ctgId}")
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCtgId(@PathParam("ctgId") String ctgId) {
+		return itemDefFinder.getAllItemRequiredIdsByCtgId(ctgId);
 	}
 	
 	@POST

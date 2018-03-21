@@ -64,11 +64,13 @@ module nts.uk.at.view.kaf009.b {
             reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
             selectedReason: KnockoutObservable<string> = ko.observable('');
             displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
+            enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
             //MultilineEditor
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
             multilContent: KnockoutObservable<string> = ko.observable('');
             multiOption: any;
             displayReason: KnockoutObservable<boolean> = ko.observable(false);
+            enableReason: KnockoutObservable<boolean> = ko.observable(false);
             //Insert command
             command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
             //list Work Location 
@@ -85,6 +87,10 @@ module nts.uk.at.view.kaf009.b {
             version : number  = 0;
             isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
             isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
+            
+            checkboxDisplay: KnockoutObservable<boolean> = ko.observable(false);
+            checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
+            workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
             
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
@@ -113,7 +119,9 @@ module nts.uk.at.view.kaf009.b {
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
-                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
+                    self.displayReason(self.displayTypicalReason()||
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false));
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -141,6 +149,9 @@ module nts.uk.at.view.kaf009.b {
                         if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
                           || settingData.goBackSettingDto.workChangeFlg == initialSelection){
                             self.isWorkChange(true);
+                            self.checkboxDisplay(true);
+                            self.workChangeBtnDisplay(true);
+                            self.checkboxEnable(true&&self.isNewScreen());
                             if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
                                 self.workChangeAtr(false);
                             }else{
@@ -150,10 +161,16 @@ module nts.uk.at.view.kaf009.b {
                         }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
                             self.isWorkChange(false);
                             self.workChangeAtr(false);
+                            self.checkboxDisplay(false);
+                            self.workChangeBtnDisplay(true);
+                            self.checkboxEnable(false&&self.isNewScreen());
                         }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
                             self.workChangeAtr(true);
                             self.isWorkChange(true);
                             self.workState(false);
+                            self.checkboxDisplay(false);
+                            self.workChangeBtnDisplay(false);
+                            self.checkboxEnable(false&&self.isNewScreen());
                         }
                         
                     }
@@ -161,6 +178,8 @@ module nts.uk.at.view.kaf009.b {
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
+                        self.isNewScreen(detailData.outMode==1?true:false);
+                        self.enableReason(self.isNewScreen() && self.requiredReason());
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();

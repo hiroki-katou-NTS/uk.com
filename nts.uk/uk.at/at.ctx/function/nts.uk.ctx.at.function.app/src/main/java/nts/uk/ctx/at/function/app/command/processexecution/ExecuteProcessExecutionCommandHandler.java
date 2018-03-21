@@ -55,6 +55,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.log.SettingInforForDailyCreation;
@@ -155,6 +156,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	
 	@Inject
 	private DailyCalculationService dailyCalculationService;
+	
+	@Inject
+	private ExecutionLogRepository executionLogRepository;
 	
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -451,12 +455,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			
 			// ドメインモデル「就業計算と集計実行ログ」を新規登録する
 			EmpCalAndSumExeLog empCalAndSumExeLog = null;
+			List<ExecutionLog> lstExecutionLog = null;
 			Optional<EmpCalAndSumExeLog> empExeLogOpt = 
 					this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(execId);
 			if (empExeLogOpt.isPresent()) {
 				empCalAndSumExeLog = empExeLogOpt.get();
+				lstExecutionLog = this.executionLogRepository.getExecutionLogs(empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 			} else {
-				empCalAndSumExeLog = this.registerEmpCalAndSumExeLog(execId, procExecLog, command, period.start(), period.end());
+				 EmpCalAndSumExeLogOutput registerEmpCalAndSumExeLog = this.registerEmpCalAndSumExeLog(execId, procExecLog, command, period.start(), period.end());
+				 empCalAndSumExeLog =  registerEmpCalAndSumExeLog.getEmpCalAndSumExeLog();
+				 lstExecutionLog =  registerEmpCalAndSumExeLog.getExecutionLogs();
 			}
 			
 			val asyncContext = context.asAsync();
@@ -492,9 +500,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				
 				ProcessState finalStatus = ProcessState.SUCCESS;
 				// 実行ログを確認する
-				val executionLogs = empCalAndSumExeLog.getExecutionLogs();
+			//	val executionLogs = empCalAndSumExeLog.getExecutionLogs();
 				Map<ExecutionContent, ExecutionLog> logsMap = new HashMap<>();
-				for (val executionLog : executionLogs){
+				for (val executionLog : lstExecutionLog){
 					logsMap.put(executionLog.getExecutionContent(), executionLog);
 				}
 				
@@ -597,10 +605,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		return new DatePeriod(startClosingDate, endClosingDate);
 	}
 
-	private EmpCalAndSumExeLog registerEmpCalAndSumExeLog(String execId, ProcessExecutionLog procExecLog,
+	private EmpCalAndSumExeLogOutput registerEmpCalAndSumExeLog(String execId, ProcessExecutionLog procExecLog,
 			ExecuteProcessExecutionCommand command, GeneralDate startClosingDate, GeneralDate endClosingDate) {
 		GeneralDateTime now = GeneralDateTime.now();
 		Integer processingMonth = Integer.valueOf(GeneralDate.today().toString("YYYYMM"));
+			EmpCalAndSumExeLogOutput empCalAndSumExeLogOutput = new EmpCalAndSumExeLogOutput();
 		// ドメインモデル「就業計算と集計実行ログ」を新規登録する
 		EmpCalAndSumExeLog empCalAndSumExeLog = new EmpCalAndSumExeLog(
 													execId,
@@ -611,8 +620,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 													ExeStateOfCalAndSum.PROCESSING,
 													AppContexts.user().employeeId(),
 													1,
-													IdentifierUtil.randomUniqueId(),
-													new ArrayList<>());
+													IdentifierUtil.randomUniqueId());
+		empCalAndSumExeLogOutput.setEmpCalAndSumExeLog(empCalAndSumExeLog);
 		// ドメインモデル「実行ログ」を新規登録する
 		ExecutionLog dailyCreateLog = new ExecutionLog(
 				execId,
@@ -627,7 +636,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						ExecutionType.NORMAL_EXECUTION,
 						IdentifierUtil.randomUniqueId(),
 						DailyRecreateClassification.REBUILD, Optional.empty()));
-		empCalAndSumExeLog.addExecutionLog(dailyCreateLog);
+		empCalAndSumExeLogOutput.addExecutionLog(dailyCreateLog);
 		
 		ExecutionLog dailyCalLog = new ExecutionLog(
 				execId,
@@ -640,11 +649,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		dailyCalLog.setDailyCalSetInfo(new CalExeSettingInfor(ExecutionContent.DAILY_CALCULATION,
 				ExecutionType.NORMAL_EXECUTION,
 				IdentifierUtil.randomUniqueId()));
-		empCalAndSumExeLog.addExecutionLog(dailyCalLog);
+		empCalAndSumExeLogOutput.addExecutionLog(dailyCalLog);
 		this.empCalSumRepo.add(empCalAndSumExeLog);
+		this.executionLogRepository.addAllExecutionLog(empCalAndSumExeLogOutput.getExecutionLogs());
 //		this.empCalSumRepo.addFromUpdateProcessing(empCalAndSumExeLog);
 		
-		return empCalAndSumExeLog;
+		return empCalAndSumExeLogOutput;
 	}
 	
 	private void updateEachTaskStatus(ProcessExecutionLog procExecLog, ProcessExecutionTask execTask, EndStatus status) {

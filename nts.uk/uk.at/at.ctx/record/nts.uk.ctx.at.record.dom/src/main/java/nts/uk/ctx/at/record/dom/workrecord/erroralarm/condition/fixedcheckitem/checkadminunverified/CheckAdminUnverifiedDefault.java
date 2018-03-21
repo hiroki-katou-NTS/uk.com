@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkadminunverified;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -28,10 +29,12 @@ public class CheckAdminUnverifiedDefault implements CheckAdminUnverifiedService 
 		List<ValueExtractAlarmWR> listValueExtractAlarmWR = new ArrayList<>();
 		//管理者の確認が完了しているかチェックする
 		List<StateConfirm> listState =	checkBossConfirmedService.checkBossConfirmed(employeeID, startDate, endDate);
-		
+		if(listState.isEmpty()) {
+			return Collections.emptyList();
+		}
 		//返り値をもとにアラーム値メッセージを生成する
 		//勤務実績のアラームデータを生成する
-		String message = fixedConditionDataRepository.getAllFixedConditionData().get(3).getMessage().v();
+		String comment = fixedConditionDataRepository.getFixedByNO(4).get().getMessage().v();
 		for(StateConfirm stateConfirm : listState) {
 			if(!stateConfirm.isState()) {
 				listValueExtractAlarmWR.add(
@@ -42,7 +45,7 @@ public class CheckAdminUnverifiedDefault implements CheckAdminUnverifiedService 
 							TextResource.localize("KAL010_1"),
 							TextResource.localize("KAL010_44"),
 							TextResource.localize("KAL010_45"),
-							message
+							comment
 							));
 			}
 			

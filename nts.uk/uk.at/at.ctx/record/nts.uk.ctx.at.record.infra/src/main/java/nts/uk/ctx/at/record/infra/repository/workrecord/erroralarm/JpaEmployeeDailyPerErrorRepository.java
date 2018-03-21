@@ -163,6 +163,18 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				new ErrorAlarmWorkRecordCode(krcdtSyainDpErList.krcdtSyainDpErListPK.errorCode), lstAttendanceItemId,
 				krcdtSyainDpErList.errorCancelable.intValue());
 	}
+
+	@Override
+	public List<EmployeeDailyPerError> findAll(String employeeID, GeneralDate processingDate) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :ymd ");
+		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+				.setParameter("employeeId", employeeID).setParameter("ymd", processingDate).getList(x -> toDomain(x));
+
+	}
 	
 
 }
