@@ -82,8 +82,9 @@ public class DivergenceTimeInputMethodFinder {
 
 		// get DivergenceAttendanceId list
 		List<Integer> attendanceIdList = this.getAttendanceIds(divTimeNo);
-
-		String type = DivergenceType.valueOf(divTimeInfo.getDivType()).name().toString();
+//
+//		String type = DivergenceTypeDto.valueOf(divTimeInfo.getDivType()).name().toString();
+		String type = DivergenceTypeDto.valueOf(divTimeInfo.getDivType()).nameId.toString();
 
 		// Convert DivergenceReasonInputMethodDto, DivergenceTimeDto and
 		// DivergenceAttendanceId list to DivergenceTimeInputMethodDto

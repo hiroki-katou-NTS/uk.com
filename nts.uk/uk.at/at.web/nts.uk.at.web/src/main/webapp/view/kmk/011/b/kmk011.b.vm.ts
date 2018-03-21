@@ -30,14 +30,15 @@ module nts.uk.at.view.kmk011.b {
             enableInput: KnockoutObservable<boolean>;
             checkErrorInput: KnockoutObservable<boolean>;
 
-            existedDivergenceReason: KnockoutObservable<boolean>; //defile view for B3_19, B3_20
+            existedDivergenceReason: KnockoutObservable<boolean>; //define view for B3_19, B3_20
 
-            enable: KnockoutObservable<boolean>;
+            enableState: KnockoutObservable<boolean>;
             divergenceTimeId: KnockoutObservable<number>;
             itemDivergenceTime: KnockoutObservable<viewmodel.model.DivergenceTime>;
             listDivergenceItem: KnockoutObservableArray<viewmodel.model.DivergenceItem>;
             listItemSelected: KnockoutObservableArray<viewmodel.model.DivergenceItem>;
             listItem: KnockoutObservableArray<number>;
+            demoDivTime: model.DivergenceTime;
 
 
             use: KnockoutObservable<string>;
@@ -50,6 +51,7 @@ module nts.uk.at.view.kmk011.b {
                 var self = this;
 
                 self.check = false;
+                self.enableState = ko.observable(true);
                 self.listItem = ko.observableArray([]);
                 self.enableUse = ko.observable(false);
                 self.enableSelect = ko.observable(false);
@@ -70,7 +72,6 @@ module nts.uk.at.view.kmk011.b {
                 self.divTimeName = ko.observable('');
                 self.timeItemName = ko.observable('');
                 self.checkErrorSelect = ko.observable(true);
-                self.enable = ko.observable(true);
                 self.divergenceTimeId = ko.observable(null);
                 self.itemDivergenceTime = ko.observable(null);
 
@@ -85,13 +86,16 @@ module nts.uk.at.view.kmk011.b {
                 //subscribe currentCode
                 self.currentCode.subscribe(function(codeChanged) {
                     self.clearError();
+                    if (codeChanged == 0) {
+                        self.enableState(false);
+                        self.refreshData();
+                        return;
+                    }
+                    self.enableState(true);
                     self.selectUse(null);
-
                     self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
                         self.itemDivergenceTime(itemDivTime);
                         self.setValueDivergenceTimeDisplay();
-                        console.log(self.existedDivergenceReason());
-
                     });
 
                     //
@@ -173,6 +177,33 @@ module nts.uk.at.view.kmk011.b {
                     dfd.resolve(itemDivergenceTime);
                 });
                 return dfd.promise();
+            }
+            /**
+             * refreshData 
+             */
+            refreshData() {
+                var self = this;
+                self.currentCode(0);
+                //B3_2
+                self.selectUse(0)
+                self.enableUse(false);
+                self.divergenceTypeName('');
+
+                self.divTimeName(''); 
+                self.timeItemName('');
+
+                //B3_13:swith button, B3_15
+                self.selectSelect(0);
+                self.enableSelect(false);
+                self.checkErrorSelect(false);
+
+                //B3_17:siwth button, B3_18
+                self.selectInput(0);
+                self.enableInput(false);
+                self.checkErrorInput(false);
+
+                self.existedDivergenceReason(false);
+
             }
 
             /**
@@ -291,7 +322,6 @@ module nts.uk.at.view.kmk011.b {
                 var dfd = $.Deferred<any>();
                 self.dataSource();
                 service.getAllDivergenceTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
-                    self.currentCode('');
                     self.dataSource(lstDivTime);
                     self.currentCode(self.divergenceTimeId());
                     dfd.resolve();
@@ -369,6 +399,13 @@ module nts.uk.at.view.kmk011.b {
                     if ($('#inpDialog').ntsError("hasError") == true) {
                         $('#inpDialog').ntsError('clear');
                     }
+                    service.getAllDivReason(self.itemDivergenceTime().divergenceTimeNo).done((data) => {
+                        if (data.length != 0) {
+                            self.existedDivergenceReason(true);
+                        } else {
+                            self.existedDivergenceReason(false);
+                        }
+                    });
                     $("#itemname").focus();
                 });
             }
@@ -402,6 +439,18 @@ module nts.uk.at.view.kmk011.b {
                     this.divergenceReasonInputed = divergenceReasonInputed;
                     this.divergenceReasonSelected = divergenceReasonSelected;
                     this.targetItems = targetItems;
+                }
+                public resetData() {
+                    this.divergenceTimeNo = 0;
+                    this.divergenceTimeUseSet = 0;
+                    this.divergenceTimeName = '';
+                    this.divergenceType = '';
+                    this.reasonInput = false;
+                    this.reasonSelect = false;
+                    this.divergenceReasonInputed = false;
+                    this.divergenceReasonSelected = false;
+                    this.targetItems = [];
+
                 }
 
             }
@@ -445,6 +494,7 @@ module nts.uk.at.view.kmk011.b {
                     this.reasonRequired = requiredAtr;
                 }
             }
+
         }
     }
 }

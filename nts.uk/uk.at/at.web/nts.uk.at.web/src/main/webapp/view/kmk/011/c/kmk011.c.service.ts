@@ -7,10 +7,10 @@ module nts.uk.at.view.kmk011.c {
             save: "",
             find: "",
  
-            getAllDivReason: "at/record/divergencetime/setting/getalldivreason/",
-            addDivReason: "at/record/divergencetime/setting/adddivreason",
-            updateDivReason: "at/record/divergencetime/setting/updatedivreason",
-            deleteDivReason: "at/record/divergencetime/setting/deletedivreason"
+            getAllDivReason: "at/record/divergencetime/reason/getalldivreason/",
+            addDivReason: "at/record/divergencetime/reason/adddivreason",
+            updateDivReason: "at/record/divergencetime/reason/updatedivreason",
+            deleteDivReason: "at/record/divergencetime/reason/deletedivreason"
         };
 
         export function save(): JQueryPromise<any> {

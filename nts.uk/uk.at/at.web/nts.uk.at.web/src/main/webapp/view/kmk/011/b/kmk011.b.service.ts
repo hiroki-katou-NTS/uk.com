@@ -9,7 +9,7 @@ module nts.uk.at.view.kmk011.b {
             updateDivergenceTime: "at/record/divergencetime/setting/updatedivtime",
             getAllAttendanceItem: "at/record/divergencetime/setting/getAttendanceDivergenceItem",
             getAllNameAttendance: "at/record/divergencetime/setting/AttendanceDivergenceName",
-            getAllDivReason: "at/record/divergencetime/setting/getalldivreason/"
+            getAllDivReason: "at/record/divergencetime/reason/getalldivreason/"
 
         };
 

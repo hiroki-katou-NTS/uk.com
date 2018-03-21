@@ -4,35 +4,36 @@ package nts.uk.ctx.at.record.app.find.divergence.time;
  * The Enum DivergenceTypeDto.
  */
 public enum DivergenceTypeDto {
+
 	/** The arbitrary divergence time. */
-	ARBITRARY_DIVERGENCE_TIME(0, "Enum_DivergenceType_ARBITRARY_DIVERGENCE_TIME"),
+	ARBITRARY_DIVERGENCE_TIME(0, "任意乖離時間"),
 
 	/** The holidays departure time. */
-	HOLIDAYS_DEPARTURE_TIME(1, "Enum_DivergenceType_HOLIDAYS_DEPARTURE_TIME"),
+	HOLIDAYS_DEPARTURE_TIME(1, "休日出勤乖離時間"),
 
 	/** The entry divergence time. */
-	ENTRY_DIVERGENCE_TIME(2, "Enum_DivergenceType_ENTRY_DIVERGENCE_TIME"),
+	ENTRY_DIVERGENCE_TIME(2, "入館乖離時間"),
 
 	/** The evacuation departure time. */
-	EVACUATION_DEPARTURE_TIME(3, "Enum_DivergenceType_EVACUATION_DEPARTURE_TIME"),
+	EVACUATION_DEPARTURE_TIME(3, "退館乖離時間"),
 
 	/** The logon pc divergence time. */
-	LOGON_PC_DIVERGENCE_TIME(4, "Enum_DivergenceType_LOGON_PC_DIVERGENCE_TIME"),
+	LOGON_PC_DIVERGENCE_TIME(4, "PCログオン乖離時間"),
 
 	/** The logoff pc divergence time. */
-	LOGOFF_PC_DIVERGENCE_TIME(5, "Enum_DivergenceType_LOGOFF_PC_DIVERGENCE_TIME"),
+	LOGOFF_PC_DIVERGENCE_TIME(5, "PCログオフ乖離時間"),
 
 	/** The predetermined break time divergence time. */
-	PREDETERMINED_BREAK_TIME_DIVERGENCE_TIME(6, "Enum_DivergenceType_PREDETERMINED_BREAK_TIME_DIVERGENCE_TIME"),
+	PREDETERMINED_BREAK_TIME_DIVERGENCE_TIME(6, "所定内休憩乖離時間"),
 
 	/** The non scheduled divergence time. */
-	NON_SCHEDULED_DIVERGENCE_TIME(7, "Enum_DivergenceType_NON_SCHEDULED_DIVERGENCE_TIME"),
+	NON_SCHEDULED_DIVERGENCE_TIME(7, "所定外休憩乖離時間"),
 
 	/** The premature overtime departure time. */
-	PREMATURE_OVERTIME_DEPARTURE_TIME(8, "Enum_DivergenceType_PREMATURE_OVERTIME_DEPARTURE_TIME"),
+	PREMATURE_OVERTIME_DEPARTURE_TIME(8, "早出残業乖離時間"),
 
 	/** The normal overtime divergence time. */
-	NORMAL_OVERTIME_DIVERGENCE_TIME(9, "Enum_DivergenceType_NORMAL_OVERTIME_DIVERGENCE_TIME");
+	NORMAL_OVERTIME_DIVERGENCE_TIME(9, "普通残業乖離時間");
 
 	/** The value. */
 	public final int value;

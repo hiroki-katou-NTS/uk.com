@@ -20,19 +20,19 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- B1_1: Button New -->
+				<!-- C1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
 					data-bind="click: refreshData">#{i18n.getText('KMK011_19')}</button>
-				<!-- B1_2: Button Registration -->
+				<!-- C1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
 					data-bind="click: RegistrationDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KMK011_3')}</button>
-				<!-- B1_3: Button Delete -->
+				<!-- C1_3: Button Delete -->
 				<button tabindex="3" id="btn_005"
 					class="button danger separate-button fix-button"
 					data-bind="click: deleteDivReason, enable: enableDel">#{i18n.getText('KMK011_20')}</button>
-				<!-- B1_4: Button Close -->
+				<!-- C1_4: Button Close -->
 				<button tabindex="4" id="btn_004"
 					class="button separate-button fix-button"
 					data-bind="click: closeDialog">#{i18n.getText('KMK011_21')}</button>
@@ -41,7 +41,7 @@
 				<div id="left-content" style="float: left"
 					class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px">
-						<!-- B2_2: List Divergence Reason -->
+						<!-- C2_2: List Divergence Reason -->
 						<table tabindex="5" id="single-list"
 							data-bind="ntsGridList:{
 								width: 330,
@@ -63,11 +63,11 @@
 						</colgroup>
 						<tr class="row">
 							<td>
-								<!-- B3_1: Label -->
+								<!-- C3_1: Label -->
 								<div data-bind="ntsFormLabel: {required: true,constraint:['DiverdenceReasonCode','DivergenceReasonContent'] }">#{i18n.getText('KMK011_37')}</div>
 							</td>
 							<td>
-							<!-- B3_2: Divergence Reason Code -->
+							<!-- C3_2: Divergence Reason Code -->
 							<input tabindex="6" class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
 										  name: '#[KMK011_22]',
@@ -75,7 +75,7 @@
                                           constraint: 'DiverdenceReasonCode', 
                                           enable: enableCode, 
                                           required: true}"/> 
-								<!-- B3_3: Divergence Reason Content --> 
+								<!-- C3_3: Divergence Reason Content --> 
 								<input tabindex="7" class="nts-input" id="inpReason"
 								data-bind="ntsTextEditor: {
 										  name: '#[KMK011_23]',
@@ -86,11 +86,11 @@
 						</tr>
 						<tr class="row">
 							<td>
-								<!-- B3_4: Label -->
+								<!-- C3_4: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_38')}</div>
 							</td>
 							<td>
-								<!-- B3_5: SwitchButton Required-->
+								<!-- C3_5: SwitchButton Required-->
 								<div tabindex="8"
 									data-bind="ntsSwitchButton: {
 									options: switchUSe3,
