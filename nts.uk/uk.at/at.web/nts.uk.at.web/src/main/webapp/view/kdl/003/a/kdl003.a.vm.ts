@@ -191,7 +191,9 @@ module nts.uk.at.view.kdl003.a {
                         .done(function(data) {
                             data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
-                            self.addFirstItem(data);
+                            if (self.callerParameter.showNone){
+                                self.addFirstItem(data);
+                            }
                             self.listWorkTime(data);
                             dfd.resolve();
                         });
@@ -201,7 +203,9 @@ module nts.uk.at.view.kdl003.a {
                         .done(function(data) {
                             data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
-                            self.addFirstItem(data);
+                            if (self.callerParameter.showNone){
+                                self.addFirstItem(data);
+                            }
                             self.listWorkTime(data);
                             dfd.resolve();
                         });
@@ -626,6 +630,7 @@ module nts.uk.at.view.kdl003.a {
             selectedWorkTypeCode: string;
             workTimeCodes: Array<string>;
             selectedWorkTimeCode: string;
+            showNone: boolean;
         }
         interface ReturnedData {
             selectedWorkTypeCode: string;
