@@ -62,7 +62,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             this.filename = ko.observable(null);
             this.fileInfo = ko.observable(null);
             this.onchange = (filename) => {
-                console.log(filename);
             };
 
             self.selectedAcceptItem.subscribe((data) => {
@@ -74,7 +73,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         finished(fileInfo: any) {
             var self = this;
             self.fileId(fileInfo.id);
-            console.log(fileInfo);
             block.invisible();
             service.getNumberOfLine(self.fileId()).done(function(totalLine: any) {
                 self.fileDataTotalLine(totalLine);
@@ -478,12 +476,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 return false;
             }
             //check csvDataLineNumber Not input or exceeding the number of lines of CSV data => msg 900
-            if (self.stdCondSet().csvDataItemLineNumber() == null || self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
+            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataItemLineNumber(), false) || self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_900"});
                 return false;
             }
             //check csvDataStartLine Not input or exceeding the number of lines of CSV data => msg 901
-            if (self.stdCondSet().csvDataStartLine() == null || self.stdCondSet().csvDataStartLine() > self.fileDataTotalLine()) {
+            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataStartLine(), false) || self.stdCondSet().csvDataStartLine() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_901"});
                 return false;
             }
