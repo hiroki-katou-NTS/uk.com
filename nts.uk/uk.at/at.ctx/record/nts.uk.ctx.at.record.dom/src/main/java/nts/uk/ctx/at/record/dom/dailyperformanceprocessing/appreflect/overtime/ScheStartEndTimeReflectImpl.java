@@ -134,7 +134,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			}
 		}
 		
-		return null;
+		return findStartEndTime;
 	}
 
 	@Override

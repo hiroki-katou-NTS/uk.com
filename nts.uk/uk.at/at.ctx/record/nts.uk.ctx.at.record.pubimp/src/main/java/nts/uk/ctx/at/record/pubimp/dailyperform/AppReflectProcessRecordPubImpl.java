@@ -108,9 +108,15 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.getOvertimePara().getMapOvertimeFrame(),
 				param.getOvertimePara().getOverTimeShiftNight(),
 				param.getOvertimePara().getFlexExessTime());
-		PreOvertimeParameter overtimePara = new PreOvertimeParameter(param.getEmployeeId(), param.getDateInfo(), param.isActualReflectFlg(), param.isScheReflectFlg(), param.isTimeReflectFlg(), param.isAutoClearStampFlg(), EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
-				 param.isScheTimeOutFlg(),
-				 appOver);
+		PreOvertimeParameter overtimePara = new PreOvertimeParameter(param.getEmployeeId(), 
+				param.getDateInfo(), 
+				param.isActualReflectFlg(), 
+				param.isScheReflectFlg(), 
+				param.isTimeReflectFlg(), 
+				param.isAutoClearStampFlg(), 
+				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
+				param.isScheTimeOutFlg(),
+				appOver);
 		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(overtimePara);
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));

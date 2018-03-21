@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -8,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 
 @Stateless
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
-	
+	@Inject
 	private AppReflectProcessRecord reflectRecord;
 
 	@Override
@@ -20,10 +21,10 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				recordInfor.getExecutiontype(),
 				recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),
 				recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal());
-		boolean checkReflect = reflectRecord.appReflectProcessRecord(reflectInfor);
+		/*boolean checkReflect = reflectRecord.appReflectProcessRecord(reflectInfor);
 		if (!checkReflect) {
 			return statesInfor;
-		}
+		}*/
 		//事前事後区分を取得
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類
