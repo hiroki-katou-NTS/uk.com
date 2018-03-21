@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -20,6 +21,9 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	private String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.employeeId = :employeeId ORDER BY a.grantDate DESC";
 	
 	private String QUERY_WITH_EMPID_CHECKSTATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.employeeId = :employeeId AND a.expStatus = :checkState ORDER BY a.grantDate DESC";
+	
+	private String DELETE_QUERY = "DELETE FROM KRcmtAnnLeaRemain a WHERE  a.employeeId = :employeeId and a.grantDate = :grantDate";
+	
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
@@ -109,13 +113,10 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public void delete(String annLeavId) {
-		Optional<KRcmtAnnLeaRemain> dataOpt = this.queryProxy().find(new KRcmtAnnLeaRemainPK(annLeavId),
-				KRcmtAnnLeaRemain.class);
-		if (dataOpt.isPresent()) {
-			this.commandProxy().remove(dataOpt.get());
-		}
-
+	public void delete(String employeeId, GeneralDate grantDate) {
+		this.getEntityManager().createQuery(DELETE_QUERY)
+		.setParameter("employeeId", employeeId)
+		.setParameter("grantDate", grantDate);
 	}
 
 }

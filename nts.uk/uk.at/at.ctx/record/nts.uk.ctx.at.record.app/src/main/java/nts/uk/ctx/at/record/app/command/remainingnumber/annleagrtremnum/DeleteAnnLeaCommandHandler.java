@@ -17,7 +17,7 @@ public class DeleteAnnLeaCommandHandler extends AsyncCommandHandler<DeleteLeaGra
 	protected void handle(CommandHandlerContext<DeleteLeaGrantRemnNumCommand> context) {
 		DeleteLeaGrantRemnNumCommand command = context.getCommand();
 		
-		annLeaRepo.delete(command.getAnnLeavId());
+		annLeaRepo.delete(command.getEmployeeId(),command.getGrantDate());
 		
 	}
 

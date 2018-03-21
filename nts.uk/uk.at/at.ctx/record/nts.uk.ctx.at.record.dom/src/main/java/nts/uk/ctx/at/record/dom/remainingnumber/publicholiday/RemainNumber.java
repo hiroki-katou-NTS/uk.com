@@ -8,11 +8,11 @@ import nts.arc.primitive.constraint.DecimalMinValue;
 
 @DecimalMinValue("-999.5")
 @DecimalMaxValue("999.5")
-public class NumberDaysRemain extends DecimalPrimitiveValue<NumberDaysRemain>{
+public class RemainNumber extends DecimalPrimitiveValue<RemainNumber>{
 
 	private static final long serialVersionUID = 1L;
 
-	public NumberDaysRemain(BigDecimal rawValue) {
+	public RemainNumber(BigDecimal rawValue) {
 		super(rawValue);
 	}
 
