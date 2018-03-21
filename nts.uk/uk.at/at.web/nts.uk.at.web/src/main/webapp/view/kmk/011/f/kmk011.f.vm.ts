@@ -77,6 +77,7 @@ module nts.uk.at.view.kmk011.f {
                                   _self.showMessageError(res);  
                             });
                         }
+                        break;
                    // save work type Hist
                    case HistorySettingMode.WORKTYPE:
                         var workTypeCode: string = nts.uk.ui.windows.getShared('workTypeCode');
@@ -100,7 +101,8 @@ module nts.uk.at.view.kmk011.f {
                             }).fail((res: any) => {
                                   _self.showMessageError(res);  
                             });
-                        }       
+                        }
+                        break;      
                 }
               
                 return dfd.promise();
