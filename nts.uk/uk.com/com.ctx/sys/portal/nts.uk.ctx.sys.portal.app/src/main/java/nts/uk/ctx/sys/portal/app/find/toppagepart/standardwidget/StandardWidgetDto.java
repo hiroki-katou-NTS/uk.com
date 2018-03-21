@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.find.standardwidget;
+package nts.uk.ctx.sys.portal.app.find.toppagepart.standardwidget;
 
 import lombok.Value;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
