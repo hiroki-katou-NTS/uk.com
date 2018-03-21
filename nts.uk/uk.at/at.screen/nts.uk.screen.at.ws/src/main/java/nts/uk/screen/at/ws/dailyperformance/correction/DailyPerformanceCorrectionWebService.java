@@ -26,6 +26,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -37,6 +38,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -73,6 +75,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private ValidatorDataDaily validatorDataDaily;
+	
+	@Inject
+	private PersonalTightCommandFacade personalTightCommandFacade;
 	
 	@POST
 	@Path("startScreen")
@@ -120,6 +125,8 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("addAndUpdate")
 	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		//insert sign
+		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
 		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
@@ -130,7 +137,7 @@ public class DailyPerformanceCorrectionWebService {
 			} else if (x.getTypeGroup() == TypeLink.WORKPLACE.value) {
 				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(x.getTypeGroup(),
 						new ParamDialog(x.getDate(), x.getValue()));
-				x.setValue(codeName == null ? null : codeName.getId());
+				item.setValue(codeName == null ? null : codeName.getId());
 				return item;
 			}
 			return item;
@@ -176,6 +183,12 @@ public class DailyPerformanceCorrectionWebService {
 			return resultError;
 		}
 		return Collections.emptyMap();
+	}
+	
+	@POST
+	@Path("insertClosure")
+	public void insertClosure(EmpAndDate empAndDate){
+		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

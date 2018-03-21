@@ -95,9 +95,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			return Optional.empty();
 		//疑似的な日別実績を作成
 		val provisionalRecord = createProvisionalDailyRecord(employeeId,targetDate,workTypeCode,workTimeCode,timeSheets);
-		
+		if(!provisionalRecord.isPresent())
+			return Optional.empty();
 		//控除置き換え
-		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord,breakTimeSheets,outingTimeSheets,shortWorkingTimeSheets,employeeId,targetDate);
+		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(),breakTimeSheets,outingTimeSheets,shortWorkingTimeSheets,employeeId,targetDate);
 		//ドメインモデル「日別実績の勤怠時間」を返す
 		return Optional.of(calculateDailyRecordService.calculate(provisionalDailyRecord));
 
@@ -105,7 +106,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	/**
 	 *疑似的な日別実績を作成
 	 */
-	private IntegrationOfDaily createProvisionalDailyRecord(String employeeId, GeneralDate ymd,WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,Map<Integer, TimeZone> timeSheets) {
+	private Optional<IntegrationOfDaily> createProvisionalDailyRecord(String employeeId, GeneralDate ymd,WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,Map<Integer, TimeZone> timeSheets) {
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> preworkInformation = workInformationRepository.find(employeeId, ymd);
 		String setWorkTimeCode = null;
@@ -162,9 +163,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		//↓を使用して帰ってくるクラスにエラーメッセージが格納される場合がある。
 		//エラーメッセージは日別計算で使用しないため、empCalAndSumExecLogIDに任意の物を入れている
 		val employeeState = reflectWorkInforDomainServiceImpl.createAffiliationInforOfDailyPerfor(AppContexts.user().companyId(), employeeId, ymd, "01");
-		
+		if(!employeeState.getAffiliationInforOfDailyPerfor().isPresent())
+			return Optional.empty();
 		//return new IntegrationOfDaily(workInformation, timeAttendance, attendanceTime.get());
-		return new IntegrationOfDaily(workInformation,
+		return Optional.of(new IntegrationOfDaily(workInformation,
 									  calAttrOfDailyPerformance,
 									  employeeState.getAffiliationInforOfDailyPerfor().get(),
 									  Optional.empty(),
@@ -179,7 +181,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 									  Optional.empty(),
 									  Optional.empty(),
 									  Collections.emptyList(),
-									  Optional.empty());
+									  Optional.empty()));
 	}	
 
 	

@@ -74,21 +74,21 @@ module nts.uk.com.view.ccg027.a.viewmodel {
         checkContenListMail(): boolean {
             var self = this;
             var kt = true;
-            self.ListReturnCC(self.clean(self.mailAddressCC().replace(/\s/g, '').split(";")));
-            self.ListReturnBCC(self.clean(self.mailAddressBCC().replace(/\s/g, '').split(";")));
+            self.ListReturnCC(self.mailAddressCC().replace(/\s/g, '').split(";"));
+            self.ListReturnBCC(self.mailAddressBCC().replace(/\s/g, '').split(";"));
 
             // remove email = ""
             self.ListReturnCC(self.ListReturnCC.remove(function(item) { return item.length > 0; }));
             self.ListReturnBCC(self.ListReturnBCC.remove(function(item) { return item.length > 0; }));
 
-            var re = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-            $('#mailAddressCC').ntsError('clear');
-            $('#mailAddressBCC').ntsError('clear');
-            $('#senderAddress').ntsError('clear');
-            $('#mailRely').ntsError('clear');
+            //var re = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            //var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
+            $('.nts-input').ntsError('clear');
             
             if (self.ListReturnCC().length > 0) {
                 for (let entry of self.ListReturnCC()) {
+                    re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
                     if (!re.test(entry) || entry.length > 256) {
                         $('#mailAddressCC').ntsError('set', { messageId: "Msg_1097" });
                         //nts.uk.ui.dialog.alertError({ messageId: "Msg_1097" });
@@ -104,6 +104,7 @@ module nts.uk.com.view.ccg027.a.viewmodel {
             }
             if (self.ListReturnBCC().length > 0) {
                 for (let entry of self.ListReturnBCC()) {
+                    re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
                     if (!re.test(entry) || entry.length > 256) {
                         $('#mailAddressBCC').ntsError('set', { messageId: "Msg_1099" });
                         //nts.uk.ui.dialog.alertError({ messageId: "Msg_1099" });
@@ -117,30 +118,40 @@ module nts.uk.com.view.ccg027.a.viewmodel {
                     kt = false;
                 }
             }
-
-            if (self.sendingAddressChecks() && self.senderAddress().length != 0) {
+            re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
+            if (self.sendingAddressChecks() && self.senderAddress().length > 0) {
                 if (self.clean(self.senderAddress().replace(/\s/g, '').split(";")).length > 1) {
                     $('#senderAddress').ntsError('set', { messageId: "Msg_1113" });
                     //nts.uk.ui.dialog.alertError({ messageId: "Msg_1113" });
                     kt = false;
-                }else if(!re.test(self.senderAddress())) {
-                    $('#senderAddress').ntsError('set', { messageId: "Msg_1112" });
-                    //nts.uk.ui.dialog.alertError({ messageId: "Msg_1112" });
-                    kt = false;
+                }
+                for (let entry of self.senderAddress().replace(/\s/g, '').split(";")) {
+                    re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
+                    if (!re.test(entry) || entry.length > 256 || entry =="") {
+                        $('#mailRely').ntsError('set', { messageId: "Msg_1112" });
+                        //nts.uk.ui.dialog.alertError({ messageId: "Msg_1097" });
+                        kt = false;
+                        break;
+                    }
                 }
             }
-            
-            if (self.clean(self.mailRely().replace(/\s/g, '').split(";")).length > 1 && self.mailRely().length != 0) {
+            re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
+            if (self.clean(self.mailRely().replace(/\s/g, '').split(";")).length > 1 && self.mailRely().length > 0) {
                 $('#mailRely').ntsError('set', { messageId: "Msg_1115" });
                 //nts.uk.ui.dialog.alertError({ messageId: "Msg_1115" });
                 kt = false;
-            }else if (!re.test(self.mailRely()) && self.mailRely().length != 0) {
-                $('#mailRely').ntsError('set', { messageId: "Msg_1114" });
-                //nts.uk.ui.dialog.alertError({ messageId: "Msg_1114" });
-                kt = false;
             }
-            $('#mailRely').ntsError('check');
-            $('senderAddress').ntsError('check');
+            if(self.mailRely().length > 0){
+                for (let entry of self.mailRely().replace(/\s/g, '').split(";")) {
+                    re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
+                    if (!re.test(entry) || entry.length > 256 || entry=="") {
+                        $('#mailRely').ntsError('set', { messageId: "Msg_1114" });
+                        //nts.uk.ui.dialog.alertError({ messageId: "Msg_1097" });
+                        kt = false;
+                        break;
+                    }
+                }
+            }
             return kt;
         }
         clean(arr: string[]): string[]{
