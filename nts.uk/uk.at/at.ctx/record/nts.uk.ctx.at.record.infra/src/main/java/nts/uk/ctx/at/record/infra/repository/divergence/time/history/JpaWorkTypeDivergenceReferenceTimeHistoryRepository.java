@@ -13,9 +13,9 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist_;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -35,7 +35,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 * time.GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Integer countByDatePeriod(String companyId, WorkTypeCode workTypeCode, DatePeriod datePeriod) {
+	public Integer countByDatePeriod(String companyId, BusinessTypeCode workTypeCode, DatePeriod datePeriod) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
@@ -88,7 +88,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 * nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode)
 	 */
 	@Override
-	public WorkTypeDivergenceReferenceTimeHistory findAll(String companyId, WorkTypeCode workTypeCode) {
+	public WorkTypeDivergenceReferenceTimeHistory findAll(String companyId, BusinessTypeCode workTypeCode) {
 
 		return this.toDomain(this.findByCompanyIdAndWorkType(companyId, workTypeCode.v(), new ArrayList<String>()));
 	}
@@ -130,7 +130,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	}
 
 	@Override
-	public WorkTypeDivergenceReferenceTimeHistory findLatestHist(String companyId, WorkTypeCode workTypeCode) {
+	public WorkTypeDivergenceReferenceTimeHistory findLatestHist(String companyId, BusinessTypeCode workTypeCode) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstWorktypeDrtHist> cq = criteriaBuilder.createQuery(KrcstWorktypeDrtHist.class);

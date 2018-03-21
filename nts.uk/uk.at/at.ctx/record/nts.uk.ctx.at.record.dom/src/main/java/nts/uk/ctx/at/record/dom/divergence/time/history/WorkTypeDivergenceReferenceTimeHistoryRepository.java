@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -28,7 +28,7 @@ public interface WorkTypeDivergenceReferenceTimeHistoryRepository {
 	 *            the date period
 	 * @return the integer
 	 */
-	public Integer countByDatePeriod(String companyId, WorkTypeCode workTypeCode, DatePeriod datePeriod);
+	public Integer countByDatePeriod(String companyId, BusinessTypeCode workTypeCode, DatePeriod datePeriod);
 
 	/**
 	 * Find all.
@@ -39,7 +39,7 @@ public interface WorkTypeDivergenceReferenceTimeHistoryRepository {
 	 *            the work type code
 	 * @return the work type divergence reference time history
 	 */
-	WorkTypeDivergenceReferenceTimeHistory findAll(String companyId, WorkTypeCode workTypeCode);
+	WorkTypeDivergenceReferenceTimeHistory findAll(String companyId, BusinessTypeCode workTypeCode);
 
 	/**
 	 * Adds the.
@@ -74,5 +74,5 @@ public interface WorkTypeDivergenceReferenceTimeHistoryRepository {
 	 *            the work type code
 	 * @return the work type divergence reference time history
 	 */
-	WorkTypeDivergenceReferenceTimeHistory findLatestHist(String companyId, WorkTypeCode workTypeCode);
+	WorkTypeDivergenceReferenceTimeHistory findLatestHist(String companyId, BusinessTypeCode workTypeCode);
 }
