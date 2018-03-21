@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 

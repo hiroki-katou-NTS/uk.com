@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -83,4 +85,14 @@ public class HolidayShipmentDto {
 	 */
 	WithDrawalReqSetDto drawalReqSet;
 
+	/**
+	 * 振休申請
+	 * 
+	 */
+	AbsenceLeaveAppDto absApp;
+
+	/**
+	 * 振出申請
+	 */
+	RecruitmentAppDto recApp;
 }

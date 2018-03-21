@@ -1,22 +1,14 @@
-package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
+package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
-/**
- * 消化対象振休管理
- * 
- * @author sonnlb
- */
-
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubDigestion {
+@Data
+public class SubDigestionDto {
 	/**
 	 * 振休申請ID
 	 */
@@ -25,7 +17,7 @@ public class SubDigestion {
 	/**
 	 * 使用日数
 	 */
-	private ManagementDataDaysAtr daysUsedNo;
+	private int daysUsedNo;
 
 	/**
 	 * 振出管理データ
@@ -35,7 +27,7 @@ public class SubDigestion {
 	/**
 	 * 振出状態
 	 */
-	private ManagementDataAtr pickUpState;
+	private int pickUpState;
 
 	/**
 	 * 振休発生日

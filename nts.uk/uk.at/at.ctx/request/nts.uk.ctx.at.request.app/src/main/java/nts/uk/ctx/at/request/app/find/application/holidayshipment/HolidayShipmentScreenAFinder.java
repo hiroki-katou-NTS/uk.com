@@ -142,7 +142,7 @@ public class HolidayShipmentScreenAFinder {
 
 		// アルゴリズム「平日時就業時間帯の取得」を実行する
 		PersonalLaborCondition perLaborCond = getWorkingHourOnWeekDays(employeeID, refDate);
-		// アルゴリズム「振休振出申請起動時の共通処理」を実行する
+
 		if (perLaborCond != null) {
 			Optional<WorkTimeCode> WorkTimeCodeOpt = perLaborCond.getWorkCategory().getWeekdayTime().getWorkTimeCode();
 			String wkTimeCD = WorkTimeCodeOpt.isPresent() ? WorkTimeCodeOpt.get().v() : "";
@@ -150,6 +150,7 @@ public class HolidayShipmentScreenAFinder {
 			String takingOutWkTypeCD, takingOutWkTimeCD, holiDayWkTypeCD, holidayWkTimeCD;
 			appDate = deadDate = null;
 			takingOutWkTypeCD = takingOutWkTimeCD = holiDayWkTypeCD = holidayWkTimeCD = null;
+			// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 			commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD,
 					deadDate, holiDayWkTypeCD, holidayWkTimeCD, output);
 			// アルゴリズム「勤務時間初期値の取得」を実行する
@@ -229,7 +230,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private GeneralDate DetRefDate(GeneralDate takingOutDate, GeneralDate holidayDate) {
+	public static GeneralDate DetRefDate(GeneralDate takingOutDate, GeneralDate holidayDate) {
 
 		if (holidayDate != null && takingOutDate != null) {
 
@@ -305,9 +306,9 @@ public class HolidayShipmentScreenAFinder {
 		return result;
 	}
 
-	private void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate appDate,
-			String takingOutWkTypeCD, String takingOutWkTimeCD, GeneralDate deadDate, String holidayWkTypeCD,
-			String holidayWkTimeCD, HolidayShipmentDto output) {
+	private void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate recDate,
+			String recWkTypeCD, String recWkTimeCD, GeneralDate absDate, String absWkTypeCD, String absWkTimeCD,
+			HolidayShipmentDto output) {
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
 		if (withDrawalReqSetOpt.isPresent()) {
@@ -318,12 +319,12 @@ public class HolidayShipmentScreenAFinder {
 		output.setAppReasons(appResonRepo.getReasonByCompanyId(companyID).stream()
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 		// アルゴリズム「基準日別設定の取得」を実行する
-		getDateSpecificSetting(companyID, employeeID, refDate, false, takingOutWkTypeCD, takingOutWkTimeCD,
-				holidayWkTypeCD, holidayWkTimeCD, appCommonSettingOutput, output);
+		getDateSpecificSetting(companyID, employeeID, refDate, false, recWkTypeCD, recWkTimeCD, absWkTypeCD,
+				absWkTimeCD, appCommonSettingOutput, output);
 
-		getAchievement(companyID, employeeID, appDate);
+		getAchievement(companyID, employeeID, recDate);
 
-		getAchievement(companyID, employeeID, deadDate);
+		getAchievement(companyID, employeeID, absDate);
 
 	}
 
@@ -337,7 +338,7 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	private void getDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean getSetting,
-			String takingOutWkTypeCD, String takingOutWkTimeCode, String holidayWkTypeCD, String holidayWkTimeCD,
+			String recWkTypeCD, String recWkTimeCode, String absWkTypeCD, String absWkTimeCD,
 			AppCommonSettingOutput appCommonSet, HolidayShipmentDto output) {
 		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> empImpOpt = wpAdapter.getEmpHistBySid(companyID, employeeID, refDate);
@@ -363,13 +364,13 @@ public class HolidayShipmentScreenAFinder {
 
 			// アルゴリズム「振出用勤務種類の取得」を実行する
 			// TakingOut
-			output.setTakingOutWkTypes(getWorkTypeFor(companyID, employmentCD, takingOutWkTypeCD).stream()
+			output.setTakingOutWkTypes(getWorkTypeFor(companyID, employmentCD, recWkTypeCD).stream()
 					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 
 			// INPUT.振出就業時間帯コード＝設定なし
 			// アルゴリズム「振休用勤務種類の取得」を実行する
 			// Holiday
-			output.setHolidayWkTypes(getWorkTypeFor(companyID, employmentCD, holidayWkTypeCD).stream()
+			output.setHolidayWkTypes(getWorkTypeFor(companyID, employmentCD, absWkTypeCD).stream()
 					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 			// INPUT.振休就業時間帯コード＝設定なし
 
@@ -396,7 +397,7 @@ public class HolidayShipmentScreenAFinder {
 
 	private List<WorkType> getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD) {
 
-		// ドメインモデル「勤務種類」を取得する yêu cầu team anh Chình trả về wktypes
+		// ドメインモデル「勤務種類」を取得する
 
 		List<WorkType> wkTypes = wkTypeRepo.findWorkTypeForPause(companyID);
 		// アルゴリズム「対象勤務種類の抽出」を実行する
