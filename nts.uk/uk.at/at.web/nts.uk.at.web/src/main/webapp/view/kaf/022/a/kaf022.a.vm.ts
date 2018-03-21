@@ -1388,10 +1388,10 @@ module nts.uk.at.view.kmf022 {
                 ]);
                 self.selectedIdG23 = ko.observable(0);
                 self.itemListG24 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_198')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_199')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_200')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_201'))
+                    new ItemModel(3, nts.uk.resource.getText('KAF022_198')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_199')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_200')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_201'))
                 ]);
                 self.selectedIdG24 = ko.observable(0);
                 self.itemListG25 = ko.observableArray([
