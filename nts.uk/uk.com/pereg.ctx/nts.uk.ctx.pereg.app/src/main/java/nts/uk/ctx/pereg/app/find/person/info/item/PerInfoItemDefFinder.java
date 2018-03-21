@@ -38,6 +38,7 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
@@ -400,9 +401,13 @@ public class PerInfoItemDefFinder {
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
 			return ItemTypeStateDto.createSingleItemDto(createDataTypeStateDto(singleItemDom.getDataTypeState()));
-		} else {
+		} else if(itemType == ItemType.SET_ITEM){
 			SetItem setItemDom = (SetItem) itemTypeState;
 			return ItemTypeStateDto.createSetItemDto(setItemDom.getItems());
+		}
+		else {
+			SetTableItem setItemDom = (SetTableItem) itemTypeState;
+			return ItemTypeStateDto.createSetTableItemDto(setItemDom.getItems());
 		}
 	}
 
@@ -543,6 +548,8 @@ public class PerInfoItemDefFinder {
 	public boolean isCheckData(String itemId) {
 
 		String contractCd = AppContexts.user().contractCode();
+		
+		
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep.getPerInfoItemDefById(itemId, contractCd).orElse(null);
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(oldItem.getPerInfoCategoryId(), contractCd)
