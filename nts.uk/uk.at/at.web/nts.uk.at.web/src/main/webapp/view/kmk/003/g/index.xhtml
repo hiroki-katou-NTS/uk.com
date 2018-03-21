@@ -30,29 +30,13 @@
 							<hr />
 						</div>
 					</div>
-					<div class = "pad-left-20">
-						<div class="margin-first-child ntsControl">
-							<label class="ntsRadioBox control-group"> <input
-								type="radio" name="textRadio"
-								data-bind="checkedValue: 1, checked: true, enable: true" /> <span
-								class="box"></span><span class="label"
-								data-bind="text: nts.uk.resource.getText('KMK003_235')"></span>
-							</label> 
-							<br /> 
-							<label class="ntsRadioBox control-group"> <input
-								type="radio" name="textRadio"
-								data-bind="checkedValue: 1, checked: false, enable: true" /> <span
-								class="box"></span><span class="label"
-								data-bind="text: nts.uk.resource.getText('KMK003_236')"></span>
-							</label>
-							<br />
-							<label class="ntsRadioBox control-group"> <input
-								type="radio" name="textRadio"
-								data-bind="checkedValue: 1, checked: false, enable: true" /> <span
-								class="box"></span><span class="label"
-								data-bind="text: nts.uk.resource.getText('KMK003_237')"></span>
-							</label>
-						</div>
+					<div class="pad-left-20">
+						<div data-bind="ntsRadioBoxGroup: {
+										options: lstRest,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedRest,
+										enable: true}"></div>
 					</div>
 					<div>
 						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_230')}</div>
