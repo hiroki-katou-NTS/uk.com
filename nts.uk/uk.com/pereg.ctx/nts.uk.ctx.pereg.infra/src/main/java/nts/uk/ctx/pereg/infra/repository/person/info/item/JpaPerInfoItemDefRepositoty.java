@@ -539,8 +539,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			}
 			item.setItemTypeState(ItemTypeState.createSingleItem(dataTypeState));
-		} else {
+		} else if (itemType == ItemType.SET_ITEM.value){
 			item.setItemTypeState(ItemTypeState.createSetItem(items == null ? Arrays.asList(new String[] {}) : items));
+		}else if (itemType == ItemType.TABLE_ITEM.value) {
+			item.setItemTypeState(ItemTypeState.createSetTableItem(items == null ? Arrays.asList(new String[] {}) : items));
 		}
 
 		return item;
