@@ -26,7 +26,5 @@
 **/*.map
 
 # except all js, map in base.web
-!**/base.web/**/*.js
-!**/base.web/**/*.map
-**/base.web/**/*bundles.js
-**/base.web/**/*bundles.js.map
+!**/base.web/**/*.js*
+**/base.web/**/*bundles.js*
