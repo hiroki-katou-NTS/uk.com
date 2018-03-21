@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.holidayshipment.subdigestion;
+package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
 
 /**
  * 管理データ日数単位

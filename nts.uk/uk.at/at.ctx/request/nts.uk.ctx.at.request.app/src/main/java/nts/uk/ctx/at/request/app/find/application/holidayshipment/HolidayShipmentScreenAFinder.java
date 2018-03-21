@@ -74,7 +74,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class HolidayShipmentFinder {
+public class HolidayShipmentScreenAFinder {
 
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
@@ -127,7 +127,7 @@ public class HolidayShipmentFinder {
 	 * @param uiType
 	 * @return HolidayShipmentDto
 	 */
-	public HolidayShipmentDto getHolidayShipment(String employeeID, String initDateInput, int uiType) {
+	public HolidayShipmentDto startPage(String employeeID, String initDateInput, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
 		String companyID = AppContexts.user().companyId();
 		GeneralDate initDate = initDateInput == null ? null : GeneralDate.fromString(initDateInput, DATE_FORMAT);
@@ -161,6 +161,22 @@ public class HolidayShipmentFinder {
 		}
 
 		return output;
+	}
+
+	/**
+	 * find by Id
+	 * 
+	 * @param employeeID
+	 * @param initDateInput
+	 * @param uiType
+	 * @return HolidayShipmentDto
+	 */
+
+	public HolidayShipmentDto findByID(String appID) {
+		HolidayShipmentDto output = new HolidayShipmentDto();
+		// 14-1.詳細画面起動前申請共通設定を取得する
+		return output;
+
 	}
 
 	public ChangeWorkTypeDto changeWorkType(String workTypeCD, String wkTimeCD) {

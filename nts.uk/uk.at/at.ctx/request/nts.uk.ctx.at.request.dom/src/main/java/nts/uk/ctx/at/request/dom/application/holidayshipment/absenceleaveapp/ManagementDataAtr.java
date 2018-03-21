@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.holidayshipment.subtargetdigestion;
+package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
 
 /**
  * 管理データ区分

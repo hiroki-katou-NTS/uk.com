@@ -1,12 +1,10 @@
-package nts.uk.ctx.at.request.dom.application.holidayshipment.subdigestion;
+package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.subtargetdigestion.ManagementDataAtr;
 
 /**
  * 消化対象振休管理
@@ -18,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.subtargetdigestion.
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubDigestion extends AggregateRoot {
+public class SubDigestion {
 	/**
 	 * 振休申請ID
 	 */
