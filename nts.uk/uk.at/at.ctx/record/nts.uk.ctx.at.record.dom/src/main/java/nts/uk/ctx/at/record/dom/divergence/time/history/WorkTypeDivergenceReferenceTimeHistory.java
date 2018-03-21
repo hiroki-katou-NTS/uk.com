@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class WorkTypeDivergenceReferenceTimeHistory extends AggregateRoot implem
 
 	/** The history item. */
 	// 履歴項目
-	private List<DateHistoryItem> historyItems;
+	private List<DateHistoryItem> historyItems = new ArrayList<>();
 	
 	/**
 	 * Instantiates a new work type divergence reference time history.
@@ -72,7 +73,7 @@ public class WorkTypeDivergenceReferenceTimeHistory extends AggregateRoot implem
 		int result = 1;
 		result = prime * result + ((cId == null) ? 0 : cId.hashCode());
 		result = prime * result + ((workTypeCode == null) ? 0 : workTypeCode.hashCode());
-		result = prime * result + ((historyItems == null) ? 0 : historyItems.hashCode());
+		result = prime * result + ((historyItems.isEmpty()) ? 0 : historyItems.hashCode());
 		return result;
 	}
 
@@ -101,10 +102,7 @@ public class WorkTypeDivergenceReferenceTimeHistory extends AggregateRoot implem
 				return false;
 		} else if (!workTypeCode.equals(other.workTypeCode))
 			return false;
-		if (historyItems == null) {
-			if (other.historyItems != null)
-				return false;
-		} else if (!historyItems.equals(other.historyItems))
+		if (!historyItems.equals(other.historyItems))
 			return false;
 		return true;
 	}
