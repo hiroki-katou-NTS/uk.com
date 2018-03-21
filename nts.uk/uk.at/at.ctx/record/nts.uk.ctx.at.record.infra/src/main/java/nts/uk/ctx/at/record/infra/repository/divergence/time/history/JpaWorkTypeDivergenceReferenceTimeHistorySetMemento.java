@@ -107,7 +107,6 @@ public class JpaWorkTypeDivergenceReferenceTimeHistorySetMemento
 		});
 
 		// remove item that's history ID is empty
-		this.entities = this.entities.stream().filter(item -> !StringUtils.isEmpty(item.getHistId()))
-				.collect(Collectors.toList());
+		this.entities.removeIf(item -> StringUtils.isEmpty(item.getHistId()));
 	}
 }
