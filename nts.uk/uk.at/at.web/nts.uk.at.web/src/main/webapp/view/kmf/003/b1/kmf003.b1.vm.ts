@@ -243,7 +243,17 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error){
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });    
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                    if(error.messageId === "Msg_266") {
+                    
+                    } else if(error.messageId === "Msg_268") {
+                        
+                    } else if(error.messageId === "Msg_269") {
+                        
+                    } else if(error.messageId === "Msg_270") {
+                        $('#b2_1').focus();
+                    }
+                }); 
             });
         }
         

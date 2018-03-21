@@ -521,7 +521,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             let resId:Array<string> = ["KAF022_279", "KAF022_54"];
             for (let i = 0; i < 2; i++) {
                 
-                let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, i);
+                let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, (resId.length - (i + 1)));
                 dataSetting.optionName(nts.uk.resource.getText(resId[i]));
                 complementLeaveSet.push(dataSetting);
             }            
