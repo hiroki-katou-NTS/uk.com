@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,7 +32,7 @@ public class WorkTypeDivergenceReferenceTimeHistoryFinder {
 		String companyId = AppContexts.user().companyId();
 
 		WorkTypeDivergenceReferenceTimeHistory domain = this.histRepoitory.findAll(companyId,
-				new WorkTypeCode(workTypeCode));
+				new BusinessTypeCode(workTypeCode));
 
 		if (!domain.getHistoryItems().isEmpty()) {
 			return domain.getHistoryItems().stream().map(o -> {

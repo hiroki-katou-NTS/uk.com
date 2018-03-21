@@ -6,10 +6,11 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -39,13 +40,13 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 		WorkTypeDivergenceRefTimeHistSaveCommand command = context.getCommand();
 		
 		// validate start date , end date
-		if (command.getStartDate().compareTo(command.getEndDate()) > 0) {
+		if (GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd").compareTo(GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd")) > 0) {
 			throw new BusinessException("Msg_917");
 		}
 		
 		//validate duplicate history
-		DatePeriod period = new DatePeriod(command.getStartDate(), command.getEndDate());
-		Integer count = this.historyRepo.countByDatePeriod(companyId, new WorkTypeCode(command.getWorkTypeCodes()), period);
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"));
+		Integer count = this.historyRepo.countByDatePeriod(companyId, new BusinessTypeCode(command.getWorkTypeCodes()) ,period);
 		if (count.intValue() > 0){
 			throw new BusinessException("106");
 		}
@@ -64,7 +65,7 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 				//make default data for Company DivergenceReference Time
 				this.itemRepo.addDefaultDataWhenCreateHistory(domain.getHistoryItems().get(0).identifier());
 			}else {
-				WorkTypeDivergenceReferenceTimeHistory latestHist = this.historyRepo.findLatestHist(companyId, new WorkTypeCode(command.getWorkTypeCodes()));
+				WorkTypeDivergenceReferenceTimeHistory latestHist = this.historyRepo.findLatestHist(companyId, new BusinessTypeCode(command.getWorkTypeCodes()));
 				this.itemRepo.copyDataFromLatestHistory(domain.getHistoryItems().get(0).identifier(), latestHist.getHistoryItems().get(0).identifier());
 			}
 		} else {

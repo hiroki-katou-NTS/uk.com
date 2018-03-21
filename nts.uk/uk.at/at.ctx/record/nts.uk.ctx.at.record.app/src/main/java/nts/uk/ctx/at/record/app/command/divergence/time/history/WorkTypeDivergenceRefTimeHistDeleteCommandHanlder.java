@@ -7,11 +7,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Class WorkTypeDivergenceRefTimeHistDeleteCommandHanlder.
@@ -49,7 +49,7 @@ public class WorkTypeDivergenceRefTimeHistDeleteCommandHanlder
 
 			// find and delete all item by history
 			List<WorkTypeDivergenceReferenceTime> listDomain = this.itemRepo.findAll(command.getHistoryId(),
-					new WorkTypeCode(command.getWorkTypeCode()));
+					new BusinessTypeCode(command.getWorkTypeCode()));
 			listDomain.stream().forEach(item -> {
 				this.itemRepo.delete(item);
 			});

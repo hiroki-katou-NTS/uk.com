@@ -57,7 +57,7 @@ module nts.uk.at.view.kmk011.f {
                     // save company Hist
                     case HistorySettingMode.COMPANY:
                         if (_self.selectedId() == CreateMode.NEW){
-                            var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), false);
+                            var data = new CreateHistoryCommand(null, moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), false);
                             service.saveComHist(data).done(() => {
                                  nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     dfd.resolve();
@@ -67,7 +67,7 @@ module nts.uk.at.view.kmk011.f {
                                   _self.showMessageError(res);  
                             });
                         } else {
-                            var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), true);
+                            var data = new CreateHistoryCommand(null,moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), true);
                             service.saveComHist(data).done(() => {
                                  nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     dfd.resolve();
@@ -81,7 +81,7 @@ module nts.uk.at.view.kmk011.f {
                    case HistorySettingMode.WORKTYPE:
                         var workTypeCode: string = nts.uk.ui.windows.getShared('workTypeCode');
                         if (_self.selectedId() == CreateMode.NEW){
-                            let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, _self.startDate(), _self.endDate(), false);
+                            let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), false);
                             service.saveWkTypeHist(data1).done(() => {
                                  nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     dfd.resolve();
@@ -91,7 +91,7 @@ module nts.uk.at.view.kmk011.f {
                                   _self.showMessageError(res);  
                             });
                         } else {
-                            let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, _self.startDate(), _self.endDate(), true);
+                            let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), true);
                             service.saveWkTypeHist(data1).done(() => {
                                  nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     dfd.resolve();

@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Class WorkTypeDivergenceReferenceTimeFinder.
@@ -29,7 +29,7 @@ public class WorkTypeDivergenceReferenceTimeFinder {
 	 */
 	public List<WorkTypeDivergenceReferenceTimeDto> getDivergenceReferenceTimeItemByHist(String historyId, String workTypeCode){
 		
-		List<WorkTypeDivergenceReferenceTime> listDomain = this.itemRepository.findAll(historyId, new WorkTypeCode(workTypeCode));
+		List<WorkTypeDivergenceReferenceTime> listDomain = this.itemRepository.findAll(historyId, new BusinessTypeCode(workTypeCode));
 		
 		if (listDomain.isEmpty()){
 			return Collections.emptyList();

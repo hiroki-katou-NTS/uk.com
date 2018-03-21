@@ -23,10 +23,10 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 	private String historyId;
 	
 	/** The start date. */
-	private GeneralDate startDate;
+	private String startDate;
 	
 	/** The end date. */
-	private GeneralDate endDate;
+	private String endDate;
 	
 	/** The is copy data. */
 	private boolean isCopyData;
@@ -60,7 +60,7 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 		
 		List<DateHistoryItem> list = new ArrayList<DateHistoryItem>();
 		
-		DatePeriod period = new DatePeriod(this.startDate, this.endDate);
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"), GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
 		list.add(new DateHistoryItem(histId, period));
 		return list;
 	}

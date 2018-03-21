@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
@@ -38,12 +39,12 @@ public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<C
 		ComDivergenceRefTimeHistSaveCommand command = context.getCommand();
 		
 		// validate start date , end date
-		if (command.getStartDate().compareTo(command.getEndDate()) > 0) {
+		if (GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd").compareTo(GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd")) > 0) {
 			throw new BusinessException("Msg_917");
 		}
 		
 		//validate duplicate history
-		DatePeriod period = new DatePeriod(command.getStartDate(), command.getEndDate());
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"));
 		Integer count = this.historyRepo.countByDatePeriod(companyId, period);
 		if (count.intValue() > 0){
 			throw new BusinessException("106");

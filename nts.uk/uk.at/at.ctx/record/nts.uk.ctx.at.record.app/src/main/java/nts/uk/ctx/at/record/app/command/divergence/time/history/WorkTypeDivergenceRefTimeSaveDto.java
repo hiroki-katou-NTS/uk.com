@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.app.command.divergence.time.history;
 import java.util.Optional;
 
 import lombok.Data;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -81,8 +81,8 @@ public class WorkTypeDivergenceRefTimeSaveDto implements WorkTypeDivergenceRefer
 	 * WorkTypeDivergenceReferenceTimeGetMemento#getWorkTypeCode()
 	 */
 	@Override
-	public WorkTypeCode getWorkTypeCode() {
-		return new WorkTypeCode(this.workTypeCodes);
+	public BusinessTypeCode getWorkTypeCode() {
+		return new BusinessTypeCode(this.workTypeCodes);
 	}
 
 	/*

@@ -6,10 +6,11 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryGetMemento;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -17,7 +18,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class WorkTypeDivergenceRefTimeHistSaveCommand.
  */
-@Data
+@Getter
+@Setter
 public class WorkTypeDivergenceRefTimeHistSaveCommand implements WorkTypeDivergenceReferenceTimeHistoryGetMemento{
 	
 	/** The work type code. */
@@ -27,10 +29,10 @@ public class WorkTypeDivergenceRefTimeHistSaveCommand implements WorkTypeDiverge
 	private String historyId;
 	
 	/** The start date. */
-	private GeneralDate startDate;
+	private String startDate;
 	
 	/** The end date. */
-	private GeneralDate endDate;
+	private String endDate;
 	
 	/** The is copy data. */
 	private boolean isCopyData;
@@ -51,8 +53,8 @@ public class WorkTypeDivergenceRefTimeHistSaveCommand implements WorkTypeDiverge
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryGetMemento#getWorkTypeCode()
 	 */
 	@Override
-	public WorkTypeCode getWorkTypeCode() {
-		return new WorkTypeCode(this.workTypeCodes);
+	public BusinessTypeCode getWorkTypeCode() {
+		return new BusinessTypeCode(this.workTypeCodes);
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +71,7 @@ public class WorkTypeDivergenceRefTimeHistSaveCommand implements WorkTypeDiverge
 		
 		List<DateHistoryItem> list = new ArrayList<DateHistoryItem>();
 		
-		DatePeriod period = new DatePeriod(this.startDate, this.endDate);
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"), GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
 		list.add(new DateHistoryItem(histId, period));
 		return list;
 	}
