@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.SaveComMonthCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.SaveComStatWorkTimeSetCommandHandler;
 
 /**
@@ -21,7 +22,11 @@ public class Kmk004ComAddCommandHandler extends CommandHandler<Kmk004ComAddComma
 
 	/** The save com stat work time set command handler. */
 	@Inject
-	private SaveComStatWorkTimeSetCommandHandler saveCommand;
+	private SaveComStatWorkTimeSetCommandHandler saveStatCommand;
+	
+	/** The save com flex command. */
+	@Inject
+	private SaveComMonthCalSetCommandHandler saveMonthCommand;
 
 	/*
 	 * (non-Javadoc)
@@ -32,9 +37,8 @@ public class Kmk004ComAddCommandHandler extends CommandHandler<Kmk004ComAddComma
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<Kmk004ComAddCommand> context) {
-		// TODO Auto-generated method stub
 		Kmk004ComAddCommand addCommand = context.getCommand();
-		this.saveCommand.handle(addCommand.getSaveCommand());
+		this.saveStatCommand.handle(addCommand.getSaveStatCommand());
+		this.saveMonthCommand.handle(addCommand.getSaveMonthCommand());		
 	}
-
 }

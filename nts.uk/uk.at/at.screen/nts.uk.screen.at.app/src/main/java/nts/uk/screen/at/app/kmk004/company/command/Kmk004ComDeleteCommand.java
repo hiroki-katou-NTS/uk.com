@@ -7,6 +7,7 @@ package nts.uk.screen.at.app.kmk004.company.command;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.DelComMonthCalSetCommand;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.DeleteComStatWorkTimeSetCommand;
 
 /**
@@ -18,6 +19,9 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.DeleteComS
 public class Kmk004ComDeleteCommand {
 
 	/** The update com stat work time set command. */
-	private DeleteComStatWorkTimeSetCommand deleteCommand;
-
+	private DeleteComStatWorkTimeSetCommand delStatCommand;
+	
+	/** The del month command. */
+	private DelComMonthCalSetCommand delMonthCommand;
+	
 }
