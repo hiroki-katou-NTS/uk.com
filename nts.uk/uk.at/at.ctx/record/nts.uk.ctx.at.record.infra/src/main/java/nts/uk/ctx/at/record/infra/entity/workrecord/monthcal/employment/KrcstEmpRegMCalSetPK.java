@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.at.shared.infra.entity.statutory.worktime;
+package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employment;
 
 import java.io.Serializable;
 import javax.persistence.Basic;

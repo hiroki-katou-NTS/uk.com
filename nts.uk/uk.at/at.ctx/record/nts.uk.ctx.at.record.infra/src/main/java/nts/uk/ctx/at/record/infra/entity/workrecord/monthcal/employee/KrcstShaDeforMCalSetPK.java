@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.at.shared.infra.entity.statutory.worktime;
+package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
  * @author NWS_THANHNC_PC
  */
 @Embeddable
-public class KrcstWkpFlexMCalSetPK implements Serializable {
+public class KrcstShaDeforMCalSetPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 17)
@@ -26,15 +26,15 @@ public class KrcstWkpFlexMCalSetPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 36)
-    @Column(name = "WKP_ID")
-    private String wkpId;
+    @Column(name = "SID")
+    private String sid;
 
-    public KrcstWkpFlexMCalSetPK() {
+    public KrcstShaDeforMCalSetPK() {
     }
 
-    public KrcstWkpFlexMCalSetPK(String cid, String wkpId) {
+    public KrcstShaDeforMCalSetPK(String cid, String sid) {
         this.cid = cid;
-        this.wkpId = wkpId;
+        this.sid = sid;
     }
 
     public String getCid() {
@@ -45,33 +45,33 @@ public class KrcstWkpFlexMCalSetPK implements Serializable {
         this.cid = cid;
     }
 
-    public String getWkpId() {
-        return wkpId;
+    public String getSid() {
+        return sid;
     }
 
-    public void setWkpId(String wkpId) {
-        this.wkpId = wkpId;
+    public void setSid(String sid) {
+        this.sid = sid;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
-        hash += (wkpId != null ? wkpId.hashCode() : 0);
+        hash += (sid != null ? sid.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KrcstWkpFlexMCalSetPK)) {
+        if (!(object instanceof KrcstShaDeforMCalSetPK)) {
             return false;
         }
-        KrcstWkpFlexMCalSetPK other = (KrcstWkpFlexMCalSetPK) object;
+        KrcstShaDeforMCalSetPK other = (KrcstShaDeforMCalSetPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }
-        if ((this.wkpId == null && other.wkpId != null) || (this.wkpId != null && !this.wkpId.equals(other.wkpId))) {
+        if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
             return false;
         }
         return true;
@@ -79,7 +79,7 @@ public class KrcstWkpFlexMCalSetPK implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.KrcstWkpFlexMCalSetPK[ cid=" + cid + ", wkpId=" + wkpId + " ]";
+        return "entities.KrcstShaDeforMCalSetPK[ cid=" + cid + ", sid=" + sid + " ]";
     }
     
 }

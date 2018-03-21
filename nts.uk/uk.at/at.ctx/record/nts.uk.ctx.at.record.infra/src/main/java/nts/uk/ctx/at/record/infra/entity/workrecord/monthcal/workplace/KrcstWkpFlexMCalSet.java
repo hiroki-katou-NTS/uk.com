@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.at.shared.infra.entity.statutory.worktime;
+package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -25,26 +25,29 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCST_COM_FLEX_M_CAL_SET")
+@Table(name = "KRCST_WKP_FLEX_M_CAL_SET")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcstComFlexMCalSet.findAll", query = "SELECT k FROM KrcstComFlexMCalSet k"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByInsDate", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByInsCcd", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByInsScd", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByInsPg", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByUpdDate", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByUpdCcd", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByUpdScd", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByUpdPg", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByExclusVer", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByCid", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.cid = :cid"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByInsufficSet", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.insufficSet = :insufficSet"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByIncludeOt", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.includeOt = :includeOt"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByAggrMethod", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.aggrMethod = :aggrMethod"),
-    @NamedQuery(name = "KrcstComFlexMCalSet.findByLegalAggrSet", query = "SELECT k FROM KrcstComFlexMCalSet k WHERE k.legalAggrSet = :legalAggrSet")})
-public class KrcstComFlexMCalSet implements Serializable {
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findAll", query = "SELECT k FROM KrcstWkpFlexMCalSet k"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByInsDate", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.insDate = :insDate"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByInsCcd", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.insCcd = :insCcd"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByInsScd", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.insScd = :insScd"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByInsPg", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.insPg = :insPg"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByUpdDate", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.updDate = :updDate"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByUpdCcd", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.updCcd = :updCcd"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByUpdScd", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.updScd = :updScd"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByUpdPg", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.updPg = :updPg"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByExclusVer", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.exclusVer = :exclusVer"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByCid", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.krcstWkpFlexMCalSetPK.cid = :cid"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByWkpId", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.krcstWkpFlexMCalSetPK.wkpId = :wkpId"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByInsufficSet", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.insufficSet = :insufficSet"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByIncludeOt", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.includeOt = :includeOt"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByAggrMethod", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.aggrMethod = :aggrMethod"),
+    @NamedQuery(name = "KrcstWkpFlexMCalSet.findByLegalAggrSet", query = "SELECT k FROM KrcstWkpFlexMCalSet k WHERE k.legalAggrSet = :legalAggrSet")})
+public class KrcstWkpFlexMCalSet implements Serializable {
     private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected KrcstWkpFlexMCalSetPK krcstWkpFlexMCalSetPK;
     @Column(name = "INS_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insDate;
@@ -73,12 +76,6 @@ public class KrcstComFlexMCalSet implements Serializable {
     @NotNull
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
     @Basic(optional = false)
     @NotNull
     @Column(name = "INSUFFIC_SET")
@@ -96,20 +93,32 @@ public class KrcstComFlexMCalSet implements Serializable {
     @Column(name = "LEGAL_AGGR_SET")
     private short legalAggrSet;
 
-    public KrcstComFlexMCalSet() {
+    public KrcstWkpFlexMCalSet() {
     }
 
-    public KrcstComFlexMCalSet(String cid) {
-        this.cid = cid;
+    public KrcstWkpFlexMCalSet(KrcstWkpFlexMCalSetPK krcstWkpFlexMCalSetPK) {
+        this.krcstWkpFlexMCalSetPK = krcstWkpFlexMCalSetPK;
     }
 
-    public KrcstComFlexMCalSet(String cid, int exclusVer, short insufficSet, short includeOt, short aggrMethod, short legalAggrSet) {
-        this.cid = cid;
+    public KrcstWkpFlexMCalSet(KrcstWkpFlexMCalSetPK krcstWkpFlexMCalSetPK, int exclusVer, short insufficSet, short includeOt, short aggrMethod, short legalAggrSet) {
+        this.krcstWkpFlexMCalSetPK = krcstWkpFlexMCalSetPK;
         this.exclusVer = exclusVer;
         this.insufficSet = insufficSet;
         this.includeOt = includeOt;
         this.aggrMethod = aggrMethod;
         this.legalAggrSet = legalAggrSet;
+    }
+
+    public KrcstWkpFlexMCalSet(String cid, String wkpId) {
+        this.krcstWkpFlexMCalSetPK = new KrcstWkpFlexMCalSetPK(cid, wkpId);
+    }
+
+    public KrcstWkpFlexMCalSetPK getKrcstWkpFlexMCalSetPK() {
+        return krcstWkpFlexMCalSetPK;
+    }
+
+    public void setKrcstWkpFlexMCalSetPK(KrcstWkpFlexMCalSetPK krcstWkpFlexMCalSetPK) {
+        this.krcstWkpFlexMCalSetPK = krcstWkpFlexMCalSetPK;
     }
 
     public Date getInsDate() {
@@ -184,14 +193,6 @@ public class KrcstComFlexMCalSet implements Serializable {
         this.exclusVer = exclusVer;
     }
 
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
     public short getInsufficSet() {
         return insufficSet;
     }
@@ -227,18 +228,18 @@ public class KrcstComFlexMCalSet implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (krcstWkpFlexMCalSetPK != null ? krcstWkpFlexMCalSetPK.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KrcstComFlexMCalSet)) {
+        if (!(object instanceof KrcstWkpFlexMCalSet)) {
             return false;
         }
-        KrcstComFlexMCalSet other = (KrcstComFlexMCalSet) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+        KrcstWkpFlexMCalSet other = (KrcstWkpFlexMCalSet) object;
+        if ((this.krcstWkpFlexMCalSetPK == null && other.krcstWkpFlexMCalSetPK != null) || (this.krcstWkpFlexMCalSetPK != null && !this.krcstWkpFlexMCalSetPK.equals(other.krcstWkpFlexMCalSetPK))) {
             return false;
         }
         return true;
@@ -246,7 +247,7 @@ public class KrcstComFlexMCalSet implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.KrcstComFlexMCalSet[ cid=" + cid + " ]";
+        return "entities.KrcstWkpFlexMCalSet[ krcstWkpFlexMCalSetPK=" + krcstWkpFlexMCalSetPK + " ]";
     }
     
 }

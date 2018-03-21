@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nts.uk.ctx.at.shared.infra.entity.statutory.worktime;
+package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -25,28 +25,31 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCST_COM_REG_M_CAL_SET")
+@Table(name = "KRCST_WKP_REG_M_CAL_SET")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcstComRegMCalSet.findAll", query = "SELECT k FROM KrcstComRegMCalSet k"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByInsDate", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByInsCcd", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByInsScd", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByInsPg", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByUpdDate", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByUpdCcd", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByUpdScd", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByUpdPg", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByExclusVer", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByCid", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.cid = :cid"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByIncludeLegalOt", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.includeLegalOt = :includeLegalOt"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByIncludeHolidayOt", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.includeHolidayOt = :includeHolidayOt"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByIncludeExtraOt", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.includeExtraOt = :includeExtraOt"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByIncludeLegalAggr", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.includeLegalAggr = :includeLegalAggr"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByIncludeHolidayAggr", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.includeHolidayAggr = :includeHolidayAggr"),
-    @NamedQuery(name = "KrcstComRegMCalSet.findByIncludeExtraAggr", query = "SELECT k FROM KrcstComRegMCalSet k WHERE k.includeExtraAggr = :includeExtraAggr")})
-public class KrcstComRegMCalSet implements Serializable {
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findAll", query = "SELECT k FROM KrcstWkpRegMCalSet k"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByInsDate", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.insDate = :insDate"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByInsCcd", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.insCcd = :insCcd"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByInsScd", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.insScd = :insScd"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByInsPg", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.insPg = :insPg"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByUpdDate", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.updDate = :updDate"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByUpdCcd", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.updCcd = :updCcd"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByUpdScd", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.updScd = :updScd"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByUpdPg", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.updPg = :updPg"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByExclusVer", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.exclusVer = :exclusVer"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByCid", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.krcstWkpRegMCalSetPK.cid = :cid"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByWkpid", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.krcstWkpRegMCalSetPK.wkpid = :wkpid"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByIncludeLegalOt", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.includeLegalOt = :includeLegalOt"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByIncludeHolidayOt", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.includeHolidayOt = :includeHolidayOt"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByIncludeExtraOt", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.includeExtraOt = :includeExtraOt"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByIncludeLegalAggr", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.includeLegalAggr = :includeLegalAggr"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByIncludeHolidayAggr", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.includeHolidayAggr = :includeHolidayAggr"),
+    @NamedQuery(name = "KrcstWkpRegMCalSet.findByIncludeExtraAggr", query = "SELECT k FROM KrcstWkpRegMCalSet k WHERE k.includeExtraAggr = :includeExtraAggr")})
+public class KrcstWkpRegMCalSet implements Serializable {
     private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected KrcstWkpRegMCalSetPK krcstWkpRegMCalSetPK;
     @Column(name = "INS_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insDate;
@@ -75,12 +78,6 @@ public class KrcstComRegMCalSet implements Serializable {
     @NotNull
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
     @Basic(optional = false)
     @NotNull
     @Column(name = "INCLUDE_LEGAL_OT")
@@ -106,15 +103,15 @@ public class KrcstComRegMCalSet implements Serializable {
     @Column(name = "INCLUDE_EXTRA_AGGR")
     private short includeExtraAggr;
 
-    public KrcstComRegMCalSet() {
+    public KrcstWkpRegMCalSet() {
     }
 
-    public KrcstComRegMCalSet(String cid) {
-        this.cid = cid;
+    public KrcstWkpRegMCalSet(KrcstWkpRegMCalSetPK krcstWkpRegMCalSetPK) {
+        this.krcstWkpRegMCalSetPK = krcstWkpRegMCalSetPK;
     }
 
-    public KrcstComRegMCalSet(String cid, int exclusVer, short includeLegalOt, short includeHolidayOt, short includeExtraOt, short includeLegalAggr, short includeHolidayAggr, short includeExtraAggr) {
-        this.cid = cid;
+    public KrcstWkpRegMCalSet(KrcstWkpRegMCalSetPK krcstWkpRegMCalSetPK, int exclusVer, short includeLegalOt, short includeHolidayOt, short includeExtraOt, short includeLegalAggr, short includeHolidayAggr, short includeExtraAggr) {
+        this.krcstWkpRegMCalSetPK = krcstWkpRegMCalSetPK;
         this.exclusVer = exclusVer;
         this.includeLegalOt = includeLegalOt;
         this.includeHolidayOt = includeHolidayOt;
@@ -122,6 +119,18 @@ public class KrcstComRegMCalSet implements Serializable {
         this.includeLegalAggr = includeLegalAggr;
         this.includeHolidayAggr = includeHolidayAggr;
         this.includeExtraAggr = includeExtraAggr;
+    }
+
+    public KrcstWkpRegMCalSet(String cid, String wkpid) {
+        this.krcstWkpRegMCalSetPK = new KrcstWkpRegMCalSetPK(cid, wkpid);
+    }
+
+    public KrcstWkpRegMCalSetPK getKrcstWkpRegMCalSetPK() {
+        return krcstWkpRegMCalSetPK;
+    }
+
+    public void setKrcstWkpRegMCalSetPK(KrcstWkpRegMCalSetPK krcstWkpRegMCalSetPK) {
+        this.krcstWkpRegMCalSetPK = krcstWkpRegMCalSetPK;
     }
 
     public Date getInsDate() {
@@ -196,14 +205,6 @@ public class KrcstComRegMCalSet implements Serializable {
         this.exclusVer = exclusVer;
     }
 
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
     public short getIncludeLegalOt() {
         return includeLegalOt;
     }
@@ -255,18 +256,18 @@ public class KrcstComRegMCalSet implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (krcstWkpRegMCalSetPK != null ? krcstWkpRegMCalSetPK.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KrcstComRegMCalSet)) {
+        if (!(object instanceof KrcstWkpRegMCalSet)) {
             return false;
         }
-        KrcstComRegMCalSet other = (KrcstComRegMCalSet) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+        KrcstWkpRegMCalSet other = (KrcstWkpRegMCalSet) object;
+        if ((this.krcstWkpRegMCalSetPK == null && other.krcstWkpRegMCalSetPK != null) || (this.krcstWkpRegMCalSetPK != null && !this.krcstWkpRegMCalSetPK.equals(other.krcstWkpRegMCalSetPK))) {
             return false;
         }
         return true;
@@ -274,7 +275,7 @@ public class KrcstComRegMCalSet implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.KrcstComRegMCalSet[ cid=" + cid + " ]";
+        return "entities.KrcstWkpRegMCalSet[ krcstWkpRegMCalSetPK=" + krcstWkpRegMCalSetPK + " ]";
     }
     
 }
