@@ -17,20 +17,38 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemai
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {
 
-	private String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.employeeId = :employeeId";
-
+	private String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.employeeId = :employeeId ORDER BY a.grantDate DESC";
+	
+	private String QUERY_WITH_EMPID_CHECKSTATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.employeeId = :employeeId AND a.expStatus = :checkState ORDER BY a.grantDate DESC";
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream()
-				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.annLeavID,ent.employeeId, ent.grantDate,
+				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.annLeavID, ent.CID, ent.employeeId, ent.grantDate,
 						ent.deadline, ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays,
 						ent.usedMinutes, ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent,
 						ent.perscribedDays, ent.deductedDays, ent.workingDays))
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, Boolean checkState) {
+		if (checkState) {
+			return find(employeeId);
+		}
+		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMPID_CHECKSTATE, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("checkState", 0)
+				.getList();
+		return entities.stream()
+				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.annLeavID,ent.CID, ent.employeeId, ent.grantDate,
+						ent.deadline, ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays,
+						ent.usedMinutes, ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent,
+						ent.perscribedDays, ent.deductedDays, ent.workingDays))
+				.collect(Collectors.toList());
+	}
+	
 	@Override
 	public void add(AnnualLeaveGrantRemainingData data) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();

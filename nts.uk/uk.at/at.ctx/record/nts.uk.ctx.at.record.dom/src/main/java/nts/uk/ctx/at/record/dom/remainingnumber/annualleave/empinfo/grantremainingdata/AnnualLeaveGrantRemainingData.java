@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 
 	private String annLeavID;
+	
+	private String cID;
 	/**
 	 * 社員ID
 	 */
@@ -49,11 +51,12 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 	 */
 	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
-	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String employeeId, GeneralDate grantDate,
+	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String cID, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, Integer grantMinutes,
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
 			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
+		domain.cID = cID;
 		domain.annLeavID = annLeavID;
 		domain.employeeId = employeeId;
 		domain.grantDate = grantDate;

@@ -214,14 +214,14 @@
 	width: 120px !important;
 }
 #fixed_table tr>td:NTH-CHILD(2) {
-	width:100px !important;
+	width:80px !important;
 }
 #fixed_table tr>td:NTH-CHILD(3) {
-	width:100px !important;
+	width:80px !important;
 }
 #fixed_table tr>td:NTH-CHILD(4) {
 	width:100px !important;
 }
 #fixed_table tr>td:NTH-CHILD(5) {
-	width:100px !important;
+	width:80px !important;
 }

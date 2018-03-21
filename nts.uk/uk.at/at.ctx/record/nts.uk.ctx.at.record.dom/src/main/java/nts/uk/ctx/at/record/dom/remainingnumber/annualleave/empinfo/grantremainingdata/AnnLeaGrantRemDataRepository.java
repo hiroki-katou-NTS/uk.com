@@ -6,6 +6,8 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> find(String employeeId);
 	
+	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, Boolean checkState);
+	
 	void add(AnnualLeaveGrantRemainingData data);
 	
 	void update(AnnualLeaveGrantRemainingData data);

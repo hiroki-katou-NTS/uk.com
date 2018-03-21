@@ -29,15 +29,15 @@
 
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: create" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
-				<button tabindex="2" data-bind="" class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
-				<button tabindex="3" data-bind="" class="danger btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="2" data-bind="click: save" class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
+				<button tabindex="3" data-bind="click: remove" class="danger btnStyle">#{i18n.getText('CPS001_110')}</button>
 				<button tabindex="4" data-bind="click : close" class="btnStyle">#{i18n.getText('CPS001_111')}</button>
 			</div>
 
 			<div id="contents-area">
 				<div class="grid-container">
-					<div data-bind="ntsCheckBox: { checked: true, enable: true}">#{i18n.getText('CPS001_125')}</div>
-					<table id="single-list"
+					<div tabindex="5" data-bind="ntsCheckBox: { checked: checked, enable: true}">#{i18n.getText('CPS001_125')}</div>
+					<table tabindex="6" id="single-list"
 						data-bind="ntsGridList: {			
 		 				dataSource: listAnnualLeaveGrantRemainData, 
 						primaryKey: 'grantDate', 
@@ -53,7 +53,7 @@
 						<td>年休付与日</td>
 
 						<td>
-							<div
+							<div  tabindex="7" id="idGrantDate"
 								data-bind="ntsDatePicker: {value: grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
@@ -61,7 +61,7 @@
 						<td>年休期限日</td>
 
 						<td>
-							<div
+							<div tabindex="8"
 								data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
@@ -69,7 +69,7 @@
 						<td>年休期限切れ状態</td>
 
 						<td>
-							<div class="cf"
+							<div class="cf" tabindex="9"
 								data-bind="ntsSwitchButton: {
 								options: $parent.expirationStatus,
 								optionsValue: 'code',
@@ -101,7 +101,7 @@
 									<td></td>
 									<td data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</td>
 									<td>付与日数</td>
-									<td><input class="resize_Edittor" tabindex="9"
+									<td><input class="resize_Edittor" tabindex="10"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
 	                                      value: grantDays,
@@ -113,7 +113,7 @@
 	                                      }" />
 									</td>
 									<td>付与時間</td>
-									<td><input class="resize_Edittor"
+									<td><input class="resize_Edittor" tabindex="11"
 										data-bind="ntsTimeEditor: {
 										value: grantMinutes,
 										required: true,
@@ -128,7 +128,7 @@
 									<td></td>
 									<td data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</td>
 									<td>使用日数</td>
-									<td><input tabindex="9" class="resize_Edittor"
+									<td><input tabindex="12" class="resize_Edittor"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
 	                                      value: usedDays,
@@ -140,7 +140,7 @@
 	                                      }" />
 									</td>
 									<td>使用時間</td>
-									<td><input class="resize_Edittor"
+									<td><input class="resize_Edittor" tabindex="13"
 										data-bind="ntsTimeEditor: {
 										value: usedMinutes,
 										required: true,
@@ -155,7 +155,7 @@
 									<td></td>
 									<td data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</td>
 									<td>残日数</td>
-									<td><input class="resize_Edittor" tabindex="9"
+									<td><input class="resize_Edittor" tabindex="14"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
 	                                      value:remainingDays,
@@ -167,7 +167,7 @@
 	                                      }" />
 									</td>
 									<td>残時間</td>
-									<td><input class="resize_Edittor"
+									<td><input class="resize_Edittor" tabindex="15"
 										data-bind="ntsTimeEditor: {
 										value: remainingMinutes,
 										required: true,

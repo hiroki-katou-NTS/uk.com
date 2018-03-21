@@ -12,6 +12,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 @Getter
 public class SpecialLeaveBasicInfo extends AggregateRoot{
 	
+	private String infoId;
+	
 	// 社員ID
 	private String employeeId;
 	

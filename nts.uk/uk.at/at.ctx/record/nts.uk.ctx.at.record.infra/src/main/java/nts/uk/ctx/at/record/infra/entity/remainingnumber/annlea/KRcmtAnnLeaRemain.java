@@ -15,6 +15,9 @@ public class KRcmtAnnLeaRemain extends UkJpaEntity{
 	@EmbeddedId
     public KRcmtAnnLeaRemainPK key;
 
+	@Column(name = "CID")
+    public String CID;
+	
 	@Column(name = "EMPLOYEE_ID")
     public String employeeId;
 	
