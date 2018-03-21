@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KrcmtAnnLeaBasicInfo;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcmtAnnLeaBasicInfo;
 
 @Stateless
 public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEmpBasicInfoRepository {

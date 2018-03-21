@@ -8,6 +8,8 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> find(String employeeId);
 	
+	List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);
+	
 	void add(AnnualLeaveGrantRemainingData data);
 	
 	void update(AnnualLeaveGrantRemainingData data);

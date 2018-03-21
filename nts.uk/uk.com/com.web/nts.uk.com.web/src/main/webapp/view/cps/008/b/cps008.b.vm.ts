@@ -14,17 +14,19 @@ module cps008.b.vm {
             self.start();
 
             var currentDialog = nts.uk.ui.windows.getSelf();
-            var doit;
-            $(currentDialog.parent.globalContext).resize(function() {
-                clearTimeout(doit);
-                doit = setTimeout(self.resizedw(), 1000);
-            });
+            if (currentDialog) {
+                let doit = undefined;
+                $(currentDialog.parent.globalContext).resize(function() {
+                    clearTimeout(doit);
+                    doit = setTimeout(self.resizedw(), 1000);
+                });
+            }
         }
 
         resizedw() {
             let self = this,
                 currentDialog = nts.uk.ui.windows.getSelf();
-           // $(currentDialog.parent.globalContext).css("overflow", "hidden");
+            // $(currentDialog.parent.globalContext).css("overflow", "hidden");
 
             if (currentDialog.parent.globalContext.innerWidth <= 1275) {
                 currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
@@ -72,8 +74,8 @@ module cps008.b.vm {
             if (cls && cls.length) {
                 layout.itemsClassification.removeAll();
                 _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
-            } else{
-                 layout.itemsClassification([]);
+            } else {
+                layout.itemsClassification([]);
             }
         }
 
