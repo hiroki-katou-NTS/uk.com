@@ -55,6 +55,10 @@ module cmm045.shr {
                     this.appDisplayAtr = appDisplayAtr;
                     this.listEmployeeId = listEmployeeId;
                     this.empRefineCondition = empRefineCondition;
+                
+            }
+            setAppType(appType: number){
+                  this.appType = appType;
             }
         }
         //data fill grid list mode application
