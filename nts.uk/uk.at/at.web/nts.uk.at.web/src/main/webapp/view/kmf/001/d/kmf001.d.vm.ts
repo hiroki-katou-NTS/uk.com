@@ -306,17 +306,20 @@ module nts.uk.pr.view.kmf001.d {
             
             private deleteByEmployment(): void {
                 var self = this;
-                service.deleteByEmployment(self.selectedItem()).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 
-                    // Remove item from setting list (un-tick)
-                    self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    service.deleteByEmployment(self.selectedItem()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     
-                    // Reload current setting
-                    service.findByEmployment(self.selectedItem()).done(function(data1: EmploymentSettingFindDto) {
-                        self.bindEmploymentSettingData(data1);
+                        // Remove item from setting list (un-tick)
+                        self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
                         
-                        self.checkDeleteAvailability();
+                        // Reload current setting
+                        service.findByEmployment(self.selectedItem()).done(function(data1: EmploymentSettingFindDto) {
+                            self.bindEmploymentSettingData(data1);
+                            
+                            self.checkDeleteAvailability();
+                        });
                     });
                 });
             }

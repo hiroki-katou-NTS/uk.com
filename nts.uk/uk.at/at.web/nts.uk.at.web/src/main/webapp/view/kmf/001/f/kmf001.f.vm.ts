@@ -465,8 +465,9 @@ module nts.uk.pr.view.kmf001.f {
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){
                         service.update(self.collectData()).done(function() {
-                            self.loadSetting();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.loadSetting().then(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            });
                         })
                         .fail((err) => {
                             // display error 782 on fields
@@ -643,13 +644,15 @@ module nts.uk.pr.view.kmf001.f {
             //delete employment
             private deleteEmployment() {
                 var self = this;
-                service.deleteEmploymentSetting(self.collectEmploymentData()).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    self.loadEmploymentList().done(() => {
-                        //reload list employment
-                        $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
-                            self.loadEmploymentSetting(self.emSelectedCode());
-                            self.checkDeleteAvailability();
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    service.deleteEmploymentSetting(self.collectEmploymentData()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        self.loadEmploymentList().done(() => {
+                            //reload list employment
+                            $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
+                                self.loadEmploymentSetting(self.emSelectedCode());
+                                self.checkDeleteAvailability();
+                            });
                         });
                     });
                 });

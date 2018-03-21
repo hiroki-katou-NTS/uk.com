@@ -277,15 +277,16 @@ module nts.uk.pr.view.kmf001.h {
             public deleteEmpSetting(): void {
                 let self = this;
                 let dfd = $.Deferred();
-                
-                this.service.deleteEmpSetting(self.selectedItem()).done(function() {
-                    // Remove item from setting list (un-tick)
-                    self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
-                    
-                    // Reload setting (empty out fields)
-                    self.loadEmpSettingDetails(self.selectedItem());
-                    self.checkDeleteAvailability();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    self.service.deleteEmpSetting(self.selectedItem()).done(function() {
+                        // Remove item from setting list (un-tick)
+                        self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
+                        
+                        // Reload setting (empty out fields)
+                        self.loadEmpSettingDetails(self.selectedItem());
+                        self.checkDeleteAvailability();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    });
                 });
             }
 
