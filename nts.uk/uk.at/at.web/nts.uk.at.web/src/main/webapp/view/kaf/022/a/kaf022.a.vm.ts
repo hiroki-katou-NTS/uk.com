@@ -1665,6 +1665,7 @@ module nts.uk.at.view.kmf022 {
                     self.initDataJ(data);
                     self.initDataK(data);
                 }).always(()=>{
+                    nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
                     $("#a4_6").focus();
                 });
