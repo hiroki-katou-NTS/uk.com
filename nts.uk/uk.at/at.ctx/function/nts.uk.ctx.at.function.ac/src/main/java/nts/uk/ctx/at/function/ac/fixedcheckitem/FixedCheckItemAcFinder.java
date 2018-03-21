@@ -59,13 +59,13 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 	
 	private ValueExtractAlarm convertToExport(ValueExtractAlarmWRPubExport export) {
 		return new ValueExtractAlarm(
-				export.getWorkplaceID().get(),
+				export.getWorkplaceID().orElse(null),
 				export.getEmployeeID(),
 				export.getAlarmValueDate().toString(),
 				export.getClassification(),
 				export.getAlarmItem(),
 				export.getAlarmValueMessage(),
-				export.getComment().get()
+				export.getComment().orElse(null)
 				);
 	}
 
