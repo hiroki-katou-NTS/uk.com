@@ -225,25 +225,18 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 						// ループする日と受付制限日と比較する
 						GeneralDate limitDay = systemDate.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
 						if(loopDay.before(limitDay)) {
-							throw new BusinessException("Msg_327", limitDay.toString(DATE_FORMAT));
+							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						}
 					} else {
 						// ループする日とシステム日付を比較する
 						if(loopDay.before(systemDate)){
-							throw new BusinessException("Msg_327", systemDate.toString(DATE_FORMAT));
+							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						} else if(loopDay.equals(systemDate)){
 							Integer limitTime = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
 							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
 							// システム日時と受付制限日時と比較する
 							if(systemTime > limitTime) {
-								GeneralDateTime limitDateTime = GeneralDateTime.ymdhms(
-										systemDate.year(), 
-										systemDate.month(), 
-										systemDate.day(), 
-										limitTime/60, 
-										limitTime%60, 
-										0);
-								throw new BusinessException("Msg_327", limitDateTime.toString("yyyy/MM/dd HH:mm"));
+								throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 							}
 						}
 					}
