@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,26 +10,21 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.record.dom.monthlyperformanceformat.enums.SettingUnit;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.tmp.MonthlyItemControlAuthDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.OperationOfMonthlyPerformanceDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class MonthlyPerformanceDisplay {
 	
 	@Inject
-	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
-	//@Inject
-	//private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
+	//MonthlyInitDisplayFormatRepo initDisplay;
+	
 	private static final String SCREEN_KDW003 = "KDW/003/a";
 	/**
 	 * 表示フォーマットの取得
@@ -38,14 +32,14 @@ public class MonthlyPerformanceDisplay {
 	 * @param formatCodes: 使用するフォーマットコード：月別実績フォーマットコード
 	 * 表示する項目一覧
 	 */
-	public DisplayItem getDisplayFormat(List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
+	public void getDisplayFormat(List<String> lstEmployeeId, List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, OperationOfMonthlyPerformanceDto operation){
+		DisplayItem dispItem;
 		//会社ID：ログイン会社に一致する
 		String cId = AppContexts.user().companyId();
 		//ロールID：ログイン社員の就業ロールに一致する
 		String employmentRoleID = AppContexts.user().roles().forAttendance();
-		DisplayItem dispItem;
 		//権限の場合 
-		if(unitType == SettingUnitType.AUTHORITY){
+		if(operation.getSettingUnit() == SettingUnit.AUTHORITY){
 			//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
 			dispItem = getDisplayItemAuthority(cId, formatCodes, correctionOfDaily);
 		}
@@ -53,29 +47,13 @@ public class MonthlyPerformanceDisplay {
 		else{
 			//社員の勤務種別に対応する表示項目を取得する
 			//(Lấy các item hiển thị ứng với loại đi làm của employee)
-			dispItem = getDisplayItemBussiness(lstEmployees, formatCodes, correctionOfDaily);
+			dispItem = getDisplayItemBussiness(lstEmployeeId, formatCodes, correctionOfDaily);
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
-		//TODO 権限別月次項目制御
+		//TODO 権限別月次項目制御		
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」 bởi domain 「権限別月次項目制御」
-		MonthlyItemControlAuthDto filterMonthItemDto = new MonthlyItemControlAuthDto();
-		
-		if(!CollectionUtil.isEmpty(filterMonthItemDto.getLstInputItem())){
-			//ドメインモデル「月次の勤怠項目」を取得する
-			List<Integer> attendanceItemIds = filterMonthItemDto.getLstInputItem().stream().map(x -> x.getAtendanceItemId()).collect(Collectors.toList());
-			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, attendanceItemIds);
-			
-			//TODO 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する  - attendanceItemLinkingRepository
-			
-			//取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む 
-			
-			//ドメインモデル「月次の勤怠項目の制御」を取得する
-			
-		}
 		DisplayItem lockItem = new DisplayItem();
-		
-		return dispItem;
 	}
 
 	/**
@@ -107,7 +85,7 @@ public class MonthlyPerformanceDisplay {
 				//}else{
 					//アルゴリズム「表示項目の選択を起動する」を実行する
 					//ダイアログで選択していたフォーマットコードをパラメータ「使用するフォーマットコード」にセットする
-					throw new BusinessException(SCREEN_KDW003);
+				//	throw new BusinessException(SCREEN_KDW003);
 				//}
 			}
 		}		
@@ -128,7 +106,7 @@ public class MonthlyPerformanceDisplay {
 	 * (Lấy các item hiển thị ứng với loại đi làm của employee)
 	 * @return
 	 */
-	private DisplayItem getDisplayItemBussiness(List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily){
+	private DisplayItem getDisplayItemBussiness(List<String> lstEmployeeId, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily){
 		DisplayItem dispItem = new DisplayItem();
 		List<FormatMPCorrectionDto> lstFormat = new ArrayList<FormatMPCorrectionDto>();
 		List<MPSheetDto> lstSheet = new ArrayList<MPSheetDto>();
