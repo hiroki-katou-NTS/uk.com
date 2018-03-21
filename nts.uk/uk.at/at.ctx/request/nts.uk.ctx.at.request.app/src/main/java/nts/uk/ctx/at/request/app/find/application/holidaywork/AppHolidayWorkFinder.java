@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -226,7 +227,17 @@ public class AppHolidayWorkFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,int prePostAtr,String appDate,String siftCD,String workTydeCode,String employeeID,GeneralDateTime inputDate){
+	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,
+			int prePostAtr,
+			String appDate,
+			String siftCD,
+			String workTydeCode,
+			String employeeID,
+			GeneralDateTime inputDate,
+			Integer startTime,
+			Integer endTime,
+			Integer startTimeRest,
+			Integer endTimeRest){
 		if(inputDate == null){
 			inputDate = GeneralDateTime.now();
 		}
@@ -300,13 +311,20 @@ public class AppHolidayWorkFinder {
 		getDivigenceReason(overtimeRestAppCommonSet,appHolidayWorkDto,companyID);
 		// 01-09_事前申請を取得
 		//getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate);
+		Integer restStartTime = null;
+		Integer restEndTime = null;
+		List<HolidayWorkInputDto> overtimeRestTimes = appHolidayWorkDto.getHolidayWorkInputDtos().stream().filter(x -> x.getAttendanceType() == AttendanceType.RESTTIME.value).collect(Collectors.toList());
+		if(!CollectionUtil.isEmpty(overtimeRestTimes)){
+			restStartTime = overtimeRestTimes.get(0).getStartTime();
+			restEndTime = overtimeRestTimes.get(0).getEndTime();
+		}
 		// 6.計算処理 : TODO
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(appHolidayWork.getApplication().getEmployeeID(), 
 																								appHolidayWork.getApplication().getAppDate(), 
 																								appHolidayWork.getWorkTypeCode() == null ? "" : appHolidayWork.getWorkTypeCode().v(),
 																								appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), 
 																								appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
-																								appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(), 100, 200);
+																								appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(), restStartTime, restEndTime);
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		getBreaktime(companyID, holidayWorkInputDtos);
 		List<HolidayWorkInputDto> breakTimes = appHolidayWorkDto.getHolidayWorkInputDtos().stream().filter(x -> x.getAttendanceType() == AttendanceType.BREAKTIME.value).collect(Collectors.toList());
@@ -341,6 +359,7 @@ public class AppHolidayWorkFinder {
 				}
 			});
 		});
+		
 		for(int i = 1; i < 11; i++){
 			HolidayWorkInputDto holidayInputDto = new HolidayWorkInputDto();
 			holidayInputDto.setAttendanceType(AttendanceType.RESTTIME.value);
