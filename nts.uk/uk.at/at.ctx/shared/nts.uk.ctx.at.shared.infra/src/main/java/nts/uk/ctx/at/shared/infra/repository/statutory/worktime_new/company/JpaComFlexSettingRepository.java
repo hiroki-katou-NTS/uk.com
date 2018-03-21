@@ -23,8 +23,6 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComFlexSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComFlexSet_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSet;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSet_;
 
 /**
  * The Class JpaCompanyWtSettingRepository.
