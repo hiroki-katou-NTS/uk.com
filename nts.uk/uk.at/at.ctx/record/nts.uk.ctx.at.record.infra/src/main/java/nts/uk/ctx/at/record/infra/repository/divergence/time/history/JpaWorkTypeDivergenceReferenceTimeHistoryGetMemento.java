@@ -46,7 +46,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryGetMemento
 	 */
 	@Override
 	public WorkTypeCode getWorkTypeCode() {
-		return new WorkTypeCode(this.entities.get(0).getWorktypeCd());
+		return this.entities.isEmpty() ? null : new WorkTypeCode(this.entities.get(0).getWorktypeCd());
 	}
 
 	/* (non-Javadoc)
