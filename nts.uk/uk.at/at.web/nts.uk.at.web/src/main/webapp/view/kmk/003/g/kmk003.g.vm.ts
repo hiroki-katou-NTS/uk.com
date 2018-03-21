@@ -11,25 +11,40 @@ module nts.uk.at.view.kmk003.g {
             switchValue: KnockoutObservable<number>;
             unitValue: KnockoutObservable<number>;
             roundingValue: KnockoutObservable<number>;
+            
+            lstRest: KnockoutObservableArray<any>;
+            actualList: KnockoutObservableArray<any>;
+            
+            selectedRest: KnockoutObservable<number>;
+            selectedActual: KnockoutObservable<number>;
+            
             constructor() {
                 let self = this;
-
+ 
                 self.switchOptions = ko.observableArray([
                     new Item(1, nts.uk.resource.getText("KMK003_113")),
                     new Item(0, nts.uk.resource.getText("KMK003_114"))
                 ]);
-                self.unitComboBoxOptions = ko.observableArray([
-                    new Item(1, nts.uk.resource.getText("KMK003_113")),
-                    new Item(0, nts.uk.resource.getText("KMK003_114"))
-                ]);
-                self.roundingComboBoxOptions = ko.observableArray([
-                    new Item(1, nts.uk.resource.getText("KMK003_113")),
-                    new Item(0, nts.uk.resource.getText("KMK003_114"))
-                ]);
+                
+                self.unitComboBoxOptions = ko.observableArray([]);
+                self.roundingComboBoxOptions = ko.observableArray([]);
 
                 self.switchValue = ko.observable(1);
                 self.unitValue = ko.observable(1);
                 self.roundingValue = ko.observable(1);
+                
+                self.lstRest = ko.observableArray([
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236')),
+                    new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
+                ]);
+                self.actualList = ko.observableArray([
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_239')),
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_240'))
+                ]);
+            
+                self.selectedRest = ko.observable(0);
+                self.selectedActual = ko.observable(0);
             }
 
             /**
@@ -57,6 +72,17 @@ module nts.uk.at.view.kmk003.g {
                 }
 
                 //TODO
+                //get list enum
+                let arrayUnit:any =[]; 
+                dataObject.lstEnum.roundingTimeUnit.forEach(function(item:any,index:number){
+                    arrayUnit.push(new Item(index, item.localizedName));
+                });
+                _self.unitComboBoxOptions(arrayUnit);
+                let arrayRounding:any = [];
+                dataObject.lstEnum.rounding.forEach(function(item:any, index:number) {
+                    arrayRounding.push(new Item(index, item.localizedName));
+                });
+                _self.roundingComboBoxOptions(arrayRounding);
             }
 
             /**
@@ -80,6 +106,15 @@ module nts.uk.at.view.kmk003.g {
 
             constructor(code: number, name: string) {
                 this.code = code;
+                this.name = name;
+            }
+        }
+        export class RadioBoxModel {
+            id: number;
+            name: string;
+
+            constructor(id: number, name: string) {
+                this.id = id;
                 this.name = name;
             }
         }

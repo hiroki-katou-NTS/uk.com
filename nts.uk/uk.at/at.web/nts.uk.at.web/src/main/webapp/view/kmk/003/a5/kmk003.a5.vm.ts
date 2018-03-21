@@ -9,6 +9,7 @@ module a5 {
     import FlexHalfDayWorkTimeModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexHalfDayWorkTimeModel;
     import DialogHParam = nts.uk.at.view.kmk003.h.viewmodel.DialogHParam;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
 
     class ScreenModel {
         mainSettingModel: MainSettingModel;
@@ -86,7 +87,7 @@ module a5 {
         isFlexTimezone: KnockoutComputed<boolean>; // flex and suru *26
         isFlexRestTime: KnockoutComputed<boolean>; // flex and nashi *26
         display27: KnockoutComputed<boolean>; // A23_7 is checked *27
-
+        enumSetting: WorkTimeSettingEnumDto;
         constructor(valueAccessor: any) {
             let self = this;
             // switch button
@@ -103,7 +104,7 @@ module a5 {
 
             // fix table option
             self.setFixedTableOption();
-
+            self.enumSetting = valueAccessor.enum;
         }
 
         /**
@@ -449,6 +450,11 @@ module a5 {
             var self = this;
             //if flex or flow
             if (self.isFlex() || self.isFlow()) {
+                let dataFlexFlow = {
+                lstEnum: self.enumSetting
+                    //TODO add data    
+                }
+                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA',dataFlexFlow);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml", {
                     height: 500,
                     width: 400,
