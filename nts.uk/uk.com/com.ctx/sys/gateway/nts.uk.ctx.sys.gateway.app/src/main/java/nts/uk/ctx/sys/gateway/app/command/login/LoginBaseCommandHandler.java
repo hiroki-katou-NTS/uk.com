@@ -362,25 +362,30 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/**
 	 * Lock out executed.
 	 *
-	 * @param user the user
+	 * @param user
+	 *            the user
 	 */
 	private void lockOutExecuted(UserImport user) {
 		// ドメインモデル「アカウントロックポリシー」を取得する
 		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
 				.getAccountLockPolicy(new ContractCode(user.getContractCode())).get();
 		if (accountLockPolicy.isUse()) {
-			// ロックアウト条件に満たしているかをチェックする (Check whether the lockout condition is satisfied)
-			if(this.checkLoginLog(user.getUserId(), accountLockPolicy)){
-				//Add to domain model LockOutData
-				LockOutDataDto dto = LockOutDataDto.builder().userId(user.getUserId()).contractCode(accountLockPolicy.getContractCode().v())
-						.logoutDateTime(GeneralDateTime.now()).lockType(LockType.AUTO_LOCK.value).build();
+			// ロックアウト条件に満たしているかをチェックする (Check whether the lockout condition is
+			// satisfied)
+			if (this.checkLoginLog(user.getUserId(), accountLockPolicy)) {
+				// Add to domain model LockOutData
+				LockOutDataDto dto = LockOutDataDto.builder().userId(user.getUserId())
+						.contractCode(accountLockPolicy.getContractCode().v()).logoutDateTime(GeneralDateTime.now())
+						.lockType(LockType.AUTO_LOCK.value).build();
 				LockOutData lockOutData = new LockOutData(dto);
 				this.lockOutDataRepository.add(lockOutData);
 			}
 		}
-		//Add to the domain model LoginLog
-		LoginLogDto dto = LoginLogDto.builder().userId(user.getUserId()).contractCode(accountLockPolicy.getContractCode().v())
-				.processDateTime(GeneralDateTime.now()).successOrFail(SuccessFailureClassification.Failure.value).operation(OperationSection.Login.value).build();
+		// Add to the domain model LoginLog
+		LoginLogDto dto = LoginLogDto.builder().userId(user.getUserId())
+				.contractCode(accountLockPolicy.getContractCode().v()).processDateTime(GeneralDateTime.now())
+				.successOrFail(SuccessFailureClassification.Failure.value).operation(OperationSection.Login.value)
+				.build();
 		LoginLog loginLog = new LoginLog(dto);
 		this.loginLogRepository.add(loginLog);
 	}
@@ -388,8 +393,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/**
 	 * Check login log.
 	 *
-	 * @param userId the user id
-	 * @param accountLockPolicy the account lock policy
+	 * @param userId
+	 *            the user id
+	 * @param accountLockPolicy
+	 *            the account lock policy
 	 * @return true, if successful
 	 */
 	private boolean checkLoginLog(String userId, AccountLockPolicy accountLockPolicy) {
@@ -398,8 +405,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		if (accountLockPolicy.getErrorCount().lessThanOrEqualTo(BigDecimal.ZERO)) {
 			startTime = GeneralDateTime.fromString("1901/01/01", "yyyy/MM/dd HH:mm:ss");
 		}
-		// Search the domain model [LoginLog] and acquire [number of failed
-		// logs] → [failed times]
+		// Search the domain model [LoginLog] and acquire [number of failed logs] → [failed times]
 		Integer countFailure = this.loginLogRepository.getLoginLogByConditions(userId, startTime);
 
 		// Return LockOut

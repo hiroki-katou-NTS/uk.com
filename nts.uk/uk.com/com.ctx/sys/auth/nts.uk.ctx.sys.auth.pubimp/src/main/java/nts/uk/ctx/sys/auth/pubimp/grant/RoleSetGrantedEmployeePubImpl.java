@@ -13,7 +13,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
-import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;

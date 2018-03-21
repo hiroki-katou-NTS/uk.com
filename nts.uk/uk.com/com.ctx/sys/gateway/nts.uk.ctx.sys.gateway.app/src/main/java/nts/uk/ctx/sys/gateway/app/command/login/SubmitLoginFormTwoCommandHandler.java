@@ -52,42 +52,42 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			// アルゴリズム「アカウント照合」を実行する
 			this.compareAccount();
 		} else {
-		String companyCode = command.getCompanyCode();
-		String employeeCode = command.getEmployeeCode();
-		String password = command.getPassword();
-		String contractCode = command.getContractCode();
-		String companyId = contractCode + "-" + companyCode;
-		
-		// check validate input
-		this.checkInput(command);
-
-		//recheck contract
-		this.reCheckContract(contractCode, command.getContractPassword());
-		
-		// Edit employee code
-		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
-		
-		// Get domain 社員
-		EmployeeImport em = this.getEmployee(companyId, employeeCode);
-		
-		// Check del state
-		this.checkEmployeeDelStatus(em.getEmployeeId());
-		
-		// Get User by PersonalId
-		UserImport user = this.getUser(em.getPersonalId());
-		
-		// check password
-		this.compareHashPassword(user, password);
-		
-		// check time limit
-		this.checkLimitTime(user);
-
-		//set info to session
-		this.setLoggedInfo(user,em,companyCode);
-		
-		//set role Id for LoginUserContextManager
-		this.setRoleId(user.getUserId());
-				}
+			String companyCode = command.getCompanyCode();
+			String employeeCode = command.getEmployeeCode();
+			String password = command.getPassword();
+			String contractCode = command.getContractCode();
+			String companyId = contractCode + "-" + companyCode;
+			
+			// check validate input
+			this.checkInput(command);
+	
+			//recheck contract
+			this.reCheckContract(contractCode, command.getContractPassword());
+			
+			// Edit employee code
+			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
+			
+			// Get domain 社員
+			EmployeeImport em = this.getEmployee(companyId, employeeCode);
+			
+			// Check del state
+			this.checkEmployeeDelStatus(em.getEmployeeId());
+			
+			// Get User by PersonalId
+			UserImport user = this.getUser(em.getPersonalId());
+			
+			// check password
+			this.compareHashPassword(user, password);
+			
+			// check time limit
+			this.checkLimitTime(user);
+	
+			//set info to session
+			this.setLoggedInfo(user,em,companyCode);
+			
+			//set role Id for LoginUserContextManager
+			this.setRoleId(user.getUserId());
+		}
 	}
 
 	/**
