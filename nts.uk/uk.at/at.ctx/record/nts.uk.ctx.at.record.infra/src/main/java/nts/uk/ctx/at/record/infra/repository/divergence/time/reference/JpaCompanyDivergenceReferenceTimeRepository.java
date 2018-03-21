@@ -77,7 +77,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void addDefaultDataWhenCreateHistory(String historyId) {
-		for (int i = 0; i < DIVERGENCE_TIME_MAX_COUNT; i++) {
+		for (int i = 1; i <= DIVERGENCE_TIME_MAX_COUNT; i++) {
 			// set value for entity
 			KrcstDrt drt = new KrcstDrt();
 			drt.setId(new KrcstDrtPK(historyId, i));
