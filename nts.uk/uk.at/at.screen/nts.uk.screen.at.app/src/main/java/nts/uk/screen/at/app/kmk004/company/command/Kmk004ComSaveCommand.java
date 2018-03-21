@@ -4,25 +4,20 @@
  *****************************************************************/
 package nts.uk.screen.at.app.kmk004.company.command;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.SaveComMonthCalSetCommand;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.SaveComStatWorkTimeSetCommand;
-
 
 /**
  * The Class Kmk004ComAddCommand.
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Kmk004ComAddCommand {
+public class Kmk004ComSaveCommand {
 
 	/** The save com stat work time set command. */
 	private SaveComStatWorkTimeSetCommand saveStatCommand;
-	
+
 	/** The save com flex command. */
 	private SaveComMonthCalSetCommand saveMonthCommand;
-	
+
 }

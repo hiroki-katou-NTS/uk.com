@@ -10,8 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComAddCommand;
-import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComAddCommandHandler;
+import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComSaveCommand;
+import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComSaveCommandHandler;
 import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComDeleteCommand;
 import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComDeleteCommandHandler;
 import nts.uk.screen.at.app.kmk004.company.find.Kmk004ComDto;
@@ -30,7 +30,7 @@ public class Kmk004ComWebService extends WebService {
 
 	/** The add. */
 	@Inject
-	private Kmk004ComAddCommandHandler add;
+	private Kmk004ComSaveCommandHandler add;
 
 	/** The delete. */
 	@Inject
@@ -57,7 +57,7 @@ public class Kmk004ComWebService extends WebService {
 	 */
 	@POST
 	@Path("add")
-	public void add(Kmk004ComAddCommand cm) {
+	public void add(Kmk004ComSaveCommand cm) {
 		this.add.handle(cm);
 	}
 

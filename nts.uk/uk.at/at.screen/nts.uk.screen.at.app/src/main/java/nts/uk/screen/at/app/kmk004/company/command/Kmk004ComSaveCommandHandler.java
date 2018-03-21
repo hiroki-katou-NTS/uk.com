@@ -18,12 +18,12 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.SaveComSta
  */
 @Stateless
 @Transactional
-public class Kmk004ComAddCommandHandler extends CommandHandler<Kmk004ComAddCommand> {
+public class Kmk004ComSaveCommandHandler extends CommandHandler<Kmk004ComSaveCommand> {
 
 	/** The save com stat work time set command handler. */
 	@Inject
 	private SaveComStatWorkTimeSetCommandHandler saveStatCommand;
-	
+
 	/** The save com flex command. */
 	@Inject
 	private SaveComMonthCalSetCommandHandler saveMonthCommand;
@@ -36,9 +36,9 @@ public class Kmk004ComAddCommandHandler extends CommandHandler<Kmk004ComAddComma
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<Kmk004ComAddCommand> context) {
-		Kmk004ComAddCommand addCommand = context.getCommand();
+	protected void handle(CommandHandlerContext<Kmk004ComSaveCommand> context) {
+		Kmk004ComSaveCommand addCommand = context.getCommand();
 		this.saveStatCommand.handle(addCommand.getSaveStatCommand());
-		this.saveMonthCommand.handle(addCommand.getSaveMonthCommand());		
+		this.saveMonthCommand.handle(addCommand.getSaveMonthCommand());
 	}
 }
