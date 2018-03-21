@@ -5,18 +5,19 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingSetMemento;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 
 /**
  * The Class ComFlexSettingDto.
  */
-@Getter
-public class ComFlexSettingDto implements ComFlexSettingSetMemento {
+@Data
+public class ComFlexSettingDto {
 
 	/** The year. */
 	/** 年. */
@@ -24,55 +25,24 @@ public class ComFlexSettingDto implements ComFlexSettingSetMemento {
 
 	/** The statutory setting. */
 	/** 法定時間. */
-	private List<MonthlyUnit> statutorySetting;
+	private List<MonthlyUnitDto> statutorySetting;
 
 	/** The specified setting. */
 	/** 所定時間. */
-	private List<MonthlyUnit> specifiedSetting;
+	private List<MonthlyUnitDto> specifiedSetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComFlexSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.
-	 * CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-	 //
+	public static ComFlexSettingDto fromDomain(ComFlexSetting domain) {
+		ComFlexSettingDto dto = new ComFlexSettingDto();
+		dto.setYear(domain.getYear().v());
+		
+		Function<MonthlyUnit, MonthlyUnitDto> funMap  = monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		};
+		List<MonthlyUnitDto> statutorySetting = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
+		List<MonthlyUnitDto> specifiedSetting = domain.getSpecifiedSetting().stream().map(funMap).collect(Collectors.toList());
+		
+		dto.setStatutorySetting(statutorySetting);
+		dto.setSpecifiedSetting(specifiedSetting);
+		return dto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComFlexSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComFlexSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComFlexSettingSetMemento#setSpecifiedSetting(java.util.List)
-	 */
-	@Override
-	public void setSpecifiedSetting(List<MonthlyUnit> specifiedSetting) {
-		this.specifiedSetting = specifiedSetting;
-	}
-
 }

@@ -6,8 +6,9 @@ package nts.uk.ctx.at.shared.app.command.statutory.worktime.common;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -15,7 +16,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MonthlyUnitDto extends ValueObject {
 
 	/** The monthly. */

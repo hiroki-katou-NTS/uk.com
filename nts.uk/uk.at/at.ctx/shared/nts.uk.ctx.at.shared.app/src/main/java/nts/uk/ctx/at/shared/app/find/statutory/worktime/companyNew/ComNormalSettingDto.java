@@ -5,18 +5,19 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingSetMemento;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 
 /**
  * The Class ComNormalSettingDto.
  */
-@Getter
-public class ComNormalSettingDto implements ComNormalSettingSetMemento {
+@Data
+public class ComNormalSettingDto {
 
 	/** The year. */
 	/** 年. */
@@ -24,40 +25,17 @@ public class ComNormalSettingDto implements ComNormalSettingSetMemento {
 
 	/** The statutory setting. */
 	/** 法定時間. */
-	private List<MonthlyUnit> statutorySetting;
+	private List<MonthlyUnitDto> statutorySetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComNormalSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.
-	 * CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// do nothing
+	public static ComNormalSettingDto fromDomain(ComNormalSetting domain) {
+		ComNormalSettingDto dto = new ComNormalSettingDto();
+		dto.setYear(domain.getYear().v());
+		Function<MonthlyUnit, MonthlyUnitDto> funMap  = monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		};
+		List<MonthlyUnitDto> statutorySetting = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setStatutorySetting(statutorySetting);
+		return dto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComNormalSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * ComNormalSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
-	}
-
+	
 }

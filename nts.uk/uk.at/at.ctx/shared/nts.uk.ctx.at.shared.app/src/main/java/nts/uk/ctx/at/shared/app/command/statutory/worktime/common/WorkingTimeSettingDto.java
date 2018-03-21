@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.common;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -25,7 +24,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-@Builder
 public class WorkingTimeSettingDto {
 
 	/** The weekly time. */
@@ -89,6 +87,15 @@ public class WorkingTimeSettingDto {
 			return new WorkingTimeSetting(weeklyUnit, dailyUnit);
 		}
 		
+	}
+
+	public static WorkingTimeSettingDto fromDomain(WorkingTimeSetting domain) {
+		WorkingTimeSettingDto dto = new WorkingTimeSettingDto();
+		WeeklyUnitDto weeklyTime = new WeeklyUnitDto(domain.getWeeklyTime().getTime().v(), domain.getWeeklyTime().getStart().value);
+		DailyUnitDto dailyTime = new DailyUnitDto(domain.getDailyTime().getDailyTime().v());
+		dto.setWeeklyTime(weeklyTime);
+		dto.setDailyTime(dailyTime);
+		return dto;
 	}
 	
 }
