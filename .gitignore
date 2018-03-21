@@ -22,8 +22,7 @@
 *.orig
 
 #ignore all js, map file
-**/*.js
-**/*.map
+**/*.js*
 
 # except all js, map in base.web
 !**/base.web/**/*.js*
