@@ -825,8 +825,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
 			String wkpID = "";
 			String wkpName = "";
-			if(displaySet.equals(ShowName.SHOW) && wkp != null){
+			if(wkp != null){
 				wkpID = wkp.getWorkplaceId();
+			}
+			
+			if(displaySet.equals(ShowName.SHOW) && wkp != null){
 				wkpName = wkp.getWkpDisplayName();
 			}
 //			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
