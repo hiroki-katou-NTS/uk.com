@@ -286,8 +286,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.filterByWorktype = false;
                 param.worktypeCodes = [];
                 param.includeIncumbents = true;
-                param.includeWorkersOnLeave = false;
-                param.includeOccupancy = false;
+                param.includeWorkersOnLeave = true;
+                param.includeOccupancy = true;
                 param.includeRetirees = false;
                 param.systemType = self.systemType;
                 param.sortOrderNo = 1; // 並び順NO＝1

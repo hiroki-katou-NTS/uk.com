@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
- * 振休申請
+ * 振出申請
  * 
  * @author sonnlb
  */
@@ -24,6 +26,14 @@ public class RecruitmentApp extends AggregateRoot {
 	 * 勤務種類
 	 */
 	private String workTypeCD;
+	/**
+	 * 勤務場所コード
+	 */
+	private WorkLocationCD workLocationCD;
+	/**
+	 * 就業時間帯
+	 */
+	private WorkTimeCode workTimeCD;
 
 	/**
 	 * 勤務時間1

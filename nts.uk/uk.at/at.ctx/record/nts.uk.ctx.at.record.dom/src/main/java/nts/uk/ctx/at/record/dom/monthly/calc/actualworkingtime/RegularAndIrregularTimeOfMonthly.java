@@ -181,7 +181,7 @@ public class RegularAndIrregularTimeOfMonthly {
 						weekStart);
 
 				// 集計区分を確認する
-				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 				
 					// 時間外超過の時、週割増時間を逆時系列で割り当てる
 					excessOutsideWorkMng.assignWeeklyPremiumTimeByReverseTimeSeries(

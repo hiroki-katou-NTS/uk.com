@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
@@ -442,7 +443,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours) {
+	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours,List<OvertimeInputCaculation> overtimeInputCaculations) {
 		// TODO Auto-generated method stub
 		AppOvertimeReference result = new AppOvertimeReference();
 		if(appDate == null){
@@ -486,10 +487,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				
 				if(checkTimeDay(appDate,workTimeSet)){
 					// 06-04-3_当日の場合
-					caculationTimes = overtimeSixProcess.checkDuringTheDay(companyID, employeeID, appDate, approvalFunctionSetting, siftCode, overtimeHours,recordWorkInfoImport);
+					caculationTimes = overtimeSixProcess.checkDuringTheDay(companyID, employeeID, appDate, approvalFunctionSetting, siftCode, overtimeHours,recordWorkInfoImport,overtimeInputCaculations);
 				}else{
 					// 06-04-2_当日以外の場合
-					caculationTimes = this.overtimeSixProcess.checkOutSideTimeTheDay(companyID, employeeID, appDate, approvalFunctionSetting, siftCode, overtimeHours,recordWorkInfoImport);
+					caculationTimes = this.overtimeSixProcess.checkOutSideTimeTheDay(companyID, employeeID, appDate, approvalFunctionSetting, siftCode, overtimeHours,recordWorkInfoImport,overtimeInputCaculations);
 				}
 			}
 			result.setOverTimeInputsRefer(caculationTimes);

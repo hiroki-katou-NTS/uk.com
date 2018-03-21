@@ -61,9 +61,6 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             $.when(self.getLengthOfService(), self.getGrantHdTbl()).done(function() {
                 let combinedData = [];
                 
-                self.lengthOfServiceData;
-                self.grantHdData;
-                
                 for(var i = 0; i < self.lengthOfServiceData.length; i++){
                     var item : IItem = {
                         grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
@@ -191,16 +188,16 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 _.forEach(self.items(), function(item) {
                      if (item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || item.limitedHalfHdCnt() != null) {
                          grantHolidayTblList.push({
-                            grantYearHolidayNo: item.grantYearHolidayNo(),
+                            grantNum: item.grantYearHolidayNo(),
                             conditionNo: item.conditionNo(),
                             yearHolidayCode: item.yearHolidayCode(),
-                            lengthOfServiceYears: item.lengthOfServiceYears(),
-                            lengthOfServiceMonths: item.lengthOfServiceMonths(),
+                            year: item.lengthOfServiceYears(),
+                            month: item.lengthOfServiceMonths(),
                             grantDays: item.grantDays(),
-                            limitedTimeHdDays: item.limitedTimeHdDays(),
-                            limitedHalfHdCnt: item.limitedHalfHdCnt(),
-                            grantReferenceDate: item.grantReferenceDate(),
-                            grantSimultaneity: item.grantSimultaneity() ? 1 : 0
+                            limitTimeHd: item.limitedTimeHdDays(),
+                            limitDayYear: item.limitedHalfHdCnt(),
+                            standGrantDay: item.grantReferenceDate(),
+                            allowStatus: item.grantSimultaneity() ? 1 : 0
                         });
                     }
                 }); 
@@ -218,7 +215,26 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
                 
                 service.calculateGrantDate(dataTranfer).done(function(res) {
-                    self.bindData(res);
+                    var results = [];
+                    for(var i = 0; i < res.length; i++){
+                        var item : IItem = {
+                            grantYearHolidayNo: res[i].grantNum,
+                            conditionNo: res[i].conditionNo,
+                            yearHolidayCode: res[i].yearHolidayCode,
+                            lengthOfServiceYears: res[i].year,
+                            lengthOfServiceMonths: res[i].month,
+                            grantDays: res[i].grantDays,
+                            limitedTimeHdDays: res[i].limitTimeHd,
+                            limitedHalfHdCnt: res[i].limitDayYear,
+                            grantReferenceDate: res[i].standGrantDay,
+                            grantSimultaneity: res[i].allowStatus,
+                            grantDate: res[i].grantDate
+                        };
+                        
+                        results.push(new Item(item));
+                    }
+                    
+                    self.bindData(results);
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});    
                 });
