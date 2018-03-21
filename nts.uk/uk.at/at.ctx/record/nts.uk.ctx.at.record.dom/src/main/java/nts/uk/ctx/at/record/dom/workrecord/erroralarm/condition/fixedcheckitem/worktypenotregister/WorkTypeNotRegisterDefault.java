@@ -38,7 +38,7 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 		// 勤務種類CDがドメインモデル「勤務種類」に存在するかをチェックする
 		boolean check = checkExistWorkTypeAdapter.checkExistWorkType(workTypeCD);
 		//ドメインに存在する場合
-		if(check)
+		if(check || workTypeCD ==null)
 			return Optional.empty();
 		//社員の日別実績のエラーを作成する
 		String comment = fixedConditionDataRepository.getFixedByNO(1).get().getMessage().v();

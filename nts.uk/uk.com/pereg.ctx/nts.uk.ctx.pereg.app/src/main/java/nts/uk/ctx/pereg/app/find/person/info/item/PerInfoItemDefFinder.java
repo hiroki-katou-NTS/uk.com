@@ -351,7 +351,7 @@ public class PerInfoItemDefFinder {
 	public PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
-		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
+		return  new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(),
 				itemDef.getIsAbolition().value, itemDef.getIsFixed().value, itemDef.getIsRequired().value,
 				itemDef.getSystemRequired().value, itemDef.getRequireChangable().value, dispOrder,
@@ -448,7 +448,7 @@ public class PerInfoItemDefFinder {
 		
 		case 10: 
 			RelatedCategory reCtgDto = (RelatedCategory) dataTypeState;
-			return DataTypeStateDto.createReadOnly(reCtgDto.getRelatedCtgCode().v());
+			return DataTypeStateDto.createRelatedCategory(reCtgDto.getRelatedCtgCode().v());
 
 		case 11: 
 			NumericButton numbtnItem = (NumericButton) dataTypeState;
@@ -456,7 +456,7 @@ public class PerInfoItemDefFinder {
 			
 		case 12: 
 			ReadOnlyButton rOnlyButton = (ReadOnlyButton) dataTypeState;
-			return DataTypeStateDto.createReadOnly(rOnlyButton.getReadText().v());
+			return DataTypeStateDto.createReadOnlyButton(rOnlyButton.getReadText().v());
 			
 		default:
 			return null;

@@ -86,7 +86,11 @@ public class DailyAggregationProcessService {
 				switch(i) {
 				case 0 :
 					for(GeneralDate date : period.getListDate()) {
-						String workType = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).get().getWorkTypeCode();
+						String workType = null;
+						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfo = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
+						if(recordWorkInfo.isPresent()) {
+							workType = recordWorkInfo.get().getWorkTypeCode();
+						}
 						
 						Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
 						if(checkWorkType.isPresent()) {

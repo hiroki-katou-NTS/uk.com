@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.remainingnumber;
+package nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
