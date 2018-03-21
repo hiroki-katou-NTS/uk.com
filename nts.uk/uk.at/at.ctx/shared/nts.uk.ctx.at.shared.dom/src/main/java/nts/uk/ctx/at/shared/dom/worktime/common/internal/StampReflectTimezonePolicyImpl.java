@@ -26,7 +26,7 @@ public class StampReflectTimezonePolicyImpl implements StampReflectTimezonePolic
 	@Override
 	public void validate(BundledBusinessException bundledBusinessExceptions, boolean isFlow,
 			StampReflectTimezone timezone) {
-		if (timezone.getStartTime().equals(0) && timezone.getEndTime().equals(0)) {
+		if (timezone.getStartTime().v().equals(0) && timezone.getEndTime().v().equals(0)) {
 			return;
 		}
 
