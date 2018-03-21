@@ -102,6 +102,9 @@
 									   <com:ko-if bind="isCheckFinish() == true">
 									   <button id="BTN_IMPORT" data-bind="click : executionImport" class="x-large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button>
 									   </com:ko-if>
+									   <com:ko-if bind="isCheckFinish() == false">
+									   <button id="BTN_IMPORT" data-bind="click : executionImport" class="x-large proceed" disabled="disabled">#{i18n.getText('CMF001_496')}</button>
+									   </com:ko-if>
 									</div>
 								</td>
 								<td width='150px'>

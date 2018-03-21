@@ -210,8 +210,8 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 return true;
             } else {
                 if (self.numDataFormatSetting().effectiveDigitLength() == 1) {
-                    let startDigit = self.numDataFormatSetting().startDigit();
-                    let endDigit = self.numDataFormatSetting().endDigit();
+                    let startDigit : number = +self.numDataFormatSetting().startDigit();
+                    let endDigit : number = +self.numDataFormatSetting().endDigit();
                     if (startDigit == 0 || endDigit == 0) {
                         alertError({ messageId: "Msg_2" });
                         return false;

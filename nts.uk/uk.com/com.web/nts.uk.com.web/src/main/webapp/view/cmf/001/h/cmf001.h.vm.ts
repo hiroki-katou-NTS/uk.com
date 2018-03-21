@@ -206,8 +206,8 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 return true;
             }else{
                 if (self.characterDataFormatSetting().effectiveDigitLength() == 1) {
-                    let startDigit = self.characterDataFormatSetting().startDigit();
-                    let endDigit = self.characterDataFormatSetting().endDigit();
+                    let startDigit : number = +self.characterDataFormatSetting().startDigit();
+                    let endDigit : number = +self.characterDataFormatSetting().endDigit();
                     if (startDigit == 0 || endDigit == 0) {
                         alertError({ messageId: "Msg_2" });
                         return false;
