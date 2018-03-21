@@ -60,7 +60,9 @@ module nts.uk.at.view.kaf011.shr {
             appReasons: Array<any>;
             employeeID: string;
             employeeName: string;
+            drawalReqSet: any;
         }
+
         export interface IWorkType {
             /* 勤務種類コード */
             workTypeCode: string;
@@ -72,6 +74,21 @@ module nts.uk.at.view.kaf011.shr {
             selectedWorkTypeCode: string;
             workTimeCodes: Array<string>;
             selectedWorkTimeCode: string;
+        }
+
+        export class Comment {
+            deferredComment: KnockoutObservable<string> = ko.observable('');
+            deferredBold: KnockoutObservable<boolean> = ko.observable(false);
+            pickUpComment: KnockoutObservable<string> = ko.observable('');
+            pickUpBold: KnockoutObservable<boolean> = ko.observable(false);
+            constructor(commentSetting) {
+                if (commentSetting) {
+                    this.deferredComment(commentSetting.deferredComment);
+                    this.deferredBold(commentSetting.deferredBold);
+                    this.pickUpComment(commentSetting.deferredComment);
+                    this.pickUpBold(commentSetting.deferredBold);
+                }
+            }
         }
         export class WorkItems {
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);

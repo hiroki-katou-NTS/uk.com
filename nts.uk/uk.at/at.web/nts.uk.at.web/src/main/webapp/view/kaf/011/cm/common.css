@@ -49,3 +49,7 @@ hr {
 .text_line {
 	line-height: 37px;
 }
+
+.bold {
+	font-weight: bold;
+}

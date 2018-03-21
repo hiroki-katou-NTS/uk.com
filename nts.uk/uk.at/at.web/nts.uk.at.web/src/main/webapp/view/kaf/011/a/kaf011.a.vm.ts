@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import service = nts.uk.at.view.kaf011.shr.service;
 
     export class ViewModel {
-
+        screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
         prePostTypes = ko.observableArray([
             { code: 0, text: text('KAF011_14') },
             { code: 1, text: text('KAF011_15') }]);
@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             { code: 1, text: text('KAF011_20') },
             { code: 2, text: text('KAF011_21') },
         ]);
-        appComSelectedCode: KnockoutObservable<number> = ko.observable(1);
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
         appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
 
@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         employeeName: KnockoutObservable<string> = ko.observable('');
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(0);
-
+        comment: KnockoutObservable<Comment> = ko.observable(new common.Comment(null));
         constructor() {
             let self = this;
             self.takingOutWk().appDate.subscribe((newDate) => {
@@ -114,6 +114,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.appReasons(data.appReasons || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
+                if (data.drawalReqSet) {
+                    self.comment(data.drawalReqSet);
+                }
             }
         }
 

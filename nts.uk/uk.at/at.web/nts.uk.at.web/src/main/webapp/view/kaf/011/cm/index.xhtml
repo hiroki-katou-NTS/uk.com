@@ -1,6 +1,6 @@
 <div id="container">
 	<div id="content_left">
-		<div class="div_line" id='number_Info'>
+		<!-- 	<div class="div_line" id='number_Info'>
 			<div class="div_line_col_1">
 				<label data-bind="text : '#{i18n.getText('KAF011_64')}'"></label>
 			</div>
@@ -15,7 +15,7 @@
 				</table>
 			</div>
 			<div></div>
-		</div>
+		</div> -->
 
 		<div class="div_line">
 			<div class="div_line_col_1">
@@ -36,11 +36,11 @@
 							optionsValue: 'code',
 							optionsText: 'text',
 							value: prePostSelectedCode ,
-							enable: true }"></div>
+							enable: screenModeNew }"></div>
 
 			</div>
 		</div>
-		<div class="div_line">
+		<div class="div_line" data-bind="if:screenModeNew">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
@@ -69,10 +69,14 @@
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
-				<div class="div_line_col_2">
+				<div class="div_line_col_2" data-bind="if:$parent.screenModeNew">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
+				<div class="div_line_col_2">
+					<label class="text_line"></label>
+				</div>
+
 			</div>
 
 			<div class="div_line">
@@ -89,7 +93,7 @@
 										value: wkTypeCD ,
 										optionsText: 'name',
 										editable: false,
-										enable: true,
+										enable: $parent.screenModeNew ,
 										columns: [
 											{ prop: 'name', length: 10 },
 										]}">
@@ -136,7 +140,15 @@
 				</div>
 			</div>
 
-			<div id="app_rec_des" class="div_line">description</div>
+			<div id="app_rec_des" class="div_line"
+				data-bind="with:$parent.comment">
+				<div class="div_line"
+					data-bind="text:
+					 deferredComment
+					,css: { 'bold': deferredBold }"></div>
+
+
+			</div>
 
 		</div>
 
@@ -154,9 +166,25 @@
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
-				<div class="div_line_col_2">
+
+				<div class="div_line_col_2" data-bind="if:$parents[1].screenModeNew">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+				</div>
+				<div data-bind="if:!$parents[1].screenModeNew">
+					<div class="div_line_col_2">
+						<label class="text_line"></label>
+					</div>
+
+					<div class="div_line_col_3">
+						<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
+						<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
+
+						<button tabindex="1">#{i18n.getText('KAF011_26')}</button>
+
+						<button tabindex="1">#{i18n.getText('KAF011_27')}</button>
+						<span class="caret-right caret-inline"></span>
+					</div>
 				</div>
 			</div>
 			<div class="div_line">
@@ -173,7 +201,7 @@
 										value: wkTypeCD ,
 										optionsText: 'name',
 										editable: false,
-										enable: true,
+										enable: $parent.screenModeNew,
 										columns: [
 											{ prop: 'name', length: 10 },
 										]}">
@@ -213,8 +241,15 @@
 					</div>
 				</div>
 			</div>
+			<div id="app_break_des" class="div_line"
+				data-bind="with:$parent.comment">
+				<div class="div_line"
+					data-bind="text:
+					 pickUpComment
+					,css: { 'bold': pickUpBold }"></div>
 
-			<div id="app_break_des" class="div_line">description</div>
+
+			</div>
 		</div>
 
 		<div class="div_line">
