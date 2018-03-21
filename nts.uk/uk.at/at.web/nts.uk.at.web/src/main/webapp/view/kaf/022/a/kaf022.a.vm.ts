@@ -1270,16 +1270,16 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdE9 = ko.observable(0);
                 self.itemListE10 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_174')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
                 ]);
                 self.selectedIdE10 = ko.observable(0);
                 self.selectedValueE11 = ko.observable(0);
                 self.enableE11_5 = ko.observable(true);
                 self.itemListE12 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_174')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
                 ]);
                 self.selectedIdE12 = ko.observable(0);
                 self.texteditorE13 = {
