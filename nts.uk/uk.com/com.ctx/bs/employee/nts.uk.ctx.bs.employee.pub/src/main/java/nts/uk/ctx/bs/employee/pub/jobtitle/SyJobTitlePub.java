@@ -41,7 +41,7 @@ public interface SyJobTitlePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #67-1
+	// RequestList67-1
 	Optional<JobTitleExport> findByJobId(String companyId, String jobId, GeneralDate baseDate);
 
 	/**
@@ -51,7 +51,7 @@ public interface SyJobTitlePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #74
+	// RequestList74
 	List<JobTitleExport> findAll(String companyId, GeneralDate baseDate);
 
 	/**
@@ -72,7 +72,7 @@ public interface SyJobTitlePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #158
+	// RequestList158
 	List<SimpleJobTitleExport> findByIds(String companyId,List<String> jobIds, GeneralDate baseDate);
 	
 	/**
