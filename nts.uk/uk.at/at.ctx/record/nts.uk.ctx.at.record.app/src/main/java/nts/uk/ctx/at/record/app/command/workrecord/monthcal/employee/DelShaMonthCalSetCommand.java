@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
+package nts.uk.ctx.at.record.app.command.workrecord.monthcal.employee;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +12,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class DelComFlexMonthActCalSetCommand {
+public class DelShaMonthCalSetCommand {
 
+	/** The sid. */
+	private String sid;
+	
 }

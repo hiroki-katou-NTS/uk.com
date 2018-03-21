@@ -8,16 +8,18 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SaveCompanyCalMonthlyFlexCommandHandler.
  */
 @Stateless
-public class SaveCompanyCalMonthlyFlexCommandHandler extends CommandHandler<SaveCompanyCalMonthlyFlexCommand> {
+public class SaveComMonthCalSetCommandHandler
+		extends CommandHandler<SaveComMonthCalSetCommand> {
 
 	/** The com cal monthly flex repo. */
-	//@Inject
-	//private CompanyCalMonthlyFlexRepository comCalMonthlyFlexRepo;
+	// @Inject
+	// private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -27,8 +29,8 @@ public class SaveCompanyCalMonthlyFlexCommandHandler extends CommandHandler<Save
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<SaveCompanyCalMonthlyFlexCommand> context) {
-
+	protected void handle(CommandHandlerContext<SaveComMonthCalSetCommand> context) {
+		String cid = AppContexts.user().companyId();
 	}
 
 }

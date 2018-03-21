@@ -2,19 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
+package nts.uk.ctx.at.record.app.command.workrecord.monthcal.employment;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class CompanyCalMonthlyFlexCommand.
+ * The Class DeleteCompanyCalMonthlyFlexCommand.
  */
 @Getter
 @Setter
-public class SaveComFlexMonthActCalSetCommand {
-
-	/** The aggr setting. */
-	private FlexMonthWorkTimeAggrSetDto aggrSetting;
-
+public class DelEmpMonthCalSetCommand {
+	
+	/** The emp code. */
+	private String empCode;
+	
 }

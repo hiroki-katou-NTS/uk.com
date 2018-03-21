@@ -2,20 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
+package nts.uk.ctx.at.record.app.command.workrecord.monthcal.workplace;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class SaveCompanyCalMonthlyFlexCommandHandler.
+ * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
  */
 @Stateless
-public class SaveComFlexMonthActCalSetCommandHandler
-		extends CommandHandler<SaveComFlexMonthActCalSetCommand> {
+public class DelWkpMonthCalSetCommandHandler
+		extends CommandHandler<DelWkpMonthCalSetCommand> {
 
 	/** The com cal monthly flex repo. */
 	// @Inject
@@ -29,8 +28,8 @@ public class SaveComFlexMonthActCalSetCommandHandler
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<SaveComFlexMonthActCalSetCommand> context) {
-		String cid = AppContexts.user().companyId();
+	protected void handle(CommandHandlerContext<DelWkpMonthCalSetCommand> context) {
+		// this.comFlexMonthActCalSetRepo.remove(AppContexts.user().companyId());
 	}
 
 }

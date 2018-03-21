@@ -5,23 +5,17 @@
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
 
 import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.FlexMonthWorkTimeAggrSetDto;
 
 /**
- * The Class AggrSettingMonthlyOfFlxNew.
+ * The Class CompanyCalMonthlyFlexCommand.
  */
 @Getter
-public class FlexMonthWorkTimeAggrSetDto {
+@Setter
+public class SaveComMonthCalSetCommand {
 
-	/** The aggregate method. */
-	private Integer aggrMethod;
-
-	/** The shortage set. */
-	private Integer insufficSet;
-
-	/** The legal aggregate set. */
-	private Integer legalAggrSet;
-
-	/** The include over time. */
-	private Integer includeOverTime;
+	/** The aggr setting. */
+	private FlexMonthWorkTimeAggrSetDto aggrSetting;
 
 }
