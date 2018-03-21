@@ -71,12 +71,6 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
-		List<KrcdtDaiPerWorkInfo> lstData = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).getList();
-		if(lstData.isEmpty()){
-			return Optional.empty();
-		}
-		
 		return this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(c -> c.toDomain());
 	}
