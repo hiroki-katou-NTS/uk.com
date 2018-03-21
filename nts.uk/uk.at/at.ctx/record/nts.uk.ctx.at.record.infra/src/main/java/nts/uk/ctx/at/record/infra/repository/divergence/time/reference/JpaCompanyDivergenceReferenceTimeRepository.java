@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.divergence.time;
+package nts.uk.ctx.at.record.infra.repository.divergence.time.reference;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

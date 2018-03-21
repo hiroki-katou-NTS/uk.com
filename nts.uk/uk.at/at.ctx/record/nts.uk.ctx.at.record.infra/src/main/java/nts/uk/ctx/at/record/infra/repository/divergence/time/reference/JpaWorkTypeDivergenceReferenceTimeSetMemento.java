@@ -1,34 +1,35 @@
-package nts.uk.ctx.at.record.infra.repository.divergence.time;
+package nts.uk.ctx.at.record.infra.repository.divergence.time.reference;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
+import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class JpaCompanyDivergenceReferenceTimeSetMemento.
+ * The Class JpaWorkTypeDivergenceReferenceTimeSetMemento.
  */
-public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDivergenceReferenceTimeSetMemento {
+public class JpaWorkTypeDivergenceReferenceTimeSetMemento implements WorkTypeDivergenceReferenceTimeSetMemento {
 
 	/** The entity. */
 	private KrcstDrt entity;
 
 	/**
-	 * Instantiates a new jpa company divergence reference time set memento.
+	 * Instantiates a new jpa work type divergence reference time set memento.
 	 */
-	public JpaCompanyDivergenceReferenceTimeSetMemento() {
+	public JpaWorkTypeDivergenceReferenceTimeSetMemento() {
 	}
 
 	/**
-	 * Instantiates a new jpa company divergence reference time set memento.
+	 * Instantiates a new jpa work type divergence reference time set memento.
 	 *
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaCompanyDivergenceReferenceTimeSetMemento(KrcstDrt entity) {
+	public JpaWorkTypeDivergenceReferenceTimeSetMemento(KrcstDrt entity) {
 		this.entity = entity;
 	}
 
@@ -36,7 +37,7 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeSetMemento#setDivergenceTimeNo(java.lang.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceTimeNo(java.lang.
 	 * Integer)
 	 */
 	@Override
@@ -48,7 +49,7 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeSetMemento#setCompanyId(java.lang.String)
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -59,7 +60,7 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeSetMemento#setNotUseAtr(nts.uk.shr.com.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setNotUseAtr(nts.uk.shr.com.
 	 * enumcommon.NotUseAtr)
 	 */
 	@Override
@@ -71,7 +72,19 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeSetMemento#setHistoryId(java.lang.String)
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setWorkTypeCode(nts.uk.ctx.at.
+	 * shared.dom.worktype.WorkTypeCode)
+	 */
+	@Override
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		// No coding.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setHistoryId(java.lang.String)
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
@@ -82,8 +95,8 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeSetMemento#setDivergenceReferenceTimeValue(java
-	 * .util.Optional)
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceReferenceTimeValue(
+	 * java.util.Optional)
 	 */
 	@Override
 	public void setDivergenceReferenceTimeValue(Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue) {
