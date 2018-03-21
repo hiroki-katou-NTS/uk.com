@@ -35,6 +35,10 @@ public class KshmtDtStampReflectPK implements Serializable {
 	@Column(name = "WORK_NO")
 	private int workNo;
 
+	/** The atr. */
+	@Column(name = "ATR")
+	private int atr;
+	
 	/**
 	 * Instantiates a new kshmt dt stamp reflect PK.
 	 */
@@ -49,11 +53,12 @@ public class KshmtDtStampReflectPK implements Serializable {
 	 * @param worktimeCd the worktime cd
 	 * @param workNo the work no
 	 */
-	public KshmtDtStampReflectPK(String cid, String worktimeCd, int workNo) {
+	public KshmtDtStampReflectPK(String cid, String worktimeCd, int workNo, int atr) {
 		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
 		this.workNo = workNo;
+		this.atr = atr;
 	}
 	/*
 	 * (non-Javadoc)

@@ -34,6 +34,10 @@ public class KshmtFixedStampReflectPK implements Serializable {
 	/** The work no. */
 	@Column(name = "WORK_NO")
 	private int workNo;
+	
+	/** The atr. */
+	@Column(name = "ATR")
+	private int atr;
 
 	/**
 	 * Instantiates a new kshmt fixed stamp reflect PK.

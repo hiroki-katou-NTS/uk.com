@@ -94,8 +94,8 @@ module a4 {
             let workForm = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr();
 
             let stamp = self.mainSettingModel.commonSetting.stampSet;
-            self.priorityGoWork = stamp.prioritySets[0].priorityAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].stampAtr : stamp.prioritySets[1].stampAtr;
-            self.priorityLeaveWork = stamp.prioritySets[0].priorityAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].stampAtr : stamp.prioritySets[1].stampAtr;
+            self.priorityGoWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
+            self.priorityLeaveWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
             //                
             self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
             self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
@@ -132,10 +132,10 @@ module a4 {
                 isFixedAndUseTime2: isFixedAndUseTime2,
                 listRoundingTimeUnit: _self.enumSetting.roundingTimeUnit,
                 
-                prioritySettingEntering: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().stampAtr(),
-                prioritySettingExit: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().stampAtr(),
-                prioritySettingPcLogin: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().stampAtr(),
-                prioritySettingPcLogout: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().stampAtr(),
+                prioritySettingEntering: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().priorityAtr(),
+                prioritySettingExit: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().priorityAtr(),
+                prioritySettingPcLogin: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().priorityAtr(),
+                prioritySettingPcLogout: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().priorityAtr(),
                 goOutRoundingUnit: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.roundingTimeUnit(),
                 goOutFontRearSection: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(),
                 turnBackRoundingUnit: _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(),
@@ -195,10 +195,10 @@ module a4 {
                     return;    
                 }
                 // Update common data
-                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().stampAtr(outputDataObject.prioritySettingEntering);
-                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().stampAtr(outputDataObject.prioritySettingExit);
-                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().stampAtr(outputDataObject.prioritySettingPcLogin);
-                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().stampAtr(outputDataObject.prioritySettingPcLogout);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().priorityAtr(outputDataObject.prioritySettingEntering);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().priorityAtr(outputDataObject.prioritySettingExit);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogin().priorityAtr(outputDataObject.prioritySettingPcLogin);
+                _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsPcLogout().priorityAtr(outputDataObject.prioritySettingPcLogout);
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.roundingTimeUnit(outputDataObject.goOutRoundingUnit);
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(outputDataObject.goOutFontRearSection);
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(outputDataObject.turnBackRoundingUnit);

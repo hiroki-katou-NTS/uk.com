@@ -61,11 +61,17 @@ public class DiffTimeStampReflectTimezonePolicyImpl implements DiffTimeStampRefl
 		TimeWithDayAttr endTime = startTime.forwardByMinutes(predetemineTimeSetting.getRangeTimeDay().valueAsMinutes());
 		PrescribedTimezoneSetting timezone = predetemineTimeSetting.getPrescribedTimezoneSetting();
 		diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().forEach(stampReflectTz -> {
-
+			if (stampReflectTz.isEmpty()) {
+				return;
+			}
 			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz);
 
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {
-				be.addMessage("Msg_516");
+				if (stampReflectTz.isGoWork1()) {
+					be.addMessage("Msg_516", "#KMK003_271");
+				} else if (stampReflectTz.isLeaveWork1()) {
+					be.addMessage("Msg_516", "#KMK003_274");
+				}
 			}
 
 			if (WORK_NO_1.equals(stampReflectTz.getWorkNo().v())) {

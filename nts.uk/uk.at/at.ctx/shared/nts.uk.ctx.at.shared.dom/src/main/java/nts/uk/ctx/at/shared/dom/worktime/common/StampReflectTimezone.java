@@ -57,15 +57,48 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 		memento.setStartTime(this.startTime);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject#validate()
+	/**
+	 * Checks if is empty.
+	 *
+	 * @return true, if is empty
 	 */
-	@Override
-	public void validate() {
-		super.validate();
+	public boolean isEmpty() {
+		return (this.startTime.v().equals(0) && this.endTime.v().equals(0));
 	}
 
+	/**
+	 * Checks if is go work 1.
+	 *
+	 * @return true, if is go work 1
+	 */
+	public boolean isGoWork1() {
+		return this.workNo.v() == 1 && GoLeavingWorkAtr.GO_WORK.equals(this.classification.value);
+	}
+
+	/**
+	 * Checks if is go work 2.
+	 *
+	 * @return true, if is go work 2
+	 */
+	public boolean isGoWork2() {
+		return this.workNo.v() == 2 && GoLeavingWorkAtr.GO_WORK.equals(this.classification.value);
+	}
+
+	/**
+	 * Checks if is leave work 1.
+	 *
+	 * @return true, if is leave work 1
+	 */
+	public boolean isLeaveWork1() {
+		return this.workNo.v() == 1 && GoLeavingWorkAtr.LEAVING_WORK.equals(this.classification.value);
+	}
+
+	/**
+	 * Checks if is leave work 2.
+	 *
+	 * @return true, if is leave work 2
+	 */
+	public boolean isLeaveWork2() {
+		return this.workNo.v() == 2 && GoLeavingWorkAtr.LEAVING_WORK.equals(classification.value);
+	}
 }

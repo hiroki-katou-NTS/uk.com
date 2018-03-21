@@ -79,12 +79,22 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 				.findFirst();
 
 		fixedWorkSetting.getLstStampReflectTimezone().forEach(stampReflectTz -> {
-			
+			if (stampReflectTz.isEmpty()) {
+				return;
+			}
 			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz);
 			
 			// Msg_516
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {
-				be.addMessage("Msg_516");
+				if (stampReflectTz.isGoWork1()) {
+					be.addMessage("Msg_516", "#KMK003_271");
+				} else if (stampReflectTz.isGoWork2()) {
+					be.addMessage("Msg_516", "#KMK003_272");
+				} else if (stampReflectTz.isLeaveWork1()) {
+					be.addMessage("Msg_516", "#KMK003_274");
+				} else if (stampReflectTz.isGoWork2()) {
+					be.addMessage("Msg_516", "#KMK003_275");
+				}
 			}
 		});
 

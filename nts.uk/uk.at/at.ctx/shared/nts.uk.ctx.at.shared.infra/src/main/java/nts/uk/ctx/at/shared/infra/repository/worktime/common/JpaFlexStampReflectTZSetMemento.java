@@ -54,7 +54,7 @@ public class JpaFlexStampReflectTZSetMemento implements StampReflectTimezoneSetM
 	 */
 	@Override
 	public void setClassification(GoLeavingWorkAtr classification) {
-		this.entity.setAtr(classification.value);
+		this.entity.getKshmtFlexStampReflectPK().setAtr(classification.value);
 	}
 
 	/*

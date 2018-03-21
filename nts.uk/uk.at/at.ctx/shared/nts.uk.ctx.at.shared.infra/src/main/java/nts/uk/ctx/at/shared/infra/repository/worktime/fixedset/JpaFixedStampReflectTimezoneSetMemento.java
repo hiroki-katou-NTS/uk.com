@@ -60,7 +60,7 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 */
 	@Override
 	public void setClassification(GoLeavingWorkAtr classification) {
-		this.entity.setAtr(classification.value);
+		this.entity.getKshmtFixedStampReflectPK().setAtr(classification.value);
 	}
 
 	/*

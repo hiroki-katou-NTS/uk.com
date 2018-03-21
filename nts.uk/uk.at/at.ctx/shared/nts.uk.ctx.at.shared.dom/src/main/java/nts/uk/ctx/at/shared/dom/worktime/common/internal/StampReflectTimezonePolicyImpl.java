@@ -26,7 +26,7 @@ public class StampReflectTimezonePolicyImpl implements StampReflectTimezonePolic
 	@Override
 	public void validate(BundledBusinessException bundledBusinessExceptions, boolean isFlow,
 			StampReflectTimezone timezone) {
-		if (timezone.getStartTime().v().equals(0) && timezone.getEndTime().v().equals(0)) {
+		if (timezone.isEmpty()) {
 			return;
 		}
 
@@ -34,28 +34,28 @@ public class StampReflectTimezonePolicyImpl implements StampReflectTimezonePolic
 		if (timezone.getStartTime().greaterThanOrEqualTo(timezone.getEndTime())) {
 			if (isFlow) {
 				// J2_2, J2_4
-				if (timezone.getWorkNo().v() == 1 && timezone.getClassification().value == 0) {
+				if (timezone.isGoWork1()) {
 					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_270");
 				}
 				// J2_9, J2_11
-				if (timezone.getWorkNo().v() == 1 && timezone.getClassification().value == 1) {
+				if (timezone.isLeaveWork1()) {
 					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_273");
 				}
 			} else {
 				// J1_3, J1_5
-				if (timezone.getWorkNo().v() == 1 && timezone.getClassification().value == 0) {
+				if (timezone.isGoWork1()) {
 					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_271");
 				}
 				// J1_7, J1_9
-				if (timezone.getWorkNo().v() == 2 && timezone.getClassification().value == 0) {
+				if (timezone.isGoWork2()) {
 					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_272");
 				}
 				// J1_12, J1_14
-				if (timezone.getWorkNo().v() == 1 && timezone.getClassification().value == 1) {
+				if (timezone.isLeaveWork1()) {
 					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_274");
 				}
 				// J1_16, J1_18
-				if (timezone.getWorkNo().v() == 2 && timezone.getClassification().value == 1) {
+				if (timezone.isLeaveWork2()) {
 					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_275");
 				}
 			}

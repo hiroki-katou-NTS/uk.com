@@ -45,7 +45,7 @@ public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetM
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtFlexStampReflectPK().getAtr());
 	}
 
 	/* (non-Javadoc)

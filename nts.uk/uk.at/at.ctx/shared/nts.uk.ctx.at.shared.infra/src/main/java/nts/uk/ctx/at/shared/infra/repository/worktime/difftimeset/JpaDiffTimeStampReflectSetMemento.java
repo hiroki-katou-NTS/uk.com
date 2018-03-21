@@ -40,7 +40,7 @@ public class JpaDiffTimeStampReflectSetMemento implements DiffTimeStampReflectSe
 		stampReflectTimezone.forEach(domain -> {
 			periodNo++;
 			KshmtDtStampReflectPK pk = new KshmtDtStampReflectPK(this.entity.getKshmtDiffTimeWorkSetPK().getCid(),
-					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), periodNo);
+					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), periodNo, domain.getClassification().value);
 			KshmtDtStampReflect entity = lstOldEntity.get(pk);
 			if (entity == null) {
 				entity = new KshmtDtStampReflect();

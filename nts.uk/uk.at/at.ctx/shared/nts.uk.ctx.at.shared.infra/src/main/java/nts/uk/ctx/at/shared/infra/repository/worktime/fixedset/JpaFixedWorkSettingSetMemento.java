@@ -191,7 +191,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 			KshmtFixedStampReflect entity = lstStampReflect.stream().filter(item -> {
 				KshmtFixedStampReflectPK pk = item.getKshmtFixedStampReflectPK();
 				return pk.getCid().compareTo(companyId) == 0 && pk.getWorktimeCd().compareTo(workTimeCd) == 0
-						&& pk.getWorkNo() == stampRelect.getWorkNo().v().intValue();
+						&& pk.getWorkNo() == stampRelect.getWorkNo().v().intValue() && pk.getAtr() == stampRelect.getClassification().value;
 			}).findFirst().orElse(new KshmtFixedStampReflect());
 
 			stampRelect.saveToMemento(new JpaFixedStampReflectTimezoneSetMemento(companyId, workTimeCd, entity));

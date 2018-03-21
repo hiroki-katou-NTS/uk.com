@@ -34,6 +34,10 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	/** The work no. */
 	@Column(name = "WORK_NO")
 	private Integer workNo;
+	
+	/** The atr. */
+	@Column(name = "ATR")
+	private int atr;
 
 	/**
 	 * Instantiates a new kshmt flex stamp reflect PK.
@@ -48,10 +52,12 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	 * @param cid the cid
 	 * @param worktimeCd the worktime cd
 	 */
-	public KshmtFlexStampReflectPK(String cid, String worktimeCd) {
+	public KshmtFlexStampReflectPK(String cid, String worktimeCd, int workNo, int atr) {
 		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
+		this.workNo = workNo;
+		this.atr = atr;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

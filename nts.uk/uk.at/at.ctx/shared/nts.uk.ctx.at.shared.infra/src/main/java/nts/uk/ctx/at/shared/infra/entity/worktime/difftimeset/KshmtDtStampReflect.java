@@ -35,10 +35,6 @@ public class KshmtDtStampReflect extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The atr. */
-	@Column(name = "ATR")
-	private int atr;
-
 	/** The start time. */
 	@Column(name = "START_TIME")
 	private int startTime;

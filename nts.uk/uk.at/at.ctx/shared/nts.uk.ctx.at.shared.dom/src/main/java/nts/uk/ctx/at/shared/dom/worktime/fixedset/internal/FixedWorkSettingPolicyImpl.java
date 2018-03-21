@@ -77,7 +77,8 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		// Check domain StampReflectTimezone
 		// #Msg_520
 		List<StampReflectTimezone> listGoWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
-				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK).collect(Collectors.toList());
+				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK)
+				.collect(Collectors.toList());
 		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
 				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
 				.collect(Collectors.toList());

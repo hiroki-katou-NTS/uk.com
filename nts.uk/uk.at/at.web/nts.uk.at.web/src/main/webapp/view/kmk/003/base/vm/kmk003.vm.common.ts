@@ -1481,12 +1481,12 @@ module nts.uk.at.view.kmk003.a {
                     });
                 }
                 
-                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 0) }                
-                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 1) }              
-                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 2) }              
-                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 3) }             
-                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 4) }           
-                getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.priorityAtr() == 5) }
+                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 0) }                
+                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 1) }              
+                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 2) }              
+                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 3) }             
+                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 4) }           
+                getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 5) }
                 
                 getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 0) }               
                 getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 1) }               

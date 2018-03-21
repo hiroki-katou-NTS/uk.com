@@ -227,7 +227,7 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 			this.entity.setKshmtFlexStampReflects(stampReflectTimezone.stream().map(domain -> {
 				KshmtFlexStampReflect entity = new KshmtFlexStampReflect(
 						new KshmtFlexStampReflectPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
-								this.entity.getKshmtFlexWorkSetPK().getWorktimeCd()));
+								this.entity.getKshmtFlexWorkSetPK().getWorktimeCd(), domain.getWorkNo().v(), domain.getClassification().value));
 				domain.saveToMemento(new JpaFlexStampReflectTZSetMemento(entity));
 				return entity;
 			}).collect(Collectors.toList()));

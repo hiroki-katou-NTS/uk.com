@@ -869,7 +869,10 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
-                }                            
+                }      
+                
+                self.updateInterlockDialogJ();
+                self.updateStampValue();
             }
             
             resetData(isNewMode?: boolean) {
@@ -913,8 +916,8 @@ module nts.uk.at.view.kmk003.a {
                         } else {                           
                             _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
-                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(workEnd);
-                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(workEnd);
+                            _self.fixedWorkSetting.getGoWork1Stamp().endTime(workEnd);
+                            _self.fixedWorkSetting.getLeaveWork1Stamp().endTime(workEnd);
                         }
                     }   
                     if (_self.workTimeSetting.isFlex()) {
