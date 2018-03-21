@@ -7,6 +7,7 @@ module a5 {
     import FixHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixHalfDayWorkTimezoneModel;
     import DiffTimeHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeHalfDayWorkTimezoneModel;
     import FlexHalfDayWorkTimeModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexHalfDayWorkTimeModel;
+    import DialogHParam = nts.uk.at.view.kmk003.h.viewmodel.DialogHParam;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
 
     class ScreenModel {
@@ -105,20 +106,83 @@ module a5 {
 
         }
 
+        /**
+         * Open dialog fixed break setting
+         */
         public openFixedBreakSetting(): void {
             let self = this;
-            let input = {};
+
+            let input = <DialogHParam>{};
+            if (self.isFlex()) {
+                input.calcMethodFixed = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod();
+                input.isCalcFromSchedule = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule();
+                input.isReferRestTime = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime();
+                input.usePrivateGoOutRest = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest();
+                input.useAssoGoOutRest = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest();
+            }
+            if (self.isFlow()) {
+                input.calcMethodFixed = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod();
+                input.isCalcFromSchedule = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule();
+                input.isReferRestTime = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime();
+                input.usePrivateGoOutRest = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest();
+                input.useAssoGoOutRest = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest();
+            }
+
             nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index2.xhtml").onClosed(() => {
-                // TODO: output
+                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
+                if (self.isFlow()) {
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(dto.calcMethodFixed);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule(dto.isCalcFromSchedule);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime(dto.isReferRestTime);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(dto.usePrivateGoOutRest);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(dto.useAssoGoOutRest);
+                }
+                if (self.isFlex()) {
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(dto.calcMethodFixed);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule(dto.isCalcFromSchedule);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime(dto.isReferRestTime);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(dto.usePrivateGoOutRest);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(dto.useAssoGoOutRest);
+                }
             });
         }
+
+        /**
+         * Open dialog flow break setting
+         */
         public openFlowBreakSetting(): void {
             let self = this;
-            let input = {};
+
+            let input = <DialogHParam>{};
+            if (self.isFlex()) {
+                input.calcMethodFluctuation = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod();
+                input.useStamp = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp();
+                input.useStampCalcMethod = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod();
+                input.timeManagerSetAtr = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr();
+            }
+            if (self.isFlow()) {
+                input.calcMethodFluctuation = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod();
+                input.useStamp = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp();
+                input.useStampCalcMethod = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod();
+                input.timeManagerSetAtr = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr();
+            }
+
             nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index.xhtml").onClosed(() => {
-                //TODO: output
+                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
+                if (self.isFlow()) {
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(dto.calcMethodFluctuation);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp(dto.useStamp);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod(dto.useStampCalcMethod);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr(dto.timeManagerSetAtr);
+                }
+                if (self.isFlex()) {
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(dto.calcMethodFluctuation);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp(dto.useStamp);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod(dto.useStampCalcMethod);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr(dto.timeManagerSetAtr);
+                }
             });
         }
 

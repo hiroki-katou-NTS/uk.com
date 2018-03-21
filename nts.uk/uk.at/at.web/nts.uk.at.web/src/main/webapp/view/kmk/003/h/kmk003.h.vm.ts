@@ -92,7 +92,7 @@ module nts.uk.at.view.kmk003.h {
 
         export interface DialogHParam {
             calcMethodFixed: number;
-            calcMethodFluctuation;
+            calcMethodFluctuation: number;
             isCalcFromSchedule: boolean;
             isReferRestTime: boolean;
             usePrivateGoOutRest: boolean;
