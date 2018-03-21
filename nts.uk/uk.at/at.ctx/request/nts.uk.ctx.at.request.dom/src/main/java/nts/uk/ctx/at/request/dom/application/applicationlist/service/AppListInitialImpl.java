@@ -815,17 +815,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
 			String empName = "";
 			String inpEmpName = null;
-			if(displaySet.equals(ShowName.SHOW)){
+//			if(displaySet.equals(ShowName.SHOW)){
 				 empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
 				 inpEmpName = app.getEmployeeID().equals(app.getEnteredPersonID()) ? null : empRequestAdapter.getEmployeeName(app.getEnteredPersonID());
-			}
+//			}
 			
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
 			String wkpID = "";
+			String wkpName = "";
 			if(displaySet.equals(ShowName.SHOW) && wkp != null){
 				wkpID = wkp.getWorkplaceId();
+				wkpName = wkp.getWkpDisplayName();
 			}
 //			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
@@ -841,7 +843,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
 			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
-					empName, inpEmpName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
+					empName, inpEmpName, wkpName, false, null, checkAddNote, 0));
 		}
 		return lstAppMasterInfo;
 	}
