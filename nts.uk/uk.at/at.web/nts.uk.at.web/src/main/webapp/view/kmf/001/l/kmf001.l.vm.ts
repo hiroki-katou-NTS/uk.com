@@ -38,28 +38,6 @@ module nts.uk.pr.view.kmf001.l {
                         $('#nursing-number-leave-day').ntsError('clear');
                         $('#nursing-number-person').ntsError('clear');
                         $('#work-type-code-nursing').ntsError('clear');
-                        
-                        let dfd = $.Deferred();
-                        service.findSetting().done(function(res: any) {
-                            if (res) {
-                                // NURSING
-                                self.nursingSetting().monthDay(res[0].startMonthDay);
-                                self.nursingSetting().nursingNumberLeaveDay(res[0].nursingNumberLeaveDay);
-                                self.nursingSetting().nursingNumberPerson(res[0].nursingNumberPerson);
-                                self.nursingSetting().workTypeCodes(res[0].workTypeCodes);
-                                self.nursingSetting().typeCode(res[0].workType);
-                            } else{
-                                self.nursingSetting().monthDay(null);
-                                self.nursingSetting().nursingNumberLeaveDay(null);
-                                self.nursingSetting().nursingNumberPerson(null);
-                                self.nursingSetting().workTypeCodes(null);
-                                self.nursingSetting().typeCode('');
-                            }
-                            dfd.resolve();
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message);
-                        });
-                        return dfd.promise();
                     }
                 });
                 
@@ -71,28 +49,6 @@ module nts.uk.pr.view.kmf001.l {
                         $('#child-nursing-number-leave-day').ntsError('clear');
                         $('#child-nursing-number-person').ntsError('clear');
                         $('#work-type-code-child-nursing').ntsError('clear');
-                        
-                        let dfd = $.Deferred();
-                        service.findSetting().done(function(res: any) {
-                            if (res) {
-                                // NURSING
-                                self.childNursingSetting().monthDay(res[1].startMonthDay);
-                                self.childNursingSetting().nursingNumberLeaveDay(res[1].nursingNumberLeaveDay);
-                                self.childNursingSetting().nursingNumberPerson(res[1].nursingNumberPerson);
-                                self.childNursingSetting().workTypeCodes(res[1].workTypeCodes);
-                                self.childNursingSetting().typeCode(res[1].workType);
-                            } else{
-                                self.childNursingSetting().monthDay(null);
-                                self.childNursingSetting().nursingNumberLeaveDay(null);
-                                self.childNursingSetting().nursingNumberPerson(null);
-                                self.childNursingSetting().workTypeCodes(null);
-                                self.childNursingSetting().typeCode('');
-                            }
-                            dfd.resolve();
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message);
-                        });
-                        return dfd.promise();
                     }
                 });
             }
