@@ -6,18 +6,17 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal.employee;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Class ShainDeforLaborMonthActCalSet.
+ * The Class ShainFlexMonthActCalSet.
  */
 @Getter
-// 変形労働社員別月別実績集計設定
-public class ShainDeforLaborMonthActCalSet extends AggregateRoot
-		implements DeforLaborMonthActCalSet {
+// フレックス月別実績集計設定.
+public class ShaFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet {
 
 	/** The company id. */
 	// 会社ID
@@ -29,26 +28,26 @@ public class ShainDeforLaborMonthActCalSet extends AggregateRoot
 
 	/** The aggr setting. */
 	// 集計設定
-	private DeforWorkTimeAggrSet aggrSetting;
+	private FlexMonthWorkTimeAggrSet aggrSetting;
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.workrecord.monthcal.SetMonthlyCalTransLabor
-	 * #getLegalAggrSetOfIrgNew()
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.SetCalMonthlyFlex#
+	 * getAggrSettingMonthlyOfFlxNew()
 	 */
 	@Override
-	public DeforWorkTimeAggrSet getAggregateSetting() {
+	public FlexMonthWorkTimeAggrSet getAggregateSetting() {
 		return aggrSetting;
 	}
 
 	/**
-	 * Instantiates a new shain defor labor month act cal set.
+	 * Instantiates a new shain flex month act cal set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public ShainDeforLaborMonthActCalSet(ShainDeforLaborMonthActCalSetGetMemento memento) {
+	public ShaFlexMonthActCalSet(ShaFlexMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.aggrSetting = memento.getAggrSetting();
@@ -57,9 +56,10 @@ public class ShainDeforLaborMonthActCalSet extends AggregateRoot
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(ShainDeforLaborMonthActCalSetSetMemento memento) {
+	public void saveToMemento(ShaFlexMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setAggrSetting(this.aggrSetting);

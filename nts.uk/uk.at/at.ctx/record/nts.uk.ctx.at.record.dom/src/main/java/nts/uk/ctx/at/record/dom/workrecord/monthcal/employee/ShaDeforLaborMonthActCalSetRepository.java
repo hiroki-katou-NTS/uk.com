@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface EmployeeLaborDeforSetTemporaryRepository.
  */
-public interface ShainDeforLaborMonthActCalSetRepository {
+public interface ShaDeforLaborMonthActCalSetRepository {
 
 	/**
 	 * Find emp labor defor set temp by cid and emp id.
@@ -18,27 +18,27 @@ public interface ShainDeforLaborMonthActCalSetRepository {
 	 * @param empId the emp id
 	 * @return the optional
 	 */
-	Optional<ShainDeforLaborMonthActCalSet> findEmpLaborDeforSetTempByCidAndEmpId(String cid, String empId);
+	Optional<ShaDeforLaborMonthActCalSet> findEmpLaborDeforSetTempByCidAndEmpId(String cid, String empId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param EmpLaborDeforSetTemp the emp labor defor set temp
 	 */
-	void add(ShainDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
+	void add(ShaDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
 
 	/**
 	 * Update.
 	 *
 	 * @param EmpLaborDeforSetTemp the emp labor defor set temp
 	 */
-	void update(ShainDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
+	void update(ShaDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
 
 	/**
 	 * Delete.
 	 *
 	 * @param EmpLaborDeforSetTemp the emp labor defor set temp
 	 */
-	void delete(ShainDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
+	void delete(ShaDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
 
 }

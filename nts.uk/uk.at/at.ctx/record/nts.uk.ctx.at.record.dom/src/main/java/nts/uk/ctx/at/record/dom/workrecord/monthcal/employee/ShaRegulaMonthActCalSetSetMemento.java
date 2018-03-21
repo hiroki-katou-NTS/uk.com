@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 /**
  * The Interface EmployeeRegularSetMonthlyActualSetMemento.
  */
-public interface ShainRegulaMonthActCalSetSetMemento {
+public interface ShaRegulaMonthActCalSetSetMemento {
 
 	/**
 	 * Sets the company id.

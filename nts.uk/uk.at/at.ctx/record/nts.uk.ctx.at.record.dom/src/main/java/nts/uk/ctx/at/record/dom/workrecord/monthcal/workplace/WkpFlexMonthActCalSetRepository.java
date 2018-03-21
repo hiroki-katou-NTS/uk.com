@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface WkpCalSetMonthlyActualFlexRepository.
  */
-public interface WkpCalSetMonthlyActualFlexRepository {
+public interface WkpFlexMonthActCalSetRepository {
 
 	/**
 	 * Find by cid and wkp id.

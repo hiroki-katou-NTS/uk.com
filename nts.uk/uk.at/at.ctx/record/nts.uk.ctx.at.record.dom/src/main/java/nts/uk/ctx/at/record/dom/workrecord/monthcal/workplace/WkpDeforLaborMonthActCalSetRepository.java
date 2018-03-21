@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface WkpTransLaborSetMonthlyRepository.
  */
-public interface WkpTransLaborSetMonthlyRepository {
+public interface WkpDeforLaborMonthActCalSetRepository {
 
 	/**
 	 * Find by cid and wkpid.

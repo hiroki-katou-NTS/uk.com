@@ -6,17 +6,17 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal.employee;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Class ShainFlexMonthActCalSet.
+ * The Class EmployeeRegularSetMonthlyActual.
  */
 @Getter
-// フレックス月別実績集計設定.
-public class ShainFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet {
+// 通常勤務社員別月別実績集計設定.
+public class ShaRegulaMonthActCalSet extends AggregateRoot implements RegulaMonthActCalSet {
 
 	/** The company id. */
 	// 会社ID
@@ -26,28 +26,28 @@ public class ShainFlexMonthActCalSet extends AggregateRoot implements FlexMonthA
 	// 社員ID
 	private EmployeeId employeeId;
 
-	/** The aggr setting. */
+	/** The legal aggr set of reg new. */
 	// 集計設定
-	private FlexMonthWorkTimeAggrSet aggrSetting;
+	private RegularWorkTimeAggrSet aggrSetting;
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.SetCalMonthlyFlex#
-	 * getAggrSettingMonthlyOfFlxNew()
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * SetRegularActualWorkMonthly#getLegalAggrSetOfRegNew()
 	 */
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggregateSetting() {
+	public RegularWorkTimeAggrSet getAggrSetting() {
 		return aggrSetting;
 	}
 
 	/**
-	 * Instantiates a new shain flex month act cal set.
+	 * Instantiates a new employee regular set monthly actual.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public ShainFlexMonthActCalSet(ShainFlexMonthActCalSetGetMemento memento) {
+	public ShaRegulaMonthActCalSet(ShaRegulaMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.aggrSetting = memento.getAggrSetting();
@@ -59,7 +59,7 @@ public class ShainFlexMonthActCalSet extends AggregateRoot implements FlexMonthA
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(ShainFlexMonthActCalSetSetMemento memento) {
+	public void saveToMemento(ShaRegulaMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setAggrSetting(this.aggrSetting);

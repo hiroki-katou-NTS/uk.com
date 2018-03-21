@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface EmployeeRegularSetMonthlyActualRepository.
  */
-public interface ShainRegulaMonthActCalSetRepository {
+public interface ShaRegulaMonthActCalSetRepository {
 
 	/**
 	 * Find emp reg set monthly actual by cid and emp id.
@@ -18,27 +18,27 @@ public interface ShainRegulaMonthActCalSetRepository {
 	 * @param empId the emp id
 	 * @return the optional
 	 */
-	Optional<ShainRegulaMonthActCalSet> findEmpRegSetMonthlyActualByCidAndEmpId(String cid, String empId);
+	Optional<ShaRegulaMonthActCalSet> findEmpRegSetMonthlyActualByCidAndEmpId(String cid, String empId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param empRegSetMonthlyActual the emp reg set monthly actual
 	 */
-	void add(ShainRegulaMonthActCalSet empRegSetMonthlyActual);
+	void add(ShaRegulaMonthActCalSet empRegSetMonthlyActual);
 
 	/**
 	 * Update.
 	 *
 	 * @param empRegSetMonthlyActual the emp reg set monthly actual
 	 */
-	void update(ShainRegulaMonthActCalSet empRegSetMonthlyActual);
+	void update(ShaRegulaMonthActCalSet empRegSetMonthlyActual);
 
 	/**
 	 * Delete.
 	 *
 	 * @param empRegSetMonthlyActual the emp reg set monthly actual
 	 */
-	void delete(ShainRegulaMonthActCalSet empRegSetMonthlyActual);
+	void delete(ShaRegulaMonthActCalSet empRegSetMonthlyActual);
 
 }

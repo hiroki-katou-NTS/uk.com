@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal.employee;
 
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Interface EmployeeLaborDeforSetTemporaryGetMemento.
+ * The Interface EmployeeRegularSetMonthlyActualGetMemento.
  */
-public interface ShainDeforLaborMonthActCalSetGetMemento {
 
+public interface ShaRegulaMonthActCalSetGetMemento {
 	/**
 	 * Gets the company id.
 	 *
@@ -28,10 +28,10 @@ public interface ShainDeforLaborMonthActCalSetGetMemento {
 	EmployeeId getEmployeeId();
 
 	/**
-	 * Gets the legal aggr set of irg new.
+	 * Gets the legal aggr set of reg new.
 	 *
-	 * @return the legal aggr set of irg new
+	 * @return the legal aggr set of reg new
 	 */
-	DeforWorkTimeAggrSet getAggrSetting();
+	RegularWorkTimeAggrSet getAggrSetting();
 
 }

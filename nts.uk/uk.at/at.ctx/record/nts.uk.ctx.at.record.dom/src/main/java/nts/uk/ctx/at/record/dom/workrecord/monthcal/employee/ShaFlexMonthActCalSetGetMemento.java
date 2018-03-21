@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal.employee;
 
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Interface EmployeeRegularSetMonthlyActualGetMemento.
+ * The Interface EmployeeCalSetMonthlyFlexGetMemento.
  */
+public interface ShaFlexMonthActCalSetGetMemento {
 
-public interface ShainRegulaMonthActCalSetGetMemento {
 	/**
 	 * Gets the company id.
 	 *
@@ -28,10 +28,10 @@ public interface ShainRegulaMonthActCalSetGetMemento {
 	EmployeeId getEmployeeId();
 
 	/**
-	 * Gets the legal aggr set of reg new.
+	 * Gets the aggr setting monthly of flx new.
 	 *
-	 * @return the legal aggr set of reg new
+	 * @return the aggr setting monthly of flx new
 	 */
-	RegularWorkTimeAggrSet getAggrSetting();
+	FlexMonthWorkTimeAggrSet getAggrSetting();
 
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface EmployeeCalSetMonthlyFlexRepository.
  */
-public interface ShainFlexMonthActCalSetRepository {
+public interface ShaFlexMonthActCalSetRepository {
 
 	/**
 	 * Find employee cal set monthly flex by cid and emp id.
@@ -18,26 +18,26 @@ public interface ShainFlexMonthActCalSetRepository {
 	 * @param empId the emp id
 	 * @return the optional
 	 */
-  Optional<ShainFlexMonthActCalSet> findEmployeeCalSetMonthlyFlexByCidAndEmpId(String cid, String empId);
+  Optional<ShaFlexMonthActCalSet> findEmployeeCalSetMonthlyFlexByCidAndEmpId(String cid, String empId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param empCalSetMonthlyFlex the emp cal set monthly flex
 	 */
-  void add(ShainFlexMonthActCalSet empCalSetMonthlyFlex);
+  void add(ShaFlexMonthActCalSet empCalSetMonthlyFlex);
 
 	/**
 	 * Update.
 	 *
 	 * @param empCalSetMonthlyFlex the emp cal set monthly flex
 	 */
-  void update(ShainFlexMonthActCalSet empCalSetMonthlyFlex);
+  void update(ShaFlexMonthActCalSet empCalSetMonthlyFlex);
 
 	/**
    * Delete.
    *
    * @param empCalSetMonthlyFlex the emp cal set monthly flex
    */
-  void delete(ShainFlexMonthActCalSet empCalSetMonthlyFlex);
+  void delete(ShaFlexMonthActCalSet empCalSetMonthlyFlex);
 }
