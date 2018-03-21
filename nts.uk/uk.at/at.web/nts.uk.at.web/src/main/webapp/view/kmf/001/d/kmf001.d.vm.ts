@@ -32,6 +32,7 @@ module nts.uk.pr.view.kmf001.d {
             leaveAsWorkDaysOpt: KnockoutObservableArray<LeaveAsWorkDaysModel>;
             isShowEmployment: KnockoutObservable<boolean>;
             
+            deleteEnable: KnockoutObservable<boolean>;
             selectedName: KnockoutObservable<string>;
 
             employmentVisible: KnockoutObservable<boolean>;
@@ -158,10 +159,7 @@ module nts.uk.pr.view.kmf001.d {
                     self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
                     self.selectedManagement(data.managementCategory);
                 }
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == self.selectedItem();
-                });
-                self.deleteEnable(!!match);
+                self.checkDeleteAvailability();
             }
             
             // Initialize wholeCompany Data
@@ -210,10 +208,8 @@ module nts.uk.pr.view.kmf001.d {
                         let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
                         let selectedEmp = _.find(employmentList, { 'code': data });
                         self.selectedName(':   ' + selectedEmp.name);
-                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                            return item.code == self.selectedItem();
-                        });
-                        self.deleteEnable(!!match);
+                        
+                        self.checkDeleteAvailability();
                         self.hasSelectedEmp(true);
                     }
                     else {
@@ -232,7 +228,7 @@ module nts.uk.pr.view.kmf001.d {
                     
                     // Get Data List
                     if (($('#left-content').getDataList() == undefined) || ($('#left-content').getDataList().length <= 0)) {
-                        //                        self.hasSelectedEmp(false);
+                        self.deleteEnable(false);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146" }).then(function() {
                             $('a[role="tab-navigator"][href="#whole-company-tab"]').click();
                         });
@@ -242,11 +238,8 @@ module nts.uk.pr.view.kmf001.d {
                         self.employmentList($('#left-content').getDataList());
                         // Set Selected Item
                         self.selectedItem(self.employmentList()[0].code);
-                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                            return item.code == self.selectedItem();
-                        });
-                        self.deleteEnable(!!match);
-                        //                        self.hasSelectedEmp(true);
+                        
+                        self.checkDeleteAvailability();
                     }
                 });
             }
@@ -313,21 +306,19 @@ module nts.uk.pr.view.kmf001.d {
             
             private deleteByEmployment(): void {
                 var self = this;
-                service.deleteByEmployment(self.selectedItem());
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                service.deleteByEmployment(self.selectedItem()).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 
-                // Remove item from setting list (un-tick)
-                self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
-                
-                // Reload current setting
-                service.findByEmployment(self.selectedItem()).done(function(data1: EmploymentSettingFindDto) {
-                    self.bindEmploymentSettingData(data1);
+                    // Remove item from setting list (un-tick)
+                    self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
+                    
+                    // Reload current setting
+                    service.findByEmployment(self.selectedItem()).done(function(data1: EmploymentSettingFindDto) {
+                        self.bindEmploymentSettingData(data1);
+                        
+                        self.checkDeleteAvailability();
+                    });
                 });
-                
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == self.selectedItem();
-                });
-                self.deleteEnable(!!match);
             }
             
             // Method register By Employment
@@ -347,11 +338,17 @@ module nts.uk.pr.view.kmf001.d {
                 // Register
                 service.saveByEmployment(self.collectDataByEmployment()).done(function() {
                     self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.checkDeleteAvailability();
                     });
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+            }
+            
+            // check if delete is available
+            private checkDeleteAvailability() {
+                var self = this;
                 var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
                     return item.code == self.selectedItem();
                 });

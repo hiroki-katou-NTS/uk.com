@@ -70,6 +70,8 @@ module nts.uk.pr.view.kmf001.f {
             firstLoad: KnockoutObservable<boolean>;
             employmentVisible: KnockoutObservable<boolean>;
             
+            deleteEnable: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(1);
@@ -155,7 +157,9 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 self.enableDigestiveUnit = ko.computed(function() {
-                    return self.isEmManageCompen() && !self.isEmptyEmployment() && self.emTimeManage() == UseDivision.Use;
+                    if (self.isEmptyEmployment()) return false;
+                    if (self.deleteEnable()) return self.isEmManageCompen();
+                    return self.isEmManageCompen() && self.emTimeManage() == UseDivision.Use;
                 });
 
                 self.emSelectedCode.subscribe(function(employmentCode: string) {
@@ -168,13 +172,11 @@ module nts.uk.pr.view.kmf001.f {
                         self.emSelectedName(selectedEmp.name);
                         self.isEmptyEmployment(false);
                         
-                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                            return item.code == employmentCode;
-                        });
-                        self.deleteEnable(!!match);
+                        self.checkDeleteAvailability();
                     }
                     else {
                         //not selected item -> disable All
+                        self.emSelectedName('');
                         self.isEmptyEmployment(true);
                         self.deleteEnable(false);
                     }
@@ -237,6 +239,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.employmentList($('#list-employ-component').getDataList());
                     //list employment is empty
                     if (!$('#list-employ-component').getDataList() || $('#list-employ-component').getDataList().length <= 0) {
+                        self.deleteEnable(false);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: [] }).then(function() {
                             $('a[role="tab-navigator"][href="#company-tab"]').click();
                         });
@@ -245,10 +248,7 @@ module nts.uk.pr.view.kmf001.f {
                     } else {
                         self.emSelectedCode(self.employmentList()[0].code);
                         
-                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                            return item.code == self.emSelectedCode();
-                        });
-                        self.deleteEnable(!!match);
+                        self.checkDeleteAvailability();
                         
                         $('#emCompenManage').focus();
                     }
@@ -442,19 +442,41 @@ module nts.uk.pr.view.kmf001.f {
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){
                         service.update(self.collectData()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.loadSetting();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         })
                         .fail((err) => {
-                            let errors = _.uniqBy(err.errors, (v: any) => {
+                            // display error 782 on fields
+                            let errors = _.filter(err.errors, (v: any) => {
+                                return v.messageId == 'Msg_782';    
+                            });
+                            if (errors.length > 0) {
+                                if (errors.length == 2) {
+                                    $('#workHalfDay').ntsError('set', {messageId: 'Msg_782'});
+                                    $('#overHalfDay').ntsError('set', {messageId: 'Msg_782'});
+                                } else {
+                                    if ($('#workHalfDay').is(":enabled")) $('#workHalfDay').ntsError('set', {messageId: 'Msg_782'});
+                                    if ($('#overHalfDay').is(":enabled")) $('#overHalfDay').ntsError('set', {messageId: 'Msg_782'});
+                                }
+                                
+                                if (nts.uk.ui.errors.errorsViewModel().errors().length > 0) nts.uk.ui.errors.errorsViewModel().open();
+                            }
+                            
+                            // display other errors
+                            errors = _.reject(err.errors, (v: any) => {
+                                return v.messageId == 'Msg_782';
+                            });
+                            errors = _.uniqBy(errors, (v: any) => {
                                 let key = v.messageId;
                                 for (let param of v.parameterIds) {
                                     key = key + ' ' + param;
                                 }
                                 return key;
                             });
-                            err.errors = errors;
-                            self.showMessageError(err);
+                            if (errors.length > 0) {
+                                err.errors = errors;
+                                self.showMessageError(err);
+                            }
                         });
                     }
                 });
@@ -592,13 +614,10 @@ module nts.uk.pr.view.kmf001.f {
                         //reload list employment
                         $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
                             self.loadEmploymentSetting(self.emSelectedCode());
+                            self.checkDeleteAvailability();
                         });
                     });
                 });
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == employmentCode;
-                });
-                self.deleteEnable(!!match);
             }
             
             //delete employment
@@ -610,13 +629,10 @@ module nts.uk.pr.view.kmf001.f {
                         //reload list employment
                         $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
                             self.loadEmploymentSetting(self.emSelectedCode());
+                            self.checkDeleteAvailability();
                         });
                     });
                 });
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == employmentCode;
-                });
-                self.deleteEnable(!!match);
             }
 
             //default data for employment
@@ -654,6 +670,15 @@ module nts.uk.pr.view.kmf001.f {
                         digestiveUnit: self.enableDigestiveUnit() ? self.emTimeUnit() : data.compensatoryDigestiveTimeUnit.digestiveUnit
                     }
                 };
+            }
+            
+            // check if delete is available
+            private checkDeleteAvailability() {
+                var self = this;
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.emSelectedCode();
+                });
+                self.deleteEnable(!!match);
             }
 
             private gotoVacationSetting() {

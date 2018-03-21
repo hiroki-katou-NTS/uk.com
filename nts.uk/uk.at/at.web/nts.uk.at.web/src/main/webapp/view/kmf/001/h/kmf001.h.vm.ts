@@ -34,6 +34,8 @@ module nts.uk.pr.view.kmf001.h {
             isComManaged: KnockoutObservable<boolean>;
             hasEmp: KnockoutObservable<boolean>;
             isEmpManaged: KnockoutObservable<boolean>;
+            
+            deleteEnable: KnockoutObservable<boolean>;
 
             employmentVisible: KnockoutObservable<boolean>;
             
@@ -108,10 +110,7 @@ module nts.uk.pr.view.kmf001.h {
                     self.loadComSettingDetails();
                     self.selectedItem(self.employmentList()[0].code);
                     self.selectedName(self.employmentList()[0].name);
-                    var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                        return item.code == self.selectedItem();
-                    });
-                    self.deleteEnable(!!match);
+                    self.checkDeleteAvailability();
                     $('#company-manage').focus();
                     dfd.resolve();
                 });
@@ -122,6 +121,7 @@ module nts.uk.pr.view.kmf001.h {
                 let dfd = $.Deferred();
                 $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
                     if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
+                        self.deleteEnable(false);
                         nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] }).then(function() {
                             $('a[role="tab-navigator"][href="#tabpanel-1"]').click();
                         });
@@ -136,10 +136,7 @@ module nts.uk.pr.view.kmf001.h {
                         self.loadEmpSettingDetails(data);
                         self.hasEmp(true);
                         self.saveDisable(true);
-                        var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                            return item.code == self.selectedItem();
-                        });
-                        self.deleteEnable(!!match);
+                        self.checkDeleteAvailability();
                         
                         // Set displayed Employee name
                         let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
@@ -241,14 +238,11 @@ module nts.uk.pr.view.kmf001.h {
                         self.empSettingModel().expirationDate(self.vacationExpirationEnums()[0].value);
                         self.empSettingModel().allowPrepaidLeave(self.applyPermissionEnums()[0].value);
                     }
+                    self.checkDeleteAvailability();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.messageId);
                 });
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == self.selectedItem();
-                });
-                self.deleteEnable(!!match);
                 return dfd.promise();
             }
 
@@ -275,12 +269,9 @@ module nts.uk.pr.view.kmf001.h {
                 this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
                     self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
                     self.loadEmpSettingDetails(self.selectedItem());
+                    self.checkDeleteAvailability();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == self.selectedItem();
-                });
-                self.deleteEnable(!!match);
             }
             
             public deleteEmpSetting(): void {
@@ -293,12 +284,9 @@ module nts.uk.pr.view.kmf001.h {
                     
                     // Reload setting (empty out fields)
                     self.loadEmpSettingDetails(self.selectedItem());
+                    self.checkDeleteAvailability();
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 });
-                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
-                    return item.code == self.selectedItem();
-                });
-                self.deleteEnable(!!match);
             }
 
             private validateComSetting(): boolean {
@@ -325,6 +313,14 @@ module nts.uk.pr.view.kmf001.h {
                 $('input').ntsError('clear');
             }
 
+            // check if delete is available
+            private checkDeleteAvailability() {
+                var self = this;
+                var match = ko.utils.arrayFirst(self.alreadySettingList(), function(item) {
+                    return item.code == self.selectedItem();
+                });
+                self.deleteEnable(!!match);
+            }
         }
 
         // Model class
