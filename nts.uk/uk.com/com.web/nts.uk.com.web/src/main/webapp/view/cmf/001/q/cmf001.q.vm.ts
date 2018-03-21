@@ -101,8 +101,8 @@ module nts.uk.com.view.cmf001.q {
                 let self = this;
                 nts.uk.ui.windows.setShared('CMF001-R', {
                     // add after test
-                    imexProcessId: '001',
-                    nameSetting: 'A社人事管理情報'
+                    imexProcessId: self.codCode(),
+                    nameSetting: self.codName()
                 }, true);
                 
                 nts.uk.ui.windows.sub.modal("/view/cmf/001/r/index.xhtml");
