@@ -132,20 +132,22 @@ module nts.uk.at.view.kmk003.a {
                 calculationSetting: FixedWorkCalcSettingModel;
                 
                 constructor() {
-                    this.workTimeCode = ko.observable('');
-                    this.offdayWorkTimezone = new FixOffdayWorkTimezoneModel();
-                    this.commonSetting = new WorkTimezoneCommonSetModel();
-                    this.useHalfDayShift = ko.observable(false);
-                    this.fixedWorkRestSetting = new FixedWorkRestSetModel();
-                    this.lstHalfDayWorkTimezone = FixHalfDayWorkTimezoneModel.getDefaultData();
-                    this.lstStampReflectTimezone = [];
-                    this.legalOTSetting = ko.observable(0);
+                    let self = this;
+                    self.workTimeCode = ko.observable('');
+                    self.offdayWorkTimezone = new FixOffdayWorkTimezoneModel();
+                    self.commonSetting = new WorkTimezoneCommonSetModel();
+                    self.useHalfDayShift = ko.observable(false);
+                    self.fixedWorkRestSetting = new FixedWorkRestSetModel();
+                    self.lstHalfDayWorkTimezone = FixHalfDayWorkTimezoneModel.getDefaultData();
+                    self.lstStampReflectTimezone = [];
+                    self.legalOTSetting = ko.observable(0);
                     // Update phase 2
-                    this.calculationSetting = new FixedWorkCalcSettingModel();
-                    this.initStampSets();
+                    self.calculationSetting = new FixedWorkCalcSettingModel();
+                    self.initStampSets();
                 }
 
                 initStampSets() {
+                    let self = this;
                     let goWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                     goWork1Stamp.workNo(1);
                     goWork1Stamp.classification(0);
@@ -158,10 +160,10 @@ module nts.uk.at.view.kmk003.a {
                     let leaveWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                     leaveWork2Stamp.workNo(2);
                     leaveWork2Stamp.classification(1);
-                    this.lstStampReflectTimezone.push(goWork1Stamp);
-                    this.lstStampReflectTimezone.push(leaveWork1Stamp);   
-                    this.lstStampReflectTimezone.push(goWork2Stamp);
-                    this.lstStampReflectTimezone.push(leaveWork2Stamp);                         
+                    self.lstStampReflectTimezone.push(goWork1Stamp);
+                    self.lstStampReflectTimezone.push(leaveWork1Stamp);   
+                    self.lstStampReflectTimezone.push(goWork2Stamp);
+                    self.lstStampReflectTimezone.push(leaveWork2Stamp);                         
                 }
                 
                 public getHDWtzOneday(): FixHalfDayWorkTimezoneModel {
@@ -227,7 +229,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[] = _.map(this.lstHalfDayWorkTimezone, (dataModel) => dataModel.toDto());
-                    let lstStampReflectTimezone: StampReflectTimezoneDto[] = _.map(this.lstStampReflectTimezone, (dataModel) => dataModel.toDto());
+                    let listStamp = _.uniqWith(this.lstStampReflectTimezone, (s: StampReflectTimezoneModel) => s.workNo() && s.classification());
+                    let lstStampReflectTimezone: StampReflectTimezoneDto[] = _.map(listStamp, (dataModel) => dataModel.toDto());
                     
                     let dataDTO: FixedWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),                       
