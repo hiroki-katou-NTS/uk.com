@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -202,17 +203,46 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();
 		// ドメインモデル「日別実績の残業時間」を取得する
 		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		
 		Optional<OverTimeOfDaily> optOverTimeOfDaily = excessOfStatutory.getOverTimeWork();
 		if(!optOverTimeOfDaily.isPresent()) {
 			return;
 		}
 		OverTimeOfDaily overTimeOfDaily = optOverTimeOfDaily.get();
+		List<OverTimeFrameTime> lstOverTimeWorkFrameTime = overTimeOfDaily.getOverTimeWorkFrameTime();
+		if(lstOverTimeWorkFrameTime.isEmpty()) {
+			return;
+		}
+		lstOverTimeWorkFrameTime.stream().forEach(x -> {
+			if(mapOvertime.containsKey(x.getOverWorkFrameNo().v())) {				
+				//x.getBeforeApplicationTime().setTime(new AttendanceTime(mapOvertime.get(x.getOverWorkFrameNo().v())));
+				x.setBeforeApplicationTime(new AttendanceTime(mapOvertime.get(x.getOverWorkFrameNo().v())));
+			}
+		});
+		
+		/* List<OverTimeFrameTimeSheet> lstOverTimeWorkFrameTimeSheet = overTimeOfDaily.getOverTimeWorkFrameTimeSheet();
+		 if(lstOverTimeWorkFrameTimeSheet.isEmpty()) {
+			 return;
+		 }
+		 
 		List<OverTimeFrameTime> lstOverTime = overTimeOfDaily.getOverTimeWorkFrameTime();
-		lstOverTime.stream().forEach(x -> {			
+		int count = 0;
+		Integer i = 0;	*/
+		/*for(OverTimeFrameTime overTimeFrame : lstOverTime ) {
+			if(i >= 40) {
+				if(mapOvertime.containsKey(count)) {
+					overTimeFrame.getOverTimeWork().setTime(new AttendanceTime(mapOvertime.get(count)));
+				}
+				count++;
+			}
+			i++;
+		}*/
+		/*lstOverTime.stream().forEach(x -> {
+			
 			if(mapOvertime.containsKey(x.getOverWorkFrameNo().v())) {				
 				x.getOverTimeWork().setTime(new AttendanceTime(mapOvertime.get(x.getOverWorkFrameNo().v())));
-			} 
-		});
+			}
+		});*/
 		attendanceTime.update(attendanceTimeData);
 		
 		//残業時間の編集状態を更新する
@@ -225,14 +255,14 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	 */
 	private List<Integer> lstOvertimeItem(){
 		List<Integer> lstItem = new ArrayList<Integer>();
-		lstItem.add(216);
-		lstItem.add(221);
-		lstItem.add(231);
-		lstItem.add(236);
-		lstItem.add(241);
-		lstItem.add(251);
-		lstItem.add(256);
-		lstItem.add(261);
+		lstItem.add(220);
+		lstItem.add(225);
+		lstItem.add(235);
+		lstItem.add(240);
+		lstItem.add(245);
+		lstItem.add(255);
+		lstItem.add(260);
+		lstItem.add(265);
 		return lstItem;		
 	}
 	
