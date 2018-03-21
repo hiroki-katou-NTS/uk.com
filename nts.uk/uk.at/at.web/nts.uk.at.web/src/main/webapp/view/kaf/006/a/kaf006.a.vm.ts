@@ -94,6 +94,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).done((data) => {
                 self.initData(data);
                 self.holidayTypeCode.subscribe(function(value){
+                    if (nts.uk.ui.errors.hasError()){return;}
                     if(!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())){
                          var dfd = $.Deferred();
                         service.getAllAppForLeave({
@@ -161,6 +162,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by appDate
         findChangeAppDate(data: any){
             let self = this;
+            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.findByChangeAppDate({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -191,6 +193,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by switch button AllDayHalfDay(A3_12)
         findChangeAllDayHalfDay(value: any){
             let self = this;
+            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.findChangeAllDayHalfDay({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -221,6 +224,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by switch button DisplayHalfDay(A5_3)
         findChangeDisplayHalfDay(value: any){
             let self = this;
+            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.getChangeDisplayHalfDay({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -253,6 +257,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by workType
         findChangeWorkType(value: any){
             let self = this;
+            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.getChangeWorkType({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),

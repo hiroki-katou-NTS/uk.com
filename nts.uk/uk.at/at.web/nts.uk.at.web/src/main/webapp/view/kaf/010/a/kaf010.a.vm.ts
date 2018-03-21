@@ -162,6 +162,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
+                    if (nts.uk.ui.errors.hasError()){return;} 
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
                         service.findByChangeAppDate({
