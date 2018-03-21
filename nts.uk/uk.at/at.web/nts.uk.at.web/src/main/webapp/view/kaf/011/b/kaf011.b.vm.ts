@@ -7,6 +7,15 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         update() {
 
         }
+        start(appID: string): JQueryPromise<any> {
+            var self = this,
+                dfd = $.Deferred();
+
+            dfd.resolve();
+
+            return dfd.promise();
+
+        }
     }
 
 

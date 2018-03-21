@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         employeeName: KnockoutObservable<string> = ko.observable('');
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(0);
-        comment: KnockoutObservable<Comment> = ko.observable(new common.Comment(null));
+        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
         constructor() {
             let self = this;
             self.takingOutWk().appDate.subscribe((newDate) => {
@@ -48,9 +48,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.holidayWk().appDate.subscribe((newDate) => {
                 self.changeDate();
             });
-        }
-        update() {
-
         }
         changeDate() {
 
