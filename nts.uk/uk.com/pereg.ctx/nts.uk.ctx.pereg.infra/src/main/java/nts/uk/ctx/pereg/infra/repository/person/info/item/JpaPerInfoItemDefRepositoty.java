@@ -195,10 +195,15 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName",
 			"AND i.ppemtPerInfoItemPK.perInfoItemDefId != :perInfoItemDefId");
 
-	// vinhpx: start
 	private final static String COUNT_ITEMS_IN_CATEGORY = String.join(" ", "SELECT COUNT(i.perInfoCtgId)",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId");
+	
+	private final static String COUNT_ITEMS_IN_CATEGORY_NO812 = String.join(" ", "SELECT COUNT(i.perInfoCtgId)",
+			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0", 
+			"AND ic.dataType != 9 AND ic.dataType != 10");
 
 	private final static String SELECT_PER_ITEM_BY_CTG_ID_AND_ORDER = "SELECT i "
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -775,10 +780,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		return new PersonInfoItemDefinitionSimple(i[0].toString(), i[1].toString());
 	}
 
-	// vinhpx start
 	@Override
 	public int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId) {
 		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_CATEGORY, Long.class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
+		return a.isPresent() ? a.get().intValue() : 0;
+	}
+	
+	@Override
+	public int countPerInfoItemDefInCategoryNo812(String perInfoCategoryId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_CATEGORY_NO812, Long.class)
 				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
 		return a.isPresent() ? a.get().intValue() : 0;
 	}
