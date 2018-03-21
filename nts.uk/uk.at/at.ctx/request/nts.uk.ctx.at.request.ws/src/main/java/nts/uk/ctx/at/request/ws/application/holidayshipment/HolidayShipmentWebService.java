@@ -9,7 +9,8 @@ import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 
@@ -18,26 +19,34 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShi
 public class HolidayShipmentWebService extends WebService {
 
 	@Inject
-	private HolidayShipmentFinder finder;
+	private HolidayShipmentScreenAFinder aFinder;
+	@Inject
+	private HolidayShipmentScreenBFinder bFinder;
 	@Inject
 	private SaveHolidayShipmentCommandHandler handler;
 
 	@POST
 	@Path("start")
-	public HolidayShipmentDto startPage(StartParam param) {
-		return this.finder.getHolidayShipment(param.getSID(), param.getAppDate(), param.getUiType());
+	public HolidayShipmentDto startPage(StartAParam param) {
+		return this.aFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
 	}
 
 	@POST
 	@Path("change_work_type")
 	public ChangeWorkTypeDto changeWorkType(ChangeWorkTypeParam param) {
-		return this.finder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
+		return this.aFinder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
+	}
+
+	@POST
+	@Path("update")
+	public void update(SaveHolidayShipmentCommand command) {
+		handler.handle(command);
 	}
 
 	@POST
 	@Path("change_day")
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
-		return this.finder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
+		return this.aFinder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
 	}
 
@@ -47,12 +56,25 @@ public class HolidayShipmentWebService extends WebService {
 		handler.handle(command);
 	}
 
+	@POST
+	@Path("find_by_id")
+	public HolidayShipmentDto findByID(StartBParam param) {
+		return this.bFinder.findByID(param.getAppID());
+	}
+
 }
 
 @Value
-class StartParam {
+class StartAParam {
 	private String sID;
 	private String appDate;
+	private int uiType;
+}
+
+@Value
+class StartBParam {
+	private String sID;
+	private String appID;
 	private int uiType;
 }
 
