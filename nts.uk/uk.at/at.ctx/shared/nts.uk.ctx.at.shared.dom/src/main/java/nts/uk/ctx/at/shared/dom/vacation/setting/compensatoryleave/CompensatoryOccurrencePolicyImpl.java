@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 
 /**
  * The Class CompensatoryOccurrencePolicyImpl.
@@ -27,7 +28,9 @@ public class CompensatoryOccurrencePolicyImpl implements CompensatoryOccurrenceP
 		List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting) {
 		compensatoryOccurrenceSetting.forEach(c -> {
 			if (c.getTransferSetting().getOneDayTime().lessThan(c.getTransferSetting().getHalfDayTime())) {
-				bundledBusinessExceptions.addMessage("Msg_782");
+				BusinessException be = new BusinessException("Msg_782");
+				be.setSuppliment("occurrenceType", c.getOccurrenceType().value);
+				bundledBusinessExceptions.addMessage(be);
 			}
 		});
 	}

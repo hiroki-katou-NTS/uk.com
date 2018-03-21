@@ -70,6 +70,9 @@ module nts.uk.pr.view.kmf001.f {
             firstLoad: KnockoutObservable<boolean>;
             employmentVisible: KnockoutObservable<boolean>;
             
+            inputWorkHalfDay: any;
+            inputOverHalfDay: any;
+            
             deleteEnable: KnockoutObservable<boolean>;
             
             constructor() {
@@ -91,6 +94,9 @@ module nts.uk.pr.view.kmf001.f {
                 self.overOneDay = ko.observable('0000');
                 self.overHalfDay = ko.observable('0000');
                 self.overAll = ko.observable('0000');
+                
+                self.inputWorkHalfDay = $('#workHalfDay');
+                self.inputOverHalfDay = $('#overHalfDay');
                 self.deleteEnable = ko.observable(true);
 
                 self.inputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -137,6 +143,22 @@ module nts.uk.pr.view.kmf001.f {
 
                 self.enableDesignOver = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.NotUse;
+                });
+                
+                self.enableDesignWork.subscribe(function(flag) {
+                    if (flag) {
+                        if (self.inputWorkHalfDay.is(":enabled")) self.inputWorkHalfDay.ntsError('check');
+                        return true;
+                    }
+                    if (self.inputWorkHalfDay.ntsError("hasError")) self.inputWorkHalfDay.ntsError('clear');
+                });
+                
+                self.enableDesignOver.subscribe(function(flag) {
+                    if (flag) {
+                        if (self.inputOverHalfDay.is(":enabled")) self.inputOverHalfDay.ntsError('check');
+                        return true;
+                    }
+                    if (self.inputOverHalfDay.ntsError("hasError")) self.inputOverHalfDay.ntsError('clear');
                 });
 
                 //employment
@@ -233,6 +255,7 @@ module nts.uk.pr.view.kmf001.f {
             //switch to em tab
             private switchToEmploymentTab() {
                 let self = this;
+                self.clearError();
                 let dfd = $.Deferred<any>();
                 //include list employment
                 $.when($('#list-employ-component').ntsListComponent(this.listComponentOption),self.loadEmploymentList()).done(() => {
@@ -448,24 +471,21 @@ module nts.uk.pr.view.kmf001.f {
                         .fail((err) => {
                             // display error 782 on fields
                             let errors = _.filter(err.errors, (v: any) => {
-                                return v.messageId == 'Msg_782';    
-                            });
-                            if (errors.length > 0) {
-                                if (errors.length == 2) {
-                                    $('#workHalfDay').ntsError('set', {messageId: 'Msg_782'});
-                                    $('#overHalfDay').ntsError('set', {messageId: 'Msg_782'});
-                                } else {
-                                    if ($('#workHalfDay').is(":enabled")) $('#workHalfDay').ntsError('set', {messageId: 'Msg_782'});
-                                    if ($('#overHalfDay').is(":enabled")) $('#overHalfDay').ntsError('set', {messageId: 'Msg_782'});
+                                if (v.messageId == 'Msg_782') {
+                                    switch (v.supplements.occurrenceType) {
+                                        case 0:
+                                            self.inputOverHalfDay.ntsError('set', {messageId: 'Msg_782'});
+                                            break;
+                                        case 1:
+                                            self.inputWorkHalfDay.ntsError('set', {messageId: 'Msg_782'});
+                                            break;
+                                    }
+                                    return false;
                                 }
-                                
-                                if (nts.uk.ui.errors.errorsViewModel().errors().length > 0) nts.uk.ui.errors.errorsViewModel().open();
-                            }
-                            
-                            // display other errors
-                            errors = _.reject(err.errors, (v: any) => {
-                                return v.messageId == 'Msg_782';
+                                return true;
                             });
+                            
+                            // display other errors;
                             errors = _.uniqBy(errors, (v: any) => {
                                 let key = v.messageId;
                                 for (let param of v.parameterIds) {

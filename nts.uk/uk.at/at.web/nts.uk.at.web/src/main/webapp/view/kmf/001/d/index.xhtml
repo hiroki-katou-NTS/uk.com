@@ -142,10 +142,10 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 <!-- 					<button data-bind="click: backToHistorySelection">#{i18n.getText('KMF001_27')}</button> -->
-					<a class="goback" tabindex="2" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
-					<button class="proceed" tabindex="3" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
+					<a class="goback" tabindex="5" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
+					<button class="proceed" tabindex="6" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
 					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div> -->
-					<button class="danger register-button" tabindex="4" data-bind="click: deleteByEmployment, enable: deleteEnable">#{i18n.getText('KMF001_149')}</button>
+					<button class="danger register-button" tabindex="7" data-bind="click: deleteByEmployment, enable: deleteEnable">#{i18n.getText('KMF001_149')}</button>
 				</div>
 				<div class="ruledLine"></div>
 				<div id="by-employment-content">
@@ -154,7 +154,7 @@
 					<table style="margin: 30px 50px">
 						<tr>
 							<td>
-								<div id="left-content" tabindex="5"></div>
+								<div id="left-content" tabindex="8"></div>
 							</td>
 
 							<td id="right-content">
@@ -178,7 +178,7 @@
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedManagement,
-												enable: hasSelectedEmp}, click: clearEmptErrors" tabindex="6"></div>
+												enable: hasSelectedEmp}, click: clearEmptErrors" tabindex="9"></div>
 										</td>
 									</tr>
 									
@@ -203,7 +203,7 @@
 									},
 													required: true,
 													enable: hasSelectedEmp,
-													readonly: false}" tabindex="7"/>
+													readonly: false}" tabindex="10"/>
 											</div>
 										</td>
 									</tr>
@@ -226,7 +226,7 @@
 									},
 													required: true,
 													enable: hasSelectedEmp,
-													readonly: false}" tabindex="8"/>
+													readonly: false}" tabindex="11"/>
 											</div>
 										</td>
 									</tr>
