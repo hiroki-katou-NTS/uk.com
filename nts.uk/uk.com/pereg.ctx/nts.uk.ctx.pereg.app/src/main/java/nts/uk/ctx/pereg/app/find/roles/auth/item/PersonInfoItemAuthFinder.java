@@ -23,7 +23,7 @@ public class PersonInfoItemAuthFinder {
 	public List<PersonInfoItemDetailDto> getAllItemDetail(String roleId, String personCategoryAuthId) {
 		return this.personItemAuthRepository
 				.getAllItemDetail(roleId, personCategoryAuthId, AppContexts.user().contractCode()).stream()
-				.map(item -> PersonInfoItemDetailDto.fromDomain(item)).collect(Collectors.toList());
+				.map(item -> PersonInfoItemDetailDto.createDto(item)).collect(Collectors.toList());
 	}
 
 }
