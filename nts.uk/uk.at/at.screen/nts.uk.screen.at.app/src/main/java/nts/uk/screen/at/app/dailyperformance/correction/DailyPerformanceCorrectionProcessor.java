@@ -79,6 +79,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -360,7 +361,9 @@ public class DailyPerformanceCorrectionProcessor {
 				appMapDateSid.put(key, x.getAppTypeName());
 			}
 		});
-		Map<String, ItemValue> itemValueMap = new HashMap<>();
+		//get  check box sign(Confirm day)
+		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
+		
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
 		screenDto.markLoginUser();
@@ -372,6 +375,7 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		// set cell data
 		long start2 = System.currentTimeMillis();
+		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
@@ -386,6 +390,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			//set checkbox sign
+			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
 				lockData(sId, screenDto, dailyRecOpeFun, data);
@@ -421,6 +427,9 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(lstData);
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
+		// identityProcessDto show button A2_6
+		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
+		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get() : new IdentityProcessUseSetDto(false, false));
 		return screenDto;
 	}
 

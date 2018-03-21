@@ -16,8 +16,11 @@ public class CheckBossConfirmedService {
 	private AppTargetPersonStatusAdapter appTargetPersonStatusAdapter;
 	
 	public List<StateConfirm> checkBossConfirmed(String employeeID,GeneralDate startDate,GeneralDate endDate){
-		appTargetPersonStatusAdapter.appTargetPersonStatus(employeeID, startDate, endDate, 1);
-		return Collections.emptyList();
+		List<StateConfirm> listState = appTargetPersonStatusAdapter.appTargetPersonStatus(employeeID, startDate, endDate, 1);
+		if(listState.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return listState;
 	}
 
 }
