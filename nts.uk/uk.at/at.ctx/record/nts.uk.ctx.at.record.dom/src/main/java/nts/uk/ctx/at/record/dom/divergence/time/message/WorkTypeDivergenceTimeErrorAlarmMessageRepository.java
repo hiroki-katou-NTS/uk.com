@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.divergence.time.message;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Interface WorkTypeDivergenceTimeErrorAlarmMessageRepository.

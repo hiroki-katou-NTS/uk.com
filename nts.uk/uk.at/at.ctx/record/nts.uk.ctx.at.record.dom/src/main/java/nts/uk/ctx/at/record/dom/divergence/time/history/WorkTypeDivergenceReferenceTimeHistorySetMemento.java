@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -22,7 +22,7 @@ public interface WorkTypeDivergenceReferenceTimeHistorySetMemento {
 	 *
 	 * @param workTypeCode the new work type code
 	 */
-	void setWorkTypeCode(WorkTypeCode workTypeCode);
+	void setWorkTypeCode(BusinessTypeCode workTypeCode);
 
 	/**
 	 * Sets the history items.

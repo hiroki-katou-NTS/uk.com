@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reference;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -76,7 +76,7 @@ public class JpaWorkTypeDivergenceReferenceTimeSetMemento implements WorkTypeDiv
 	 * shared.dom.worktype.WorkTypeCode)
 	 */
 	@Override
-	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+	public void setWorkTypeCode(BusinessTypeCode workTypeCode) {
 		// No coding.
 	}
 
@@ -107,7 +107,7 @@ public class JpaWorkTypeDivergenceReferenceTimeSetMemento implements WorkTypeDiv
 			if (divergenceReferenceTimeValue.get().getAlarmTime().isPresent()) {
 				alarmTime = BigDecimal.valueOf(divergenceReferenceTimeValue.get().getAlarmTime().get().v());
 			}
-			
+
 			if (divergenceReferenceTimeValue.get().getErrorTime().isPresent()) {
 				errorTime = BigDecimal.valueOf(divergenceReferenceTimeValue.get().getErrorTime().get().v());
 			}

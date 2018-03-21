@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -24,7 +24,7 @@ public class WorkTypeDivergenceReferenceTimeHistory extends AggregateRoot implem
 	
 	/** The work type code. */
 	// 勤務種別コード
-	private WorkTypeCode workTypeCode;
+	private BusinessTypeCode workTypeCode;
 
 	/** The history item. */
 	// 履歴項目

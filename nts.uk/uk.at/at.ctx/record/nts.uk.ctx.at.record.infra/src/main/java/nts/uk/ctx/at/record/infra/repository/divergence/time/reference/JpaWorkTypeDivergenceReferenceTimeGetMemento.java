@@ -3,11 +3,11 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reference;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -20,7 +20,7 @@ public class JpaWorkTypeDivergenceReferenceTimeGetMemento implements WorkTypeDiv
 	private KrcstDrt entity;
 
 	/** The work type code. */
-	private WorkTypeCode workTypeCode;
+	private BusinessTypeCode workTypeCode;
 
 	/**
 	 * Instantiates a new jpa work type divergence reference time get memento.
@@ -34,7 +34,7 @@ public class JpaWorkTypeDivergenceReferenceTimeGetMemento implements WorkTypeDiv
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTypeDivergenceReferenceTimeGetMemento(KrcstDrt entity, WorkTypeCode workTypeCode) {
+	public JpaWorkTypeDivergenceReferenceTimeGetMemento(KrcstDrt entity, BusinessTypeCode workTypeCode) {
 		this.entity = entity;
 		this.workTypeCode = workTypeCode;
 	}
@@ -79,7 +79,7 @@ public class JpaWorkTypeDivergenceReferenceTimeGetMemento implements WorkTypeDiv
 	 * WorkTypeDivergenceReferenceTimeGetMemento#getWorkTypeCode()
 	 */
 	@Override
-	public WorkTypeCode getWorkTypeCode() {
+	public BusinessTypeCode getWorkTypeCode() {
 		return this.workTypeCode;
 	}
 

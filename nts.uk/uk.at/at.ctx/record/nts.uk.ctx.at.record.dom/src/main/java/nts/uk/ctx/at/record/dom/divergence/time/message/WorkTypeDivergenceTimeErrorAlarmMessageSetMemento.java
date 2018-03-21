@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.divergence.time.message;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Interface WorkTypeDivergenceTimeErrorAlarmMessageSetMemento.
@@ -22,7 +22,7 @@ public interface WorkTypeDivergenceTimeErrorAlarmMessageSetMemento {
 	 *
 	 * @param workTypeCode the new work type code
 	 */
-	public void setWorkTypeCode(WorkTypeCode workTypeCode);
+	public void setWorkTypeCode(BusinessTypeCode workTypeCode);
 
 	/**
 	 * Sets the divergence time no.

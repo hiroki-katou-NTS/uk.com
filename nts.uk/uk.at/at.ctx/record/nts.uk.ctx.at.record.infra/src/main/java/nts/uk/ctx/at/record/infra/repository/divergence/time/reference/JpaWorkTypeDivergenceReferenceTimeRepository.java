@@ -14,6 +14,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt_;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -43,7 +43,7 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 * nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType)
 	 */
 	@Override
-	public Optional<WorkTypeDivergenceReferenceTime> findByKey(String histId, WorkTypeCode workTypeCode,
+	public Optional<WorkTypeDivergenceReferenceTime> findByKey(String histId, BusinessTypeCode workTypeCode,
 			DivergenceType divergenceTimeNo) {
 		KrcstDrtPK pk = new KrcstDrtPK();
 		pk.setHistId(histId);
@@ -61,7 +61,7 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 * WorkTypeDivergenceReferenceTimeRepository#findAll(java.lang.String)
 	 */
 	@Override
-	public List<WorkTypeDivergenceReferenceTime> findAll(String histId, WorkTypeCode workTypeCode) {
+	public List<WorkTypeDivergenceReferenceTime> findAll(String histId, BusinessTypeCode workTypeCode) {
 		// query data
 		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId);
 
@@ -146,7 +146,7 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 *            the work type code
 	 * @return the work type divergence reference time
 	 */
-	private WorkTypeDivergenceReferenceTime toDomain(KrcstDrt entity, WorkTypeCode workTypeCode) {
+	private WorkTypeDivergenceReferenceTime toDomain(KrcstDrt entity, BusinessTypeCode workTypeCode) {
 		if (entity == null) {
 			return null;
 		}

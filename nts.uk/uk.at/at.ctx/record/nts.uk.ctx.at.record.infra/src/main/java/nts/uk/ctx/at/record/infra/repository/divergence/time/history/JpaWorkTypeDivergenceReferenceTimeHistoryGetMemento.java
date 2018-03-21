@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -45,8 +45,8 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryGetMemento
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryGetMemento#getWorkTypeCode()
 	 */
 	@Override
-	public WorkTypeCode getWorkTypeCode() {
-		return this.entities.isEmpty() ? null : new WorkTypeCode(this.entities.get(0).getWorktypeCd());
+	public BusinessTypeCode getWorkTypeCode() {
+		return this.entities.isEmpty() ? null : new BusinessTypeCode(this.entities.get(0).getWorktypeCd());
 	}
 
 	/* (non-Javadoc)

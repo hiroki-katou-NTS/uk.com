@@ -6,19 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
- * Gets the error message.
- *
- * @return the error message
- */
-
-/**
- * Gets the error message.
- *
- * @return the error message
+ * The Class WorkTypeDivergenceTimeErrorAlarmMessage.
  */
 @Getter
 @Setter
@@ -30,7 +22,7 @@ public class WorkTypeDivergenceTimeErrorAlarmMessage extends AggregateRoot {
 
 	/** The work type code. */
 	// 勤務種別コード
-	private WorkTypeCode workTypeCode;
+	private BusinessTypeCode workTypeCode;
 
 	/** The divergence time no. */
 	// 乖離時間NO
