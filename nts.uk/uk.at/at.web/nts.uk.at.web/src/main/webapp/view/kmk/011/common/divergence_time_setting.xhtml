@@ -19,50 +19,6 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr data-bind="css: { disable_table_row: mapObj2.get(0).divergenceTimeUseSet == 0 }">
-						<td>
-							<span data-bind="text: mapObj2.get(0).divergenceTimeNo"></span>
-						</td>
-						<td>  
-							<div class="cf" data-bind="ntsSwitchButton: {
-								name: '#[KMK011_54]',
-								options: roundingRules,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: mapObj.get(0).notUseAtr,
-								required: required,
-								enable: isDisableAllRow(mapObj.get(0).divergenceTimeNo()) }"></div>
-						</td>
-						<td>
-							<span data-bind="text: mapObj2.get(0).divergenceTimeName"></span>
-						</td>
-						<td>
-							<input id="alarm_time_0"
-										data-bind="ntsTimeEditor: {
-											name: '#[KMK011_32]',
-											constraint: 'DivergenceReferenceTime', 
-											value: mapObj.get(0).alarmTime,
-											option: {width: '50px'},
-											inputFormat: 'time', 
-											mode: 'time', 
-											enable: checkStatusEnable(mapObj.get(0).divergenceTimeNo()), 
-											readonly: false, 
-											required: false}" />
-                        </td>
-						<td>
-                            <input id="error_time_0"
-										data-bind="ntsTimeEditor: {
-											name: '#[KMK011_33]',
-											constraint: 'DivergenceReferenceTime', 
-											value: mapObj.get(0).errorTime,
-											option: {width: '50px'},
-											inputFormat: 'time', 
-											mode: 'time', 
-											enable: checkStatusEnable(mapObj.get(0).divergenceTimeNo()), 
-											readonly: false, 
-											required: false }" />
-						</td>
-					</tr>
 					<tr data-bind="css: { disable_table_row: mapObj2.get(1).divergenceTimeUseSet == 0 }">
 						<td>
 							<span data-bind="text: mapObj2.get(1).divergenceTimeNo"></span>
@@ -122,7 +78,7 @@
 								enable: isDisableAllRow(mapObj.get(2).divergenceTimeNo()) }"></div>
 						</td>
 						<td>
-							<span data-bind="text: mapObj2.get(2).divergenceTimeName"></span>
+							<span data-bind="text: mapObj2.get(1).divergenceTimeName"></span>
 						</td>
 						<td>
 							<input id="alarm_time_2"
@@ -146,7 +102,7 @@
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnable(mapObj.get(2).divergenceTimeNo()),
+											enable: checkStatusEnable(mapObj.get(2).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 						</td>
@@ -278,7 +234,7 @@
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnable(mapObj.get(5).divergenceTimeNo()), 
+											enable: checkStatusEnable(mapObj.get(5).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 						</td>
@@ -322,7 +278,7 @@
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnable(mapObj.get(6).divergenceTimeNo()),
+											enable: checkStatusEnable(mapObj.get(6).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 						</td>
@@ -410,7 +366,7 @@
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnable(mapObj.get(8).divergenceTimeNo()), 
+											enable: checkStatusEnable(mapObj.get(8).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 						</td>
@@ -455,6 +411,50 @@
 											inputFormat: 'time', 
 											mode: 'time', 
 											enable: checkStatusEnable(mapObj.get(9).divergenceTimeNo()), 
+											readonly: false, 
+											required: false }" />
+						</td>
+					</tr>
+					<tr data-bind="css: { disable_table_row: mapObj2.get(10).divergenceTimeUseSet == 0 }">
+						<td>
+							<span data-bind="text: mapObj2.get(10).divergenceTimeNo"></span>
+						</td>
+						<td>  
+							<div class="cf" data-bind="ntsSwitchButton: {
+								name: '#[KMK011_54]',
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: mapObj.get(10).notUseAtr,
+								required: required,
+								enable: isDisableAllRow(mapObj.get(10).divergenceTimeNo()) }"></div>
+						</td>
+						<td>
+							<span data-bind="text: mapObj2.get(10).divergenceTimeName"></span>
+						</td>
+						<td>
+							<input id="alarm_time_10"
+										data-bind="ntsTimeEditor: {
+											name: '#[KMK011_32]',
+											constraint: 'DivergenceReferenceTime', 
+											value: mapObj.get(10).alarmTime,
+											option: {width: '50px'},
+											inputFormat: 'time', 
+											mode: 'time', 
+											enable: checkStatusEnable(mapObj.get(10).divergenceTimeNo()), 
+											readonly: false, 
+											required: false}" />
+                        </td>
+						<td>
+                            <input id="error_time_10"
+										data-bind="ntsTimeEditor: {
+											name: '#[KMK011_33]',
+											constraint: 'DivergenceReferenceTime', 
+											value: mapObj.get(10).errorTime,
+											option: {width: '50px'},
+											inputFormat: 'time', 
+											mode: 'time', 
+											enable: checkStatusEnable(mapObj.get(10).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 						</td>

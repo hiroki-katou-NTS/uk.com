@@ -8,7 +8,8 @@ module nts.uk.at.view.kmk011.e {
             findAllItemSetting: "at/record/divergence/time/workTypeDivergenceRefTime/find",
             deleteHist: "at/record/divergence/time/history/workTypeDivergenceRefTime/remove",
             findListHistory: "at/record/divergence/time/history/workTypeDivergenceRefTime/findAll",
-            findListDivergenceTime: "at/record/divergencetime/setting/getalldivtime"
+            findListDivergenceTime: "at/record/divergencetime/setting/getalldivtime",
+            findListWorkType: "at/record/businesstype/findAll"
         };
 
         export function save(data: model.WorkTypeDivergenceRefTimeSaveCommand): JQueryPromise<any> {
@@ -22,8 +23,11 @@ module nts.uk.at.view.kmk011.e {
             return nts.uk.request.ajax("at", path.findAllItemSetting + "/" + historyId);
         }
 
-        export function getAllHistory(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.findListHistory);
+        export function getAllHistory(workTypeCode: string): JQueryPromise<any> {
+            if (nts.uk.text.isNullOrEmpty(workTypeCode)){
+                    workTypeCode = "0";
+            }
+            return nts.uk.request.ajax("at", path.findListHistory+ "/" + workTypeCode);
         }
 
         export function deleteHistory(command: any): JQueryPromise<any> {
@@ -32,6 +36,10 @@ module nts.uk.at.view.kmk011.e {
 
         export function getAllDivergenceTime(): JQueryPromise<model.DivergenceTimeDto[]> {
             return nts.uk.request.ajax("at", path.findListDivergenceTime);
+        }
+        
+        export function getAllWorkType(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.findListWorkType);
         }
     }
     export module model {
@@ -55,14 +63,16 @@ module nts.uk.at.view.kmk011.e {
         }
 
         export class WorkTypeDivergenceRefTimeSaveDto {
+            workTypeCodes: string;
             divergenceTimeNo: number;
             notUseAtr: number;
             historyId: string;
             alarmTime: number;
             errorTime: number;
 
-            constructor(divergenceTimeNo: number, notUseAtr: number, historyId: string, alarmTime: number, errorTime: number) {
-                this.divergenceTimeNo = divergenceTimeNo
+            constructor(workTypeCodes: string, divergenceTimeNo: number, notUseAtr: number, historyId: string, alarmTime: number, errorTime: number) {
+                this.workTypeCodes = workTypeCodes;
+                this.divergenceTimeNo = divergenceTimeNo;
                 this.notUseAtr = notUseAtr;
                 this.historyId = historyId;
                 this.alarmTime = alarmTime;

@@ -24,8 +24,8 @@ module nts.uk.at.view.kmk011.d {
             roundingRules: KnockoutObservableArray<any>;
             required: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
-            mapObj: KnockoutObservable<Map<number, ComDivergenceTimeSettingDto>>;
-            mapObj2: KnockoutObservable<Map<number, DivergenceTimeDto>>;
+            mapObj: Map<number, ComDivergenceTimeSettingDto>;
+            mapObj2: Map<number, DivergenceTimeDto>;
             
             //history screen
             enable_button_creat: KnockoutObservable<boolean>;
@@ -96,7 +96,7 @@ module nts.uk.at.view.kmk011.d {
                     // Process for screen E (Mother of all screen)
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
-                    $.when(_self.screenE().start_page()).done(function() {
+                    _self.screenE().start_page().done(function() {
                         dfd.resolve(_self);    
                         blockUI.clear();
                     });
@@ -191,7 +191,7 @@ module nts.uk.at.view.kmk011.d {
             private hasError(): boolean {
                 let _self = this;
                 _self.clearErrors();
-                for (let i = 0 ; i < 10; i++) {
+                for (let i = 1 ; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
                         $('#alarm_time_' + i).ntsEditor("validate");
                         $('#error_time_' + i).ntsEditor("validate");    
@@ -210,7 +210,7 @@ module nts.uk.at.view.kmk011.d {
             private clearErrors(): void {
                 let _self = this;
                  // Clear errors
-                for (let i = 0 ; i < 10; i++) {
+                for (let i = 1 ; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
                         $('#alarm_time_' + i).ntsEditor("clear");
                         $('#error_time_' + i).ntsEditor("clear");    
@@ -319,9 +319,18 @@ module nts.uk.at.view.kmk011.d {
 
                 let objTemp1: ComDivergenceTimeSettingDto;
 
-                for(let i = 0; i < 10; i++){
-                     objTemp1 = new ComDivergenceTimeSettingDto();
-                     _self.mapObj.set(i, objTemp1);     
+                for(let i = 1; i <= 10; i++){
+                    objTemp1 = new ComDivergenceTimeSettingDto();
+                    let item = {
+                        divergenceTimeNo: i,
+                        notUseAtr: 0,
+                        divergenceReferenceTimeValue : {
+                            errorTime: 0,
+                            alarmTime: 0
+                        }
+                    };
+                    objTemp1.updateData(item);
+                    _self.mapObj.set(i, objTemp1);     
                 }
                 
             }
@@ -367,12 +376,14 @@ module nts.uk.at.view.kmk011.d {
             // history mode
             public createMode() : void {
                 let _self = this;
+                nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
                       _self.start_page(SideBarTabIndex.FIRST);
                 });
             }
             public editMode() : void {
                 let _self = this;
+                nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.setShared('history', _self.selectedHist());
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
                        _self.start_page(SideBarTabIndex.FIRST);

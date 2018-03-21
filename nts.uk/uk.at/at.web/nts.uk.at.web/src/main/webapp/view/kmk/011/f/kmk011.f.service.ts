@@ -4,21 +4,21 @@ module nts.uk.at.view.kmk011.f {
          * define path to service
          */
         var path: any = {
-            save: "at/record/divergence/time/history/companyDivergenceRefTime/save",
-            findByHistId: "at/record/divergence/time/history/companyDivergenceRefTime/find"
+            saveComHist: "at/record/divergence/time/history/companyDivergenceRefTime/save",
+            saveWkTypeHist: "at/record/divergence/time/history/workTypeDivergenceRefTime/save",
         };
         
-        export function save(data: model.CreateHistoryCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.save, data);
+        export function saveComHist(data: model.CreateComHistoryCommand): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.saveComHist, data);
         }
         
-        export function findByHistoryId(historyId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.findByHistId + "/" + historyId);
+        export function saveWkTypeHist(data: model.CreateWkTypeHistoryCommand): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.saveWkTypeHist, data);
         }
     }
     
     export module model {
-        export class CreateHistoryCommand {
+        export class CreateComHistoryCommand {
             historyId: string;
             startDate: string;
             endDate: string;
@@ -30,6 +30,22 @@ module nts.uk.at.view.kmk011.f {
                 this.endDate = endDate;
                 this.isCopyData = isCopyData;
             }
-        }    
+        }
+        
+        export class CreateWkTypeHistoryCommand {
+            workTypeCodes: string;
+            historyId: string;
+            startDate: string;
+            endDate: string;
+            isCopyData: boolean;
+            
+            constructor(workTypeCodes: string, historyId: string, startDate: string, endDate: string, isCopyData: boolean) {
+                this.workTypeCodes = workTypeCodes;
+                this.historyId = historyId;
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.isCopyData = isCopyData;
+            }
+        }
     }
 }

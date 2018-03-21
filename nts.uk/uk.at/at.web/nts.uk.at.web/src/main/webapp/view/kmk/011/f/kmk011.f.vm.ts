@@ -3,7 +3,8 @@ module nts.uk.at.view.kmk011.f {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     
-    import CreateHistoryCommand = nts.uk.at.view.kmk011.f.model.CreateHistoryCommand;
+    import CreateHistoryCommand = nts.uk.at.view.kmk011.f.model.CreateComHistoryCommand;
+    import CreateWkTypeHistoryCommand = nts.uk.at.view.kmk011.f.model.CreateWkTypeHistoryCommand;
     
     export module viewmodel {
         export class ScreenModel {
@@ -45,30 +46,61 @@ module nts.uk.at.view.kmk011.f {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
+                // prevent if have any error
                 if(_self.hasError()){
                     return;    
                 }
                 
-                if (_self.selectedId() == CreateMode.NEW){
-                    var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), false);
-                    service.save(data).done(() => {
-                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            dfd.resolve();
-                            nts.uk.ui.windows.close();
-                         });
-                    }).fail((res: any) => {
-                          _self.showMessageError(res);  
-                    });
-                } else {
-                    var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), true);
-                    service.save(data).done(() => {
-                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            dfd.resolve();
-                            nts.uk.ui.windows.close();
-                         });
-                    }).fail((res: any) => {
-                          _self.showMessageError(res);  
-                    });
+                // save history
+                let mode: number = nts.uk.ui.windows.getShared('settingMode');
+                switch(mode){
+                    // save company Hist
+                    case HistorySettingMode.COMPANY:
+                        if (_self.selectedId() == CreateMode.NEW){
+                            var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), false);
+                            service.saveComHist(data).done(() => {
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    dfd.resolve();
+                                    nts.uk.ui.windows.close();
+                                 });
+                            }).fail((res: any) => {
+                                  _self.showMessageError(res);  
+                            });
+                        } else {
+                            var data = new CreateHistoryCommand(null,_self.startDate(), _self.endDate(), true);
+                            service.saveComHist(data).done(() => {
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    dfd.resolve();
+                                    nts.uk.ui.windows.close();
+                                 });
+                            }).fail((res: any) => {
+                                  _self.showMessageError(res);  
+                            });
+                        }
+                   // save work type Hist
+                   case HistorySettingMode.WORKTYPE:
+                        var workTypeCode: string = nts.uk.ui.windows.getShared('workTypeCode');
+                        if (_self.selectedId() == CreateMode.NEW){
+                            let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, _self.startDate(), _self.endDate(), false);
+                            service.saveWkTypeHist(data1).done(() => {
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    dfd.resolve();
+                                    nts.uk.ui.windows.close();
+                                 });
+                            }).fail((res: any) => {
+                                  _self.showMessageError(res);  
+                            });
+                        } else {
+                            let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, _self.startDate(), _self.endDate(), true);
+                            service.saveWkTypeHist(data1).done(() => {
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    dfd.resolve();
+                                    nts.uk.ui.windows.close();
+                                 });
+                            }).fail((res: any) => {
+                                  _self.showMessageError(res);  
+                            });
+                        }       
                 }
               
                 return dfd.promise();
@@ -127,6 +159,11 @@ module nts.uk.at.view.kmk011.f {
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');
             }
+        }
+        
+        export enum HistorySettingMode {
+            COMPANY = 0,
+            WORKTYPE = 1
         }
         
         export class BoxModel {

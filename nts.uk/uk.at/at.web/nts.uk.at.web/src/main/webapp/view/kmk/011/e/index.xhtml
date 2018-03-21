@@ -8,31 +8,44 @@
 <body>
 	<ui:composition >
 		<div class="sidebar-content-header">
-			<span class="title">TextResource</span>
+			<span class="title">勤務種別</span>
 			<!-- E1_1 -->
-			<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK011_48')}</a>
+			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK011_48')}</a>
    			<!-- E1_2 -->
-   			<button class="proceed" tabindex="1">#{i18n.getText('KMK011_3')}</button>
+   			<button class="proceed" tabindex="2" data-bind="click: saveDivergenceRefSetting, enable: enableSaveDivergenceRefSetting">#{i18n.getText('KMK011_3')}</button>
    			<!-- E1_3 -->
-   			<button tabindex="2">#{i18n.getText('KMK011_75')}</button>
+   			<button tabindex="3">#{i18n.getText('KMK011_75')}</button>
 		</div>
 	
 		<div class="contents-area fixed-flex-layout" style="padding-top: 50px; padding-left: 50px;">
 			<div class="fixed-flex-layout-left">
 				<div class="background-for-list caret-bottom caret-background bg-green">
-					<table id="single-list" data-bind="ntsGridList: {								
+					<table tabindex="4" id="single-list" data-bind="ntsGridList: {								
 						height: 350,
-						dataSource: items,
+						dataSource: listWorkType,
 						primaryKey: 'code',
 						columns: columns2,
 						multiple: false,
-						value: currentCode
+						value: currentCode,
+						rows: 10
 					}"></table>	
 				</div>
 				<ui:include src="../common/history.xhtml"></ui:include>
 			</div>
 			<div class="fixed-flex-layout-right">
-				<ui:include src="../common/divergence_time_setting.xhtml"></ui:include>
+				<div style="margin-bottom: 30px; margin-left: 50px;">
+					<table>
+						<colgroup>
+							<col width="135px" />
+							<col width="*" />
+						</colgroup> 
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_72')}</div></td>
+							<td><span data-bind="text: wkTypeCode"></span>&#160;&#160;&#160;&#160;<span data-bind="text: wkTypeName"></span></td>
+						</tr>
+					</table>
+				</div>
+				<!-- <ui:include src="../common/divergence_time_setting.xhtml"></ui:include> -->
 			</div>
 		</div>
 	</ui:composition>
