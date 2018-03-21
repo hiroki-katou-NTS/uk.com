@@ -17,7 +17,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW006_25')}</a>
-				<button id="register-button" class="proceed" tabindex="2" data-bind="click: register" style="margin-left:  85px;">#{i18n.getText('KDW006_26')}</button>
+				<button id="register-button" class="proceed" tabindex="2" data-bind="click: saveData" style="margin-left:  85px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="screen-b">
@@ -37,13 +37,13 @@
 					<div id="comment">
 						<div class="item-name">#{i18n.getText('KDW006_62')}</div>
 						<textarea id="comment-text" tabindex="4"
-							data-bind="ntsMultilineEditor: { name: '#[KDW006_62]',constraint: 'RegisterTotaltimeCheer',value: comment }" />
+							data-bind="ntsMultilineEditor: { name: '#[KDW006_62]',constraint: 'RegisterTotaltimeCheer',value: commentDaily }" />
 					</div>
 					
 					<div id="comment">
                         <div class="item-name">#{i18n.getText('KDW006_63')}</div>
                         <textarea id="comment-text" tabindex="5"
-                            data-bind="ntsMultilineEditor: { name: '#[KDW006_63]',constraint: 'RegisterTotaltimeCheer',value: comment }" />
+                            data-bind="ntsMultilineEditor: { name: '#[KDW006_63]',constraint: 'RegisterTotaltimeCheer',value: commentMonthly }" />
                     </div>
 				</div>
 			</div>

@@ -1,0 +1,51 @@
+#screen-g #left-side {
+	vertical-align: top;
+	padding-top: 20px;
+	padding-left: 40px;
+	width: 450px;
+}
+
+#screen-g #right-side {
+	vertical-align: top;
+	padding-top: 20px;
+}
+
+#screen-g .up-part {
+	margin-top: 15px;
+}
+
+#screen-g .no-name-group {
+	width: 450px;
+	margin-bottom: 15px;
+	display: inline-block;
+}
+
+#screen-g #choose-workType {
+	margin-left: 10px;
+	margin-right: 20px;
+}
+
+#screen-g #work-type-names {
+	width: 466px;
+}
+
+#screen-g #clear-workType {
+	margin-left: 25px;
+}
+
+#screen-g .no-group {
+	margin-bottom: 15px;
+	display: inline-block;
+}
+
+#screen-g .name-group {
+	width: 300px;
+}
+
+#image-button {
+	margin-left: 200px;
+}
+
+#work-type-comment {
+	margin-left: 80px;	
+}

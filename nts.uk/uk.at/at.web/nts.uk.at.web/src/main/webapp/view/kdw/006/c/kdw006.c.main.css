@@ -1,26 +1,63 @@
-#screen-c .title-content {
-	margin-top: 30px;
-	margin-left: 100px;
+#screen-d #label11 {
+	margin-left: 40px;
+	margin-top: 40px;
 }
 
-#screen-c .label-switch {
-	display: inline-block;
+
+#screen-d .check-box-atr {
+	display:block;
+	margin-top: 20px;
+	margin-left: 60px;
 }
 
-#screen-c .switch-line {
-	margin-left: 160px;
-	margin-top: 30px;
+.ntsRadioBox span.label{
+	padding-left: 3px !important;
 }
 
-#screen-c .checkBox-atr {
-	margin-left: 160px;
-	margin-top: 30px;
+
+#screen-d .radio-error {
+	margin-left: 90px;
+	margin-top: 20px;
 }
 
-#screen-c .switchAtr {
-	margin-left: 100px;
+.ntsRadioBox {
+	padding-left: 5px;
 }
 
-#screen-c .switchAtr > button.nts-switch-button {
-	width: 80px;
+#checkBox21
+{
+width: 176px;
+}
+#checkBox31{
+width: 147px;
+}
+#checkBox41{
+width: 415px;
+}
+#checkBox51{
+width: 415px;
+}
+#checkBox61{
+width: 415px;
+}
+#checkBox71{
+width: 415px;
+}
+#checkBox81{
+width: 415px;
+}
+#checkBox91{
+width: 415px;
+}
+#checkBox101{
+width: 415px;
+}
+#checkBox111{
+width: 415px;
+}
+#checkBox121{
+width: 415px;
+}
+#checkBox131{
+width: 415px;
 }

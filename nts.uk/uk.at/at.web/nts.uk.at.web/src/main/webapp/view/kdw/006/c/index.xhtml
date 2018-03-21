@@ -1,82 +1,74 @@
-<div id="screen-c">
-	<div id="area1">
-		<div class="title-content">#{i18n.getText('KDW006_29')}</div>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-		<div class="switch-line">
-			<div class="label-switch">#{i18n.getText('KDW006_30')}</div>
-			<div class="switchAtr" tabindex="3" 
-				data-bind="ntsSwitchButton: {
-				options: roundingRules,
-				optionsValue: 'code',
-				optionsText: 'name',
-				value: yearDisplayAtr,
-				enable: true }">
+<body>
+    <ui:composition template="../../../../master/base.xhtml">
+        <ui:define name="htmlHead">
+            <com:scriptfile set="IGNITE" />
+            <com:stylefile path="kdw006.c.main.css" />
+            <com:scriptfile path="kdw006.c.start.js" />
+            <com:scriptfile path="kdw006.c.vm.js" />
+            <com:scriptfile path="kdw006.c.service.js" />
+        </ui:define>
+        <ui:define name="content">
+            <div id="functions-area">
+                <a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW006_25')}</a>
+                <button id="register-button" class="proceed" tabindex="2" data-bind="click: saveData" style="margin-left:  85px;">#{i18n.getText('KDW006_26')}</button>
+            </div>
+			<div id="contents-area">
+				<div id="screen-d">
+					<div id="label11" class="label">#{i18n.getText('KDW006_35')}</div>
+					<div id="checkBox21" class="check-box-atr" tabindex="3"
+						data-bind="ntsCheckBox: { checked: useConfirmByYourself }">#{i18n.getText('KDW006_36')}</div>
+					<div id="radioBox22" class="radio-error" tabindex="4"
+						data-bind="ntsRadioBoxGroup: {
+				        options: itemList,
+				        optionsValue: 'id',
+				        optionsText: 'name',
+				        value: identityProcessDto().yourselfConfirmError,
+				        enable: identityProcessDto().useConfirmByYourself}">
+					</div>
+					<div id="checkBox31" class="check-box-atr" tabindex="5"
+						data-bind="ntsCheckBox: { checked: useSupervisorConfirm }">#{i18n.getText('KDW006_37')}</div>
+					<div id="radioBox32" class="radio-error" tabindex="6"
+						data-bind="ntsRadioBoxGroup: {
+				        options: itemList,
+				        optionsValue: 'id',
+				        optionsText: 'name',
+				        value: approvalProcessDto().supervisorConfirmError,
+				        enable: approvalProcessDto().useDayApproverConfirm}">
+					</div>
+					<div id="checkBox41" class="check-box-atr" tabindex="7"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isCompleteConfirmOneMonth }">#{i18n.getText('KDW006_64')}</div>
+					<div id="checkBox51" class="check-box-atr" tabindex="8"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isDisplayAgreementThirtySix }">#{i18n.getText('KDW006_65')}</div>
+					<div id="checkBox61" class="check-box-atr" tabindex="9"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isDisplayFlexWorker }">#{i18n.getText('KDW006_66')}</div>
+					<div id="checkBox71" class="check-box-atr" tabindex="10"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isSettingAutoTime }">#{i18n.getText('KDW006_67')}</div>
+					<div id="checkBox81" class="check-box-atr" tabindex="11"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isFixContentAuto }">#{i18n.getText('KDW006_68')}</div>
+					<div id="checkBox91" class="check-box-atr" tabindex="12"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isDayBreak }">#{i18n.getText('KDW006_69')}</div>
+					<div id="checkBox101" class="check-box-atr" tabindex="13"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().isFixClearedContent }">#{i18n.getText('KDW006_70')}</div>
+					<div>
+						<div id="label11" class="label">#{i18n.getText('KDW006_60')}</div>
+						<div id="checkBox111" class="check-box-atr" tabindex="14"
+							data-bind="ntsCheckBox: { checked: monPerformanceFunDto().isConfirmDaily }">#{i18n.getText('KDW006_61')}</div>
+						<div id="checkBox121" class="check-box-atr" tabindex="15"
+							data-bind="ntsCheckBox: { checked: identityProcessDto().useIdentityOfMonth }">#{i18n.getText('KDW006_36')}</div>
+						<div id="checkBox131" class="check-box-atr" tabindex="16"
+							data-bind="ntsCheckBox: { checked: approvalProcessDto().useMonthApproverComfirm }">#{i18n.getText('KDW006_37')}</div>
+					</div>
+				</div>
 			</div>
-		</div>
+		</ui:define>
+    </ui:composition>
+</body>
+</html>
 
-		<div class="checkBox-atr" tabindex="4"
-			data-bind="ntsCheckBox: { checked: yearRemainingNumberCheck , enable: yearDisplayAtr}">
-			#{i18n.getText('KDW006_31')}</div>
-	</div>
-
-	<div id="area2">
-		<div class="title-content">#{i18n.getText('KDW006_32')}</div>
-		<div class="switch-line">
-			<div class="label-switch">#{i18n.getText('KDW006_30')}</div>
-
-			<div class="switchAtr" tabindex="5"
-				data-bind="ntsSwitchButton: {
-				options: roundingRules,
-				optionsValue: 'code',
-				optionsText: 'name',
-				value: savingYearDisplayAtr,
-				enable: true }">
-			</div>
-		</div>
-
-		<div class="checkBox-atr" tabindex="6"
-			data-bind="ntsCheckBox: { checked: savingYearRemainingNumberCheck , enable:savingYearDisplayAtr }">
-			#{i18n.getText('KDW006_31')}</div>
-	</div>
-
-	<div id="area3">
-		<div class="title-content">#{i18n.getText('KDW006_33')}</div>
-		<div class="switch-line">
-			<div class="label-switch">#{i18n.getText('KDW006_30')}</div>
-
-			<div class="switchAtr" tabindex="7"
-				data-bind="ntsSwitchButton: {
-				options: roundingRules,
-				optionsValue: 'code',
-				optionsText: 'name',
-				value: compensatoryDisplayAtr,
-				enable: true }">
-			</div>
-		</div>
-
-
-		<div class="checkBox-atr" tabindex="8"
-			data-bind="ntsCheckBox: { checked: compensatoryRemainingNumberCheck , enable: compensatoryDisplayAtr}">
-			#{i18n.getText('KDW006_31')}</div>
-	</div>
-
-	<div id="area4">
-		<div class="title-content">#{i18n.getText('KDW006_34')}</div>
-		<div class="switch-line">
-			<div class="label-switch">#{i18n.getText('KDW006_30')}</div>
-			<div class="switchAtr" tabindex="9"
-				data-bind="ntsSwitchButton: {
-				options: roundingRules,
-				optionsValue: 'code',
-				optionsText: 'name',
-				value: substitutionDisplayAtr,
-				enable: true }">
-			</div>
-		</div>
-
-
-		<div class="checkBox-atr" tabindex="10"
-			data-bind="ntsCheckBox: { checked: substitutionRemainingNumberCheck , enable: substitutionDisplayAtr}">
-			#{i18n.getText('KDW006_31')}</div>
-	</div>
-</div>

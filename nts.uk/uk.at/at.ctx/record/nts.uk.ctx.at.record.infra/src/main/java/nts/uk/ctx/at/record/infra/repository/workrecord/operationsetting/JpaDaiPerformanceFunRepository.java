@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFunRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceFun;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceFunPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFun;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFunPk;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
@@ -20,26 +20,26 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
 
     @Override
     public List<DaiPerformanceFun> getAllDaiPerformanceFun(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtDaiPerformanceFun.class)
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtDaiPerformEdFun.class)
                 .getList(item -> item.toDomain());
     }
 
     @Override
     public Optional<DaiPerformanceFun> getDaiPerformanceFunById(String cid){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtDaiPerformanceFun.class)
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtDaiPerformEdFun.class)
         .setParameter("cid", cid)
         .getSingle(c->c.toDomain());
     }
 
     @Override
     public void add(DaiPerformanceFun domain){
-        this.commandProxy().insert(KrcmtDaiPerformanceFun.toEntity(domain));
+        this.commandProxy().insert(KrcmtDaiPerformEdFun.toEntity(domain));
     }
 
     @Override
     public void update(DaiPerformanceFun domain){
-        KrcmtDaiPerformanceFun newDaiPerformanceFun = KrcmtDaiPerformanceFun.toEntity(domain);
-        KrcmtDaiPerformanceFun updateDaiPerformanceFun = this.queryProxy().find(newDaiPerformanceFun.daiPerformanceFunPk, KrcmtDaiPerformanceFun.class).get();
+        KrcmtDaiPerformEdFun newDaiPerformanceFun = KrcmtDaiPerformEdFun.toEntity(domain);
+        KrcmtDaiPerformEdFun updateDaiPerformanceFun = this.queryProxy().find(newDaiPerformanceFun.daiPerformanceFunPk, KrcmtDaiPerformEdFun.class).get();
         if (null == updateDaiPerformanceFun) {
             return;
         }
@@ -61,6 +61,6 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
 
     @Override
     public void remove(String cid){
-        this.commandProxy().remove(KrcmtDaiPerformanceFun.class, new KrcmtDaiPerformanceFunPk(cid)); 
+        this.commandProxy().remove(KrcmtDaiPerformEdFun.class, new KrcmtDaiPerformEdFunPk(cid)); 
     }
 }

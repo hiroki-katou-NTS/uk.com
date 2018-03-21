@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrcmtDaiPerformanceFunPk implements Serializable
+public class KrcmtDaiPerformEdFunPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

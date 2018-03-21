@@ -20,8 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_PERFORMANCE_FUN")
-public class KrcmtDaiPerformanceFun extends UkJpaEntity implements Serializable
+@Table(name = "KRCMT_DAI_PERFORM_ED_FUN")
+public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -29,7 +29,7 @@ public class KrcmtDaiPerformanceFun extends UkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public KrcmtDaiPerformanceFunPk daiPerformanceFunPk;
+    public KrcmtDaiPerformEdFunPk daiPerformanceFunPk;
     
     /**
     * コメント
@@ -131,8 +131,8 @@ public class KrcmtDaiPerformanceFun extends UkJpaEntity implements Serializable
     public DaiPerformanceFun toDomain() {
         return new DaiPerformanceFun(this.daiPerformanceFunPk.cid, new Comment(this.comment), this.isCompleteConfirmOneMonth, this.isDisplayAgreementThirtySix, this.isFixClearedContent, this.isDisplayFlexWorker, this.isUpdateBreak, this.isSettingTimeBreak, this.isDayBreak, this.isSettingAutoTime, this.isUpdateEarly, this.isUpdateOvertime, this.isUpdateOvertimeWithinLegal, this.isFixContentAuto);
     }
-    public static KrcmtDaiPerformanceFun toEntity(DaiPerformanceFun domain) {
-        return new KrcmtDaiPerformanceFun(new KrcmtDaiPerformanceFunPk(domain.getCid()), domain.getComment().toString(), domain.getIsCompleteConfirmOneMonth(), domain.getIsDisplayAgreementThirtySix(), domain.getIsFixClearedContent(), domain.getIsDisplayFlexWorker(), domain.getIsUpdateBreak(), domain.getIsSettingTimeBreak(), domain.getIsDayBreak(), domain.getIsSettingAutoTime(), domain.getIsUpdateEarly(), domain.getIsUpdateOvertime(), domain.getIsUpdateOvertimeWithinLegal(), domain.getIsFixContentAuto());
+    public static KrcmtDaiPerformEdFun toEntity(DaiPerformanceFun domain) {
+        return new KrcmtDaiPerformEdFun(new KrcmtDaiPerformEdFunPk(domain.getCid()), domain.getComment().toString(), domain.getIsCompleteConfirmOneMonth(), domain.getIsDisplayAgreementThirtySix(), domain.getIsFixClearedContent(), domain.getIsDisplayFlexWorker(), domain.getIsUpdateBreak(), domain.getIsSettingTimeBreak(), domain.getIsDayBreak(), domain.getIsSettingAutoTime(), domain.getIsUpdateEarly(), domain.getIsUpdateOvertime(), domain.getIsUpdateOvertimeWithinLegal(), domain.getIsFixContentAuto());
     }
 
 }

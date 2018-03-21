@@ -1,19 +1,34 @@
 module nts.uk.at.view.kdw006.b.service {
     let servicePath = {
-        getAllFormatPerformanceById: 'at/record/workrecord/operationsetting/getFormat',
-        getDaiPerformanceFunById: 'at/record/workrecord/operationsetting/getdaily',
-        getAllMonPerformanceFunById: 'at/record/workrecord/operationsetting/getMonthy'
+        getFormatPerformanceById: 'at/record/workrecord/operationsetting/getFormat',
+        getDaiPerformanceFunById: 'at/record/workrecord/operationsetting/getDaily',
+        getMonPerformanceFunById: 'at/record/workrecord/operationsetting/getMonthy',
+        updateFormatPerformanceById: 'at/record/workrecord/operationsetting/updateFormat',
+        updatetDaiPerformanceFunById:'at/record/workrecord/operationsetting/updateMonthly',
+        updateMonPerformanceFunById:'at/record/workrecord/operationsetting/updateDaily'
     };
 
-    export function getAllFormatPerformanceById() : JQueryPromise<any>{
-        return nts.uk.request.ajax(servicePath.getAllFormatPerformanceById);
+    export function getFormatPerformanceById() : JQueryPromise<any>{
+        return nts.uk.request.ajax(servicePath.getFormatPerformanceById);
     }
     
     export function getDaiPerformanceFunById() : JQueryPromise<any>{
         return nts.uk.request.ajax(servicePath.getDaiPerformanceFunById);
     }
     
-    export function getAllMonPerformanceFunById() : JQueryPromise<any>{
-        return nts.uk.request.ajax(servicePath.getAllMonPerformanceFunById);
+    export function getMonPerformanceFunById() : JQueryPromise<any>{
+        return nts.uk.request.ajax(servicePath.getMonPerformanceFunById);
+    }
+    
+    export function updateFormatPerformanceById(data) : JQueryPromise<any>{
+        return nts.uk.request.ajax(servicePath.updateFormatPerformanceById, data);
+    }
+    
+    export function updatetDaiPerformanceFunById(data) : JQueryPromise<any>{
+        return nts.uk.request.ajax(servicePath.updatetDaiPerformanceFunById, data);
+    }
+    
+    export function updateMonPerformanceFunById(data) : JQueryPromise<any>{
+        return nts.uk.request.ajax(servicePath.updateMonPerformanceFunById, data);
     }
 }
