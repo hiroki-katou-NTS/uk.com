@@ -75,7 +75,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	@Override
 	public WorkReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para) {
 		OvertimeAppPubParameter overtimePara = new OvertimeAppPubParameter(EnumAdaptor.valueOf(para.getOvertimePara().getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(para.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
+				EnumAdaptor.valueOf(para.getOvertimePara().getReasonNotReflect() == null ? 0 : para.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
 				para.getOvertimePara().getWorkTimeCode(),
 				para.getOvertimePara().getWorkTimeCode(),
 				para.getOvertimePara().getStartTime1(),

@@ -86,8 +86,11 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return;
 		}
 		//予定開始終了時刻の反映(事前事後共通部分)
-		WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
-		scheStartEndTimeReflect.reflectScheStartEndTime(para, timeTypeData);
+		//WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
+		
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getScheduleWorkInformation().getWorkTimeCode().v(),
+				dailyData.getScheduleWorkInformation().getWorkTypeCode().v());
+		scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut);
 	}
 	@Override
 	public boolean timeReflectCheck(PreOvertimeParameter para, boolean changeFlg,

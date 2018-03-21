@@ -157,7 +157,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 
 	@Override
 	public StartEndTimeOutput justLateEarly(String worktimeCode, ScheStartEndTimeReflectOutput startEndTime) {
-		StartEndTimeOutput startEnd = null;
+		StartEndTimeOutput startEnd = new StartEndTimeOutput(null, null, null, null);
 		// INPUT．１回勤務反映区分をチェックする
 		if(startEndTime.isCountReflect1Atr()) {
 			//ジャスト遅刻により時刻を編集する

@@ -41,7 +41,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
 		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
-			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getAppOvertime(appInfor.getAppID(), appInfor.getAppID());
+			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getAppOvertimeFrame(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
 				return;
 			}
@@ -52,11 +52,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
 		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);
 		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();
-		appOvertimeData.getOverTimeInput().stream().forEach(x -> {
-			if(x.getAttendanceType() == AttendanceType.NORMALOVERTIME && x.getFrameNo() <= 10) {
-				mapOvertimeFrame.put(x.getFrameNo(), x.getStartTime().v());
-			}
-		});
+		if(appOvertimeData.getOverTimeInput() != null) {
+			appOvertimeData.getOverTimeInput().stream().forEach(x -> {
+				if(x.getAttendanceType() == AttendanceType.NORMALOVERTIME && x.getFrameNo() <= 10) {
+					mapOvertimeFrame.put(x.getFrameNo(), x.getApplicationTime().v());
+				}
+			});
+		}
+		
 		OvertimeAppParameter overtimePara = new OvertimeAppParameter(appInfor.getReflectionInformation().getStateReflectionReal(), //can xac nhan lai
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
 				appOvertimeData.getWorkTypeCode().v(),

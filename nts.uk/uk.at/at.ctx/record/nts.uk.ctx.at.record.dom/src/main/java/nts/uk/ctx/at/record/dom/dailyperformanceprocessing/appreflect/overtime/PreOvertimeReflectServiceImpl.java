@@ -49,7 +49,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			//TODO nho
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
-			output.setReasonNotReflect(ReasonNotReflectRecord.WORK_CONFIRMED);
+			//dang lay nham thong tin enum
+			output.setReasonNotReflect(ReasonNotReflectRecord.WORK_FIXED);
 			return output;
 	
 		} catch (Exception ex) {
