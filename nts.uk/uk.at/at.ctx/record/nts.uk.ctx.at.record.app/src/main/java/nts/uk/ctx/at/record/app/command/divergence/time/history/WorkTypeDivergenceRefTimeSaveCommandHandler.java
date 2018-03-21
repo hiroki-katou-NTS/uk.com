@@ -1,17 +1,67 @@
 package nts.uk.ctx.at.record.app.command.divergence.time.history;
 
-import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
+import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
+/**
+ * The Class WorkTypeDivergenceRefTimeSaveCommandHandler.
+ */
 @Stateless
 public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<WorkTypeDivergenceRefTimeSaveCommand> {
 
+	/** The Constant USE. */
+	private final static int USE = 1;
+
+	/** The item repo. */
+	@Inject
+	private WorkTypeDivergenceReferenceTimeRepository itemRepo;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<WorkTypeDivergenceRefTimeSaveCommand> context) {
-		// TODO Auto-generated method stub
-		
+		// get command
+		WorkTypeDivergenceRefTimeSaveCommand command = context.getCommand();
+
+		// validate
+		command.getListDataSetting().stream().forEach(item -> {
+			if (item.getNotUseAtr().value == USE) {
+				if (item.getAlarmTime() < item.getErrorTime()) {
+					throw new BusinessException("Msg_82");
+				}
+			}
+		});
+
+		// convert to domain
+		List<WorkTypeDivergenceReferenceTime> listDomain = command.getListDataSetting().stream().map(e -> {
+			if (e.getNotUseAtr().value == USE) {
+				return new WorkTypeDivergenceReferenceTime(e);
+			} else {
+				Optional<WorkTypeDivergenceReferenceTime> oldDomain = this.itemRepo.findByKey(e.getHistoryId(),
+						new WorkTypeCode(e.getWorkTypeCodes()), DivergenceType.valueOf(e.getDivergenceTimeNo()));
+				return oldDomain.get();
+			}
+		}).collect(Collectors.toList());
+
+		// update
+		this.itemRepo.update(listDomain);
 	}
 
 }

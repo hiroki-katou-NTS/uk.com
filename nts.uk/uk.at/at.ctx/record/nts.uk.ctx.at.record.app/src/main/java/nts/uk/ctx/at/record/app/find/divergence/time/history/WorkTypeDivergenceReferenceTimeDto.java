@@ -3,15 +3,16 @@ package nts.uk.ctx.at.record.app.find.divergence.time.history;
 import java.util.Optional;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
+import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class CompanyDivergenceReferenceTimeDto.
+ * The Class WorkTypeDivergenceReferenceTimeDto.
  */
 @Data
-public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceReferenceTimeSetMemento{
+public class WorkTypeDivergenceReferenceTimeDto implements WorkTypeDivergenceReferenceTimeSetMemento{
 	
 	/** The divergence time no. */
 	private int divergenceTimeNo;
@@ -23,14 +24,14 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	private DivergenceReferenceTimeValueDto divergenceReferenceTimeValue;
 	
 	/**
-	 * Instantiates a new company divergence reference time dto.
+	 * Instantiates a new work type divergence reference time dto.
 	 */
-	public CompanyDivergenceReferenceTimeDto() {
+	public WorkTypeDivergenceReferenceTimeDto() {
 		super();
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento#setDivergenceTimeNo(java.lang.Integer)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceTimeNo(java.lang.Integer)
 	 */
 	@Override
 	public void setDivergenceTimeNo(Integer divergenceTimeNo) {
@@ -38,7 +39,7 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento#setCompanyId(java.lang.String)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -46,7 +47,7 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento#setNotUseAtr(nts.uk.shr.com.enumcommon.NotUseAtr)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setNotUseAtr(nts.uk.shr.com.enumcommon.NotUseAtr)
 	 */
 	@Override
 	public void setNotUseAtr(NotUseAtr notUseAtr) {
@@ -54,15 +55,23 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento#setHistoryId(java.lang.String)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setWorkTypeCode(nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode)
 	 */
 	@Override
-	public void setHistoryId(String historyId) {
-		// no coding
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		//no coding
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento#setDivergenceReferenceTimeValue(java.util.Optional)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setHistoryId(java.lang.String)
+	 */
+	@Override
+	public void setHistoryId(String historyId) {
+		//no coding
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceReferenceTimeValue(java.util.Optional)
 	 */
 	@Override
 	public void setDivergenceReferenceTimeValue(Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue) {

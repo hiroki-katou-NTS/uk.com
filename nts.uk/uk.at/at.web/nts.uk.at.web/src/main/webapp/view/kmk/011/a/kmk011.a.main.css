@@ -14,32 +14,29 @@
 .master_title_left {
 	margin-top: 20px;
 	margin-left: 20px;
-	margin-bottom: 10px;
-	width: 190px;
-	height: 80px;
-	background-color: #f2f2f2;
-	border-radius: 5px;
+	margin-bottom: 15px;
+	width: 210px;
+	height: 55px;
+	background-color: #E7E6E6;
 }
 
 .master_title_right {
 	margin-top: 20px;
 	margin-left: 15px;
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 	width: 275px;
-	height: 80px;
-	background-color: #f2f2f2;
-	border-radius: 5px;
+	height: 55px;
+	background-color: #E7E6E6;
 }
 
 .label_master {
-	font-size: 20pt;
-	padding-top: 20px;
-	padding-left: 20px;
+	font-size: 2em;
+	padding-top: 10px;
+	padding-left: 10px;
 	display: block;
 }
 
 .label_tips {
-	font-size: 9pt;
 	margin-top: 5px;
 	margin-left: 20px;
 }

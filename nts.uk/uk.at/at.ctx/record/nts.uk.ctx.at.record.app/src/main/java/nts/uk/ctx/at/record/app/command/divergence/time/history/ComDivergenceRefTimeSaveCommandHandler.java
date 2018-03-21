@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 @Stateless
 public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDivergenceRefTimeSaveCommand>{
 	
+	/** The Constant USE. */
 	private final static int USE = 1;
 	
 	/** The repository. */
@@ -32,6 +34,15 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 	protected void handle(CommandHandlerContext<ComDivergenceRefTimeSaveCommand> context) {
 		//get command
 		ComDivergenceRefTimeSaveCommand command = context.getCommand();
+		
+		//validate
+		command.getListDataSetting().stream().forEach(item -> {
+			if(item.getNotUseAtr().value == USE){
+				if(item.getAlarmTime() < item.getErrorTime()){
+					throw new BusinessException("Msg_82");
+				}
+			}
+		});
 				
 		//convert to domain
 		List<CompanyDivergenceReferenceTime> listDomain = command.getListDataSetting().stream().map(e -> {

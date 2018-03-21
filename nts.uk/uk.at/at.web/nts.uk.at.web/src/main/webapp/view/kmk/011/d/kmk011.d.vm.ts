@@ -66,7 +66,6 @@ module nts.uk.at.view.kmk011.d {
                     if(nts.uk.text.isNullOrEmpty(value)) {
                         _self.enable_button_edit(false);
                         _self.enable_button_delete(false);
-                        _self.isEnableListHist(false);
                         _self.enableSaveDivergenceRefSetting(false);
                     }else {
                         _self.enable_button_edit(true);

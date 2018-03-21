@@ -10,11 +10,22 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 
+/**
+ * The Class CompanyDivergenceReferenceTimeFinder.
+ */
 @Stateless
 public class CompanyDivergenceReferenceTimeFinder {
+	
+	/** The com divergence ref time repository. */
 	@Inject
 	private CompanyDivergenceReferenceTimeRepository comDivergenceRefTimeRepository;
 	
+	/**
+	 * Gets the divergence reference time item by hist.
+	 *
+	 * @param historyId the history id
+	 * @return the divergence reference time item by hist
+	 */
 	public List<CompanyDivergenceReferenceTimeDto> getDivergenceReferenceTimeItemByHist(String historyId){
 		
 		List<CompanyDivergenceReferenceTime> listDomain = this.comDivergenceRefTimeRepository.findAll(historyId);
