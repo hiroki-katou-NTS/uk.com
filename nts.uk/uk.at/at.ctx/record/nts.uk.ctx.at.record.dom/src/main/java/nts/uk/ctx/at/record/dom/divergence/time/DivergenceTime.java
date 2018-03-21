@@ -1,22 +1,12 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
-
 import java.util.List;
-
-import com.zaxxer.hikari.metrics.CodaHaleMetricsTracker.Context;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
-import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
-/**
- * Gets the target items.
- *
- * @return the target items
- */
 @Getter
 public class DivergenceTime extends AggregateRoot {
 
@@ -31,20 +21,20 @@ public class DivergenceTime extends AggregateRoot {
 	/** The Use classification. */
 	// 使用区分
 	private DivergenceTimeUseSet divTimeUseSet;
-	
-	/**  The divergence time name. */
+
+	/** The divergence time name. */
 	// 乖離時間名称
 	private DivergenceTimeName divTimeName;
 
-	/**  The divergence type. */
+	/** The divergence type. */
 	// 乖離の種類
 	private DivergenceType divType;
 
-	/**  The divergence time error cancel method. */
+	/** The divergence time error cancel method. */
 	// 乖離時間のエラーの解除方法
 	private DivergenceTimeErrorCancelMethod errorCancelMedthod;
 
-	/**  The target item list. */
+	/** The target item list. */
 	// 対象項目一覧
 	private List<Double> targetItems;
 
@@ -82,11 +72,7 @@ public class DivergenceTime extends AggregateRoot {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -96,11 +82,7 @@ public class DivergenceTime extends AggregateRoot {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

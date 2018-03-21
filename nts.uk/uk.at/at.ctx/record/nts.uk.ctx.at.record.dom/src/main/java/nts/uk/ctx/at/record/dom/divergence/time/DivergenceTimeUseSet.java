@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
-
 public enum DivergenceTimeUseSet {
 
 	/** The not use. */

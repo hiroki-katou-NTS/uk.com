@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reason;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,9 +13,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelect;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK_;
@@ -27,12 +28,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaDivergenceReasonSelectRepository extends JpaRepository implements DivergenceReasonSelectRepository {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonSelectRepository#findAllReason(int)
-	 */
 	@Override
 	public List<DivergenceReasonSelect> findAllReason(int divTimeNo, String companyId) {
 
@@ -62,63 +57,33 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 		return new ArrayList<DivergenceReasonSelect>();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonSelectRepository#findReasonInfo(int, java.lang.String,
-	 * java.lang.String)
-	 */
 	@Override
-	public DivergenceReasonSelect findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
+	public Optional<DivergenceReasonSelect> findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
 
 		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, companyId, reasonCode);
 
-		KrcstDvgcReason entity = this.queryProxy().find(PK, KrcstDvgcReason.class).orElse(new KrcstDvgcReason());
+		return this.queryProxy().find(PK, KrcstDvgcReason.class).map(e -> toDomain(e));
 
-		if (entity != null)
-			return this.toDomain(entity);
-		else
-			return new DivergenceReasonSelect(null);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonSelectRepository#update(nts.uk.ctx.at.record.dom.
-	 * divergence.time.setting.DivergenceReasonSelect)
-	 */
 	@Override
 	public void update(int divTimeNo, DivergenceReasonSelect divergenceReasonSelect) {
 		this.commandProxy().update(this.toEntity(divTimeNo, divergenceReasonSelect));
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonSelectRepository#delete(nts.uk.ctx.at.record.dom.
-	 * divergence.time.setting.DivergenceReasonSelect)
-	 */
 	@Override
 	public void delete(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
-//		this.commandProxy().remove(this.toEntity(divTimeNo, divReasonSelect));
-		
-		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, AppContexts.user().companyId(), divReasonSelect.getDivergenceReasonCode().toString());
+		// this.commandProxy().remove(this.toEntity(divTimeNo,
+		// divReasonSelect));
+
+		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, AppContexts.user().companyId(),
+				divReasonSelect.getDivergenceReasonCode().toString());
 		this.commandProxy().remove(KrcstDvgcReason.class, PK);
 		this.getEntityManager().flush();
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonSelectRepository#add(nts.uk.ctx.at.record.dom.divergence.
-	 * time.setting.DivergenceReasonSelect)
-	 */
 	@Override
 	public void add(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**

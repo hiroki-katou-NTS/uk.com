@@ -3,10 +3,9 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time;
 import java.util.List;
 
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelect;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaDivergenceReasonInputMethodRepositoryGetMemento.
  */
@@ -35,60 +34,28 @@ public class JpaDivergenceReasonInputMethodRepositoryGetMemento implements Diver
 		this.entities = entities;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonInputMethodGetMemento#getDivergenceTimeNo()
-	 */
 	@Override
 	public int getDivergenceTimeNo() {
 		return entities.getId().getNo();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonInputMethodGetMemento#getCompanyId()
-	 */
 	@Override
 	public String getCompanyId() {
 		return entities.getId().getCid();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonInputMethodGetMemento#getDivergenceReasonInputed()
-	 */
 	@Override
-	public boolean getDivergenceReasonInputed() {		
-		if (entities.getDvgcReasonInputed().intValue() == 1)
-			return false;
-		return true;
+	public boolean getDivergenceReasonInputed() {
+		return entities.getDvgcReasonInputed().intValue() == 1;
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonInputMethodGetMemento#getDivergenceReasonSelected()
-	 */
 	@Override
 	public boolean getDivergenceReasonSelected() {
-		if (entities.getDvgcReasonInputed().intValue() == 1)
-			return false;
-		return true;
+		return entities.getDvgcReasonInputed().intValue() == 1;
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.setting.
-	 * DivergenceReasonInputMethodGetMemento#getReasons()
-	 */
 	@Override
 	public List<DivergenceReasonSelect> getReasons() {
 		return null;

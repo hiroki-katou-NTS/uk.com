@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 import lombok.Getter;
 import lombok.Setter;
 
-// TODO: Auto-generated Javadoc
 /**
  * Checks if is reason selected.
  *
@@ -14,8 +13,7 @@ import lombok.Setter;
 /**
  * Sets the reason selected.
  *
- * @param reasonSelected
- *            the new reason selected
+ * @param reasonSelected the new reason selected
  */
 @Setter
 public class DivergenceTimeErrorCancelMethod {
@@ -35,18 +33,16 @@ public class DivergenceTimeErrorCancelMethod {
 	 *            the reason selected
 	 */
 	public DivergenceTimeErrorCancelMethod(int reasonInputed, int reasonSelected) {
-		if (reasonInputed == 0)
-			this.reasonInputed = false;
-		else
-			this.reasonInputed = true;
 
-		if (reasonSelected == 0)
-			this.reasonSelected = false;
-		else
-			this.reasonSelected = true;
+		this.reasonInputed = reasonInputed == 0;
+
+		this.reasonSelected = reasonSelected == 0;
 
 	}
 
+	/**
+	 * Instantiates a new divergence time error cancel method.
+	 */
 	public DivergenceTimeErrorCancelMethod() {
 
 	}

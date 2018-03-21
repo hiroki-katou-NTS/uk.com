@@ -22,32 +22,17 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaDivergenceTimeRepository.
  */
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
 
-	/**
-	 * get all divergence time.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @return the all div time
-	 */
-
 	@Override
 	public List<DivergenceTime> getAllDivTime(String companyId) {
 		return this.findByCompanyId(companyId);
 	}
 
-	/**
-	 * Update.
-	 *
-	 * @param divTimeDomain
-	 *            the div time domain
-	 */
 	@Override
 	public void update(DivergenceTime divTimeDomain) {
 
@@ -59,50 +44,20 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 		// Get Divergence Attendance Entity List
 		List<KrcstDvgcAttendance> attendanceList = divTimeDomain.getTargetItems().stream()
-				.map(e -> toEntityAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId(),e.intValue())).collect(Collectors.toList());
+				.map(e -> toEntityAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId(),
+						e.intValue()))
+				.collect(Collectors.toList());
 
 		// Add new Divergence Attendance List
 		this.addAttendance(attendanceList);
 	}
 
-	/**
-	 * Gets the div time info.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param divTimeNo
-	 *            the div time no
-	 * @return the div time info
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository
-	 * #getDivTimeInfo(java.lang.String, int)
-	 */
 	@Override
 	public DivergenceTime getDivTimeInfo(String companyId, int divTimeNo) {
 
 		return this.findByCode(companyId, divTimeNo);
 	}
 
-	/**
-	 * Find attendance id.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param divTimeNo
-	 *            the div time no
-	 * @return the list
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository
-	 * #findAttendanceId(java.lang.String, int)
-	 */
 	@Override
 	public List<Integer> findAttendanceId(String companyId, int divTimeNo) {
 		EntityManager em = this.getEntityManager();
@@ -177,9 +132,10 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 		// Get List entity
 		List<KrcstDvgcAttendance> attendanceList = findAttendanceEntity(companyId, divTimeNo);
-		
+
 		// Remove List
-//		this.commandProxy().removeAll(KrcstDvgcAttendance.class, attendanceList);
+		// this.commandProxy().removeAll(KrcstDvgcAttendance.class,
+		// attendanceList);
 		this.commandProxy().removeAll(attendanceList);
 		this.getEntityManager().flush();
 
