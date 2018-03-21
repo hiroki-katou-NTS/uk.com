@@ -15,8 +15,16 @@ module nts.uk.at.view.kmk003.a {
             saveFixedWorkSetting: "at/shared/worktimesetting/fixedset/save",
             saveFlowWorkSetting: "at/shared/worktimesetting/flowset/save",
             saveDiffTimeWorkSetting: "at/shared/worktimesetting/difftimeset/save",
-            removeWorkTimeByCode: "at/shared/worktimesetting/remove"
+            removeWorkTimeByCode: "at/shared/worktimesetting/remove",
+            findSettingFlexWork: "ctx/at/shared/workingform/settingflexwork/find"
         };
+
+        /**
+         * function find all work time set
+         */
+        export function findSettingFlexWork(): JQueryPromise<model.common.SettingFlexWorkDto> {
+            return nts.uk.request.ajax(servicePath.findSettingFlexWork);
+        }
 
         /**
          * function find all work time set

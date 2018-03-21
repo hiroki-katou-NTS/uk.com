@@ -60,6 +60,7 @@ module nts.uk.at.view.kmk003.a {
             isDetailMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             isTestMode: KnockoutObservable<boolean>;
+            flexWorkManaging: boolean;
 
             constructor() {
                 let self = this;
@@ -99,9 +100,13 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 self.bindFunction();
+                service.findSettingFlexWork().done(vl => {
+                    self.flexWorkManaging = vl.flexWorkManaging;
 
-                self.getAllEnums().done(() => {
-                    self.loadListWorktime().done(() => dfd.resolve());
+                    self.getAllEnums().done(() => {
+                        self.setFlexOptionVisibility();
+                        self.loadListWorktime().done(() => dfd.resolve());
+                    });
                 });
                 
                 return dfd.promise();
@@ -328,6 +333,17 @@ module nts.uk.at.view.kmk003.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+
+            /**
+             * Set flex options visibility
+             */
+            private setFlexOptionVisibility(): void {
+                let self = this;
+                if (!self.flexWorkManaging) {
+                    self.settingEnum.workTimeDailyAtr = _.filter(self.settingEnum.workTimeDailyAtr, item => item.fieldName != 'FLEX_WORK');
+                    self.workTimeSettingLoader.workTimeAtrEnums = _.filter(self.workTimeSettingLoader.workTimeAtrEnums, item => item.fieldName != 'FLEX_WORK');
+                }
             }
 
             /**

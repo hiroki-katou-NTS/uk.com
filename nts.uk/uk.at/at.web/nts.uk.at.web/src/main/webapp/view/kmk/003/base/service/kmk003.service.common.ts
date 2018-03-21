@@ -4,6 +4,10 @@ module nts.uk.at.view.kmk003.a {
         export module model {
             export module common {
 
+                export interface SettingFlexWorkDto {
+                    flexWorkManaging: boolean;
+                }
+
                 export interface CommonRestSettingDto {
                     calculateMethod: number;
                 }
