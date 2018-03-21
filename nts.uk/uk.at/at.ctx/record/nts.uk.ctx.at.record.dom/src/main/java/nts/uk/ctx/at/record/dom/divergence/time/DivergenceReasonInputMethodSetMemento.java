@@ -2,11 +2,13 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 
 import java.util.List;
 
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
+
 /**
  * The Interface DivergenceReasonInputMethodSetMemento.
  */
 public interface DivergenceReasonInputMethodSetMemento {
-	
+
 	/**
 	 * Sets the new divergence time no.
 	 *

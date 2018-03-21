@@ -16,7 +16,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK_;

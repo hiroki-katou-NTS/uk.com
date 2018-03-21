@@ -9,27 +9,22 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceReasonSelectAddCommand;
-import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceReasonSelectAddCommandHandler;
-import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceReasonSelectDeleteCommand;
-import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceReasonSelectDeleteCommandHandler;
-import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceReasonSelectSaveCommand;
-import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceReasonSelectSaveCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceTimeInputMethodSaveCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.DivergenceTimeInputMethodSaveCommandHandler;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceAttendanceItemFinder;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceReasonSelectDto;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceReasonSelectFinder;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeDto;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeSettingFinder;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTypeDto;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTypeFinder;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodDto;
-import nts.uk.ctx.at.record.app.find.divergence.time.setting.DivergenceTimeInputMethodFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceAttendanceItemFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceNameDto;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceTypeDto;
 
+/**
+ * The Class DivergenceTimeWebService.
+ */
 @Path("at/record/divergencetime/setting")
 @Produces("application/json")
 public class DivergenceTimeWebService extends WebService {
@@ -41,27 +36,19 @@ public class DivergenceTimeWebService extends WebService {
 	@Inject
 	private DivergenceTimeSettingFinder divTimeFinder;
 
+	/** The div time inputmethod finder. */
 	@Inject
 	private DivergenceTimeInputMethodFinder divTimeInputmethodFinder;
 
+	/** The div time save command handler. */
 	@Inject
 	private DivergenceTimeInputMethodSaveCommandHandler divTimeSaveCommandHandler;
 
+	/** The div time attendance finder. */
 	@Inject
 	private DivergenceAttendanceItemFinder divTimeAttendanceFinder;
-	
-	@Inject
-	private DivergenceReasonSelectFinder divReasonselectFinder;
-	
-	@Inject
-	private DivergenceReasonSelectAddCommandHandler divReasonSelectAddCommandHandler;
-	
-	@Inject
-	private DivergenceReasonSelectSaveCommandHandler divReasonSelectSaveCommandHandler;
-	
-	@Inject
-	private DivergenceReasonSelectDeleteCommandHandler divReasonSelectDeleteCommandHandler;
-	
+
+	/** The div type finder. */
 	@Inject
 	private DivergenceTypeFinder divTypeFinder;
 
@@ -125,56 +112,6 @@ public class DivergenceTimeWebService extends WebService {
 	}
 
 	/**
-	 * get all divergence reason.
-	 *
-	 * @param divTimeId
-	 *            the div time id
-	 * @return the all div reason
-	 */
-	@POST
-	@Path("getalldivreason/{divTimeId}")
-	public List<DivergenceReasonSelectDto> getAllDivReason(@PathParam("divTimeId") String divTimeNo) {
-		return this.divReasonselectFinder.getAllReason(Integer.parseInt(divTimeNo));
-		
-	}
-
-	/**
-	 * add divergence reason.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("adddivreason")
-	public void addDivReason(DivergenceReasonSelectAddCommand command) {
-		 this.divReasonSelectAddCommandHandler.handle(command);
-	}
-
-	/**
-	 * update divergence reason.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("updatedivreason")
-	public void updateDivReason(DivergenceReasonSelectSaveCommand command) {
-		 this.divReasonSelectSaveCommandHandler.handle(command);
-	}
-
-	/**
-	 * delete divergence reason.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("deletedivreason")
-	public void deleteDivReason(DivergenceReasonSelectDeleteCommand command) {
-		 this.divReasonSelectDeleteCommandHandler.handle(command);
-	}
-
-	/**
 	 * get item set.
 	 *
 	 * @param divTimeId
@@ -187,7 +124,6 @@ public class DivergenceTimeWebService extends WebService {
 		// return this.divTimeAttendanceFinder.getAllDivReasonByCode(divTimeId);
 		return null;
 	}
-	
 
 	/**
 	 * Gets the at type.

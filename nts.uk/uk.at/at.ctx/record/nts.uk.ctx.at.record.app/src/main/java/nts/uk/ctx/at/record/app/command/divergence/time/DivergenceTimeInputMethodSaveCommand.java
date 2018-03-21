@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -50,8 +49,11 @@ public class DivergenceTimeInputMethodSaveCommand {
 
 	/** The attendance id. */
 	private List<Integer> targetItems;
-	
-	public DivergenceTimeInputMethodSaveCommand(){
+
+	/**
+	 * Instantiates a new divergence time input method save command.
+	 */
+	public DivergenceTimeInputMethodSaveCommand() {
 		super();
 	}
 

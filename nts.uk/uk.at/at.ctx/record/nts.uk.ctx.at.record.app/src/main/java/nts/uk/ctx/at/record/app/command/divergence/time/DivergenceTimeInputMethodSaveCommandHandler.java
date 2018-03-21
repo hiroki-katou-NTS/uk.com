@@ -11,9 +11,11 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 
-
+/**
+ * The Class DivergenceTimeInputMethodSaveCommandHandler.
+ */
 @Stateless
 public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<DivergenceTimeInputMethodSaveCommand> {
 
@@ -25,13 +27,6 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 	@Inject
 	private DivergenceReasonInputMethodRepository divReasonInputRepo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
-	 * .CommandHandlerContext)
-	 */
 	@Override
 	protected void handle(CommandHandlerContext<DivergenceTimeInputMethodSaveCommand> context) {
 		// get command
@@ -40,14 +35,14 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 
 		// Convert to DivergenceTimeSaveCommand
 		DivergenceTimeSaveCommand divTimeCommand = new DivergenceTimeSaveCommand(command.getDivergenceTimeNo(),
-				command.getCompanyId(), command.getDivergenceTimeUseSet(), command.getDivergenceTimeName(),
-				divType, command.isReasonInput(), command.isReasonSelect(),
+				command.getDivergenceTimeUseSet(), command.getDivergenceTimeName(), divType, command.isReasonInput(),
+				command.isReasonSelect(),
 				command.getTargetItems().stream().map(e -> e.doubleValue()).collect(Collectors.toList()));
 
 		// Convert to DivergenceReasonInputMethosSaveCommand
 
 		DivergenceReasonInputMethodSaveCommand divReasonCommand = new DivergenceReasonInputMethodSaveCommand(
-				command.getDivergenceTimeNo(), command.getCompanyId(), command.isDivergenceReasonInputed(),
+				command.getDivergenceTimeNo(), command.isDivergenceReasonInputed(),
 				command.isDivergenceReasonSelected());
 		// convert to domain
 

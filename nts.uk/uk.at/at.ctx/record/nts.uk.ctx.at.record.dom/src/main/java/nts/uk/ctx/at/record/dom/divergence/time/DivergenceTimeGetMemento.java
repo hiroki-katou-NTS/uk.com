@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
-
 /**
  * The Interface DivergenceTimeGetMemento.
  */

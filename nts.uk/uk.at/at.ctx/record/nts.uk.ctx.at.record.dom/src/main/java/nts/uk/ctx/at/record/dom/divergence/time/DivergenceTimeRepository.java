@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface DivergenceTimeRepository.
  */
