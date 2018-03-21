@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 
 
 @Stateless

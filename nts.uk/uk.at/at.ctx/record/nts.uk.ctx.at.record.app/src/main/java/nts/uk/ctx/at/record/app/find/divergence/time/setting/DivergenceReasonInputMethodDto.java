@@ -2,9 +2,9 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodSetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodGetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodSetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelect;
 
 
 public class DivergenceReasonInputMethodDto

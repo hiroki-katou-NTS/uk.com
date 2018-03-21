@@ -2,10 +2,10 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reason;
 
 import java.math.BigDecimal;
 
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceInputRequired;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReason;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectSetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceInputRequired;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReason;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 

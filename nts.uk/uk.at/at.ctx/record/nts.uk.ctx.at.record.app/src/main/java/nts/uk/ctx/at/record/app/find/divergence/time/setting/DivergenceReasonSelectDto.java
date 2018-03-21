@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceInputRequired;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReason;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectSetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceInputRequired;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReason;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectSetMemento;
 
 // TODO: Auto-generated Javadoc
 /**

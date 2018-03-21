@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethod;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeUseSet;
 import nts.uk.shr.com.context.AppContexts;
 
 

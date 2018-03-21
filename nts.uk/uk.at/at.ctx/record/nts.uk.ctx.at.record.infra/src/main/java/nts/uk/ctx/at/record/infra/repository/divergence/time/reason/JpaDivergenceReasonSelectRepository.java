@@ -12,9 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelect;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectGetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK_;
@@ -103,8 +103,11 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	 * divergence.time.setting.DivergenceReasonSelect)
 	 */
 	@Override
-	public void delete(DivergenceReasonSelect divReasonSelect) {
-		this.commandProxy().remove(divReasonSelect);
+	public void delete(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
+//		this.commandProxy().remove(this.toEntity(divTimeNo, divReasonSelect));
+		
+		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, AppContexts.user().companyId(), divReasonSelect.getDivergenceReasonCode().toString());
+		this.commandProxy().remove(KrcstDvgcReason.class, PK);
 		this.getEntityManager().flush();
 
 	}

@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.reason;
 
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceInputRequired;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReason;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectGetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceInputRequired;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReason;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 
 // TODO: Auto-generated Javadoc

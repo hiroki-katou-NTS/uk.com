@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelect;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonSelectRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelect;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonSelectRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

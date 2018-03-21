@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethod;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceReasonInputMethodRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

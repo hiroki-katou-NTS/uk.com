@@ -3,11 +3,11 @@ package nts.uk.ctx.at.record.app.find.divergence.time.setting;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeErrorCancelMethod;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeName;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeSetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.setting.DivergenceTimeUseSet;
 
 @Getter
 public class DivergenceTimeDto implements DivergenceTimeSetMemento {
