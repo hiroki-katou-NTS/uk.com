@@ -1,0 +1,166 @@
+package nts.uk.ctx.at.request.app.find.application.holidayshipment;
+
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
+
+@Stateless
+public class HolidayShipmentScreenBFinder {
+
+	@Inject
+	private DetailAppCommonSetService detailService;
+	@Inject
+	private BeforePreBootMode bootMode;
+	@Inject
+	private ApplicationSettingRepository appSetRepo;
+	@Inject
+	private AbsenceLeaveAppRepository absRepo;
+	@Inject
+	private RecruitmentAppRepository recRepo;
+	@Inject
+	private CompltLeaveSimMngRepository CompLeaveRepo;
+
+	/**
+	 * find by Id
+	 * 
+	 * @param employeeID
+	 * @param initDateInput
+	 * @param uiType
+	 * @return HolidayShipmentDto
+	 */
+	RecruitmentApp recApp;
+	AbsenceLeaveApp absApp;
+
+	public HolidayShipmentDto findByID(String applicationID) {
+		HolidayShipmentDto output = new HolidayShipmentDto();
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		boolean isRecApp = isRecApp(applicationID);
+		// 14-1.詳細画面起動前申請共通設定を取得する
+		ApplicationMetaOutput appOutput = detailService.getDetailAppCommonSet(companyID, applicationID);
+		// 14-2.詳細画面起動前モードの判断
+		if (appOutput != null) {
+			DetailedScreenPreBootModeOutput bootOutput = bootMode.judgmentDetailScreenMode(companyID, employeeID,
+					applicationID, appOutput.getAppDate());
+
+			if (bootOutput != null) {
+				// 14-3.詳細画面の初期モード
+
+				Optional<ApplicationSetting> appSetOpt = appSetRepo.getApplicationSettingByComID(companyID);
+				if (appSetOpt.isPresent()) {
+					ApplicationSetting appSet = appSetOpt.get();
+
+				}
+				if (isRecApp) {
+					// 申請＝振出申請
+					// アルゴリズム「振出申請に対応する振休情報の取得」を実行する
+					getRecApp(applicationID);
+
+				} else {
+
+					// 申請＝振休申請
+					// アルゴリズム「振休申請に対応する振出情報の取得」を実行する
+					getAbsApp(applicationID);
+				}
+
+			}
+		}
+
+		return output;
+
+	}
+
+	private void getAbsApp(String applicationID) {
+		// アルゴリズム「振休申請に同期された振出申請の取得」を実行する
+		SyncState syncState = getCompltLeaveSimMngFromAbsID(applicationID);
+		if (syncState.equals(SyncState.SYNCHRONIZING)) {
+			// アルゴリズム「振休申請と関連付けた振出情報の取得」を実行する
+
+		}
+	}
+
+	private SyncState getCompltLeaveSimMngFromAbsID(String applicationID) {
+		// ドメインモデル「振休振出同時申請管理」を1件取得する
+		SyncState result = SyncState.ASYNCHRONOUS;
+		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+		if (CompltLeaveSimMngOpt.isPresent()) {
+			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
+			result = compltLeaveSimMng.getSyncing();
+			Optional<RecruitmentApp> recAppOpt = recRepo.findByID(compltLeaveSimMng.getRecAppID());
+			if (recAppOpt.isPresent()) {
+
+				recApp = recAppOpt.get();
+			} else {
+
+				throw new BusinessException("");
+			}
+
+		}
+		return result;
+	}
+
+	private void getRecApp(String applicationID) {
+		// アルゴリズム「振出申請に同期された振休申請の取得」を実行する
+		SyncState syncState = getCompltLeaveSimMngFromRecID(applicationID);
+		if (syncState.equals(SyncState.SYNCHRONIZING)) {
+			// アルゴリズム「振出日に関連付いた振休情報の取得」を実行する
+			// TODO chưa có ai làm domain 暫定振出管理データ
+		}
+
+	}
+
+	private SyncState getCompltLeaveSimMngFromRecID(String applicationID) {
+		// ドメインモデル「振休振出同時申請管理」を1件取得する
+		SyncState result = SyncState.ASYNCHRONOUS;
+		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+		if (CompltLeaveSimMngOpt.isPresent()) {
+			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
+			result = compltLeaveSimMng.getSyncing();
+			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMng.getAbsenceLeaveAppID());
+			if (absAppOpt.isPresent()) {
+
+				absApp = absAppOpt.get();
+			} else {
+
+				throw new BusinessException("");
+			}
+
+		}
+		return result;
+
+	}
+
+	private boolean isRecApp(String applicationID) {
+		boolean result = false;
+		Optional<RecruitmentApp> recAppOpt = recRepo.findByID(applicationID);
+		if (recAppOpt.isPresent()) {
+			recApp = recAppOpt.get();
+			result = true;
+
+		} else {
+			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(applicationID);
+
+			absApp = absAppOpt.get();
+		}
+		return result;
+
+	}
+}

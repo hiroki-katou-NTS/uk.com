@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
@@ -236,7 +238,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private void createNewComLeaveSilMng(String recAppID, String absAppID) {
-		CompltLeaveSimMng comMng = new CompltLeaveSimMng(recAppID, absAppID, 1);
+		CompltLeaveSimMng comMng = new CompltLeaveSimMng(recAppID, absAppID, SyncState.SYNCHRONIZING);
 		CompLeaveRepo.insert(comMng);
 
 	}
@@ -259,7 +261,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, absAppCmd.getWkTypeCD(),
 				EnumAdaptor.valueOf(absAppCmd.getChangeWorkHoursType(), NotUseAtr.class),
 				new WorkLocationCD(absAppCmd.getWorkLocationCD()), new WorkTimeCode(wkTime1Cmd.getWkTimeCD()),
-				workTime1, workTime2);
+				workTime1, workTime2, Collections.emptyList(), Collections.emptyList());
 		appRepo.insert(absApplication);
 		absRepo.insert(absApp);
 		return absAppID;
@@ -286,7 +288,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime2Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class)));
+						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class)),
+				Collections.emptyList());
 		appRepo.insert(recApplication);
 		recRepo.insert(recApp);
 		return recAppID;
