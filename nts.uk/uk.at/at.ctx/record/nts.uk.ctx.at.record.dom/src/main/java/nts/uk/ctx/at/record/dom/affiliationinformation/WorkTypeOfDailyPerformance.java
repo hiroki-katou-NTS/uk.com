@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 /**
  * 
  * @author nampt
- * 日別実績の所属情報 - root
+ * 日別実績の勤務種別 - root
  *
  */
 @Getter
@@ -23,11 +23,11 @@ public class WorkTypeOfDailyPerformance extends AggregateRoot{
 	/** 勤務種別コード */
 	private BusinessTypeCode workTypeCode;
 
-	public WorkTypeOfDailyPerformance(String employeeId, GeneralDate date, BusinessTypeCode workTypeCode) {
+	public WorkTypeOfDailyPerformance(String employeeId, GeneralDate date, String workTypeCode) {
 		super();
 		this.employeeId = employeeId;
 		this.date = date;
-		this.workTypeCode = workTypeCode;
+		this.workTypeCode = new BusinessTypeCode(workTypeCode);
 	}
 	
 }
