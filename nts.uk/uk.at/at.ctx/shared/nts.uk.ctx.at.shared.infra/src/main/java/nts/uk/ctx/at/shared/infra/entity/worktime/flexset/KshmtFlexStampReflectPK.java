@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.flexset;
@@ -34,7 +34,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	/** The work no. */
 	@Column(name = "WORK_NO")
 	private Integer workNo;
-	
+
 	/** The atr. */
 	@Column(name = "ATR")
 	private int atr;
@@ -45,12 +45,18 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	public KshmtFlexStampReflectPK() {
 		super();
 	}
-	
+
 	/**
 	 * Instantiates a new kshmt flex stamp reflect PK.
 	 *
-	 * @param cid the cid
-	 * @param worktimeCd the worktime cd
+	 * @param cid
+	 *            the cid
+	 * @param worktimeCd
+	 *            the worktime cd
+	 * @param workNo
+	 *            the work no
+	 * @param atr
+	 *            the atr
 	 */
 	public KshmtFlexStampReflectPK(String cid, String worktimeCd, int workNo, int atr) {
 		super();
@@ -59,20 +65,26 @@ public class KshmtFlexStampReflectPK implements Serializable {
 		this.workNo = workNo;
 		this.atr = atr;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + atr;
 		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
 		result = prime * result + ((workNo == null) ? 0 : workNo.hashCode());
 		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -84,6 +96,8 @@ public class KshmtFlexStampReflectPK implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		KshmtFlexStampReflectPK other = (KshmtFlexStampReflectPK) obj;
+		if (atr != other.atr)
+			return false;
 		if (cid == null) {
 			if (other.cid != null)
 				return false;
@@ -101,6 +115,4 @@ public class KshmtFlexStampReflectPK implements Serializable {
 			return false;
 		return true;
 	}
-
-
 }

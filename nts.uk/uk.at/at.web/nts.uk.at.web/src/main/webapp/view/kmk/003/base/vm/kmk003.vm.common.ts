@@ -1905,10 +1905,10 @@ module nts.uk.at.view.kmk003.a {
                 toDto(): StampReflectTimezoneDto {
                     var dataDTO: StampReflectTimezoneDto = {
                         workNo: this.workNo(),
-                        classification: this.workNo(),
+                        classification: this.classification(),
                         endTime: this.endTime(),
                         startTime: this.startTime()
-                    };
+                    }
                     return dataDTO;
                 }
                 

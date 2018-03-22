@@ -229,8 +229,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[] = _.map(this.lstHalfDayWorkTimezone, (dataModel) => dataModel.toDto());
-                    let listStamp = _.uniqWith(this.lstStampReflectTimezone, (s: StampReflectTimezoneModel) => s.workNo() && s.classification());
-                    let lstStampReflectTimezone: StampReflectTimezoneDto[] = _.map(listStamp, (dataModel) => dataModel.toDto());
+                    let lstStampReflectTimezone: StampReflectTimezoneDto[] = _.map(this.lstStampReflectTimezone, (dataModel) => dataModel.toDto());
                     
                     let dataDTO: FixedWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),                       
