@@ -16,36 +16,59 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComFlexSet;
 
 /**
- * The Class JpaCompanySettingGetMemento.
+ * The Class JpaComFlexSettingGetMemento.
  */
 public class JpaComFlexSettingGetMemento implements ComFlexSettingGetMemento {
 	
+	/** The entity. */
 	private KshstComFlexSet entity;
 
+	/**
+	 * Instantiates a new jpa com flex setting get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaComFlexSettingGetMemento(KshstComFlexSet entity) {
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getYear()
+	 */
 	@Override
 	public Year getYear() {
 		return new Year(this.entity.getKshstComFlexSetPK().getYear());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.entity.getKshstComFlexSetPK().getCid());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getStatutorySetting()
+	 */
 	@Override
 	public List<MonthlyUnit> getStatutorySetting() {
 		return this.toStatutorySetting();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getSpecifiedSetting()
+	 */
 	@Override
 	public List<MonthlyUnit> getSpecifiedSetting() {
 		return this.toSpecSetting();
 	}
 	
+	/**
+	 * To statutory setting.
+	 *
+	 * @return the list
+	 */
 	private List<MonthlyUnit> toStatutorySetting() {
 		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
 		monthlyUnits.add(new MonthlyUnit( new Month(Month.JANUARY), new MonthlyEstimateTime(this.entity.getStatJanTime())));
@@ -63,6 +86,11 @@ public class JpaComFlexSettingGetMemento implements ComFlexSettingGetMemento {
 		return monthlyUnits;
 	}
 	
+	/**
+	 * To spec setting.
+	 *
+	 * @return the list
+	 */
 	private List<MonthlyUnit> toSpecSetting() {
 		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
 		monthlyUnits.add(new MonthlyUnit( new Month(Month.JANUARY), new MonthlyEstimateTime(this.entity.getSpecJanTime())));

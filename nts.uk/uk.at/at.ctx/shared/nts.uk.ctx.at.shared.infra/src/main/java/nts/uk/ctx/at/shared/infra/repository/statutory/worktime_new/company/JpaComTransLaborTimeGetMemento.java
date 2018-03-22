@@ -15,14 +15,21 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
- * The Class JpaCompanySettingGetMemento.
+ * The Class JpaComTransLaborTimeGetMemento.
  */
 public class JpaComTransLaborTimeGetMemento implements ComTransLaborTimeGetMemento {
 	
+	/** The company id. */
 	private CompanyId companyId;
 
+	/** The working time set. */
 	private WorkingTimeSetting workingTimeSet;
 
+	/**
+	 * Instantiates a new jpa com trans labor time get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaComTransLaborTimeGetMemento(KshstComTransLabTime entity) {
 		this.companyId = new CompanyId(entity.getCid());
 		
@@ -31,11 +38,17 @@ public class JpaComTransLaborTimeGetMemento implements ComTransLaborTimeGetMemen
 		this.workingTimeSet = new WorkingTimeSetting(weekyUnit, dailyTime);
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return this.companyId;
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeGetMemento#getWorkingTimeSet()
+	 */
 	@Override
 	public WorkingTimeSetting getWorkingTimeSet() {
 		return this.workingTimeSet;

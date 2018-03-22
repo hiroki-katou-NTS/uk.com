@@ -17,27 +17,46 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSet;
 
 /**
- * The Class JpaCompanyWtSettingSetMemento.
+ * The Class JpaComNormalSettingSetMemento.
+ */
+
+/**
+ * Gets the entity.
+ *
+ * @return the entity
  */
 @Getter
 public class JpaComNormalSettingSetMemento implements ComNormalSettingSetMemento {
 	
+	/** The entity. */
 	private KshstComNormalSet entity;
 	
+	/**
+	 * Instantiates a new jpa com normal setting set memento.
+	 */
 	public JpaComNormalSettingSetMemento() {
 		this.entity = new KshstComNormalSet();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
+	 */
 	@Override
 	public void setYear(Year year) {
 		this.entity.getKshstComNormalSetPK().setYear(year.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.entity.getKshstComNormalSetPK().setCid(companyId.v());;
 	}
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingSetMemento#setStatutorySetting(java.util.List)
+	 */
 	@Override
 	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
 		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(statutorySetting);
@@ -55,6 +74,12 @@ public class JpaComNormalSettingSetMemento implements ComNormalSettingSetMemento
 		this.entity.setDecTime(map.get(Month.DECEMBER));
 	}
 	
+	/**
+	 * To monthly estimate time map.
+	 *
+	 * @param statutorySetting the statutory setting
+	 * @return the map
+	 */
 	private Map<Integer, Integer> toMonthlyEstimateTimeMap (List<MonthlyUnit> statutorySetting) {
 		return statutorySetting.stream().collect(Collectors.toMap(unit -> unit.getMonth().v(), unit -> unit.getMonthlyTime().v()));
 	}

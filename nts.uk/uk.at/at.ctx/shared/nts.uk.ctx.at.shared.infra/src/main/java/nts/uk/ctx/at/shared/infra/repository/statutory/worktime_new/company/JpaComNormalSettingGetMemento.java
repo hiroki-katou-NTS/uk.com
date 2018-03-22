@@ -20,27 +20,47 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
  */
 public class JpaComNormalSettingGetMemento implements ComNormalSettingGetMemento {
 
+	/** The entity. */
 	private KshstComNormalSet entity;
 
+	/**
+	 * Instantiates a new jpa com normal setting get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaComNormalSettingGetMemento(KshstComNormalSet entity) {
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingGetMemento#getYear()
+	 */
 	@Override
 	public Year getYear() {
 		return new Year(this.entity.getKshstComNormalSetPK().getYear());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.entity.getKshstComNormalSetPK().getCid());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingGetMemento#getStatutorySetting()
+	 */
 	@Override
 	public List<MonthlyUnit> getStatutorySetting() {
 		return this.toMonthlyUnits();
 	}
 	
+	/**
+	 * To monthly units.
+	 *
+	 * @return the list
+	 */
 	private List<MonthlyUnit> toMonthlyUnits() {
 		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
 		monthlyUnits.add(new MonthlyUnit( new Month(Month.JANUARY), new MonthlyEstimateTime(this.entity.getJanTime())));

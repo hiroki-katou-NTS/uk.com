@@ -17,27 +17,46 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComFlexSet;
 
 /**
- * The Class JpaCompanyWtSettingSetMemento.
+ * The Class JpaComFlexSettingSetMemento.
+ */
+
+/**
+ * Gets the entity.
+ *
+ * @return the entity
  */
 @Getter
 public class JpaComFlexSettingSetMemento implements ComFlexSettingSetMemento {
 	
+	/** The entity. */
 	private KshstComFlexSet entity;
 
+	/**
+	 * Instantiates a new jpa com flex setting set memento.
+	 */
 	public JpaComFlexSettingSetMemento() {
 		this.entity = new KshstComFlexSet(); 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.entity.getKshstComFlexSetPK().setCid(companyId.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
+	 */
 	@Override
 	public void setYear(Year year) {
 		this.entity.getKshstComFlexSetPK().setYear(year.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingSetMemento#setStatutorySetting(java.util.List)
+	 */
 	@Override
 	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
 		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(statutorySetting);
@@ -55,6 +74,9 @@ public class JpaComFlexSettingSetMemento implements ComFlexSettingSetMemento {
 		this.entity.setStatDecTime(map.get(Month.DECEMBER));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingSetMemento#setSpecifiedSetting(java.util.List)
+	 */
 	@Override
 	public void setSpecifiedSetting(List<MonthlyUnit> specifiedSetting) {
 		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(specifiedSetting);
@@ -72,6 +94,12 @@ public class JpaComFlexSettingSetMemento implements ComFlexSettingSetMemento {
 		this.entity.setSpecDecTime(map.get(Month.DECEMBER));
 	}
 	
+	/**
+	 * To monthly estimate time map.
+	 *
+	 * @param setting the setting
+	 * @return the map
+	 */
 	private Map<Integer, Integer> toMonthlyEstimateTimeMap (List<MonthlyUnit> setting) {
 		return setting.stream().collect(Collectors.toMap(unit -> unit.getMonth().v(), unit -> unit.getMonthlyTime().v()));
 	}

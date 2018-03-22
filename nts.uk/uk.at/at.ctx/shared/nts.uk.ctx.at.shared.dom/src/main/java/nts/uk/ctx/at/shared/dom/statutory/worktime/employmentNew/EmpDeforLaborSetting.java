@@ -32,9 +32,9 @@ public class EmpDeforLaborSetting extends DeforLaborSetting
 	 * @param memento
 	 *            the memento
 	 */
-	public EmpDeforLaborSetting(EmpDeforLaborSetting memento) {
+	public EmpDeforLaborSetting(EmpDeforLaborSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.employeeCode = memento.getEmployeeCode();
+		this.employeeCode = memento.getEmploymentCode();
 		this.year = memento.getYear();
 		this.statutorySetting = memento.getStatutorySetting();
 	}

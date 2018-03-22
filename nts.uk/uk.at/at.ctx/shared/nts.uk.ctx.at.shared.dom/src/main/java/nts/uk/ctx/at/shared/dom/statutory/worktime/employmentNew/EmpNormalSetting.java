@@ -32,7 +32,7 @@ public class EmpNormalSetting extends NormalSetting
 	 * @param memento
 	 *            the memento
 	 */
-	public EmpNormalSetting(EmpNormalSetting memento) {
+	public EmpNormalSetting(EmpNormalSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
 		this.year = memento.getYear();

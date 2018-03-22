@@ -11,23 +11,38 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
- * The Class JpaCompanyWtSettingSetMemento.
+ * The Class JpaComTransLaborTimeSetMemento.
  */
 
+/**
+ * Gets the entity.
+ *
+ * @return the entity
+ */
 @Getter
 public class JpaComTransLaborTimeSetMemento implements ComTransLaborTimeSetMemento {
 	
+	/** The entity. */
 	private KshstComTransLabTime entity;
 
+	/**
+	 * Instantiates a new jpa com trans labor time set memento.
+	 */
 	public JpaComTransLaborTimeSetMemento() {
 		this.entity = new KshstComTransLabTime();
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.entity.setCid(companyId.v());
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeSetMemento#setWorkingTimeSet(nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting)
+	 */
 	@Override
 	public void setWorkingTimeSet(WorkingTimeSetting workingTimeSettingNew) {
 		// Set work time setting.

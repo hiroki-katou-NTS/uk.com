@@ -25,21 +25,30 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSet;
 
 /**
- * The Class JpaCompanyWtSettingRepository.
+ * The Class JpaComFlexSettingRepository.
  */
 @Stateless
 public class JpaComFlexSettingRepository extends JpaRepository implements ComFlexSettingRepository {
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository#create(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting)
+	 */
 	@Override
 	public void create(ComFlexSetting setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting)
+	 */
 	@Override
 	public void update(ComFlexSetting setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository#remove(java.lang.String, int)
+	 */
 	@Override
 	public void remove(String companyId, int year) {
 		KshstComFlexSetPK key = new KshstComFlexSetPK();
@@ -48,6 +57,9 @@ public class JpaComFlexSettingRepository extends JpaRepository implements ComFle
 		commandProxy().remove(KshstComNormalSet.class, key);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository#find(java.lang.String, int)
+	 */
 	@Override
 	public Optional<ComFlexSetting> find(String companyId, int year) {
 		EntityManager em = this.getEntityManager();
@@ -63,12 +75,24 @@ public class JpaComFlexSettingRepository extends JpaRepository implements ComFle
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst com flex set
+	 */
 	private KshstComFlexSet toEntity(ComFlexSetting domain) {
 		JpaComFlexSettingSetMemento memento = new JpaComFlexSettingSetMemento();
 		domain.saveToMemento(memento);
 		return memento.getEntity();
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entities the entities
+	 * @return the com flex setting
+	 */
 	private ComFlexSetting toDomain(List<KshstComFlexSet> entities) {
 		if (entities.isEmpty()) {
 			return null;

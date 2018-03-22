@@ -15,21 +15,33 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime;
 
 /**
- * The Class JpaCompanySettingGetMemento.
+ * The Class JpaComRegularLaborTimeGetMemento.
  */
 public class JpaComRegularLaborTimeGetMemento implements ComRegularLaborTimeGetMemento {
 	
+	/** The entity. */
 	private KshstComRegLaborTime entity;
 	
+	/**
+	 * Instantiates a new jpa com regular labor time get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaComRegularLaborTimeGetMemento(KshstComRegLaborTime entity) {
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.entity.getCid());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeGetMemento#getWorkingTimeSet()
+	 */
 	@Override
 	public WorkingTimeSetting getWorkingTimeSet() {
 		WeeklyUnit weekyUnit = new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), WeekStart.valueOf(entity.getWeekStr()));

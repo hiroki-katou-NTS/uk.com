@@ -23,27 +23,39 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
- * The Class JpaCompanyWtSettingRepository.
+ * The Class JpaComRegularLaborTimeRepository.
  */
 @Stateless
 public class JpaComRegularLaborTimeRepository extends JpaRepository
 		implements ComRegularLaborTimeRepository {
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#create(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime)
+	 */
 	@Override
 	public void create(ComRegularLaborTime setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime)
+	 */
 	@Override
 	public void update(ComRegularLaborTime setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#remove(java.lang.String)
+	 */
 	@Override
 	public void remove(String companyId) {
 		commandProxy().remove(KshstComTransLabTime.class, companyId);
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#find(java.lang.String)
+	 */
 	@Override
 	public Optional<ComRegularLaborTime> find(String companyId) {
 		EntityManager em = this.getEntityManager();
@@ -58,12 +70,24 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst com reg labor time
+	 */
 	private KshstComRegLaborTime toEntity(ComRegularLaborTime domain) {
 		JpaComRegularLaborTimeSetMemento memento = new JpaComRegularLaborTimeSetMemento();
 		domain.saveToMemento(memento);
 		return memento.getEntity();
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entities the entities
+	 * @return the com regular labor time
+	 */
 	private ComRegularLaborTime toDomain(List<KshstComRegLaborTime> entities) {
 		if (entities.isEmpty()) {
 			return null;

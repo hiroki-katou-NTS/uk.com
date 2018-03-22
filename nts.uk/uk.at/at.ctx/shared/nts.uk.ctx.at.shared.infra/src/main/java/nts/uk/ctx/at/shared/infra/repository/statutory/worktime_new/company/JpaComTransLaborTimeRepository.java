@@ -22,26 +22,38 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime_;
 
 /**
- * The Class JpaCompanyWtSettingRepository.
+ * The Class JpaComTransLaborTimeRepository.
  */
 @Stateless
 public class JpaComTransLaborTimeRepository extends JpaRepository implements ComTransLaborTimeRepository {
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository#create(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime)
+	 */
 	@Override
 	public void create(ComTransLaborTime setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime)
+	 */
 	@Override
 	public void update(ComTransLaborTime setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository#remove(java.lang.String)
+	 */
 	@Override
 	public void remove(String companyId) {
 		commandProxy().remove(KshstComTransLabTime.class, companyId);
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository#find(java.lang.String)
+	 */
 	@Override
 	public Optional<ComTransLaborTime> find(String companyId) {
 		EntityManager em = this.getEntityManager();
@@ -56,12 +68,24 @@ public class JpaComTransLaborTimeRepository extends JpaRepository implements Com
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst com trans lab time
+	 */
 	private KshstComTransLabTime toEntity(ComTransLaborTime domain) {
 		JpaComTransLaborTimeSetMemento memento = new JpaComTransLaborTimeSetMemento();
 		domain.saveToMemento(memento);
 		return memento.getEntity();
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entities the entities
+	 * @return the com trans labor time
+	 */
 	private ComTransLaborTime toDomain(List<KshstComTransLabTime> entities) {
 		if (entities.isEmpty()) {
 			return null;

@@ -24,22 +24,31 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComDeforLarSet_;
 
 /**
- * The Class JpaCompanyWtSettingRepository.
+ * The Class JpaComDeforLaborSettingRepository.
  */
 @Stateless
 public class JpaComDeforLaborSettingRepository extends JpaRepository
 		implements ComDeforLaborSettingRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository#create(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting)
+	 */
 	@Override
 	public void create(ComDeforLaborSetting setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting)
+	 */
 	@Override
 	public void update(ComDeforLaborSetting setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository#remove(java.lang.String, int)
+	 */
 	@Override
 	public void remove(String companyId, int year) {
 		KshstComDeforLarSetPK key = new KshstComDeforLarSetPK();
@@ -48,6 +57,9 @@ public class JpaComDeforLaborSettingRepository extends JpaRepository
 		commandProxy().remove(KshstComDeforLarSetPK.class, key);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository#find(java.lang.String, int)
+	 */
 	@Override
 	public Optional<ComDeforLaborSetting> find(String companyId, int year) {
 		EntityManager em = this.getEntityManager();
@@ -64,12 +76,24 @@ public class JpaComDeforLaborSettingRepository extends JpaRepository
 	}
 
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst com defor lar set
+	 */
 	private KshstComDeforLarSet toEntity(ComDeforLaborSetting domain) {
 		JpaComDeforLaborSettingSetMemento memento = new JpaComDeforLaborSettingSetMemento();
 		domain.saveToMemento(memento);
 		return memento.getEntity();
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entities the entities
+	 * @return the com defor labor setting
+	 */
 	private ComDeforLaborSetting toDomain(List<KshstComDeforLarSet> entities) {
 		if (entities.isEmpty()) {
 			return null;

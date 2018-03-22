@@ -16,31 +16,51 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComDeforLarSet;
 
 /**
- * The Class JpaCompanySettingGetMemento.
+ * The Class JpaComDeforLaborSettingGetMemento.
  */
 public class JpaComDeforLaborSettingGetMemento implements ComDeforLaborSettingGetMemento {
 	
+	/** The entity. */
 	private KshstComDeforLarSet entity;
 
+	/**
+	 * Instantiates a new jpa com defor labor setting get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaComDeforLaborSettingGetMemento(KshstComDeforLarSet entity) {
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getYear()
+	 */
 	@Override
 	public Year getYear() {
 		return new Year(this.entity.getKshstComDeforLarSetPK().getYear());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.entity.getKshstComDeforLarSetPK().getCid());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getStatutorySetting()
+	 */
 	@Override
 	public List<MonthlyUnit> getStatutorySetting() {
 		return this.toMonthlyUnits();
 	}
 	
+	/**
+	 * To monthly units.
+	 *
+	 * @return the list
+	 */
 	private List<MonthlyUnit> toMonthlyUnits() {
 		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
 		monthlyUnits.add(new MonthlyUnit( new Month(Month.JANUARY), new MonthlyEstimateTime(this.entity.getJanTime())));

@@ -35,7 +35,7 @@ public class EmpRegularWorkTime extends AggregateRoot implements StatutoryWorkTi
 	 *
 	 * @param memento the memento
 	 */
-	public EmpRegularWorkTime (EmpRegularWorkTime memento) {
+	public EmpRegularWorkTime (EmpRegularWorkTimeGetMemento memento) {
 		this.companyId  = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
 		this.workingTimeSet = memento.getWorkingTimeSet();
