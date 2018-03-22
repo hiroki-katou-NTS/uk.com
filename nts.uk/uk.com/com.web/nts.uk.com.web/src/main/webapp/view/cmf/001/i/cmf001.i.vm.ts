@@ -52,6 +52,8 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             self.checkRequired1.subscribe(function(data: any) {
                 if (!data) {
                     $('#I4_5').ntsError('clear');
+                } else {
+                    $('#I4_5').ntsError('check');
                 }
             });
         }
@@ -79,14 +81,14 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             if (!self.hasError()) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
                 nts.uk.ui.windows.close();
-            }            
+            }
         }
-        
+
         private cancelSetting(): void {
             nts.uk.ui.windows.close();
         }
-        
-        private hasError(): boolean{
+
+        private hasError(): boolean {
             if (this.setting().fixedValue())
                 $('#I4_5').ntsError('check');
             return nts.uk.ui.errors.hasError()

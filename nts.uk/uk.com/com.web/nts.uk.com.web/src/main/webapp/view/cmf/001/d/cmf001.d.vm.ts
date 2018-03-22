@@ -538,11 +538,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         
         private screenFileCheck(): boolean {
             let self = this;
-            //check fileId null => msg 899
-            if (self.fileId() == null || self.fileId() == undefined) {
-                alertError({messageId: "Msg_899"});
-                return false;
-            }
             //check csvDataLineNumber Not input or exceeding the number of lines of CSV data => msg 900
             if (self.stdCondSet().csvDataItemLineNumber() == null || self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_900"});
@@ -553,7 +548,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 alertError({messageId: "Msg_901"});
                 return false;
             }
-            
             return true;
         }
         
