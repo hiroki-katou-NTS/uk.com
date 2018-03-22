@@ -69,6 +69,11 @@ public class AppForLeaveWebService extends WebService{
 		JavaTypeResult<String> result  =  new JavaTypeResult<String>(creatAppAbsenceCommandHandler.handle(param));
 		return result;
 	}
+	@POST
+	@Path("getByAppID")
+	public AppAbsenceDto getByAppID(String appID) {
+		return this.appForLeaveFinder.getByAppID(appID);
+	}
 	
 }
 

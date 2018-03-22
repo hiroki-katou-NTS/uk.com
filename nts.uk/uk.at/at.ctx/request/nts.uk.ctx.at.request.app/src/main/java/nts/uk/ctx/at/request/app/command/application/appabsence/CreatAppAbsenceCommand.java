@@ -105,4 +105,9 @@ public class CreatAppAbsenceCommand {
 	 * 登録時にメールを送信する
 	 */
 	private boolean sendMail;
+	
+	/**
+	 * displayEndDateFlg
+	 */
+	private boolean displayEndDateFlg;
 }
