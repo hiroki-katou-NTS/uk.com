@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.excessleave;
 
-import javax.persistence.EnumType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 public class ExcessLeaveInfo extends AggregateRoot{
 	
 	// 社員ID
-	private String employeeId;
+	private String sID;
 	
 	// 使用区分
 	private UseAtr useAtr;
@@ -33,7 +31,7 @@ public class ExcessLeaveInfo extends AggregateRoot{
 	private PaymentMethod paymentMethod;
 	
 	public ExcessLeaveInfo(String sid, int useCls, int occ, int paymentMethod){
-		this.employeeId = sid;
+		this.sID = sid;
 		this.useAtr = EnumAdaptor.valueOf(useCls, UseAtr.class);
 		this.occurrenceUnit = new OccurrenceUnit(occ);
 		this.paymentMethod = EnumAdaptor.valueOf(paymentMethod, PaymentMethod.class);

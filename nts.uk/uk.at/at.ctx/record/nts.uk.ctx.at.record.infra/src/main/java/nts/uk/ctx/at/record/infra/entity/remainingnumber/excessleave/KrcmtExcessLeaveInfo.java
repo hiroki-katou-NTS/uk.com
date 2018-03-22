@@ -16,7 +16,7 @@ public class KrcmtExcessLeaveInfo extends UkJpaEntity{
     public String employeeId;
 	
 	@Column(name="USE_ATR")
-	public int useClassification;
+	public int useAtr;
 	
 	@Column(name="OCCURRENCE_UNIT")
 	public int occurrenceUnit;
