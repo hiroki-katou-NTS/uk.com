@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.share;
+package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal;
 
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
@@ -24,18 +24,18 @@ public abstract class KrcstFlexMCalSet extends UkJpaEntity {
 
 	/** The insuffic set. */
 	@Column(name = "INSUFFIC_SET")
-	private short insufficSet;
+	private int insufficSet;
 
 	/** The include ot. */
 	@Column(name = "INCLUDE_OT")
-	private short includeOt;
+	private int includeOt;
 
 	/** The aggr method. */
 	@Column(name = "AGGR_METHOD")
-	private short aggrMethod;
+	private int aggrMethod;
 
 	/** The legal aggr set. */
 	@Column(name = "LEGAL_AGGR_SET")
-	private short legalAggrSet;
+	private int legalAggrSet;
 
 }

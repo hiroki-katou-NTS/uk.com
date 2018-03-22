@@ -40,4 +40,30 @@ public class DeforWorkTimeAggrSet extends DomainObject {
 		return this.settlementPeriod;
 	}
 
+	/**
+	 * Instantiates a new aggr setting monthly of flx new.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public DeforWorkTimeAggrSet(DeforWorkTimeAggrSetGetMemento memento) {
+		this.aggregateTimeSet = memento.getAggregateTimeSet();
+		this.excessOutsideTimeSet = memento.getExcessOutsideTimeSet();
+		this.deforLaborCalSetting = memento.getDeforLaborCalSetting();
+		this.settlementPeriod = memento.getSettlementPeriod();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(DeforWorkTimeAggrSetSetMemento memento) {
+		memento.setAggregateTimeSet(this.aggregateTimeSet);
+		memento.setExcessOutsideTimeSet(this.excessOutsideTimeSet);
+		memento.setDeforLaborCalSetting(this.deforLaborCalSetting);
+		memento.setSettlementPeriod(this.settlementPeriod);
+	}
+
 }

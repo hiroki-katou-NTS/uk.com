@@ -4,21 +4,36 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Interface AggrSettingMonthlyOfFlxNewGetMemento.
+ * The Interface FlexMonthWorkTimeAggrSetGetMemento.
  */
-public interface FlexMonthAggrSettingGetMemento {
+public interface FlexMonthWorkTimeAggrSetGetMemento {
 
 	/**
-	 * Gets the flex aggregate method.
+	 * Gets the aggr method.
 	 *
-	 * @return the flex aggregate method
+	 * @return the aggr method
 	 */
 	FlexAggregateMethod getAggrMethod();
+
+	/**
+	 * Gets the insuffic set.
+	 *
+	 * @return the insuffic set
+	 */
+	ShortageFlexSetting getInsufficSet();
+
+	/**
+	 * Gets the legal aggr set.
+	 *
+	 * @return the legal aggr set
+	 */
+	AggregateTimeSetting getLegalAggrSet();
 
 	/**
 	 * Gets the include over time.
@@ -26,19 +41,5 @@ public interface FlexMonthAggrSettingGetMemento {
 	 * @return the include over time
 	 */
 	NotUseAtr getIncludeOverTime();
-
-	/**
-	 * Gets the shortage flex setting.
-	 *
-	 * @return the shortage flex setting
-	 */
-	ShortageFlexSetting getInsufficSet();
-
-	/**
-	 * Gets the legal aggr set of flx.
-	 *
-	 * @return the legal aggr set of flx
-	 */
-	LegalAggFlexTime getLegalAggrSet();
 
 }

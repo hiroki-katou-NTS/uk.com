@@ -22,4 +22,25 @@ public class RegularWorkTimeAggrSet extends DomainObject {
 	// 時間外超過設定
 	private ExcessOutsideTimeSetReg excessOutsideTimeSet;
 
+	/**
+	 * Instantiates a new aggr setting monthly of flx new.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public RegularWorkTimeAggrSet(RegularWorkTimeAggrSetGetMemento memento) {
+		this.aggregateTimeSet = memento.getAggregateTimeSet();
+		this.excessOutsideTimeSet = memento.getExcessOutsideTimeSet();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(RegularWorkTimeAggrSetSetMemento memento) {
+		memento.setAggregateTimeSet(this.aggregateTimeSet);
+		memento.setExcessOutsideTimeSet(this.excessOutsideTimeSet);
+	}
 }

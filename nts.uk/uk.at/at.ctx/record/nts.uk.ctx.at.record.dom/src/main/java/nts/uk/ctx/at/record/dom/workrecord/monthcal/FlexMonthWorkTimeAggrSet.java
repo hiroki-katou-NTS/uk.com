@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -24,10 +25,10 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 	/** The shortage set. */
 	// 不足設定
 	private ShortageFlexSetting insufficSet;
-	
+
 	/** The legal aggregate set. */
 	// 法定内集計設定
-	private LegalAggFlexTime legalAggrSet;
+	private AggregateTimeSetting legalAggrSet;
 
 	/** The include over time. */
 	// 残業時間を含める
@@ -39,7 +40,7 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public FlexMonthWorkTimeAggrSet(FlexMonthAggrSettingGetMemento memento) {
+	public FlexMonthWorkTimeAggrSet(FlexMonthWorkTimeAggrSetGetMemento memento) {
 		this.aggrMethod = memento.getAggrMethod();
 		this.insufficSet = memento.getInsufficSet();
 		this.legalAggrSet = memento.getLegalAggrSet();
@@ -52,11 +53,11 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(FlexMonthAggrSettingSetMemento memento) {
-		memento.setFlexAggregateMethod(this.aggrMethod);
+	public void saveToMemento(FlexMonthWorkTimeAggrSetSetMemento memento) {
+		memento.setAggrMethod(this.aggrMethod);
 		memento.setIncludeOverTime(this.includeOverTime);
-		memento.setShortageFlexSetting(this.insufficSet);
-		memento.setLegalAggrSetOfFlx(this.legalAggrSet);
+		memento.setInsufficSet(this.insufficSet);
+		memento.setLegalAggrSet(this.legalAggrSet);
 	}
 
 }

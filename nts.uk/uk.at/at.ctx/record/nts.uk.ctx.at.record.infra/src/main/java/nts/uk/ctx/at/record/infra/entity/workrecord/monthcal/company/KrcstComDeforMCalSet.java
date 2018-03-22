@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.share.KrcstDeforMCalSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
 
 /**
  * The Class KrcstComDeforMCalSet.

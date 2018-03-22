@@ -50,8 +50,7 @@ public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthActCalSet#
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthActCalSet#
 	 * getAggrSettings()
 	 */
 	@Override

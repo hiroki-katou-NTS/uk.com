@@ -17,6 +17,12 @@ public class DeforLaborCalSetting {
 	// 基準時間未満の残業時間を変形基準内残業とする
 	private boolean isOtTransCriteria;
 
+	/**
+	 * Instantiates a new defor labor cal setting.
+	 *
+	 * @param isOtTransCriteria
+	 *            the is ot trans criteria
+	 */
 	public DeforLaborCalSetting(boolean isOtTransCriteria) {
 		super();
 		this.isOtTransCriteria = isOtTransCriteria;

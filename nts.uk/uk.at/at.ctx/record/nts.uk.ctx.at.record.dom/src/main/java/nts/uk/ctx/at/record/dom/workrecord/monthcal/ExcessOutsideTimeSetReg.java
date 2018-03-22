@@ -25,4 +25,22 @@ public class ExcessOutsideTimeSetReg {
 	// 週、月割増時間を集計する
 	private Boolean surchargeWeekMonth;
 
+	/**
+	 * Instantiates a new excess outside time set reg.
+	 *
+	 * @param legalOverTimeWork
+	 *            the legal over time work
+	 * @param legalHoliday
+	 *            the legal holiday
+	 * @param surchargeWeekMonth
+	 *            the surcharge week month
+	 */
+	public ExcessOutsideTimeSetReg(Boolean legalOverTimeWork, Boolean legalHoliday,
+			Boolean surchargeWeekMonth) {
+		super();
+		this.legalOverTimeWork = legalOverTimeWork;
+		this.legalHoliday = legalHoliday;
+		this.surchargeWeekMonth = surchargeWeekMonth;
+	}
+
 }
