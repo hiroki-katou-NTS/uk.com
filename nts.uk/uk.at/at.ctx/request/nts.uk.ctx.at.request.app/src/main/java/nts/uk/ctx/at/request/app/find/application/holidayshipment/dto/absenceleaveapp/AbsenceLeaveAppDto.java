@@ -9,9 +9,14 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 
+/**
+ * @author sonnlb
+ * 振休申請Dto
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class AbsenceLeaveAppDto {
 	/**
 	 * 申請ID

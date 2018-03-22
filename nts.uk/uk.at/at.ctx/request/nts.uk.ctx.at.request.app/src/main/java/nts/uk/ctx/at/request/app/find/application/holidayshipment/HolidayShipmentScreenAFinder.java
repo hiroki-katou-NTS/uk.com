@@ -414,7 +414,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
+	public boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
 		boolean masterUnregistered = true;
 
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
