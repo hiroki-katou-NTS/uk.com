@@ -7,14 +7,14 @@ package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfoGetMemento;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 
 /**
  * The Class JpaWindowAccountGetMemento.
  */
-public class JpaWindowAccountGetMemento implements WindowAccountGetMemento{
+public class JpaWindowAccountInfoGetMemento implements WindowsAccountInfoGetMemento{
 	
 	/** The typed value. */
 	private SgwmtWindowAcc typedValue;
@@ -24,19 +24,11 @@ public class JpaWindowAccountGetMemento implements WindowAccountGetMemento{
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaWindowAccountGetMemento(SgwmtWindowAcc typedValue) {
+	public JpaWindowAccountInfoGetMemento(SgwmtWindowAcc typedValue) {
 		this.typedValue = typedValue;
 		if (this.typedValue.getSgwmtWindowAccPK() == null) {
 			this.typedValue.setSgwmtWindowAccPK(new SgwmtWindowAccPK());
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento#getUserId()
-	 */
-	@Override
-	public String getUserId() {
-		return this.typedValue.getSgwmtWindowAccPK().getUserId();
 	}
 
 	/* (non-Javadoc)

@@ -245,11 +245,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
                         if(error.messageId === "Msg_266") {
-                        
+                            $('.year-input1').focus();
                         } else if(error.messageId === "Msg_268") {
                             
                         } else if(error.messageId === "Msg_269") {
-                            
+                            $('.year-input1').focus();
                         } else if(error.messageId === "Msg_270") {
                             $('#b2_1').focus();
                         }
@@ -302,11 +302,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             }).fail(function(error){
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
                     if(error.messageId === "Msg_266") {
-                    
+                        $('.year-input1').focus();
                     } else if(error.messageId === "Msg_268") {
                         
                     } else if(error.messageId === "Msg_269") {
-                        
+                        $('.year-input1').focus();
                     } else if(error.messageId === "Msg_270") {
                         $('#b2_1').focus();
                     }
@@ -343,9 +343,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 self.count(1);
                 self.items()[index].grantSimultaneity(false);   
                 nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
-                    $('.year-input').focus();
-                    return;
+                    $('.year-input' + index).focus();
                 });
+                return;
             }
             
             if (value) {
@@ -368,6 +368,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             if(self.count() == 1) {
                 self.count(0);
                 return true;
+            }
+            
+            if(Number(self.items()[0].lengthOfServiceYears()) == 0 && Number(self.items()[0].lengthOfServiceMonths()) == 0 && Number(self.items()[0].grantDays()) == 0 
+                        && Number(self.items()[0].limitedHalfHdCnt()) == 0 && Number(self.items()[0].limitedTimeHdDays()) == 0) {
+                return false;
             }
             
             if(self.items()[index].lengthOfServiceYears() != null || self.items()[index].lengthOfServiceMonths() != null) {
@@ -440,7 +445,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
     
     function checkAllowPayBelow(item: Item): void {
         var self = nts.uk.ui._viewModel.content;
-        var index = _.indexOf(self.items(), item);
+        var itemJS = ko.toJS(item);
+        
+        var index = itemJS.grantYearHolidayNo - 1;
         self.checkAllowPayBelow(index, item.grantSimultaneity());
     }
 

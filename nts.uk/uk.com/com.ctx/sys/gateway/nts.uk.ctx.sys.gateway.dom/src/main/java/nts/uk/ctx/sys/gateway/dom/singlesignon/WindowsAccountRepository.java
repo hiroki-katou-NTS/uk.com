@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * The Interface WindowAccountRepository.
  */
-public interface WindowAccountRepository {
+public interface WindowsAccountRepository {
 	
 
 	/**
@@ -19,7 +19,7 @@ public interface WindowAccountRepository {
 	 * @param userId the user id
 	 * @return the list
 	 */
-	List<WindowAccount> findListWindowAccountByUserId(String userId);
+	Optional<WindowsAccount> findListWindowAccountByUserId(String userId);
 
 	/**
 	 * Removes the.
@@ -34,7 +34,7 @@ public interface WindowAccountRepository {
 	 *
 	 * @param windowAccount the window account
 	 */
-	void add(WindowAccount windowAccount);
+	void add(String userId, WindowsAccountInfo windowAccountInfo);
 	
 	/**
 	 * Findby user name and host name.
@@ -43,7 +43,7 @@ public interface WindowAccountRepository {
 	 * @param hostName the host name
 	 * @return the optional
 	 */
-	Optional<WindowAccount> findbyUserNameAndHostName(String userName, String hostName);
+	Optional<WindowsAccount> findbyUserNameAndHostName(String userName, String hostName);
 	
 		
 	/**
@@ -52,7 +52,7 @@ public interface WindowAccountRepository {
 	 * @param userId the user id
 	 * @return the list
 	 */
-	List<WindowAccount> findByUserId(String userId);
+	Optional<WindowsAccount> findByUserId(String userId);
 
 	/**
 	 * Update.
@@ -60,7 +60,7 @@ public interface WindowAccountRepository {
 	 * @param winAccCommand the win acc command
 	 * @param winAccDB the win acc DB
 	 */
-	void update(WindowAccount winAccCommand, WindowAccount winAccDB);
+	void update(String userId, WindowsAccountInfo winAccCommand, WindowsAccountInfo winAccDB);
 	
 	
 	/**
@@ -69,6 +69,6 @@ public interface WindowAccountRepository {
 	 * @param ltsUserId the lts user id
 	 * @return the list
 	 */
-	List<WindowAccount> findByListUserId(List<String> ltsUserId);
+	List<WindowsAccount> findByListUserId(List<String> ltsUserId);
 	
 }

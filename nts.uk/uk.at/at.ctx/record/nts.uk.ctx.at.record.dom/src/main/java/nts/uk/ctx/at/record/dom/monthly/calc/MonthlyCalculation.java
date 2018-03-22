@@ -10,7 +10,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -93,6 +95,8 @@ public class MonthlyCalculation {
 	private AttendanceTimeMonth prescribedWorkingTimeWeek;
 	/** 月間所定労働時間 */
 	private AttendanceTimeMonth prescribedWorkingTimeMonth;
+	/** 月別実績の勤怠時間　（集計前） */
+	private Optional<AttendanceTimeOfMonthly> originalData;
 	
 	/** 年度 */
 	private Year year;
@@ -131,6 +135,7 @@ public class MonthlyCalculation {
 		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
 		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(0);
 		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.originalData = null;
 
 		this.year = new Year(0);
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
@@ -251,6 +256,10 @@ public class MonthlyCalculation {
 		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(0);
 		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
 		
+		// 月別実績の勤怠時間　既存データ　取得
+		this.originalData = repositories.getAttendanceTimeOfMonthly().find(
+				employeeId, yearMonth, closureId, closureDate);
+		
 		// 年度　設定
 		this.year = new Year(this.yearMonth.year());
 	}
@@ -259,9 +268,13 @@ public class MonthlyCalculation {
 	 * 履歴ごとに月別実績を集計する
 	 * @param aggrPeriod 集計期間
 	 * @param aggrAtr 集計区分
+	 * @param annualDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
+			Optional<AttendanceDaysMonth> annualDeductDays,
+			Optional<AttendanceTimeMonth> absenceDeductTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果　初期化
@@ -270,6 +283,9 @@ public class MonthlyCalculation {
 		this.statutoryWorkingTime = new AttendanceTimeMonth(0);
 		this.totalWorkingTime = new AggregateTotalWorkingTime();
 		this.totalTimeSpentAtWork = new AggregateTotalTimeSpentAtWork();
+		
+		// 既存データの復元
+		this.restoreOriginalData(annualDeductDays, absenceDeductTime);
 		
 		// 共有項目を集計する
 		this.totalWorkingTime.aggregateSharedItem(aggrPeriod, this.attendanceTimeOfDailyMap);
@@ -329,6 +345,32 @@ public class MonthlyCalculation {
 	}
 	
 	/**
+	 * 既存データの復元
+	 * @param annualDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
+	 */
+	private void restoreOriginalData(
+			Optional<AttendanceDaysMonth> annualDeductDays,
+			Optional<AttendanceTimeMonth> absenceDeductTime){
+		
+		// 年休控除日数・欠勤控除時間
+		AttendanceDaysMonth applyAnnualDeductDays = new AttendanceDaysMonth(0.0);
+		AttendanceTimeMonth applyAbsenceDeductTime = new AttendanceTimeMonth(0);
+		if (annualDeductDays.isPresent() || absenceDeductTime.isPresent()){
+			if (annualDeductDays.isPresent()) applyAnnualDeductDays = annualDeductDays.get();
+			if (absenceDeductTime.isPresent()) applyAbsenceDeductTime = absenceDeductTime.get();
+		}
+		else if (this.originalData.isPresent()){
+			val monthlyCalculation = this.originalData.get().getMonthlyCalculation();
+			val flexShortDeductTime = monthlyCalculation.getFlexTime().getFlexShortDeductTime();
+			applyAnnualDeductDays = flexShortDeductTime.getAnnualLeaveDeductDays();
+			applyAbsenceDeductTime = flexShortDeductTime.getAbsenceDeductTime();
+		}
+		this.flexTime.getFlexShortDeductTime().setAnnualLeaveDeductDays(applyAnnualDeductDays);
+		this.flexTime.getFlexShortDeductTime().setAbsenceDeductTime(applyAbsenceDeductTime);
+	}
+	
+	/**
 	 * 36協定時間の集計
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
@@ -358,7 +400,8 @@ public class MonthlyCalculation {
 		this.prepareAggregation(companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
 				aggrPeriod.getPeriod(), workingSystem, isRetireMonth, repositories);
 		this.year = aggrPeriod.getYear();
-		this.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, repositories);
+		this.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+				Optional.empty(), Optional.empty(), repositories);
 
 		// 管理時間の36協定時間を返す
 		return Optional.of(this.agreementTimeOfManagePeriod);

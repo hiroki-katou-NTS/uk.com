@@ -5,32 +5,13 @@
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class WindowAccount.
  */
-//Windowsアカウント
-
-/**
- * Gets the use atr.
- *
- * @return the use atr
- */
+// Windowsアカウント情報
 @Getter
-public class WindowAccount extends AggregateRoot{
-
-	// ユーザID
-	/** The user id. */
-	private String userId;
-
-	// ホスト名
-	/** The hot name. */
-	private HostName hostName;
-
-	// ユーザ名
-	/** The user name. */
-	private UserName userName;
+public class WindowsAccountInfo {
 
 	// NO
 	/** The no. */
@@ -40,14 +21,21 @@ public class WindowAccount extends AggregateRoot{
 	/** The use atr. */
 	private UseAtr useAtr;
 
+	// ホスト名
+	/** The hot name. */
+	private HostName hostName;
+
+	// ユーザ名
+	/** The user name. */
+	private UserName userName;
+
 	/**
 	 * Instantiates a new window account.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public WindowAccount(WindowAccountGetMemento memento) {
-		this.userId = memento.getUserId();
+	public WindowsAccountInfo(WindowsAccountInfoGetMemento memento) {
 		this.hostName = memento.getHostName();
 		this.userName = memento.getUserName();
 		this.no = memento.getNo();
@@ -60,8 +48,7 @@ public class WindowAccount extends AggregateRoot{
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(WindowAccountSetMemento memento) {
-		memento.setUserId(this.userId);
+	public void saveToMemento(WindowsAccountInfoSetMemento memento) {
 		memento.setHostName(this.hostName);
 		memento.setUserName(this.userName);
 		memento.setNo(this.no);
@@ -83,7 +70,7 @@ public class WindowAccount extends AggregateRoot{
 	/**
 	 * Instantiates a new window account.
 	 */
-	public WindowAccount() {
+	public WindowsAccountInfo() {
 		super();
 	}
 
