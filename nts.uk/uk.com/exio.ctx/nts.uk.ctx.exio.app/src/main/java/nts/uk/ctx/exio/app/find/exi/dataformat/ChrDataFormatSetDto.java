@@ -62,7 +62,7 @@ public class ChrDataFormatSetDto {
 				domain.getCdEditDigit().isPresent() ? domain.getCdEditDigit().get().v() : null,
 				domain.getFixedVal().isPresent() ? domain.getFixedVal().get().v() : null,
 				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
-				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null);
+				domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null);
 	}
 
 }
