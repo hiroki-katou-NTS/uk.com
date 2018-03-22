@@ -14,7 +14,7 @@
 				data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK011_48')}</a>
 			<!-- E1_2 -->
 			<button class="proceed" tabindex="2"
-				data-bind="click: $parent.saveDivergenceRefSetting, enable: $parent.enableSaveDivergenceRefSetting">#{i18n.getText('KMK011_3')}</button>
+				data-bind="click: saveDivergenceRefSetting, enable: enableSaveDivergenceRefSetting">#{i18n.getText('KMK011_3')}</button>
 			<!-- E1_3 -->
 			<button tabindex="3">#{i18n.getText('KMK011_75')}</button>
 		</div>
@@ -37,17 +37,17 @@
 				<div class="history_setting">
 					<div class ="functions">
 						<button tabindex="-1" data-bind="click: createMode, enable: enable_button_creat">#{i18n.getText('KMK011_50')}</button>
-						<button tabindex="-1" data-bind="click: editMode, enable: $parent.enable_button_edit">#{i18n.getText('KMK011_51')}</button>
-						<button class="danger" tabindex="-1" data-bind="click: deleteMode, enable: $parent.nable_button_delete">#{i18n.getText('KMK011_74')}</button>
+						<button tabindex="-1" data-bind="click: editMode, enable: enable_button_edit">#{i18n.getText('KMK011_51')}</button>
+						<button class="danger" tabindex="-1" data-bind="click: deleteMode, enable: enable_button_delete">#{i18n.getText('KMK011_74')}</button>
 					</div>
 					<div class="list_hist">
 						<div id="list-box" data-bind="ntsListBox: {
-									options: $parent.histList,
+									options: histList,
 									optionsValue: 'historyId',
 									optionsText: 'textDisplay',
 									multiple: false,
-									value: $parent.selectedHist,
-									enable: $parent.isEnableListHist,
+									value: 	selectedHist,
+									enable: isEnableListHist,
 									rows: 5,
 									columns: [
 										{ key: 'textDisplay', length: 15 }
@@ -94,9 +94,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(1).notUseAtr,
+								value: mapObj.get(1).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(1).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(1).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(1).divergenceTimeName"></span>
@@ -105,11 +105,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(1).alarmTime,
+											value: mapObj.get(1).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(1).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(1).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -117,11 +117,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(1).errorTime,
+											value: mapObj.get(1).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(1).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(1).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -138,9 +138,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(2).notUseAtr,
+								value: mapObj.get(2).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(2).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(2).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(1).divergenceTimeName"></span>
@@ -149,11 +149,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(2).alarmTime,
+											value: mapObj.get(2).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(2).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(2).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -161,11 +161,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(2).errorTime,
+											value: mapObj.get(2).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(2).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(2).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -182,9 +182,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(3).notUseAtr,
+								value: mapObj.get(3).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(3).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(3).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(3).divergenceTimeName"></span>
@@ -193,11 +193,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(3).alarmTime,
+											value: mapObj.get(3).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(3).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(3).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -205,11 +205,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(3).errorTime,
+											value: mapObj.get(3).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(3).divergenceTimeNo()),
+											enable: checkStatusEnableWkType(mapObj.get(3).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -226,9 +226,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(4).notUseAtr,
+								value: mapObj.get(4).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(4).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(4).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(4).divergenceTimeName"></span>
@@ -237,11 +237,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(4).alarmTime,
+											value: mapObj.get(4).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(4).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(4).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -249,11 +249,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(4).errorTime,
+											value: mapObj.get(4).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(4).divergenceTimeNo()),
+											enable: checkStatusEnableWkType(mapObj.get(4).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -270,9 +270,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(5).notUseAtr,
+								value: mapObj.get(5).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(5).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(5).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(5).divergenceTimeName"></span>
@@ -281,11 +281,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(5).alarmTime,
+											value: mapObj.get(5).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(5).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(5).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -293,11 +293,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(5).errorTime,
+											value: mapObj.get(5).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(5).divergenceTimeNo()),
+											enable: checkStatusEnableWkType(mapObj.get(5).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -314,9 +314,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(6).notUseAtr,
+								value: mapObj.get(6).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(6).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(6).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(6).divergenceTimeName"></span>
@@ -325,11 +325,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(6).alarmTime,
+											value: mapObj.get(6).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(6).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(6).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -337,11 +337,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(6).errorTime,
+											value: mapObj.get(6).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(6).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(6).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -358,9 +358,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(7).notUseAtr,
+								value: mapObj.get(7).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(7).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(7).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(7).divergenceTimeName"></span>
@@ -369,11 +369,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(7).alarmTime,
+											value: mapObj.get(7).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(7).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(7).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -381,11 +381,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(7).errorTime,
+											value: mapObj.get(7).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(7).divergenceTimeNo()),
+											enable: checkStatusEnableWkType(mapObj.get(7).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -402,9 +402,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(8).notUseAtr,
+								value: mapObj.get(8).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(8).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(8).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(8).divergenceTimeName"></span>
@@ -413,11 +413,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(8).alarmTime,
+											value: mapObj.get(8).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(8).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(8).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -425,11 +425,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(8).errorTime,
+											value: mapObj.get(8).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(8).divergenceTimeNo()),
+											enable: checkStatusEnableWkType(mapObj.get(8).divergenceTimeNo()),
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -446,9 +446,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(9).notUseAtr,
+								value: mapObj.get(9).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(9).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(9).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(9).divergenceTimeName"></span>
@@ -457,11 +457,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(9).alarmTime,
+											value: mapObj.get(9).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(9).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(9).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -469,11 +469,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(9).errorTime,
+											value: mapObj.get(9).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(9).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(9).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 								</td>
@@ -490,9 +490,9 @@
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.mapObj.get(10).notUseAtr,
+								value: mapObj.get(10).notUseAtr,
 								required: required,
-								enable: isDisableAllRowWkType($parent.mapObj.get(10).divergenceTimeNo()) }"></div>
+								enable: isDisableAllRowWkType(mapObj.get(10).divergenceTimeNo()) }"></div>
 								</td>
 								<td><span
 									data-bind="text: $parent.mapObj2.get(10).divergenceTimeName"></span>
@@ -501,11 +501,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_32]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(10).alarmTime,
+											value: mapObj.get(10).alarmTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(10).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(10).divergenceTimeNo()), 
 											readonly: false, 
 											required: false}" />
 								</td>
@@ -513,11 +513,11 @@
 									data-bind="ntsTimeEditor: {
 											name: '#[KMK011_33]',
 											constraint: 'DivergenceReferenceTime', 
-											value: $parent.mapObj.get(10).errorTime,
+											value: mapObj.get(10).errorTime,
 											option: {width: '50px'},
 											inputFormat: 'time', 
 											mode: 'time', 
-											enable: checkStatusEnableWkType($parent.mapObj.get(10).divergenceTimeNo()), 
+											enable: checkStatusEnableWkType(mapObj.get(10).divergenceTimeNo()), 
 											readonly: false, 
 											required: false }" />
 								</td>

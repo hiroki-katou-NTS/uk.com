@@ -29,7 +29,7 @@ public class ComDivergenceRefTimeHistSaveCommand implements CompanyDivergenceRef
 	private String endDate;
 	
 	/** The is copy data. */
-	private boolean isCopyData;
+	private int isCopyData;
 	
 	/**
 	 * Instantiates a new company divergence reference time history command.

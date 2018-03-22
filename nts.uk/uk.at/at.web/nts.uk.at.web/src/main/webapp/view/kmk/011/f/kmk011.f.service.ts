@@ -22,9 +22,9 @@ module nts.uk.at.view.kmk011.f {
             historyId: string;
             startDate: string;
             endDate: string;
-            isCopyData: boolean;
+            isCopyData: number;
             
-            constructor(historyId: string, startDate: string, endDate: string, isCopyData: boolean) {
+            constructor(historyId: string, startDate: string, endDate: string, isCopyData: number) {
                 this.historyId = historyId;
                 this.startDate = startDate;
                 this.endDate = endDate;
@@ -37,9 +37,9 @@ module nts.uk.at.view.kmk011.f {
             historyId: string;
             startDate: string;
             endDate: string;
-            isCopyData: boolean;
+            isCopyData: number;
             
-            constructor(workTypeCodes: string, historyId: string, startDate: string, endDate: string, isCopyData: boolean) {
+            constructor(workTypeCodes: string, historyId: string, startDate: string, endDate: string, isCopyData: number) {
                 this.workTypeCodes = workTypeCodes;
                 this.historyId = historyId;
                 this.startDate = startDate;

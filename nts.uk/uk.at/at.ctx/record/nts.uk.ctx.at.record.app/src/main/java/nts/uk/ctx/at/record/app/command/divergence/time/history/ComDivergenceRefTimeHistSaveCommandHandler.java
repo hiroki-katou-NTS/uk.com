@@ -19,6 +19,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<ComDivergenceRefTimeHistSaveCommand> {
 
+	private final static int NEW_MOE = 0;
+
 	/** The history repo. */
 	@Inject
 	private CompanyDivergenceReferenceTimeHistoryRepository historyRepo;
@@ -71,15 +73,18 @@ public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<C
 				exceptions.throwExceptions();
 			}
 
-			// create history
-			this.historyRepo.add(domain);
-			if (!command.isCopyData()) {
+			if (command.getIsCopyData() == NEW_MOE) {
+				// create history
+				this.historyRepo.add(domain);
 				// make default data for Company DivergenceReference Time
 				this.itemRepo.addDefaultDataWhenCreateHistory(domain.getHistoryItems().get(0).identifier());
 			} else {
+				// find latest data to copy
 				CompanyDivergenceReferenceTimeHistory latestHist = this.historyRepo.findLatestHist(companyId);
-				this.itemRepo.copyDataFromLatestHistory(domain.getHistoryItems().get(0).identifier(),
-						latestHist.getHistoryItems().get(0).identifier());
+				// create history
+				this.historyRepo.add(domain);
+				this.itemRepo.copyDataFromLatestHistory(latestHist.getHistoryItems().get(0).identifier(),
+						domain.getHistoryItems().get(0).identifier());
 			}
 		} else {
 			// validate duplicate history

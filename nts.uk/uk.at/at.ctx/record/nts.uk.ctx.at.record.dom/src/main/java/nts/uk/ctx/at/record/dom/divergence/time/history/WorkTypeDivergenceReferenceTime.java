@@ -59,6 +59,7 @@ public class WorkTypeDivergenceReferenceTime extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public void saveToMemento (WorkTypeDivergenceReferenceTimeSetMemento memento) {
+		memento.setDivergenceTimeNo(this.divergenceTimeNo);
 		memento.setCompanyId(this.cId);
 		memento.setNotUseAtr(this.notUseAtr);
 		memento.setWorkTypeCode(this.workTypeCode);
