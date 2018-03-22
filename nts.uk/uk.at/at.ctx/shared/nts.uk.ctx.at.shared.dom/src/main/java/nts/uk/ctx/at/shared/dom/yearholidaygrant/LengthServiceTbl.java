@@ -136,7 +136,7 @@ public class LengthServiceTbl extends AggregateRoot{
 
 	public LengthServiceTbl(String companyId, YearHolidayCode yearHolidayCode, GrantNum grantNum,
 			GrantSimultaneity allowStatus, GrantReferenceDate standGrantDay, LimitedTimeHdDays year, Month month) {
-		super();
+		
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
 		this.grantNum = grantNum;
