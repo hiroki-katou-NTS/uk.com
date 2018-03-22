@@ -21,12 +21,14 @@
 		
 		<ui:define name="content">
 			<div id="functions-area">
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
-				<button tabindex="2" data-bind="click: createNewCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_29')}</button>
-				<button tabindex="3" data-bind="click: registerCondition" class="proceed" >#{i18n.getText('CMF001_30')}</button>
-<!-- 					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button> -->
-				<button tabindex="5" data-bind="click: openCMF001m, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_33')}</button>
-				<button tabindex="6" data-bind="click: deleteCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE" class="danger" >#{i18n.getText('CMF001_34')}</button>
+				<div class="container">
+					<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
+					<button tabindex="2" data-bind="click: createNewCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_29')}</button>
+					<button tabindex="3" data-bind="click: registerCondition" class="proceed" >#{i18n.getText('CMF001_30')}</button>
+	<!-- 					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button> -->
+					<button tabindex="5" data-bind="click: openCMF001m, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_33')}</button>
+					<button tabindex="6" data-bind="click: deleteCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE" class="danger" >#{i18n.getText('CMF001_34')}</button>
+				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
