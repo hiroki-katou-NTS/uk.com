@@ -28,8 +28,7 @@ public class ComDeforLaborMonthActCalSet extends AggregateRoot implements DeforL
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.workrecord.monthcal.SetMonthlyCalTransLabor
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.SetMonthlyCalTransLabor
 	 * #getLegalAggrSetOfIrgNew()
 	 */
 	@Override
@@ -40,17 +39,19 @@ public class ComDeforLaborMonthActCalSet extends AggregateRoot implements DeforL
 	/**
 	 * Instantiates a new com defor labor month act cal set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public ComDeforLaborMonthActCalSet(ComDeforLaborMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getDeforAggrSetting();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(ComDeforLaborMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);

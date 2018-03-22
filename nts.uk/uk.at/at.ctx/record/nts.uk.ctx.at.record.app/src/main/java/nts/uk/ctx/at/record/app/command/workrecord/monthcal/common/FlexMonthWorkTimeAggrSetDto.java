@@ -4,24 +4,113 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.common;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSetGetMemento;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class AggrSettingMonthlyOfFlxNew.
+ * The Class FlexMonthWorkTimeAggrSetDto.
  */
 @Getter
+@Setter
+@Builder
 public class FlexMonthWorkTimeAggrSetDto {
 
-	/** The aggregate method. */
+	/** The aggr method. */
 	private Integer aggrMethod;
 
-	/** The shortage set. */
+	/** The insuffic set. */
 	private Integer insufficSet;
 
-	/** The legal aggregate set. */
+	/** The legal aggr set. */
 	private Integer legalAggrSet;
 
 	/** The include over time. */
 	private Integer includeOverTime;
+
+	/**
+	 * To domain.
+	 *
+	 * @return the flex month work time aggr set
+	 */
+	public FlexMonthWorkTimeAggrSet toDomain() {
+		return new FlexMonthWorkTimeAggrSet(new GetMementoImpl(this));
+	}
+
+	/**
+	 * The Class GetMementoImpl.
+	 */
+	private class GetMementoImpl implements FlexMonthWorkTimeAggrSetGetMemento {
+
+		/** The dto. */
+		private FlexMonthWorkTimeAggrSetDto dto;
+
+		/**
+		 * Instantiates a new gets the memento impl.
+		 *
+		 * @param dto
+		 *            the dto
+		 */
+		public GetMementoImpl(FlexMonthWorkTimeAggrSetDto dto) {
+			super();
+			this.dto = dto;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+		 * FlexMonthWorkTimeAggrSetGetMemento#getAggrMethod()
+		 */
+		@Override
+		public FlexAggregateMethod getAggrMethod() {
+			return EnumAdaptor.valueOf(this.dto.getAggrMethod(), FlexAggregateMethod.class);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+		 * FlexMonthWorkTimeAggrSetGetMemento#getInsufficSet()
+		 */
+		@Override
+		public ShortageFlexSetting getInsufficSet() {
+			return ShortageFlexSetting.of(EnumAdaptor.valueOf(this.dto.getInsufficSet(),
+					CarryforwardSetInShortageFlex.class));
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+		 * FlexMonthWorkTimeAggrSetGetMemento#getLegalAggrSet()
+		 */
+		@Override
+		public AggregateTimeSetting getLegalAggrSet() {
+			return AggregateTimeSetting
+					.of(EnumAdaptor.valueOf(this.dto.getLegalAggrSet(), AggregateSetting.class));
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+		 * FlexMonthWorkTimeAggrSetGetMemento#getIncludeOverTime()
+		 */
+		@Override
+		public NotUseAtr getIncludeOverTime() {
+			return EnumAdaptor.valueOf(this.dto.getIncludeOverTime(), NotUseAtr.class);
+		}
+
+	}
 
 }

@@ -24,5 +24,5 @@ public interface ComRegulaMonthActCalSetSetMemento {
 	 *
 	 * @param legalAggrSetOfRegNew the new legal aggr set of reg new
 	 */
-	void setAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew);
+	void setRegulaAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew);
 }

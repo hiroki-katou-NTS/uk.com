@@ -16,6 +16,6 @@ public interface RegulaMonthActCalSet {
 	 * @return the legal aggr set of reg new
 	 */
 	// 集計設定
-	RegularWorkTimeAggrSet getAggrSetting();
+	RegularWorkTimeAggrSet getRegulaAggrSetting();
 
 }

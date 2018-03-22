@@ -24,5 +24,5 @@ public interface ComFlexMonthActCalSetGetMemento {
 	 *
 	 * @return the aggr setting monthly of flx new
 	 */
-	FlexMonthWorkTimeAggrSet getAggrSetting();
+	FlexMonthWorkTimeAggrSet getFlexAggrSetting();
 }

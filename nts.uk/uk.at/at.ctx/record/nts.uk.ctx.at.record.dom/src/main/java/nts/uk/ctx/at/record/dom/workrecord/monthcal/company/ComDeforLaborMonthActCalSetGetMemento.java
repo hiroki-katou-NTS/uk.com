@@ -24,6 +24,6 @@ public interface ComDeforLaborMonthActCalSetGetMemento {
 	 *
 	 * @return the legal aggr set of irg new
 	 */
-	DeforWorkTimeAggrSet getAggrSetting();
+	DeforWorkTimeAggrSet getDeforAggrSetting();
 
 }

@@ -24,5 +24,5 @@ public interface ComRegulaMonthActCalSetGetMemento {
 	 *
 	 * @return the aggr setting
 	 */
-	RegularWorkTimeAggrSet getAggrSetting();
+	RegularWorkTimeAggrSet getRegulaAggrSetting();
 }

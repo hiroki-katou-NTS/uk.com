@@ -33,7 +33,7 @@ public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	 */
 	public ComFlexMonthActCalSet(ComFlexMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getFlexAggrSetting();
 	}
 
 	/**

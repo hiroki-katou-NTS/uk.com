@@ -40,7 +40,7 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
-		// TODO Auto-generated method stub
+		
 	}
 
 }

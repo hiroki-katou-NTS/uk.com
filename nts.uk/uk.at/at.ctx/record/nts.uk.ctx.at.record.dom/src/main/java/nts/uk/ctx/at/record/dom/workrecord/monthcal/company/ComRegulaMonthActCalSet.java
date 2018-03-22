@@ -32,7 +32,7 @@ public class ComRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 	 * SetRegularActualWorkMonthly#getLegalAggrSetOfRegNew()
 	 */
 	@Override
-	public RegularWorkTimeAggrSet getAggrSetting() {
+	public RegularWorkTimeAggrSet getRegulaAggrSetting() {
 		return aggrSetting;
 	}
 
@@ -44,7 +44,7 @@ public class ComRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 	 */
 	public ComRegulaMonthActCalSet(ComRegulaMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getRegulaAggrSetting();
 	}
 
 	/**
@@ -55,6 +55,6 @@ public class ComRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 	 */
 	public void saveToMemento(ComRegulaMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setAggrSetting(this.aggrSetting);
+		memento.setRegulaAggrSetting(this.aggrSetting);
 	}
 }
