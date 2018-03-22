@@ -6,10 +6,16 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -17,13 +23,22 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto>{
-	
+public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
+
 	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-	
+	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
+
 	@Inject
 	private AnnLeaMaxDataRepository maxDataRepo;
+	
+	@Inject
+	private AnnLeaEmpBasicInfoDomService annLeaDomainService;
+	
+	@Inject
+	private AnnLeaGrantRemDataRepository annLeaDataRepo;
+	
+	@Inject
+	private RervLeaGrantRemDataRepository rervLeaDataRepo;
 
 	@Override
 	public String targetCategoryCode() {
@@ -42,10 +57,20 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto>{
 
 	@Override
 	public AnnualLeaveDto getSingleData(PeregQuery query) {
-		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = annLeaEmpBasicInfoRepo.get(query.getEmployeeId());
+		String companyId = AppContexts.user().companyId();
+		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = annLeaBasicInfoRepo.get(query.getEmployeeId());
 		Optional<AnnualLeaveMaxData> maxDataOpt = maxDataRepo.get(query.getEmployeeId());
 		if (basicInfoOpt.isPresent() && maxDataOpt.isPresent()) {
+
+			List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(query.getEmployeeId());
+			List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(query.getEmployeeId());
+
 			AnnualLeaveDto dto = AnnualLeaveDto.createFromDomains(basicInfoOpt.get(), maxDataOpt.get());
+
+			dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnualLeaveNumber(companyId, annualLeaveDataList));
+			dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(annualLeaveDataList));
+			dto.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveDataList));
+			
 			return dto;
 		}
 		return null;
@@ -62,7 +87,5 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto>{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 
 }

@@ -120,13 +120,7 @@ public class AgreementTimeBreakdown {
 		for (val attendanceItemId : outsideOTSet.getAllAttendanceItemIds()){
 			
 			// 対象項目の時間を取得　と　丸め処理
-			AttendanceTimeMonth targetItemTime = new AttendanceTimeMonth(0);
-			if (aggregateAtr == MonthlyAggregateAtr.MONTHLY){
-				targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
-			}
-			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
-				targetItemTime = totalTime.getTimeOfAttendanceItemId(attendanceItemId);
-			}
+			val targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
 			
 			// 勤怠項目IDに対応する時間を加算する
 			this.addTimeByAttendanceItemId(attendanceItemId, targetItemTime);

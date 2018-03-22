@@ -236,7 +236,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		if(workInfo.getRecordWorkInformation().getWorkTimeCode() == null)
+		if(workInfo == null || workInfo.getRecordWorkInformation() == null || workInfo.getRecordWorkInformation().getWorkTimeCode() == null)
 			return oneRange;
 		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return oneRange;
@@ -590,6 +590,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*1日の計算範囲取得*/
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
 												   ,predetermineTimeSet.get().getStartDateClock().forwardByMinutes(predetermineTimeSet.get().getRangeTimeDay().valueAsMinutes()));
+		
+		WorkInfoOfDailyPerformance toDayWorkInfo = workInformationRepository.find(employeeId, targetDate).get();
+		
+		WorkInfoOfDailyPerformance toDayWorkInfo = integrationOfDaily.getWorkInformation();
 		
 		/*ジャストタイムの判断するための設定取得*/
 //		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;

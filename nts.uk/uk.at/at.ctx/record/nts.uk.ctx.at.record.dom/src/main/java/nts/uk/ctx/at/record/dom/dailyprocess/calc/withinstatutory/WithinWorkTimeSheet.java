@@ -285,7 +285,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * コアタイムのセット
 	 * @param coreTimeSetting コアタイム時間設定
 	 */
-	public FlexWithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
+	public WithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
 		List<TimeSpanForCalc> duplicateCoreTimeList = new ArrayList<>();
 		for(WithinWorkTimeFrame workTimeFrame : this.withinWorkTimeFrame) {
 			Optional<TimeSpanForCalc> duplicateSpan = workTimeFrame.getCalcrange().getDuplicatedWith(new TimeSpanForCalc(coreTimeSetting.getCoreTimeSheet().getStartTime(),
@@ -302,7 +302,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			/*フレックス時間帯に入れる*/
 			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,new TimeSpanForCalc(startTime, endTime));
 		}
-		return new FlexWithinWorkTimeSheet(Collections.emptyList(),new TimeSpanForCalc(startTime, endTime));
+		else {
+			return this;
+		}
 	}
 	
 	
