@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
@@ -21,7 +22,9 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmen
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -85,14 +88,13 @@ public class HolidayShipmentScreenBFinder {
 	private RequestOfEachWorkplaceRepository requestWpRepo;
 	@Inject
 	private RequestOfEachCompanyRepository requestComRepo;
+	@Inject
+	private ApplicationRepository_New appRepo;
 
 	/**
 	 * find by Id
 	 * 
-	 * @param employeeID
-	 * @param initDateInput
-	 * @param uiType
-	 * @return HolidayShipmentDto
+	 * @param applicationID
 	 */
 	RecruitmentApp recApp;
 	AbsenceLeaveApp absApp;
@@ -109,9 +111,12 @@ public class HolidayShipmentScreenBFinder {
 		String employeeID = AppContexts.user().employeeId();
 		boolean isRecApp = isRecApp(applicationID);
 		// 14-1.詳細画面起動前申請共通設定を取得する
-		ApplicationMetaOutput appOutput = detailService.getDetailAppCommonSet(companyID, applicationID);
+		Optional<Application_New> appOutputOpt = appRepo.findByID(companyID, applicationID);
 		// 14-2.詳細画面起動前モードの判断
-		if (appOutput != null) {
+		if (appOutputOpt.isPresent()) {
+			Application_New appOutput = appOutputOpt.get();
+
+			output.setApplication(ApplicationDto_New.fromDomain(appOutput));
 			DetailedScreenPreBootModeOutput bootOutput = bootMode.judgmentDetailScreenMode(companyID, employeeID,
 					applicationID, appOutput.getAppDate());
 

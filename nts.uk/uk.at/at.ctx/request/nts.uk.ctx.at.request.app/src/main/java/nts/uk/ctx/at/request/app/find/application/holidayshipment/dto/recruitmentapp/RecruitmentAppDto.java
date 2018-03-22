@@ -10,6 +10,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.SubTargetDigestionDto;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 
+/**
+ * @author sonnlb
+ * 振出申請Dto
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -64,18 +64,18 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		newBeforeRegister.processBeforeRegister(appRoot);
 		// 7.登録時のエラーチェック
 		checkBeforeRegister(command);
-		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
 		// insert
 		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
+		// 2-2.新規画面登録時承認反映情報の整理
+		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
 		// 2-3.新規画面登録後の処理を実行
 		return newAfterRegister.processAfterRegister(appRoot);
 
 	}
 	private void checkBeforeRegister(CreatAppAbsenceCommand command){
-		GeneralDate endDate = command.getEndDate().addDays(1);
 		int countDay = 0;
-		for(GeneralDate appDate = command.getStartDate(); appDate.before(endDate); appDate.addDays(1)){
+		for(int i = 0; command.getStartDate().compareTo(command.getEndDate()) + i <= 0; i++){
+			GeneralDate appDate = command.getStartDate().addDays(i);
 			countDay = countDay + 1;
 			// 休暇・振替系申請存在チェック
 			saveHolidayShipmentCommandHandler.vacationTransferCheck(command.getEmployeeID(), appDate, command.getPrePostAtr());

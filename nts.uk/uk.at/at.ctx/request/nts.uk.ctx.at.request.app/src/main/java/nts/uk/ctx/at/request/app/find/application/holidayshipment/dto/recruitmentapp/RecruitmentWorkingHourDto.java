@@ -4,9 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author sonnlb
+ * 勤務時間Dto
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class RecruitmentWorkingHourDto {
 	/**
 	 * 開始時刻

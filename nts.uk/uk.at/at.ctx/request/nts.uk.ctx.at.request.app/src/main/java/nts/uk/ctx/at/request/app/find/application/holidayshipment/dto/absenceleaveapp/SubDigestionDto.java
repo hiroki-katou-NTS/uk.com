@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
+/**
+ * @author sonnlb
+ *消化対象振休管理Dto
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

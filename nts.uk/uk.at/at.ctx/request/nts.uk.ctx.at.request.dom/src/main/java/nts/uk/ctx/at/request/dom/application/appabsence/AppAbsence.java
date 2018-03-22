@@ -113,7 +113,7 @@ public class AppAbsence extends AggregateRoot{
 			Integer endTime2){
 		this.companyID = companyID;
 		this.appID = appID;
-		this.holidayAppType = EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class);
+		this.holidayAppType = holidayAppType == null ? null : EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class);
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 		this.workTimeCode = workTimeCode == null ?  null : new WorkTimeCode(workTimeCode);
 		this.halfDayFlg = halfDayFlg;
