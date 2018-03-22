@@ -55,6 +55,10 @@ module cmm045.shr {
                     this.appDisplayAtr = appDisplayAtr;
                     this.listEmployeeId = listEmployeeId;
                     this.empRefineCondition = empRefineCondition;
+                
+            }
+            setAppType(appType: number){
+                  this.appType = appType;
             }
         }
         //data fill grid list mode application
@@ -395,8 +399,6 @@ module cmm045.shr {
             breakTimeStart1: string;
             /**休憩時間終了1*/
             breakTimeEnd1: string;
-            //0: する
-            //1: しない
             constructor(appId: string, workTypeName: string, workTimeName: string,
                 goWorkAtr1: number, workTimeStart1: string, backHomeAtr1: number,
                 workTimeEnd1: string, goWorkAtr2: number, workTimeStart2: string,
@@ -444,8 +446,67 @@ module cmm045.shr {
                 this.lstFrame = lstFrame;    
             }
         }
-            
-            
+        export class AppAbsenceFull {
+            /**申請ID */
+            appID: string;
+            /**休暇種類 */
+            holidayAppType: number;
+            //日数
+            day: number;
+            /**就業時間帯コード - Name */
+            workTimeName: string;
+            /**終日半日休暇区分*/
+            allDayHalfDayLeaveAtr: number;
+            /**開始時刻*/
+            startTime1: string;
+            /**終了時刻*/
+            endTime1: string;
+            /**開始時刻2*/
+            startTime2: string;
+            /**終了時刻2*/
+            endTime2: string;
+            /**続柄コード*/
+            relationshipCode: string;
+            /**続柄コード - Name*/
+            relationshipName: string;
+            /**喪主フラグ*/
+            mournerFlag: boolean;
+            constructor(appID: string, holidayAppType: number, day: number, workTimeName: string,
+                allDayHalfDayLeaveAtr: number, startTime1: string,endTime1: string,startTime2: string,
+                endTime2: string, relationshipCode: string, relationshipName: string, mournerFlag: boolean)
+            {
+                this.appID = appID;
+                this.holidayAppType = holidayAppType;
+                this.day = day;
+                this.workTimeName = workTimeName;
+                this.allDayHalfDayLeaveAtr = allDayHalfDayLeaveAtr;
+                this.startTime1 = startTime1;
+                this.endTime1 = endTime1;
+                this.startTime2 = startTime2;
+                this.endTime2 = endTime2;
+                this.relationshipCode = relationshipCode;
+                this.relationshipName = relationshipName;
+                this.mournerFlag = mournerFlag;    
+            }
+        }
+        export class HdAppSet{
+            // 代表者名 - 1
+            obstacleName: string;
+            // 休日名称 - 5
+            hdName: string;
+            // 年休名称 - 0
+            yearHdName: string;
+            // 振休名称 - 7
+            furikyuName: string;
+            // 時間消化名称 - 6
+            timeDigest: string;
+            // 欠勤名称 - 2
+            absenteeism: string;
+            // 特別休暇名称 - 3
+            specialVaca: string;
+            // 積立年休名称  - 4
+            yearResig: string;
+        }            
         export class ProcessHandler {
             /**
              * sort by appType and appDate

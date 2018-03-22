@@ -57,7 +57,6 @@ public class ExtsSheduleErrorExportService  extends ExportService<List<ErrorCont
         
         List<Map<String, Object>> dataSource = lstError
         		.stream()
-        		.sorted((s1,s2) -> s1.getEmployeeCode().compareTo(s2.getEmployeeCode()))
         		.map(errorLine -> {
 		        	 Map<String, Object> map = new HashMap<>();
 					 map.put(header.get(0), errorLine.getEmployeeCode());

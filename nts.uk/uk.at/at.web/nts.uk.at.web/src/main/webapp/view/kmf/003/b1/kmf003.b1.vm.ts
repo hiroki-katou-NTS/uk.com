@@ -13,6 +13,7 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         count: KnockoutObservable<number>;
         lengthServiceData: any;
         GrantHdData: any;
+        checkDataExisted: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -30,6 +31,8 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
             } else {
                 self.displayDateSelected = ko.observable(true);
             }
+            
+            self.checkDataExisted = ko.observable(false);
             
             self.referenceDate = ko.observable("");
             self.items = ko.observableArray([]);
@@ -72,6 +75,7 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                     self.bindData(combinedData, true);
                 } else {
                     self.bindData(combinedData, false);
+                    self.checkDataExisted(true);
                 }
                 
                 dfd.resolve();
@@ -243,7 +247,17 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error){
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });    
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                    if(error.messageId === "Msg_266") {
+                        $('.year-input1').focus();
+                    } else if(error.messageId === "Msg_268") {
+                        
+                    } else if(error.messageId === "Msg_269") {
+                        $('.year-input1').focus();
+                    } else if(error.messageId === "Msg_270") {
+                        $('#b2_1').focus();
+                    }
+                }); 
             });
         }
         
@@ -251,8 +265,8 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
          * Close dialog.
          */
         cancel() {
-            var calcelData = nts.uk.ui.windows.getShared("KMF003_CANCEL_DATA");
-            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", calcelData);
+            var self = this;
+            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", self.checkDataExisted());
             nts.uk.ui.windows.close();
         }
         

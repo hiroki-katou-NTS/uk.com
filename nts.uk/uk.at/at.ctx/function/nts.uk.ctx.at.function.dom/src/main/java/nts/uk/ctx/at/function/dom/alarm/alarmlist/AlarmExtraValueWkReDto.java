@@ -8,7 +8,7 @@ import nts.gul.text.IdentifierUtil;
 @Setter
 public class AlarmExtraValueWkReDto {
 	
-	private String gUID;
+	private String guid;
 	/**職場ID*/
 	private String workplaceID;
 	
@@ -46,6 +46,7 @@ public class AlarmExtraValueWkReDto {
 			String employeeCode, String employeeName, String alarmValueDate, int category, String categoryName,
 			String alarmItem, String alarmValueMessage, String comment) {
 		super();
+		this.guid= IdentifierUtil.randomUniqueId();
 		this.workplaceID = workplaceID;
 		this.hierarchyCd = hierarchyCd;
 		this.workplaceName = workplaceName;

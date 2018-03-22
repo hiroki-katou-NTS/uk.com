@@ -19,5 +19,7 @@ public class PerCtgInfoDto {
 	private int systemRequired;
 	private int isExistedItemLst;
 	private int personEmployeeType;
+	private boolean initValMasterObjCls;
+	private boolean addItemObjCls;
 	private List<PersonInfoItemDefDto> itemLst;
 }

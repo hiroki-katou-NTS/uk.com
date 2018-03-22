@@ -120,7 +120,8 @@ public class PerInfoCategoryFinder {
 
 					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0)) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
+								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+								 p.getInitValMasterCls().value , p.getAddItemCls().value);
 					}
 					return null;
 				}).filter(m -> m != null).collect(Collectors.toList());
@@ -141,7 +142,8 @@ public class PerInfoCategoryFinder {
 
 					if (!lstItemDfInCat.isEmpty()) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
+								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+								p.getInitValMasterCls() == null? 1: p.getInitValMasterCls().value , p.getAddItemCls() == null? 1: p.getAddItemCls().value);
 					}
 					return null;
 				}).filter(m -> m != null).filter(m -> m.getIsAbolition() == 0).collect(Collectors.toList());
@@ -151,15 +153,17 @@ public class PerInfoCategoryFinder {
 	};
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
-		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty
-				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
-				.stream().map(p -> {
+		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
+				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
+		
+		List<PerInfoCtgShowDto> x =	categoryList.stream().map(p -> {
 					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
+							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+							p.getInitValMasterCls()== null? 1: p.getInitValMasterCls().value , p.getAddItemCls()== null? 1: p.getAddItemCls().value);
 				}).collect(Collectors.toList());
 
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
-		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
+		return new PerInfoCtgDataEnumDto(historyTypes, x);
 	};
 
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {

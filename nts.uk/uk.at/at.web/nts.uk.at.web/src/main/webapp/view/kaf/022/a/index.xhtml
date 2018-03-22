@@ -38,6 +38,7 @@
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
 				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+				nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr
 			</com:EnumScript>
 		</ui:define>
 		<ui:define name="sidebar">
@@ -605,7 +606,7 @@
 							<table class="viewmodel-a" id="fixed-table-a10">
 								<colgroup>
 									<col width="300px" />
-									<col width="600px" />
+									<col width="500px" />
 								</colgroup>
 								<thead>
 									<tr>
@@ -616,7 +617,7 @@
 									<tr>
 										<td class="color-header" id="a10_2">#{i18n.getText('KAF022_87')}</td>
 										<td>
-											<div id="a10_3" class="a9_9" tabindex="213"
+											<div id="a10_3" class="a10_3" tabindex="213"
 												data-bind="ntsRadioBoxGroup: {
 													options: itemListA10_3,
 													optionsValue: 'code',

@@ -16,15 +16,15 @@ public class WorkplaceAcAdapter implements WorkplaceAdapter {
 	private SyWorkplacePub workplacePub;
 
 	@Override
-	public WorkplaceImport getWorlkplaceHistory(String employeeId, GeneralDate baseDate) {
-		
+	public Optional<WorkplaceImport> getWorlkplaceHistory(String employeeId, GeneralDate baseDate) {
+
 		Optional<SWkpHistExport> workplaceHistOpt = workplacePub.findBySid(employeeId, baseDate);
 		if (!workplaceHistOpt.isPresent())
-			throw new RuntimeException("Not found Workplace History domain!");
+			return Optional.empty();
 		SWkpHistExport wp = workplaceHistOpt.get();
-		return WorkplaceImport.builder().dateRange(wp.getDateRange()).employeeId(wp.getEmployeeId())
+		return Optional.of(WorkplaceImport.builder().dateRange(wp.getDateRange()).employeeId(wp.getEmployeeId())
 				.wkpDisplayName(wp.getWkpDisplayName()).workplaceCode(wp.getWorkplaceCode())
-				.workplaceId(wp.getWorkplaceId()).workplaceName(wp.getWorkplaceName()).build();
+				.workplaceId(wp.getWorkplaceId()).workplaceName(wp.getWorkplaceName()).build());
 	}
 
 }

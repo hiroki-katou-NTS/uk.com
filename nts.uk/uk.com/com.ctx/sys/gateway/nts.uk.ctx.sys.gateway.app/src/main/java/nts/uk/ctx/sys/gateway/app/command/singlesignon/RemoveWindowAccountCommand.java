@@ -9,23 +9,9 @@ import lombok.Setter;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 
 /**
- * Sets the use atr.
- *
- * @param useAtr the new use atr
+ * The Class RemoveWindowAccountCommand.
  */
 @Setter
-
-/**
- * Gets the use atr.
- *
- * @return the use atr
- */
-
-/**
- * Gets the use atr.
- *
- * @return the use atr
- */
 @Getter
 public class RemoveWindowAccountCommand {
 	// ユーザID
@@ -48,5 +34,6 @@ public class RemoveWindowAccountCommand {
 	/** The use atr. */
 	private UseAtr useAtr;
 	
+	/** The user id delete. */
 	private String userIdDelete;
 }

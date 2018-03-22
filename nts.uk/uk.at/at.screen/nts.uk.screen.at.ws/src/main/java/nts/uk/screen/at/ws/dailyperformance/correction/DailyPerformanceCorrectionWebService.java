@@ -4,7 +4,6 @@
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,11 +20,13 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -37,6 +38,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -73,6 +75,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private ValidatorDataDaily validatorDataDaily;
+	
+	@Inject
+	private PersonalTightCommandFacade personalTightCommandFacade;
 	
 	@POST
 	@Path("startScreen")
@@ -130,7 +135,7 @@ public class DailyPerformanceCorrectionWebService {
 			} else if (x.getTypeGroup() == TypeLink.WORKPLACE.value) {
 				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(x.getTypeGroup(),
 						new ParamDialog(x.getDate(), x.getValue()));
-				x.setValue(codeName == null ? null : codeName.getId());
+				item.setValue(codeName == null ? null : codeName.getId());
 				return item;
 			}
 			return item;
@@ -169,13 +174,31 @@ public class DailyPerformanceCorrectionWebService {
 				dailyModifyCommandFacade.handleEditCell(itemValueChild);
 			}else{
 				//resultError.put(1, itemInputErors);
-				return resultError;
+				//return resultError;
 			}
 		}else{
 			resultError.put(0, itemErrors);
-			return resultError;
+			//return resultError;
 		}
-		return Collections.emptyMap();
+		
+		// insert sign
+		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
+		
+		//
+		if(dataParent.getMode() == 0){
+			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
+					dataParent.getDateRange());
+			if (!dataCheck.isEmpty()) {
+				resultError.put(2, dataCheck);
+			}
+		}
+		return resultError;
+	}
+	
+	@POST
+	@Path("insertClosure")
+	public void insertClosure(EmpAndDate empAndDate){
+		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

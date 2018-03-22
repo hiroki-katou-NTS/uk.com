@@ -12,6 +12,7 @@ import javax.enterprise.util.TypeLiteral;
 import find.person.contact.PersonContactDto;
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.AnnualLeaveDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
@@ -58,7 +59,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00022 個人連絡先
 			new TypeLiteral<PeregFinder<PersonContactDto>>(){},
 			// CS00023 社員連絡先
-			new TypeLiteral<PeregFinder<EmpInfoContactDto>>(){}
+			new TypeLiteral<PeregFinder<EmpInfoContactDto>>(){},
+			// CS00024 年休情報
+			new TypeLiteral<PeregFinder<AnnualLeaveDto>>(){}
 			);
 
 	@Override
