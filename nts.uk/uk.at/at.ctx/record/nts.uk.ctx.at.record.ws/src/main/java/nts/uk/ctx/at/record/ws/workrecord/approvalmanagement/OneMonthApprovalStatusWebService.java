@@ -10,9 +10,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.find.approvalmanagement.OneMonthApprovalStatusDto;
 import nts.uk.ctx.at.record.app.find.approvalmanagement.OneMonthApprovalStatusFinder;
 import nts.uk.ctx.at.record.app.find.approvalmanagement.OneMonthApprovalStatusRequest;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.OneMonthApprovalStatusDto;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

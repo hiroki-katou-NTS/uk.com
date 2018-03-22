@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.ComparableRange;
@@ -23,7 +24,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 public class TimeSpanForCalc extends DomainObject implements ComparableRange<Integer> {
-
 	private final TimeWithDayAttr start;
 	private final TimeWithDayAttr end;
 

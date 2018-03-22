@@ -86,8 +86,10 @@ public class PrescribedWorkingTimeOfMonthly {
 		for (val timeSeriesWork : this.timeSeriesWorks){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
-			this.schedulePrescribedWorkingTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
-			this.recordPrescribedWorkingTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
+			this.schedulePrescribedWorkingTime = this.schedulePrescribedWorkingTime.addMinutes(
+					prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+			this.recordPrescribedWorkingTime = this.recordPrescribedWorkingTime.addMinutes(
+					prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 	}
 
@@ -102,7 +104,7 @@ public class PrescribedWorkingTimeOfMonthly {
 		for (val timeSeriesWork : this.timeSeriesWorks){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
-			returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
+			returnTime = returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 		return returnTime;
 	}

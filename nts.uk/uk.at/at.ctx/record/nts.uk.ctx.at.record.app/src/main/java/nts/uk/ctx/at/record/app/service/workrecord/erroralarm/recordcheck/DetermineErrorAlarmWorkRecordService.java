@@ -36,7 +36,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 		Map<ErrorAlarmWorkRecord, Map<String, Boolean>> lstErrorAlarm = checkError(employeeID, date);
 		if (!lstErrorAlarm.isEmpty()) {
 			lstErrorAlarm.entrySet().forEach(erAl -> {
-				if (!erAl.getValue().isEmpty() && isError(erAl.getValue().get(employeeID))) {
+				if (!erAl.getValue().isEmpty() && isError(erAl.getValue().get(employeeID) && erAl.getKey().getErrorDisplayItem() != null)) {
 					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, date,
 							new ErrorAlarmWorkRecordCode(erAl.getKey().getCode().v()),
 							Arrays.asList(erAl.getKey().getErrorDisplayItem().intValue()));

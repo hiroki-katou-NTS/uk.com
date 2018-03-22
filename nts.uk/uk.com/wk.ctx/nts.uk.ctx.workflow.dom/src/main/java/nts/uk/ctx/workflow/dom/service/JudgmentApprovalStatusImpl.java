@@ -227,7 +227,12 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		
 		// ループ中のフェーズの番号-１から、降順にループする
 		for(int i = currentPhase.getPhaseOrder(); i>0; i--){
-			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(i-1);
+			ApprovalPhaseState approvalPhaseState = null;
+			for(ApprovalPhaseState loopPhase : approvalRootState.getListApprovalPhaseState()){
+				if(loopPhase.getPhaseOrder()==i){
+					approvalPhaseState = loopPhase;
+				}
+			}
 			List<String> approvers = this.getApproverFromPhase(approvalPhaseState);
 			if(approvers.isEmpty()){
 				continue;

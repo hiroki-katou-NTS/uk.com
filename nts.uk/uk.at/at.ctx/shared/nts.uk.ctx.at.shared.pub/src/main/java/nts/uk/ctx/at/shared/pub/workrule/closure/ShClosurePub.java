@@ -19,5 +19,6 @@ public interface ShClosurePub {
 	 * @return the optional
 	 */
 	// 処理年月と締め期間を取得する
+	// RequestList 336.
 	Optional<PresentClosingPeriodExport> find(String cId, int closureId);
 }

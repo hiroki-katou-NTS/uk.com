@@ -77,13 +77,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
 				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v()));
+						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
 				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
-						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v()));
+						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){
 				String name = "";
@@ -97,7 +101,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
 				}
 				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
-						name, null, overTime.getApplicationTime().v()));
+						name, null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 		}
 		return new AppOverTimeInfoFull(appId, 
@@ -138,7 +144,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 */
 	@Override
 	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId) {
-		// TODO Auto-generated method stub
 		Optional<AppHolidayWork> appHdWork = repoHolidayWork.getAppHolidayWorkFrame(companyId, appId);
 		AppHolidayWork hdWork = appHdWork.get();
 		List<HolidayWorkInput> lstOverTimeInput = hdWork.getHolidayWorkInputs();
@@ -149,13 +154,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
 				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v()));
+						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
 				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
-						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v()));
+						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){
 				String name = "";
@@ -169,7 +178,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
 				}
 				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
-						name, null, overTime.getApplicationTime().v()));
+						name, null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			
 		}
