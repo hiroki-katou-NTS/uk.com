@@ -106,7 +106,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private SpecialLeaveGrantRemainingData toDomain(KrcmtSpecialLeaveReam e) {
 		// TODO Auto-generated method stub
-		return SpecialLeaveGrantRemainingData.createFromJavaType(e.employeeId, e.specialLeaCode,
+		return SpecialLeaveGrantRemainingData.createFromJavaType(e.key.specialLeaID,e.employeeId, e.specialLeaCode,
 				e.grantDate, e.deadlineDate, 
 				e.expStatus, e.registerType,
 				e.numberOfDayGrant, e.timeGrant, 

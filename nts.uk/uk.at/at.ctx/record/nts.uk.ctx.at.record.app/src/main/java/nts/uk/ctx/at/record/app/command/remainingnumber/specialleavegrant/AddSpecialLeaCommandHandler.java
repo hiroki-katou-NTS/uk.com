@@ -34,7 +34,7 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<AddSpecialLeaCom
 			// exception
 		}
 		
-		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(command.getSid(), command.getSpecialLeaCode(), 
+		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(command.getSpecialLeaId(),command.getSid(), command.getSpecialLeaCode(), 
 				command.getGrantDate(), command.getDeadlineDate(), command.getExpStatus(),
 				command.getRegisterType(), command.getNumberOfDayGrant(), command.getTimeGrant(), 
 				command.getNumberOfDayUse(), command.getTimeUse(), command.getNumberOfDayUseToLose(), 
