@@ -1117,7 +1117,6 @@ module cmm045.a.viewmodel {
                     }else{
                         approvalNumber += 1;
                     }
-                     approvalNumber += 1;
                 }
 //                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
                 if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3
