@@ -72,6 +72,9 @@ module nts.uk.pr.view.kmf001.l {
                     return;
                 }
                 let command = self.toJsObject();
+                
+                nts.uk.ui.block.grayout();
+                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
@@ -80,6 +83,8 @@ module nts.uk.pr.view.kmf001.l {
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             

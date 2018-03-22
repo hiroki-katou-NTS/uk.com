@@ -116,6 +116,9 @@ module nts.uk.pr.view.kmf001.b {
                 let dfd = $.Deferred();
                 
                 let command = self.setList();
+                
+                nts.uk.ui.block.grayout();
+                
                 service.updateAcquisitionRule(command).done(function() {
                     self.loadAcquisitionRule().done(function(res) {
                         // Msg_15
@@ -124,8 +127,10 @@ module nts.uk.pr.view.kmf001.b {
                         });
                         dfd.resolve();
                     });
-                }).fail(function(res) {
+                }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             

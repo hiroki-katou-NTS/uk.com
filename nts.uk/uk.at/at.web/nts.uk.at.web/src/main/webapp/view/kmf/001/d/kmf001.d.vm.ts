@@ -268,11 +268,15 @@ module nts.uk.pr.view.kmf001.d {
                     return;
                 }
                 // Register
+                nts.uk.ui.block.grayout();
+                
                 service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
                     self.employmentVisible(self.selectedComManagement() == 1);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             
@@ -339,6 +343,8 @@ module nts.uk.pr.view.kmf001.d {
                 }
                 
                 // Register
+                nts.uk.ui.block.grayout();
+                
                 service.saveByEmployment(self.collectDataByEmployment()).done(function() {
                     self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -346,6 +352,8 @@ module nts.uk.pr.view.kmf001.d {
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             

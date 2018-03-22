@@ -88,18 +88,6 @@ module nts.uk.pr.view.kmf001.c {
                 // Data backup
                 self.dataBackup = ko.observable(null);
                 
-                // subscribe
-                self.selectedMaxManageSemiVacation.subscribe(function(value) {
-                    if (value == 0) {
-                        $('#max-number-company').ntsError('clear');
-                    }
-                });
-                self.selectedManageUpperLimitDayVacation.subscribe(function(value) {
-                    if (value == 0) {
-                        $('#time-max-day-company').ntsError('clear');
-                    }
-                });
-                
                 self.enableAnnualVacation = ko.computed(function() {
                     return self.selectedAnnualManage() == 1;
                 }, self);
@@ -117,6 +105,29 @@ module nts.uk.pr.view.kmf001.c {
                 });
                 self.enableTimeMaxNumberCompany = ko.computed(function() {
                     return self.enableTimeSetting() && self.selectedMaxDayVacation() == 0;
+                });
+                
+                
+                // subscribe
+                self.selectedMaxManageSemiVacation.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#max-number-company').ntsError('clear');
+                    }
+                });
+                self.selectedManageUpperLimitDayVacation.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#time-max-day-company').ntsError('clear');
+                    }
+                });
+                self.enableTimeSetting.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#yearLy-number-days').ntsError('clear');
+                    }
+                });
+                self.enableTimeMaxNumberCompany.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#time-max-day-company').ntsError('clear');
+                    }
                 });
             }
             
@@ -141,6 +152,9 @@ module nts.uk.pr.view.kmf001.c {
                     return;
                 }
                 let command = self.toJsObject();
+                
+                nts.uk.ui.block.grayout();
+                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $('#annual-manage').focus();
@@ -149,6 +163,8 @@ module nts.uk.pr.view.kmf001.c {
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             

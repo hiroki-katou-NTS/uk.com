@@ -70,8 +70,12 @@ module nts.uk.pr.view.kmf001.f {
             firstLoad: KnockoutObservable<boolean>;
             employmentVisible: KnockoutObservable<boolean>;
             
+            inputWorkOneDay: any;
             inputWorkHalfDay: any;
+            inputOverOneDay: any;
             inputOverHalfDay: any;
+            inputOverAll: any;
+            inputWorkAll: any;
             
             deleteEnable: KnockoutObservable<boolean>;
             
@@ -95,8 +99,12 @@ module nts.uk.pr.view.kmf001.f {
                 self.overHalfDay = ko.observable('0000');
                 self.overAll = ko.observable('0000');
                 
+                self.inputWorkOneDay = $('#workOneDay');
+                self.inputOverOneDay = $('#overOneDay');
                 self.inputWorkHalfDay = $('#workHalfDay');
                 self.inputOverHalfDay = $('#overHalfDay');
+                self.inputWorkAll = $('#workAll');
+                self.inputOverAll = $('#overAll');
                 self.deleteEnable = ko.observable(true);
 
                 self.inputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -147,18 +155,30 @@ module nts.uk.pr.view.kmf001.f {
                 
                 self.enableDesignWork.subscribe(function(flag) {
                     if (flag) {
-                        if (self.inputWorkHalfDay.is(":enabled")) self.inputWorkHalfDay.ntsError('check');
+                        if (self.inputWorkAll.ntsError("hasError")) self.inputWorkAll.ntsError('clear');
+                        
+                        self.inputWorkOneDay.ntsError('check');
+                        self.inputWorkHalfDay.ntsError('check');
                         return true;
                     }
+                    if (self.inputWorkOneDay.ntsError("hasError")) self.inputWorkOneDay.ntsError('clear');
                     if (self.inputWorkHalfDay.ntsError("hasError")) self.inputWorkHalfDay.ntsError('clear');
+                    
+                    self.inputWorkAll.ntsError('check');
                 });
                 
                 self.enableDesignOver.subscribe(function(flag) {
                     if (flag) {
-                        if (self.inputOverHalfDay.is(":enabled")) self.inputOverHalfDay.ntsError('check');
+                        if (self.inputOverAll.ntsError("hasError")) self.inputOverAll.ntsError('clear');
+                        
+                        self.inputOverOneDay.ntsError('check');
+                        self.inputOverHalfDay.ntsError('check');
                         return true;
                     }
+                    if (self.inputOverOneDay.ntsError("hasError")) self.inputOverOneDay.ntsError('clear');
                     if (self.inputOverHalfDay.ntsError("hasError")) self.inputOverHalfDay.ntsError('clear');
+                    
+                    self.inputOverAll.ntsError('check');
                 });
 
                 //employment
@@ -462,8 +482,12 @@ module nts.uk.pr.view.kmf001.f {
             private saveData() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){
+                        
+                        nts.uk.ui.block.grayout();
+                        
                         service.update(self.collectData()).done(function() {
                             self.loadSetting().then(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -498,6 +522,8 @@ module nts.uk.pr.view.kmf001.f {
                                 err.errors = errors;
                                 self.showMessageError(err);
                             }
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
                         });
                     }
                 });
@@ -629,6 +655,9 @@ module nts.uk.pr.view.kmf001.f {
             //save employment
             private saveEmployment() {
                 var self = this;
+                
+                nts.uk.ui.block.grayout();
+                
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.loadEmploymentList().done(() => {
@@ -638,6 +667,8 @@ module nts.uk.pr.view.kmf001.f {
                             self.checkDeleteAvailability();
                         });
                     });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             

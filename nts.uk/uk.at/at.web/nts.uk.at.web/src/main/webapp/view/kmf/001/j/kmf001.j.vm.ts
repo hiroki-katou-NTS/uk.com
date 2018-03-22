@@ -139,6 +139,9 @@ module nts.uk.pr.view.kmf001.j {
                 if (!self.validateComSetting()) {
                     return;
                 }
+                
+                nts.uk.ui.block.grayout();
+                
                 this.service.saveComSetting(self.settingModel().toSixtyHourVacationSettingDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -146,6 +149,8 @@ module nts.uk.pr.view.kmf001.j {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
 
