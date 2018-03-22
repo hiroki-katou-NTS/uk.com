@@ -4,5 +4,6 @@ module nts.uk.com.view.cmf001.q {
         screenModel.start().done(function(){
            __viewContext.bind(screenModel);
         });
+        $('#BTN_STOP').focus();
     });
 }
