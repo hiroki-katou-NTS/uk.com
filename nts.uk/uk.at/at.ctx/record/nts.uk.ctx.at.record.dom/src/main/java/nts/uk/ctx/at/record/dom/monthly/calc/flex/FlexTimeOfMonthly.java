@@ -47,6 +47,8 @@ public class FlexTimeOfMonthly {
 	private FlexCarryforwardTime flexCarryforwardTime;
 	/** 時間外超過のフレックス時間 */
 	private FlexTimeOfExcessOutsideTime flexTimeOfExcessOutsideTime;
+	/** フレックス不足控除時間 */
+	private FlexShortDeductTime flexShortDeductTime;
 	
 	/** 加算した休暇使用時間 */
 	private AddedVacationUseTime addedVacationUseTime;
@@ -61,6 +63,7 @@ public class FlexTimeOfMonthly {
 		this.flexShortageTime = new AttendanceTimeMonth(0);
 		this.flexCarryforwardTime = new FlexCarryforwardTime();
 		this.flexTimeOfExcessOutsideTime = new FlexTimeOfExcessOutsideTime();
+		this.flexShortDeductTime = new FlexShortDeductTime();
 		
 		this.addedVacationUseTime = new AddedVacationUseTime();
 	}
@@ -72,6 +75,7 @@ public class FlexTimeOfMonthly {
 	 * @param flexShortageTime フレックス不足時間
 	 * @param flexCarryforwardTime フレックス繰越時間
 	 * @param flexTimeOfExcessOutsideWork 時間外超過のフレックス時間
+	 * @param flexShortDeductTime フレックス不足控除時間
 	 * @return 月別実績のフレックス時間
 	 */
 	public static FlexTimeOfMonthly of(
@@ -79,7 +83,8 @@ public class FlexTimeOfMonthly {
 			AttendanceTimeMonth flexExcessTime,
 			AttendanceTimeMonth flexShortageTime,
 			FlexCarryforwardTime flexCarryforwardTime,
-			FlexTimeOfExcessOutsideTime flexTimeOfExcessOutsideWork){
+			FlexTimeOfExcessOutsideTime flexTimeOfExcessOutsideWork,
+			FlexShortDeductTime flexShortDeductTime){
 		
 		val domain = new FlexTimeOfMonthly();
 		domain.flexTime = flexTime;
@@ -238,6 +243,9 @@ public class FlexTimeOfMonthly {
 					repositories);
 		}
 		
+		// 年休控除する
+		
+		// 欠勤控除する
 	}
 	
 	/**
