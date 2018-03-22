@@ -205,6 +205,12 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedValueB8_5 = ko.observable(true);
                 self.selectedValueB8_6 = ko.observable(false);
                 
+                self.checkedB7_23.subscribe((v) => {
+                    if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
+                        self.checkedB7_24(true);
+                    }
+                });
+                
                 self.checkedB8_7.subscribe((v) => {
                     if (v == true) {
                         if (self.selectedValueB8_5() == true) {
