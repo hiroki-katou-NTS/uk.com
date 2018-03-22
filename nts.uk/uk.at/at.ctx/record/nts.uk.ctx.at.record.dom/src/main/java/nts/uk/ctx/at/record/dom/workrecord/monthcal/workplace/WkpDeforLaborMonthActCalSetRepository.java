@@ -18,7 +18,7 @@ public interface WkpDeforLaborMonthActCalSetRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpDeforLaborMonthActCalSet> findByCidAndWkpid(String cid, String wkpId);
+	Optional<WkpDeforLaborMonthActCalSet> find(String cid, String wkpId);
 
 	/**
 	 * Adds the.
@@ -39,6 +39,6 @@ public interface WkpDeforLaborMonthActCalSetRepository {
 	 *
 	 * @param wkpTransLaborSetMonthly the wkp trans labor set monthly
 	 */
-	void delete(WkpDeforLaborMonthActCalSet wkpTransLaborSetMonthly);
+	void remove(String cid, String wkpId);
 
 }

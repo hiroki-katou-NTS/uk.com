@@ -18,7 +18,7 @@ public interface WkpRegulaMonthActCalSetRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpRegulaMonthActCalSet> findByCidAndWkpId(String cid, String wkpId);
+	Optional<WkpRegulaMonthActCalSet> find(String cid, String wkpId);
 
 	/**
 	 * Adds the.
@@ -39,6 +39,6 @@ public interface WkpRegulaMonthActCalSetRepository {
 	 *
 	 * @param wkpRegularSetMonthlyActualWork the wkp regular set monthly actual work
 	 */
-	void delete(WkpRegulaMonthActCalSet wkpRegularSetMonthlyActualWork);
+	void remove(String cid, String wkpId);
 
 }

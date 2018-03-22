@@ -32,13 +32,13 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<WkpDeforLaborMonthActCalSet> findByCidAndWkpid(String cid, String wkpId) {
+	public Optional<WkpDeforLaborMonthActCalSet> find(String cid, String wkpId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(WkpDeforLaborMonthActCalSet wkpTransLaborSetMonthly) {
+	public void remove(String cid, String wkpId) {
 		// TODO Auto-generated method stub
 
 	}

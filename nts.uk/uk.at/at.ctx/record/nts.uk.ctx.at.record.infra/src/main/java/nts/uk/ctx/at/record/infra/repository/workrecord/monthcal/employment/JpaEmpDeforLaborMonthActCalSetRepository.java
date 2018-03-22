@@ -32,15 +32,15 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<EmpDeforLaborMonthActCalSet> findById(String cid, String emplCode) {
+	public Optional<EmpDeforLaborMonthActCalSet> find(String cid, String emplCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(EmpDeforLaborMonthActCalSet emplLaborDeforSetTemporary) {
+	public void remove(String cid, String empCode) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

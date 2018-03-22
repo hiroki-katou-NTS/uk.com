@@ -17,7 +17,7 @@ public interface ComFlexMonthActCalSetRepository {
 	 * @param companyId the company id
 	 * @return the company cal monthly flex by cid
 	 */
-	Optional<ComFlexMonthActCalSet> getCompanyCalMonthlyFlexByCid(String companyId);
+	Optional<ComFlexMonthActCalSet> find(String companyId);
 
 	/**
 	 * Adds the.

@@ -20,7 +20,7 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository
 		implements ComFlexMonthActCalSetRepository {
 
 	@Override
-	public Optional<ComFlexMonthActCalSet> getCompanyCalMonthlyFlexByCid(String companyId) {
+	public Optional<ComFlexMonthActCalSet> find(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

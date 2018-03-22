@@ -15,10 +15,10 @@ public interface EmpDeforLaborMonthActCalSetRepository {
 	 * Find by id.
 	 *
 	 * @param cid the cid
-	 * @param emplCode the empl code
+	 * @param empCode the empl code
 	 * @return the optional
 	 */
-	Optional<EmpDeforLaborMonthActCalSet> findById(String cid, String emplCode);
+	Optional<EmpDeforLaborMonthActCalSet> find(String cid, String empCode);
 
 	/**
 	 * Adds the.
@@ -39,5 +39,5 @@ public interface EmpDeforLaborMonthActCalSetRepository {
 	 *
 	 * @param emplLaborDeforSetTemporary the empl labor defor set temporary
 	 */
-	void delete(EmpDeforLaborMonthActCalSet emplLaborDeforSetTemporary);
+	void remove(String cid, String empCode);
 }

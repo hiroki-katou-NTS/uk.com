@@ -22,25 +22,25 @@ public class JpaWkpFlexMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void add(WkpFlexMonthActCalSet companyCalMonthlyFlex) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(WkpFlexMonthActCalSet companyCalMonthlyFlex) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public Optional<WkpFlexMonthActCalSet> findByCidAndWkpId(String cid, String wkpId) {
+	public Optional<WkpFlexMonthActCalSet> find(String cid, String wkpId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(WkpFlexMonthActCalSet wkpCalSetMonthlyActualFlex) {
+	public void remove(String cid, String wkpId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

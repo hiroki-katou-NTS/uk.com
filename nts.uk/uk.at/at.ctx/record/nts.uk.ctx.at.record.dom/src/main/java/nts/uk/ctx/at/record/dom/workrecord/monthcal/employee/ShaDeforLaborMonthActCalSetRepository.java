@@ -14,31 +14,31 @@ public interface ShaDeforLaborMonthActCalSetRepository {
 	/**
 	 * Find emp labor defor set temp by cid and emp id.
 	 *
-	 * @param cid the cid
-	 * @param empId the emp id
+	 * @param cId the cid
+	 * @param sId the emp id
 	 * @return the optional
 	 */
-	Optional<ShaDeforLaborMonthActCalSet> findEmpLaborDeforSetTempByCidAndEmpId(String cid, String empId);
+	Optional<ShaDeforLaborMonthActCalSet> find(String cId, String sId);
 
 	/**
 	 * Adds the.
 	 *
-	 * @param EmpLaborDeforSetTemp the emp labor defor set temp
+	 * @param laborDeforSetTemp the emp labor defor set temp
 	 */
-	void add(ShaDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
+	void add(ShaDeforLaborMonthActCalSet laborDeforSetTemp);
 
 	/**
 	 * Update.
 	 *
-	 * @param EmpLaborDeforSetTemp the emp labor defor set temp
+	 * @param laborDeforSetTemp the emp labor defor set temp
 	 */
-	void update(ShaDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
+	void update(ShaDeforLaborMonthActCalSet laborDeforSetTemp);
 
 	/**
 	 * Delete.
 	 *
-	 * @param EmpLaborDeforSetTemp the emp labor defor set temp
+	 * @param laborDeforSetTemp the emp labor defor set temp
 	 */
-	void delete(ShaDeforLaborMonthActCalSet EmpLaborDeforSetTemp);
+	void remove(ShaDeforLaborMonthActCalSet laborDeforSetTemp);
 
 }

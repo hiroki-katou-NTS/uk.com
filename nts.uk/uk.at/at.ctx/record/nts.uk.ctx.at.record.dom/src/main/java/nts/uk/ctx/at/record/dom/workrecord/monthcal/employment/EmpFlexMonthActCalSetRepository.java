@@ -15,10 +15,10 @@ public interface EmpFlexMonthActCalSetRepository {
 	 * Find by cid and empl code.
 	 *
 	 * @param cid the cid
-	 * @param emplCode the empl code
+	 * @param empCode the empl code
 	 * @return the optional
 	 */
-	Optional<EmpFlexMonthActCalSet> findByCidAndEmplCode(String cid, String emplCode);
+	Optional<EmpFlexMonthActCalSet> find(String cid, String empCode);
 
 	/**
 	 * Adds the.
@@ -39,5 +39,5 @@ public interface EmpFlexMonthActCalSetRepository {
 	 *
 	 * @param EmplCalMonthlyFlex the empl cal monthly flex
 	 */
-	void delete(EmpFlexMonthActCalSet EmplCalMonthlyFlex);
+	void remove(String cid, String empCode);
 }

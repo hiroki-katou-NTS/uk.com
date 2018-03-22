@@ -17,7 +17,7 @@ public interface ComDeforLaborMonthActCalSetRepository {
 	 * @param companyId the company id
 	 * @return the company labor defor set monthly by cid
 	 */
-	Optional<ComDeforLaborMonthActCalSet> getCompanyLaborDeforSetMonthlyByCid(String companyId);
+	Optional<ComDeforLaborMonthActCalSet> find(String companyId);
 
 	/**
 	 * Adds the.
@@ -32,4 +32,11 @@ public interface ComDeforLaborMonthActCalSetRepository {
 	 * @param companyLaborDeforSetMonthly the company labor defor set monthly
 	 */
 	void update(ComDeforLaborMonthActCalSet companyLaborDeforSetMonthly);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 */
+	void remove(String companyId);
 }

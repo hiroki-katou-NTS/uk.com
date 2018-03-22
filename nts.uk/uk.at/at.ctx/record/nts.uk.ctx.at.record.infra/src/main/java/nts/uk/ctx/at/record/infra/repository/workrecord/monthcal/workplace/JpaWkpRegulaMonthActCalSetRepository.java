@@ -32,13 +32,13 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<WkpRegulaMonthActCalSet> findByCidAndWkpId(String cid, String wkpId) {
+	public Optional<WkpRegulaMonthActCalSet> find(String cid, String wkpId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(WkpRegulaMonthActCalSet wkpRegularSetMonthlyActualWork) {
+	public void remove(String cid, String wkpId) {
 		// TODO Auto-generated method stub
 
 	}

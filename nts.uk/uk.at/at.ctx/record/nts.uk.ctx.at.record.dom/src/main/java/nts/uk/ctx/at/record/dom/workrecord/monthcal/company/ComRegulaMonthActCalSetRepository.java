@@ -17,7 +17,7 @@ public interface ComRegulaMonthActCalSetRepository {
 	 * @param companyId the company id
 	 * @return the company labor reg set monthly actual by cid
 	 */
-	Optional<ComRegulaMonthActCalSet> getCompanyLaborRegSetMonthlyActualByCid(String companyId);
+	Optional<ComRegulaMonthActCalSet> find(String companyId);
 
 	/**
 	 * Adds the.
@@ -32,4 +32,11 @@ public interface ComRegulaMonthActCalSetRepository {
 	 * @param companyLaborRegSetMonthlyActual the company labor reg set monthly actual
 	 */
 	void update(ComRegulaMonthActCalSet companyLaborRegSetMonthlyActual);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param cId the c id
+	 */
+	void remove(String cId);
 }

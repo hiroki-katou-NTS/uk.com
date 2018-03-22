@@ -20,8 +20,7 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements ComDeforLaborMonthActCalSetRepository {
 
 	@Override
-	public Optional<ComDeforLaborMonthActCalSet> getCompanyLaborDeforSetMonthlyByCid(
-			String companyId) {
+	public Optional<ComDeforLaborMonthActCalSet> find(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -34,6 +33,12 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 
 	@Override
 	public void update(ComDeforLaborMonthActCalSet companyLaborDeforSetMonthly) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void remove(String companyId) {
 		// TODO Auto-generated method stub
 
 	}

@@ -18,7 +18,7 @@ public interface WkpFlexMonthActCalSetRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpFlexMonthActCalSet> findByCidAndWkpId(String cid, String wkpId);
+	Optional<WkpFlexMonthActCalSet> find(String cid, String wkpId);
 
 	/**
 	 * Adds the.
@@ -39,6 +39,6 @@ public interface WkpFlexMonthActCalSetRepository {
 	 *
 	 * @param wkpCalSetMonthlyActualFlex the wkp cal set monthly actual flex
 	 */
-	void delete(WkpFlexMonthActCalSet wkpCalSetMonthlyActualFlex);
+	void remove(String cid, String wkpId);
 
 }

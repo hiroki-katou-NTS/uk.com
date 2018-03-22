@@ -18,7 +18,7 @@ public interface ShaRegulaMonthActCalSetRepository {
 	 * @param empId the emp id
 	 * @return the optional
 	 */
-	Optional<ShaRegulaMonthActCalSet> findEmpRegSetMonthlyActualByCidAndEmpId(String cid, String empId);
+	Optional<ShaRegulaMonthActCalSet> find(String cid, String sId);
 
 	/**
 	 * Adds the.

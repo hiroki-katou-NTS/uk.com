@@ -20,8 +20,7 @@ public class JpaComRegulaMonthActCalSetRepository extends JpaRepository
 		implements ComRegulaMonthActCalSetRepository {
 
 	@Override
-	public Optional<ComRegulaMonthActCalSet> getCompanyLaborRegSetMonthlyActualByCid(
-			String companyId) {
+	public Optional<ComRegulaMonthActCalSet> find(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -34,6 +33,12 @@ public class JpaComRegulaMonthActCalSetRepository extends JpaRepository
 
 	@Override
 	public void update(ComRegulaMonthActCalSet companyLaborRegSetMonthlyActual) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void remove(String cId) {
 		// TODO Auto-generated method stub
 
 	}

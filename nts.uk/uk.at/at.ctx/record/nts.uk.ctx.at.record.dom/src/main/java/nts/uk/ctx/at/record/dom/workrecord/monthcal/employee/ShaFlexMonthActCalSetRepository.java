@@ -15,10 +15,10 @@ public interface ShaFlexMonthActCalSetRepository {
 	 * Find employee cal set monthly flex by cid and emp id.
 	 *
 	 * @param cid the cid
-	 * @param empId the emp id
+	 * @param sId the emp id
 	 * @return the optional
 	 */
-  Optional<ShaFlexMonthActCalSet> findEmployeeCalSetMonthlyFlexByCidAndEmpId(String cid, String empId);
+  Optional<ShaFlexMonthActCalSet> find(String cid, String sId);
 
 	/**
 	 * Adds the.
@@ -39,5 +39,5 @@ public interface ShaFlexMonthActCalSetRepository {
    *
    * @param empCalSetMonthlyFlex the emp cal set monthly flex
    */
-  void remove(ShaFlexMonthActCalSet empCalSetMonthlyFlex);
+  void remove(String cid, String sId);
 }

@@ -32,14 +32,13 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<ShaFlexMonthActCalSet> findEmployeeCalSetMonthlyFlexByCidAndEmpId(String cid,
-			String empId) {
+	public Optional<ShaFlexMonthActCalSet> find(String cid, String empId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void remove(ShaFlexMonthActCalSet empCalSetMonthlyFlex) {
+	public void remove(String cid, String sId) {
 		// TODO Auto-generated method stub
 
 	}
