@@ -12,24 +12,35 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KRcmtAnnLeaRemain;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KRcmtAnnLeaRemainPK;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemain;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KRcmtAnnLeaRemainPK;
 
 @Stateless
 public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGrantRemDataRepository {
 
 	private String QUERY_WITH_EMP_ID = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.key.employeeId = :employeeId";
+	
+	private String QUERY_WITH_EMP_ID_NOT_EXP = QUERY_WITH_EMP_ID + " AND a.expStatus = 0 ORDER BY a.key.grantDate";
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
-		return entities.stream()
-				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.employeeId, ent.key.grantDate,
-						ent.deadline, ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays,
-						ent.usedMinutes, ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent,
-						ent.perscribedDays, ent.deductedDays, ent.workingDays))
-				.collect(Collectors.toList());
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
+		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID_NOT_EXP, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId).getList();
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
+	private AnnualLeaveGrantRemainingData toDomain(KRcmtAnnLeaRemain ent) {
+		return AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.employeeId, ent.key.grantDate, ent.deadline,
+				ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays, ent.usedMinutes,
+				ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent, ent.perscribedDays,
+				ent.deductedDays, ent.workingDays);
 	}
 
 	@Override
@@ -100,5 +111,6 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		}
 
 	}
+
 
 }

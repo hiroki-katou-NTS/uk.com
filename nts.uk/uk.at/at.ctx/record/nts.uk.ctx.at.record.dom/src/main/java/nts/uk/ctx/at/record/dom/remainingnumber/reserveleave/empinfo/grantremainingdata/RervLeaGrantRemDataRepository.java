@@ -8,6 +8,8 @@ public interface RervLeaGrantRemDataRepository {
 
 	List<ReserveLeaveGrantRemainingData> find(String employeeId);
 	
+	List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId);
+	
 	void add(ReserveLeaveGrantRemainingData data);
 	
 	void update(ReserveLeaveGrantRemainingData data);
