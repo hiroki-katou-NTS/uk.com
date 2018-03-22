@@ -80,7 +80,7 @@ module a2 {
             self.dataSourceOneDay = ko.observableArray([]);
             self.fixTableOptionOneDay = {
                 maxRow: 5,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceOneDay,
@@ -92,7 +92,7 @@ module a2 {
             self.dataSourceMorning = ko.observableArray([]);
             self.fixTableOptionMorning = {
                 maxRow: 5,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceMorning,
@@ -104,7 +104,7 @@ module a2 {
             self.dataSourceAfternoon = ko.observableArray([]);
             self.fixTableOptionAfternoon = {
                 maxRow: 5,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceAfternoon,

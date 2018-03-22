@@ -46,7 +46,7 @@ module a6 {
             var self = this;
             self.fixTableOptionFlow = {
                 maxRow: 5,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,
@@ -56,7 +56,7 @@ module a6 {
             };
             self.fixTableOptionFlex = {
                 maxRow: 10,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceFlex,
@@ -66,7 +66,7 @@ module a6 {
             };
             self.fixTableOptionFixed = {
                 maxRow: 10,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceFixed,
@@ -76,7 +76,7 @@ module a6 {
             };
             self.fixTableOptionDiffTime = {
                 maxRow: 10,
-                minRow: 0,
+                minRow: 1,
                 maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceDiffTime,
