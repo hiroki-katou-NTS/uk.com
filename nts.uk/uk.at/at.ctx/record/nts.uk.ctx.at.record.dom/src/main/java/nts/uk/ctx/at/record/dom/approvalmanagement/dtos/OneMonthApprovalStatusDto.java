@@ -1,7 +1,7 @@
 /**
  * 5:53:25 PM Mar 9, 2018
  */
-package nts.uk.ctx.at.record.app.find.approvalmanagement;
+package nts.uk.ctx.at.record.dom.approvalmanagement.dtos;
 
 import java.util.List;
 
