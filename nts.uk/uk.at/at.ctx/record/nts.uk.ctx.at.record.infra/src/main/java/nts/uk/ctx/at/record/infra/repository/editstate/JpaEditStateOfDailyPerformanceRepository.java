@@ -121,4 +121,10 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				.map(x -> new EditStateOfDailyPerformance(employeeId, id, ymd, EnumAdaptor.valueOf(x.editState, EditStateSetting.class)));
 	}
 
+	@Override
+	public void updateByKeyFlush(List<EditStateOfDailyPerformance> editStates) {
+		this.updateByKey(editStates);
+		this.getEntityManager().flush();
+	}
+
 }

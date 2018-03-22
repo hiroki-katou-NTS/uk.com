@@ -21,4 +21,6 @@ public interface WorkInformationRepository {
 	void updateByKey(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 	
 	void insert(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
+	
+	void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 }
