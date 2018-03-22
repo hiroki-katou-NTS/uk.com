@@ -6,23 +6,39 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.company;
 
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetSetMemento;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComDeforMCalSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Class JpaWorkFixedSetMemento.
  */
-public class JpaComDeforLaborMonthActCalSetSetMemento implements ComDeforLaborMonthActCalSetSetMemento {
+public class JpaComDeforLaborMonthActCalSetSetMemento
+		implements ComDeforLaborMonthActCalSetSetMemento {
+
+	/** The type value. */
+	private KrcstComDeforMCalSet typeValue;
+
+	/**
+	 * Instantiates a new jpa com defor labor month act cal set set memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaComDeforLaborMonthActCalSetSetMemento(KrcstComDeforMCalSet typeValue) {
+		super();
+		this.typeValue = typeValue;
+	}
 
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

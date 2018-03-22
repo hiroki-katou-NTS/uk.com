@@ -22,6 +22,17 @@ public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 	/** The type value. */
 	private T typeValue;
 
+	/**
+	 * Instantiates a new jpa defor work time aggr set get memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaDeforWorkTimeAggrSetGetMemento(T typeValue) {
+		super();
+		this.typeValue = typeValue;
+	}
+
 	@Override
 	public ExcessOutsideTimeSetReg getAggregateTimeSet() {
 		return null;
