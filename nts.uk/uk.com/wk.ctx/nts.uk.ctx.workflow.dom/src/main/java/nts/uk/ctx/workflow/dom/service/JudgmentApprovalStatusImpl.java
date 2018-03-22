@@ -221,28 +221,22 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		}
 		
 		// パラメータのループ中のフェーズ番号をチェックする
-		if(currentPhase.getPhaseOrder()==1) {
+		if(approvalRootState.getListApprovalPhaseState().size()==1) {
+			return true;
+		}
+		if(currentPhase.getPhaseOrder()==1){
 			return true;
 		}
 		
 		// ループ中のフェーズの番号-１から、降順にループする
-		for(int i = currentPhase.getPhaseOrder(); i>0; i--){
-			ApprovalPhaseState approvalPhaseState = null;
-			for(ApprovalPhaseState loopPhase : approvalRootState.getListApprovalPhaseState()){
-				if(loopPhase.getPhaseOrder()==i){
-					approvalPhaseState = loopPhase;
-				}
-			}
-			List<String> approvers = this.getApproverFromPhase(approvalPhaseState);
-			if(approvers.isEmpty()){
-				continue;
-			}
-			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-				return true;
-			}
-			return false;
+		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().filter(x -> x.getPhaseOrder()<currentPhase.getPhaseOrder())
+				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed())
+				.findFirst().get();
+		if(lowerPhase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	
