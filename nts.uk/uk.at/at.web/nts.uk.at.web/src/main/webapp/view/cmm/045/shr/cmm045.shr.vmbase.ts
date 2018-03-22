@@ -77,11 +77,11 @@ module cmm045.shr {
             displayAppStatus: string;
             checkAtr: boolean;
             version: number;
-            checkTimecolor: boolean;
+            checkTimecolor: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string, appContent: string,
                 inputDate: string, appStatus: string, displayAppStatus: string,
-                checkAtr: boolean, version: number, checkTimecolor: boolean){
+                checkAtr: boolean, version: number, checkTimecolor: number){
                 this.appId = appId;
                 this.appType = appType;
 //                this.check = appType == 0 ? true : false;
@@ -112,9 +112,9 @@ module cmm045.shr {
             phaseStatus: string;
             //事前、事後の後ろに#CMM045_101(※)を追加
             checkAddNote: boolean;
-            checkTimecolor: boolean;
+            checkTimecolor: number;
             constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
-            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: boolean)
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: number)
             {
                 this.appID = appID;
                 this.appType = appType;
@@ -506,7 +506,27 @@ module cmm045.shr {
             specialVaca: string;
             // 積立年休名称  - 4
             yearResig: string;
-        }            
+        }
+        export class CellState {
+            rowId: number;
+            columnKey: string;
+            state: Array<any>
+            constructor(rowId: any, columnKey: string, state: Array<any>) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.state = state;
+            }
+        }      
+        export class TextColor {
+            rowId: number;
+            columnKey: string;
+            color: string;
+            constructor(rowId: any, columnKey: string, color: string) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.color = color;
+            } 
+        }      
         export class ProcessHandler {
             /**
              * sort by appType and appDate
