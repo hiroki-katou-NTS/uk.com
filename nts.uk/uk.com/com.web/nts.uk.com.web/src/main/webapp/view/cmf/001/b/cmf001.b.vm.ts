@@ -47,7 +47,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                             let item = new model.StandardAcceptanceConditionSetting(result.systemType, result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
-                            $("#B3_4").focus();
+                            if (nts.uk.util.isNullOrUndefined(self.transitData))
+                                $("#B3_4").focus();
+                            else
+                                $("#B4_21").focus();
                             _.defer(() => {nts.uk.ui.errors.clearAll()});
                         }
                         if (rs && rs.length) {
@@ -189,6 +192,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         registerCondition() {
             let self = this;
             let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().systemType(), self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine(), self.selectedStandardImportSetting().deleteExistDataMethod(), self.selectedStandardImportSetting().categoryId());
+            if (data.deleteExistData() ==  model.NOT_USE_ATR.NOT_USE) {
+                data.deleteExistDataMethod(null);
+            }
             data.action(self.screenMode());
             let command: any = ko.toJS(data);
             $(".nts-input").trigger("validate");
