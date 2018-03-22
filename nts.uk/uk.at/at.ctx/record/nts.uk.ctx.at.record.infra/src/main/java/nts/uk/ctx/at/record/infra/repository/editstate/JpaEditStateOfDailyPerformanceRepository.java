@@ -123,7 +123,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void updateByKeyFlush(List<EditStateOfDailyPerformance> editStates) {
-		this.updateByKey(editStates);
+		this.addAndUpdate(editStates);
 		this.getEntityManager().flush();
 	}
 
