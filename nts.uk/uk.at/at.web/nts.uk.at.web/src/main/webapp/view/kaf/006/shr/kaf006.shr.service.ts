@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf006.shr.service {
         updateOvertime: "at/request/application/overtime/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
-        findByAppID: "at/request/application/overtime/findByAppID",
+        findByAppID: "at/request/application/appforleave/getByAppID",
         getRecordWork: "at/request/application/overtime/getRecordWork"
     }
     /** Get TitleMenu */

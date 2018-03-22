@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
-        valueChecked : KnockoutObservable<boolean> = ko.observable(false);
+        displayEndDateFlg : KnockoutObservable<boolean> = ko.observable(false);
         //current Data
 //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
@@ -72,11 +72,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let self = this;
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            //startPage 005a AFTER start 000_A
+            //startPage 006a AFTER start 000_A
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
-                    $("#fixed-table").ntsFixedTable({ height: 120 });
+                
                 })    
             })
             
@@ -331,7 +331,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 startTime1: self.timeStart1(),
                 endTime1: self.timeEnd1(),
                 startTime2: self.timeStart2(),
-                endTime2: self.timeEnd2()
+                endTime2: self.timeEnd2(),
+                displayEndDateFlg: self.displayEndDateFlg()
              };
              service.createAbsence(paramInsert).done((data) =>{
                   dialog.info({ messageId: "Msg_15" }).then(function() {         

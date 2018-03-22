@@ -26,7 +26,7 @@ public class FactoryApplicationImpl implements IFactoryApplication{
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), GeneralDateTime.now(), applicantSID,
 				new AppReason(Strings.EMPTY), applicationDate, new AppReason(applicationReason),
 				appType, employeeID, Optional.of(startDate),
-				Optional.of(endDate), ReflectionInformation_New.firstCreate());
+				Optional.ofNullable(endDate), ReflectionInformation_New.firstCreate());
 		return app;
 	}
 	
