@@ -180,7 +180,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 				 							 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(timeSpan).get()))
 				 							 .collect(Collectors.toList());
 		/*深夜*/
-		val duplicateMidNightSpan = overTimeHourSet.getTimezone().getDuplicatedWith(midNightTimeSheet.getTimeSpan());
+		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSpan());
 		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = Optional.empty();
 		if(duplicateMidNightSpan.isPresent()) {
 			duplicatemidNightTimeSheet = Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));
@@ -426,11 +426,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
 		//調整時間を減算(元に戻す)
 		this.calcrange.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes());
-		return new AttendanceTime(calcBreakTime.valueAsMinutes()
-								 +calcUnionGoOutTime.valueAsMinutes()
-								 +calcPrivateGoOutTime.valueAsMinutes()
-								 +calcCareTime.valueAsMinutes()
-								 +calcChildTime.valueAsMinutes());
+		return new AttendanceTime(this.calcrange.lengthAsMinutes()
+								 -calcBreakTime.valueAsMinutes()
+								 -calcUnionGoOutTime.valueAsMinutes()
+								 -calcPrivateGoOutTime.valueAsMinutes()
+								 -calcCareTime.valueAsMinutes()
+								 -calcChildTime.valueAsMinutes());
 	}
 	
 	/**
@@ -441,10 +442,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
 		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
 		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
 			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
 			}
 		}
 		return dedTotalTime;

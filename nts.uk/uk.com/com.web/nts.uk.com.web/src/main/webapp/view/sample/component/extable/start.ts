@@ -181,15 +181,15 @@ __viewContext.ready(function () {
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00"
+            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
             key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
             key: "_3", width: "100px", handlerType: "Input", dataType: "duration/duration", required: true, min: "-12:00", max: "71:59"
         }, {
-            key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_4", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_5", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr"
         }, {
             key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
@@ -424,7 +424,7 @@ __viewContext.ready(function () {
             updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "shortName",
+            viewMode: "time",
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -443,7 +443,6 @@ __viewContext.ready(function () {
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
         .create();
-    
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },

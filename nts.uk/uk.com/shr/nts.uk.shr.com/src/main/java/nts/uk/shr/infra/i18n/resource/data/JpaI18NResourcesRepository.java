@@ -116,6 +116,7 @@ public class JpaI18NResourcesRepository extends JpaRepository implements I18NRes
 			entity.pk = pk;
 			entity.content = newContent;
 			entity.resourceType = I18NResourceType.ITEM_NAME.value;
+			this.commandProxy().insert(entity);
 		}
 		
 	}

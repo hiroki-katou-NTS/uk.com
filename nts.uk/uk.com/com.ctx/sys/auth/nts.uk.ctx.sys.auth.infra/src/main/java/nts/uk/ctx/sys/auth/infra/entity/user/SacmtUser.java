@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.infra.entity.user;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,6 +12,7 @@ import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -49,7 +51,8 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     /** The expiration date. */
     /** 有効期限 */
     @Column(name = "EXPIRATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = GeneralDateToDBConverter.class)
+    @Temporal(TemporalType.DATE)
     public GeneralDate expirationDate;
     
     /** The special user. */

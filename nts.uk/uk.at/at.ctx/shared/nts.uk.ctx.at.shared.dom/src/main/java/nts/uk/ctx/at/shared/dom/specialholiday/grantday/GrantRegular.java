@@ -63,7 +63,7 @@ public class GrantRegular extends DomainObject {
 	 * @param grantRegularMethod
 	 * @return
 	 */
-	public static GrantRegular createFromJavaType(String companyId, String specialHolidayCode,
+	public static GrantRegular createFromJavaType(String companyId, int specialHolidayCode,
 			GeneralDate grantStartDate, Integer months, Integer years, int grantRegularMethod) {
 		return new GrantRegular(companyId, new SpecialHolidayCode(specialHolidayCode), grantStartDate,
 				months != null ? new Months(months) : null, 

@@ -5,6 +5,7 @@ package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
+import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -33,8 +35,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataD
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -71,6 +75,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private ValidatorDataDaily validatorDataDaily;
+	
+	@Inject
+	private PersonalTightCommandFacade personalTightCommandFacade;
 	
 	@POST
 	@Path("startScreen")
@@ -116,8 +123,11 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("addAndUpdate")
-	public List<DPItemValue> addAndUpdate(List<DPItemValue> itemValues) {
-		itemValues = itemValues.stream().map(x -> {
+	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		//insert sign
+		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
+		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
 				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(x.getTypeGroup(),
@@ -127,44 +137,58 @@ public class DailyPerformanceCorrectionWebService {
 			} else if (x.getTypeGroup() == TypeLink.WORKPLACE.value) {
 				CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(x.getTypeGroup(),
 						new ParamDialog(x.getDate(), x.getValue()));
-				x.setValue(codeName == null ? null : codeName.getId());
+				item.setValue(codeName == null ? null : codeName.getId());
 				return item;
 			}
 			return item;
 		}).collect(Collectors.toList());
-		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = itemValues.stream()
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = itemValueChild.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 		// check error care item
 		List<DPItemValue> itemErrors = new ArrayList<>();
+		List<DPItemValue> itemInputErors = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
-			List<ItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
-					.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
-							y.getItemId()))
-					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
+			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
+					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
 					.collect(Collectors.toList());
-			List<ItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
-			if (!items.isEmpty())
-				itemErrors.addAll(items.stream()
-						.map(z -> new DPItemValue(x.getValue().get(0).getRowId(), x.getKey().getLeft(), x.getKey().getRight(), z.getItemId()))
-						.collect(Collectors.toList()));
+			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+			if (!items.isEmpty()){
+				itemErrors.addAll(items);
+			}else{
+				//List<DPItemValue> itemInputs = validatorDataDaily.checkCareInputData(itemCovert);
+				//itemInputErors.addAll(itemInputs);
+			}
+			
 		});
 		if (itemErrors.isEmpty()) {
-			mapSidDate.entrySet().forEach(x -> {
-				List<ItemValue> itemCovert = x.getValue().stream()
-						.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
-								y.getItemId()))
-						.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
-						.collect(Collectors.toList());
-				if (!itemCovert.isEmpty())
-					dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getValue().get(0).getEmployeeId(),
-							x.getValue().get(0).getDate(), itemCovert));
-			});
-			// insert cell edit
-			dailyModifyCommandFacade.handleEditCell(itemValues);
-			return Collections.emptyList();
+			if (itemInputErors.isEmpty()) {
+				mapSidDate.entrySet().forEach(x -> {
+					List<ItemValue> itemCovert = x.getValue().stream()
+							.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()),
+									y.getLayoutCode(), y.getItemId()))
+							.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
+							.collect(Collectors.toList());
+					if (!itemCovert.isEmpty())
+						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getValue().get(0).getEmployeeId(),
+								x.getValue().get(0).getDate(), itemCovert));
+				});
+				// insert cell edit
+				dailyModifyCommandFacade.handleEditCell(itemValueChild);
+			}else{
+				//resultError.put(1, itemInputErors);
+				return resultError;
+			}
 		}else{
-			return itemErrors;
+			resultError.put(0, itemErrors);
+			return resultError;
 		}
+		return Collections.emptyMap();
+	}
+	
+	@POST
+	@Path("insertClosure")
+	public void insertClosure(EmpAndDate empAndDate){
+		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

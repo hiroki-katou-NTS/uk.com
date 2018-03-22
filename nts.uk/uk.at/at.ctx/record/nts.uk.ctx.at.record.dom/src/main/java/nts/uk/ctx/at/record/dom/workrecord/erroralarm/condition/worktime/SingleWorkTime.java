@@ -50,10 +50,14 @@ public class SingleWorkTime extends WorkTimeCondition {
 
 	@Override
 	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+		if(workInfo.getScheduleWorkInformation().getWorkTimeCode() != null && 
+				!workInfo.getScheduleWorkInformation().getWorkTimeCode().equals(workInfo.getRecordWorkInformation().getWorkTimeCode())){
+			return false;
+		}
 		if (this.targetWorkTime != null && isUse()) {
 			return this.targetWorkTime.contains(workInfo.getRecordWorkInformation().getWorkTimeCode());
 		}
-		return false;
+		return true;
 
 	}
 

@@ -163,7 +163,7 @@ public abstract class CalculationTimeSheet {
 	 * @param conditionAtr　条件
 	 * @return　控除項目の時間帯
 	 */
-	private List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
+	public List<TimeSheetOfDeductionItem> getDedTimeSheetByAtr(DeductionAtr dedAtr, ConditionAtr conditionAtr) {
 		val returnList = (dedAtr.isDeduction())?this.deductionTimeSheet:this.recordedTimeSheet;
 		switch(conditionAtr) {
 			case BREAK:
@@ -351,11 +351,14 @@ public abstract class CalculationTimeSheet {
 	 * @return 切り出したl控除時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> recreateDeductionItemBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore, DeductionAtr dedAtr){
+		
 		List<TimeSheetOfDeductionItem> deductionList = new ArrayList<>();
 		if(dedAtr.isDeduction()) {
+			
 			deductionList = this.deductionTimeSheet;
 		}
 		else {
+			
 			deductionList = this.recordedTimeSheet;
 		}
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
@@ -364,6 +367,7 @@ public abstract class CalculationTimeSheet {
 			
 			if(deductionItem.contains(baseTime)) {
 				returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
+				returnList.add(deductionItem);
 			}
 			else if(deductionItem.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				returnList.add(deductionItem);
@@ -385,7 +389,8 @@ public abstract class CalculationTimeSheet {
 	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
-				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				//return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				return midNightTimeSheet;
 			}
 			else if(midNightTimeSheet.get().calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				return midNightTimeSheet;
@@ -530,4 +535,22 @@ public abstract class CalculationTimeSheet {
 			return new AttendanceTime(0);
 		}
 	}
+	
+//	/**
+//	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)
+//	 * @param dedAtr
+//	 * @param conAtr
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getDedTimeSheetByDedAtr(DeductionAtr dedAtr,ConditionAtr conAtr){
+//		switch(dedAtr) {
+//		case Appropriate:
+//			return this.recordedTimeSheet.stream().filter(tc -> tc.getBreakAtr().get().isBreak()).collect(Collectors.toList());
+//		case Deduction:
+//			return this.deductionTimeSheet.stream().filter(tc -> tc.getBreakAtr().get().isBreak()).collect(Collectors.toList());
+//		default:
+//			throw new RuntimeException("unknown DedAtr:" + dedAtr);
+//		}
+//		
+//	}
 }

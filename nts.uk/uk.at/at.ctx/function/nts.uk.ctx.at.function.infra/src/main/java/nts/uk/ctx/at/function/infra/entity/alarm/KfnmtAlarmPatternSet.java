@@ -14,10 +14,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import alarmPatternRepo.AlarmPatternSettingSimple;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;

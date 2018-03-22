@@ -18,7 +18,7 @@ module nts.uk.com.view.cas012.b.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'userID', key: 'userID', width: 100, hidden: true },
                 { headerText: nts.uk.resource.getText("CAS012_25"), key: 'loginID', width: 120, columnCssClass: "colStyle" },
-                { headerText: nts.uk.resource.getText("CAS012_26"), key: 'userName', width: 230 }
+                { headerText: nts.uk.resource.getText("CAS012_26"), key: 'userName', width: 230, columnCssClass: "colStyle" }
 
             ]);
             self.selectUserID = ko.observable('');
@@ -42,8 +42,11 @@ module nts.uk.com.view.cas012.b.viewmodel {
         decision() {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("No message param 218")]});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS012_24")]});
                 return;
+                
+                
+                
             }
 
             var selectUser: any = _.find(self.dataSource(), (item: any) => {

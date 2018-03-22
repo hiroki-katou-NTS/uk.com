@@ -117,6 +117,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let dfd = $.Deferred<any>();
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
+            block.invisible();
             service.getAlarmByUser().done((alarmData)=>{
                 
                 self.alarmCombobox(alarmData);
@@ -132,6 +133,8 @@ module nts.uk.at.view.kal001.a.model {
                         dfd.resolve();
                     }).fail((errorCheckTime) =>{
                         alertError(errorCheckTime);
+                    }).always(()=>{
+                        block.clear();    
                     });
                                         
                 }else{
@@ -141,6 +144,7 @@ module nts.uk.at.view.kal001.a.model {
                 
             }).fail((errorAlarm)=>{
                  alertError(errorAlarm);
+                 block.clear();
             });
             
 
@@ -153,8 +157,12 @@ module nts.uk.at.view.kal001.a.model {
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));
-                    });    
+                        }));                        
+                    }).fail((errorTime)=>{
+                        alertError(errorTime);
+                    });
+                    
+                    self.checkAll(false);
             });
         }
         
@@ -193,15 +201,34 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm)=>{
+            if(self.currentAlarmCode()=='' ) return;
+          
+            if(listSelectedEmpployee.length==0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
+                return;
+            }
+            block.invisible();
+            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
+                if(dataExtractAlarm.extracting) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
+                    return;
+                }
+                if(dataExtractAlarm.nullData){
+                      nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
+                      return;
+                }
+                
+                nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
+                modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                    
+                });
             }).fail((errorExtractAlarm)=>{
                 alertError(errorExtractAlarm);
+            }).always(()=>{
+                block.clear();    
             });
-            nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
-            modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-                
-            });
+
         }
 
     }

@@ -257,7 +257,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @return
 	 */
 	public AttendanceTime calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,
-														DeductionTimeSheet dedTimeSheet,
+														Optional<DeductionTimeSheet> dedTimeSheet,
 														TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 														WorkingSystem workingSystem,
 														AddSettingOfRegularWork addSettingOfRegularWork,
@@ -272,15 +272,21 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 														boolean leaveEarly  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 														) {
 		AttendanceTime actualTime = calcActualTime();
-		val dedAllTime = dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, this.getTimeSheet().timeSpan()).valueAsMinutes();
-		if(dedAllTime > 0) {
-			actualTime = actualTime.minusMinutes(dedAllTime);
+		AttendanceTime dedAllTime = new AttendanceTime(0);
+		if(dedTimeSheet.isPresent()) {
+			dedAllTime = dedTimeSheet.get().calcDeductionAllTimeSheet(DeductionAtr.Deduction, this.getTimeSheet().timeSpan());
+		}
+		if(dedAllTime.greaterThan(0)) {
+			actualTime = actualTime.minusMinutes(dedAllTime.valueAsMinutes());
 		}
 		AttendanceTime workTime = calcWorkTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		
 		//控除時間の内、時間休暇で相殺した時間を計算
-		DeductionOffSetTime timeVacationOffSetTime = dedTimeSheet.calcTotalDeductionOffSetTime(lateTimeOfDaily,lateTimeSheet,leaveEarlyTimeOfDaily,leaveEarlyTimeSheet);
+		DeductionOffSetTime timeVacationOffSetTime = (dedTimeSheet.isPresent())
+													  ?dedTimeSheet.get().calcTotalDeductionOffSetTime(lateTimeOfDaily,lateTimeSheet,leaveEarlyTimeOfDaily,leaveEarlyTimeSheet)
+													  //控除時間帯が存在する前提で動いていたため、控除時間帯が無かったらオールゼロで修正
+												      :new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
 		//時間休暇使用の残時間を計算 
 		timevacationUseTimeOfDaily.subtractionDeductionOffSetTime(timeVacationOffSetTime);
 		//就業時間に加算する時間休暇を就業時間へ加算     

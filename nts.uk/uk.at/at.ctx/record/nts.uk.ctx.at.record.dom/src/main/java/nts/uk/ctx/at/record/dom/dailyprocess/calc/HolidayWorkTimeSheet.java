@@ -64,10 +64,10 @@ public class HolidayWorkTimeSheet{
 		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
 		
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:workHolidayTime) {
-			AttendanceTime calcTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting); 
+			AttendanceTime calcTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Appropriate); 
 			HolidayWorkFrameTime getListItem = calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v() - 1);
 			getListItem.addHolidayTime(calcTime);
-			calcHolidayTimeWorkTimeList.set(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1, getListItem);
+			calcHolidayTimeWorkTimeList.set(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v().intValue() - 1, getListItem);
 		}
 		return calcHolidayTimeWorkTimeList;
 	}
@@ -90,7 +90,7 @@ public class HolidayWorkTimeSheet{
 		AttendanceTime totalTime = new AttendanceTime(0);
 		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(HolidayWorkFrameTimeSheetForCalc frameTime : this.workHolidayTime) {
-			totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}

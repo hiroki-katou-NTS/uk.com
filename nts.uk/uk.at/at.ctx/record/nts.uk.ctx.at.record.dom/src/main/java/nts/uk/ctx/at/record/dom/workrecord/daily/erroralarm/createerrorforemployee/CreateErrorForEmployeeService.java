@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.daily.erroralarm.createerrorforemployee;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,12 +20,12 @@ public class CreateErrorForEmployeeService {
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 	
-	public ValueExtractAlarmWR createErrorForEmployeeService(String workplaceID,String companyID,String employeeID,GeneralDate date,String errorCode,List<Integer> listTimeItem) {
+	public Optional<ValueExtractAlarmWR> createErrorForEmployeeService(String workplaceID,String companyID,String employeeID,GeneralDate date,String errorCode,List<Integer> listTimeItem) {
 		//ドメインモデル「社員の日別実績エラー一覧」の事前条件をチェックする
 		boolean check  = employeeDailyPerErrorRepository.checkExistErrorCode(employeeID, date, errorCode);
 		//エラーあり(có error)
 		if(check)
-			return null;
+			return Optional.empty();
 		//社員の日別実績エラーを作成する(tạo dữ liệu 社員の日別実績エラー)
 		EmployeeDailyPerError  employeeDailyPerError = new EmployeeDailyPerError(
 				companyID, employeeID, date,new ErrorAlarmWorkRecordCode(errorCode), listTimeItem, 0);
@@ -39,6 +40,6 @@ public class CreateErrorForEmployeeService {
 				null,
 				null
 				);
-		return valueExtractAlarmWR;
+		return Optional.ofNullable(valueExtractAlarmWR);
 	}
 }

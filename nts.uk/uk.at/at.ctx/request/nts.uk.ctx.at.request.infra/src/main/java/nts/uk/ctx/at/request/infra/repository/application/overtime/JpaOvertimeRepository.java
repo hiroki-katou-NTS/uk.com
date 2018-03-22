@@ -83,14 +83,14 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				.map(item -> {
 					KrqdtOvertimeInputPK pk =  new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo(),item.getTimeItemTypeAtr().value);
-					return new KrqdtOvertimeInput(pk, item.getStartTime().v(), item.getEndTime().v(),
+					return new KrqdtOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() == null ? null : item.getEndTime().v(),
 							item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
 
 		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(),
-				domain.getOverTimeAtr().value, domain.getWorkTypeCode().v(), domain.getSiftCode().v(),
+				domain.getOverTimeAtr().value, domain.getWorkTypeCode() == null? null :  domain.getWorkTypeCode().v(), domain.getSiftCode() == null ? null : domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
 				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
 				domain.getOverTimeShiftNight(), overtimeInputs);
@@ -102,5 +102,23 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				entity.getSiftCode(), entity.getWorkClockFrom1(), entity.getWorkClockTo1(), entity.getWorkClockFrom2(),
 				entity.getWorkClockTo2(), entity.getDivergenceReason(), entity.getFlexExcessTime(),
 				entity.getOvertimeShiftNight());
+	}
+
+	/**
+	 * get Application Over Time and Frame
+	 * @author hoatt
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public Optional<AppOverTime> getAppOvertimeFrame(String companyID, String appID) {
+		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID), KrqdtAppOvertime.class);
+		if(!opKrqdtAppOvertime.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
+		return Optional.of(appOverTime);
 	}
 }

@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.Column;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
@@ -37,6 +38,9 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSetPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
@@ -89,6 +93,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
@@ -115,6 +120,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_FORMAT_DP_CORRECTION;
 
+	private final static String SEL_FORMAT_DP_CORRECTION_MULTI;
+	
 	private final static String SEL_CLOSURE_IDS;
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE;
@@ -192,6 +199,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final String SELECT_ALL_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c"
 			+ " WHERE c.kmkmtDivergenceReasonPK.companyId = :companyId";
+	
+	private final String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
+			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
+	        + " AND c.krcdtIdentificationStatusPK.employeeId IN :sids"
+	        + " AND c.krcdtIdentificationStatusPK.processingYmd IN :processingYmds";
 
 	static {
 		StringBuilder builderString = new StringBuilder();		
@@ -212,6 +224,18 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND b.krcmtBusinessTypeDailyPK.businessTypeCode IN :lstBusinessTypeCode ");
 		builderString.append(" ORDER BY b.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
 		SEL_FORMAT_DP_CORRECTION = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtBusinessTypeDaily b INNER JOIN");
+		builderString.append(" KrcstBusinessTypeSorted s");
+		builderString.append(" WHERE s.krcstBusinessTypeSortedPK.companyId = :companyId");
+		builderString.append(
+				" AND b.krcmtBusinessTypeDailyPK.attendanceItemId = s.krcstBusinessTypeSortedPK.attendanceItemId");
+		builderString.append(" AND b.krcmtBusinessTypeDailyPK.companyId = :companyId");
+		builderString.append(" AND b.krcmtBusinessTypeDailyPK.businessTypeCode IN :lstBusinessTypeCode ");
+		builderString.append(" ORDER BY s.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
+		SEL_FORMAT_DP_CORRECTION_MULTI = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT NEW ");
@@ -594,14 +618,27 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType) {
-		return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION, KrcmtBusinessTypeDaily.class)
-				.setParameter("companyId", AppContexts.user().companyId())
-				.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
-				.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
-						f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
-						String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo), f.order,
-						f.columnWidth != null ? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
-				.distinct().collect(Collectors.toList());
+		if (lstBusinessType.size() > 1) {
+			return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION_MULTI, KrcmtBusinessTypeDaily.class)
+					.setParameter("companyId", AppContexts.user().companyId())
+					.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
+					.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
+							f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
+							String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo),
+							f.order, f.columnWidth != null
+									? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
+					.distinct().collect(Collectors.toList());
+		} else {
+			return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION, KrcmtBusinessTypeDaily.class)
+					.setParameter("companyId", AppContexts.user().companyId())
+					.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
+					.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
+							f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
+							String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo),
+							f.order, f.columnWidth != null
+									? f.columnWidth.intValue() > 0 ? f.columnWidth.intValue() : 100 : 100))
+					.distinct().collect(Collectors.toList());
+		}
 	}
 
 	@Override
@@ -967,7 +1004,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId) {
 		Optional<KrcstDailyRecOpeFun> krcstDailyRecOpeFunOpt = this.queryProxy().find(companyId.toString(),
 				KrcstDailyRecOpeFun.class);
-		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty() : Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr, krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError));
+		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty()
+				: Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr,
+						krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError,
+						krcstDailyRecOpeFunOpt.get().confirmBySupervisorAtr,
+						krcstDailyRecOpeFunOpt.get().supervisorConfirmWhenError));
 	}
 
 	@Override
@@ -1007,6 +1048,26 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			}).collect(Collectors.toList());
 		} else {
 			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId) {
+		return this.queryProxy().find(new KrcmtIdentityProceSetPK(comapnyId), KrcmtIdentityProceSet.class)
+				.map(x -> new IdentityProcessUseSetDto(x.useConfirmByYourself == 1 ? true : false, x.useIdentityOfMonth == 1 ? true : false));
+	}
+
+	@Override
+	public Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates) {
+		if (!sids.isEmpty()) {
+			return this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
+					.setParameter("companyID", companyId).setParameter("sids", sids)
+					.setParameter("processingYmds", dates.toListDate())
+					.getList(x -> x.krcdtIdentificationStatusPK.employeeId + "|"
+							+ x.krcdtIdentificationStatusPK.processingYmd)
+					.stream().collect(Collectors.toMap(y -> y, y -> true));
+		} else {
+			return Collections.emptyMap();
 		}
 	}
 

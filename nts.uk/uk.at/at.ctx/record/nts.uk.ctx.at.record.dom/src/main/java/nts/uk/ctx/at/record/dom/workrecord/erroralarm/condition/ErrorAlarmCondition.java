@@ -4,12 +4,15 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 
 /**
  * @author hungnm
@@ -252,6 +256,25 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	
 	public void setContinuousPeriod(int continuousPeriod){
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
+	}
+	
+	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Function<List<Integer>, List<Integer>> getValueFromItemIds){
+		/** 勤務種類をチェックする */
+		// TODO: uncomment
+		// if (condition.getWorkTypeCondition().isUse() &&
+		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
+		if (true && !this.workTypeCondition.checkWorkType(workInfo)) {
+			return false;
+		}
+		/** 就業時間帯をチェックする */
+		// TODO: uncomment
+		// if (condition.getWorkTimeCondition().isUse() &&
+		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
+		if (true && !this.workTimeCondition.checkWorkTime(workInfo)) {
+			return false;
+		}
+		/** 勤怠項目をチェックする */
+		return this.atdItemCondition.check(getValueFromItemIds);
 	}
 	
 	/**

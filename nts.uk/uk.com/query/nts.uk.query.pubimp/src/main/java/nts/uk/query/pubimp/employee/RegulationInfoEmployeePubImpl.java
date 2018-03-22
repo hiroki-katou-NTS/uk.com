@@ -82,7 +82,6 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 			.sortOrderNo(query.getSortOrderNo())
 			.workplaceCodes(query.getWorkplaceCodes())
 			.systemType(query.getSystemType())
-			.roleId(query.getRoleId())
 			.build();
 	}
 }
