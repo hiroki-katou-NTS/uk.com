@@ -64,7 +64,7 @@
 						</div>
 					</div>
 					<div class="valign-center control-group" style="display: inline-block; padding-left: 10px; vertical-align: text-bottom">
-						<button tabindex="7" data-bind="click: refreshCsvData">#{i18n.getText('CMF001_145')}</button>
+						<button tabindex="7" data-bind="click: refreshCsvData, enable: !nts.uk.text.isNullOrEmpty(fileId())">#{i18n.getText('CMF001_145')}</button>
 					</div>
 				</div>
 				<div class="fixed-flex-layout">
@@ -139,7 +139,7 @@
 									<td><span class="label" data-bind="text: acceptItemName"></span></td>
 									<td>
 										<span class="limited-label" style="width: 142px;vertical-align: middle;" data-bind="text: csvItemName"></span>
-										<button tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}">#{i18n.getText('CMF001_167')}</button>
+										<button tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
 									</td>
 									<td><span class="label" data-bind="text: sampleData"></span></td>
 									<td>
