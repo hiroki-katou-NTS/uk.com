@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 
 /**
  * The Class RemoveWindowAccountCommandHandler.
@@ -22,7 +22,7 @@ public class RemoveWindowAccountCommandHandler extends CommandHandler<RemoveWind
 
 	/** The window account repository. */
 	@Inject
-	private WindowAccountRepository windowAccountRepository;
+	private WindowsAccountRepository windowAccountRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -37,13 +37,13 @@ public class RemoveWindowAccountCommandHandler extends CommandHandler<RemoveWind
 		// Get command
 		RemoveWindowAccountCommand command = context.getCommand();
 
-		List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserIdDelete());
+		Optional<WindowsAccount> optWindowAcc = windowAccountRepository.findByUserId(command.getUserIdDelete());
 
-		// remove
-		for (WindowAccount wd : listWindowAcc) {
-			windowAccountRepository.remove(wd.getUserId(), wd.getNo());
+		if(optWindowAcc.isPresent()) {
+			optWindowAcc.get().getAccountInfos().forEach(wd -> {
+				windowAccountRepository.remove(optWindowAcc.get().getUserId(), wd.getNo());
+			});
 		}
-
 	}
 
 }
