@@ -21,7 +21,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }" tabindex="1">振込元銀行の登録へ</a>
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }" tabindex="1">#{i18n.getText('KMK011_48')}</a>
 
 				<!--B1_2: Button Registration -->
 				<button id="btnSave"
@@ -118,7 +118,13 @@
 										enable: enableUse}" />
 							</td>
 						</tr>
-
+					</table>
+						<hr></hr>
+					<table>
+						<colgroup>
+							<col width="135px" />
+							<col width="*" />
+						</colgroup>
 						<tr class="row">
 							<td>
 								<!-- B3_12: Label -->
