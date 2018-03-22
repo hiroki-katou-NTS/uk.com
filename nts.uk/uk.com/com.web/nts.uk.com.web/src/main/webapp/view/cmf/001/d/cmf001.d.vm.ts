@@ -451,7 +451,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                 screenCondition = new model.AcceptScreenConditionSetting(rs.acceptItemName, sc.selectComparisonCondition,
                                                             sc.timeConditionValue2, sc.timeConditionValue1, 
                                                             sc.timeMomentConditionValue2, sc.timeMomentConditionValue1,
-                                                            sc.dateConditionValue2, sc.dateConditionValue1, 
+                                                            moment.utc(sc.dateConditionValue2, "YYYY/MM/DD").toISOString(), moment.utc(sc.dateConditionValue1, "YYYY/MM/DD").toISOString(), 
                                                             sc.characterConditionValue2, sc.characterConditionValue1, 
                                                             sc.numberConditionValue2, sc.numberConditionValue1,
                                                             rs.conditionCode, rs.acceptItemNumber);

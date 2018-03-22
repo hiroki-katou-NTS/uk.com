@@ -105,13 +105,13 @@ module nts.uk.com.view.cmf001.l.viewmodel {
                     break;
             }
             if (!nts.uk.ui.errors.hasError()) {
-                 self.acceptScreenConditionSetting().receiptItemName(self.receiptItemName());
+                self.acceptScreenConditionSetting().receiptItemName(self.receiptItemName());
                 self.acceptScreenConditionSetting().numberConditionValue1(self.numberConditionValue1());
                 self.acceptScreenConditionSetting().numberConditionValue2(self.numberConditionValue2());
                 self.acceptScreenConditionSetting().characterConditionValue1(self.characterConditionValue1());
                 self.acceptScreenConditionSetting().characterConditionValue2(self.characterConditionValue2());
-                self.acceptScreenConditionSetting().dateConditionValue1(self.dateConditionValue1());
-                self.acceptScreenConditionSetting().dateConditionValue2(self.dateConditionValue2());
+                self.acceptScreenConditionSetting().dateConditionValue1(moment.utc(self.dateConditionValue1(), "YYYY/MM/DD").toISOString());
+                self.acceptScreenConditionSetting().dateConditionValue2(moment.utc(self.dateConditionValue2(), "YYYY/MM/DD").toISOString());
                 self.acceptScreenConditionSetting().timeConditionValue1(self.timeConditionValue1());
                 self.acceptScreenConditionSetting().timeConditionValue2(self.timeConditionValue2());
                 self.acceptScreenConditionSetting().timeMomentConditionValue1(self.timeMomentConditionValue1());
