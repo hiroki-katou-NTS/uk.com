@@ -147,7 +147,7 @@ module nts.uk.com.view.cmf001.q {
                 // update mode
                 self.isCheckMode(false);
                 self.isStop(false);
-                
+                $('#BTN_STOP').focus();
                 let command: CSVManager = new CSVManager(
                     self.totalRecord(),
                     self.currentRecord(),
@@ -170,7 +170,6 @@ module nts.uk.com.view.cmf001.q {
              */
             private updateState() {
                 let self = this;
-                
                 // Set execution state to processing
                 if (self.isCheckMode() == true) {
                     self.executionState(getListProcessing()[0].value);
