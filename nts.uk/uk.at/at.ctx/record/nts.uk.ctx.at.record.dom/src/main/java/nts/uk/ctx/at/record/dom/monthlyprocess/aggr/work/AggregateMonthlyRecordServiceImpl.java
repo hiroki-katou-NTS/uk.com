@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -108,7 +110,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			
 			// 月の計算
 			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY, this.repositories);
+			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY,
+					Optional.empty(), Optional.empty(), this.repositories);
 			
 			// 36協定時間の集計
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();

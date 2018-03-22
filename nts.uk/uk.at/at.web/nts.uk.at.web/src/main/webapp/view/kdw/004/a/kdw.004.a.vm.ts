@@ -3,7 +3,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
     var SUNDAY_BACKGROUND_COLOR = "#FABF8F";
     var SATURDAY_TEXT_COLOR = "#0031FF";
     var SUNDAY_TEXT_COLOR = "#FF0000";
-    var TEMPLATE_EMPLOYEE_NAME_HEADER = "<a href='#' data-bind=\"click: clickNameJumpToKdw003.bind($data, '${employeeId}')\">${employeeName}</a>";
+    var TEMPLATE_EMPLOYEE_NAME_HEADER = "<span class='limited-label' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind=\"click: clickNameJumpToKdw003.bind($data, '${employeeId}')\">${employeeName}</span>";
     enum ApprovalStatus {
         Approved = 0,
         UnApproved = 1,
@@ -102,9 +102,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             initParam.transitionDesScreen = 'KDW004';
             let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.DATE, self.datePeriod().startDate, self.datePeriod().endDate, self.lstData.map((data) => { return data.employeeId; }));
             extractionParam.dateTarget = moment(date).format("YYYY/MM/DD");
-            nts.uk.ui.windows.setShared('DPCorrectionInitParam', initParam);
-            nts.uk.ui.windows.setShared('DPCorrectionExtractionParam', extractionParam);
-            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml");
+            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
 
         clickStatusJumpToKdw003(employeeId) {
@@ -113,9 +111,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             initParam.transitionDesScreen = 'KDW004';
             let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
             extractionParam.individualTarget = employeeId;
-            nts.uk.ui.windows.setShared('DPCorrectionInitParam', initParam);
-            nts.uk.ui.windows.setShared('DPCorrectionExtractionParam', extractionParam);
-            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml");
+            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
 
         clickNameJumpToKdw003(employeeId) {
@@ -124,9 +120,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             initParam.transitionDesScreen = 'KDW004';
             let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
             extractionParam.individualTarget = employeeId;
-            nts.uk.ui.windows.setShared('DPCorrectionInitParam', initParam);
-            nts.uk.ui.windows.setShared('DPCorrectionExtractionParam', extractionParam);
-            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml");
+            nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
 
         convertToGridData(lstEmployee: Array<ApprovalEmployee>): Array<any> {
@@ -149,8 +143,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             $("#approvalSttGrid").igGrid({
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
-                width: 1295,
-                height: 506,
+                width: 1245,
+                height: 498,
                 autofitLastColumn: false,
                 autoGenerateColumns: false,
                 alternateRowStyles: false,
@@ -166,7 +160,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 16
+                        pageSize: 15
                     }
                 ]
             });
@@ -177,7 +171,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             self.lstColumns = [
                 { key: "employeeId", width: "115px", headerText: nts.uk.resource.getText('KDW004_7'), dataType: "string", hidden: true },
                 { key: "employeeCode", width: "115px", headerText: nts.uk.resource.getText('KDW004_13'), dataType: "string" },
-                { key: "employeeName", width: "250px", headerText: nts.uk.resource.getText('KDW004_14'), dataType: "string", template: TEMPLATE_EMPLOYEE_NAME_HEADER }
+                { key: "employeeName", width: "200px", headerText: nts.uk.resource.getText('KDW004_14'), dataType: "string", template: TEMPLATE_EMPLOYEE_NAME_HEADER }
             ];
             self.lstHeaderColor = [];
             let index = moment(self.datePeriod().startDate);
