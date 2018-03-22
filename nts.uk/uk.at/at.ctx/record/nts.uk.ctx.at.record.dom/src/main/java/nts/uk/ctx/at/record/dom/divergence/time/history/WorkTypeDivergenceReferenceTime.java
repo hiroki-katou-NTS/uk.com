@@ -45,6 +45,7 @@ public class WorkTypeDivergenceReferenceTime extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public WorkTypeDivergenceReferenceTime(WorkTypeDivergenceReferenceTimeGetMemento memento) {
+		this.divergenceTimeNo = memento.getDivergenceTimeNo();
 		this.cId = memento.getCompanyId();
 		this.notUseAtr = memento.getNotUseAtr();
 		this.workTypeCode = memento.getWorkTypeCode();
