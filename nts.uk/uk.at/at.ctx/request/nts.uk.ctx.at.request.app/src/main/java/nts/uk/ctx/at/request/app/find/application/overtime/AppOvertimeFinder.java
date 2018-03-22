@@ -787,10 +787,10 @@ public class AppOvertimeFinder {
 				result.setReferencePanelFlg(true);
 			}
 			// hien thi don xin truoc
-			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
-				result.setAllPreAppPanelFlg(false);
-			}else{
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
 				result.setAllPreAppPanelFlg(true);
+			}else{
+				result.setAllPreAppPanelFlg(false);
 			}
 		}
 		if(result.isAllPreAppPanelFlg()){
