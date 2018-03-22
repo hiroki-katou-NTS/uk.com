@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
  * 残業申請: 事前申請処理
@@ -23,5 +24,5 @@ public interface PreOvertimeReflectService {
 	 * @param dataData
 	 * @return
 	 */
-	public IntegrationOfDaily calculateForAppReflect(IntegrationOfDaily dailyData, String employeeId, GeneralDate dataData);
+	public IntegrationOfDaily calculateForAppReflect(WorkInfoOfDailyPerformance workInfo, String employeeId, GeneralDate dataData);
 }
