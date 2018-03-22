@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnL
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.TimeAnnualLeaveMax;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KrcmtAnnLeaMax;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcmtAnnLeaMax;
 
 @Stateless
 public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxDataRepository {

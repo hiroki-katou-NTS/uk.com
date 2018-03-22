@@ -13,6 +13,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         count: KnockoutObservable<number>;
         lengthOfServiceData: any;
         grantHdData: any;
+        checkDataExisted: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -30,6 +31,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             } else {
                 self.displayDateSelected = ko.observable(true);
             }
+            
+            self.checkDataExisted = ko.observable(false);
             
             if(self.conditionData.useCondition == true){
                 var style = $('<style>table td.allow-pay { display: table-cell; }</style>');
@@ -64,19 +67,23 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 for(var i = 0; i < self.lengthOfServiceData.length; i++){
                     var item : IItem = {
                         grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
-                        conditionNo: self.grantHdData[i].conditionNo,
+                        conditionNo: self.grantHdData.length > 0 ? self.grantHdData[i].conditionNo : "",
                         yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
                         lengthOfServiceYears: self.lengthOfServiceData[i].year,
                         lengthOfServiceMonths: self.lengthOfServiceData[i].month,
-                        grantDays: self.grantHdData[i].grantDays,
-                        limitedTimeHdDays: self.grantHdData[i].limitTimeHd,
-                        limitedHalfHdCnt: self.grantHdData[i].limitDayYear,
+                        grantDays: self.grantHdData.length > 0 ? self.grantHdData[i].grantDays : "",
+                        limitedTimeHdDays: self.grantHdData.length > 0 ? self.grantHdData[i].limitTimeHd : "",
+                        limitedHalfHdCnt: self.grantHdData.length > 0 ? self.grantHdData[i].limitDayYear : "",
                         grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
                         grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
                         grantDate: ""
                     };
                     
                     combinedData.push(new Item(item));
+                }
+                
+                if(combinedData.length > 0) {
+                    self.checkDataExisted(true);
                 }
                 
                 self.bindData(combinedData);
@@ -236,10 +243,22 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     
                     self.bindData(results);
                 }).fail(function(error){
-                    nts.uk.ui.dialog.alertError({messageId: error.messageId});    
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                        if(error.messageId === "Msg_266") {
+                        
+                        } else if(error.messageId === "Msg_268") {
+                            
+                        } else if(error.messageId === "Msg_269") {
+                            
+                        } else if(error.messageId === "Msg_270") {
+                            $('#b2_1').focus();
+                        }
+                    }); 
                 });
             } else {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_272" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_272" }).then(() => {
+                    $('#reference-date').focus();
+                });
             }
         }
         
@@ -281,7 +300,17 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error){
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });    
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                    if(error.messageId === "Msg_266") {
+                    
+                    } else if(error.messageId === "Msg_268") {
+                        
+                    } else if(error.messageId === "Msg_269") {
+                        
+                    } else if(error.messageId === "Msg_270") {
+                        $('#b2_1').focus();
+                    }
+                }); 
             });
         }
         
@@ -289,8 +318,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          * Close dialog.
          */
         cancel() {
-            var calcelData = nts.uk.ui.windows.getShared("KMF003_CANCEL_DATA");
-            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", calcelData);
+            var self = this;
+            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", self.checkDataExisted());
             nts.uk.ui.windows.close();
         }
         
@@ -313,8 +342,10 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             if (!checkMonths) {
                 self.count(1);
                 self.items()[index].grantSimultaneity(false);   
-                nts.uk.ui.dialog.alert({ messageId: "Msg_267" });             
-                return;
+                nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
+                    $('.year-input').focus();
+                    return;
+                });
             }
             
             if (value) {

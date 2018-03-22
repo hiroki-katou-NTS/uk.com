@@ -127,6 +127,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         errorReference: KnockoutObservable<any> = ko.observable(true);
         activationSourceRefer: KnockoutObservable<any> = ko.observable(null);
         tighten: KnockoutObservable<any> = ko.observable(null);
+        //button A2_6
+        showTighProcess: KnockoutObservable<any> = ko.observable(true);
 
         constructor() {
             var self = this;
@@ -364,6 +366,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                 self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
                 self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
+                self.showTighProcess(data.identityProcessDto.useConfirmByYourself);
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
@@ -931,6 +934,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.showPrincipal(data.showPrincipal);
                     self.showSupervisor(data.showSupervisor);
+                    self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if ( self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -1177,6 +1181,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                 });
             }
+        }
+        
+        tighProcess(){
+            let self = this;
+            var dataSource = $("#dpGrid").igGrid("option", "dataSource");
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            let dataRowEnd = dataSource[dataSource.length - 1];
+            service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dataDetail }).done((data) => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.block.clear();
+            });
+            nts.uk.ui.block.clear();
         }
         btnSetting_Click() {
             var container = $("#setting-content");

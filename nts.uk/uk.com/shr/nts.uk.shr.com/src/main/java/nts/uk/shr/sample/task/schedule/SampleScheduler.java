@@ -1,5 +1,7 @@
 package nts.uk.shr.sample.task.schedule;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -22,7 +24,7 @@ public class SampleScheduler {
 		scheduletimeData.put("TEST", "1234567890");
 		
 		// http://www.quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger.html
-		val cron = new CronSchedule("0/5 * * * * ?");
+		val cron = new CronSchedule(Arrays.asList("0/5 * * * * ?"));
 		
 		val options = UkJobScheduleOptions.builder(SampleScheduledJob.class, cron)
 				.userData(scheduletimeData)

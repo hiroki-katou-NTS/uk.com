@@ -9,6 +9,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -107,7 +108,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			
 			// 月の計算
 			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-			monthlyCalculation.aggregate(procPeriod, this.repositories);
+			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY, this.repositories);
 			
 			// 36協定時間の集計
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();

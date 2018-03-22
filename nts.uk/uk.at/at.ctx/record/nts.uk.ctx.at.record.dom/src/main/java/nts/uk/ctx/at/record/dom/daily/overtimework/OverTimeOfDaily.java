@@ -325,4 +325,10 @@ public class OverTimeOfDaily {
 		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(calcTime));
 	}
 	
+	/**
+	 * 残業時間実績超過
+	 */
+	public void overRecord() {
+		
+	}
 }
