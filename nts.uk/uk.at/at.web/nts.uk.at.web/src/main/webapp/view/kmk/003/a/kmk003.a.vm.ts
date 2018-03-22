@@ -1049,7 +1049,7 @@ module nts.uk.at.view.kmk003.a {
                 super();
                 let self = this;
                 this.selectedWorktimeCode = selectedWorktimeCode;
-                this.isAbolish(false); // initial value in specs = clear
+                this.isAbolish(true); // initial value in specs = clear, update default show value, remove A3_6
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {

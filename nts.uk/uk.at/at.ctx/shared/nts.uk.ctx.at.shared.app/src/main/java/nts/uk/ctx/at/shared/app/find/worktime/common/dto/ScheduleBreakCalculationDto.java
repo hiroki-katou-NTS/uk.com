@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculationSetMeme
 public class ScheduleBreakCalculationDto implements ScheduleBreakCalculationSetMemento {
 
 	/** The is refer rest time. */
-	private boolean isReferRestTime;
+	private Boolean isReferRestTime;
 
 	/** The is calc from schedule. */
-	private boolean isCalcFromSchedule;
+	private Boolean isCalcFromSchedule;
 
 	/*
 	 * (non-Javadoc)
