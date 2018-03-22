@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 public enum LeaveExpirationStatus {
 	
 	// 使用可能
-	AVAILABLE(1),
+	AVAILABLE(0),
 	
 	// 期限切れ
-	EXPIRED(0);
+	EXPIRED(1);
 	
 	public final int value;
 	

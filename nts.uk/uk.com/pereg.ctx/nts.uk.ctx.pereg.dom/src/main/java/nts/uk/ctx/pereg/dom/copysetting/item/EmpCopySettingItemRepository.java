@@ -11,5 +11,7 @@ public interface EmpCopySettingItemRepository {
 	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
 
 	List<EmpCopySettingItem> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
+	
+	List<EmpCopySettingItem> getPerInfoItemByCtgIdNo812(String perInfoCategoryId, String companyId, String contractCd);
 
 }

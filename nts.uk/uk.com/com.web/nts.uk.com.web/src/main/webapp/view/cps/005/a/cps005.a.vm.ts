@@ -112,8 +112,8 @@ module nts.uk.com.view.cps005.a {
                             confirm({ messageId: "Msg_213" }).ifYes(() => {
                                 let params = {
                                     categoryId: self.currentData().perInfoCtgSelectCode(),
-                                    currentCtg: ko.toJS(self.currentData().currentCtgSelected())
-
+                                    currentCtg: ko.toJS(self.currentData().currentCtgSelected()),
+                                    isAdd: ko.toJS(self.currentData().currentCtgSelected().addItemObjCls())
                                 };
                                 setShared('CPS005_A', params);
                                 modal("/view/cps/005/b/index.xhtml").onClosed(() => {
@@ -152,7 +152,8 @@ module nts.uk.com.view.cps005.a {
                 let self = this,
                     params = {
                         categoryId: self.currentData().perInfoCtgSelectCode(),
-                        currentCtg: ko.toJS(self.currentData().currentCtgSelected())
+                        currentCtg: ko.toJS(self.currentData().currentCtgSelected()),
+                        isAdd: ko.toJS(self.currentData().currentCtgSelected().addItemObjCls())
 
                     };
                 block.invisible();
@@ -234,6 +235,8 @@ module nts.uk.com.view.cps005.a {
         historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(true);
         fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
         isChangeAbleCtgType: KnockoutObservable<boolean> = ko.observable(true);
+        initValMasterObjCls: KnockoutObservable<boolean> = ko.observable(true);
+        addItemObjCls: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoCtg) {
             let self = this;
             if (data) {
@@ -244,6 +247,8 @@ module nts.uk.com.view.cps005.a {
                 self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? getText("CPS005_54") : getText("CPS005_53");
                 self.categoryType = data.categoryType;
                 self.personEmployeeType = data.personEmployeeType;
+                self.initValMasterObjCls(data.initValMasterObjCls)
+                self.addItemObjCls(data.addItemObjCls);
                 switch (self.categoryType) {
                     case 1:
                         self.categoryTypeName = getText("CPS005_55");
@@ -337,6 +342,8 @@ module nts.uk.com.view.cps005.a {
         personEmployeeType: number;
         itemNameList?: Array<string>;
         isChangeAbleCtgType: boolean;
+        initValMasterObjCls: boolean;
+        addItemObjCls: boolean;
     }
 }
 

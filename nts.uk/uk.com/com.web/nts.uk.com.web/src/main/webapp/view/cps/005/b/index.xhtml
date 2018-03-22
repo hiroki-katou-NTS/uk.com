@@ -31,7 +31,7 @@
 
 			<div id="functions-area">
 				<div id="functions-area-content">
-					<button tabindex="1" data-bind="click : register">#{i18n.getText('CPS005_10')}</button>
+					<button tabindex="1" data-bind="click : register, enable: currentCtg.isAdd">#{i18n.getText('CPS005_10')}</button>
 					<button tabindex="2" class="proceed"
 						data-bind="click : addUpdateData, enable: isEnableButtonProceed()">#{i18n.getText('CPS005_11')}</button>
 					<button tabindex="3" class="danger"

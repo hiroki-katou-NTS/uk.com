@@ -59,13 +59,12 @@ public interface PerInfoItemDefRepositoty {
 
 	// Sonnlb Code
 
-	// vinhpx start
 	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
+	
+	int countPerInfoItemDefInCategoryNo812(String perInfoCategoryId, String companyId);
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
-
-	// vinhpx end
 
 	/**
 	 * getNotFixedPerInfoItemDefByCategoryId

@@ -18,5 +18,14 @@ public class SpecialLeaveOverNumber {
 	public DayNumberOfExeeded dayNumberOfExeeded;
 	// 時間
 	public Optional<TimeOfExeeded> timeOfExeeded;
+	
+	private SpecialLeaveOverNumber(int days, Integer minutes) {
+		this.dayNumberOfExeeded = new DayNumberOfExeeded(days);
+		this.timeOfExeeded = minutes != null ? Optional.of(new TimeOfExeeded(minutes)) : Optional.empty();
+	}
+
+	public static SpecialLeaveOverNumber createFromJavaType(int days, Integer minutes) {
+		return new SpecialLeaveOverNumber(days, minutes);
+	}
 
 }

@@ -24,16 +24,27 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	
 	private String DELETE_QUERY = "DELETE FROM KRcmtAnnLeaRemain a WHERE  a.employeeId = :employeeId and a.grantDate = :grantDate";
 	
+	private String QUERY_WITH_EMP_ID_NOT_EXP = QUERY_WITH_EMP_ID + " AND a.expStatus = 0 ORDER BY a.key.grantDate";
+
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
-		return entities.stream()
-				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.annLeavID, ent.CID, ent.employeeId, ent.grantDate,
-						ent.deadline, ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays,
-						ent.usedMinutes, ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent,
-						ent.perscribedDays, ent.deductedDays, ent.workingDays))
-				.collect(Collectors.toList());
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
+		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID_NOT_EXP, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId).getList();
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+
+	private AnnualLeaveGrantRemainingData toDomain(KRcmtAnnLeaRemain ent) {
+		return AnnualLeaveGrantRemainingData.createFromJavaType(ent.key.annLeavID, ent.employeeId,ent.CID, ent.grantDate, ent.deadline,
+				ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays, ent.usedMinutes,
+				ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent, ent.perscribedDays,
+				ent.deductedDays, ent.workingDays);
 	}
 
 	@Override
@@ -118,5 +129,6 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		.setParameter("employeeId", employeeId)
 		.setParameter("grantDate", grantDate);
 	}
+
 
 }
