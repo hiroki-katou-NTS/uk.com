@@ -8,13 +8,13 @@ import lombok.Setter;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfoGetMemento;
 
 /**
  * The Class WindowAccountDto.
  */
 @Setter
-public class WindowAccountDto implements WindowAccountGetMemento {
+public class WindowAccountDto implements WindowsAccountInfoGetMemento {
 
 	// ユーザID
 	/** The user id. */
@@ -38,18 +38,6 @@ public class WindowAccountDto implements WindowAccountGetMemento {
 
 	/** The is change. */
 	private Boolean isChange;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento#getUserId
-	 * ()
-	 */
-	@Override
-	public String getUserId() {
-		return this.userId;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -103,5 +91,14 @@ public class WindowAccountDto implements WindowAccountGetMemento {
 	 */
 	public Boolean getIsChange() {
 		return this.isChange;
+	}
+	
+	/**
+	 * Gets the user id.
+	 *
+	 * @return the user id
+	 */
+	public String getUserId() {
+		return this.userId;
 	}
 }
