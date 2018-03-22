@@ -427,8 +427,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		String hostname = AppContexts.windowsAccount().getDomain();
 
 		// ドメインモデル「Windowsアカウント情報」を取得する
-		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from
-		// 「Windowsアカウント」
+		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from 「Windowsアカウント」
 		Optional<WindowAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username,
 				hostname);
 

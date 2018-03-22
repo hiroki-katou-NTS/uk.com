@@ -11,10 +11,18 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstPasswordPolicy;
 
+/**
+ * The Class JpaPasswordPolicyRepository.
+ */
 @Stateless
 public class JpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
+	
+	/** The select by contract code. */
 	private final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstPasswordPolicy c WHERE c.contractCode = :contractCode";
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#getPasswordPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
+	 */
 	@Override
 	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCode) {
 		Optional<SgwstPasswordPolicy> sgwstPasswordPolicyOptional = this.queryProxy()
@@ -26,6 +34,9 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 		return Optional.empty();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#updatePasswordPolicy(nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy)
+	 */
 	@Override
 	public void updatePasswordPolicy(PasswordPolicy passwordPolicy) {
 		Optional<SgwstPasswordPolicy> sgwstPasswordPolicyOPtional = this.queryProxy()
@@ -67,6 +78,12 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 		}
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param sgwstPasswordPolicy the sgwst password policy
+	 * @return the password policy
+	 */
 	private PasswordPolicy toDomain(SgwstPasswordPolicy sgwstPasswordPolicy) {
 		return PasswordPolicy.createFromJavaType(sgwstPasswordPolicy.contractCode,
 				sgwstPasswordPolicy.notificationPasswordChange.intValue(),
@@ -78,6 +95,12 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 				sgwstPasswordPolicy.alphabetDigit.intValue());
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param passwordPolicy the password policy
+	 * @return the sgwst password policy
+	 */
 	private SgwstPasswordPolicy toEntity(PasswordPolicy passwordPolicy) {
 		return new SgwstPasswordPolicy(passwordPolicy.getContractCode().v(),
 				passwordPolicy.getNotificationPasswordChange().v(),

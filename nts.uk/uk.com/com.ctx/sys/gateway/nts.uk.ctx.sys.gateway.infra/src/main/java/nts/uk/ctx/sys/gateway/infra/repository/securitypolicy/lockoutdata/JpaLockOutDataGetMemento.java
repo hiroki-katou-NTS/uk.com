@@ -1,15 +1,15 @@
-package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.logoutdata;
+package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.lockoutdata;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.logoutdata.SgwmtLogoutData;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
 
 public class JpaLockOutDataGetMemento implements LockOutDataGetMemento {
 
-	public JpaLockOutDataGetMemento(SgwmtLogoutData sgwmtLogoutData) {
+	public JpaLockOutDataGetMemento(SgwmtLockoutData sgwmtLogoutData) {
 		// TODO Auto-generated constructor stub
 	}
 

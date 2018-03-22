@@ -11,10 +11,18 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstAccountLockPolicy;
 
+/**
+ * The Class JpaAccountLockPolicy.
+ */
 @Stateless
 public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPolicyRepository {
+	
+	/** The select by contract code. */
 	private final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstAccountLockPolicy c WHERE c.contractCode = :contractCode";
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository#getAccountLockPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
+	 */
 	@Override
 	public Optional<AccountLockPolicy> getAccountLockPolicy(ContractCode contractCode) {
 		Optional<SgwstAccountLockPolicy> sgwstAccountLockPolicyOptional = this.queryProxy()
@@ -26,6 +34,9 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 		return Optional.empty();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository#updateAccountLockPolicy(nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy)
+	 */
 	@Override
 	public void updateAccountLockPolicy(AccountLockPolicy accountLockPolicy) {
 		Optional<SgwstAccountLockPolicy> sgwstAccountLockPolicyOptional = this.queryProxy()
@@ -55,12 +66,24 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 		}
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param sgwstAccountLockPolicy the sgwst account lock policy
+	 * @return the account lock policy
+	 */
 	private AccountLockPolicy toDomain(SgwstAccountLockPolicy sgwstAccountLockPolicy) {
 		return AccountLockPolicy.createFromJavaType(sgwstAccountLockPolicy.contractCode,
 				sgwstAccountLockPolicy.errorCount.intValue(), sgwstAccountLockPolicy.lockInterval.intValue(),
 				sgwstAccountLockPolicy.lockOutMessage, sgwstAccountLockPolicy.isUse.intValue() == 1 ? true : false);
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param accountLockPolicy the account lock policy
+	 * @return the sgwst account lock policy
+	 */
 	private SgwstAccountLockPolicy toEntity(AccountLockPolicy accountLockPolicy) {
 		return new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(),
 				accountLockPolicy.getErrorCount().v(), new BigDecimal(accountLockPolicy.getLockInterval().v()),
