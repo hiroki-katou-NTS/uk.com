@@ -89,7 +89,11 @@ module nts.uk.com.view.cmf001.q {
 
                 // ドメインモデル「外部受入実行結果ログ」に登録する
                 let command: IExacExeResultLog = self.exacExeResultLog;
-                service.addErrorLog(command);
+                service.addErrorLog(command).done(function(data){
+                    console.log("PROCESS ID:" + data);
+                    self.processId(data);
+                    
+                });
                 self.executionCheck();
                 dfd.resolve();
                 return dfd.promise();
@@ -101,7 +105,8 @@ module nts.uk.com.view.cmf001.q {
                 let self = this;
                 nts.uk.ui.windows.setShared('CMF001-R', {
                     // add after test
-                    imexProcessId: self.codCode(),
+                    imexProcessId: self.processId(),
+                    code: self.codCode(),
                     nameSetting: self.codName()
                 }, true);
                 
@@ -329,5 +334,9 @@ module nts.uk.com.view.cmf001.q {
             self.key = key;
             self.value = value;
         }
+    }
+    
+    interface IExeResultLogCommandResult {
+        processID: string;
     }
 }
