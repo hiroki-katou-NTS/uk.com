@@ -290,6 +290,7 @@ module nts.uk.pr.view.kmf001.c {
                 $('#max-remaining-day').ntsError('clear');
                 $('#number-year-retain').ntsError('clear');
                 $('#time-max-day-company').ntsError('clear');
+                $('#yearLy-number-days').ntsError('clear');
             }
             
             // find enumeration ManageDistinct
