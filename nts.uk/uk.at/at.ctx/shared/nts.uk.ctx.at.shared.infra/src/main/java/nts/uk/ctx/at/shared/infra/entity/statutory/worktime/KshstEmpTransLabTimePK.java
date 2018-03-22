@@ -24,6 +24,8 @@ import lombok.Setter;
 @Embeddable
 public class KshstEmpTransLabTimePK implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The cid. */
 	@Basic(optional = false)
 	@NotNull
@@ -54,7 +56,6 @@ public class KshstEmpTransLabTimePK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
 		if (!(object instanceof KshstEmpTransLabTimePK)) {
 			return false;

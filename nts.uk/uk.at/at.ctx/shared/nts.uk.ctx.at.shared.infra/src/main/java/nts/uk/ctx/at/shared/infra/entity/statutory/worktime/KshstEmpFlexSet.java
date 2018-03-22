@@ -19,18 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstFlexS
  * The Class KshstEmpFlexSet.
  */
 
-/**
- * Sets the kshst emp flex set PK.
- *
- * @param kshstEmpFlexSetPK the new kshst emp flex set PK
- */
 @Setter
-
-/**
- * Gets the kshst emp flex set PK.
- *
- * @return the kshst emp flex set PK
- */
 @Getter
 @Entity
 @Table(name = "KSHST_EMP_FLEX_SET")

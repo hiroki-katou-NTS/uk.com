@@ -6,23 +6,14 @@
 package nts.uk.ctx.at.shared.infra.entity.statutory.worktime;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstDeforLarSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstNormalSet;
 
 /**
  * The Class KshstEmpNormalSet.
@@ -32,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstDefor
 @Getter
 @Entity
 @Table(name = "KSHST_EMP_NORMAL_SET")
-public class KshstEmpNormalSet extends KshstDeforLarSet implements Serializable {
+public class KshstEmpNormalSet extends KshstNormalSet implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -60,7 +51,6 @@ public class KshstEmpNormalSet extends KshstDeforLarSet implements Serializable 
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
 		if (!(object instanceof KshstEmpNormalSet)) {
 			return false;

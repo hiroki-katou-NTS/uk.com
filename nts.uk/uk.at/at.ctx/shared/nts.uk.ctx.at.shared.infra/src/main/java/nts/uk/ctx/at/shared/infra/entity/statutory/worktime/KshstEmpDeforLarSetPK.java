@@ -34,6 +34,8 @@ import lombok.Setter;
 @Embeddable
 public class KshstEmpDeforLarSetPK implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The cid. */
 	@Size(min = 1, max = 17)
 	@Column(name = "CID")
@@ -65,7 +67,6 @@ public class KshstEmpDeforLarSetPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
 		if (!(object instanceof KshstEmpDeforLarSetPK)) {
 			return false;

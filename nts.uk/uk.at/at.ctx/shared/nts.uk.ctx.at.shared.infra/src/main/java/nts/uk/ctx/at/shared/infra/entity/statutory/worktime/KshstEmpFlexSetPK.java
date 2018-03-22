@@ -23,6 +23,8 @@ import lombok.Setter;
 @Embeddable
 public class KshstEmpFlexSetPK implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The cid. */
 	@Size(min = 1, max = 17)
 	@Column(name = "CID")

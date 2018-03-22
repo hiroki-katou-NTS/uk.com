@@ -12,74 +12,73 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshstShaRegLaborTimePK.
  */
+
+/**
+ * Sets the sid.
+ *
+ * @param sid the new sid
+ */
+@Setter
+
+/**
+ * Gets the sid.
+ *
+ * @return the sid
+ */
+@Getter
 @Embeddable
 public class KshstShaRegLaborTimePK implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
-    @Column(name = "SID")
-    private String sid;
+	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+	
+	/** The cid. */
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 17)
+	@Column(name = "CID")
+	private String cid;
+	
+	/** The sid. */
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 36)
+	@Column(name = "SID")
+	private String sid;
 
-    public KshstShaRegLaborTimePK() {
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (sid != null ? sid.hashCode() : 0);
+		return hash;
+	}
 
-    public KshstShaRegLaborTimePK(String cid, String sid) {
-        this.cid = cid;
-        this.sid = sid;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KshstShaRegLaborTimePK)) {
+			return false;
+		}
+		KshstShaRegLaborTimePK other = (KshstShaRegLaborTimePK) object;
+		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
+			return false;
+		}
+		return true;
+	}
 
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public String getSid() {
-        return sid;
-    }
-
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (sid != null ? sid.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstShaRegLaborTimePK)) {
-            return false;
-        }
-        KshstShaRegLaborTimePK other = (KshstShaRegLaborTimePK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entities.KshstShaRegLaborTimePK[ cid=" + cid + ", sid=" + sid + " ]";
-    }
-    
 }
