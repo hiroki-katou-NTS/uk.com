@@ -25,4 +25,9 @@ public class OverTimeFrame {
 	 */
 	@Setter
 	private Integer applicationTime;
+	
+	/**開始時間*/
+	private Integer startTime;
+	/**完了時間*/
+	private Integer endTime;
 }

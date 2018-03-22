@@ -1,14 +1,13 @@
-package nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordSameChangePubFlg;
 @AllArgsConstructor
-@Setter
 @Getter
-public class PreOvertimePubParameter {
+@Setter
+public class PreOvertimePara {
 	/**社員ID	 */
 	private String employeeId;
 	/** 年月日	 */
@@ -40,7 +39,7 @@ public class PreOvertimePubParameter {
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameChangePubFlg scheAndRecordSameChangeFlg;
+	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
 	/**
 	 * 予定出退勤反映フラグ
 	 * true: する
@@ -50,5 +49,5 @@ public class PreOvertimePubParameter {
 	/**
 	 * 残業申請
 	 */
-	private OvertimeAppPubParameter overtimePara;
+	private OvertimeAppParameter overtimePara;
 }

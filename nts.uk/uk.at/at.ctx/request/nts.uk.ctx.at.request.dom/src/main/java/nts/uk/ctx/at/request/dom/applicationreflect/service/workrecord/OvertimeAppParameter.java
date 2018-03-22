@@ -1,24 +1,24 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
+package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 @AllArgsConstructor
-@Getter
 @Setter
+@Getter
 public class OvertimeAppParameter {
 	/**
 	 * 反映状態
 	 */
-	private ReflectedStateRecord reflectedState;
+	private ReflectedState_New reflectedState;
 	/**
 	 * 反映不可理由
 	 */
-	private ReasonNotReflectRecord reasonNotReflect;
+	private ReasonNotReflectDaily_New reasonNotReflect;
 	/**
 	 * 勤務種類コード
 	 */
@@ -45,7 +45,7 @@ public class OvertimeAppParameter {
 	/**
 	 * 残業申請．残業時間（10枠）
 	 */
-	private Map<Integer, Integer> mapOvertimeFrame;
+	Map<Integer, Integer> mapOvertimeFrame;
 	
 	/**
 	 * 就業時間外深夜時間
@@ -55,5 +55,4 @@ public class OvertimeAppParameter {
 	 * フレックス超過時間
 	 */
 	private Integer flexExessTime;
-
 }

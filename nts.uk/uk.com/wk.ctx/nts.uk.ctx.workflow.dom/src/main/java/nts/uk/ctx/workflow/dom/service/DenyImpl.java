@@ -103,7 +103,12 @@ public class DenyImpl implements DenyService {
 			return canDenyFlag;
 		}
 		for(int i = order; i >= 0 ; i--){
-			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(5-i);
+			ApprovalPhaseState approvalPhaseState = null;
+			for(ApprovalPhaseState loopPhase : approvalRootState.getListApprovalPhaseState()){
+				if(loopPhase.getPhaseOrder()==i){
+					approvalPhaseState = loopPhase;
+				}
+			}
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listApprover)){
 				continue;
