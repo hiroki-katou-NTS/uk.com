@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 public class AddSpecialLeaCommand {
 
 	private String sid;
-	
+
 	private String specialLeaId;
 
 	private int specialLeaCode;
@@ -38,7 +38,7 @@ public class AddSpecialLeaCommand {
 	/**
 	 * 付与日数
 	 */
-	private int numberOfDayGrant;
+	private int numberDayGrant;
 
 	/**
 	 * 付与時間
@@ -48,27 +48,29 @@ public class AddSpecialLeaCommand {
 	/**
 	 * 使用日数
 	 */
-	private double numberOfDayUse;
+	private double numberDayUse;
 
-	private double numberOfDayUseToLose;
 	/**
 	 * 使用時間
 	 */
 	private int timeUse;
 
+	
+	private double useSavingDays;
+
 	/**
 	 * 上限超過消滅日数
 	 */
-	private int numberOfExceededDays;
+	private int numberDaysOver;
 	/**
 	 * 上限超過消滅時間
 	 */
-	private int timeExceeded;
+	private int timeOver;
 
 	/**
 	 * 残日数
 	 */
-	private double numberOfDayRemain;
+	private double numberDayRemain;
 
 	/**
 	 * 残時間

@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Table(name = "KRCMT_SPECIAL_LEAVE_REAM")
+@Table(name = "KRCMT_SPECIAL_LEAVE_REMA")
 public class KrcmtSpecialLeaveReam extends UkJpaEntity{
 	
 	@Embedded
@@ -31,32 +31,32 @@ public class KrcmtSpecialLeaveReam extends UkJpaEntity{
 	@Column(name = "REGISTRATION_TYPE")
     public int registerType;
 	
-	@Column(name = "NUMBER_OF_DAYS_GRANT")
-    public int numberOfDayGrant;
+	@Column(name = "NUMBER_DAYS_GRANT")
+    public int numberDayGrant;
 	
 	@Column(name = "TIME_GRANT")
     public int timeGrant;
 	
-	@Column(name = "NUMBER_OF_DAYS_REMAIN")
-    public double numberOfDayRemain;
+	@Column(name = "NUMBER_DAYS_REMAIN")
+    public double numberDayRemain;
 	
 	@Column(name = "TIME_REMAIN")
     public int timeRemain;
 	
-	@Column(name = "NUMBER_OF_DAYS_USE")
-    public double numberOfDayUse;
+	@Column(name = "NUMBER_DAYS_USE")
+    public double numberDayUse;
 
 	@Column(name = "TIME_USE")
     public int timeUse;
 	
-	@Column(name = "NUMBER_OF_DAYS_USE_LOSE")
-    public double numberOfDayUseToLose;
+	@Column(name = "USED_SAVING_DAYS")
+    public double useSavingDays;
 	
-	@Column(name = "NUMBER_OF_EXCEEDED_DAYS")
-    public int numberOfExceededDays;
+	@Column(name = "NUMBER_OVER_DAYS")
+    public int numberOverDays;
 
-	@Column(name = "TIME_EXCEEDED")
-    public int timeExceeded;
+	@Column(name = "TIME_OVER")
+    public int timeOver;
 	
 	@Override
 	protected Object getKey() {

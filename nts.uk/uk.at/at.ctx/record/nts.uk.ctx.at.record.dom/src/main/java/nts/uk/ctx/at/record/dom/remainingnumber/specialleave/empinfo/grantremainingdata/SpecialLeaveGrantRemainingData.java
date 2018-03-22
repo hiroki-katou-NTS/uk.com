@@ -38,7 +38,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId,String employeeId, int specialLeaveCode,
 			GeneralDate grantDate, GeneralDate deadlineDate, int expirationStatus, int registerType,
 			int dayNumberOfGrant, Integer timeOfGrant, Double dayNumberOfUse, Integer timeOfUse,
-			Double numberOfDayUseToLose, int dayNumberOfExeeded, Integer timeOfExeeded, Double dayNumberOfRemain,
+			Double useSavingDays, int numberOverdays, Integer timeOver, Double dayNumberOfRemain,
 			Integer timeOfRemain) {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 		domain.specialId = specialId;
@@ -50,7 +50,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 
 		domain.details = new SpecialLeaveNumberInfo(dayNumberOfGrant, timeOfGrant, dayNumberOfUse, timeOfUse,
-				numberOfDayUseToLose, dayNumberOfExeeded, timeOfExeeded, dayNumberOfRemain, timeOfRemain);
+				useSavingDays, numberOverdays, timeOver, dayNumberOfRemain, timeOfRemain);
 
 		return domain;
 	}
