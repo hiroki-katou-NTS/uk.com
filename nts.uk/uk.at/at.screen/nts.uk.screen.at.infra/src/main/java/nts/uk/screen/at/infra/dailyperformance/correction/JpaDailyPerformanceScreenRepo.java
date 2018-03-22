@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.Column;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
@@ -497,8 +496,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
 				KalmtAnnualPaidLeave.class);
 		if (entity.isPresent()) {
-			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false,
-					entity.get().getPermitAtr() == 1 ? true : false, entity.get().getPermitAtr());
+			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false, entity.get().getPriorityType());
 		}
 		return null;
 	}

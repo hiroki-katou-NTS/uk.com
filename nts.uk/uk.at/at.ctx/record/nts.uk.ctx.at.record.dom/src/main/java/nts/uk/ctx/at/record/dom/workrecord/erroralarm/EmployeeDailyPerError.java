@@ -44,4 +44,14 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.errorCancelAble = errorCancelAble;
 	}
 
+	public EmployeeDailyPerError(String companyID, String employeeID, GeneralDate date,
+			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList) {
+		super();
+		this.companyID = companyID;
+		this.employeeID = employeeID;
+		this.date = date;
+		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
+		this.attendanceItemList = attendanceItemList;
+		this.errorCancelAble = 0;
+	}
 }

@@ -498,6 +498,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
 		}
 		
+		if(integrationOfDaily.getWorkInformation() == null || integrationOfDaily.getWorkInformation().getRecordWorkInformation() == null || integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTypeCode() == null)
+			return integrationOfDaily;
+		
+		val workType = this.workTypeRepository.findByPK(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		if(!workType.isPresent()) return integrationOfDaily;
 		//休暇加算時間設定
 		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
 																							oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getMorning(),
@@ -510,7 +515,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily,sharedOtSet,holidayAutoCalcSetting,
 					Optional.empty(),//Optional.of(personalLabor),
 				    vacation,
-				    this.workTypeRepository.findByPK(companyId,oneRange.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTypeCode().v()).get(),
+				    workType.get(),
 				    lateTimeSheet,
 				    leaveEarlyTimeSheet,
 				    lateTimeOfDaily,

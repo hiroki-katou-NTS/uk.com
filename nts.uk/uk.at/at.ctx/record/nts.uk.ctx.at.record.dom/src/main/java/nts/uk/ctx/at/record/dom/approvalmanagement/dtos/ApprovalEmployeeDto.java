@@ -1,7 +1,7 @@
 /**
  * 3:23:04 PM Mar 13, 2018
  */
-package nts.uk.ctx.at.record.app.find.approvalmanagement;
+package nts.uk.ctx.at.record.dom.approvalmanagement.dtos;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApprovalEmployeeDto {
+	
+	private String employeeId;
 
 	private String employeeCode;
 	
