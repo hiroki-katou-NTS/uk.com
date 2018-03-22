@@ -95,7 +95,9 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @return the divergence time
 	 */
 	private DivergenceTime toDomain(KrcstDvgcTime entities) {
+
 		DivergenceTimeGetMemento memento = new JpaDivergenceTimeRepositoryGetMemento(entities);
+
 		return new DivergenceTime(memento);
 	}
 

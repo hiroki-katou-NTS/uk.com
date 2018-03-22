@@ -60,6 +60,7 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	@Override
 	public Optional<DivergenceReasonSelect> findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
 
+		// Get Primary Key
 		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, companyId, reasonCode);
 
 		return this.queryProxy().find(PK, KrcstDvgcReason.class).map(e -> toDomain(e));
@@ -74,13 +75,19 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 
 	@Override
 	public void delete(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
-		// this.commandProxy().remove(this.toEntity(divTimeNo,
-		// divReasonSelect));
 
+		// Get Primary Key
 		KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK(divTimeNo, AppContexts.user().companyId(),
 				divReasonSelect.getDivergenceReasonCode().toString());
-		this.commandProxy().remove(KrcstDvgcReason.class, PK);
-		this.getEntityManager().flush();
+
+		// Find Entity
+		Optional<KrcstDvgcReason> reason = this.queryProxy().find(PK, KrcstDvgcReason.class);
+
+		if (reason.isPresent()) {
+			// if present
+			this.commandProxy().remove(reason.get());
+			this.getEntityManager().flush();
+		}
 
 	}
 
@@ -101,9 +108,17 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	private KrcstDvgcReason toEntity(int divTimeNo, DivergenceReasonSelect domain) {
 
 		KrcstDvgcReason entity = new KrcstDvgcReason();
+
+		// convert domain to Entity
 		domain.saveToMemento(new JpaDivergenceReasonSelectRepositorySetMemento(entity));
+
+		// Set DivergenceTimeNo
 		entity.getId().setNo(divTimeNo);
+
+		// Set ConpanyID
 		entity.getId().setCid(AppContexts.user().companyId());
+
+		// Return
 		return entity;
 	}
 
@@ -115,6 +130,8 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	 * @return the divergence reason select
 	 */
 	private DivergenceReasonSelect toDomain(KrcstDvgcReason entity) {
+
+		// convert Enyity to domain
 		DivergenceReasonSelectGetMemento memento = new JpaDivergenceReasonSelectRepositoryGetMemento(entity);
 
 		return new DivergenceReasonSelect(memento);

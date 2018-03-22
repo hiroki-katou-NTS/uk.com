@@ -73,6 +73,24 @@ public enum DivergenceTypeDto {
 		// Find value.
 		for (DivergenceTypeDto val : DivergenceTypeDto.values) {
 			if (val.value == value) {
+
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
+
+	public static DivergenceTypeDto valueOfString(String value) {
+		// Invalid object.
+		if (value == "") {
+			return null;
+		}
+
+		// Find value.
+		for (DivergenceTypeDto val : DivergenceTypeDto.values) {
+			if (value.equals(val.nameId)) {
 				return val;
 			}
 		}
