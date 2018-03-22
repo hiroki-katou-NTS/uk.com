@@ -88,8 +88,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//予定開始終了時刻の反映(事前事後共通部分)
 		//WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
 		
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getScheduleWorkInformation().getWorkTimeCode().v(),
-				dailyData.getScheduleWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getScheduleWorkInformation().getWorkTimeCode() == null ? null : dailyData.getScheduleWorkInformation().getWorkTimeCode().v(),
+				dailyData.getScheduleWorkInformation().getWorkTypeCode() == null ? null : dailyData.getScheduleWorkInformation().getWorkTypeCode().v());
 		scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut);
 	}
 	@Override
@@ -124,8 +124,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getScheduleWorkInformation().getWorkTimeCode().v(),
-				dailyPerfor.getScheduleWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getScheduleWorkInformation().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleWorkInformation().getWorkTimeCode().v(),
+				dailyPerfor.getScheduleWorkInformation().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleWorkInformation().getWorkTypeCode().v());
 		return dataOut;
 	}
 

@@ -134,6 +134,14 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		//日別実績の編集状態
 		//予定開始時刻の項目ID
 		List<Integer> lstItem = new ArrayList<Integer>();
+		if(para.isPreCheck()) {
+			lstItem.add(3);
+			lstItem.add(5);	
+		} else {
+			lstItem.add(4);
+			lstItem.add(6);
+		}
+		
 		//TODO add lstItem
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
@@ -176,8 +184,16 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		TimeLeavingOfDailyPerformance tmpData = new TimeLeavingOfDailyPerformance(para.getEmployeeId(), timeLeavingOfDailyData.getWorkTimes(), lstTimeLeavingWorks, para.getDateData());
 		timeLeavingOfDaily.updateFlush(tmpData);
 		//開始時刻の編集状態を更新する		
-		//予定項目ID=出勤の項目ID		
-		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), this.lstWorkOfItem());
+		//予定項目ID=出勤の項目ID	
+		List<Integer> lstItem = new ArrayList<Integer>();
+		if(para.isPreCheck()) {
+			lstItem.add(31);
+			lstItem.add(41);	
+		} else {
+			lstItem.add(34);
+			lstItem.add(44);
+		}
+		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
 	}
 	/**
