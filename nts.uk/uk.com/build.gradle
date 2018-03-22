@@ -154,10 +154,6 @@ subprojects {
         compile group: 'nts.arc', name: 'nts.arc', version: version
 	}
 }
-<<<<<<< .merge_file_a01704
-=======
-
->>>>>>> .merge_file_a07004
 //=============com.file�==========================================
 project (':com.file:nts.uk.file.com.ws') {
 	dependencies {
@@ -194,10 +190,7 @@ project (':com.file:nts.uk.file.com.infra') {
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')		
 	}
 }
-<<<<<<< .merge_file_a01704
-=======
 
->>>>>>> .merge_file_a07004
 //=============com.file�==========================================
 //========================shr　�====================================
 project (':shr:nts.uk.shr.com') {
@@ -282,10 +275,6 @@ project (':com.ctx:basic:nts.uk.ctx.basic.pubimp') {
 	}
 }
 //========================basic �====================================
-<<<<<<< .merge_file_a01704
-//========================sys:shared　�====================================
-=======
->>>>>>> .merge_file_a07004
 
 //========================sys:shared　�====================================
 project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws') {
@@ -317,14 +306,7 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra') {
 }
 //========================sys:shared �====================================
 
-<<<<<<< .merge_file_a01704
-//========================sys:shared �====================================
-
 //========================sys:auth �====================================
-
-=======
-//========================sys:auth �====================================
->>>>>>> .merge_file_a07004
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
@@ -446,11 +428,6 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pubimp') {
 	}
 }
 //========================sys:gateway �====================================
-<<<<<<< .merge_file_a01704
-
-//========================sys:portal　�====================================
-=======
->>>>>>> .merge_file_a07004
 
 //========================sys:portal　�====================================
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
@@ -627,10 +604,6 @@ project (':com.ctx:bs:company:nts.uk.ctx.bs.company.pubimp') {
 	}
 }
 //========================bs:company �====================================
-<<<<<<< .merge_file_a01704
-//========================bs:employee　�====================================
-=======
->>>>>>> .merge_file_a07004
 
 //========================bs:employee �====================================
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ws') {
@@ -692,10 +665,7 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pubimp') {
 	}
 }
 //========================bs:employee �====================================
-<<<<<<< .merge_file_a01704
-=======
 
->>>>>>> .merge_file_a07004
 //=====================com.screen�=============================
 project (':com.screen:nts.uk.screen.com.ws') {
 	dependencies {
