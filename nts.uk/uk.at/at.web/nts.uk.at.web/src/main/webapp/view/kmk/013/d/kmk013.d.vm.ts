@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk013.d {
             selectedId34: KnockoutObservable<any>;
             selectedId44: KnockoutObservable<any>;
             
-            time: KnockoutObservable<string>;
+            time: KnockoutObservable<number>;
             timeEditor: any;
             
             constructor() {
@@ -85,9 +85,9 @@ module nts.uk.at.view.kmk013.d {
                     }
                 });
                 
-                self.time = ko.observable("3:00");
+                self.time = ko.observable(180);
                 self.timeEditor = {
-                    value: ko.observable("3:00"),
+                    value: ko.observable(180),
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                         inputFormat: 'time'
                     })),
