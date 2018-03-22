@@ -456,34 +456,110 @@ module a5 {
             var self = this;
             //if flex or flow
             if (self.isFlex() || self.isFlow()) {
-                let dataFlexFlow = {
-                lstEnum: self.enumSetting
-                    //TODO add data    
+                let dataFlexFlow: any = null;
+                if (self.isFlow()) {//flow
+                    dataFlexFlow = {
+                        workForm: EnumWorkForm.REGULAR,
+                        settingMethod:SettingMethod.FLOW,
+                        lstEnum: self.enumSetting,
+                        //1勤務目と2勤務目の間を休憩として扱うか
+                        useRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(),
+                        //休憩として扱う場合の単位
+                        roundUnit: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
+                        //休憩として扱う場合の端数処理
+                        roundType: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
+                        //休憩中に退勤した場合の休憩時間の計算方法
+                        calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod()
+                    }
                 }
-                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA',dataFlexFlow);
+                else {//flex
+                    dataFlexFlow = {
+                        workForm: EnumWorkForm.FLEX,
+                        settingMethod:SettingMethod.FLOW,
+                        lstEnum: self.enumSetting,
+                        useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(),
+                        roundUnit: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
+                        roundType: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
+                        calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod()
+                    }
+                }
+                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFlexFlow);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml", {
                     height: 500,
                     width: 400,
                     title: nts.uk.resource.getText("KMK003_287"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
-                    var returnParam = nts.uk.ui.windows.getShared('');
+                    var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
+                    //if case flex
+                    if (self.isFlex()) {
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
+                        self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
+                    }
+                    else//case flow
+                    {
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
+                        self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
+                    }
                 });
             }
             else//difftime or fixed
             {
+                let dataFixedDiff: any = null;
+                if (self.isDiffTime) {//difftime
+                    dataFixedDiff = {
+                        workForm: EnumWorkForm.REGULAR,
+                        settingMethod:SettingMethod.DIFFTIME,
+                        //実績での休憩計算方法
+                        actualRest: self.mainSettingModel.diffWorkSetting.restSet.fixedRestCalculateMethod(),
+                        //休憩中に退勤した場合の休憩時間の計算方法
+                        restTimeCalcMethod: self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod()
+                    }
+                }
+                else {//fixed
+                    dataFixedDiff = {
+                        workForm: EnumWorkForm.REGULAR,
+                        settingMethod:SettingMethod.FIXED,
+                        actualRest: self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.fixedRestCalculateMethod(),
+                        restTimeCalcMethod: self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.commonRestSet.calculateMethod()
+                    }
+                }
+                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml", {
                     height: 500,
                     width: 400,
                     title: nts.uk.resource.getText("KMK003_287"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
-                    var returnParam = nts.uk.ui.windows.getShared('');
+                    var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
+                    if (self.isDiffTime()) {
+                        self.mainSettingModel.diffWorkSetting.restSet.fixedRestCalculateMethod(returnObject.actualRest);
+                        self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
+                    }
+                    else {
+                        self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.fixedRestCalculateMethod(returnObject.actualRest);
+                        self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
+                    }
                 });
             }
         }
     }
+    
+    export enum EnumWorkForm {
+        REGULAR,
+        FLEX
+    }
 
+    export enum SettingMethod {
+        FIXED,
+        DIFFTIME,
+        FLOW,
+        ALL
+    }
     class KMK003A5BindingHandler implements KnockoutBindingHandler {
 
         constructor() {

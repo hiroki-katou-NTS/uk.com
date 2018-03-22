@@ -156,8 +156,8 @@ module a1 {
             };
             nts.uk.ui.windows.setShared('KMK003_DIALOG_F_INPUT_DATA', dataObject);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml", {
-                height: 500,
-                width: 400,
+                height: 350,
+                width: 300,
                 title: nts.uk.resource.getText("KMK003_287"),
                 dialogClass: 'no-close'
             }).onClosed(() => {
