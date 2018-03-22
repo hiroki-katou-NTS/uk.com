@@ -648,8 +648,8 @@ module nts.uk.at.view.kmf022 {
 
                 //a5
                 self.itemListA5_14 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_37'))
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_37'))
                 ]);
                 self.selectedIdA5_14 = ko.observable(0);
                 self.enableA5_14 = ko.observable(true);
