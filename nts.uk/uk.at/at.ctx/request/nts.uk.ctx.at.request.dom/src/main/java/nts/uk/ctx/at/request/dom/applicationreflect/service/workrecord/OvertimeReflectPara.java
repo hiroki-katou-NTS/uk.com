@@ -49,5 +49,5 @@ public class OvertimeReflectPara {
 	/**
 	 * 残業申請
 	 */
-	private OvertimeAppRequestParameter overtimePara;
+	private OvertimeAppParameter overtimePara;
 }

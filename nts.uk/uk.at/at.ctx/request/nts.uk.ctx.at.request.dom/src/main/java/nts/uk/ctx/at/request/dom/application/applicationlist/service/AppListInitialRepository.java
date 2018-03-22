@@ -70,7 +70,7 @@ public interface AppListInitialRepository {
 	 * @param time
 	 * @return
 	 */
-	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time);
+	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time, Integer restStart, Integer restEnd);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param application
