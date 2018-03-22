@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 
 /**
  * The persistent class for the KSHST_INSUFF_FLEX_MNT database table.
- * 
+ * @author HoangNDH
  */
 @Entity
 @Getter
@@ -28,6 +28,7 @@ public class KshstInsuffFlexMnt extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KshstInsuffFlexMntPK kshstInsuffFlexMntPK;
 
+	/** 補填可能時間 */
 	@Column(name="ATTEND_TIME")
 	private int attendTime;
 

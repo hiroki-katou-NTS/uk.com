@@ -11,6 +11,11 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHoliday
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * Class handling adding insufficient flex holiday time management command data
+ * @author HoangNDH
+ *
+ */
 @Stateless
 public class AddInsufficientFlexHolidayMntCommandHandler extends CommandHandler<AddInsufficientFlexHolidayMntCommand> {
 	@Inject

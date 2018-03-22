@@ -11,6 +11,11 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHoliday
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstInsuffFlexMnt;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstInsuffFlexMntPK;
 
+/**
+ * Implementation of insufficient flex holiday time management repository
+ * @author HoangNDH
+ *
+ */
 @Stateless
 public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository implements InsufficientFlexHolidayMntRepository {
 	private static final String SELECT_BY_CID;

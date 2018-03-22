@@ -10,6 +10,11 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHoliday
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * Classing handling getting insufficient flex holiday management data from repository
+ * @author HoangNDH
+ *
+ */
 @Stateless
 public class InsufficientFlexHolidayMntFinder {
 	/** The insufficient flex holiday management repository */
