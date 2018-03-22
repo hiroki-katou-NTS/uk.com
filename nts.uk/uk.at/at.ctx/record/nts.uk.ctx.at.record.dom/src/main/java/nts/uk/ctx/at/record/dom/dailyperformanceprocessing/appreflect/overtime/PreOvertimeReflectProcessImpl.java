@@ -33,8 +33,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	public void workTimeWorkTimeUpdate(PreOvertimeParameter para) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
 		//INPUT．勤種反映フラグ(予定)をチェックする
-		if(para.getOvertimePara().getWorkTimeCode() != null
-				|| para.getOvertimePara().getWorkTypeCode() != null
+		if(!para.getOvertimePara().getWorkTimeCode().isEmpty()
+				|| !para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isScheReflectFlg()) {
 			return;
 		}
@@ -50,8 +50,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	public boolean changeFlg(PreOvertimeParameter para) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
-		if(para.getOvertimePara().getWorkTimeCode() != null
-				|| para.getOvertimePara().getWorkTypeCode() != null
+		if(!para.getOvertimePara().getWorkTimeCode().isEmpty()
+				|| !para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
 			return false;
 		}
