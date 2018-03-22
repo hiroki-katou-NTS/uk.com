@@ -82,7 +82,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				overtimePara); 
 		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, appGobackTmp, overTimeTmp);
 		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
-		appInfor.getReflectionInformation().setStateReflection(workRecordreflect.getReflectedSate());
+		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
 		appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
 		appRepo.update(appInfor);
 	}
