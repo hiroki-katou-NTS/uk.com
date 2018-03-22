@@ -202,7 +202,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             blockUI.invisible();
             var self = this;
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                let divReason = self.itemDivReason();
+//                let divReason = self.itemDivReason();
+                var divReason = new model.DivergenceReason(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {

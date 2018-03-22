@@ -22,7 +22,7 @@ public class DivergenceReasonSelectDeleteCommandHandler extends CommandHandler<D
 	protected void handle(CommandHandlerContext<DivergenceReasonSelectDeleteCommand> context) {
 		// get command
 		DivergenceReasonSelectDeleteCommand command = context.getCommand();
-		
+
 		// Convert to domain
 		DivergenceReasonSelect domain = new DivergenceReasonSelect(command);
 
