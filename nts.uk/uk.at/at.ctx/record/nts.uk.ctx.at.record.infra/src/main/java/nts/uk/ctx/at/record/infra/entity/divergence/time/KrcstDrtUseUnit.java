@@ -17,19 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The persistent class for the KRCST_DRT_USE_UNIT database table.
  * 
  */
-
-/**
- * Gets the worktype use set.
- *
- * @return the worktype use set
- */
 @Getter
-
-/**
- * Sets the worktype use set.
- *
- * @param worktypeUseSet the new worktype use set
- */
 @Setter
 @Entity
 @Table(name="KRCST_DRT_USE_UNIT")

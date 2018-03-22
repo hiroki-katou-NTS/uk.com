@@ -17,19 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The persistent class for the KRCST_DRT database table.
  * 
  */
-
-/**
- * Gets the error time.
- *
- * @return the error time
- */
 @Getter
-
-/**
- * Sets the error time.
- *
- * @param errorTime the new error time
- */
 @Setter
 @Entity
 @Table(name="KRCST_DRT")
