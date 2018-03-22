@@ -424,18 +424,25 @@ public class OverTimeSheet {
 	 */
 	public List<OverTimeFrameTime> periodOfTimeTransfer(OneDayTime periodTime,List<OverTimeFrameTime> afterCalcUpperTimeList) {
 		/*振替可能時間の計算*/
-		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList);
+		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.TIME);
+		AttendanceTime transAbleCalcTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
 		/*振り替える*/
-		return trans(transAbleTime , afterCalcUpperTimeList);
+		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME);
+		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME);
+		return afterTransOverCalcTime;
 	}
 	
 	/**
 	 * 代休の振替可能時間の計算
 	 * @param periodTime 一定時間
+	 * @param afterCalcUpperTimeList 残業時間枠リスト
+	 * @param useTimeAtr 使用時間区分
 	 * @return 振替可能時間
 	 */
-	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<OverTimeFrameTime> afterCalcUpperTimeList) {
-		int totalFrameTime = afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
+	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<OverTimeFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
+		int totalFrameTime =  useTimeAtr.isTime()
+								?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().v()).collect(Collectors.summingInt(tc -> tc))
+								:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
 		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
 			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
 		}
@@ -444,40 +451,88 @@ public class OverTimeSheet {
 		}
 	}
 
-
 	
-	public List<OverTimeFrameTime> trans(AttendanceTime restTransAbleTime, List<OverTimeFrameTime> afterCalcUpperTimeList) {
+	public List<OverTimeFrameTime> trans(AttendanceTime restTransAbleTime, List<OverTimeFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
 		List<OverTimeFrameTime> returnList = new ArrayList<>();
-		AttendanceTime transAbleTime = restTransAbleTime; 
+		//振替時間
+		AttendanceTime transAbleTime = restTransAbleTime;
+		//振替残時間
+		AttendanceTime transRestAbleTime = restTransAbleTime;
 		for(OverTimeFrameTime overTimeFrameTime : afterCalcUpperTimeList) {
-			transAbleTime = overTimeFrameTime.getOverTimeWork().getCalcTime().greaterThanOrEqualTo(restTransAbleTime)
-																			  ?transAbleTime
-																			  :overTimeFrameTime.getOverTimeWork().getCalcTime();
+
+			transAbleTime = calcTransferTime(useTimeAtr, overTimeFrameTime, transAbleTime, transRestAbleTime);
+			//振替
 			val overTime = overTimeFrameTime.getOverTimeWork().getCalcTime().minusMinutes(transAbleTime.valueAsMinutes());
-			transAbleTime = transAbleTime.minusMinutes();
-			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(overTime);
-			val transOverTimeFrame = overTimeFrameTime.changeTransTime(overTime);
-			
-			returnList.add(transOverTimeFrame);
+			//振替可能時間から減算
+			transRestAbleTime = transRestAbleTime.minusMinutes(transAbleTime.valueAsMinutes());
+			returnList.add(calcTransTimeInFrame(useTimeAtr, overTimeFrameTime, overTime, transAbleTime));
+		}
+		
+		return returnList;
+	}
+	
+	/**
+	 * 振替可能時間算出(振替処理前)
+	 * @param useTimeAtr
+	 * @param overTimeFrameTime
+	 * @param transAbleTime
+	 * @param transRestAbleTime
+	 * @return
+	 */
+	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, OverTimeFrameTime overTimeFrameTime, AttendanceTime transAbleTime, AttendanceTime transRestAbleTime) {
+		if(useTimeAtr.isTime()) {
+			return overTimeFrameTime.getOverTimeWork().getTime().greaterThanOrEqualTo(transRestAbleTime)
+																		  ?transAbleTime
+																		  :overTimeFrameTime.getOverTimeWork().getTime();
+		}
+		else {
+			return transAbleTime = overTimeFrameTime.getOverTimeWork().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
+					  													  ?transAbleTime
+					  													  :overTimeFrameTime.getOverTimeWork().getCalcTime();
 		}
 	}
 	
+	
+	/**
+	 * 振替残時間(振替後)の算出
+	 * @param useTimeAtr 使用する時間区分
+	 * @param overTimeFrameTime　残業時間枠
+	 * @param overTime　残業時間
+	 * @param transAbleTime　振替時間
+	 * @return 振替処理後の残業時間枠
+	 */
+	private OverTimeFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, OverTimeFrameTime overTimeFrameTime,AttendanceTime overTime, AttendanceTime transAbleTime){
+		if(useTimeAtr.isTime()) {
+			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getTime()));
+			return changeOverTimeFrame.changeTransTime(TimeWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getTime(), transAbleTime));
+		}
+		else {
+			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getCalcTime()));
+			return changeOverTimeFrame.changeTransTime(TimeWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getCalcTime(), transAbleTime));
+		}
+	}
 	
 	/**
 	 * 指定時間の振替処理
 	 * @param prioritySet 優先設定
 	 */
 	public List<OverTimeFrameTime> transAllTime(OneDayTime oneDay,OneDayTime halfDay,List<OverTimeFrameTime> afterCalcUpperTimeList) {
-		AttendanceTime transAbleTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList);
-		return trans(transAbleTime, afterCalcUpperTimeList);
+		AttendanceTime transAbleTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.TIME);
+		AttendanceTime transAbleCalcTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
+		/*振り替える*/
+		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME);
+		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME);
+		return afterTransOverCalcTime;
 	}
 	
 	/**
 	 * 指定合計時間の計算
 	 * @param 指定時間クラス 
 	 */
-	private AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<OverTimeFrameTime> afterCalcUpperTimeList) {
-		int totalFrameTime = afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
+	private AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<OverTimeFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
+		int totalFrameTime = useTimeAtr.isTime()
+										?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().v()).collect(Collectors.summingInt(tc -> tc))
+										:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
 		if(totalFrameTime >= oneDay.valueAsMinutes()) {
 			return  new AttendanceTime(oneDay.v());
 		}
