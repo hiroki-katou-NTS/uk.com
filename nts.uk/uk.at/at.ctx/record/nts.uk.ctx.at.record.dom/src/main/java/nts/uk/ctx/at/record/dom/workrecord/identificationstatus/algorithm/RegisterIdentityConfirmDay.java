@@ -54,7 +54,7 @@ public class RegisterIdentityConfirmDay {
 							identificationRepository
 									.insert(new Identification(companyId, employeeId, data.getDate(), processingYmd));
 						} else {
-							identificationRepository.remove(companyId, employeeId, processingYmd);
+							identificationRepository.remove(companyId, employeeId, data.getDate());
 						}
 					} else {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
@@ -70,7 +70,7 @@ public class RegisterIdentityConfirmDay {
 									identificationRepository.insert(
 											new Identification(companyId, employeeId, data.getDate(), processingYmd));
 								} else {
-									identificationRepository.remove(companyId, employeeId, processingYmd);
+									identificationRepository.remove(companyId, employeeId, data.getDate());
 								}
 							}
 						}
