@@ -118,11 +118,14 @@ public class ErAlWorkRecordCheckService {
 		return toEmptyResultMap();
 	}
 
+	/** 大塚用連続休暇チェック */
 	public Map<GeneralDate, Integer> checkContinuousHolidays(String employeeId, DatePeriod range) {
 		Optional<ContinuousHolCheckSet> settingOp = checkSetting.find(AppContexts.user().companyId());
 		Map<GeneralDate, Integer> result = new HashMap<>();
 		settingOp.ifPresent(setting -> {
-			processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+			if(setting.isUseAtr()){
+				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+			}
 		});
 
 		return result;
@@ -157,7 +160,7 @@ public class ErAlWorkRecordCheckService {
 			}
 		}
 
-		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-15), range.start().addDays(-1));
+		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-16), range.start().addDays(-1));
 		processCheckContinuous(endMark, perviousRange, result, setting, employeeId, markDate, count, markPreviousDate);
 	}
 
