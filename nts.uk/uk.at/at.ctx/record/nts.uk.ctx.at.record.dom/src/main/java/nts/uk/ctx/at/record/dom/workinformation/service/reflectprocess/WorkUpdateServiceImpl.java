@@ -223,11 +223,17 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			}
 		});
 
-		attendanceTime.updateFlush(attendanceTimeData);
-		
+		attendanceTime.updateFlush(attendanceTimeData);		
 		//残業時間の編集状態を更新する
 		//日別実績の編集状態  予定項目ID=残業時間(枠番)の項目ID
-		this.updateEditStateOfDailyPerformance(employeeId, dateData, this.lstOvertimeItem());
+		List<Integer> lstOverTemp = this.lstOvertimeItem();
+		for(int i = 1; i <= 10; i++) {
+			if(!mapOvertime.containsKey(i)) {
+				Integer item = this.lstOvertimeItem().get(i); 
+				lstOverTemp.remove(item);
+			}
+		}
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstOverTemp);
 	}
 	/**
 	 * 予定項目ID=残業時間(枠番)の項目ID
@@ -237,9 +243,11 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		List<Integer> lstItem = new ArrayList<Integer>();
 		lstItem.add(220);
 		lstItem.add(225);
+		lstItem.add(230);
 		lstItem.add(235);
 		lstItem.add(240);
 		lstItem.add(245);
+		lstItem.add(250);
 		lstItem.add(255);
 		lstItem.add(260);
 		lstItem.add(265);
