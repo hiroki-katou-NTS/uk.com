@@ -29,7 +29,7 @@
 			</div>
 			<div id="contents-area">
 				<!-- H2 -->
-				<div id="tab-panel"
+				<div id="tab-panel" tabindex="3"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
 					<div class="tab-content-1" data-bind="with: appApprovalUnapproved">
 						<table class="tbl-control">
@@ -43,7 +43,7 @@
 									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 								</td>
 								<!-- H3_1_1 -->
-								<td><input
+								<td><input tabindex="4"
 									data-bind="ntsTextEditor: {
 									constraint: '', 
 									name: '#KAF018_82', 
@@ -61,7 +61,7 @@
 							</tr>
 							<tr>
 								<!-- H3_2_1 -->
-								<td colspan="2"><textarea
+								<td colspan="2"><textarea tabindex="5"
 										data-bind="ntsMultilineEditor: {
 										constraint: '', 
 										name: '#KAF018_83', 
@@ -74,7 +74,8 @@
 							<tr>
 								<!-- H3_3 -->
 								<td colspan="2">
-									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_84')}</div>
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="6">#{i18n.getText('KAF018_84')}</div>
 								</td>
 							</tr>
 						</table>
@@ -92,7 +93,7 @@
 									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 								</td>
 								<!-- H4_1_1 -->
-								<td><input
+								<td><input tabindex="7"
 									data-bind="ntsTextEditor: {
 									constraint: '', 
 									name: '#KAF018_82', 
@@ -110,7 +111,7 @@
 							</tr>
 							<tr>
 								<!-- H4_2_1 -->
-								<td colspan="2"><textarea
+								<td colspan="2"><textarea tabindex="8"
 										data-bind="ntsMultilineEditor: {
 										constraint: '', 
 										name: '#KAF018_83', 
@@ -123,7 +124,8 @@
 							<tr>
 								<!-- H4_3 -->
 								<td colspan="2">
-									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_84')}</div>
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="9">#{i18n.getText('KAF018_84')}</div>
 								</td>
 							</tr>
 						</table>
@@ -141,7 +143,7 @@
 									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 								</td>
 								<!-- H5_1_1 -->
-								<td><input
+								<td><input tabindex="10"
 									data-bind="ntsTextEditor: {
 									constraint: '', 
 									name: '#KAF018_82', 
@@ -159,7 +161,7 @@
 							</tr>
 							<tr>
 								<!-- H5_2_1 -->
-								<td colspan="2"><textarea
+								<td colspan="2"><textarea tabindex="11"
 										data-bind="ntsMultilineEditor: {
 										constraint: '', 
 										name: '#KAF018_83', 
@@ -172,7 +174,8 @@
 							<tr>
 								<!-- H5_3 -->
 								<td colspan="2">
-									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_84')}</div>
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="12">#{i18n.getText('KAF018_84')}</div>
 								</td>
 							</tr>
 						</table>
@@ -190,7 +193,7 @@
 									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
 								</td>
 								<!-- H6_1_1 -->
-								<td><input
+								<td><input tabindex="13"
 									data-bind="ntsTextEditor: {
 									constraint: '', 
 									name: '#KAF018_82', 
@@ -208,7 +211,7 @@
 							</tr>
 							<tr>
 								<!-- H6_2_1 -->
-								<td colspan="2"><textarea
+								<td colspan="2"><textarea tabindex="14"
 										data-bind="ntsMultilineEditor: {
 										constraint: '', 
 										name: '#KAF018_83', 
@@ -221,7 +224,8 @@
 							<tr>
 								<!-- H6_3 -->
 								<td colspan="2">
-									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_84')}</div>
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="15">#{i18n.getText('KAF018_84')}</div>
 								</td>
 							</tr>
 						</table>
