@@ -219,30 +219,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 				x.setBeforeApplicationTime(new AttendanceTime(mapOvertime.get(x.getOverWorkFrameNo().v())));
 			}
 		});
-		
-		/* List<OverTimeFrameTimeSheet> lstOverTimeWorkFrameTimeSheet = overTimeOfDaily.getOverTimeWorkFrameTimeSheet();
-		 if(lstOverTimeWorkFrameTimeSheet.isEmpty()) {
-			 return;
-		 }
-		 
-		List<OverTimeFrameTime> lstOverTime = overTimeOfDaily.getOverTimeWorkFrameTime();
-		int count = 0;
-		Integer i = 0;	*/
-		/*for(OverTimeFrameTime overTimeFrame : lstOverTime ) {
-			if(i >= 40) {
-				if(mapOvertime.containsKey(count)) {
-					overTimeFrame.getOverTimeWork().setTime(new AttendanceTime(mapOvertime.get(count)));
-				}
-				count++;
-			}
-			i++;
-		}*/
-		/*lstOverTime.stream().forEach(x -> {
-			
-			if(mapOvertime.containsKey(x.getOverWorkFrameNo().v())) {				
-				x.getOverTimeWork().setTime(new AttendanceTime(mapOvertime.get(x.getOverWorkFrameNo().v())));
-			}
-		});*/
+
 		attendanceTime.update(attendanceTimeData);
 		
 		//残業時間の編集状態を更新する
