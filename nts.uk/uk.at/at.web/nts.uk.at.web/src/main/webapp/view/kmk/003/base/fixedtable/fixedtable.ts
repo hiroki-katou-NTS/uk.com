@@ -286,6 +286,16 @@ module nts.fixedtable {
             // render html table
             return self.renderTable();
         }
+
+        /**
+         * Add minimum rows
+         */
+        public addMinRows(): void {
+            let self = this;
+            for (let i = 0; i < self.minRow; i++) {
+                self.addRowItem();
+            }
+        }
         
         /**
          * Add a row table
@@ -382,8 +392,10 @@ module nts.fixedtable {
             if (newValue == null) {
                 return;
             }
-            _.forEach(self.itemList(), row => {
-                row.isChecked(newValue);
+            _.forEach(self.itemList(), (row, index) => {
+                if (index >= self.minRow) {
+                    row.isChecked(newValue);
+                }
             });
         }
         
@@ -711,21 +723,23 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
-                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height});
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
-                })
+                });
                 screenModel.$element.on('keypress', '.check-box-column > div', function(event){
                     if (event.keyCode === 0 || event.keyCode === 32) {
                         event.preventDefault();
                         _.defer(() => screenModel.itemList.valueHasMutated());
                     }
-                })
+                });
                 
                 screenModel.$element.on('change', '.time-edior-column', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
-                })
+                });
+                // Add default data
+                screenModel.addMinRows();
             });
         });
     }

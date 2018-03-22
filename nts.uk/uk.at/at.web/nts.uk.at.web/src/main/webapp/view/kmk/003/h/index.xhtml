@@ -22,64 +22,54 @@
 	
 		<ui:define name="content">
 		
-			<div id="contents-area">				
+			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<div class="main-container">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
 					<hr/>
-					<div class="margin-first-child ntsControl">
+					<span class="margin-first-child ntsControl">
 						<label class="ntsRadioBox control-group" tabindex="1">
-							<input type="radio" name="radio-calc-method" data-bind="checkedValue: 0, checked: calcMethodFluctuation, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: calcMethodFixed, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_241')"></span>
 						</label>
 						<br/>
 						<label class="ntsRadioBox control-group" tabindex="2">
-							<input type="radio" name="radio-calc-method" data-bind="checkedValue: 1, checked: calcMethodFluctuation, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_252')"></span>
+							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: calcMethodFixed, enable: true" />
+							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_242')"></span>
 						</label>
-					</div>
-					<br/>
-					<br/>
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_253')}</div>
-					<hr class="control-group"/>
-					<div class="margin-first-child">
-						<div class="checkbox_display control-group" tabindex="3" data-bind="ntsCheckBox: { checked: useStamp }">#{i18n.getText('KMK003_255')}
+					</span>
+					<div class="margin-second-child">
+						<div class="checkbox_display control-group" tabindex="4"
+							data-bind="ntsCheckBox: { checked: isCalcFromSchedule, enable: calcMethodFixed() == 1 }">
+							#{i18n.getText('KMK003_293')}
+						</div>
+						<div class="checkbox_display control-group" tabindex="5"
+							data-bind="ntsCheckBox: { checked: isReferRestTime, enable: calcMethodFixed() == 1 }">
+							#{i18n.getText('KMK003_294')}
 						</div>
 					</div>
-					<br/>
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_256')}</div>
-					<hr class="control-group"/>
-					<div class="margin-first-child ntsControl">
-						<label class="ntsRadioBox control-group" tabindex="4">
-							<input type="radio" name="radio-use-stamp" data-bind="checkedValue: 0, checked: useStampCalcMethod, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_257')"></span>
+					<span class="margin-first-child ntsControl control-group">
+						<label class="ntsRadioBox" tabindex="3">
+							<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: calcMethodFixed, enable: true" />
+							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_243')"></span>
 						</label>
+					</span>
+					<div class="margin-second-child">
+						<div class="checkbox_display control-group" tabindex="6"
+							data-bind="ntsCheckBox: { checked: usePrivateGoOutRest, enable: calcMethodFixed() == 2 }">
+							#{i18n.getText('KMK003_250')}
+						</div>
 						<br/>
-						<label class="ntsRadioBox control-group" tabindex="5">
-							<input type="radio" name="radio-use-stamp" data-bind="checkedValue: 1, checked: useStampCalcMethod, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_258')"></span>
-						</label>
-					</div>
-					<br/>
-					<br/>
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_259')}</div>
-					<hr class="control-group"/>
-					<div class="margin-first-child ntsControl">
-						<label class="ntsRadioBox control-group" tabindex="6">
-							<input type="radio" name="radio-time-atr" data-bind="checkedValue: 0, checked: timeManagerSetAtr, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_260')"></span>
-						</label>
-						<br/>
-						<label class="ntsRadioBox control-group" tabindex="7">
-							<input type="radio" name="radio-time-atr" data-bind="checkedValue: 1, checked: timeManagerSetAtr, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_261')"></span>
-						</label>
+						<div class="checkbox_display control-group" tabindex="7"
+							data-bind="ntsCheckBox: { checked: useAssoGoOutRest, enable: calcMethodFixed() == 2 }">
+							#{i18n.getText('KMK003_251')}
+						</div>
 					</div>
 				</div>
 			</div>
 		
 			<div id="functions-area-bottom">
-				<button tabindex="8" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="9" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

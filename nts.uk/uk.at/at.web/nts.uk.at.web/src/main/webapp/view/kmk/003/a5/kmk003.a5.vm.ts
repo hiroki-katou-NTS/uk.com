@@ -130,8 +130,11 @@ module a5 {
             }
 
             nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
-            nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index2.xhtml").onClosed(() => {
+            _.defer(() => nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index.xhtml").onClosed(() => {
                 let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
+                if (!dto) {
+                    return;
+                }
                 if (self.isFlow()) {
                     self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(dto.calcMethodFixed);
                     self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule(dto.isCalcFromSchedule);
@@ -146,7 +149,7 @@ module a5 {
                     self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(dto.usePrivateGoOutRest);
                     self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(dto.useAssoGoOutRest);
                 }
-            });
+            }));
         }
 
         /**
@@ -170,8 +173,11 @@ module a5 {
             }
 
             nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
-            nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index.xhtml").onClosed(() => {
+            _.defer(() => nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index2.xhtml").onClosed(() => {
                 let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
+                if (!dto) {
+                    return;
+                }
                 if (self.isFlow()) {
                     self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(dto.calcMethodFluctuation);
                     self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp(dto.useStamp);
@@ -184,7 +190,7 @@ module a5 {
                     self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod(dto.useStampCalcMethod);
                     self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr(dto.timeManagerSetAtr);
                 }
-            });
+            }));
         }
 
         /**
