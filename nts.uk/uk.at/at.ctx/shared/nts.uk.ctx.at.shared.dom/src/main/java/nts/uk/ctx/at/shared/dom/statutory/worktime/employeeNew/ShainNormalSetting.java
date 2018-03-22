@@ -32,7 +32,7 @@ public class ShainNormalSetting extends NormalSetting
 	 * @param memento
 	 *            the memento
 	 */
-	public ShainNormalSetting(ShainNormalSetting memento) {
+	public ShainNormalSetting(ShainNormalSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.year = memento.getYear();

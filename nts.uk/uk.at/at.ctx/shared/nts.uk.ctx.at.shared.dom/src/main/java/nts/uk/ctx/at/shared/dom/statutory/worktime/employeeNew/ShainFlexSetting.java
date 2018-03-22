@@ -31,7 +31,7 @@ public class ShainFlexSetting extends FlexSetting implements MonthStatutoryWorki
 	 * @param memento
 	 *            the memento
 	 */
-	public ShainFlexSetting(ShainFlexSetting memento) {
+	public ShainFlexSetting(ShainFlexSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.year = memento.getYear();

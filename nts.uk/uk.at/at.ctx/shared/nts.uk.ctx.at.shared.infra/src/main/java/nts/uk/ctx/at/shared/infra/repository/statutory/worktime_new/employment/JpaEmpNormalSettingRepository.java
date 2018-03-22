@@ -57,7 +57,7 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository#findByCidAndEmplCodeAndYear(java.lang.String, java.lang.String, nts.uk.ctx.at.shared.dom.common.Year)
 	 */
 	@Override
-	public Optional<EmpNormalSetting> findByCidAndEmplCodeAndYear(String cid, String emplCode, Year year) {
+	public Optional<EmpNormalSetting> find(String cid, String emplCode, Year year) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstEmpNormalSet> cq = cb.createQuery(KshstEmpNormalSet.class);
@@ -69,7 +69,7 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 		predicateList.add(cb.equal(root.get(KshstEmpNormalSet_.kshstEmpNormalSetPK).get(KshstEmpNormalSetPK_.empCd), emplCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
+		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
 	}
 
 	/**
@@ -87,13 +87,13 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	/**
 	 * To domain.
 	 *
-	 * @param entities the entities
+	 * @param entity the entities
 	 * @return the emp normal setting
 	 */
-	private EmpNormalSetting toDomain(List<KshstEmpNormalSet> entities) {
-		if (entities.isEmpty()) {
+	private EmpNormalSetting toDomain(KshstEmpNormalSet entity) {
+		if (entity == null) {
 			return null;
 		}
-		return new EmpNormalSetting(new JpaEmpNormalSettingGetMemento(entities.get(0)));
+		return new EmpNormalSetting(new JpaEmpNormalSettingGetMemento(entity));
 	}
 }

@@ -21,7 +21,7 @@ public interface ShainFlexSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<ShainFlexSetting> findEmpFlexSettingByCidAndEmpIdAndYear(String cid, String empId, Year year);
+	Optional<ShainFlexSetting> find(String cid, String empId, Year year);
 
 	/**
 	 * Adds the.

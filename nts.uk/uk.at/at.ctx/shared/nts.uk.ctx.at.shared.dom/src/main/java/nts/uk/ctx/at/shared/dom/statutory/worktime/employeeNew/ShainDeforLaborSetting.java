@@ -32,7 +32,7 @@ public class ShainDeforLaborSetting extends DeforLaborSetting
 	 * @param memento
 	 *            the memento
 	 */
-	public ShainDeforLaborSetting(ShainDeforLaborSetting memento) {
+	public ShainDeforLaborSetting(ShainDeforLaborSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.year = memento.getYear();

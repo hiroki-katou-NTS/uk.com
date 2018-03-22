@@ -18,7 +18,7 @@ public interface ShainSpeDeforLaborTimeRepository {
 	 * @param empId the emp id
 	 * @return the optional
 	 */
-	Optional<ShainSpeDeforLaborTime> findEmployeeSpeDeforLaborByCidAndEmpId(String cid, String empId);
+	Optional<ShainSpeDeforLaborTime> find(String cid, String empId);
 
 	/**
 	 * Adds the.

@@ -21,7 +21,7 @@ public interface ShainNormalSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-  Optional<ShainNormalSetting> findEmpNormalSettingByCidAndEmpIdAndYear(String cid, String empId, Year year);
+  Optional<ShainNormalSetting> find(String cid, String empId, Year year);
 
 	/**
 	 * Adds the.

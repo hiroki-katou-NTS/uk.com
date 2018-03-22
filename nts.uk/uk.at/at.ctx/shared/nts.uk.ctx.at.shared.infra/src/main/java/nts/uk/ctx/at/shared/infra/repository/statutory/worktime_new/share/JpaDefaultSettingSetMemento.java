@@ -64,8 +64,8 @@ public class JpaDefaultSettingSetMemento {
 		kshstFlexLarSet.setStatDecTime(map.get(Month.DECEMBER));
 	}
 	
-	protected void setSpecSettingToFlexSet(KshstFlexSet kshstFlexLarSet, List<MonthlyUnit> statutorySetting) {
-		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(statutorySetting);
+	protected void setSpecSettingToFlexSet(KshstFlexSet kshstFlexLarSet, List<MonthlyUnit> specSetting) {
+		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(specSetting);
 		kshstFlexLarSet.setSpecJanTime(map.get(Month.JANUARY));
 		kshstFlexLarSet.setSpecFebTime(map.get(Month.FEBRUARY));
 		kshstFlexLarSet.setSpecMarTime(map.get(Month.MARCH));

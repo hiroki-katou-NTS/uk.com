@@ -18,7 +18,7 @@ public interface ShainRegularWorkTimeRepository {
 	 * @param EmpId the emp id
 	 * @return the optional
 	 */
-   Optional<ShainRegularWorkTime> findEmpRegWorkHourByCidAndEmployeeId(String Cid, String EmpId);
+   Optional<ShainRegularWorkTime> find(String Cid, String EmpId);
 
 	/**
 	 * Adds the.

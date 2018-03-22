@@ -35,7 +35,7 @@ public class KshstShaNormalSetPK implements Serializable {
 	
 	/** The year. */
 	@Column(name = "YEAR")
-	private short year;
+	private int year;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

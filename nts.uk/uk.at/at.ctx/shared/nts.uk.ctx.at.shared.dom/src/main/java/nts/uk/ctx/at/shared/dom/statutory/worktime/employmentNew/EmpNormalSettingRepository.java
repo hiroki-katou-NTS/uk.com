@@ -21,7 +21,7 @@ public interface EmpNormalSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<EmpNormalSetting> findByCidAndEmplCodeAndYear(String cid, String emplCode, Year year);
+	Optional<EmpNormalSetting> find(String cid, String emplCode, Year year);
 
 	/**
 	 * Adds the.

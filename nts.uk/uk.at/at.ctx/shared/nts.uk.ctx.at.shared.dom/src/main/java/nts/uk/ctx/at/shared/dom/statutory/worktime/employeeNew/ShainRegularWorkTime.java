@@ -36,7 +36,7 @@ public class ShainRegularWorkTime extends AggregateRoot implements StatutoryWork
 	 * @param memento
 	 *            the memento
 	 */
-	public ShainRegularWorkTime(ShainRegularWorkTime memento) {
+	public ShainRegularWorkTime(ShainRegularWorkTimeGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.workingTimeSet = memento.getWorkingTimeSet();
