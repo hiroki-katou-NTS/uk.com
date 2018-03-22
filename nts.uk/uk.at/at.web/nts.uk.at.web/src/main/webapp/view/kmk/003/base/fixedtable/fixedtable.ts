@@ -292,8 +292,10 @@ module nts.fixedtable {
          */
         public addMinRows(): void {
             let self = this;
-            for (let i = 0; i < self.minRow; i++) {
-                self.addRowItem();
+            if (self.itemList().length == 0) {
+                for (let i = 0; i < self.minRow; i++) {
+                    self.addRowItem();
+                }
             }
         }
         
