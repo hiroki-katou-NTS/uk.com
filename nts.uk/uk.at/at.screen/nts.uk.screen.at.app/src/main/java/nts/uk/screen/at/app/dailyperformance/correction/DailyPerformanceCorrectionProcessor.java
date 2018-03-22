@@ -149,6 +149,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
 	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
 	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_ERROR ="ntsgrid-error";
 
 	/**
 	 * Get List Data include:<br/>
@@ -629,23 +630,29 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 			} else {
-				if (data.getError().contains("ER")) {
-					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
-					int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
-					//lock sign
-					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+				int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
+				int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
+				// lock sign
+				if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					if (data.getError().contains("ER")) {
+						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+					} else {
 						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-						// thieu check khi co data
-					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// co the dang ky data nhưng ko đăng ký được check box
 					}
-					//lock approval
-					if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					// thieu check khi co data
+				} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					// co the dang ky data nhưng ko đăng ký được check box
+				}
+				// lock approval
+				if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					if (data.getError().contains("ER")) {
+						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
+					} else {
 						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
-						// thieu check khi co data
-					} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// co the dang ky data nhưng ko đăng ký được check box
 					}
+					// thieu check khi co data
+				} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					// co the dang ky data nhưng ko đăng ký được check box
 				}
 			}
 		}
