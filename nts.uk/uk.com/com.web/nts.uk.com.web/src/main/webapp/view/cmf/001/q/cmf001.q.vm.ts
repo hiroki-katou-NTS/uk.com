@@ -55,7 +55,7 @@ module nts.uk.com.view.cmf001.q {
                     externalProcessId: self.processId(), // 外部受入処理ID＝取得した新規採番のＩＤ set at server
                     executorId: '',  /* 実行者ID ＝ログイン者  set at server*/
                     userId: '',  /* ユーザID ＝ログイン者 set at server*/
-                    processStartDatetime: "2000-02-13T00:00:00.000Z",  /* 処理開始日時  = システム日付時刻 set at server*/
+                    processStartDatetime: moment.utc(new Date().toLocaleString()).toISOString(),  /* 処理開始日時  = システム日付時刻 set at server*/
                     standardAtr: '0',  /* 定型区分*/
                     executeForm: 1, /* 実行形態  ＝手動 */
                     //targetCount: self.params.totalRecord, /*対象件数  ＝受入ファイル件数*/

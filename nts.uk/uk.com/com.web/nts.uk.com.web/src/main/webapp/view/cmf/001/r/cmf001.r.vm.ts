@@ -104,7 +104,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
 
                 if (itemList && itemList.length > 0) {
                     self.imExExecuteResultLog = itemList[0];
-                    self.datetime = nts.uk.time.formatDate(new Date(self.imExExecuteResultLog.processStartDatetime), "yyyy-MM-dd hh:mm:ss");
+                    self.datetime = moment.utc(self.imExExecuteResultLog.processStartDatetime).format("YYYY/MM/DD H:mm:ss"); 
                     self.itemDataError().resultLog = itemList[0];
                 }
                 else {

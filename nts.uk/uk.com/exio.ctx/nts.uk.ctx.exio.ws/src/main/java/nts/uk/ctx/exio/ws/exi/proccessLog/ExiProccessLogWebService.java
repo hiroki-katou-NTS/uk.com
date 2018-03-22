@@ -9,7 +9,6 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exi.execlog.AddExacExeResultLogCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.execlog.ExacExeResultLogCommand;
-import nts.uk.ctx.exio.app.command.exi.execlog.ExeResultLogCommandResult;
 
 /**
  * The Class ExiProccessLogWebService
