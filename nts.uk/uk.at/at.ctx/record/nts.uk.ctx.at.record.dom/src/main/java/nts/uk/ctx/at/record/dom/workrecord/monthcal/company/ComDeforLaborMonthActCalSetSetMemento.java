@@ -24,6 +24,6 @@ public interface ComDeforLaborMonthActCalSetSetMemento {
 	 *
 	 * @param legalAggrSetOfIrgNew the new legal aggr set of irg new
 	 */
-	void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew);
+	void setDeforAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew);
 
 }

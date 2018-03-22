@@ -24,6 +24,6 @@ public interface ComFlexMonthActCalSetSetMemento {
 	 *
 	 * @param aggrSettingMonthlyOfFlxNew the new aggr setting monthly of flx new
 	 */
-	void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew);
+	void setFlexAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew);
 
 }
