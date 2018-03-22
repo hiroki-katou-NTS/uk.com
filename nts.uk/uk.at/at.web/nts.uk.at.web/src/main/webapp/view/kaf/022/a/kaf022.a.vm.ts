@@ -1054,15 +1054,26 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdB35 = ko.observable(0);
                 self.selectedIdB36 = ko.observable(0);
 
-                self.itemListB30 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
-                ]);
+//                self.itemListB30 = ko.observableArray([
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
+//                ]);
+                 let listRest = __viewContext.enums.BreakReflect;
+                self.itemListB30 = ko.observableArray([]);
+                _.forEach(listRest,(a)=>{
+                    self.itemListB30.push(new ItemModel(a.value, a.name));   
+                }); 
                 self.selectedCodeB30 = ko.observable(0);
-                self.itemListB33 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
-                ]);
+                
+//                self.itemListB33 = ko.observableArray([
+//                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
+//                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
+//                ]);
+                let listUnitAssignmentOvertime = __viewContext.enums.UnitAssignmentOvertime;
+                self.itemListB33 = ko.observableArray([]);
+                _.forEach(listUnitAssignmentOvertime,(b)=>{
+                    self.itemListB33.push(new ItemModel(b.value, b.name));   
+                }); 
                 self.selectedCodeB33 = ko.observable(0);
 
                 //i

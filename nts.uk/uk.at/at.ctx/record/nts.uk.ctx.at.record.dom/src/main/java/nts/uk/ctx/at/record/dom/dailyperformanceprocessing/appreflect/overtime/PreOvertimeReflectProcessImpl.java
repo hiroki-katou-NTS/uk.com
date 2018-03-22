@@ -154,6 +154,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
 			}			
 		}
+		
 		//残業時間の反映
 		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame());
 	}
