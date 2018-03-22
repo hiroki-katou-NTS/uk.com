@@ -154,7 +154,7 @@ module nts.uk.ui.koExtentions {
                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]), "FND_E_SPAN_REVERSED");    
                     } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
                         let maxDate = startDate.add(31, "days");
-                        if(endDate.isAfter(maxDate)){
+                        if(endDate.isSameOrAfter(maxDate)){
                             $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]), "FND_E_SPAN_OVER_MONTH");         
                         }
                     } else if (maxRange === "oneYear"){
