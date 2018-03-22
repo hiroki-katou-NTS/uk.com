@@ -105,12 +105,14 @@ public class ErAlWorkRecordCheckService {
 
 		return toEmptyResultMap();
 	}
-	
-	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds, List<String> EACheckID) {
+
+	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
+			List<String> EACheckID) {
 		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
 
 		if (checkConditions != null) {
-			return checkConditions.stream().collect(Collectors.toMap(c -> c.getErrorAlarmCheckID(), c -> check(workingDate, employeeIds, c)));
+			return checkConditions.stream()
+					.collect(Collectors.toMap(c -> c.getErrorAlarmCheckID(), c -> check(workingDate, employeeIds, c)));
 		}
 
 		return toEmptyResultMap();
@@ -133,6 +135,8 @@ public class ErAlWorkRecordCheckService {
 		List<WorkInfoOfDailyPerformance> workInfos = workInfo.findByPeriodOrderByYmd(employeeId, range).stream()
 				.sorted((w1, w2) -> w2.getYmd().compareTo(w1.getYmd())).collect(Collectors.toList());
 
+		if (workInfos.isEmpty()) { return; }
+		
 		for (WorkInfoOfDailyPerformance info : workInfos) {
 			WorkTypeCode currentWTC = info.getRecordWorkInformation().getWorkTypeCode();
 			if (setting.getTargetWorkType().contains(currentWTC)) {
