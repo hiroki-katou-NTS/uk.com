@@ -3832,7 +3832,7 @@ var nts;
                                     }
                                     var nameToShow = item.displayName || item.defaultName;
                                     var $item = $("<li class='title-item'/>")
-                                        .data("path", item.url)
+                                        .data("path", !uk.util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
                                         .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
                                         .data(DATA_TITLEITEM_PGNAME, nameToShow)
                                         .text(nameToShow);
