@@ -201,8 +201,8 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             }
             else {
                 let self = this;
-                let startDigit: number = self.setting().startDigit();
-                let endDigit: number = self.setting().endDigit();
+                let startDigit: number = +self.setting().startDigit();
+                let endDigit: number = +self.setting().endDigit();
                 if (startDigit > endDigit && self.checkActive6() && self.checkActive1() && self.inputMode) {
                     alertError({ messageId: "Msg_1119", messageParams: [getText('CMF001_335'), getText('CMF001_338')] });
                     return true;

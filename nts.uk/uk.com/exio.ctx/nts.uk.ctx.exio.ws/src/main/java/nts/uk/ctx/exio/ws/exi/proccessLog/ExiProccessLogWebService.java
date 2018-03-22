@@ -5,9 +5,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exi.execlog.AddExacExeResultLogCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.execlog.ExacExeResultLogCommand;
+import nts.uk.ctx.exio.app.command.exi.execlog.ExeResultLogCommandResult;
 
 /**
  * The Class ExiProccessLogWebService
@@ -23,8 +25,8 @@ public class ExiProccessLogWebService extends WebService{
 	 */
 	@POST
 	@Path("addErrorLog")
-	public void addErrorLog(ExacExeResultLogCommand exacExeResultLogCommand) {
-		this.addExacExeResultLogCommandHandler.handle(exacExeResultLogCommand);
+	public JavaTypeResult<String> addErrorLog(ExacExeResultLogCommand exacExeResultLogCommand) {
+		return new JavaTypeResult<String>(this.addExacExeResultLogCommandHandler.handle(exacExeResultLogCommand));
 	}
 	
 }

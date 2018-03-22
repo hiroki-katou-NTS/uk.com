@@ -1,5 +1,5 @@
 #ex_accept_wizard {
-	width: 1200px;
+	width: 1300px;
 }
 
 #ex_accept_wizard>.steps {
@@ -8,7 +8,7 @@
 }
 
 #ex_accept_wizard>.content {
-	width: 890px;
+	width: 980px;
 	height: 590px;
 	background: none;
 }

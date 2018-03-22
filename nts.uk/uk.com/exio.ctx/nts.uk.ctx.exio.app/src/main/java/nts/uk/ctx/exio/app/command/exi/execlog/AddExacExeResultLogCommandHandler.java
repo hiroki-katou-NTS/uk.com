@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,14 +17,14 @@ import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 
 @Stateless
 @Transactional
-public class AddExacExeResultLogCommandHandler extends CommandHandler<ExacExeResultLogCommand>
+public class AddExacExeResultLogCommandHandler extends CommandHandlerWithResult<ExacExeResultLogCommand, String>
 {
     
     @Inject
     private ExacExeResultLogRepository repository;
     
     @Override
-    protected void handle(CommandHandlerContext<ExacExeResultLogCommand> context) {
+    protected String handle(CommandHandlerContext<ExacExeResultLogCommand> context) {
         ExacExeResultLogCommand addCommand = context.getCommand();
         
         // 会社ID
@@ -35,6 +36,7 @@ public class AddExacExeResultLogCommandHandler extends CommandHandler<ExacExeRes
 		String employeeID = AppContexts.user().userId();
 		
         repository.add(ExacExeResultLog.createFromJavaType(0L, companyId, addCommand.getConditionSetCd(), appID, userID, userID, addCommand.getProcessStartDatetime(), addCommand.getStandardAtr(), addCommand.getExecuteForm(), addCommand.getTargetCount(), addCommand.getErrorCount(), addCommand.getFileName(), addCommand.getSystemType(), addCommand.getResultStatus(), addCommand.getProcessEndDatetime(), addCommand.getProcessAtr()));
-    
+        
+        return appID;
     }
 }
