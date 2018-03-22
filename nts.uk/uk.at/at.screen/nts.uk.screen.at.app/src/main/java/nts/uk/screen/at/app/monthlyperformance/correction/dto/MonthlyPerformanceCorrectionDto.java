@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * TODO
@@ -51,4 +52,9 @@ public class MonthlyPerformanceCorrectionDto {
 	 * 画面項目「A4_5：実績期間選択肢」
 	 */
 	private List<ActualTime> lstActualTimes;
+	/**
+	 * 期間：取得した期間に一致する
+	 * ※一致する期間がない場合は、先頭を選択状態にする
+	 */
+	private DatePeriod selectedActualTime;
 }

@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.ws.monthlyperformance.MPParams;
 
 /**
  * TODO
@@ -19,7 +20,7 @@ public class MonthlyPerformanceCorrectionWebService {
 
 	@POST
 	@Path("startScreen")
-	public MonthlyPerformanceCorrectionDto startScreen() throws InterruptedException {
-		return processor.generateData();
+	public MonthlyPerformanceCorrectionDto startScreen(MPParams param) throws InterruptedException {
+		return processor.generateData(param.initMode, param.lstEmployees, param.formatCodes, param.correctionOfDaily);
 	}
 }

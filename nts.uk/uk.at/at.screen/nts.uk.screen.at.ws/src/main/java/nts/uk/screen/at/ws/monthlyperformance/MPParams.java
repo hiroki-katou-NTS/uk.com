@@ -2,8 +2,8 @@ package nts.uk.screen.at.ws.monthlyperformance;
 
 import java.util.List;
 
-import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
 
 public class MPParams {
 	/**
@@ -22,6 +22,8 @@ public class MPParams {
 	 * 月別実績の修正
 	 */
 	public CorrectionOfDailyPerformance correctionOfDaily;
+	
+	public int initMode;
 	/**
 	 * ロック状態一覧：List＜月の実績のロック状態＞
 	 */

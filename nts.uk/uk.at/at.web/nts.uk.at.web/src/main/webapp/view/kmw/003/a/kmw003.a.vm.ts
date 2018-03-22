@@ -1487,7 +1487,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 showClassification: true, // 分類条件
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
-                // 選択モード
+                isMutipleCheck: false,// 選択モード
 
                 /** Return data */
                 returnDataFromCcg001: function(dataList: any) {

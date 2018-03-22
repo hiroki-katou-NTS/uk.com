@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
@@ -29,11 +30,16 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.OperationOfMonthlyPerformanceDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * TODO
@@ -63,10 +69,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject
 	private ClosureRepository closureRepository;
 
+	@Inject
+	private ClosureService closureService;
+	@Inject 
+	private MonthlyPerformanceDisplay monthlyDisplay;
 	/**
 	 * @return TODO
 	 */
-	public MonthlyPerformanceCorrectionDto generateData() {
+	public MonthlyPerformanceCorrectionDto generateData(int initMode, List<DailyPerformanceEmployeeDto> lstEmployees,  List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		AppContexts.user().roles();
@@ -98,12 +108,26 @@ public class MonthlyPerformanceCorrectionProcessor {
 		Optional<PresentClosingPeriodExport> presentClosingPeriodExport = this.shClosurePub.find(companyId, closureId);
 		screenDto.setPresentClosingPeriodExport(presentClosingPeriodExport.orElse(null));
 		
-		//
-		//
+		//アルゴリズム「締め情報の表示」を実行する
+		Integer yearMonth = 0;
+		if (screenDto.getPresentClosingPeriodExport() != null) {
+			yearMonth = screenDto.getPresentClosingPeriodExport().getProcessingYm().v();
+		}
+		this.displayClosure(screenDto, companyId, closureId, yearMonth);
 		
+		//どのメニューから起動したのかをチェックする
+		//(Check xem khởi động từ menu nào)
+		//「月別実績の修正」からの場合
+		if (initMode == 0) {
+			//アルゴリズム「通常モードで起動する」を実行する
+			monthlyDisplay.getDisplayFormat(lstEmployees, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType());
+		}
+		//「月別実績の承認」からの場合
+		else{
+			//TODO 対象外
+		}
 		
-		
-		// 承認処理の利用設定
+		/*// 承認処理の利用設定
 		Optional<ApprovalProcessingUseSetting> approvalProcessingUseSetting
 				= this.approvalProcessingUseSettingRepository.findByCompanyId(companyId);
 		// 本人確認処理の利用設定
@@ -112,7 +136,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		
 
 		screenDto.setApprovalProcessingUseSetting(approvalProcessingUseSetting.orElse(null));
-		screenDto.setIdentityProcessUseSet(identityProcessUseSet.orElse(null));
+		screenDto.setIdentityProcessUseSet(identityProcessUseSet.orElse(null));*/
 		
 		return screenDto;
 	}
@@ -141,9 +165,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 		//アルゴリズム「締めの名称を取得する」を実行する
 		//Thực hiện thuật toán 「Get close Name」
 		Optional<ClosureHistory> closureHis = closureRepository.findById(companyId, closureId, startYM);
-		String closureName = Strings.EMPTY;
 		if(closureHis.isPresent()){
-			closureName = closureHis.get().getClosureName().v();
+			//締め名称　→　画面項目「A4_2：対象締め日」			
+			screenDto.setClosureName(closureHis.get().getClosureName().v());
 		}
 		
 		//アルゴリズム「実績期間の取得」を実行する
@@ -156,13 +180,16 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 * ・締めID：パラメータ「締めID」に一致する
 		 */
 		List<ActualTime> actualTimes = new ArrayList();
-		
+		//実績期間　→　画面項目「A4_5：実績期間選択肢」
+		screenDto.setLstActualTimes(actualTimes);
 		//実績期間の件数をチェックする
 		//Check số thời gian thực
 		if (actualTimes.size() == 2) {
 			//当月の期間を算出する
 			//Tính toán thời gian của tháng này
-		}
-		
+			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, new YearMonth(startYM));
+			//画面項目「A4_4：実績期間選択」の選択状態を変更する
+			screenDto.setSelectedActualTime(datePeriod);
+		}		
 	}
 }
