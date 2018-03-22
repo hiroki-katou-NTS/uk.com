@@ -17,9 +17,9 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLea
 @Stateless
 public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLeaGrantRemDataRepository {
 
-	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.key.employeeId = :employeeId";
+	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.key.sid = :employeeId";
 	
-	private String QUERY_WITH_EMP_ID_NOT_EXP = QUERY_WITH_EMP_ID + " AND a.expStatus = 0 ORDER BY a.key.grantDate";
+	private String QUERY_WITH_EMP_ID_NOT_EXP = QUERY_WITH_EMP_ID + " AND a.expStatus = 1 ORDER BY a.key.grantDate";
 
 	@Override
 	public List<ReserveLeaveGrantRemainingData> find(String employeeId) {
@@ -37,14 +37,14 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	}
 
 	private ReserveLeaveGrantRemainingData toDomain(KrcmtReverseLeaRemain ent) {
-		return ReserveLeaveGrantRemainingData.createFromJavaType(ent.key.employeeId, ent.key.grantDate, ent.deadline,
+		return ReserveLeaveGrantRemainingData.createFromJavaType(ent.key.sid, ent.key.grantDate, ent.deadline,
 				ent.expStatus, ent.registerType, ent.grantDays, ent.usedDays, ent.overLimitDays, ent.remainingDays);
 	}
 
 	@Override
 	public void add(ReserveLeaveGrantRemainingData data) {
 		KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
-		e.key.employeeId = data.getEmployeeId();
+		e.key.sid = data.getEmployeeId();
 		e.key.grantDate = data.getGrantDate();
 		updateDetail(e, data);
 		this.commandProxy().update(e);

@@ -12,8 +12,8 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class KrcmtReverseLeaRemainPK {
 	
-	@Column(name = "EMPLOYEE_ID")
-	public String employeeId;
+	@Column(name = "SID")
+	public String sid;
 
 	@Column(name = "GRANT_DATE")
 	public GeneralDate grantDate;

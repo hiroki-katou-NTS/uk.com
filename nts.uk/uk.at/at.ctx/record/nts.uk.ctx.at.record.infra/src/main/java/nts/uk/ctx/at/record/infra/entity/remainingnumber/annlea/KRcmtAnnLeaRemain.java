@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
@@ -12,14 +12,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCMT_ANNLEA_REMAIN")
 public class KRcmtAnnLeaRemain extends UkJpaEntity{
 
-	@EmbeddedId
-    public KRcmtAnnLeaRemainPK key;
+	@Id
+	@Column(name = "ANNLEAV_ID")
+    public String annLeavID;
 
 	@Column(name = "CID")
-    public String CID;
+    public String cid;
 	
-	@Column(name = "EMPLOYEE_ID")
-    public String employeeId;
+	@Column(name = "SID")
+    public String sid;
 	
 	@Column(name = "GRANT_DATE")
     public GeneralDate grantDate;
@@ -68,7 +69,7 @@ public class KRcmtAnnLeaRemain extends UkJpaEntity{
 	
 	@Override
 	protected Object getKey() {
-		return key;
+		return annLeavID;
 	}
 
 }

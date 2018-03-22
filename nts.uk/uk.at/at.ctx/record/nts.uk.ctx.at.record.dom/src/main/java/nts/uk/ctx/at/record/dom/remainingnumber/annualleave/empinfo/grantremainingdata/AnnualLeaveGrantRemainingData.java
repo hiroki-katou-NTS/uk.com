@@ -15,7 +15,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 
 	private String annLeavID;
 	
-	private String cID;
+	private String cid;
 	/**
 	 * 社員ID
 	 */
@@ -56,7 +56,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
 			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
-		domain.cID = cID;
+		domain.cid = cID;
 		domain.annLeavID = annLeavID;
 		domain.employeeId = employeeId;
 		domain.grantDate = grantDate;
