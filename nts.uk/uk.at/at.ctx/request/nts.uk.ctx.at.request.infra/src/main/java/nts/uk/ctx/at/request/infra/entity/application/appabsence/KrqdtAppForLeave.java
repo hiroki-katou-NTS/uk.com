@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -96,6 +97,23 @@ public class KrqdtAppForLeave extends UkJpaEntity implements Serializable{
 	@Override
 	protected Object getKey() {
 		return krqdtAppForLeavePK;
+	}
+	
+	public AppAbsence toDomain(){
+		AppAbsence appAbsene =  new AppAbsence(this.krqdtAppForLeavePK.getCid(),
+				this.krqdtAppForLeavePK.getAppId(),
+				this.getHolidayAppType(),
+				this.getWorkTypeCode(),
+				this.getWorkTimeCode(),
+				this.isHalfDayFlg(),
+				this.isChangeWorkHour(),
+				this.getAllDayHalfDayLeaveAtr(),
+				this.getStartTime1(),
+				this.getEndTime1(), 
+				this.getStartTime2(), 
+				this.getEndTime2());
+		appAbsene.setVersion(this.getVersion());
+		return appAbsene;
 	}
 
 }

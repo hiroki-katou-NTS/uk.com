@@ -263,7 +263,7 @@ public class AppHolidayWorkFinder {
 		  //14-1.詳細画面起動前申請共通設定を取得する
 		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appID);
 		if(!opAppHolidayWork.isPresent()){
-			throw new RuntimeException("khong tim dc doi tuong");
+			throw new RuntimeException("Msg_198");
 		}
 		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
 		AppHolidayWorkDto appHolidayWorkDto = AppHolidayWorkDto.fromDomain(appHolidayWork);

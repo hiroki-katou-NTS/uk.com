@@ -15,6 +15,8 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
         screenModel = new nts.uk.at.view.kaf007.b.viewmodel.ScreenModel(listAppMeta, currentApp);     
     }else if (currentApp.appType == 6) {
         screenModel = new nts.uk.at.view.kaf010.b.viewmodel.ScreenModel(listAppMeta, currentApp); 
+    }else if (currentApp.appType == 1) {
+        screenModel = new nts.uk.at.view.kaf006.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     }
     screenModel.start(moment.utc().format("YYYY/MM/DD")).done(function() {
         __viewContext.bind(screenModel);

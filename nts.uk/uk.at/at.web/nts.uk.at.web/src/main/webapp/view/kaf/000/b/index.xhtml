@@ -27,6 +27,7 @@
 			<com:stylefile path="../../009/share/kaf009.share.style.css" />
 			<com:stylefile path="../../007/share/kaf007.share.style.css" />
 			<com:stylefile path="../../005/cm/kaf005.cm.main.css" />
+			<com:stylefile path="../../006/shr/kaf006.shr.main.css" />
 			<com:stylefile path="../../010/cm/kaf010.cm.main.css" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
@@ -48,6 +49,8 @@
 			<com:scriptfile path="../../002/c/kaf002.c.vm.js" />
 			<com:scriptfile path="../../005/shr/kaf005.shr.vm.js" />
 			<com:scriptfile path="../../005/b/kaf005.b.vm.js" />
+			<com:scriptfile path="../../006/shr/kaf006.shr.vm.js" />
+			<com:scriptfile path="../../006/b/kaf006.b.vm.js" />
 			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
 			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
 			<com:scriptfile path="../../007/b/kaf007.b.vm.js" />
@@ -189,6 +192,9 @@
 				</com:ko-if>
 				<com:ko-if bind="appType() == 0">
 					<ui:include src="../../005/b/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 1">
+					<ui:include src="../../006/b/index.xhtml" />
 				</com:ko-if>
 				<com:ko-if bind="appType() == 2">
 					<ui:include src="../../007/b/index.xhtml" />
