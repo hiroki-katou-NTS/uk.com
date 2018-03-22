@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
@@ -31,7 +32,7 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 	protected void handle(CommandHandlerContext<DivergenceTimeInputMethodSaveCommand> context) {
 		// get command
 		DivergenceTimeInputMethodSaveCommand command = context.getCommand();
-		int divType = DivergenceType.valueOf(command.getDivergenceType()).value;
+		int divType = DivergenceTypeDto.valueOfString(command.getDivergenceType()).value;
 
 		// Convert to DivergenceTimeSaveCommand
 		DivergenceTimeSaveCommand divTimeCommand = new DivergenceTimeSaveCommand(command.getDivergenceTimeNo(),
