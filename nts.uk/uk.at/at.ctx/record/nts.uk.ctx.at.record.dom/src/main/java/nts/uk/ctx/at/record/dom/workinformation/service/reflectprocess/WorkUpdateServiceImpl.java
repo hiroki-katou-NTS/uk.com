@@ -229,7 +229,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		List<Integer> lstOverTemp = this.lstOvertimeItem();
 		for(int i = 1; i <= 10; i++) {
 			if(!mapOvertime.containsKey(i)) {
-				Integer item = this.lstOvertimeItem().get(i); 
+				Integer item = this.lstOvertimeItem().get(i - 1); 
 				lstOverTemp.remove(item);
 			}
 		}
