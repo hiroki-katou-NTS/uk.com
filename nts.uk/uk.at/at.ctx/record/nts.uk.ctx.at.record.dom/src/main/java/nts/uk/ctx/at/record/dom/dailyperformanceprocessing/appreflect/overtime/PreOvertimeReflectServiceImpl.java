@@ -91,8 +91,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	public ApplicationReflectOutput overtimeReflect(PreOvertimeParameter param) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
-			//予定勤種・就時の反映
-			priorProcess.workTimeWorkTimeUpdate(param);
+			
 			//勤種・就時の反映
 			boolean changeFlg = priorProcess.changeFlg(param);
 			//予定勤種・就時反映後の予定勤種・就時を取得する
@@ -101,6 +100,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			if(!optDailyData.isPresent()) {
 				return output;
 			}
+			//予定勤種・就時の反映
+			priorProcess.workTimeWorkTimeUpdate(param);
 			//予定開始終了時刻の反映
 			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
 			priorProcess.startAndEndTimeReflectSche(param, changeFlg, dailyData);

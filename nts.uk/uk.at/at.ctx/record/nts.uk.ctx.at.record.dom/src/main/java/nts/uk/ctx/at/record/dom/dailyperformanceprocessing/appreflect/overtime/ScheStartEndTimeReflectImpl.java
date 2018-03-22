@@ -145,6 +145,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 		Optional<PredetemineTimeSetting> optWorkTimeData = predetemineTimeRepo.findByWorkTimeCode(companyId, timeTypeData.getWorktimeCode());
 		if(!optWorkTimeData.isPresent()) {
 			findDataOut.setCountReflect2Atr(false);
+			return findDataOut;
 		} 
 		PredetemineTimeSetting workTimeData = optWorkTimeData.get();		
 		List<TimezoneUse> lstTimeZone2 = workTimeData.getPrescribedTimezoneSetting().getLstTimezone()
