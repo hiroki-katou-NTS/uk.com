@@ -227,6 +227,7 @@ module nts.uk.com.view.cmf001.q {
                                     if (res.succeeded) {
                                         // チェック終了モード
                                         self.isCheckFinish(true);
+                                        $('#BTN_ERROR').focus();
                                     }
                                     self.executionState(getListProcessing()[1].value);
                                 }else {
