@@ -7,14 +7,14 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkReflectedStatesInfo;
 @Stateless
 public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectService {
 	private ApplicationReflectProcessSche appReflectProcess;
 
 	@Override
 	public ScheReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto) {
-		Application_New application = reflectSheDto.getApplication();
+		// TODO: Fix tạm theo chị dự bảo thế cho hết error
+		Application_New application = null;
 		ScheReflectedStatesInfo reflectInfo = new ScheReflectedStatesInfo(ReflectedState_New.NOTREFLECTED, ReasonNotReflect_New.NOT_PROBLEM);
 		// TODO 反映チェック処理
 		
