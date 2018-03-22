@@ -32,6 +32,14 @@ public class DivergenceTimeErrorAlarmMessage extends AggregateRoot {
 	// エラーメッセージ
 	private Optional<ErrorAlarmMessage> errorMessage;
 	
+	
+	/**
+	 * Instantiates a new divergence time error alarm message.
+	 */
+	public DivergenceTimeErrorAlarmMessage(){
+		super();
+	}
+	
 	/**
 	 * Instantiates a new divergence time error alarm message.
 	 *

@@ -37,8 +37,7 @@ module nts.uk.at.view.kmk011.h {
                         dfd.resolve();
                         nts.uk.ui.windows.close();
                     });
-                });
-               
+                });            
                 
                 return dfd.promise();
             }
