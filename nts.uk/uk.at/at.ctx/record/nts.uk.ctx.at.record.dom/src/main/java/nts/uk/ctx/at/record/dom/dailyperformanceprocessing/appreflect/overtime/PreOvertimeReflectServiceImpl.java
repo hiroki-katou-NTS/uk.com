@@ -105,7 +105,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
 			priorProcess.startAndEndTimeReflectSche(param, changeFlg, dailyData);
 			//開始終了時刻の反映
-			startEndtimeOffReflect.startEndTimeOffReflect(param, dailyData);
+			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
 			//所定外深夜時間の反映

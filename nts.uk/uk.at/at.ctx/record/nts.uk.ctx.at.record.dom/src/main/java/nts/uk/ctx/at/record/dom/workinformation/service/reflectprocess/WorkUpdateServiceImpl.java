@@ -86,6 +86,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 						itemData.getAttendanceItemId(), itemData.getYmd(), 
 						EditStateSetting.REFLECT_APPLICATION);
 				lstDaily.add(data);
+			}else {
+				EditStateOfDailyPerformance insertData = new EditStateOfDailyPerformance(employeeId, z, dateData, EditStateSetting.REFLECT_APPLICATION);
+				lstDaily.add(insertData);
 			}
 		});
 		
