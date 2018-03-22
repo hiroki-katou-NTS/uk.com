@@ -10,7 +10,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class WidgetDisplayItem {
 
 	private WidgetDisplayItemType displayItemType;
-	
+
 	private NotUseAtr notUseAtr;
-	
+
+	public static WidgetDisplayItem createFromJavaType(int displayItemType, int notUseAtr) {
+		return new WidgetDisplayItem(WidgetDisplayItemType.valueOf(displayItemType), NotUseAtr.valueOf(notUseAtr));
+
+	}
 }
