@@ -67,7 +67,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 */
 	@Override
 	public AppOverTimeInfoFull getAppOverTimeInfo(String companyId, String appId) {
-		Optional<AppOverTime> appOtOp = repoOverTime.getFullAppOvertime(companyId, appId);
+		Optional<AppOverTime> appOtOp = repoOverTime.getAppOvertimeFrame(companyId, appId);
 		AppOverTime appOt = appOtOp.get();
 		List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
@@ -139,7 +139,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	@Override
 	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId) {
 		// TODO Auto-generated method stub
-		Optional<AppHolidayWork> appHdWork = repoHolidayWork.getFullAppHolidayWork(companyId, appId);
+		Optional<AppHolidayWork> appHdWork = repoHolidayWork.getAppHolidayWorkFrame(companyId, appId);
 		AppHolidayWork hdWork = appHdWork.get();
 		List<HolidayWorkInput> lstOverTimeInput = hdWork.getHolidayWorkInputs();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();

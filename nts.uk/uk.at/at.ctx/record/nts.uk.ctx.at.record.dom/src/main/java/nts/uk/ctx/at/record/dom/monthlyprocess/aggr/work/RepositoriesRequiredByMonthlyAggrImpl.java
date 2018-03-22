@@ -13,6 +13,9 @@ import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyReposi
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.GetAggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
@@ -92,6 +95,18 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 月次集計の法定内振替順設定の取得 */
 	@Inject
 	public LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthly;
+	
+	/** 36協定運用設定の取得 */
+	@Inject
+	public AgreementOperationSettingRepository agreementOperationSet;
+	
+	/** ドメインサービス：36協定 */
+	@Inject
+	public AgreementDomainService agreementDomainService;
+	
+	/** 36協定年月設定の取得 */
+	@Inject
+	public AgreementMonthSettingRepository agreementMonthSet;
 	
 	/** 月別実績の縦計方法の取得 */
 	//

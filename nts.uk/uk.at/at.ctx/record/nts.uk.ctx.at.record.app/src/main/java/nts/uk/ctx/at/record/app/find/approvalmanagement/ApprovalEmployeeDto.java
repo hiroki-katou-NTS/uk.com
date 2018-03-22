@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApprovalEmployeeDto {
+	
+	private String employeeId;
 
 	private String employeeCode;
 	

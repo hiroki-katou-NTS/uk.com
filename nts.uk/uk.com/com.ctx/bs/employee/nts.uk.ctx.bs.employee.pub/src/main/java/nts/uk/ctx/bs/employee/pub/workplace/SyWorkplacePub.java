@@ -44,7 +44,7 @@ public interface SyWorkplacePub {
 	 * @param date the date
 	 * @return the list
 	 */
-	// RequestList #65
+	// RequestList65
 	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
 
 	/**
@@ -55,7 +55,7 @@ public interface SyWorkplacePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #66
+	// RequestList66
 	Optional<WkpCdNameExport> findByWkpId(String workplaceId, GeneralDate baseDate);
 	
 	/**
@@ -66,7 +66,7 @@ public interface SyWorkplacePub {
 	 * @param date the date
 	 * @return the list
 	 */
-	// RequestList #83
+	// RequestList83
 	// 職場IDと基準日から上位職場を取得する
 	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
 
@@ -86,7 +86,7 @@ public interface SyWorkplacePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #157
+	// RequestList157
 	List<String> findListWorkplaceIdByBaseDate(GeneralDate baseDate);
 	
 	/**
@@ -97,7 +97,7 @@ public interface SyWorkplacePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #154
+	// RequestList154
 	List<String> findListWorkplaceIdByCidAndWkpIdAndBaseDate(String companyId, String workplaceId, GeneralDate baseDate);
 	
 	/**
@@ -106,7 +106,7 @@ public interface SyWorkplacePub {
 	 * @param period
 	 * @return List EmployeeId
 	 */
-	// RequestList #120
+	// RequestList120
 	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
 	
 	/**
@@ -125,6 +125,6 @@ public interface SyWorkplacePub {
 	 * @param wkpIds the wkp ids
 	 * @return the list
 	 */
-	// RequestList #312
+	// RequestList312
 	List<WkpConfigAtTimeExport> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
 }

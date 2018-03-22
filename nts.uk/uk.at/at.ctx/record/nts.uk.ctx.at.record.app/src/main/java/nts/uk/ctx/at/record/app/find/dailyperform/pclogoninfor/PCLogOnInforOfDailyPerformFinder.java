@@ -28,8 +28,8 @@ public class PCLogOnInforOfDailyPerformFinder extends FinderFacade {
 			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
 					(c) -> new TimeSheetDto(
 									c.getWorkNo() == null ? null : c.getWorkNo().v(),
-									TimeStampDto.createTimeStamp(c.getLogOn()),
-									TimeStampDto.createTimeStamp(c.getLogOff()),
+									TimeStampDto.createTimeStamp(c.getLogOn().orElse(null)),
+									TimeStampDto.createTimeStamp(c.getLogOff().orElse(null)),
 									0
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());

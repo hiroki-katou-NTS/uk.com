@@ -4,7 +4,9 @@ module nts.uk.at.view.kal001.b {
         let extractedAlarmData : Array<model.ValueExtractAlarmDto> =  nts.uk.ui.windows.getShared("extractedAlarmData");
         console.log(extractedAlarmData);
         screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
+            __viewContext.bind(screenModel);            
+            $("#grid").igGrid("option", "dataSource", extractedAlarmData);
+            screenModel.dataSource= extractedAlarmData;
         });
     });
 }

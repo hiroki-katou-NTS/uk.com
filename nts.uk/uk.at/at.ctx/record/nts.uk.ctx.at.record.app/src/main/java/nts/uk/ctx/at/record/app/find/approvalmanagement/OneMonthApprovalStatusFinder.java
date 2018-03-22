@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -92,6 +93,7 @@ public class OneMonthApprovalStatusFinder {
 		List<ApprovalEmployeeDto> lstApprovalEmployee = new ArrayList<>();
 		for (int e = 0; e < lstEmployee.size(); e++) {
 			ApprovalEmployeeDto approvalEmployee = new ApprovalEmployeeDto();
+			approvalEmployee.setEmployeeId(lstEmployee.get(e).getEmployeeId());
 			approvalEmployee.setEmployeeCode(lstEmployee.get(e).getEmployeeCode());
 			approvalEmployee.setEmployeeName(lstEmployee.get(e).getEmployeeName());
 			List<DateApprovalStatusDto> lstDateApprovalStatusDto = new ArrayList<>();
@@ -100,15 +102,25 @@ public class OneMonthApprovalStatusFinder {
 				if (lstEmployee.get(e).getEmployeeId().equals(lstApproval.get(a).getTargetID())) {
 					DateApprovalStatusDto dateApprovalStatusDto = new DateApprovalStatusDto();
 					dateApprovalStatusDto.setDate(lstApproval.get(a).getAppDate());
-					if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED) {
+					dateApprovalStatusDto.setStatus(3);
+					if (lstApproval.get(a).getApprovalStatus() == null
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_LESS) {
+						dateApprovalStatusDto.setStatus(2);
+					} else if (lstApproval.get(a).getApprovalStatus() == null
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.COMPLETE) {
 						dateApprovalStatusDto.setStatus(0);
 					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVAL_REQUIRE) {
+							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
+						dateApprovalStatusDto.setStatus(0);
+					}  else if (lstApproval.get(a).getApprovalStatus()
+							.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVAL_REQUIRE
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_DURING) {
 						dateApprovalStatusDto.setStatus(1);
 					} else if (lstApproval.get(a).getApprovalStatus()
-							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL) {
-						dateApprovalStatusDto.setStatus(2);
+							.getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL
+							&& lstApproval.get(a).getApprovalAtr() == ApproverEmployeeState.PHASE_PASS) {
+						dateApprovalStatusDto.setStatus(0);
 					}
 					lstDateApprovalStatusDto.add(dateApprovalStatusDto);
 				}
@@ -117,6 +129,15 @@ public class OneMonthApprovalStatusFinder {
 			lstApprovalEmployee.add(approvalEmployee);
 		}
 		return lstApprovalEmployee;
+	}
+
+	public OneMonthApprovalStatusDto getDatePeriod(int closureId) {
+		OneMonthApprovalStatusDto result = new OneMonthApprovalStatusDto();
+		YearMonth currentYearMonth = GeneralDate.today().yearMonth();
+		DatePeriod datePeriod = closureService.getClosurePeriod(closureId, currentYearMonth);
+		result.setStartDate(datePeriod.start());
+		result.setEndDate(datePeriod.end());
+		return result;
 	}
 
 	public OneMonthApprovalStatusDto getOneMonthApprovalStatus(Integer closureIdParam, GeneralDate startDateParam,

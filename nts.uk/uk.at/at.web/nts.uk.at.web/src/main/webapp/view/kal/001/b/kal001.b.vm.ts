@@ -6,14 +6,13 @@ module nts.uk.at.view.kal001.b {
             columns: KnockoutObservableArray<any>;
             currentSelectedRow: KnockoutObservable<any>;
 
-            dataSource : KnockoutObservableArray<model.ValueExtractAlarmDto>;
+            dataSource : Array<model.ValueExtractAlarmDto>=[];
             constructor() {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
-                self.dataSource = ko.observableArray([]);
                 
                 self.columns = ko.observableArray([
-                    { headerText: '', key: 'gUID', width: 1 ,hidden :true },
+                    { headerText: '', key: 'guid', width: 1 ,hidden :true },
                     { headerText: getText('KAL001_20'), key: 'workplaceName', width: 100 },
                     { headerText: getText('KAL001_13'), key: 'employeeCode', width: 150 },
                     { headerText: getText('KAL001_14'), key: 'employeeName', width: 150 },
@@ -30,29 +29,29 @@ module nts.uk.at.view.kal001.b {
                 let self = this;
                 let dfd = $.Deferred();
                 
-                for (let i = 1; i < 100; i++) {
-                    let temp = {
-                                gUID: '' +i,
-                                workplaceID : "workplaceID" +i,
-                                hierarchyCd : "hierarchyCd"+i,
-                                workplaceName : "workplaceName"+i,
-                                employeeID : "employeeID"+i,
-                                employeeCode : "employeeCode"+i,
-                                employeeName : "employeeName" +i,
-                                alarmValueDate : "alarmValueDate" +i,
-                                category : i,
-                                categoryName: "category" +i,
-                                alarmItem : "alarmItem" +i,
-                                alarmValueMessage : "alarmValueMessage" +i,
-                                comment : "comment" +i,                                
-                              };
-                    self.dataSource.push(temp);
-                }
+//                for (let i = 1; i < 100; i++) {
+//                    let temp = {
+//                                gUID: '' +i,
+//                                workplaceID : "workplaceID" +i,
+//                                hierarchyCd : "hierarchyCd"+i,
+//                                workplaceName : "workplaceName"+i,
+//                                employeeID : "employeeID"+i,
+//                                employeeCode : "employeeCode"+i,
+//                                employeeName : "employeeName" +i,
+//                                alarmValueDate : "alarmValueDate" +i,
+//                                category : i,
+//                                categoryName: "category" +i,
+//                                alarmItem : "alarmItem" +i,
+//                                alarmValueMessage : "alarmValueMessage" +i,
+//                                comment : "comment" +i,                                
+//                              };
+//                    self.dataSource.push(temp);
+//                }
                 
                 $("#grid").igGrid({ 
                         height: '500px',
-                        dataSource: self.dataSource(),
-                        primaryKey: 'GUID',
+                        dataSource: self.dataSource,
+                        primaryKey: 'guid',
                         columns: self.columns(), 
                         features: [
                             { name: 'Paging', type: 'local', pageSize: 15 },
@@ -74,7 +73,7 @@ module nts.uk.at.view.kal001.b {
 
             exportExcel(): void {
                 let self = this;
-                service.saveAsExcel(self.dataSource());
+                service.saveAsExcel(self.dataSource);
             }
             
             sendEmail(): void {
@@ -97,7 +96,7 @@ module nts.uk.at.view.kal001.b {
     export module model {
 
         export interface ValueExtractAlarmDto{
-            gUID: string;
+            guid: string;
             workplaceID : string;
             hierarchyCd : string;
             workplaceName : string;

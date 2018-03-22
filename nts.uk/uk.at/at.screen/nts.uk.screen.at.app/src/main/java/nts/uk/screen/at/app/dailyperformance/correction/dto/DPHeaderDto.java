@@ -178,6 +178,8 @@ public class DPHeaderDto {
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), "employeeName", "String", "190px", "", false,
 				"Label", true, true));
 		lstHeader.add(new DPHeaderDto("", "picture-person", "String", "35px", "", false, "Image", true, true));
+		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), "approval", "boolean", "35px", "", false,
+				"Checkbox", true, true));
 		return lstHeader;
 	}
 

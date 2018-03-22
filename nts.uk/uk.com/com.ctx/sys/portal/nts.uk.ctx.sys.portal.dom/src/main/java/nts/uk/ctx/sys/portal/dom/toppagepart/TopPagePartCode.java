@@ -6,6 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
+ * トップページ部品コード
  * @author LamDT
  */
 @StringCharType(CharType.ALPHA_NUMERIC)

@@ -19,15 +19,15 @@
 		<jar-file>lib/nts.uk.ctx.sys.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra.jar</jar-file>
 
-		<jar-file>lib/nts.uk.ctx.at.auth.infra-0.2.9.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.function.infra-0.3.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.record.infra-0.3.12.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.request.infra-0.3.6.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.schedule.infra-0.4.5.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.shared.infra-0.5.27.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.pr.core.infra-0.1.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.pr.formula.infra-0.1.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.pr.report.infra-0.1.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.auth.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.function.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.record.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.request.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.schedule.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.shared.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.pr.core.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.pr.formula.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.pr.report.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pereg.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.exio.infra.jar</jar-file>
 

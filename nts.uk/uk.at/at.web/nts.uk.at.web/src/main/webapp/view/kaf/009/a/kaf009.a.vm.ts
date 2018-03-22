@@ -65,11 +65,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
         displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
+        enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
         //MultilineEditor
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         multiOption: any;
         displayReason: KnockoutObservable<boolean> = ko.observable(false);
+        enableReason: KnockoutObservable<boolean> = ko.observable(false);
         //Insert command
         command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
         //list Work Location 
@@ -86,6 +88,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //data work
         workTypeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         workTimeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        
+        checkboxDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
+        workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             //KAF000_A
@@ -139,7 +145,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             service.getGoBackSetting().done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
                     self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
+                    self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     //申請制限設定.申請理由が必須
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                     if (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
@@ -162,6 +170,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         if (settingData.goBackSettingDto.workChangeFlg == notInitialSelection
                             || settingData.goBackSettingDto.workChangeFlg == initialSelection) {
                             self.isWorkChange(true);
+                            self.checkboxDisplay(true);
+                            self.workChangeBtnDisplay(true);
+                            self.checkboxEnable(true);
                             if (settingData.goBackSettingDto.workChangeFlg == notInitialSelection) {
                                 self.workChangeAtr(false);
                             } else {
@@ -171,10 +182,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         } else if (settingData.goBackSettingDto.workChangeFlg == notChange) {//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
                             self.isWorkChange(false);
                             self.workChangeAtr(false);
+                            self.checkboxDisplay(false);
+                            self.workChangeBtnDisplay(true);
+                            self.checkboxEnable(false);
                         } else {//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
                             self.workChangeAtr(true);
                             self.isWorkChange(true);
                             self.workState(false);
+                            self.checkboxDisplay(false);
+                            self.workChangeBtnDisplay(false);
+                            self.checkboxEnable(false);
                         }
 
                     }

@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblCommand;
+import nts.uk.ctx.at.shared.app.find.yearholidaygrant.CalculateDateDto;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.CalculateGrantHdTblParam;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.GrantHolidayTblDto;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.GrantHolidayTblFinder;
@@ -60,7 +61,7 @@ public class GrantHolidayTblService extends WebService {
 	 */
 	@POST
 	@Path("calculateGrantDate")
-	public List<GrantHolidayTblDto> calculateGrantDate(CalculateGrantHdTblParam param) {
+	public List<CalculateDateDto> calculateGrantDate(CalculateGrantHdTblParam param) {
 		return find.calculateGrantDate(param);
 	}
 }

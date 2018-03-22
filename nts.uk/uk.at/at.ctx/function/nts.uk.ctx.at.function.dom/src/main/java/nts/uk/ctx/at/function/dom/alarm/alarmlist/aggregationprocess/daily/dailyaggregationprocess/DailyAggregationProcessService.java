@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyAggregationProcessService {
@@ -79,12 +81,16 @@ public class DailyAggregationProcessService {
 		
 		//get data by dailyAlarmCondition
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
-		for(int i = 1;i <= listFixed.size();i++) {
+		for(int i = 0;i < listFixed.size();i++) {
 			if(listFixed.get(i).isUseAtr()) {
 				switch(i) {
-				case 1 :
-					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
-						String workType = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTypeCode();
+				case 0 :
+					for(GeneralDate date : period.getListDate()) {
+						String workType = null;
+						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfo = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
+						if(recordWorkInfo.isPresent()) {
+							workType = recordWorkInfo.get().getWorkTypeCode();
+						}
 						
 						Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
 						if(checkWorkType.isPresent()) {
@@ -93,22 +99,26 @@ public class DailyAggregationProcessService {
 						
 					}
 					break;
-				case 2 :
-					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
-						String workTime = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTimeCode();
+				case 1 :
+					for(GeneralDate date : period.getListDate()) {
+						String workTime = null;
+						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfoFunAdapterDto = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
+						if(recordWorkInfoFunAdapterDto.isPresent()) {
+							workTime = recordWorkInfoFunAdapterDto.get().getWorkTimeCode();
+						}
 						Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
 						if(checkWorkTime.isPresent()) {
 							listValueExtractAlarm.add(checkWorkTime.get());
-						}
+						} 
 					}
 					break;
-				case 3 : 
+				case 2 : 
 					 List<ValueExtractAlarm> listCheckPrincipalUnconfirm = fixedCheckItemAdapter.checkPrincipalUnconfirm(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
 					 if(!listCheckPrincipalUnconfirm.isEmpty()) {
 						 listValueExtractAlarm.addAll(listCheckPrincipalUnconfirm);
 					 }
 					break;
-				case 4 :
+				case 3 :
 					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
 					if(!listCheckAdminUnverified.isEmpty()) {
 						 listValueExtractAlarm.addAll(listCheckAdminUnverified);
