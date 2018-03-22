@@ -102,7 +102,7 @@ public class DenyImpl implements DenyService {
 		if(approvalRootState.getListApprovalPhaseState().size()==1){
 			return canDenyFlag;
 		}
-		if(order==1){
+		if(order<=0){
 			return canDenyFlag;
 		}
 		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
