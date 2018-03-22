@@ -74,7 +74,7 @@
 					<tbody data-bind="foreach: items">
 						<tr>
 							<td data-bind="text: $index() + 1" class="numbers"></td>
-							<td class="input-units"><input class="year-input" data-bind="ntsNumberEditor: {
+							<td class="input-units"><input class="year-input" data-bind="attr: { class: ('year-input' + $index()) }, ntsNumberEditor: {
 										value: lengthOfServiceYears, 
 										constraint: 'LengthOfServiceYears',
 										name: '#[KMF003_48]',
