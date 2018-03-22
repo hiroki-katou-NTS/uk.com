@@ -19,6 +19,7 @@ module nts.uk.at.view.kmk011.d {
 
             useUnitSetting: KnockoutObservable<boolean>;
             enableSaveDivergenceRefSetting: KnockoutObservable<boolean>;
+            isActiveTabTwo: KnockoutObservable<boolean>;
 
             //divergence time setting
             roundingRules: KnockoutObservableArray<any>;
@@ -42,6 +43,7 @@ module nts.uk.at.view.kmk011.d {
 
                 _self.useUnitSetting = ko.observable(true);
                 _self.enableSaveDivergenceRefSetting = ko.observable(true);
+                _self.isActiveTabTwo = ko.observable(false);
 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
@@ -88,9 +90,9 @@ module nts.uk.at.view.kmk011.d {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
                     $.when(_self.fillListHistory(), _self.findAllManageUseUnit(), _self.fillListDivergenceTime()).done(function() {
-                        dfd.resolve(_self);
+                        _self.screenE().mapObj2 = _self.mapObj2;
                         blockUI.clear();
-
+                        dfd.resolve(_self);
                     });
                 } else {
                     // Process for screen E (Mother of all screen)
@@ -365,20 +367,23 @@ module nts.uk.at.view.kmk011.d {
                     active: SideBarTabIndex.FIRST,
                     activate: (event: any, info: any) => {
                         let _self = this;
+                        _self.isActiveTabTwo(false);
                         _self.start_page(SideBarTabIndex.FIRST);
                     }
                 });
             }
             public onSelectTabTwo(): void {
                 let _self = this;
-                if (_self.isDisableTab() == false) {
+                _self.isActiveTabTwo(true);
+//                if (_self.isDisableTab() == false) {
                     $("#sidebar").ntsSideBar("init", {
                         active: SideBarTabIndex.SECOND,
                         activate: (event: any, info: any) => {
+                            
                             _self.start_page(SideBarTabIndex.SECOND);
                         }
                     });
-                }
+//                }
             }
 
             // history mode
@@ -413,7 +418,7 @@ module nts.uk.at.view.kmk011.d {
 
         export enum SideBarTabIndex {
             FIRST = 0,
-            SECOND = 1,
+            SECOND = 1
         }
 
         export enum DivergenceTimeUseSet {

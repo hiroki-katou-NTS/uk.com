@@ -16,11 +16,14 @@ module nts.uk.at.view.kmk011.e {
             return nts.uk.request.ajax("at", path.saveAllSetting, data);
         }
 
-        export function getAllItemSetting(historyId: string): JQueryPromise<any> {
+        export function getAllItemSetting(wkTypeCode: string, historyId: string): JQueryPromise<any> {
             if (nts.uk.text.isNullOrEmpty(historyId)) {
                 historyId = "0";
             }
-            return nts.uk.request.ajax("at", path.findAllItemSetting + "/" + historyId);
+            if (nts.uk.text.isNullOrEmpty(wkTypeCode)) {
+                wkTypeCode = "0";
+            }
+            return nts.uk.request.ajax("at", path.findAllItemSetting + "/" + wkTypeCode + "/" + historyId);
         }
 
         export function getAllHistory(workTypeCode: string): JQueryPromise<any> {

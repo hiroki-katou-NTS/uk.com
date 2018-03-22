@@ -76,7 +76,7 @@ module nts.uk.at.view.kmk011.e {
 
                 _self.currentCode.subscribe((value) => {
                     if (nts.uk.text.isNullOrEmpty(value)) {
-                       _self.wkTypeCode("");
+                        _self.wkTypeCode("");
                         _self.wkTypeName("");
                         _self.enable_button_edit(false);
                         _self.enable_button_delete(false);
@@ -91,6 +91,9 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(true);
                         _self.enable_button_creat(true);
                         _self.enableSaveDivergenceRefSetting(true);
+                        _self.fillListHistory(value).done(function() {
+                            
+                        }); 
                     }
                 });
 
@@ -106,16 +109,20 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(true);
                         _self.enableSaveDivergenceRefSetting(true);
                     }
-                    _self.fillListItemSetting(value).done(() => {
+                    _self.fillListItemSetting(_self.currentCode() ,value).done(() => {
 
                     });
                 });
+                
+                // create default data
+                _self.fillListItemSettingDefault();
             }
 
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
+//                $.when(_self.fillListWorkType(), _self.fillListDivergenceTime()).done(() => {
                 _self.fillListWorkType().done(() => {
                     _self.currentCode(_self.listWorkType()[0].code);
                     _self.fillListHistory(_self.currentCode()).done(function() {
@@ -141,7 +148,7 @@ module nts.uk.at.view.kmk011.e {
 
                 _self.mapObj.forEach((value: WorkTypeDivergenceTimeSettingDto, key: number) => {
 
-                    if (_self.isDisableAllRow(key)) {
+                    if (_self.isDisableAllRowWkType(key)) {
                         let commandDto = new WorkTypeDivergenceRefTimeSaveDto(
                             _self.currentCode(),
                             value.divergenceTimeNo(),
@@ -166,7 +173,7 @@ module nts.uk.at.view.kmk011.e {
             /**
              * check enable or disable divergence reference time setting
              */
-            public isDisableAllRow(diverNo: number): boolean {
+            public isDisableAllRowWkType(diverNo: number): boolean {
                 let _self = this;
                 if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null) {
                     return false;
@@ -177,7 +184,7 @@ module nts.uk.at.view.kmk011.e {
             /**
              * check enable or disable alarm time && error time
              */
-            public checkStatusEnable(diverNo: number): boolean {
+            public checkStatusEnableWkType(diverNo: number): boolean {
                 let _self = this;
                 if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE) {
                     return false;
@@ -262,9 +269,28 @@ module nts.uk.at.view.kmk011.e {
                 var dfd = $.Deferred<any>();
 
                 service.getAllWorkType().done((response: any) => {
-                    response.forEach((item: any) => {
-                        _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
-                    });
+                    if(response != null) {
+                        if(_self.listWorkType().length == 0) {
+                            response.forEach((item: any) => {
+                                _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
+                            });
+                        } else {
+                            response.forEach((item: any) => {
+                                if(_self.listWorkType().filter(e => e.code != item.businessTypeCode).length == 0){
+                                    _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
+                                }
+                            });
+                        }
+                    } else {
+                        _self.wkTypeCode("");
+                        _self.wkTypeName("");
+                        _self.enable_button_edit(false);
+                        _self.enable_button_delete(false);
+                        _self.isEnableListHist(false);
+                        _self.enable_button_creat(false);
+                        _self.enableSaveDivergenceRefSetting(false);
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1051" });    
+                    } 
 
                     dfd.resolve();
                 });
@@ -275,11 +301,11 @@ module nts.uk.at.view.kmk011.e {
             /**
              * find list divergence reference time by his
              */
-            private fillListItemSetting(value: string): JQueryPromise<any> {
+            private fillListItemSetting(wkTypeCode: string, histId: string): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 let dto: WorkTypeDivergenceTimeSettingDto;
-                service.getAllItemSetting(value).done((response: any) => {
+                service.getAllItemSetting(wkTypeCode, histId).done((response: any) => {
                     if (response != null) {
                         if (_self.mapObj.size == 0) {
                             response.forEach((item: any) => {
@@ -341,7 +367,7 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(true);
                         _self.enable_button_edit(true);
                         _self.enable_button_delete(true);
-                        _self.fillListItemSetting(historyData[0].historyId).done(() => {
+                        _self.fillListItemSetting(_self.currentCode(), historyData[0].historyId).done(() => {
                             dfd.resolve();
                         });
                     } else {
@@ -370,7 +396,7 @@ module nts.uk.at.view.kmk011.e {
 
                 let objTemp1: WorkTypeDivergenceTimeSettingDto;
 
-                for (let i = 0; i < 10; i++) {
+                for (let i = 1; i <= 10; i++) {
                     objTemp1 = new WorkTypeDivergenceTimeSettingDto();
                     let item = {
                         divergenceTimeNo: i,

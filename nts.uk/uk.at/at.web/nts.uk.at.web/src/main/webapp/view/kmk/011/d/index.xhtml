@@ -31,8 +31,8 @@
 			<ul tabindex="1" class="navigator">
 				<li data-bind="click: onSelectTabOne"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectTabTwo, visible: useUnitSetting"><a tabindex="-1"
-					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KMK011_49')}</a></li>
+				<li data-bind="click: onSelectTabTwo"><a tabindex="-1"
+					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KMK011_72')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -40,7 +40,9 @@
 				<ui:include src="d_index.xhtml" />
 			</div>
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE()">
-				<ui:include src="../e/index.xhtml" />
+				
+					<ui:include src="../e/index.xhtml" />
+				
 			</div>
 		</ui:define>
 	</ui:composition>

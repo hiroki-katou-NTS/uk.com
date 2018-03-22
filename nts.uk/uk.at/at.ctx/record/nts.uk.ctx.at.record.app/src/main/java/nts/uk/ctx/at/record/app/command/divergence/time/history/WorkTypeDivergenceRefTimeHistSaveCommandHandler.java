@@ -47,13 +47,9 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 			exceptions.throwExceptions();
 		}
 		
-		//validate duplicate history
+		//find duplicate history
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"));
 		Integer count = this.historyRepo.countByDatePeriod(companyId, new BusinessTypeCode(command.getWorkTypeCodes()) ,period);
-		if (count.intValue() > 0){
-			exceptions.addMessage("Msg_106");
-			exceptions.throwExceptions();
-		}
 		
 		//convert to domain
 		WorkTypeDivergenceReferenceTimeHistory domain = new WorkTypeDivergenceReferenceTimeHistory(command);
@@ -63,6 +59,11 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 		
 		// check and save
 		if(find.getHistoryItems().isEmpty()){
+			// validate start date , end date
+			if (count.intValue() > 0){
+				exceptions.addMessage("Msg_106");
+				exceptions.throwExceptions();
+			}
 			//create history
 			this.historyRepo.add(domain);
 			if(!command.isCopyData()){
@@ -73,6 +74,11 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 				this.itemRepo.copyDataFromLatestHistory(domain.getHistoryItems().get(0).identifier(), latestHist.getHistoryItems().get(0).identifier());
 			}
 		} else {
+			// validate start date , end date
+			if (count.intValue() > 0){
+				exceptions.addMessage("Msg_107");
+				exceptions.throwExceptions();
+			}
 			//update history
 			this.historyRepo.update(domain);
 		}
