@@ -7,11 +7,11 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringMaxLength(20)
 @StringCharType(CharType.ALPHA_NUMERIC)
-public class SpecialLeaveCode extends CodePrimitiveValue<SpecialLeaveCode>  {
+public class SpecialLeaveCD extends CodePrimitiveValue<SpecialLeaveCD>  {
 
 	private static final long serialVersionUID = 1L;
 
-	public SpecialLeaveCode(String rawValue) {
+	public SpecialLeaveCD(String rawValue) {
 		super(rawValue);
 	}
 

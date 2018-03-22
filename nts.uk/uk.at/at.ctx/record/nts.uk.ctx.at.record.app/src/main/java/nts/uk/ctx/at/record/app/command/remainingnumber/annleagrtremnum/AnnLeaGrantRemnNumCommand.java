@@ -8,6 +8,8 @@ import nts.uk.shr.pereg.app.PeregItem;
 @Getter
 public class AnnLeaGrantRemnNumCommand {
 	
+	private String annLeavId;
+	
 	/**
 	 * 社員ID
 	 */
