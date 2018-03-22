@@ -211,15 +211,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			if(CollectionUtil.isEmpty(listApprover)){
 				return;
 			}
+			List<Approver> listRemoveApprover = new ArrayList<>();
 			List<String> listApproverID = listApprover.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApproverID);
 			listApprover.stream().forEach(x -> {
 				approvalRepresenterOutput.getListApprovalAgentInfor().stream().filter(y -> y.getApprover().equals(x.getEmployeeId())).findAny().ifPresent(z -> {
 					if(z.getRepresenter().getValue().equals(RepresenterInforOutput.Path_Information)){
-						listApprover.remove(x);
+						listRemoveApprover.add(x);
 					}
 				});;
 			});
+			listApprover.removeAll(listRemoveApprover);
 			PrincipalApprovalFlg principalApprovalFlg = approvalSettingRepository.getPrincipalByCompanyId(companyID).orElse(PrincipalApprovalFlg.NOT_PRINCIPAL);
 			if(principalApprovalFlg.equals(PrincipalApprovalFlg.NOT_PRINCIPAL)){
 				List<Approver> listDeleteApprover = listApprover.stream().filter(x -> x.getEmployeeId().equals(employeeID)).collect(Collectors.toList());

@@ -2,7 +2,8 @@ module cmm045.a.service {
      var paths = {
          getApplicationList: "at/request/application/applist/getapplist",
          getApplicationDisplayAtr: "at/request/application/applist/get/appdisplayatr",
-         approvalListApp: "at/request/application/applist/approval"
+         approvalListApp: "at/request/application/applist/approval",
+         getHdSetInfo: "at/request/vacation/setting/hdapp"
     }
 
     /**
@@ -22,5 +23,11 @@ module cmm045.a.service {
      */
     export function approvalListApp(data: any): JQueryPromise<any>{
         return nts.uk.request.ajax("at", paths.approvalListApp, data);
+    }
+    /**
+     * get holiday set info
+     */
+    export function getHdSetInfo(): JQueryPromise<any>{
+        return nts.uk.request.ajax("at", paths.getHdSetInfo);
     }
 }

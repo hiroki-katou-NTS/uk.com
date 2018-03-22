@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 
 import java.util.List;
+import java.util.Map;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * 反映処理
@@ -24,6 +27,33 @@ public interface ScheWorkUpdateService {
 	 * 開始時刻の反映
 	 * @param data
 	 */
-	public void updateReflectStartEndTime(TimeReflectParameter para,List<Integer> lstItem);
+	public void updateReflectStartEndTime(TimeReflectParameter para);
+	/**
+	 * 残業時間の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param mapOvertime
+	 */
+	public void reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime);
+	/**
+	 * 所定外深夜時間の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param timeNight
+	 */
+	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight);
+	/**
+	 * 休出時間(深夜)の反映
+	 * @param employeeId
+	 * @param dateData
+	 */
+	public void updateBreakNight(String employeeId, GeneralDate dateData);
+	/**
+	 * フレックス時間の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param flexTime
+	 */
+	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime);
 
 }

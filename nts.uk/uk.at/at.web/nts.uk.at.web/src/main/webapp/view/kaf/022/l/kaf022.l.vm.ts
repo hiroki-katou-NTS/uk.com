@@ -212,7 +212,8 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             nts.uk.ui.block.invisible();
             let self = parent;
             let commands = [];
-            commands.push(ko.mapping.toJS(self.appSetData().overTimeSet()));
+            var overTimeSet = ko.mapping.toJS(self.appSetData().overTimeSet());
+            commands.push(overTimeSet);
              _.forEach(self.appSetData().absenceSet(), function(item: any) {
                 commands.push(ko.mapping.toJS(item));
             });
@@ -502,7 +503,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     holidayOrPauseType: holidayOrPauseType,
                     workTypeCode: '',
                 };
-            return new DataSetting('', employmentCode, appType, holidayOrPauseType, false, false, [workTypeData]);
+            return new DataSetting('', employmentCode, appType, holidayOrPauseType, false, null, [workTypeData]);
         }
         initDefaultAbsenceSet(employmentCode: string): KnockoutObservableArray<DataSetting>{
             let self = this,
@@ -510,6 +511,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             for (let i = 0; i < 8; i++) {
                 let resId: number = 47 + i;
                 let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.ABSENCE_APPLICATION, i);
+                if (dataSetting.displayFlag) {
+                   dataSetting.holidayTypeUseFlg(false);
+                }
                 dataSetting.optionName(nts.uk.resource.getText('KAF022_'+ resId));
                 absenceSet.push(dataSetting);
             }            
@@ -534,7 +538,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         appType: number;
         holidayOrPauseType: number;
         displayFlag: KnockoutObservable<boolean> = ko.observable(false);
-        holidayTypeUseFlg: KnockoutObservable<boolean> = ko.observable(false);
+        holidayTypeUseFlg: KnockoutObservable<boolean> = ko.observable(null);
         lstWorkType: KnockoutObservableArray<any> = ko.observableArray();
         displayWorkTypes: KnockoutObservable<string> = ko.observable('');
         optionName: KnockoutObservable<string> = ko.observable('');

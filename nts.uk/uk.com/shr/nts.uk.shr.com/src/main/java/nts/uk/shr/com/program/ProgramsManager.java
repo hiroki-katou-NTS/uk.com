@@ -1460,7 +1460,7 @@ public class ProgramsManager {
 	public static final Program KAF004B = new Program(WebAppId.AT, ProgramIdConsts.KAF004B, null,
 			"/view/kaf/004/b/index.xhtml");
 	/**	 KAF005A*/
-	public static final Program KAF005A = new Program(WebAppId.AT, ProgramIdConsts.KAF005A, null,
+	public static final Program KAF005A = new Program(WebAppId.AT, ProgramIdConsts.KAF005A, "KAF005_1",
 			"/view/kaf/005/a/index.xhtml");
 	/**	 KAF007A*/
 	public static final Program KAF007A = new Program(WebAppId.AT, ProgramIdConsts.KAF007A, null,
@@ -1469,7 +1469,7 @@ public class ProgramsManager {
 	public static final Program KAF009A = new Program(WebAppId.AT, ProgramIdConsts.KAF009A, null,
 			"/view/kaf/009/a/index.xhtml");
 	/**	 KAF010A*/
-	public static final Program KAF010A = new Program(WebAppId.AT, ProgramIdConsts.KAF010A, "LAF010_1",
+	public static final Program KAF010A = new Program(WebAppId.AT, ProgramIdConsts.KAF010A, "KAF010_1",
 			"/view/kaf/010/a/index.xhtml");
 	// TODO: Define new programs here.
 	/**
