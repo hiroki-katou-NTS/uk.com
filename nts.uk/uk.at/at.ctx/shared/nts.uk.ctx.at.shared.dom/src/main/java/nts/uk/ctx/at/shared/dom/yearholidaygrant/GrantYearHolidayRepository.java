@@ -18,7 +18,7 @@ public interface GrantYearHolidayRepository {
 	 * @param grantYearHolidayNo
 	 * @return
 	 */
-	Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantYearHolidayNo);
+	Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
 	
 	/**
 	 * Gets the year holiday grant by code.
@@ -51,7 +51,7 @@ public interface GrantYearHolidayRepository {
 	 * @param yearHolidayCode the year holiday code
 	 * @return the holiday grant by codes
 	 */
-	void remove(String companyId, int grantYearHolidayNo, int conditionNo, String yearHolidayCode);
+	void remove(String companyId, int grantNum, int conditionNo, String yearHolidayCode);
 	
 	void remove(String companyId, int conditionNo, String yearHolidayCode);
 	

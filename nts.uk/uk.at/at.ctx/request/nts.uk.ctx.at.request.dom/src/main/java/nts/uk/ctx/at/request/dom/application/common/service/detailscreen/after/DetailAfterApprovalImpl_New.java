@@ -10,10 +10,13 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -43,6 +46,9 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 	
+	@Inject
+	private AppReflectManager appReflectManager;
+	
 	@Override
 	public String doApproval(String companyID, String appID, String employeeID, String memo) {
 		String strMail = "";
@@ -67,6 +73,10 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 			// 実績反映状態 = 反映状態．反映待ち
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.update(application);
+			if(application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
+					application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
+				appReflectManager.reflectEmployeeOfApp(application);
+			}
 		}
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		// 承認処理時に自動でメールを送信するが trueの場合

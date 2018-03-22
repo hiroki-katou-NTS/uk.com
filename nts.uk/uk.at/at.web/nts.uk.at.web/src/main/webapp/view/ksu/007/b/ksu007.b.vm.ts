@@ -24,6 +24,7 @@ module nts.uk.at.view.ksu007.b {
             inputData: ScheduleBatchCorrectSettingSave;
             isError: KnockoutObservable<boolean>;
             isFinish: KnockoutObservable<boolean>;
+            readIndex: KnockoutObservableArray<number>;
             constructor() {
                 var self = this;
                 self.errorLogs = ko.observableArray([]);
@@ -46,6 +47,7 @@ module nts.uk.at.view.ksu007.b {
                 self.executionError = ko.observable('yyyyyyyyy');
                 self.isError = ko.observable(false);
                 self.isFinish = ko.observable(false);
+                self.readIndex = ko.observableArray([]);
             }
             
             /**
@@ -112,6 +114,9 @@ module nts.uk.at.view.ksu007.b {
                         if (res.running || res.succeeded || res.cancelled) {
                              _.forEach(res.taskDatas, item => {
                                 if (item.key.substring(0, 5) == "DATA_") {
+                                    if (self.readIndex.indexOf(parseInt(item.key.substring(5))) != -1) {
+                                        return;
+                                    }
                                     var errors = JSON.parse(item.valueAsString);
                                     _.forEach(errors, error => {
                                         var errorContent : ErrorContentDto = {
@@ -122,6 +127,7 @@ module nts.uk.at.view.ksu007.b {
                                         }   
                                         self.errorLogs.push(errorContent);
                                     });
+                                    self.readIndex.push(parseInt(item.key.substring(5)));
                                 }
                                 if (item.key == 'NUMBER_OF_SUCCESS') {
                                      self.numberSuccess(item.valueAsNumber);
@@ -136,9 +142,9 @@ module nts.uk.at.view.ksu007.b {
                         //self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
                         self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
-                        if (res.succeeded || res.failed || res.cancelled) {
+                        if (res.succeeded || res.failed || res.cancelled || res.status == "REQUESTED_CANCEL") {
                             self.errorLogs.sort(function(a,b) {
-                                return (a.employeeId - b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
+                                return a.employeeId.localeCompare(b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
                             });
                             
                             self.executionState('完了');
@@ -152,11 +158,13 @@ module nts.uk.at.view.ksu007.b {
                                 $('#tableShowError').show();
                             }
                             
+                            self.numberFail(self.errorLogs().length);
+                            self.readIndex.removeAll();
                             self.isFinish(true);
                         }
                     });
                 }).while(infor => {
-                    return infor.pending || infor.running;
+                    return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
                 }).pause(1000));
             }
 
@@ -187,7 +195,8 @@ module nts.uk.at.view.ksu007.b {
                 }
                 // interrupt process import then close dialog
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                nts.uk.ui.windows.close();
+                
+                service.interrupt();
             }
             
             /**

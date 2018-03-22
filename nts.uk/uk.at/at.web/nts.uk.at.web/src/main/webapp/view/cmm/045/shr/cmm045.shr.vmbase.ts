@@ -55,6 +55,10 @@ module cmm045.shr {
                     this.appDisplayAtr = appDisplayAtr;
                     this.listEmployeeId = listEmployeeId;
                     this.empRefineCondition = empRefineCondition;
+                
+            }
+            setAppType(appType: number){
+                  this.appType = appType;
             }
         }
         //data fill grid list mode application
@@ -102,19 +106,21 @@ module cmm045.shr {
             appType: number;
             dispName: string;
             empName: string;
+            inpEmpName: string;
             workplaceName: string;
             statusFrameAtr: boolean;
             phaseStatus: string;
             //事前、事後の後ろに#CMM045_101(※)を追加
             checkAddNote: boolean;
             checkTimecolor: boolean;
-            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, 
-            statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: boolean)
+            constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: boolean)
             {
                 this.appID = appID;
                 this.appType = appType;
                 this.dispName = dispName;
                 this.empName = empName;
+                this.inpEmpName = inpEmpName;
                 this.workplaceName = workplaceName;
                 this.statusFrameAtr = statusFrameAtr;
                 this.phaseStatus = phaseStatus;
@@ -319,12 +325,6 @@ module cmm045.shr {
                 approvalAgentNumber: number, cancelNumber: number,
                 remandNumner: number,denialNumber: number)
             {
-//                this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
-//                this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
-//                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [denialNumber]);
-//                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
-//                this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
-//                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [cancelNumber]); 
                 this.unApprovalNumber = getText('CMM045_18', [unApprovalNumber]); 
                 this.approvalNumber = getText('CMM045_18', [approvalNumber]);
                 this.approvalAgentNumber = getText('CMM045_18', [denialNumber]);
@@ -354,13 +354,15 @@ module cmm045.shr {
             lstFrameRes: Array<vmbase.OverTimeFrame>;
             appPre: any;
             reasonAppPre: string;
+            appPreHd: any;
             constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>,
-                appPre: any, reasonAppPre: string){
+                appPre: any, reasonAppPre: string, appPreHd: any){
                 this.preAppID = preAppID;
                 this.postAppID = postAppID;
                 this.lstFrameRes = lstFrameRes;
                 this.appPre = appPre;
                 this.reasonAppPre = reasonAppPre;
+                this.appPreHd = appPreHd;
             }
         }
         export class ApproveAgent{
@@ -397,8 +399,6 @@ module cmm045.shr {
             breakTimeStart1: string;
             /**休憩時間終了1*/
             breakTimeEnd1: string;
-            //0: する
-            //1: しない
             constructor(appId: string, workTypeName: string, workTimeName: string,
                 goWorkAtr1: number, workTimeStart1: string, backHomeAtr1: number,
                 workTimeEnd1: string, goWorkAtr2: number, workTimeStart2: string,
@@ -433,9 +433,9 @@ module cmm045.shr {
             startTime2: string;
             //勤務終了時刻2
             endTime2: string;
-            lstFrame: any;
+            lstFrame: Array<OverTimeFrame>;
             constructor(appId: string, workTypeName: string, workTimeName: string, startTime1: string,
-                endTime1: string, startTime2: string, endTime2: string, lstFrame: any){
+                endTime1: string, startTime2: string, endTime2: string, lstFrame: Array<OverTimeFrame>){
                 this.appId = appId;
                 this.workTypeName = workTypeName;
                 this.workTimeName = workTimeName;
@@ -446,8 +446,67 @@ module cmm045.shr {
                 this.lstFrame = lstFrame;    
             }
         }
-            
-            
+        export class AppAbsenceFull {
+            /**申請ID */
+            appID: string;
+            /**休暇種類 */
+            holidayAppType: number;
+            //日数
+            day: number;
+            /**就業時間帯コード - Name */
+            workTimeName: string;
+            /**終日半日休暇区分*/
+            allDayHalfDayLeaveAtr: number;
+            /**開始時刻*/
+            startTime1: string;
+            /**終了時刻*/
+            endTime1: string;
+            /**開始時刻2*/
+            startTime2: string;
+            /**終了時刻2*/
+            endTime2: string;
+            /**続柄コード*/
+            relationshipCode: string;
+            /**続柄コード - Name*/
+            relationshipName: string;
+            /**喪主フラグ*/
+            mournerFlag: boolean;
+            constructor(appID: string, holidayAppType: number, day: number, workTimeName: string,
+                allDayHalfDayLeaveAtr: number, startTime1: string,endTime1: string,startTime2: string,
+                endTime2: string, relationshipCode: string, relationshipName: string, mournerFlag: boolean)
+            {
+                this.appID = appID;
+                this.holidayAppType = holidayAppType;
+                this.day = day;
+                this.workTimeName = workTimeName;
+                this.allDayHalfDayLeaveAtr = allDayHalfDayLeaveAtr;
+                this.startTime1 = startTime1;
+                this.endTime1 = endTime1;
+                this.startTime2 = startTime2;
+                this.endTime2 = endTime2;
+                this.relationshipCode = relationshipCode;
+                this.relationshipName = relationshipName;
+                this.mournerFlag = mournerFlag;    
+            }
+        }
+        export class HdAppSet{
+            // 代表者名 - 1
+            obstacleName: string;
+            // 休日名称 - 5
+            hdName: string;
+            // 年休名称 - 0
+            yearHdName: string;
+            // 振休名称 - 7
+            furikyuName: string;
+            // 時間消化名称 - 6
+            timeDigest: string;
+            // 欠勤名称 - 2
+            absenteeism: string;
+            // 特別休暇名称 - 3
+            specialVaca: string;
+            // 積立年休名称  - 4
+            yearResig: string;
+        }            
         export class ProcessHandler {
             /**
              * sort by appType and appDate

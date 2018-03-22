@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
-import nts.uk.ctx.at.shared.dom.specialholiday.Classfication;
-import nts.uk.ctx.at.shared.dom.specialholiday.Employment;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationMethod;

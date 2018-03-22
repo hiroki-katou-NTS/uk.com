@@ -103,6 +103,18 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
+                
+                nts.uk.ui.errors.clearAll();
+                $("#work-place-base-date").trigger("validate");
+                if(nts.uk.ui.errors.hasError()){
+                    self.treeGrid.baseDate(moment(new Date()).toDate());
+                    nts.uk.ui.errors.clearAll();
+                }
+                $("#standardDate").trigger("validate");
+                if(nts.uk.ui.errors.hasError()){
+                    self.standardDate(moment(new Date()).toDate());
+                    nts.uk.ui.errors.clearAll();
+                }
                 self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
                 if(newValue == 0){
@@ -178,7 +190,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //clear data before push employee new
             self.employeeList([]);
             //個人設定 (employee setting)
-            if(selectTypeSet === self.personSetting){                
+            if(selectTypeSet === self.personSetting){
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
                 employeeSearch.workplaceIds = self.treeGrid.selectedWorkplaceId();

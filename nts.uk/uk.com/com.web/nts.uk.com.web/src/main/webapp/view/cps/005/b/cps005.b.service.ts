@@ -48,7 +48,7 @@ module nts.uk.com.view.cps005.b {
             };
             
             checkItemData(itemId: string){
-               return nts.uk.request.ajax((nts.uk.text.format(this.paths.checkItemData, itemId));
+               return nts.uk.request.ajax(nts.uk.text.format(this.paths.checkItemData, itemId));
             };
         }
     }

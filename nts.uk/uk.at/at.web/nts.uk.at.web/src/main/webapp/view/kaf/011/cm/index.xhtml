@@ -53,7 +53,9 @@
 			</div>
 		</div>
 		<!-- app rec -->
-		<div id="app_rec_container" class="div_line">
+		<div
+			data-bind="visible : appComSelectedCode() !=2, with : takingOutWk"
+			id="app_rec_container" class="div_line">
 			<div id="app_rec_header" class="div_line app_header">
 				#{i18n.getText('KAF011_1')}</div>
 
@@ -70,6 +72,7 @@
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
 			</div>
+
 			<div class="div_line">
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_28')}</div>
@@ -78,10 +81,10 @@
 					<div tabindex="7" id="combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
-										options: dutyTypes ,
+										options: wkTypes ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: dutySelectedType ,
+										value: wkCD ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -97,16 +100,17 @@
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 				</div>
 				<div class="div_line_col_2 working_hour">
-					<button data-bind=" click: openKDL003" tabindex="1">#{i18n.getText('KAF011_5')}</button>
-					<div data-bind='text:genWorkingText()'></div>
+					<button
+						data-bind=" click:function(data, event) {$parent.openKDL003(true) } "
+						tabindex="1">#{i18n.getText('KAF011_5')}</button>
+					<div data-bind='text:wkText'></div>
 				</div>
 			</div>
 			<div class="div_line">
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 				</div>
-				<div class="div_line_col_2 working_hour"
-					data-bind='with: workingHour '>
+				<div class="div_line_col_2 working_hour" data-bind='with: wkTime '>
 					<input
 						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false ,option: timeOption }" />
@@ -131,12 +135,14 @@
 							enable: true }"></div>
 				</div>
 			</div>
+
 			<div id="app_rec_des" class="div_line">description</div>
 
 		</div>
 
 		<!-- app break -->
-		<div id="app_break_container">
+		<div id="app_break_container" class="div_line"
+			data-bind="visible : appComSelectedCode() !=1 , with: holidayWk ">
 			<div id="app_break_header" class="div_line app_header">
 				#{i18n.getText('KAF011_2')}</div>
 
@@ -161,10 +167,10 @@
 					<div tabindex="7" id="combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
-										options: dutyTypes ,
+										options: wkTypes ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: dutySelectedType ,
+										value: wkCD ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,
@@ -184,16 +190,17 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour">
-						<button data-bind=" click: openKDL003" tabindex="1">#{i18n.getText('KAF011_5')}</button>
-						<div data-bind='text:genWorkingText()'></div>
+						<button
+							data-bind=" click: function(data, event) {$parent.openKDL003(false) } "
+							tabindex="1">#{i18n.getText('KAF011_5')}</button>
+						<div data-bind='text:wkText'></div>
 					</div>
 				</div>
 				<div class="div_line">
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 					</div>
-					<div class="div_line_col_2 working_hour"
-						data-bind='with: workingHour '>
+					<div class="div_line_col_2 working_hour" data-bind='with: wkTime '>
 						<input
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false,option: timeOption }" />
@@ -206,6 +213,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div id="app_break_des" class="div_line">description</div>
 		</div>
 
@@ -217,10 +225,10 @@
 				<div tabindex="7" id="combo-box"
 					data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
-										options: stereoTypes ,
+										options: appReasons ,
 										optionsValue: 'value' ,
 										visibleItemsCount: 5 ,
-										value: stereoSelectedType ,
+										value: appReasonSelectedType ,
 										optionsText: 'name',
 										editable: false,
 										enable: true,

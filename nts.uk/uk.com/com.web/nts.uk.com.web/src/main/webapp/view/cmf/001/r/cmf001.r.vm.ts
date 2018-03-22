@@ -27,6 +27,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         
         //params from Q, S
+        code: KnockoutObservable<string>;
         nameSetting: KnockoutObservable<string>;
         imexProcessID: any ;
         
@@ -38,8 +39,28 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             let self = this;
             // param received from Q, S
             let paramReceived = getShared('CMF001-R');
+            self.code =  ko.observable(paramReceived.code);
             self.imexProcessID = paramReceived.imexProcessId;
             self.nameSetting = ko.observable(paramReceived.nameSetting);
+            
+            self.datetime = '';
+            self.imExExecuteResultLog = {
+                cid: '',
+                conditionSetCd: '',
+                externalProcessId: '',
+                executorId: '',
+                userId: '',
+                processStartDatetime: '',
+                standardAtr: null,
+                executeForm: null,
+                targetCount: 0,
+                errorCount: 0,
+                fileName: '',
+                systemType: null,
+                resultStatus: null,
+                processEndDatetime: '',
+                processAtr: null,
+            };
             
             // grid list constructor
             self.imExErrorLog =  ko.observableArray([]);
@@ -85,6 +106,9 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                     self.imExExecuteResultLog = itemList[0];
                     self.datetime = nts.uk.time.formatDate(new Date(self.imExExecuteResultLog.processStartDatetime), "yyyy-MM-dd hh:mm:ss");
                     self.itemDataError().resultLog = itemList[0];
+                }
+                else {
+                     self.nameSetting('');   
                 }
 
                 // set to list csv data
