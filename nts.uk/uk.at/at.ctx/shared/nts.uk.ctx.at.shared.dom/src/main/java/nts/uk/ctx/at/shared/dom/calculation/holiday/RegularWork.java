@@ -47,6 +47,14 @@ public class RegularWork {
 
 	/** 加算する */
 	private int additionTime2;
+	
+	/*B5_22*/
+	/*就業時間帯毎の設定を可能とする*/
+	private boolean enableSetPerWorkHour1;
+	
+	/*B5_23*/
+	/*就業時間帯毎の設定を可能とする*/
+	private boolean enableSetPerWorkHour2;
 
 	/**
 	 * create From Java Type Regular Work
@@ -63,16 +71,18 @@ public class RegularWork {
 	 * @param incChildNursingCare2
 	 * @param notDeductLateleave2
 	 * @param additionTime2
+	 * @param enableSetPerWorkHour1
+	 * @param enableSetPerWorkHour2
 	 * @return
 	 */
 	public static RegularWork createFromJavaType(String companyId, int calcActualOperation1, int exemptTaxTime1,
 			int incChildNursingCare1, int additionTime1, int notDeductLateleave1, int deformatExcValue1,
 			int exemptTaxTime2, int calcActualOperation2, int incChildNursingCare2, int notDeductLateleave2,
-			int additionTime2) {
+			int additionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
 		return new RegularWork(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class),
 				exemptTaxTime1, incChildNursingCare1, additionTime1, notDeductLateleave1,
 				EnumAdaptor.valueOf(deformatExcValue1, DeformatExcValueAtr.class), exemptTaxTime2,
 				EnumAdaptor.valueOf(calcActualOperation2, CalcActualOperationAtr.class), incChildNursingCare2,
-				notDeductLateleave2, additionTime2);
+				notDeductLateleave2, additionTime2, enableSetPerWorkHour1 == 1 ? true : false, enableSetPerWorkHour2 == 1 ? true : false);
 	}
 }

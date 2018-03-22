@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDepLabor;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.RegularWork;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,6 +55,13 @@ public class HolidayAddtionFinder {
 			holidayAddtimeDto.setRegularWork(convertToDbTypeRegularWork(holidayAddtime.getRegularWork()));
 			holidayAddtimeDto.setFlexWork(convertToDbTypeFlexWork(holidayAddtime.getFlexWork()));
 			holidayAddtimeDto.setIrregularWork(convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork()));
+			holidayAddtimeDto.setHourlyPaymentAdditionSet(convertToDbTypeHourlyPaymentAdditionSet(holidayAddtime.getHourPaymentAddition()));
+			holidayAddtimeDto.setAddSetManageWorkHour(holidayAddtime.getAdditionSettingOfOvertime().getAdditionSettingOfOvertime().value);
+			holidayAddtimeDto.setAddingMethod1(holidayAddtime.getTimeHolidayAddition().get(0).getAddingMethod().value);
+			holidayAddtimeDto.setAddingMethod2(holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value);
+			holidayAddtimeDto.setWorkClass1(holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value);
+			holidayAddtimeDto.setWorkClass2(holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value);
+			
 		return holidayAddtimeDto;
 	}
 
@@ -80,6 +88,8 @@ public class HolidayAddtionFinder {
 			regularWorkDto.setIncChildNursingCareWork(regularWork.getIncChildNursingCare2());
 			regularWorkDto.setNotDeductLateleaveWork(regularWork.getNotDeductLateleave2());
 			regularWorkDto.setAdditionTimeWork(regularWork.getAdditionTime2());
+			regularWorkDto.setEnableSetPerWorkHour1(regularWork.isEnableSetPerWorkHour1() == true ? 1 : 0);
+			regularWorkDto.setEnableSetPerWorkHour2(regularWork.isEnableSetPerWorkHour2() == true ? 1 : 0);
 		return regularWorkDto;
 	}
 
@@ -108,6 +118,9 @@ public class HolidayAddtionFinder {
 			flexWorkDto.setNotDeductLateleaveWork(flexWork.getNotDeductLateleave2());
 			flexWorkDto.setPredeterminDeficiencyWork(flexWork.getPredeterminDeficiency2().value);
 			flexWorkDto.setAdditionTimeWork(flexWork.getAdditionTime2());
+			flexWorkDto.setEnableSetPerWorkHour1(flexWork.isEnableSetPerWorkHour1() == true ? 1 : 0);
+			flexWorkDto.setEnableSetPerWorkHour2(flexWork.isEnableSetPerWorkHour2() == true ? 1 : 0);
+			flexWorkDto.setAdditionWithinMonthlyStatutory(flexWork.getAdditionWithinMonthlyStatutory().value);
 		return flexWorkDto;
 	}
 
@@ -135,6 +148,30 @@ public class HolidayAddtionFinder {
 			laborDto.setIncChildNursingCareWork(labor.getIncChildNursingCare2());
 			laborDto.setNotDeductLateleaveWork(labor.getNotDeductLateleave2());
 			laborDto.setAdditionTimeWork(labor.getAdditionTime2());
+			laborDto.setEnableSetPerWorkHour1(labor.isEnableSetPerWorkHour1() == true ? 1 : 0);
+			laborDto.setEnableSetPerWorkHour2(labor.isEnableSetPerWorkHour2() == true ? 1 : 0);
 		return laborDto;
+	}
+	
+	private HourlyPaymentAdditionSetDto convertToDbTypeHourlyPaymentAdditionSet(HourlyPaymentAdditionSet hourlyPaymentAdditionSet) {
+		if (hourlyPaymentAdditionSet == null) {
+			return null;
+		}
+		
+		HourlyPaymentAdditionSetDto dto = new HourlyPaymentAdditionSetDto();
+		dto.setCalcPremiumVacation(hourlyPaymentAdditionSet.getCalcPremiumVacation().value);
+		dto.setAddition1(hourlyPaymentAdditionSet.getAddition1().value);;
+		dto.setDeformatExcValue(hourlyPaymentAdditionSet.getDeformatExcValue().value);
+		dto.setIncChildNursingCare(hourlyPaymentAdditionSet.getIncChildNursingCare().value);
+		dto.setDeduct(hourlyPaymentAdditionSet.isDeduct() == true ? 1 : 0);
+		dto.setCalculateIncludeIntervalExemptionTime1(hourlyPaymentAdditionSet.getCalculateIncludeIntervalExemptionTime1().value);
+		dto.setCalcWorkHourVacation(hourlyPaymentAdditionSet.getCalcWorkHourVacation().value);
+		dto.setAddition2(hourlyPaymentAdditionSet.getAddition2().value);
+		dto.setCalculateIncludCareTime(hourlyPaymentAdditionSet.getCalculateIncludCareTime().value);
+		dto.setNotDeductLateLeaveEarly(hourlyPaymentAdditionSet.getNotDeductLateLeaveEarly().value);
+		dto.setCalculateIncludeIntervalExemptionTime2(hourlyPaymentAdditionSet.getCalculateIncludeIntervalExemptionTime2().value);
+		dto.setEnableSetPerWorkHour1(hourlyPaymentAdditionSet.isEnableSetPerWorkHour1() == true ? 1 : 0);
+		dto.setEnableSetPerWorkHour2(hourlyPaymentAdditionSet.isEnableSetPerWorkHour2() == true ? 1 : 0);
+		return dto;
 	}
 }

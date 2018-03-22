@@ -49,15 +49,24 @@ public class WorkDepLabor {
 
 	/** 加算する */
 	private int additionTime2;
+	
+	/*B7_23*/
+	/*就業時間帯毎の設定を可能とする*/
+	private boolean enableSetPerWorkHour1;
+	
+	/*B7_24*/
+	/*就業時間帯毎の設定を可能とする*/
+	private boolean enableSetPerWorkHour2;
 
 	public static WorkDepLabor createFromJavaType(String companyId, int calcActualOperation1, int exemptTaxTime1,
 			int incChildNursingCare1, int additionTime1, int notDeductLateleave1, int deformatExcValue,
 			int exemptTaxTime2, int minusAbsenceTime2, int calcActualOperation2, int incChildNursingCare2,
-			int notDeductLateleave2, int additionTime2) {
+			int notDeductLateleave2, int additionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
 		return new WorkDepLabor(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class),
 				exemptTaxTime1, incChildNursingCare1, additionTime1, notDeductLateleave1,
 				EnumAdaptor.valueOf(deformatExcValue, DeformatExcValueAtr.class), exemptTaxTime2, minusAbsenceTime2,
 				EnumAdaptor.valueOf(calcActualOperation2, CalcActualOperationAtr.class), incChildNursingCare2,
-				notDeductLateleave2, additionTime2);
+				notDeductLateleave2, additionTime2,
+				enableSetPerWorkHour1 == 1 ? true : false, enableSetPerWorkHour2 == 1 ? true : false);
 	}
 }
