@@ -68,7 +68,7 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 		super(itemType);
 		this.delimiterSet = EnumAdaptor.valueOf(delimiterSet, DelimiterSetting.class);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
-		this.effectiveDigitLength = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
+		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
 		this.hourMinSelect = EnumAdaptor.valueOf(hourMinSelect, HourlySegment.class);
 		this.roundProc = EnumAdaptor.valueOf(roundProc, NotUseAtr.class);
 		this.decimalSelect = EnumAdaptor.valueOf(decimalSelect, DecimalSelection.class);

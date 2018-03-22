@@ -118,7 +118,7 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 
 	public OiomtInsTimeDatFmSet(String cid, int sysType, String conditionCode, int acceptItemNum, int delimiterSet,
 			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
-			String valueOfFixedValue, int startDigit, int endDigit, int roundProcCls) {
+			String valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
 		super();
 		this.insTimeDatFmSetPk = new OiomtInsTimeDatFmSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
