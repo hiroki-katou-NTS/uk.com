@@ -154,7 +154,7 @@ module nts.custombinding {
                         text-align: center;
                     }
 
-                    .layout-control .item-classification .table-container {
+                    .layout-control .item-controls .table-container {
                         max-width: calc(100% - 225px);
                         color: #000;
                         padding-top: 35px;
@@ -167,52 +167,59 @@ module nts.custombinding {
                         background: repeating-linear-gradient(#CFF1A5, #CFF1A5 35px, #aaa 36px, #CFF1A5 36px);
                     }
 
-                    .layout-control.dragable .item-classification .table-container {
+                    .layout-control.dragable .item-controls .table-container {
                         max-width: calc(100% - 240px);
                     }
                 
-                    .layout-control .item-classification .table-container.header-1rows {
+                    .layout-control .item-controls .table-container.header-1rows {
                         padding-top: 35px;
                     }
                 
-                    .layout-control .item-classification .table-container.header-2rows {
+                    .layout-control .item-controls .table-container.header-2rows {
                         padding-top: 70px;
                     }
                 
-                    .layout-control .item-classification .table-container.header-3rows {
+                    .layout-control .item-controls .table-container.header-3rows {
                         padding-top: 105px;
                     }
                 
-                    .layout-control .item-classification .table-container>div {
+                    .layout-control .item-controls .table-container>div {
                         overflow-y: auto;
                         max-height: 205px;
                         border-top: 1px solid #aaa;
                     }
                 
-                    .layout-control .item-classification .table-container>div table {
+                    .layout-control .item-controls .table-container>div table {
                         border-collapse: collapse;
                     }
                 
-                    .layout-control .item-classification td {
+                    .layout-control .item-controls td {
                         background-color: #fff;
                         border-left: 1px solid #aaa;
                     }
                 
-                    .layout-control .item-classification td,
-                    .layout-control .item-classification th {
+                    .layout-control .item-control td,
+                    .layout-control .item-control th,
+                    .layout-control .item-controls td,
+                    .layout-control .item-controls th {
                         padding: 0px;
                         border: 1px solid #aaa;
                     }
+
+                    .layout-control .item-control td,
+                    .layout-control .item-control th {
+                        background-color: #CFF1A5;
+                    }
                 
-                    .layout-control .item-classification td:first-child {
+                    .layout-control .item-controls td:first-child {
                         border-left: none;
                     }
                 
-                    .layout-control .item-classification td:last-child {
+                    .layout-control .item-controls td:last-child {
                         border-right: none;
                     }
                 
-                    .layout-control .item-classification th {
+                    .layout-control .item-controls th {
                         height: 0;
                         line-height: 0;
                         border: none;
@@ -220,7 +227,7 @@ module nts.custombinding {
                         white-space: nowrap;
                     }
                 
-                    .layout-control .item-classification th div {
+                    .layout-control .item-controls th div {
                         top: 0;    
                         height: 35px;
                         color: #000;
@@ -232,46 +239,50 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
                 
-                    .layout-control .item-classification thead>tr:first-child div {
+                    .layout-control .item-controls thead>tr:first-child div {
                         top: 0;
                     }
                 
-                    .layout-control .item-classification thead>tr:nth-child(2) div {
+                    .layout-control .item-controls thead>tr:nth-child(2) div {
                         top: 35px;
                     }
                 
-                    .layout-control .item-classification thead>tr:nth-child(3) div {
+                    .layout-control .item-controls thead>tr:nth-child(3) div {
                         top: 70px;
                     }
 
-                    .layout-control .item-classification th.index,
-                    .layout-control .item-classification td.index {
-                        min-width: 30px;
-                        text-align: center;
-                    }
-
-                    .layout-control .item-classification td input,
-                    .layout-control .item-classification td textarea {
+                    .layout-control .item-control td input,
+                    .layout-control .item-control td textarea,
+                    .layout-control .item-controls td input,
+                    .layout-control .item-controls td textarea {
                         border: 1px solid transparent;
                         border-radius: 0;
                     }
 
-                    .layout-control .item-classification td input:focus,
-                    .layout-control .item-classification td textarea:focus {
+                    .layout-control .item-control td input:focus,
+                    .layout-control .item-control td textarea:focus,
+                    .layout-control .item-controls td input:focus,
+                    .layout-control .item-controls td textarea:focus {
                         border: 1px dashed #0096f2;
                         box-shadow: none;
                     }
                 
-                    .layout-control .item-classification th:first-child div {
-                      border: none;
+                    .layout-control .item-controls th:first-child div {
+                        border: none;
                     }
                 
-                    .layout-control .item-classification tbody tr:first-child td {
-                      border-top: none;
+                    .layout-control .item-controls tbody tr:first-child td {
+                        border-top: none;
                     }
                 
-                    .layout-control .item-classification tbody tr:last-child td {
-                      border-bottom: none;
+                    .layout-control .item-controls tbody tr:last-child td {
+                        border-bottom: none;
+                    }
+                
+                    .layout-control .set-table-items thead th {
+                        padding: 0 3px;
+                        line-height: 32px;
+                        background-color: #CFF1A5;
                     }
 
                     .layout-control .item-classification div.item-sperator>hr {
@@ -468,7 +479,10 @@ module nts.custombinding {
                                             TIMEPOINT: 5,
                                             SELECTION: 6,
                                             SEL_RADIO: 7,
-                                            SEL_BUTTON: 8
+                                            SEL_BUTTON: 8,
+                                            READONLY: 9,
+                                            NUMBERIC_BUTTON: 10,
+                                            READONLY_BUTTON: 11
                                         },
                                         STRING_TYPE: {
                                             ANY: 1,
@@ -484,7 +498,8 @@ module nts.custombinding {
                                         },
                                         CTRL_TYPE: {
                                             SET: 1,
-                                            SINGLE: 2
+                                            SINGLE: 2,
+                                            SET_TABLE: 3
                                         },
                                         cls: $data, 
                                         _item: items && _.find(items(), function(x, i) { return i == 0; }), 
@@ -494,7 +509,7 @@ module nts.custombinding {
                                 <!-- ko if: layoutItemType == LAYOUT_TYPE.ITEM -->
                                 <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
                                         .filter(function(x) {
-                                                if ((_item || {}).type == CTRL_TYPE.SET) {
+                                                if ([CTRL_TYPE.SET, CTRL_TYPE.SET_TABLE].indexOf((_item || {}).type) > -1) {
                                                     return false;
                                                 }
                                                 if (__items.length == 1) {
@@ -574,6 +589,25 @@ module nts.custombinding {
                                                 name: 'ctr_template'
                                             }" class="single-item"></div>
                                         <!-- /ko -->
+                                    </div>
+                                    <!-- /ko -->
+                                    <!-- ko if: (_item || {}).type == CTRL_TYPE.SET_TABLE -->
+                                    <div class="set-table-items">
+                                        <table>
+                                            <thead>
+                                                <tr data-bind="foreach: { data: _items, as: '_column' }">
+                                                    <th data-bind="text: _column.itemName"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-bind="foreach: { data: _items, as: '_column' }">
+                                                    <td data-bind="template: { 
+                                                                data: _column,
+                                                                name: 'ctr_template'
+                                                            }"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <!-- /ko -->
                                 </div>
@@ -904,19 +938,20 @@ module nts.custombinding {
                              }, text: text('CPS001_106'), enable: editable">選択</button>
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
+                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
+                            <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                        <!-- /ko -->
                     </div>
                 </script>`;
 
         private services = {
             getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
-            //getCats: () => ajax(`ctx/pereg/person/info/category/findby/company`),
             getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
             getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
             getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
             getItemByGroups: (gids: Array<any>) => ajax(`ctx/pereg/person/groupitem/findby/listgroupId`, gids),
             getItemsById: (id: string) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/itemId/${id}`),
-            //getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemId`, ids),
             getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemIdv2`, ids)
         };
 
@@ -1103,7 +1138,7 @@ module nts.custombinding {
                                         item.personInfoCategoryID = def.perInfoCtgId;
 
                                         // setitem
-                                        if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                        if ([ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(def.itemTypeState.itemType) > -1) {
                                             let childs = _(defs)
                                                 .filter(x => x.itemParentCode == def.itemCode)
                                                 .orderBy(x => x.dispOrder)
@@ -1112,7 +1147,7 @@ module nts.custombinding {
                                             item.listItemDf = _.concat(item.listItemDf, childs);
                                             _.each(childs, c => {
                                                 // setitem
-                                                if (c.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                if ([ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(c.itemTypeState.itemType) > -1) {
                                                     let newchilds = _(defs)
                                                         .filter(x => x.itemParentCode == c.itemCode)
                                                         .orderBy(x => x.dispOrder)
@@ -2437,7 +2472,8 @@ module nts.custombinding {
     // define ITEM_TYPE is set or single item
     enum ITEM_TYPE {
         SET = 1, // List item info
-        SINGLE = 2 // Single item info
+        SINGLE = 2, // Single item info
+        SET_TABLE = 3
     }
 
     // define ITEM_SINGLE_TYPE
@@ -2450,7 +2486,10 @@ module nts.custombinding {
         TIMEPOINT = 5,
         SELECTION = 6,
         SEL_RADIO = 7,
-        SEL_BUTTON = 8
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        NUMBERIC_BUTTON = 10,
+        READONLY_BUTTON = 11
     }
 
     // define ITEM_STRING_DATA_TYPE
