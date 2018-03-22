@@ -47,7 +47,7 @@ public class LackOfStampingAlgorithm {
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
 
-		if (workStyle == WorkStyle.ONE_DAY_REST) {
+		if (workStyle != WorkStyle.ONE_DAY_REST) {
 
 			// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository.findByKey(employeeID, processingDate).get();
 			

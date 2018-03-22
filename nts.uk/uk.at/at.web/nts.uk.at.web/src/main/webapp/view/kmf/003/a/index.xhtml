@@ -68,7 +68,7 @@
 							</tr>
 							<tr></tr>
 							<tr>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_13')}</div></td>
+								<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF003_13')}</div></td>
 								<td>
 									<div class="inline-display">
 										<div class="a4_2"
@@ -83,7 +83,7 @@
 							</tr>
 							<tr></tr>
 							<tr>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_16')}</div></td>
+								<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF003_16')}</div></td>
 								<td>
 									<div class="cf"
 										data-bind="ntsSwitchButton: {
@@ -117,7 +117,7 @@
 								<td width="200"></td>
 								<td width="20"></td>
 								<td width="80"><input id="cond01" class="a7_7"
-									data-bind="ntsNumberEditor: { value: conditionValue01, enable: conditionValue01Enable, constraint: 'ConditionValue', name: '#[KMF003_23]' }" /></td>
+									data-bind="ntsNumberEditor: { value: conditionValue01, enable: conditionValue01Enable, constraint: 'ConditionValue', name: '#[KMF003_23]', required: useCls01 }" /></td>
 								<td width="120"><label class="a7_8"><span
 										data-bind="text: symbols"></span> ~ <span
 										data-bind="text: limitedValue01"></span><span

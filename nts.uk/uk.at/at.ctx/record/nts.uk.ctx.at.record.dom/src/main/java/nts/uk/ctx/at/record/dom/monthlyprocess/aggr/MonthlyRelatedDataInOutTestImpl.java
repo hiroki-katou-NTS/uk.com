@@ -15,6 +15,11 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
@@ -36,7 +41,10 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.Aggre
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -59,6 +67,10 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 	@Inject
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	
+	/** 管理期間の36協定時間リポジトリ */
+	@Inject
+	private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepository;
+	
 	/**
 	 * テスト入出力
 	 * @param companyId 会社ID
@@ -76,7 +88,6 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val returnValue = new AggregateMonthlyRecordValue();
 		
 		//*****start（テスト shuichi_ishida）　2017.12 検収用。仮データ設定。
-		/*
 		Random random = new Random();
 		val randomVal = random.nextInt(9) + 1;		// 1～9の乱数発生
 		val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
@@ -149,9 +160,20 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val excessOutsideWork = ExcessOutsideWorkOfMonthly.of(
 				new AttendanceTimeMonth(1200 + randomVal),
 				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonthWithMinus(0),
 				excoutList);
 		attendanceTime.setExcessOutsideWork(excessOutsideWork);
+		
+		// 36協定時間追加　2018.3.16
+		monthlyCalculation.setAgreementTime(
+				AgreementTimeOfMonthly.of(
+						new AttendanceTimeMonth(1300 + randomVal),
+						new LimitOneMonth(800 + randomVal),
+						new LimitOneMonth(0),
+						Optional.of(new LimitOneMonth(500 + randomVal)),
+						Optional.empty(),
+						AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR)
+			);
 		
 		// 縦計分追加　2018.2.8
 		val verticalTotal = attendanceTime.getVerticalTotal();
@@ -245,8 +267,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		if (randomVal >= 6) anyLeaveDays.put(1, anyLeave02);
 		vWorkDays.getWorkDays().setDays(new AttendanceDaysMonth(20.0 +  randomVal));
 		
-		returnValue.getAttendanceTimes().add(attendanceTime);
-		*/
+		returnValue.getAttendanceTimeList().add(attendanceTime);
 		//*****end（テスト shuichi_ishida）　2017.12 検収用。仮データ設定。
 		
 		//*****（テスト 2017.12 shuichi_ichida）　集計設定読み込み　（テストデータは、DB直接手入力）
@@ -259,6 +280,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		*/
 
 		//*****（テスト 2017.3.1 shuichi_ichida）　月別実績の丸め設定読み書き
+		/*
 		List<ItemRoundingSetOfMonthly> itemRoundingSets = new ArrayList<>();
 		itemRoundingSets.add(ItemRoundingSetOfMonthly.of(companyId, 12,
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN_OVER)));
@@ -277,6 +299,34 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val roundingSetOpt = this.repositories.getRoundingSetOfMonthly().find(companyId);
 		RoundingSetOfMonthly roundingSet = null;
 		if (roundingSetOpt.isPresent()) roundingSet = roundingSetOpt.get();
+		*/
+		
+		//*****（テスト　2018.3.16 shuichi_ishida）　管理期間の36協定時間読み書き
+		val agreementTimeOfManagePeriod = AgreementTimeOfManagePeriod.of(
+				employeeId,
+				yearMonth,
+				new Year(yearMonth.year()),
+				AgreementTimeOfMonthly.of(
+						new AttendanceTimeMonth(1200 + randomVal),
+						new LimitOneMonth(700 + randomVal),
+						new LimitOneMonth(0),
+						Optional.empty(),
+						Optional.of(new LimitOneMonth(400 + randomVal)),
+						AgreementTimeStatusOfMonthly.IN_EXCEPTION_LIMIT),
+				AgreementTimeBreakdown.of(
+						new AttendanceTimeMonth(500 + randomVal),
+						new AttendanceTimeMonth(0),
+						new AttendanceTimeMonth(0),
+						new AttendanceTimeMonth(0),
+						new AttendanceTimeMonth(0),
+						new AttendanceTimeMonth(0),
+						new AttendanceTimeMonth(0),
+						new AttendanceTimeMonth(0))
+			);
+		this.agreementTimeOfManagePeriodRepository.persistAndUpdate(agreementTimeOfManagePeriod);
+		val agreementTimeOpt = this.agreementTimeOfManagePeriodRepository.find(employeeId, yearMonth);
+		AgreementTimeOfManagePeriod agreementTime = null;
+		if (agreementTimeOpt.isPresent()) agreementTime = agreementTimeOpt.get();
 		
 		return returnValue;
 	}	

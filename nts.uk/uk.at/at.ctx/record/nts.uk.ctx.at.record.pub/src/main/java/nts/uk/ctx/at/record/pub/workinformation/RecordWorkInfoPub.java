@@ -15,5 +15,5 @@ public interface RecordWorkInfoPub {
 	 */
 	RecordWorkInfoPubExport getRecordWorkInfo(String employeeId, GeneralDate ymd);
 
-	InfoCheckNotRegisterPubExport getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
+	Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
 }

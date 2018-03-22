@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+
+
+			<script>
+				var dialogSize = {
+					width : 600,
+					height : 900
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="cps001.g.style.css" />
+			<com:scriptfile path="cps001.g.service.js" />
+			<com:scriptfile path="cps001.g.vm.js" />
+			<com:scriptfile path="cps001.g.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+
+			<div id="functions-area">
+				<button tabindex="1" data-bind="" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
+				<button tabindex="2" data-bind="" class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
+				<button tabindex="3" data-bind="" class="btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="4" data-bind="" class="danger btnStyle">#{i18n.getText('CPS001_111')}</button>
+			</div>
+
+			<div id="contents-area">
+				<div class="grid-container">
+					<div data-bind="ntsCheckBox: { checked: true, enable: true}">#{i18n.getText('CPS001_125')}</div>
+					<table id="single-list"
+						data-bind="ntsGridList: {												
+						height: 250, 
+		 				dataSource: items, 
+						primaryKey: 'code', 
+						columns: columns, 
+						features: [{optionsValue: 'code', optionsText: 'name'}], 
+						multiple: false, 
+			 				value: currentCode 
+			 		}"></table>
+				</div>
+				<div class="cls-detail">
+					<div class="div_line">
+						<div class="line_col_1"><p>年休付与日</p>
+						</div>
+
+						<div class="line_col_2">
+							<div
+								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						</div>
+					</div>
+					<div class="div_line">
+						<div class="line_col_1"><p>年休期限日</p>
+						</div>
+
+						<div class="line_col_2">
+							<div
+								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						</div>
+					</div>
+					<div class="div_line">
+						<div class="line_col_1"><p>年休期限切れ状態</p>
+						</div>
+
+						<div class="line_col_2">
+							<div class="cf"
+								data-bind="ntsSwitchButton: {
+								name: 'Sample Switch',
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode,
+								required: true,
+								enable: true }"></div>
+						</div>
+					</div>
+					<div class="div_line">
+						<div class="line_col_1">
+							<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS002_104')}</div>
+						</div>
+
+						<div class="line_col_2">
+							<div>#{i18n.getText('CPS001_114')}</div>
+						</div>
+					</div>
+					<div>
+						<table id="fixed_table">
+							<tr>
+								<td style="width: 50px;"></td>
+								<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
+								<td><p>付与日数</p></td>
+								<td><input class="resize_Edittor" tabindex="9"
+									data-bind="ntsNumberEditor: {
+	         							  name: '',
+	                                      value: 0,
+	                                      option: {
+	                                       decimallength: 1
+	                                      },
+	                                      enable: true, 
+	                                      required: true,
+	                                      }" />
+								</td>
+								<td><p>付与時間</p></td>
+								<td><input class="resize_Edittor"
+									data-bind="ntsTimeEditor: {
+										value: '12:00',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 50px;"></td>
+								<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div></td>
+								<td><p>使用日数</p></td>
+								<td><input tabindex="9" class="resize_Edittor"
+									data-bind="ntsNumberEditor: {
+	         							  name: '',
+	                                      value: 0,
+	                                      option: {
+	                                       decimallength: 1
+	                                      },
+	                                      enable: true, 
+	                                      required: true,
+	                                      }" />
+								</td>
+								<td><p>使用時間</p></td>
+								<td><input class="resize_Edittor"
+									data-bind="ntsTimeEditor: {
+										value: '12:00',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+								</td>
+							</tr>
+							<tr>
+								<td style="width: 50px;"></td>
+								<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div></td>
+								<td><p>残日数</p></td>
+								<td><input class="resize_Edittor" tabindex="9"
+									data-bind="ntsNumberEditor: {
+	         							  name: '',
+	                                      value: 0,
+	                                      option: {
+	                                       decimallength: 1
+	                                      },
+	                                      enable: true, 
+	                                      required: true,
+	                                      }" />
+								</td>
+								<td><p>残時間</p></td>
+								<td><input class="resize_Edittor"
+									data-bind="ntsTimeEditor: {
+										value: '12:00',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+								</td>
+							</tr>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

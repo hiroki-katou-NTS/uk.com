@@ -34,4 +34,12 @@ public interface AppHolidayWorkRepository {
 	 * @param appID
 	 */
 	public void delete(String companyID, String appID);
+	/**
+	 * get Application Holiday Work and Frame
+	 * @author hoatt
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public Optional<AppHolidayWork> getAppHolidayWorkFrame(String companyID, String appID);
 }

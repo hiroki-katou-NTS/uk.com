@@ -1,22 +1,29 @@
-build/
-bin/
-taskArtifacts/
-.nb-gradle/
-.gradle/
-.classpath
-.project
-.settings/
-.sass-cache/
-.metadata/
-.recommenders/
-*.class
-*.js.map
-*.orig
-*.js
-*.launch
-nts.uk/uk.com/gradlew.bat
-nts.uk/uk.com/gradlew
-nts.uk/uk.com/gradle/wrapper/gradle-wrapper.properties
-nts.uk/uk.com/gradle/wrapper/gradle-wrapper.jar
+#ignore project build folders
+**/build*
+**/bin*
 
-nts.uk/uk.com/com.web/nts.uk.com.web/src/main/webapp/view/cmf/001/d/cmf001.d.vm.ts
+#ignore gradle cache folder
+**/.gradle*
+**/.nb-gradle*
+**/.settings*
+
+#ignore sass-cache folder
+**/.sass-cache*
+
+**/.metadata*
+**/.recommenders*
+**/taskArtifacts*
+
+#ignore all gradle project files
+*.classpath
+*.project
+*.launch
+*.class
+*.orig
+
+#ignore all js, map file
+**/*.js*
+
+# except all js, map in base.web
+!**/base.web/**/*.js*
+**/base.web/**/*bundles.js*
