@@ -39,5 +39,5 @@ public interface ShaFlexMonthActCalSetRepository {
    *
    * @param empCalSetMonthlyFlex the emp cal set monthly flex
    */
-  void delete(ShaFlexMonthActCalSet empCalSetMonthlyFlex);
+  void remove(ShaFlexMonthActCalSet empCalSetMonthlyFlex);
 }
