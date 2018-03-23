@@ -61,9 +61,10 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		if(scheUpdate) {
 			dailyPerfor.setScheduleWorkInformation(workInfor);
-			workRepository.updateByKey(dailyPerfor);
+			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			dailyPerfor.setRecordWorkInformation(workInfor);
+			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		
 		//日別実績の編集状態
@@ -86,11 +87,14 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 						itemData.getAttendanceItemId(), itemData.getYmd(), 
 						EditStateSetting.REFLECT_APPLICATION);
 				lstDaily.add(data);
+			}else {
+				EditStateOfDailyPerformance insertData = new EditStateOfDailyPerformance(employeeId, z, dateData, EditStateSetting.REFLECT_APPLICATION);
+				lstDaily.add(insertData);
 			}
 		});
 		
 		if(!lstDaily.isEmpty()) {
-			dailyReposiroty.updateByKey(lstDaily);
+			dailyReposiroty.updateByKeyFlush(lstDaily);
 		}
 	}
 	
@@ -127,10 +131,18 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		
 		lstTimeSheetFrameNo.add(para.getFrameNo(), timeSheet); //can xac nhan lai
 		dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
-		workRepository.updateByKey(dailyPerfor);
+		workRepository.updateByKeyFlush(dailyPerfor);
 		//日別実績の編集状態
 		//予定開始時刻の項目ID
 		List<Integer> lstItem = new ArrayList<Integer>();
+		if(para.isPreCheck()) {
+			lstItem.add(3);
+			lstItem.add(5);	
+		} else {
+			lstItem.add(4);
+			lstItem.add(6);
+		}
+		
 		//TODO add lstItem
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
@@ -171,10 +183,18 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 				timeLeavingWork.getLeaveStamp());
 		lstTimeLeavingWorks.add(lstTimeLeavingWorks.indexOf(timeLeavingWork), timeLeavingWorkTmp);
 		TimeLeavingOfDailyPerformance tmpData = new TimeLeavingOfDailyPerformance(para.getEmployeeId(), timeLeavingOfDailyData.getWorkTimes(), lstTimeLeavingWorks, para.getDateData());
-		timeLeavingOfDaily.update(tmpData);
+		timeLeavingOfDaily.updateFlush(tmpData);
 		//開始時刻の編集状態を更新する		
-		//予定項目ID=出勤の項目ID		
-		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), this.lstWorkOfItem());
+		//予定項目ID=出勤の項目ID	
+		List<Integer> lstItem = new ArrayList<Integer>();
+		if(para.isPreCheck()) {
+			lstItem.add(31);
+			lstItem.add(41);	
+		} else {
+			lstItem.add(34);
+			lstItem.add(44);
+		}
+		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
 	}
 	/**
@@ -220,11 +240,17 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			}
 		});
 
-		attendanceTime.update(attendanceTimeData);
-		
+		attendanceTime.updateFlush(attendanceTimeData);		
 		//残業時間の編集状態を更新する
 		//日別実績の編集状態  予定項目ID=残業時間(枠番)の項目ID
-		this.updateEditStateOfDailyPerformance(employeeId, dateData, this.lstOvertimeItem());
+		List<Integer> lstOverTemp = this.lstOvertimeItem();
+		for(int i = 1; i <= 10; i++) {
+			if(!mapOvertime.containsKey(i)) {
+				Integer item = this.lstOvertimeItem().get(i - 1); 
+				lstOverTemp.remove(item);
+			}
+		}
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstOverTemp);
 	}
 	/**
 	 * 予定項目ID=残業時間(枠番)の項目ID
@@ -234,9 +260,11 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		List<Integer> lstItem = new ArrayList<Integer>();
 		lstItem.add(220);
 		lstItem.add(225);
+		lstItem.add(230);
 		lstItem.add(235);
 		lstItem.add(240);
 		lstItem.add(245);
+		lstItem.add(250);
 		lstItem.add(255);
 		lstItem.add(260);
 		lstItem.add(265);
@@ -258,7 +286,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		ExcessOfStatutoryMidNightTime exMidNightTime = excessOfStatutory.getExcessOfStatutoryMidNightTime();
 		exMidNightTime.getTime().setTime(new AttendanceTime(timeNight));
-		attendanceTime.update(attendanceTimeData);
+		attendanceTime.updateFlush(attendanceTimeData);
 		//所定外深夜時間の編集状態を更新する
 		List<Integer> lstNightItem = new ArrayList<Integer>();//所定外深夜時間の項目ID
 		lstNightItem.add(556);		
@@ -296,7 +324,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			x.getTime().setTime(new AttendanceTime(0));
 		});
 		
-		attendanceTime.update(attendanceTimeData);
+		attendanceTime.updateFlush(attendanceTimeData);
 		//休出時間(深夜)(法内)の編集状態を更新する
 		List<Integer> lstItem = new ArrayList<Integer>();
 		//(法定区分=法定外休出)の時間の項目ID ???
@@ -327,7 +355,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		OverTimeOfDaily workHolidayTime = optOverTimeOfDaily.get();
 		FlexTime flexTimeData = workHolidayTime.getFlexTime();
 		flexTimeData.getFlexTime().setTime(new AttendanceTimeOfExistMinus(flexTime));
-		attendanceTime.update(attendanceTimeData);
+		attendanceTime.updateFlush(attendanceTimeData);
 		//フレックス時間の編集状態を更新する
 		//日別実績の編集状態
 		List<Integer> lstItem = new ArrayList<Integer>();//フレックス時間の項目ID

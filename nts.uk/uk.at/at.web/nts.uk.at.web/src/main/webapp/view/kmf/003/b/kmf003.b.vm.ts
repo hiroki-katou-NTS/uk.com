@@ -280,6 +280,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         submit() {
             var self = this;
+            var checkErr = true;
             
             $('#reference-date').ntsError('clear');
             
@@ -309,22 +310,34 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 return;
             }
         
-            service.addYearHolidayGrant(grantHolidayTblList).done(function(){
-                nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-            }).fail(function(error){
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
-                    if(error.messageId === "Msg_266") {
-                        $('.year-input1').focus();
-                    } else if(error.messageId === "Msg_268") {
-                        
-                    } else if(error.messageId === "Msg_269") {
-                        $('.year-input1').focus();
-                    } else if(error.messageId === "Msg_270") {
+            _.forEach(grantHolidayTblList, function(item) {
+                if(item.month != null && item.year != null && (item.grantDays == null || item.grantDays == "")) {
+                    checkErr = false;
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
                         $('#b2_1').focus();
-                    }
-                }); 
+                    });
+                    return;
+                }
             });
+            
+            if(checkErr){
+                service.addYearHolidayGrant(grantHolidayTblList).done(function(){
+                    nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                        if(error.messageId === "Msg_266") {
+                            $('.year-input1').focus();
+                        } else if(error.messageId === "Msg_268") {
+                            
+                        } else if(error.messageId === "Msg_269") {
+                            $('.year-input1').focus();
+                        } else if(error.messageId === "Msg_270") {
+                            $('#b2_1').focus();
+                        }
+                    }); 
+                });
+            }
         }
         
         /**

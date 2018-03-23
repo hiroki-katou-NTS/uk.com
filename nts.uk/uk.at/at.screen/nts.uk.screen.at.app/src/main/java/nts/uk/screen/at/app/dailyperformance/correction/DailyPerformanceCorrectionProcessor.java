@@ -54,6 +54,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWit
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
@@ -193,6 +194,13 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
+		
+		// identityProcessDto show button A2_6
+		//アルゴリズム「本人確認処理の利用設定を取得する」を実行する
+		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
+		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
+				: new IdentityProcessUseSetDto(false, false, null));
+		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);		
 		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 		getHolidaySettingData(screenDto);
@@ -395,7 +403,7 @@ public class DailyPerformanceCorrectionProcessor {
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
-				lockData(sId, screenDto, dailyRecOpeFun, data);
+				lockData(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
 
@@ -428,9 +436,6 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(lstData);
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
-		// identityProcessDto show button A2_6
-		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
-		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get() : new IdentityProcessUseSetDto(false, false));
 		return screenDto;
 	}
 
@@ -623,36 +628,45 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	private void lockData(String sId, DailyPerformanceCorrectionDto screenDto, DailyRecOpeFuncDto dailyRecOpeFun,
-			DPDataDto data) {
+			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto) {
 		// disable, enable check sign no 10
 		if (dailyRecOpeFun != null) {
 			if (!sId.equals(data.getEmployeeId())) {
 				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 			} else {
-				int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
-				int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
-				// lock sign
-				if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-					if (data.getError().contains("ER")) {
-						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
-					} else {
-						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				//if (identityProcessUseSetDto.isPresent()) {
+				if (dailyRecOpeFun != null) {
+					//int selfConfirmError = identityProcessUseSetDto.get().getYourSelfConfirmError();
+					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
+					// lock sign
+					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+						if (data.getError().contains("ER")) {
+							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+						} else {
+							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+						}
+						// thieu check khi co data
+					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+						// co the dang ky data nhưng ko đăng ký được check box
 					}
-					// thieu check khi co data
-				} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-					// co the dang ky data nhưng ko đăng ký được check box
 				}
-				// lock approval
-				if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-					if (data.getError().contains("ER")) {
-						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
-					} else {
-						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+
+				//if (approvalUseSettingDto.isPresent()) {
+				if (dailyRecOpeFun != null) {
+					// lock approval
+					//int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
+					int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
+					if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+						if (data.getError().contains("ER")) {
+							screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
+						} else {
+							screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+						}
+						// thieu check khi co data
+					} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+						// co the dang ky data nhưng ko đăng ký được check box
 					}
-					// thieu check khi co data
-				} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-					// co the dang ky data nhưng ko đăng ký được check box
 				}
 			}
 		}

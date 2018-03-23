@@ -28,19 +28,17 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 
 	@Override
 	public List<Integer> lstScheWorkTimeType() {
-		List<Integer> lstItem = new ArrayList();
-		lstItem.add(3);
-		lstItem.add(4);
-		lstItem.add(5);
-		lstItem.add(6);
+		List<Integer> lstItem = new ArrayList<>();
+		lstItem.add(1);
+		lstItem.add(2);
 		return lstItem;
 	}
 
 	@Override
 	public List<Integer> lstItemRecord() {
 		List<Integer> lstItem = new ArrayList<>();
-		lstItem.add(1);
-		lstItem.add(2);
+		lstItem.add(28);
+		lstItem.add(29);
 		return lstItem;
 	}
 

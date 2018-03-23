@@ -4,8 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.LogonInfoDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforOfDailyPerformDto;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
@@ -26,11 +25,10 @@ public class PCLogOnInforOfDailyPerformFinder extends FinderFacade {
 		PCLogOnInfoOfDaily domain = this.repo.find(employeeId, baseDate).orElse(null);
 		if (domain != null) {
 			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
-					(c) -> new TimeSheetDto(
-									c.getWorkNo() == null ? null : c.getWorkNo().v(),
-									TimeStampDto.createTimeStamp(c.getLogOn().orElse(null)),
-									TimeStampDto.createTimeStamp(c.getLogOff().orElse(null)),
-									0
+					(c) -> new LogonInfoDto(
+								c.getWorkNo() == null ? null : c.getWorkNo().v(),
+								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
+								c.getLogOff().isPresent() ? c.getLogOff().get().valueAsMinutes() : null
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
