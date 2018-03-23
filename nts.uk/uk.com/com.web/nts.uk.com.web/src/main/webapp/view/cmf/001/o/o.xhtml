@@ -34,17 +34,17 @@
 				</table>
 				<table style="width: 100%;">
 					<tr>
-						<td rowspan="2" style="width: 400px;">
-							<div class="" style="width: 400px; float: left;">
+						<td rowspan="2" style="width: 460px;">
+							<div class="" style="width: 460px; float: left;">
 								<!--O4_1 条件設定選択(パネル)-->
 								<div
-									data-bind="ntsPanel:{width: '360px', height: '430px', direction: 'none', showIcon: true, visible: true}">
+									data-bind="ntsPanel:{width: '425px', height: '430px', direction: 'none', showIcon: true, visible: true}">
 									<div class="valign-center control-group cf">
 										<!--O4_2 コード/名称-->
 										<div class="pull-left"
 											data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF001_438')}'}"></div>
 										<!--O4_3 絞り込み検索-->
-										<div class="pull-left" tabindex="2" style="width: 270px"
+										<div class="pull-left" tabindex="2" style="width: 335px"
 											data-bind="ntsSearchBox: {
 											searchMode: 'filter', 
 											targetKey: 'dispConditionSettingCode', 
@@ -62,8 +62,8 @@
 											primaryKey: 'dispConditionSettingCode', 
 											showNumbering: true,
 				 							columns: [
-										    	{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 260, formatter: _.escape }
+										    	{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 40, formatter: _.escape },
+										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 345, formatter: _.escape }
 										    ], 
 											multiple: false,
 											value: selectedConditionCd}">
@@ -122,7 +122,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="vertical-align: bottom; padding-left: 10px;">
+						<td style="vertical-align: bottom; padding-left: 20px;">
 							<!--O6_1 ←処理を選びなおす-->
 							<button id="O6_1" class="large" data-bind="click: gotoA"
 								tabindex="5">#{i18n.getText('CMF001_448')}</button> <!--O6_2 次へ→-->
