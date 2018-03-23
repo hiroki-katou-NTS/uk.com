@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.DeleteEmploymentCompensatoryCommandHandler;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.SaveCompensatoryLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.SaveCompensatoryLeaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.SaveEmploymentCompensatoryCommand;
@@ -49,7 +50,10 @@ public class CompensatoryLeaveWs extends WebService {
 	
 	@Inject
 	private CompensatoryLeaveEmploymentFinder compensatoryLeaveEmploymentFinder;
-
+	
+	@Inject
+	private DeleteEmploymentCompensatoryCommandHandler deleteEmploymentCompensatoryCommandHandler;
+	
 	/**
 	 * Update.
 	 *
@@ -61,7 +65,7 @@ public class CompensatoryLeaveWs extends WebService {
 	public void save(SaveCompensatoryLeaveCommand command) {
 		this.saveCompensatoryLeaveCommandHandler.handle(command);
 	}
-
+	
 	/**
 	 * Find by company id.
 	 *
@@ -170,5 +174,17 @@ public class CompensatoryLeaveWs extends WebService {
 	@Path("employment/findsetting/{employmentCode}")
 	public CompensatoryLeaveEmSettingDto getEmploymentSetting(@PathParam("employmentCode") String employmentCode) {
 		return compensatoryLeaveEmploymentFinder.findByEmploymentCode(employmentCode);
+	}
+	
+	/**
+	 * Delete.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("employment/delete")
+	public void deleteEmploymentSetting(SaveEmploymentCompensatoryCommand command) {
+		this.deleteEmploymentCompensatoryCommandHandler.handle(command);
 	}
 }
