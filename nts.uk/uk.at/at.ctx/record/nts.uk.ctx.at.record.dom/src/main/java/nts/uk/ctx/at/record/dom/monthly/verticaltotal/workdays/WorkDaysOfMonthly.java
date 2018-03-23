@@ -182,7 +182,6 @@ public class WorkDaysOfMonthly {
 		this.temporaryWorkTimes.aggregate(temporaryTimeOfDaily);
 		
 		// 休業日数の集計
-		//*****（未）　任意休業と固定休業の振り分けは、設計が確定してから実装。
 		this.leave.aggregate(workTypeDaysCountTable);
 	}
 }

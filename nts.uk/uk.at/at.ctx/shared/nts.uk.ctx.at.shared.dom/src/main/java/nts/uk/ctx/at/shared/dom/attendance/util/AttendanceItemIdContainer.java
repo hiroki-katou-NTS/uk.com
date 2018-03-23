@@ -33,6 +33,11 @@ public class AttendanceItemIdContainer {
 
 		ITEM_ID_CONTAINER.put(740, "日別実績の備考.備考");
 
+		ITEM_ID_CONTAINER.put(794, "日別実績のPCログオン情報.ログオン情報.ログオン1");
+		ITEM_ID_CONTAINER.put(795, "日別実績のPCログオン情報.ログオン情報.ログオフ1");
+		ITEM_ID_CONTAINER.put(796, "日別実績のPCログオン情報.ログオン情報.ログオン2");
+		ITEM_ID_CONTAINER.put(797, "日別実績のPCログオン情報.ログオン情報.ログオフ2");
+
 		ITEM_ID_CONTAINER.put(756, "日別実績の遅刻時間．インターバル免除時間.インターバル時間");
 		ITEM_ID_CONTAINER.put(757, "日別実績の遅刻時間．インターバル免除時間.免除時間");
 		ITEM_ID_CONTAINER.put(758, "日別実績の遅刻時間．インターバル免除時間.免除控除時間");
@@ -701,6 +706,7 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put(134, "日別実績の勤怠時間.実績時間.総労働時間.外出時間帯.補正後時間帯.戻り.打刻.時刻7");
 		ITEM_ID_CONTAINER.put(141, "日別実績の勤怠時間.実績時間.総労働時間.外出時間帯.補正後時間帯.戻り.打刻.時刻8");
 		ITEM_ID_CONTAINER.put(148, "日別実績の勤怠時間.実績時間.総労働時間.外出時間帯.補正後時間帯.戻り.打刻.時刻9");
+		ITEM_ID_CONTAINER.put(155, "日別実績の勤怠時間.実績時間.総労働時間.外出時間帯.補正後時間帯.戻り.打刻.時刻10");
 		ITEM_ID_CONTAINER.put(316, "日別実績の勤怠時間.実績時間.総労働時間.加給時間.加給時間.加給時間>時間1");
 		ITEM_ID_CONTAINER.put(317, "日別実績の勤怠時間.実績時間.総労働時間.加給時間.加給時間.加給時間>時間2");
 		ITEM_ID_CONTAINER.put(318, "日別実績の勤怠時間.実績時間.総労働時間.加給時間.加給時間.加給時間>時間3");

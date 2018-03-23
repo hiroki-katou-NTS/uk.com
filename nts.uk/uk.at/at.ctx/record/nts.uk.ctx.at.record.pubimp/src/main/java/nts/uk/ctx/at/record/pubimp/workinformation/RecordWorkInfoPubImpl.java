@@ -113,18 +113,18 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	}
 
 	@Override
-	public InfoCheckNotRegisterPubExport getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
+	public Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
 		 Optional<InfoCheckNotRegisterPubExport> data = workInformationRepository.find(employeeId, ymd).map(c->convertToExport(c));
 		if(data.isPresent()) {
-			return data.get();
+			return data;
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordWorkInformation().getWorkTimeCode().v(),
+				domain.getRecordWorkInformation().getWorkTimeCode()==null?"":domain.getRecordWorkInformation().getWorkTimeCode().v(),
 				domain.getRecordWorkInformation().getWorkTypeCode().v()
 				);
 	}

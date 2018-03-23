@@ -117,8 +117,8 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 	public void startEndTimeOutput(PreOvertimeParameter param,
 			WorkInfoOfDailyPerformance workInfo) {
 		//反映する開始終了時刻を求める
-		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getRecordWorkInformation().getWorkTimeCode().v(), 
-				workInfo.getRecordWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getRecordWorkInformation().getWorkTimeCode() == null ? null : workInfo.getRecordWorkInformation().getWorkTimeCode().v(), 
+				workInfo.getRecordWorkInformation().getWorkTypeCode() == null ? null : workInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		ScheStartEndTimeReflectOutput findStartEndTime = scheTimereflect.findStartEndTime(param, workInfor);
 		//ジャスト遅刻早退により時刻を編集する
 		StartEndTimeOutput justLateEarly = this.justLateEarly(workInfor.getWorktimeCode(), findStartEndTime);
@@ -157,7 +157,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 
 	@Override
 	public StartEndTimeOutput justLateEarly(String worktimeCode, ScheStartEndTimeReflectOutput startEndTime) {
-		StartEndTimeOutput startEnd = null;
+		StartEndTimeOutput startEnd = new StartEndTimeOutput(null, null, null, null);
 		// INPUT．１回勤務反映区分をチェックする
 		if(startEndTime.isCountReflect1Atr()) {
 			//ジャスト遅刻により時刻を編集する

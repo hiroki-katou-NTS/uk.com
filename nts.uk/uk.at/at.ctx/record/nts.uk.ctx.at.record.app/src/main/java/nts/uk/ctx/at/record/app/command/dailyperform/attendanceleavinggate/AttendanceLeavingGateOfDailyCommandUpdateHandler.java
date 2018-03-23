@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 @Stateless
 public class AttendanceLeavingGateOfDailyCommandUpdateHandler extends CommandFacade<AttendanceLeavingGateOfDailyCommand> {
 
-	//TODO create table and write repo
 	@Inject
 	private AttendanceLeavingGateOfDailyRepo repo;
 
@@ -18,7 +17,7 @@ public class AttendanceLeavingGateOfDailyCommandUpdateHandler extends CommandFac
 	protected void handle(CommandHandlerContext<AttendanceLeavingGateOfDailyCommand> context) {
 		AttendanceLeavingGateOfDailyCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.getData().get());
+			repo.update(command.getData().get());
 		}
 	}
 }

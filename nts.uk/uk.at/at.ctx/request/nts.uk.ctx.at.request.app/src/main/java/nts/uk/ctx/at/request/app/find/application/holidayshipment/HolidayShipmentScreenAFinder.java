@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
@@ -39,6 +40,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -114,10 +117,16 @@ public class HolidayShipmentScreenAFinder {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private BasicScheduleService basicService;
-
+	
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 	AppCommonSettingOutput appCommonSettingOutput;
+	RecruitmentApp recApp;
+	AbsenceLeaveApp absApp;
+	ApplicationMetaOutput recAppOutput;
+	ApplicationMetaOutput absAppOutput;
+	String companyID;
+	HolidayShipmentDto output;
 
 	/**
 	 * start event
@@ -127,12 +136,13 @@ public class HolidayShipmentScreenAFinder {
 	 * @param uiType
 	 * @return HolidayShipmentDto
 	 */
+	// Screen A Start
 	public HolidayShipmentDto startPage(String employeeID, String initDateInput, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
 		String companyID = AppContexts.user().companyId();
 		GeneralDate initDate = initDateInput == null ? null : GeneralDate.fromString(initDateInput, DATE_FORMAT);
-		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
 		// アルゴリズム「起動前共通処理（新規）」を実行する
+		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
 
 		GeneralDate refDate = output.getRefDate();
 
@@ -162,22 +172,6 @@ public class HolidayShipmentScreenAFinder {
 		}
 
 		return output;
-	}
-
-	/**
-	 * find by Id
-	 * 
-	 * @param employeeID
-	 * @param initDateInput
-	 * @param uiType
-	 * @return HolidayShipmentDto
-	 */
-
-	public HolidayShipmentDto findByID(String appID) {
-		HolidayShipmentDto output = new HolidayShipmentDto();
-		// 14-1.詳細画面起動前申請共通設定を取得する
-		return output;
-
 	}
 
 	public ChangeWorkTypeDto changeWorkType(String workTypeCD, String wkTimeCD) {
@@ -230,25 +224,27 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	public static GeneralDate DetRefDate(GeneralDate takingOutDate, GeneralDate holidayDate) {
+	public static GeneralDate DetRefDate(GeneralDate recDate, GeneralDate absDate) {
 
-		if (holidayDate != null && takingOutDate != null) {
+		if (absDate != null && recDate != null) {
 
-			if (takingOutDate.after(holidayDate)) {
+			if (recDate.after(absDate)) {
 
-				return holidayDate;
+				return absDate;
 			} else {
-				return takingOutDate;
+				return recDate;
 
 			}
 		} else {
-			if (takingOutDate != null) {
-				return holidayDate;
-			} else {
-				return takingOutDate;
+			if (recDate != null) {
+				return recDate;
+			}
+			if (absDate != null) {
+				return absDate;
 			}
 
 		}
+		return null;
 
 	}
 
@@ -306,7 +302,7 @@ public class HolidayShipmentScreenAFinder {
 		return result;
 	}
 
-	private void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate recDate,
+	public void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate recDate,
 			String recWkTypeCD, String recWkTimeCD, GeneralDate absDate, String absWkTypeCD, String absWkTimeCD,
 			HolidayShipmentDto output) {
 		// アルゴリズム「振休振出申請設定の取得」を実行する
@@ -321,9 +317,9 @@ public class HolidayShipmentScreenAFinder {
 		// アルゴリズム「基準日別設定の取得」を実行する
 		getDateSpecificSetting(companyID, employeeID, refDate, false, recWkTypeCD, recWkTimeCD, absWkTypeCD,
 				absWkTimeCD, appCommonSettingOutput, output);
-
+		// アルゴリズム「実績の取得」を実行する
 		getAchievement(companyID, employeeID, recDate);
-
+		// アルゴリズム「実績の取得」を実行する
 		getAchievement(companyID, employeeID, absDate);
 
 	}
@@ -506,5 +502,159 @@ public class HolidayShipmentScreenAFinder {
 		}
 		return result;
 	}
+	// Screen A End
 
+	// Screen B Start
+//	public HolidayShipmentDto findByID(String applicationID) {
+//		output = new HolidayShipmentDto();
+//		companyID = AppContexts.user().companyId();
+//		String employeeID = AppContexts.user().employeeId();
+//		boolean isRecApp = isRecApp(applicationID);
+//		// 14-1.詳細画面起動前申請共通設定を取得する
+//		Optional<Application_New> appOutputOpt = appRepo.findByID(companyID, applicationID);
+//		// 14-2.詳細画面起動前モードの判断
+//		if (appOutputOpt.isPresent()) {
+//			Application_New appOutput = appOutputOpt.get();
+//
+//			output.setApplication(ApplicationDto_New.fromDomain(appOutput));
+//			DetailedScreenPreBootModeOutput bootOutput = bootMode.judgmentDetailScreenMode(companyID, employeeID,
+//					applicationID, appOutput.getAppDate());
+//
+//			if (bootOutput != null) {
+//				// 14-3.詳細画面の初期モード
+//				Optional<ApplicationSetting> appSetOpt = appSetRepo.getApplicationSettingByComID(companyID);
+//				if (appSetOpt.isPresent()) {
+//					ApplicationSetting appSet = appSetOpt.get();
+//					output.setApplicationSetting(ApplicationSettingDto.convertToDto(appSet));
+//				}
+//				if (isRecApp) {
+//					// 申請＝振出申請
+//					// アルゴリズム「振出申請に対応する振休情報の取得」を実行する
+//					getRecApp(applicationID);
+//
+//				} else {
+//					// 申請＝振休申請
+//					// アルゴリズム「振休申請に対応する振出情報の取得」を実行する
+//					getAbsApp(applicationID);
+//				}
+//				// アルゴリズム「基準申請日の決定」を実行する
+//
+//				GeneralDate recAppDate = recAppOutput != null ? recAppOutput.getAppDate() : null;
+//				GeneralDate absAppDate = absAppOutput != null ? absAppOutput.getAppDate() : null;
+//				GeneralDate refDate = HolidayShipmentFinder.DetRefDate(recAppDate, absAppDate);
+//				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
+//				commonProcessAtStartup(employeeID, employeeID, refDate, recAppDate, recApp.getWorkTypeCD(),
+//						recApp.getWorkTimeCD().v(), absAppDate, absApp.getWorkTypeCD(), absApp.getWorkTimeCD().v(),
+//						output);
+//
+//			}
+//		}
+//
+//		return output;
+//
+//	}
+//
+//	private void getAbsApp(String applicationID) {
+//		// アルゴリズム「振休申請に同期された振出申請の取得」を実行する
+//		SyncState syncState = getCompltLeaveSimMngFromAbsID(applicationID);
+//		if (syncState.equals(SyncState.SYNCHRONIZING)) {
+//			// アルゴリズム「振休申請と関連付けた振出情報の取得」を実行する
+//			absApp.getSubDigestions().forEach(x -> {
+//				if (x.getPayoutMngDataID() != null) {
+//					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
+//					// làm domain 振出データID指定
+//				} else {
+//					// TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
+//					// làm domain 暫定振出管理データ
+//
+//				}
+//			});
+//
+//		}
+//	}
+//
+//	private SyncState getCompltLeaveSimMngFromAbsID(String applicationID) {
+//		// ドメインモデル「振休振出同時申請管理」を1件取得する
+//		SyncState result = SyncState.ASYNCHRONOUS;
+//		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+//		if (CompltLeaveSimMngOpt.isPresent()) {
+//			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
+//			result = compltLeaveSimMng.getSyncing();
+//			Optional<RecruitmentApp> recAppOpt = recRepo.findByID(compltLeaveSimMng.getRecAppID());
+//			if (recAppOpt.isPresent()) {
+//				setRecApp(recAppOpt.get());
+//			} else {
+//
+//				throw new BusinessException("");
+//			}
+//
+//		}
+//		return result;
+//	}
+//
+//	private void getRecApp(String applicationID) {
+//		// アルゴリズム「振出申請に同期された振休申請の取得」を実行する
+//		SyncState syncState = getCompltLeaveSimMngFromRecID(applicationID);
+//		if (syncState.equals(SyncState.SYNCHRONIZING)) {
+//			// アルゴリズム「振出日に関連付いた振休情報の取得」を実行する
+//			// TODO chưa có ai làm domain 暫定振出管理データ
+//		}
+//
+//	}
+//
+//	private SyncState getCompltLeaveSimMngFromRecID(String applicationID) {
+//		// ドメインモデル「振休振出同時申請管理」を1件取得する
+//		SyncState result = SyncState.ASYNCHRONOUS;
+//		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+//		if (CompltLeaveSimMngOpt.isPresent()) {
+//			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
+//			result = compltLeaveSimMng.getSyncing();
+//			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMng.getAbsenceLeaveAppID());
+//			if (absAppOpt.isPresent()) {
+//				setAbsApp(absAppOpt.get());
+//
+//			} else {
+//
+//				throw new BusinessException("");
+//			}
+//
+//		}
+//		return result;
+//
+//	}
+//
+//	private boolean isRecApp(String applicationID) {
+//		boolean result = false;
+//		Optional<RecruitmentApp> recAppOpt = recRepo.findByID(applicationID);
+//		if (recAppOpt.isPresent()) {
+//			setRecApp(recAppOpt.get());
+//
+//			result = true;
+//
+//		} else {
+//			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(applicationID);
+//			if (absAppOpt.isPresent()) {
+//				setAbsApp(absAppOpt.get());
+//			}
+//
+//		}
+//		return result;
+//
+//	}
+//
+//	private void setRecApp(RecruitmentApp recruitmentApp) {
+//
+//		recApp = recruitmentApp;
+//		recAppOutput = detailService.getDetailAppCommonSet(companyID, recruitmentApp.getAppID());
+//		output.setRecApp(RecruitmentAppDto.fromDomain(recruitmentApp, recAppOutput.getAppDate()));
+//
+//	}
+//
+//	private void setAbsApp(AbsenceLeaveApp absenceLeaveApp) {
+//		absApp = absenceLeaveApp;
+//		absAppOutput = detailService.getDetailAppCommonSet(companyID, absenceLeaveApp.getAppID());
+//		output.setAbsApp(AbsenceLeaveAppDto.fromDomain(absenceLeaveApp, absAppOutput.getAppDate()));
+//
+//	}
+	// Screen B End
 }

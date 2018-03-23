@@ -53,19 +53,19 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	private String caseSpecExeContentID;
 	
 	
-	/**
-	 * 実行ログ
-	 * 1->4 elements
-	 */
-	@Setter
-	private List<ExecutionLog> executionLogs;
-	public void addExecutionLog(ExecutionLog executionLog) {
-		this.executionLogs.add(executionLog);
-	}
+//	/**
+//	 * 実行ログ
+//	 * 1->4 elements
+//	 */
+//	@Setter
+//	private List<ExecutionLog> executionLogs;
+//	public void addExecutionLog(ExecutionLog executionLog) {
+//		this.executionLogs.add(executionLog);
+//	}
 	
 	public EmpCalAndSumExeLog(String empCalAndSumExecLogID, String companyID, YearMonth processingMonth,
 			ExecutedMenu executedMenu, GeneralDate executionDate, ExeStateOfCalAndSum executionStatus,
-			String employeeID, int closureID, String caseSpecExeContentID, List<ExecutionLog> executionLogs) {
+			String employeeID, int closureID, String caseSpecExeContentID) {
 		super();
 		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
 		this.companyID = companyID;
@@ -76,7 +76,6 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 		this.employeeID = employeeID;
 		this.closureID = closureID;
 		this.caseSpecExeContentID = caseSpecExeContentID;
-		this.executionLogs = executionLogs;
 	}
 	
 	public static EmpCalAndSumExeLog createFromJavaType(
@@ -88,8 +87,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 			int executionStatus,
 			String employeeID,
 			int closureID,
-			String caseSpecExeContentID,
-			List<ExecutionLog> executionLogs) {
+			String caseSpecExeContentID) {
 		return new EmpCalAndSumExeLog(
 				empCalAndSumExecLogID,
 				companyID,
@@ -99,8 +97,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 				EnumAdaptor.valueOf(executionStatus,ExeStateOfCalAndSum.class),
 				employeeID,
 				closureID,
-				caseSpecExeContentID,
-				executionLogs);
+				caseSpecExeContentID);
 	}
 	
 }

@@ -29,7 +29,7 @@ public class DefaultUkJobScheduler implements UkJobScheduler {
 				options.getJobClass(),
 				createJobContextKey(scheduleInfo.getScheduleId()),
 				options.getUserData(),
-				options.getCronSchedule(),
+				options.getSchedulingMethod(),
 				options.getStartDateTime(),
 				options.getEndDateTime());
 		

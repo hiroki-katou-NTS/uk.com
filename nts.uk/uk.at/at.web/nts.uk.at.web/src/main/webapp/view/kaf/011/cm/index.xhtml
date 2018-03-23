@@ -167,11 +167,11 @@
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
 
-				<div class="div_line_col_2" data-bind="if:$parents[1].screenModeNew">
+				<div class="div_line_col_2" data-bind="if:$parent.screenModeNew">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
-				<div data-bind="if:!$parents[1].screenModeNew">
+				<div data-bind="if:!$parent.screenModeNew">
 					<div class="div_line_col_2">
 						<label class="text_line"></label>
 					</div>

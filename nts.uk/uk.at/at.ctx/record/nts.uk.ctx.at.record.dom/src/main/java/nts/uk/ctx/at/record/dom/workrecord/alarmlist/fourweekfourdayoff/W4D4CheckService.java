@@ -31,7 +31,7 @@ public class W4D4CheckService {
 		String companyID = AppContexts.user().companyId();
 
 		List<WorkInfoOfDailyPerformance> listWorkInfoOfDailyPerformance = workInformationRepository.findByPeriodOrderByYmd(employeeID, period);
-		List<String> listActualWorkTypeCode = listWorkInfoOfDailyPerformance.stream().map(c -> c.getRecordWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
+		List<String> listActualWorkTypeCode = listWorkInfoOfDailyPerformance.stream().map(c -> c.getRecordWorkInformation().getWorkTypeCode().v()).distinct().collect(Collectors.toList());
 		
 		val listHolidayWorkType = workTypeRepository.findWorkOneDay(companyID, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value, WorkTypeClassification.Holiday.value);
 		List<String> listHolidayWorkTypeCode = listHolidayWorkType.stream().map(c -> c.getWorkTypeCode().v()).collect(Collectors.toList());
@@ -44,10 +44,10 @@ public class W4D4CheckService {
 		
 		if (countHoliday < 4) {
 			String alarmDate = period.start().toString() + "~" + period.end().toString();
-			String W4D4 = TextResource.localize("#KAL012_62");
-			String alarmComment = TextResource.localize("#KAL012_64");
-			String alarmMessage = TextResource.localize("#KAL012_64");
-			alarmMessage = String.format(alarmMessage, countHoliday+"日", alarmDate);
+			String W4D4 = TextResource.localize("KAL010_62");
+			String alarmComment = TextResource.localize("KAL010_64");
+			String alarmMessage = TextResource.localize("KAL010_63");
+			alarmMessage = TextResource.localize("KAL010_63",countHoliday+"日","(" +alarmDate +")");
 			AlarmExtractionValue4W4D result = new AlarmExtractionValue4W4D(workplaceID, employeeID, alarmDate, W4D4, W4D4, alarmMessage, alarmComment);
 			return Optional.of(result);
 		}

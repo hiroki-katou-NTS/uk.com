@@ -60,9 +60,25 @@ public class LeaveOfMonthly {
 
 		if (workTypeDaysCountTable == null) return;
 		
-		//*****（未）　仮に、固定の休業区分＝産前休業に加算する。固定休業・任意休業の振り分けが必要。
-		this.fixLeaveDays.putIfAbsent(CloseAtr.PRENATAL, new AggregateLeaveDays(CloseAtr.PRENATAL));
-		val targetDays = this.fixLeaveDays.get(CloseAtr.PRENATAL);
-		targetDays.addDays(workTypeDaysCountTable.getLeaveDays().v());
+		for (val leaveDays : workTypeDaysCountTable.getLeaveDays().entrySet()){
+			val closeAtr = leaveDays.getKey();
+			switch (closeAtr){
+			case PRENATAL:
+			case POSTPARTUM:
+			case CHILD_CARE:
+			case CARE:
+			case INJURY_OR_ILLNESS:
+				this.fixLeaveDays.putIfAbsent(closeAtr, new AggregateLeaveDays(closeAtr));
+				this.fixLeaveDays.get(closeAtr).addDays(leaveDays.getValue().v());
+				break;
+			default:
+				int anyLeaveNo = closeAtr.value - CloseAtr.INJURY_OR_ILLNESS.value;
+				if (anyLeaveNo > 0){
+					this.anyLeaveDays.putIfAbsent(anyLeaveNo, new AnyLeave(anyLeaveNo));
+					this.anyLeaveDays.get(anyLeaveNo).addDays(leaveDays.getValue().v());
+				}
+				break;
+			}
+		}
 	}
 }

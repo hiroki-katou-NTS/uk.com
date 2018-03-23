@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.compltleav
 @Stateless
 public class JpaCompltLeaveSimMngRepository extends JpaRepository implements CompltLeaveSimMngRepository {
 
-	private static final String FIND_ALL = "SELECT e FROM KrqdtCompltLeaveSimMana m";
+	private static final String FIND_ALL = "SELECT m FROM KrqdtCompltLeaveSimMana m";
 	private static final String FIND_BY_APPID = FIND_ALL + " WHERE m.pk.recAppID=:recAppID ";
 
 	@Override

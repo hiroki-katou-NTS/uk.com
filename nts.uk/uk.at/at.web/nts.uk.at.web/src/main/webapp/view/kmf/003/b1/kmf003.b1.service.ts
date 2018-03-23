@@ -3,16 +3,17 @@ module nts.uk.at.view.kmf003.b1.service {
      *  Service paths
      */
     var servicePath = {
-        findLengthOfService: "at/share/lengthofservice/findByCode/{0}"
+        findLengthOfService: "at/share/lengthofservice/findByCode/{0}",
         findByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
-        addGrantHdTbl: "at/share/grantholidaytbl/add"
+        addGrantHdTbl: "at/share/grantholidaytbl/add",
+        checkData: "ctx/at/share/vacation/setting/annualpaidleave/find/checkkmf003"
     }  
     
     /**
      *  Find length of service data by codes
      */
     export function findLengthOfService(yearHolidayCode: string): JQueryPromise<LengthServiceTblDto> {
-        var path = nts.uk.text.format(servicePath.findByCode, yearHolidayCode);
+        var path = nts.uk.text.format(servicePath.findLengthOfService, yearHolidayCode);
         return nts.uk.request.ajax(path);
     } 
     
@@ -23,6 +24,13 @@ module nts.uk.at.view.kmf003.b1.service {
         var path = nts.uk.text.format(servicePath.findByCode, conditionNo, yearHolidayCode);
         return nts.uk.request.ajax(path);
     }  
+    
+    /**
+     *  Check data before load
+     */
+    export function checkData(): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.checkData);
+    }
     
     /**
      *  Add data
