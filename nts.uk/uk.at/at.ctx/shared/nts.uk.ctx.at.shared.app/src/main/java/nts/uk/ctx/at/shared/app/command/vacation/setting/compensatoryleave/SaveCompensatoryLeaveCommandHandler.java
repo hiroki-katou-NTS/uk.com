@@ -107,10 +107,10 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 		// for half and one day time
 		if (commandOccurrence.getTransferSetting().getTransferDivision() != TransferSettingDivision.DesignTime.value
 				|| !commandOccurrence.getTransferSetting().isUseDivision()||compensManage) {
-			commandOccurrence.getTransferSetting()
-					.setHalfDayTime(findOccurrence.getTransferSetting().getHalfDayTime().v().intValue());
-			commandOccurrence.getTransferSetting()
-					.setOneDayTime(findOccurrence.getTransferSetting().getOneDayTime().v().intValue());
+//			commandOccurrence.getTransferSetting()
+//					.setHalfDayTime(findOccurrence.getTransferSetting().getHalfDayTime().v().intValue());
+//			commandOccurrence.getTransferSetting()
+//					.setOneDayTime(findOccurrence.getTransferSetting().getOneDayTime().v().intValue());
 		}
 		// for useDivision
 		if (compensManage) {
@@ -119,8 +119,8 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 
 		// for transferSetting Division
 		if (compensManage || !commandOccurrence.getTransferSetting().isUseDivision()) {
-			commandOccurrence.getTransferSetting()
-					.setTransferDivision(findOccurrence.getTransferSetting().getTransferDivision().value);
+//			commandOccurrence.getTransferSetting()
+//					.setTransferDivision(findOccurrence.getTransferSetting().getTransferDivision().value);
 		}
 	}
 
