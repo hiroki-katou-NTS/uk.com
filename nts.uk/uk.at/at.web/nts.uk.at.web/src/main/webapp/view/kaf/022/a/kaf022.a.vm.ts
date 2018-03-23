@@ -899,8 +899,8 @@ module nts.uk.at.view.kmf022 {
                 ]);
 
                 self.itemListA9_9 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_84')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_85'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_84')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_85'))
                 ]);
 
                 self.selectedIdA9_5 = ko.observable(0);
