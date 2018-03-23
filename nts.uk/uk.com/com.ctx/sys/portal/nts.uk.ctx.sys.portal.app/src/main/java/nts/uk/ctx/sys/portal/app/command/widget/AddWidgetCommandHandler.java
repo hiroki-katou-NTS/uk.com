@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
@@ -36,6 +37,9 @@ public class AddWidgetCommandHandler extends CommandHandler<AddWidgetCommand> {
 		String companyID = AppContexts.user().companyId();
 		String topPagePartId = IdentifierUtil.randomUniqueId();
 		AddWidgetCommand command = context.getCommand();
+		if (opWidgetRepository.isExist(companyID, command.getTopPageCode())) {
+			throw new BusinessException("Msg_3");
+		}
 		List<WidgetDisplayItem> wItems = new ArrayList<WidgetDisplayItem>();
 		command.getDisplayItemTypes().stream().forEach(x -> {
 			wItems.add(WidgetDisplayItem.createFromJavaType(x.getDisplayItemType(), x.getNotUseAtr()));
