@@ -100,7 +100,10 @@ public class OverTimeSheet {
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
 	 */
-	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalOvertimeSetting autoCalcSet,WorkType workType) {
+	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalOvertimeSetting autoCalcSet,
+														   WorkType workType,
+														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
 		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(1), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
 		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(2), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
@@ -125,7 +128,10 @@ public class OverTimeSheet {
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
 		//振替処理
-		val aftertransTimeList = transProcess(workType,afterCalcUpperTimeList);
+		val aftertransTimeList = transProcess(workType,
+											  afterCalcUpperTimeList,
+											  eachWorkTimeSet,
+											  eachCompanyTimeSet);
 		return aftertransTimeList;
 		
 	}
@@ -264,7 +270,7 @@ public class OverTimeSheet {
 	
 	/**
 	 * 深夜時間計算
-	 * @return 計算時間
+	 * @return 計算時間get
 	 */
 	public AttendanceTime calcMidNightTime(AutoCalOvertimeSetting autoCalcSet) {
 		
@@ -460,9 +466,11 @@ public class OverTimeSheet {
 		AttendanceTime transRestAbleTime = restTransAbleTime;
 		for(OverTimeFrameTime overTimeFrameTime : afterCalcUpperTimeList) {
 
+			
 			transAbleTime = calcTransferTime(useTimeAtr, overTimeFrameTime, transAbleTime, transRestAbleTime);
 			//振替
-			val overTime = overTimeFrameTime.getOverTimeWork().getCalcTime().minusMinutes(transAbleTime.valueAsMinutes());
+			val overTime = useTimeAtr.isTime()?overTimeFrameTime.getOverTimeWork().getTime().minusMinutes(transAbleTime.valueAsMinutes())
+											  :overTimeFrameTime.getOverTimeWork().getCalcTime().minusMinutes(transAbleTime.valueAsMinutes());
 			//振替可能時間から減算
 			transRestAbleTime = transRestAbleTime.minusMinutes(transAbleTime.valueAsMinutes());
 			returnList.add(calcTransTimeInFrame(useTimeAtr, overTimeFrameTime, overTime, transAbleTime));

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -29,10 +30,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -140,7 +143,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   HolidayCalcMethodSet holidayCalcMethodSet,
 			   RaisingSalaryCalcAtr raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			   CalAttrOfDailyPerformance calcAtrOfDaily) {
+			   CalAttrOfDailyPerformance calcAtrOfDaily,
+			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -162,7 +167,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																		 holidayCalcMethodSet,
 				   																	     raisingAutoCalcSet,
 				   																	     bonusPayAutoCalcSet,
-				   																	     calcAtrOfDaily)));
+				   																	     calcAtrOfDaily,
+				   																	     eachWorkTimeSet,
+				   																	     eachCompanyTimeSet)));
 		return integrationOfDaily;
 	}
 	
@@ -191,7 +198,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   HolidayCalcMethodSet holidayCalcMethodSet,
 			   RaisingSalaryCalcAtr raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			   CalAttrOfDailyPerformance calcAtrOfDaily) {
+			   CalAttrOfDailyPerformance calcAtrOfDaily,
+			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		
 		/*所定時間*/
 		
@@ -220,7 +229,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				    holidayCalcMethodSet,
 					raisingAutoCalcSet,
 					bonusPayAutoCalcSet,
-					calcAtrOfDaily);
+					calcAtrOfDaily,
+					eachWorkTimeSet,
+					eachCompanyTimeSet);
 		/*滞在時間の計算*/
 		val stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
 												 new AttendanceTime(0),
