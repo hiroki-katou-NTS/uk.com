@@ -1,85 +1,76 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KrcstWkpFlexMCalSetPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KrcstWkpFlexMCalSetPK implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
-    @Column(name = "WKP_ID")
-    private String wkpId;
 
-    public KrcstWkpFlexMCalSetPK() {
-    }
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    public KrcstWkpFlexMCalSetPK(String cid, String wkpId) {
-        this.cid = cid;
-        this.wkpId = wkpId;
-    }
+	/** The cid. */
+	@Column(name = "CID")
+	private String cid;
 
-    public String getCid() {
-        return cid;
-    }
+	/** The wkp id. */
+	@Column(name = "WKP_ID")
+	private String wkpId;
 
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
+	/**
+	 * Instantiates a new krcst wkp flex M cal set PK.
+	 */
+	public KrcstWkpFlexMCalSetPK() {
+		super();
+	}
 
-    public String getWkpId() {
-        return wkpId;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (wkpId != null ? wkpId.hashCode() : 0);
+		return hash;
+	}
 
-    public void setWkpId(String wkpId) {
-        this.wkpId = wkpId;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KrcstWkpFlexMCalSetPK)) {
+			return false;
+		}
+		KrcstWkpFlexMCalSetPK other = (KrcstWkpFlexMCalSetPK) object;
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if ((this.wkpId == null && other.wkpId != null)
+				|| (this.wkpId != null && !this.wkpId.equals(other.wkpId))) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (wkpId != null ? wkpId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KrcstWkpFlexMCalSetPK)) {
-            return false;
-        }
-        KrcstWkpFlexMCalSetPK other = (KrcstWkpFlexMCalSetPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.wkpId == null && other.wkpId != null) || (this.wkpId != null && !this.wkpId.equals(other.wkpId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entities.KrcstWkpFlexMCalSetPK[ cid=" + cid + ", wkpId=" + wkpId + " ]";
-    }
-    
 }

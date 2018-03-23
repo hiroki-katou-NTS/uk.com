@@ -1,85 +1,75 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employment;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KrcstEmpDeforMCalSetPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KrcstEmpDeforMCalSetPK implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2)
-    @Column(name = "EMP_CD")
-    private String empCd;
 
-    public KrcstEmpDeforMCalSetPK() {
-    }
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    public KrcstEmpDeforMCalSetPK(String cid, String empCd) {
-        this.cid = cid;
-        this.empCd = empCd;
-    }
+	/** The cid. */
+	@Column(name = "CID")
+	private String cid;
 
-    public String getCid() {
-        return cid;
-    }
+	/** The emp cd. */
+	@Column(name = "EMP_CD")
+	private String empCd;
 
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
+	/**
+	 * Instantiates a new krcst emp defor M cal set PK.
+	 */
+	public KrcstEmpDeforMCalSetPK() {
+		super();
+	}
 
-    public String getEmpCd() {
-        return empCd;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (empCd != null ? empCd.hashCode() : 0);
+		return hash;
+	}
 
-    public void setEmpCd(String empCd) {
-        this.empCd = empCd;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (empCd != null ? empCd.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KrcstEmpDeforMCalSetPK)) {
-            return false;
-        }
-        KrcstEmpDeforMCalSetPK other = (KrcstEmpDeforMCalSetPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.empCd == null && other.empCd != null) || (this.empCd != null && !this.empCd.equals(other.empCd))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entities.KrcstEmpDeforMCalSetPK[ cid=" + cid + ", empCd=" + empCd + " ]";
-    }
-    
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KrcstEmpDeforMCalSetPK)) {
+			return false;
+		}
+		KrcstEmpDeforMCalSetPK other = (KrcstEmpDeforMCalSetPK) object;
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if ((this.empCd == null && other.empCd != null)
+				|| (this.empCd != null && !this.empCd.equals(other.empCd))) {
+			return false;
+		}
+		return true;
+	}
 }
