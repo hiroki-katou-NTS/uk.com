@@ -7,15 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 1500, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf018.a.main.css" />
-			<com:scriptfile path="kaf018.a.service.js" />
+ 		    <com:scriptfile path="kaf018.a.service.js" />
 			<com:scriptfile path="kaf018.a.vm.js" />
 			<com:scriptfile path="kaf018.a.start.js" />
 			<!-- KCP004 -->
-			<com:stylefile path="/view/kcp/004/a/a.min.css" of="/nts.uk.at.web" />
-			<com:scriptfile path="/view/kcp/004/a/kcp004.a.service.js" of="/nts.uk.at.web" />
-			<com:scriptfile path="/view/kcp/004/a/a.min.js" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 		</ui:define>
 
 		<ui:define name="content">
@@ -25,13 +25,13 @@
 			</div>
 			<div id="contents-area">
 				<!-- A5パネル -->
-				<div class = "content-area-left" data-bind="ntsPanel:{width: '350px', height: '430px', direction: 'right', showIcon: true, visible: true}">
+				<div class = "content-area-left" data-bind="ntsPanel:{width: '456px', height: '430px', direction: 'right', showIcon: true, visible: true}">
 					<div class ="content-top">
 						<table>
 							<tr>
 								<td>
 									<!-- A3対象締め（ラベル） -->
-									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+									<div class="content-top-lable" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
 								</td>
 								<td>
 									<!-- A3_1対象締め -->
@@ -55,6 +55,7 @@
 					</div>
 					<!-- A2職場リスト -->
 					<div  class ="content-bottom" tabindex="3">
+						<div id="wkp-list"></div>
 					</div>
 				</div>
 				<!-- A4形式選択 -->
