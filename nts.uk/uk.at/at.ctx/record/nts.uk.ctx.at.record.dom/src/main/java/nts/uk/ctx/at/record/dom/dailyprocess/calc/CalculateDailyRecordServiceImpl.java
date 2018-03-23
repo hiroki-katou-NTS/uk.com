@@ -93,6 +93,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.PremiumCal
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodOfHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -503,7 +504,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
  
-		List<CompensatoryOccurrenceSetting> 
+		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSetRepository.find(companyId).getCompensatoryOccurrenceSetting();
 		
 		//-------------------------計算用一時的クラス作成----------------------------
 		
@@ -534,7 +535,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    leaveEarlyTimeOfDaily,
 				    lateLeave.getLeaveLate().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    lateLeave.getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				    manageReGetClass.getPersonalInfo(),
+				    manageReGetClass.getPersonalInfo().getWorkingSystem(),
 				    illegularAddSetting,
 				    flexAddSetting,
 				    regularAddSetting,

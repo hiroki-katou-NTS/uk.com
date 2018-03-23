@@ -94,7 +94,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   														 WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
 			   														 VacationAddTimeSet vacationAddTimeSet,
-			   														 Optional<WorkTimeDailyAtr> workTimeDailyAtr,
+			   														 WorkTimeDailyAtr workTimeDailyAtr,
 			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//残業時間
@@ -133,7 +133,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 													   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 													   WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-													   VacationAddTimeSet vacationAddTimeSet,Optional<WorkTimeDailyAtr> workTimeDailyAtr,
+													   VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr,
 													   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {

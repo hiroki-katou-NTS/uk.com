@@ -279,7 +279,7 @@ public class OverTimeOfDaily {
 												  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 												  boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 												  WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-												  VacationAddTimeSet vacationAddTimeSet,Optional<WorkTimeDailyAtr> workTimeDailyAtr,
+												  VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//枠時間帯入れる
@@ -293,7 +293,7 @@ public class OverTimeOfDaily {
 		//フレックス時間
 		FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		//フレ時間の計算に挑戦
-		if(workTimeDailyAtr.isPresent() && workTimeDailyAtr.get().isFlex() && withinWorkTimeSheetList != null) {
+		if(workTimeDailyAtr.isFlex() && withinWorkTimeSheetList != null) {
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
 			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,
 					//flexCalcMethod.get(),
