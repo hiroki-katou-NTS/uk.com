@@ -84,7 +84,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
 		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
 		appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
-		appRepo.update(appInfor);
+		appRepo.updateWithVersion(appInfor);
 	}
 
 }

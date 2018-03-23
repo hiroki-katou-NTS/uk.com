@@ -74,6 +74,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("reversionReason", application.getReversionReason().v())
 			.setParameter("appReason", application.getAppReason().v())
 			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)
+			.setParameter("notReasonReal", application.getReflectionInformation().getNotReasonReal().isPresent() == true ? application.getReflectionInformation().getNotReasonReal().get() : null)
 			.executeUpdate();
 		this.getEntityManager().flush();
 	}
@@ -86,6 +87,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
+		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
 		this.commandProxy().update(krqdtApplication);
 		this.getEntityManager().flush();
 	}
