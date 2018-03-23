@@ -105,6 +105,21 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimezone.updateData(data.workTimezone);
                     this.dayAtr(data.dayAtr);
                 }
+
+                /**
+                 * Return list dto including one day, morning, afternoon with the same data
+                 */
+                toListDto(): Array<FixHalfDayWorkTimezoneDto> {
+                    let self = this;
+                    let oneDay = this.toDto();
+                    oneDay.dayAtr = 0;
+                    let morning = this.toDto();
+                    morning.dayAtr = 1;
+                    let afternoon = this.toDto();
+                    afternoon.dayAtr = 2;
+
+                    return [oneDay, morning, afternoon];
+                }
                 
                 toDto(): FixHalfDayWorkTimezoneDto {
                     let dataDTO: FixHalfDayWorkTimezoneDto = {
@@ -228,7 +243,13 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
-                    let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[] = _.map(this.lstHalfDayWorkTimezone, (dataModel) => dataModel.toDto());
+                    let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
+                    if (this.useHalfDayShift()) {
+                        lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
+                    } else {
+                        lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
+                    }
+
                     let lstStampReflectTimezone: StampReflectTimezoneDto[] = _.map(this.lstStampReflectTimezone, (dataModel) => dataModel.toDto());
                     
                     let dataDTO: FixedWorkSettingDto = {

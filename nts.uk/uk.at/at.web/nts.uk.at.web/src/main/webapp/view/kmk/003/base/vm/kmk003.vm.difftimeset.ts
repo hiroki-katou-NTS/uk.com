@@ -373,6 +373,21 @@ module nts.uk.at.view.kmk003.a {
                     this.amPmAtr(data.amPmAtr);
                 }
 
+                /**
+                 * Return list dto including one day, morning, afternoon with the same data
+                 */
+                toListDto(): Array<DiffTimeHalfDayWorkTimezoneDto> {
+                    let self = this;
+                    let oneDay = this.toDto();
+                    oneDay.amPmAtr = 0;
+                    let morning = this.toDto();
+                    morning.amPmAtr = 1;
+                    let afternoon = this.toDto();
+                    afternoon.amPmAtr = 2;
+
+                    return [oneDay, morning, afternoon];
+                }
+
                 toDto(): DiffTimeHalfDayWorkTimezoneDto {
                     var dataDTO: DiffTimeHalfDayWorkTimezoneDto = {
                         restTimezone: this.restTimezone.toDto(),
@@ -578,9 +593,12 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): DiffTimeWorkSettingDto {
                     var halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[] = [];
-                    for (var dataModel of this.halfDayWorkTimezones) {
-                        halfDayWorkTimezones.push(dataModel.toDto());
+                    if (this.isUseHalfDayShift()) {
+                        halfDayWorkTimezones = _.map(this.halfDayWorkTimezones, item => item.toDto());
+                    } else {
+                        halfDayWorkTimezones = this.getHDWtzOneday().toListDto();
                     }
+
                     var dataDTO: DiffTimeWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),
                         restSet: this.restSet.toDto(),

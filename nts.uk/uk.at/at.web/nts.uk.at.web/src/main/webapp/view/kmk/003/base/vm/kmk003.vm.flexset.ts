@@ -123,6 +123,21 @@ module nts.uk.at.view.kmk003.a {
                     this.ampmAtr(data.ampmAtr);
                 }
 
+                /**
+                 * Return list dto including one day, morning, afternoon with the same data
+                 */
+                toListDto(): Array<FlexHalfDayWorkTimeDto> {
+                    let self = this;
+                    let oneDay = this.toDto();
+                    oneDay.ampmAtr = 0;
+                    let morning = this.toDto();
+                    morning.ampmAtr = 1;
+                    let afternoon = this.toDto();
+                    afternoon.ampmAtr = 2;
+
+                    return [oneDay, morning, afternoon];
+                }
+
                 toDto(): FlexHalfDayWorkTimeDto {
                     var dataDTO: FlexHalfDayWorkTimeDto = {
                         restTimezone: this.restTimezone.toDto(),
@@ -356,9 +371,12 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
                     var lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[] = [];
-                    for(var dataModelTimezone of this.lstHalfDayWorkTimezone){
-                        lstHalfDayWorkTimezone.push(dataModelTimezone.toDto());
+                    if (this.useHalfDayShift()) {
+                        lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
+                    } else {
+                        lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
                     }
+
                     var lstStampReflectTimezone: StampReflectTimezoneDto[] = [];
                     for(var dataModelStamp of this.lstStampReflectTimezone){
                         lstStampReflectTimezone.push(dataModelStamp.toDto());
