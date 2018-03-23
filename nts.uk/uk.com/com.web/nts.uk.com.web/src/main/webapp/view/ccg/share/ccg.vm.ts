@@ -1046,7 +1046,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private loadWorktypePart(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                if (self.showEmployment) {
+                if (self.showWorktype) {
                     service.searchAllWorkType().done((workTypeList: Array<BusinessType>) => {
                         self.listWorkType(workTypeList);
                         self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.businessTypeCode));

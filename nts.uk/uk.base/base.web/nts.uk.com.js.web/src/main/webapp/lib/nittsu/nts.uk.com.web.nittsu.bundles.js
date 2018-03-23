@@ -22884,9 +22884,26 @@ var nts;
                             var primaryKey = $grid.igGrid("option", "primaryKey");
                             if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX)
                                 return;
-                            for (var i = 0; i < ds.length; i++) {
+                            var setting = $grid.data(internal.SETTINGS);
+                            var states = setting.disableStates;
+                            var _loop_3 = function (i) {
                                 var id = ds[i][primaryKey];
+                                var cols = void 0;
+                                if (states && (cols = states[id])) {
+                                    var found_1 = false;
+                                    cols.forEach(function (c, i) {
+                                        if (c === key) {
+                                            found_1 = true;
+                                            return false;
+                                        }
+                                    });
+                                    if (found_1)
+                                        return "continue";
+                                }
                                 updating.updateCell($grid, id, key, true, undefined, true);
+                            };
+                            for (var i = 0; i < ds.length; i++) {
+                                _loop_3(i);
                             }
                         }
                         /**
@@ -22897,9 +22914,26 @@ var nts;
                             var primaryKey = $grid.igGrid("option", "primaryKey");
                             if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX)
                                 return;
-                            for (var i = 0; i < ds.length; i++) {
+                            var setting = $grid.data(internal.SETTINGS);
+                            var states = setting.disableStates;
+                            var _loop_4 = function (i) {
                                 var id = ds[i][primaryKey];
+                                var cols = void 0;
+                                if (states && (cols = states[id])) {
+                                    var found_2 = false;
+                                    cols.forEach(function (c, i) {
+                                        if (c === key) {
+                                            found_2 = true;
+                                            return false;
+                                        }
+                                    });
+                                    if (found_2)
+                                        return "continue";
+                                }
                                 updating.updateCell($grid, id, key, false, undefined, true);
+                            };
+                            for (var i = 0; i < ds.length; i++) {
+                                _loop_4(i);
                             }
                         }
                         /**
@@ -24095,7 +24129,7 @@ var nts;
                                     var targetColumn = targetCol;
                                     // Errors
                                     var comboErrors = [];
-                                    var _loop_3 = function () {
+                                    var _loop_5 = function () {
                                         var nextColumn = void 0;
                                         var columnKey = targetColumn.key;
                                         var cellElement = self.$grid.igGrid("cellById", $gridRow.data("id"), columnKey);
@@ -24153,7 +24187,7 @@ var nts;
                                         targetIndex = nextColumn.index;
                                     };
                                     for (var i = 0; i < row.length; i++) {
-                                        var state_1 = _loop_3();
+                                        var state_1 = _loop_5();
                                         if (state_1 === "break")
                                             break;
                                     }
@@ -24998,8 +25032,10 @@ var nts;
                                         // Disable row
                                         if (!uk.util.isNullOrUndefined(self.disableRows)) {
                                             var disableRow = self.disableRows[cell.id];
-                                            if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable)
+                                            if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                                 $gridCell.addClass(color.Disable);
+                                                self.addDisableState(cell.id, cell.columnKey);
+                                            }
                                         }
                                         // Set cell states
                                         if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
@@ -25010,6 +25046,8 @@ var nts;
                                                 return;
                                             _.forEach(cellState[0][stateName], function (stt) {
                                                 $gridCell.addClass(stt);
+                                                if (stt === color.Disable)
+                                                    self.addDisableState(cell.id, cell.columnKey);
                                             });
                                         }
                                     }, 0);
@@ -25018,9 +25056,35 @@ var nts;
                                 return column;
                             };
                             /**
+                             * Add disable state.
+                             */
+                            CellFormatter.prototype.addDisableState = function (id, key) {
+                                var self = this;
+                                var setting = self.$grid.data(internal.SETTINGS);
+                                if (!setting)
+                                    return;
+                                if (!setting.disableStates) {
+                                    setting.disableStates = {};
+                                    var cs = new Set();
+                                    cs.add(key);
+                                    setting.disableStates[id] = cs;
+                                    return;
+                                }
+                                var cols = setting.disableStates[id];
+                                if (!cols) {
+                                    var cs = new Set();
+                                    cs.add(key);
+                                    setting.disableStates[id] = cs;
+                                }
+                                else {
+                                    setting.disableStates[id].add(key);
+                                }
+                            };
+                            /**
                              * Style common controls.
                              */
                             CellFormatter.prototype.style = function ($grid, cell) {
+                                var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef))
                                     return;
                                 var rowIdName = this.cellStateFeatureDef.rowId;
@@ -25034,6 +25098,7 @@ var nts;
                                     if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                         cell.$element.addClass(color.Disable);
                                         utils.disableNtsControl($grid, cell, controlType);
+                                        self.addDisableState(cell.id, cell.columnKey);
                                     }
                                 }
                                 // Set cell states
@@ -25046,6 +25111,7 @@ var nts;
                                     _.forEach(cellState[0][stateName], function (stt) {
                                         if (stt === color.Disable && !cell.$element.hasClass(color.Disable)) {
                                             utils.disableNtsControl($grid, cell, controlType);
+                                            self.addDisableState(cell.id, cell.columnKey);
                                         }
                                         cell.$element.addClass(stt);
                                     });
@@ -25622,6 +25688,7 @@ var nts;
                                 _.forEach(data, function (rData, index) {
                                     for (var i = startIndex; i < endIndex; i++) {
                                         if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
+                                            rData = _.merge(rData, dataSource[i]);
                                             rData.loaded = true;
                                             dataSource.splice(i, 1, rData);
                                             if (add)
@@ -27577,7 +27644,7 @@ var nts;
                                 }
                                 else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
                                     var maxDate = startDate.add(31, "days");
-                                    if (endDate.isAfter(maxDate)) {
+                                    if (endDate.isSameOrAfter(maxDate)) {
                                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]), "FND_E_SPAN_OVER_MONTH");
                                     }
                                 }

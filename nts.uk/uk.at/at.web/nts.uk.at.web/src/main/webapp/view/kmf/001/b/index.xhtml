@@ -10,12 +10,9 @@
 			<script>
 				var dialogSize = {
 					width : 500,
-					height : 600
+					height : 540
 				};
 			</script>
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Priority
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf001.b.service.js" />
@@ -30,7 +27,7 @@
 					style="display: inline-flex; margin-bottom: 35px; margin-top: 20px;">
 					<!--（優先順位の設定） -->
 					<label class="content-label"
-						style="padding-top: 9px; margin-left: 20px; font-size: 15px;">#{i18n.getText('KMF001_21')}</label>
+						style="padding: 6px 0px; margin-left: 20px; font-size: 15px;">#{i18n.getText('KMF001_21')}</label>
 					<!--優先順位の設定選択肢-->
 					<div id="priority" style="margin-left: 110px;" tabindex="1"
 						data-bind="ntsSwitchButton: {
@@ -43,110 +40,63 @@
 				<!--優先順位の説明-->
 				<div style="width: 451px;">
 					<label style="margin-left: 20px; display: block; font-size: 15px;"
-						class="content-label">#{i18n.getText('KMF001_22')}</label>
+						class="content-label">#{i18n.getText('KMF001_141')}</label>
 				</div>
+				
 				<!--優先順位一覧-->
 				<div style="display: inline-flex;">
-					<table class="table table-bordered" id="priorityTable" tabindex="3"
-						style="margin-top: 30px; border: 1px solid #555555; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">
+					<table class="table table-bordered" id="priorityTable" tabindex="-1"
+						style="margin-top: 30px; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">
 						<tr>
-							<!--（休暇）-->
-							<th style="width: 70%">#{i18n.getText('KMF001_23')}</th>
-							<!--（優先順位）-->
-							<th class="thInput">#{i18n.getText('KMF001_24')}</th>
-						</tr>
-						<tr data-bind="visible: paidLeaveSetting">
-							<td data-bind="text: acquisitionTypeEnums()[0].localizedName">
-								<!-- 年次有給休暇 -->
+							<td>
+								<div tabindex="2" data-bind="ntsCheckBox: { checked: priorityPause, enable: enableInputPriority, text: '#{i18n.getText('KMF001_143')}'}"></div>
 							</td>
-							<td class="inputPriority"><input id="annual-paid-leave"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: annualPaidLeave,
-									constraint: 'Priority',
-									option: textEditorOption,
-									required: enableInputPriority,
-									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr data-bind="visible: compensLeaveComSetSetting">
-							<td data-bind="text: acquisitionTypeEnums()[1].localizedName">
-								<!-- 代休 -->
+						<tr>
+							<td>
+								<div tabindex="3" data-bind="ntsCheckBox: { checked: prioritySubstitute, enable: enableInputPriority, text: '#{i18n.getText('KMF001_144')}'}"></div>
 							</td>
-							<td class="inputPriority"><input id="compensatory-day-off"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: compensatoryDayOff,
-									constraint: 'Priority',
-									option: textEditorOption,
-									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr data-bind="visible: comSubtSetting">
-							<td data-bind="text: acquisitionTypeEnums()[2].localizedName">
-								<!-- 振休 -->
+						<tr>
+							<td>
+								<div tabindex="4" data-bind="ntsCheckBox: { checked: sixtyHoursOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_145')}'}"></div>
 							</td>
-							<td class="inputPriority"><input id="substitute-holiday"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: substituteHoliday,
-									option: textEditorOption,
-									constraint: 'Priority',
-									required: enableInputPriority,
-									enable: enableInputPriority}" /></td>
-						</tr>
-						<tr data-bind="visible: retentionYearlySetting">
-							<td data-bind="text: acquisitionTypeEnums()[3].localizedName">
-								<!-- 積立年休 -->
-							</td>
-							<td class="inputPriority"><input id="funded-paid-holiday"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: fundedPaidHoliday,
-									constraint: 'Priority',
-									option: textEditorOption,
-									required: enableInputPriority,
-									enable: enableInputPriority}" /></td>
-						</tr>
-						<tr data-bind="visible: com60HSetting">
-							<td data-bind="text: acquisitionTypeEnums()[4].localizedName">
-								<!-- 60H超休 -->
-							</td>
-							<td class="inputPriority"><input id="exsess-holiday"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: exsessHoliday,
-									constraint: 'Priority',
-									option: textEditorOption,
-									required: enableInputPriority,
-									enable: enableInputPriority}" /></td>
-						</tr>
-						<tr data-bind="visible: nursingSetting">
-							<td data-bind="text: acquisitionTypeEnums()[5].localizedName">
-								<!-- 特別休暇 -->
-							</td>
-							<td class="inputPriority"><input id="special-holiday"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: specialHoliday,
-									constraint: 'Priority',
-									option: textEditorOption,
-									required: enableInputPriority,
-									enable: enableInputPriority}" /></td>
-						</tr>
+						</tr>						
 					</table>
-					<!-- ヘルプアイコン -->
-					<button tabindex="2" style="margin-left: 30px; margin-top: 30px;"
-						data-bind="ntsHelpButton: {image: 'KMF001_1.png', position: 'bottom right', enable: enableHelpButton }">?</button>
+				</div>
+				
+				<!--時間年休の説明-->
+				<div style="width: 451px; margin-top: 30px;">
+					<label style="margin-left: 20px; display: block; font-size: 15px;"
+						class="content-label">#{i18n.getText('KMF001_146')}</label>
+				</div>
+				
+				<!--時間年休一覧-->
+				<div style="display: inline-flex;">
+					<table class="table table-bordered" id="priorityTable" tabindex="-1"
+						style="margin-top: 30px; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">
+						<tr>
+							<td>
+								<div tabindex="5" data-bind="ntsCheckBox: { checked: priorityOverpaid, enable: enableInputPriority, text: '#{i18n.getText('KMF001_147')}'}"></div>
+							</td>
+						</tr>				
+						
+						<tr>
+							<td>
+								<div tabindex="6" data-bind="ntsCheckBox: { checked: sixtyHoursTimeOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_148')}'}"></div>
+							</td>
+						</tr>						
+					</table>
 				</div>
 
 				<div id="functions-area-bottom">
 					<!-- 決定 -->
-					<button tabindex="4"
+					<button tabindex="7"
 						data-bind="click: saveToDb" class=" proceed large">#{i18n.getText('KMF001_25')}</button>
 					<!-- キャンセル-->
-					<button tabindex="5"
+					<button tabindex="8"
 						data-bind="click: closeDialog" class=" large">#{i18n.getText('KMF001_26')}</button>
 				</div>
-
 			</div>
 		</ui:define>
 	</ui:composition>

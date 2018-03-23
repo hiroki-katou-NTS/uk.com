@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
@@ -74,6 +75,7 @@ public class OverTimeOfDaily {
 	//変形法定内残業
 	private AttendanceTime irregularWithinPrescribedOverTimeWork = new AttendanceTime(0);
 	//フレックス時間
+	@Setter
 	private FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 	
 	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, List<OverTimeFrameTime> frameTimeList

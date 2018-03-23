@@ -42,7 +42,7 @@ public interface PreOvertimeReflectProcess {
 	 * @param dailyData
 	 * @return
 	 */
-	public boolean startAndEndTimeReflectSche(PreOvertimeParameter para,
+	public void startAndEndTimeReflectSche(PreOvertimeParameter para,
 			boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData);
 	/**
@@ -55,5 +55,26 @@ public interface PreOvertimeReflectProcess {
 	public boolean timeReflectCheck(PreOvertimeParameter para,
 			boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData);
+	/**
+	 * 残業時間の反映
+	 * @param para
+	 * @return
+	 */
+	public void getReflectOfOvertime(PreOvertimeParameter para);
+	/**
+	 * 所定外深夜時間の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param timeReflectFlg: 残業時間反映フラグ
+	 * @param overShiftNight: 外深夜時間
+	 */
+	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg, Integer overShiftNight);
+	/**
+	 * フレックス時間の反映
+	 * @param employeeId
+	 * @param dateDate
+	 * @param timeReflectFlg
+	 */
+	public void reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, Integer flexExessTime);
 
 }

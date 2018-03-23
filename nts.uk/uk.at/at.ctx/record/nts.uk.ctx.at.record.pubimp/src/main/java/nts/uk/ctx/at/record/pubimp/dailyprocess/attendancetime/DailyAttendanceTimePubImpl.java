@@ -131,7 +131,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 
 	/**
 	 * 日別計算で値が作成できなかった時のクラス作成
-	 * @return　RequestList No23 Output class(all value zero)
+	 * @return　RequestList No23 Output class(all zero)
 	 */
 	private DailyAttendanceTimePubExport notPresentValue() {
 		val overTimeFrames = new HashMap<OverTimeFrameNo,TimeWithCalculation>();

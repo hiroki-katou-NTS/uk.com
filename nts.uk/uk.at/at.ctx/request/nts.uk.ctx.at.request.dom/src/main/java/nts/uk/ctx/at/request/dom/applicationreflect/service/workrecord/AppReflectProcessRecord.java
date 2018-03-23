@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
-import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectedStatesInfo;
-
 /**
  * 勤務実績に反映
  * @author do_dt
@@ -20,5 +18,10 @@ public interface AppReflectProcessRecord {
 	 * isPre：事前申請
 	 * @return
 	 */
-	public ReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre);
+	public WorkReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre);
+	/**
+	 * 残業申請：　 事前申請の処理   
+	 * @return
+	 */
+	public WorkReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para);
 }

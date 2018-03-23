@@ -9,12 +9,12 @@ module nts.uk.at.view.kaf006.shr.service {
         getChangeWorkType: "at/request/application/appforleave/findChangeWorkType",
         getListWorkTime: "at/request/application/appforleave/getListWorkTime",
         getWorkingHours: "at/request/application/appforleave/getWorkingHours",
-        createOvertime: "at/request/application/overtime/create",
+        createAbsence: "at/request/application/appforleave/insert",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
-        findByAppID: "at/request/application/overtime/findByAppID",
+        findByAppID: "at/request/application/appforleave/getByAppID",
         getRecordWork: "at/request/application/overtime/getRecordWork"
     }
     /** Get TitleMenu */
@@ -48,8 +48,8 @@ module nts.uk.at.view.kaf006.shr.service {
     export function getWorkingHours(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getWorkingHours, param);
     }
-    export function createOvertime(overtime: any): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.createOvertime,overtime);
+    export function createAbsence(param: any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.createAbsence,param);
     }
     
      export function deleteOvertime(appID : string): JQueryPromise<void> { 

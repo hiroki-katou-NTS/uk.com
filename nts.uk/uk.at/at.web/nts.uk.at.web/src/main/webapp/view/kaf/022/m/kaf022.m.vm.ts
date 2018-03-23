@@ -11,6 +11,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 0, name: nts.uk.resource.getText("KAF022_291") },
             { code: 1, name: nts.uk.resource.getText("KAF022_292") }
         ]);
+        otAppSettingFlgAtr = ko.observableArray([
+            { code: 0, name: nts.uk.resource.getText("KAF022_291") },
+            { code: 1, name: nts.uk.resource.getText("KAF022_292") }
+        ]);
         timeCalculationUseAtr = ko.observableArray([
             { code: 0, name: nts.uk.resource.getText("KAF022_295") },
             { code: 1, name: nts.uk.resource.getText("KAF022_296") }
@@ -22,8 +26,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 3, name: nts.uk.resource.getText("KAF022_303") }
         ]);
         timeInputUseAtr = ko.observableArray([
-            { code: 1, name: nts.uk.resource.getText("KAF022_305") },
-            { code: 0, name: nts.uk.resource.getText("KAF022_306") }
+            { code: 1, name: nts.uk.resource.getText("KAF022_308") },
+            { code: 0, name: nts.uk.resource.getText("KAF022_309") }
         ]);
 
         lateOrLeaveAppCancelAtr = ko.observableArray([
