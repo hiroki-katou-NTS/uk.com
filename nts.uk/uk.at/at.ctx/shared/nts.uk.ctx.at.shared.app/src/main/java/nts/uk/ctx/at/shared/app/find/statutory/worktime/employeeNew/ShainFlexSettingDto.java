@@ -5,11 +5,13 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -42,11 +44,17 @@ public class ShainFlexSettingDto{
 		ShainFlexSettingDto dto = new ShainFlexSettingDto();
 		dto.setYear(domain.getYear().v());
 		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setEmployeeId(domain.getEmployeeId().v());
 		
-		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
+		Function<MonthlyUnit, MonthlyUnitDto> funMap = monthly -> {
 			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
-		}).collect(Collectors.toList());
-		dto.setStatutorySetting(monthlyUnitdtos);
+		};
+		
+		List<MonthlyUnitDto> statutoryMonthlys = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setStatutorySetting(statutoryMonthlys);
+		
+		List<MonthlyUnitDto> specMonthlys = domain.getSpecifiedSetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setSpecifiedSetting(specMonthlys);
 		return dto;
 	}
 }

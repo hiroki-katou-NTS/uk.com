@@ -6,32 +6,40 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
 
 /**
- * The Class EmployeeRegularWorkHourDto.
+ * The Class ShainSpeDeforLaborHourDto.
+ */
+
+/**
+ * Instantiates a new shain spe defor labor hour dto.
  */
 @Data
-public class EmpRegularWorkHourDto {
+public class EmpTransLaborHourDto {
 
 	/** The employee id. */
-	/** 社員ID. */
 	private String employmentCode;
-	
+
 	/** The company id. */
 	private String companyId;
 
-	/** The working time setting new. */
+	/** The working time setting. */
 	/** 会社労働時間設定. */
 	private WorkingTimeSettingDto workingTimeSetting;
 
-	public static EmpRegularWorkHourDto fromDomain(EmpRegularWorkTime domain) {
-		EmpRegularWorkHourDto dto = new EmpRegularWorkHourDto();
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the shain spe defor labor hour dto
+	 */
+	public static EmpTransLaborHourDto fromDomain(EmpTransWorkTime domain) {
+		EmpTransLaborHourDto dto = new EmpTransLaborHourDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
 		dto.setWorkingTimeSetting(workingTimeSetting);
-		dto.setEmploymentCode(domain.getEmploymentCode().v());
 		dto.setCompanyId(domain.getCompanyId().v());
+		dto.setEmploymentCode(domain.getEmploymentCode().v());
 		return dto;
 	}
-
 }

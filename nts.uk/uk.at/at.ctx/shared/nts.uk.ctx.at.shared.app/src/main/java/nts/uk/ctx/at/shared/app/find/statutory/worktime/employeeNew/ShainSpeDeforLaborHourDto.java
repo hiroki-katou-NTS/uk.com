@@ -38,6 +38,8 @@ public class ShainSpeDeforLaborHourDto {
 		ShainSpeDeforLaborHourDto dto = new ShainSpeDeforLaborHourDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
 		dto.setWorkingTimeSetting(workingTimeSetting);
+		dto.setEmployeeId(domain.getEmployeeId().v());
+		dto.setCompanyId(domain.getCompanyId().v());
 		return dto;
 	}
 }

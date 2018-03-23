@@ -33,6 +33,7 @@ public class ShainNormalSettingDto {
 		ShainNormalSettingDto dto = new ShainNormalSettingDto();
 		dto.setYear(domain.getYear().v());
 		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setEmployeeId(domain.getEmployeeId().v());
 		
 		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
 			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());

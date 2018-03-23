@@ -29,6 +29,8 @@ public class ShainRegularWorkHourDto {
 		ShainRegularWorkHourDto dto = new ShainRegularWorkHourDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
 		dto.setWorkingTimeSetting(workingTimeSetting);
+		dto.setEmployeeId(domain.getEmployeeId().v());
+		dto.setCompanyId(domain.getCompanyId().v());
 		return dto;
 	}
 

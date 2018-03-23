@@ -5,93 +5,56 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingSetMemento;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.shr.com.context.AppContexts;
+
 
 /**
- * The Class EmpMentFlexSettingDto.
+ * The Class ShainFlexSettingDto.
  */
-@Getter
-public class EmpFlexSettingDto implements EmpFlexSettingSetMemento {
-
-
-	/** The employment code. */
+@Data
+public class EmpFlexSettingDto{
+	
+	/** The employee id. */
 	/** 社員ID. */
 	private String employmentCode;
-
+	
 	/** The year. */
 	/** 年. */
 	private int year;
-
+	
+	/** The company id. */
+	private String companyId;
+	
 	/** The statutory setting. */
 	/** 法定時間. */
-	private List<MonthlyUnit> statutorySetting;
-
+	private List<MonthlyUnitDto> statutorySetting;
+	
 	/** The specified setting. */
 	/** 所定時間. */
-	private List<MonthlyUnit> specifiedSetting;
+	private List<MonthlyUnitDto> specifiedSetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.
-	 * EmpMentFlexSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common
-	 * .CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId CompanyId) {
-		// TODO Auto-generated method stub
+	public static EmpFlexSettingDto fromDomain(EmpFlexSetting domain) {
+		EmpFlexSettingDto dto = new EmpFlexSettingDto();
+		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setEmploymentCode(domain.getEmploymentCode().v());
+		
+		Function<MonthlyUnit, MonthlyUnitDto> funMap = monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		};
+		
+		List<MonthlyUnitDto> statutoryMonthlys = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setStatutorySetting(statutoryMonthlys);
+		
+		List<MonthlyUnitDto> specMonthlys = domain.getSpecifiedSetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setSpecifiedSetting(specMonthlys);
+		return dto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.
-	 * EmpMentFlexSettingSetMemento#setEmploymentCode(nts.uk.ctx.at.shared.dom.
-	 * vacation.setting.compensatoryleave.EmploymentCode)
-	 */
-	@Override
-	public void setEmploymentCode(EmploymentCode employmentCode) {
-		this.employmentCode = employmentCode.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.
-	 * EmpMentFlexSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.
-	 * Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.
-	 * EmpMentFlexSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.
-	 * EmpMentFlexSettingSetMemento#setSpecifiedSetting(java.util.List)
-	 */
-	@Override
-	public void setSpecifiedSetting(List<MonthlyUnit> specifiedSetting) {
-		this.specifiedSetting = specifiedSetting;
-	}
-
 }
