@@ -145,9 +145,11 @@ module nts.uk.at.view.kmk003.a {
                 lstStampReflectTimezone: StampReflectTimezoneModel[];
                 legalOTSetting: KnockoutObservable<number>;
                 calculationSetting: FixedWorkCalcSettingModel;
+                displayMode: KnockoutObservable<number>;
                 
-                constructor() {
+                constructor(displayMode: KnockoutObservable<number>) {
                     let self = this;
+                    self.displayMode = displayMode;
                     self.workTimeCode = ko.observable('');
                     self.offdayWorkTimezone = new FixOffdayWorkTimezoneModel();
                     self.commonSetting = new WorkTimezoneCommonSetModel();
@@ -244,7 +246,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
-                    if (this.useHalfDayShift()) {
+                    if (this.useHalfDayShift() || this.displayMode() == 0) {
                         lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
                     } else {
                         lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();

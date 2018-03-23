@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.app.command.worktime.common;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PredetemineTimeSettingDto;
-import nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto.WorkTimeDisplayModeDto;
 import nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkTimeCommonSaveCommand.
@@ -23,14 +23,14 @@ public class WorkTimeCommonSaveCommand {
 	/** The add mode. */
 	private boolean addMode;
 
+	/** The screen mode. */
+	private Integer screenMode;
+
 	/** The predseting. */
 	private PredetemineTimeSettingDto predseting;
 
 	/** The worktime setting. */
 	private WorkTimeSettingDto worktimeSetting;
-
-	/** The display mode. */
-	private WorkTimeDisplayModeDto displayMode;
 
 	/**
 	 * To domain predetemine time setting.
@@ -56,6 +56,7 @@ public class WorkTimeCommonSaveCommand {
 	 * @return the work time display mode
 	 */
 	public WorkTimeDisplayMode toWorkTimeDisplayMode() {
-		return new WorkTimeDisplayMode(this.displayMode);
+		return new WorkTimeDisplayMode(AppContexts.user().companyId(), this.worktimeSetting.getWorktimeCode().v(),
+				this.screenMode);
 	}
 }

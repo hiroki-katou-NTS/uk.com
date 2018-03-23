@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimedisplay;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
@@ -26,6 +27,19 @@ public class WorkTimeDisplayMode extends WorkTimeAggregateRoot {
 	/** The display mode. */
 	// 表示モード
 	private DisplayMode displayMode;
+
+	/**
+	 * Instantiates a new work time display mode.
+	 *
+	 * @param comId the com id
+	 * @param worktimeCode the worktime code
+	 * @param displayMode the display mode
+	 */
+	public WorkTimeDisplayMode(String comId, String worktimeCode, int displayMode) {
+		this.companyId = comId;
+		this.worktimeCode = new WorkTimeCode(worktimeCode);
+		this.displayMode = DisplayMode.valueOf(displayMode);
+	}
 
 	/**
 	 * Instantiates a new work time display mode.

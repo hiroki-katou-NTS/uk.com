@@ -237,9 +237,11 @@ module nts.uk.at.view.kmk003.a {
                 lstStampReflectTimezone: StampReflectTimezoneModel[];
                 calculateSetting: FlexCalcSettingModel;
                 fixRestTime: KnockoutObservable<boolean>
+                displayMode: KnockoutObservable<number>;
                 
-                constructor() {
+                constructor(displayMode: KnockoutObservable<number>) {
                     var self = this;
+                    self.displayMode = displayMode;
                     self.workTimeCode = ko.observable('');
                     self.useHalfDayShift = ko.observable(false);
                     self.coreTimeSetting = new CoreTimeSettingModel();
@@ -371,7 +373,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
                     var lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[] = [];
-                    if (this.useHalfDayShift()) {
+                    if (this.useHalfDayShift() || this.displayMode() == 0) {
                         lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
                     } else {
                         lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();

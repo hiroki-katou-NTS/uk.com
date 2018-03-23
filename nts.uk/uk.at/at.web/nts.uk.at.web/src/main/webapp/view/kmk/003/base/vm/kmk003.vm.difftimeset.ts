@@ -526,8 +526,10 @@ module nts.uk.at.view.kmk003.a {
                 stampReflectTimezone: DiffTimeWorkStampReflectTimezoneModel;
                 overtimeSetting: KnockoutObservable<number>;
                 calculationSetting: FixedWorkCalcSettingModel;
+                displayMode: KnockoutObservable<number>;
                 
-                constructor() {
+                constructor(displayMode: KnockoutObservable<number>) {
+                    this.displayMode = displayMode;
                     this.workTimeCode = ko.observable('');
                     this.restSet = new FixedWorkRestSetModel();
                     this.dayoffWorkTimezone = new DiffTimeDayOffWorkTimezoneModel();
@@ -593,7 +595,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): DiffTimeWorkSettingDto {
                     var halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[] = [];
-                    if (this.isUseHalfDayShift()) {
+                    if (this.isUseHalfDayShift() || this.displayMode() == 0) {
                         halfDayWorkTimezones = _.map(this.halfDayWorkTimezones, item => item.toDto());
                     } else {
                         halfDayWorkTimezones = this.getHDWtzOneday().toListDto();

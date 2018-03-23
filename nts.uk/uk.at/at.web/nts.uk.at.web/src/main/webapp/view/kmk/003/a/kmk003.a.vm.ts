@@ -64,9 +64,18 @@ module nts.uk.at.view.kmk003.a {
 
             constructor() {
                 let self = this;
+                // initial tab mode
+                self.tabMode = ko.observable(TabMode.DETAIL);
+                self.selectedTab = ko.observable(TabID.TAB1);
+
+                // initial screen mode
+                self.screenMode = ko.observable(ScreenMode.NEW);
+
+                self.initComputedValue();
+                
                 self.isDetailMode = ko.observable(false);
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
-                self.mainSettingModel = new MainSettingModel(self.useHalfDay);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewMode, self.useHalfDay);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -74,13 +83,6 @@ module nts.uk.at.view.kmk003.a {
 
                 // data get from service
                 self.isClickSave = ko.observable(false);
-
-                // initial tab mode
-                self.tabMode = ko.observable(TabMode.DETAIL);
-                self.selectedTab = ko.observable(TabID.TAB1);
-                
-                // initial screen mode
-                self.screenMode = ko.observable(ScreenMode.NEW);
 
                 // initial data source
                 self.initDatasource();
@@ -137,8 +139,6 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.SIMPLE, name: nts.uk.resource.getText("KMK003_190") },
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
-                        self.mainSettingModel.displayMode.displayMode(0);
-                        self.mainSettingModel.displayMode.displayMode(1);
 
                 self.useHalfDayOptions = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("KMK003_49") },
@@ -224,7 +224,13 @@ module nts.uk.at.view.kmk003.a {
                     }
                 });
 
-                // initial computed value
+            }
+
+            /**
+             * Initial computed value
+             */
+            initComputedValue(): void {
+                let self = this;
                 self.isNewMode = ko.computed(() => {
                     return self.screenMode() == ScreenMode.NEW;
                 });
@@ -479,7 +485,7 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
-                self.mainSettingModel.save(self.isNewOrCopyMode(), self.tabMode())
+                self.mainSettingModel.save()
                     .done(() => {
                         // recheck abolish condition of list worktime
                         self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
@@ -710,7 +716,6 @@ module nts.uk.at.view.kmk003.a {
         export class MainSettingModel {
             workTimeSetting: WorkTimeSettingModel;
             predetemineTimeSetting: PredetemineTimeSettingModel;
-            displayMode: WorkTimeDisplayModeModel;
             
             //dientx add for common
             commonSetting: WorkTimezoneCommonSetModel;
@@ -722,27 +727,29 @@ module nts.uk.at.view.kmk003.a {
             
             isChangeItemTable: KnockoutObservable<boolean>;
             useHalfDay: KnockoutObservable<boolean>;
+            tabMode: KnockoutObservable<number>;
+            addMode: KnockoutObservable<boolean>;
             
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
-            constructor(useHalfDay: KnockoutObservable<boolean>) {
+            constructor(tabMode: KnockoutObservable<number>, addMode: KnockoutObservable<boolean>, useHalfDay: KnockoutObservable<boolean>) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
                 self.isInterlockDialogJ = ko.observable(true);
+                self.tabMode = tabMode;
+                self.addMode = addMode;
                 
                 self.workTimeSetting = new WorkTimeSettingModel();
                 self.predetemineTimeSetting = new PredetemineTimeSettingModel();
-                self.displayMode = new WorkTimeDisplayModeModel();
                 self.commonSetting = new WorkTimezoneCommonSetModel();
-                self.fixedWorkSetting = new FixedWorkSettingModel();
+                self.fixedWorkSetting = new FixedWorkSettingModel(self.tabMode);
                 self.flowWorkSetting = new FlowWorkSettingModel();
-                self.diffWorkSetting = new DiffTimeWorkSettingModel();
-                self.flexWorkSetting = new FlexWorkSettingModel();
+                self.diffWorkSetting = new DiffTimeWorkSettingModel(self.tabMode);
+                self.flexWorkSetting = new FlexWorkSettingModel(self.tabMode);
                 self.workTimeSetting.worktimeCode.subscribe(worktimeCode => {
                     self.predetemineTimeSetting.workTimeCode(worktimeCode);
-                    self.displayMode.worktimeCode(worktimeCode);
                     self.fixedWorkSetting.workTimeCode(worktimeCode);
                     self.flowWorkSetting.workingCode(worktimeCode);
                     self.diffWorkSetting.workTimeCode(worktimeCode);
@@ -755,7 +762,7 @@ module nts.uk.at.view.kmk003.a {
                 dfd.resolve();
             }
 
-            save(addMode: boolean, tabMode: number): JQueryPromise<void> {
+            save(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
@@ -763,26 +770,26 @@ module nts.uk.at.view.kmk003.a {
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 if (self.workTimeSetting.isFlex()) {
-                    service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
+                    service.saveFlexWorkSetting(self.toFlexCommannd())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
-                    service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
+                    service.saveFixedWorkSetting(self.toFixedCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }                
                 if (self.workTimeSetting.isFlow()) {
-                    service.saveFlowWorkSetting(self.toFlowCommand(addMode, tabMode))
+                    service.saveFlowWorkSetting(self.toFlowCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
                 if (self.workTimeSetting.isDiffTime()) {
-                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand(addMode, tabMode))
+                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -794,28 +801,26 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect fixed data and convert to command dto
              */
-            toFixedCommand(addMode: boolean, tabMode: number): FixedWorkSettingSaveCommand {
+            toFixedCommand(): FixedWorkSettingSaveCommand {
                 let _self = this;
                 let command: FixedWorkSettingSaveCommand = {
-                    addMode: addMode,
+                    addMode: _self.addMode(),
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
-                    displayMode: _self.displayMode.toDto(),
                     fixedWorkSetting: _self.fixedWorkSetting.toDto(_self.commonSetting),
-                    screenMode: tabMode
+                    screenMode: _self.tabMode()
                 };
                 return command;  
             }
 
-            toFlowCommand(addMode: boolean, tabMode: number): FlowWorkSettingSaveCommand {
+            toFlowCommand(): FlowWorkSettingSaveCommand {
                 let _self = this;
                 let command: FlowWorkSettingSaveCommand = {
-                    addMode: addMode,
+                    addMode: _self.addMode(),
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
-                    displayMode: _self.displayMode.toDto(),
                     flowWorkSetting: _self.flowWorkSetting.toDto(_self.commonSetting),
-                    screenMode: tabMode
+                    screenMode: _self.tabMode()
                 };
                 return command;  
             }
@@ -823,16 +828,15 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect flex data and convert to command dto
              */
-            toFlexCommannd(addMode: boolean, tabMode: number): FlexWorkSettingSaveCommand {
+            toFlexCommannd(): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
                 command = {
-                    screenMode: tabMode,
-                    addMode: addMode,
+                    addMode: self.addMode(),
+                    screenMode: self.tabMode(),
                     flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto(),
-                    displayMode: self.displayMode.toDto()
                 };
                 return command;
             }
@@ -840,16 +844,15 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect difftime data and convert to command dto
              */
-            toDiffTimeCommand(addMode: boolean, tabMode: number): DiffTimeSettingSaveCommand {
+            toDiffTimeCommand(): DiffTimeSettingSaveCommand {
                 let self = this;
                 let command: DiffTimeSettingSaveCommand;
                 command = {
-                    screenMode: tabMode,
-                    addMode: addMode,
+                    addMode: self.addMode(),
+                    screenMode: self.tabMode(),
                     diffTimeWorkSetting: self.diffWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto(),
-                    displayMode: self.displayMode.toDto()
                 };
                 return command;
             }

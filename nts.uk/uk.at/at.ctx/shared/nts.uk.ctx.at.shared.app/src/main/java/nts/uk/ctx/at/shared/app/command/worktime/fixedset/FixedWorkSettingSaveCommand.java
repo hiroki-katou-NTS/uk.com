@@ -20,9 +20,6 @@ public class FixedWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
 	/** The fixed work setting. */
 	private FixedWorkSettingDto fixedWorkSetting;
 	
-	/** The screen mode. */
-	private Integer screenMode;
-	
 	/**
 	 * To domain fixed work setting.
 	 *

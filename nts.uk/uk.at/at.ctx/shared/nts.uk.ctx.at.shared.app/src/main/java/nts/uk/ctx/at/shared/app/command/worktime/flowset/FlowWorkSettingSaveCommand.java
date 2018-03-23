@@ -20,9 +20,6 @@ public class FlowWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
 	/** The flow work setting. */
 	private FlWorkSettingDto flowWorkSetting;
 
-	/** The screen mode. */
-	private Integer screenMode;
-	
 	/**
 	 * To domain flow work setting.
 	 *
