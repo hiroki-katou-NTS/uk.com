@@ -123,7 +123,7 @@ module nts.uk.at.view.ktg028.viewmodel {
                 self.allData = data;
                 self.items_A2([]);
                 _.forEach(data, (element, index) => {
-                    self.items_A2.push(new ItemA2(index, element.topPagePartID, element.topPageCode, element.topPageName
+                    self.items_A2.push(new ItemA2(parseInt(index)+1, element.topPagePartID, element.topPageCode, element.topPageName
                         , element.width, element.height, _.map(_.filter(element.displayItemTypes, ['notUseAtr', 1]), 'displayItemType')));
                 });
                 dfd.resolve();
@@ -153,7 +153,7 @@ module nts.uk.at.view.ktg028.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.invisible();
                 let optionalWidget = _.find(self.allData, ['topPageCode', self.currentCode_A2()]);
-                let displayItemTypes: Array<number> = [];
+                let displayItemTypes: Array<any> = [];
                 let values = _.map(self.items_A7(), 'value');
                 _.forEach(values, (x => {
                     let selectedList = _.map(self.currentCodeList_A7(), x => parseInt(x));
@@ -246,14 +246,14 @@ module nts.uk.at.view.ktg028.viewmodel {
 
     }
     class ItemA2 {
-        serialNumber: string;
+        serialNumber: number;
         topPagePartID: string;
         topPageCode: string;
         topPageName: string;
         width: KnockoutObservable<number>;
         height: KnockoutObservable<number>;
         listType: KnockoutObservableArray<any>;
-        constructor(index: string, topPagePartID: string, topPageCode: string, topPageName: string, width: number, height: number, listType: Array<any>) {
+        constructor(index: number, topPagePartID: string, topPageCode: string, topPageName: string, width: number, height: number, listType: Array<any>) {
             this.serialNumber = index;
             this.topPagePartID = topPagePartID;
             this.topPageCode = topPageCode;
