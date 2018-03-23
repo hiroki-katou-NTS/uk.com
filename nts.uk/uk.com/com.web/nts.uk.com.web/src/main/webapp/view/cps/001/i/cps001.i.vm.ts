@@ -1,10 +1,14 @@
 module nts.uk.com.view.cps001.i.vm {
     import getText = nts.uk.resource.getText;
+    import getShared = nts.uk.ui.windows.getShared;
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
         invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
+    
     export class ScreenModel {
+        
+        createMode: KnockoutObservable<boolean>;
 
         enaBtnNew: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnRemove: KnockoutObservable<boolean> = ko.observable(true);
@@ -61,6 +65,8 @@ module nts.uk.com.view.cps001.i.vm {
         constructor() {
             let self = this;
 
+            self.createMode = ko.observable(null);
+            
             self.grantDateTitle = ko.observable('grantDateTitle');
             self.dateGrantInp = ko.observable('20000101');
 
@@ -144,9 +150,17 @@ module nts.uk.com.view.cps001.i.vm {
                 currentValue = self.currentValue();
 
             lstData.removeAll();
-            service.getData().done((data) => {
-                self.listData(data);
-                self.currentValue(self.listData()[0].grantDate);
+            service.getAllList().done((data: Array<ISpecialLeaveRemaining>) => {
+               if (data && data.length > 0) {
+                    _.each(data, (item) => {
+                        self.listData.push(item);
+                    });
+                    // Set focus
+                    self.currentValue(self.listData()[0].grantDate);
+                } else {
+                    // Set to cr eate mode
+                }
+                $('#idGrantDate').focus();
             });
 
 
@@ -158,12 +172,53 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             self.enaBtnNew(false);
             self.enaBtnRemove(false);
-            self.visibleGrant(false);
-            self.visibleUse(false);
-            self.visibleOver(false);
-            self.visibleReam(false);
         }
 
+        
+
+
+        public saveData(): void {
+            let self = this,
+                dataShare: any = getShared('CPS001B_PARAMS') || null;
+            let obj = {
+                sid: __viewContext.user.employeeId,
+                specialLeaCode: dataShare,
+                grantDate : self.dateGrantInp(),
+                deadlineDate : self.deadlineDateInp(),
+                expStatus : self.selectedRuleCode(),
+                registerType : 0,
+                numberDayGrant: self.dayNumberOfGrants(),
+                timeGrant : self.grantTime(),
+                numberDayUse: self.dayNumberOfUse(),
+                timeUse : self.useTime(),
+                useSavingDays : null,
+                numberDaysOver : self.dayNumberOver(),
+                timeOver : self.timeOver(),
+                numberDayRemain : self.dayNumberOfReam(),
+                timeRemain : self.timeReam()
+            };
+            
+            
+
+
+        }
+
+        public remove(): void {
+            let _self = this;
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+                .ifYes(() => {
+
+
+                }).ifNo(() => {
+                    // Nothing happen
+                })
+        }
+        
+        public close(): void {
+            nts.uk.ui.windows.close();
+        }
+        
         public bindingData(result: ISpecialLeaveRemaining): void {
             let self = this;
             self.dayNumberOfGrantsTitle("");
@@ -188,32 +243,6 @@ module nts.uk.com.view.cps001.i.vm {
             self.dayNumberOfReam(result.numberDayRemain);
             self.timeReamTitle("");
             self.timeReam(result.timeRemain);
-
-
-        }
-
-
-        public registerData(): void {
-            let _self = this;
-
-
-        }
-
-
-        public close(): void {
-            nts.uk.ui.windows.close();
-        }
-
-        public remove(): void {
-            let _self = this;
-
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
-                .ifYes(() => {
-
-
-                }).ifNo(() => {
-                    // Nothing happen
-                })
         }
     }
 
@@ -230,7 +259,7 @@ module nts.uk.com.view.cps001.i.vm {
         numberDayUse: number;
         useSavingDays: number;
         timeUse: number;
-        numberOverDays: number;
+        numberDaysOver: number;
         timeOver: number;
         numberDayRemain: number;
         timeRemain: number;
@@ -267,7 +296,7 @@ module nts.uk.com.view.cps001.i.vm {
             this.numberDayUse = data.numberDayUse;
             this.useSavingDays = data.useSavingDays;
             this.timeUse = data.timeUse;
-            this.numberOverDays = data.numberOverDays;
+            this.numberOverDays = data.numberDaysOver;
             this.timeOver = data.timeOver;
             this.numberDayRemain = data.numberDayRemain;
             this.timeRemain = data.timeRemain;
