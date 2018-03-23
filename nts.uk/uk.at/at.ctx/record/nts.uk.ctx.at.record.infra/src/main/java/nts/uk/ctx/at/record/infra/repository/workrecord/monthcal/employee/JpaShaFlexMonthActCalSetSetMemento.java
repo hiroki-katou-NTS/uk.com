@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.employee;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaFlexMCalSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaFlexMCalSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
@@ -26,6 +27,9 @@ public class JpaShaFlexMonthActCalSetSetMemento implements ShaFlexMonthActCalSet
 	 */
 	public JpaShaFlexMonthActCalSetSetMemento(KrcstShaFlexMCalSet typeValue) {
 		super();
+		if(typeValue.getKrcstShaFlexMCalSetPK() == null){				
+			typeValue.setKrcstShaFlexMCalSetPK(new KrcstShaFlexMCalSetPK());
+		}
 		this.typeValue = typeValue;
 	}
 

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.employee;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaRegMCalSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaRegMCalSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -27,6 +28,9 @@ public class JpaShaRegulaMonthActCalSetSetMemento implements ShaRegulaMonthActCa
 	 */
 	public JpaShaRegulaMonthActCalSetSetMemento(KrcstShaRegMCalSet typeValue) {
 		super();
+		if(typeValue.getKrcstShaRegMCalSetPK() == null){				
+			typeValue.setKrcstShaRegMCalSetPK(new KrcstShaRegMCalSetPK());
+		}
 		this.typeValue = typeValue;
 	}
 

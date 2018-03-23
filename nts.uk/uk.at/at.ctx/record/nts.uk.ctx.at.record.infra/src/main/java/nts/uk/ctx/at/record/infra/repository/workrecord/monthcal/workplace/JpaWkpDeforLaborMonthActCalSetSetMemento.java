@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.workplace;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
@@ -26,6 +27,9 @@ public class JpaWkpDeforLaborMonthActCalSetSetMemento implements WkpDeforLaborMo
 	 */
 	public JpaWkpDeforLaborMonthActCalSetSetMemento(KrcstWkpDeforMCalSet typeValue) {
 		super();
+		if(typeValue.getKrcstWkpDeforMCalSetPK() == null){				
+			typeValue.setKrcstWkpDeforMCalSetPK(new KrcstWkpDeforMCalSetPK());
+		}
 		this.typeValue = typeValue;
 	}
 

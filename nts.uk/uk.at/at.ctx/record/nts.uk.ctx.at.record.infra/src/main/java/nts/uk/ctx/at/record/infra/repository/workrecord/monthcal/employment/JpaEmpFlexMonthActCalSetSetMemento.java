@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.employment;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employment.KrcstEmpFlexMCalSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employment.KrcstEmpFlexMCalSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
@@ -26,6 +27,9 @@ public class JpaEmpFlexMonthActCalSetSetMemento implements EmpFlexMonthActCalSet
 	 */
 	public JpaEmpFlexMonthActCalSetSetMemento(KrcstEmpFlexMCalSet typeValue) {
 		super();
+		if(typeValue.getKrcstEmpFlexMCalSetPK() == null){				
+			typeValue.setKrcstEmpFlexMCalSetPK(new KrcstEmpFlexMCalSetPK());
+		}
 		this.typeValue = typeValue;
 	}
 

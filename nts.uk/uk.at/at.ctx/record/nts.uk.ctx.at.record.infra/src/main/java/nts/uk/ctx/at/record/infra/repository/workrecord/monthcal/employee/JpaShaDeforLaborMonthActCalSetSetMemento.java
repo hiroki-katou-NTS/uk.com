@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.employee;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSetPK;
 import nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
@@ -27,6 +28,9 @@ public class JpaShaDeforLaborMonthActCalSetSetMemento implements ShaDeforLaborMo
 	 */
 	public JpaShaDeforLaborMonthActCalSetSetMemento(KrcstShaDeforMCalSet typeValue) {
 		super();
+		if(typeValue.getKrcstShaDeforMCalSetPK() == null){				
+			typeValue.setKrcstShaDeforMCalSetPK(new KrcstShaDeforMCalSetPK());
+		}
 		this.typeValue = typeValue;
 	}
 
