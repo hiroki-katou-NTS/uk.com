@@ -11,14 +11,18 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSetGetMem
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstRegMCalSet;
 
 /**
- * The Class JpaWorkfixedRepository.
+ * The Class JpaRegularWorkTimeAggrSetGetMemento.
+ *
+ * @param <T>
+ *            the generic type
  */
 @Stateless
-public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet> implements RegularWorkTimeAggrSetGetMemento {
+public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet>
+		implements RegularWorkTimeAggrSetGetMemento {
 
 	/** The type value. */
 	private T typeValue;
-	
+
 	/**
 	 * Instantiates a new jpa regular work time aggr set get memento.
 	 *
@@ -30,6 +34,12 @@ public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet> impl
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * RegularWorkTimeAggrSetGetMemento#getAggregateTimeSet()
+	 */
 	@Override
 	public ExcessOutsideTimeSetReg getAggregateTimeSet() {
 		return new ExcessOutsideTimeSetReg(
@@ -38,6 +48,12 @@ public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet> impl
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraAggr()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * RegularWorkTimeAggrSetGetMemento#getExcessOutsideTimeSet()
+	 */
 	@Override
 	public ExcessOutsideTimeSetReg getExcessOutsideTimeSet() {
 		return new ExcessOutsideTimeSetReg(

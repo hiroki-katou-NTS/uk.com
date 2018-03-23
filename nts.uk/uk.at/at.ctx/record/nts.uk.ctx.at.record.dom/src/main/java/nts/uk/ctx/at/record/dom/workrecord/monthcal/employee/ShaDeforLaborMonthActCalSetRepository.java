@@ -39,6 +39,6 @@ public interface ShaDeforLaborMonthActCalSetRepository {
 	 *
 	 * @param laborDeforSetTemp the emp labor defor set temp
 	 */
-	void remove(ShaDeforLaborMonthActCalSet laborDeforSetTemp);
+	void remove(String cId, String sId);
 
 }

@@ -14,7 +14,10 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
 import nts.uk.ctx.at.shared.dom.common.Month;
 
 /**
- * The Class JpaWorkfixedRepository.
+ * The Class JpaDeforWorkTimeAggrSetGetMemento.
+ *
+ * @param <T>
+ *            the generic type
  */
 @Stateless
 public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
@@ -34,6 +37,12 @@ public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * DeforWorkTimeAggrSetGetMemento#getAggregateTimeSet()
+	 */
 	@Override
 	public ExcessOutsideTimeSetReg getAggregateTimeSet() {
 		return new ExcessOutsideTimeSetReg(
@@ -42,6 +51,12 @@ public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraAggr()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * DeforWorkTimeAggrSetGetMemento#getExcessOutsideTimeSet()
+	 */
 	@Override
 	public ExcessOutsideTimeSetReg getExcessOutsideTimeSet() {
 		return new ExcessOutsideTimeSetReg(
@@ -50,15 +65,26 @@ public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * DeforWorkTimeAggrSetGetMemento#getDeforLaborCalSetting()
+	 */
 	@Override
 	public DeforLaborCalSetting getDeforLaborCalSetting() {
 		return new DeforLaborCalSetting(BooleanGetAtr.getAtrByInteger(this.typeValue.getIsOtIrg()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * DeforWorkTimeAggrSetGetMemento#getSettlementPeriod()
+	 */
 	@Override
 	public DeforLaborSettlementPeriod getSettlementPeriod() {
-		return new DeforLaborSettlementPeriod(
-				new Month(this.typeValue.getStrMonth()),
+		return new DeforLaborSettlementPeriod(new Month(this.typeValue.getStrMonth()),
 				new Month(this.typeValue.getPeriod()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getRepeatAtr()));
 	}

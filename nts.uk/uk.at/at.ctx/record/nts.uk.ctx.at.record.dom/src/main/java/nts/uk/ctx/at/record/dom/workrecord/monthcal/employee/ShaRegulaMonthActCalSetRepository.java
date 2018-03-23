@@ -39,6 +39,6 @@ public interface ShaRegulaMonthActCalSetRepository {
 	 *
 	 * @param empRegSetMonthlyActual the emp reg set monthly actual
 	 */
-	void delete(ShaRegulaMonthActCalSet empRegSetMonthlyActual);
+	void remove(String cid, String sId);
 
 }
