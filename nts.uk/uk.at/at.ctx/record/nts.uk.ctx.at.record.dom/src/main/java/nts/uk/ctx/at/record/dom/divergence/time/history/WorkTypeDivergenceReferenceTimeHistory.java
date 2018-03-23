@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 // 勤務種別ごとの乖離基準時間履歴
 @Getter
+@Setter
 public class WorkTypeDivergenceReferenceTimeHistory extends AggregateRoot implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	/** The company id. */

@@ -54,7 +54,7 @@ public class WorkTypeDivergenceReferenceTimeHistoryWs {
 	 */
 	@POST
 	@Path("find/{historyId}")
-	public WorkTypeDivergenceReferenceTimeHistoryDto getCompanyDivergenceReferenceTimeHistoryByHistId(
+	public WorkTypeDivergenceReferenceTimeHistoryDto getWkTypeDivergenceReferenceTimeHistoryByHistId(
 			@PathParam("historyId") String historyId) {
 		return this.historyFinder.getHistory(historyId);
 	}
