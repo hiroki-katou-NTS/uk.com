@@ -187,8 +187,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     grantDays: null,
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
-                    grantReferenceDate: 0,
-                    grantReferenceDateEnable: data.length == 0 ? true : false,
+                    grantReferenceDate: data[data.length - 1].grantSimultaneity() ? 1 : 0,
+                    grantReferenceDateEnable: data[data.length - 1].grantSimultaneity() ? false : true,
                     grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
                     grantDate: ""
                 };
@@ -374,7 +374,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             
             var checkMonths = self.checkTotalMonths(index);
-            if (!checkMonths) {
+            if (!checkMonths && value) {
                 self.count(1);
                 self.items()[index].grantSimultaneity(false);   
                 nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
