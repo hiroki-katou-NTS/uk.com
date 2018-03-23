@@ -8,12 +8,12 @@ public class CopyStdAcceptCondSetCommand {
 	 * システム種類
 	 */
 	private int systemType;
-	
+
 	/**
 	 * 外部受入条件コード
 	 */
 	private String sourceCondSetCode;
-	
+
 	/**
 	 * 外部受入条件コード
 	 */
@@ -23,6 +23,6 @@ public class CopyStdAcceptCondSetCommand {
 	 * 外部受入条件名称
 	 */
 	private String destCondSetName;
-	
+
 	private boolean override;
 }

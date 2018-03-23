@@ -6,7 +6,7 @@ import lombok.Value;
 public class SystemTypeDto {
 
 	private int type;
-	
+
 	private String name;
-	
+
 }

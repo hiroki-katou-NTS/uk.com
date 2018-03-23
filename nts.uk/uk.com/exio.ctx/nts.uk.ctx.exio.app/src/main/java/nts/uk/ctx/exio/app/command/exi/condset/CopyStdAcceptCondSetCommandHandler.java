@@ -20,9 +20,9 @@ public class CopyStdAcceptCondSetCommandHandler extends CommandHandler<CopyStdAc
 	@Override
 	protected void handle(CommandHandlerContext<CopyStdAcceptCondSetCommand> context) {
 		CopyStdAcceptCondSetCommand command = context.getCommand();
-		//会社ＩＤ
+		// 会社ＩＤ
 		String companyId = AppContexts.user().companyId();
-		//Copy param
+		// Copy param
 		StdAcceptCondSetCopyParam param = new StdAcceptCondSetCopyParam(companyId, command.getSystemType(),
 				command.getSourceCondSetCode(), command.getDestCondSetCode(), command.getDestCondSetName(),
 				command.isOverride());

@@ -10,10 +10,11 @@ import nts.uk.ctx.exio.app.command.exi.csvimport.CsvImportDataCommand;
 import nts.uk.ctx.exio.app.command.exi.csvimport.SyncCsvExecuteImportDataCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.csvimport.CsvImportExecutionRespone;
 import nts.uk.ctx.exio.app.command.exi.csvimport.SyncCsvCheckImportDataCommandHandler;
+
 @Path("exio/exi/csvimport")
 @Produces("application/json")
-public class SyncCsvDataImportService extends WebService{
-	
+public class SyncCsvDataImportService extends WebService {
+
 	@Inject
 	SyncCsvCheckImportDataCommandHandler checkImportHandler;
 
@@ -22,15 +23,15 @@ public class SyncCsvDataImportService extends WebService{
 
 	@POST
 	@Path("check")
-	public CsvImportExecutionRespone csvChecktProcess(CsvImportDataCommand command){
+	public CsvImportExecutionRespone csvChecktProcess(CsvImportDataCommand command) {
 		CsvImportExecutionRespone response = new CsvImportExecutionRespone();
 		response.taskInfor = checkImportHandler.handle(command);
 		return response;
 	}
-	
+
 	@POST
 	@Path("execution")
-	public CsvImportExecutionRespone csvImportProcess(CsvImportDataCommand command){
+	public CsvImportExecutionRespone csvImportProcess(CsvImportDataCommand command) {
 		CsvImportExecutionRespone response = new CsvImportExecutionRespone();
 		response.taskInfor = excuteImportHandler.handle(command);
 		return response;

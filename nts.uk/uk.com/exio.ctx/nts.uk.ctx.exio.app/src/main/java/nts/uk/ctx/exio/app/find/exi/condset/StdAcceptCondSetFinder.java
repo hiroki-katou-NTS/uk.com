@@ -94,7 +94,8 @@ public class StdAcceptCondSetFinder {
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
 		for (int i = 1; i <= 4; i++) {
 			for (int j = 1; j < 11; j++) {
-				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j%2));
+				lstCategoryItemData
+						.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j % 2));
 			}
 		}
 

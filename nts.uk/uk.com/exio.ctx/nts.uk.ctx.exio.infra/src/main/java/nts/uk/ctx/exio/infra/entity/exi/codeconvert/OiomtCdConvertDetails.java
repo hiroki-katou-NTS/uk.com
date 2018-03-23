@@ -16,46 +16,42 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* コード変換詳細
-*/
+ * コード変換詳細
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_CD_CONVERT_DETAILS")
-public class OiomtCdConvertDetails extends UkJpaEntity implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * ID
-    */
-    @EmbeddedId
-    public OiomtCdConvertDetailsPk cdConvertDetailsPk;
-    
-    /**
-    * 出力項目
-    */
-    @Basic(optional = false)
-    @Column(name = "OUTPUT_ITEM")
-    public String outputItem;
-    
-    /**
-    * 本システムのコード
-    */
-    @Basic(optional = false)
-    @Column(name = "SYSTEM_CD")
-    public String systemCd;
-    
-    @ManyToOne
-	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="CONVERT_CD",referencedColumnName="CONVERT_CD")
-	})
+public class OiomtCdConvertDetails extends UkJpaEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * ID
+	 */
+	@EmbeddedId
+	public OiomtCdConvertDetailsPk cdConvertDetailsPk;
+
+	/**
+	 * 出力項目
+	 */
+	@Basic(optional = false)
+	@Column(name = "OUTPUT_ITEM")
+	public String outputItem;
+
+	/**
+	 * 本システムのコード
+	 */
+	@Basic(optional = false)
+	@Column(name = "SYSTEM_CD")
+	public String systemCd;
+
+	@ManyToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "CONVERT_CD", referencedColumnName = "CONVERT_CD") })
 	private OiomtAcceptCdConvert oiomtAcceptCdConvert;
-    
-    @Override
-    protected Object getKey()
-    {
-        return cdConvertDetailsPk;
-    }
+
+	@Override
+	protected Object getKey() {
+		return cdConvertDetailsPk;
+	}
 }

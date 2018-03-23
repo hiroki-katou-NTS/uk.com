@@ -11,28 +11,27 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 出力条件設定（定型）: 主キー情報
-*/
+ * 出力条件設定（定型）: 主キー情報
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtStdOutputCondSetPk implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * 会社ID
-    */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-    
-    /**
-    * 外部出力条件コード
-    */
-    @Basic(optional = false)
-    @Column(name = "CONDITION_SET_CD")
-    public String conditionSetCd;
-    
+public class OiomtStdOutputCondSetPk implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
+
+	/**
+	 * 外部出力条件コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONDITION_SET_CD")
+	public String conditionSetCd;
+
 }
