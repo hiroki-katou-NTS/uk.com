@@ -75,7 +75,7 @@ module nts.uk.at.view.ktg028.viewmodel {
             };
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
             self.currentCode_A2.subscribe(function(newValue) {
-                nts.uk.ui.errors.clearAll();
+                _.defer(() => nts.uk.ui.errors.clearAll());
                 let currentItem = _.find(self.items_A2(), { 'topPageCode': newValue });
                 if (newValue) {
                     self.texteditorA3_2.enable(false);
@@ -110,7 +110,7 @@ module nts.uk.at.view.ktg028.viewmodel {
             let self = this;
             let listWidgets = __viewContext.enums.WidgetDisplayItemType;
             self.items_A7(listWidgets);
-            self.findAll().done(()=>{
+            self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
                 }
@@ -243,6 +243,8 @@ module nts.uk.at.view.ktg028.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+
+    }
     class ItemA2 {
         serialNumber: string;
         topPagePartID: string;
