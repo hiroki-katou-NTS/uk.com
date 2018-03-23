@@ -64,6 +64,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			dailyPerfor.setRecordWorkInformation(workInfor);
+			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		
 		//日別実績の編集状態
