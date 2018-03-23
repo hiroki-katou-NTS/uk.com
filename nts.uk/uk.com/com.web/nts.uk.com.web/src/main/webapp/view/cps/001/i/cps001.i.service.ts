@@ -3,9 +3,11 @@ module nts.uk.com.view.cps001.i.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'at/record/remainnumber/special/getall',
+        'getAllList': 'at/record/remainnumber/special/getall',
+        'getAllListByCheckState': 'at/record/remainnumber/special/getall',
         'getDetail': 'at/record/remainnumber/special/getdetailemployeetodelete/{0}',
         'save': 'at/record/remainnumber/special/restoredata',
+          lostFocus: "at/record/remainnumber/annlea/lostFocus",
         'delete': 'at/record/remainnumber/special/deleteemp/{0}'
     };
 
@@ -17,10 +19,10 @@ module nts.uk.com.view.cps001.i.service {
         return ajax(format(paths.getDetail, id));
     }
 
-    export function save(command : any) {
+    export function save(command: any) {
         return ajax(paths.save, command);
     }
-    
+
     export function remove(id: any) {
         return ajax(format(paths.delete, id));
     }

@@ -1,18 +1,18 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 
 @Stateless
-public class AddSpecialLeaCommandHandler extends CommandHandler<AddSpecialLeaCommand> {
+public class AddSpecialLeaCommandHandler extends AsyncCommandHandler<AddSpecialLeaCommand> {
 
 	@Inject
 	private SpecialLeaveGrantRepository repo;
@@ -21,30 +21,23 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<AddSpecialLeaCom
 	protected void handle(CommandHandlerContext<AddSpecialLeaCommand> context) {
 		
 		AddSpecialLeaCommand command = context.getCommand();
-		
-		if(command == null) {
-			// exception
+		String specialId = IdentifierUtil.randomUniqueId();
+		// 付与日＞使用期限の場合はエラー #Msg_1023
+		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0){
+			throw new BusinessException("Msg_1023");
 		}
 		
-		String specialLeaID = IdentifierUtil.randomUniqueId();
+		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, command.getSid(), 
+				command.getSpecialLeaCode(), command.getGrantDate(), 
+				command.getDeadlineDate(), command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
+				command.getNumberDayGrant(), command.getTimeGrant(), 
+				command.getNumberDayUse(),command.getTimeUse(), 
+				null, 
+				command.getNumberDaysOver(),command.getTimeOver(), 
+				command.getNumberDayRemain(), command.getTimeRemain());
 		
-		Optional<SpecialLeaveGrantRemainingData> opt = repo.getBySpecialId(specialLeaID);
-		if(opt.isPresent()) {
-			
-			// exception
-		}
-		
-		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(command.getSpecialLeaId(),command.getSid(), command.getSpecialLeaCode(), 
-				command.getGrantDate(), command.getDeadlineDate(), command.getExpStatus(),
-				command.getRegisterType(), command.getNumberDayGrant(), command.getTimeGrant(), 
-				command.getNumberDayUse(), command.getTimeUse(), command.getUseSavingDays(), 
-				command.getNumberDaysOver(), command.getTimeOver(), command.getNumberDayRemain(), command.getTimeRemain());
-		
-		repo.add(domain);
-			
-		
-		
+		repo.add(data);
 		
 	}
-
+		
 }

@@ -41,12 +41,12 @@
 
 			<div id="contents-area">
 				<div class="grid-container">
-					<div data-bind="ntsCheckBox: { checked: true, enable: true}">#{i18n.getText('CPS001_125')}</div>
+					<div data-bind="ntsCheckBox: { checked: checked, enable: true}">#{i18n.getText('CPS001_125')}</div>
 					<table id="single-list"
 						data-bind="ntsGridList: {												
 						height: 250, 
 		 				dataSource: listData, 
-						primaryKey: 'code', 
+						primaryKey: 'grantDate', 
 						columns: ko.observableArray([
 				                { headerText: 'stt', key: 'code', width: 50 },
 				                { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 80 },
@@ -63,7 +63,9 @@
 				            ]), 
 						features: [{optionsValue: 'code', optionsText: 'name'}], 
 						multiple: false, 
-			 		    value: currentCode 
+						showNumbering: true,
+						rows:5,
+			 		    value: currentValue 
 			 		}"></table>
 				</div>
 				<div style="padding-top: 20px" class="cls-detail">

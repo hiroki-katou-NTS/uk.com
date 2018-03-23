@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumCommand;
+import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantFinder;
 
@@ -25,6 +26,12 @@ public class SpecialLeaveGrantRemWebService {
 	@Path("getall/{sid}/{ctgcode}")
 	public List<SpecialLeaveGrantDto> getAll(@PathParam("sid") String sid ,@PathParam("ctgcd") int ctgcode) {
 		return finder.getListData(sid, ctgcode);
+	}
+	
+	@POST
+	@Path("getAnnLeaByCheckState")
+	public List<SpecialLeaveGrantDto> getAnnLeaByCheckState(String employeeId,int ctgcode, Boolean checkState) {
+		return finder.getListDataByCheckState(employeeId,ctgcode,checkState);
 	}
 	
 	

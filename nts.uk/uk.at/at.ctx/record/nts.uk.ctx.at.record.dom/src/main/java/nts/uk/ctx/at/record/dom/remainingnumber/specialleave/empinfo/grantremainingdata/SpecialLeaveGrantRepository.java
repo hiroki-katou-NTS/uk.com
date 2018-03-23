@@ -13,7 +13,7 @@ public interface SpecialLeaveGrantRepository {
 
 	void update(SpecialLeaveGrantRemainingData data);
 
-	void delete(String employeeId, GeneralDate grantDate);
+	void delete(String employeeId, int specialCode ,GeneralDate grantDate);
 
 	Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId);
 

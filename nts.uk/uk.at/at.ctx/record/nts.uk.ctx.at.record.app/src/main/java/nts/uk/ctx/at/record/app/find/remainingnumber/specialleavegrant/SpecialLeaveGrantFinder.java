@@ -16,12 +16,14 @@ public class SpecialLeaveGrantFinder {
 	private SpecialLeaveGrantRepository repo;
 
 	public List<SpecialLeaveGrantDto> getListData(String employeeId, int specialCode) {
-
 		List<SpecialLeaveGrantRemainingData> datalist = repo.getAll(employeeId, specialCode);
-		
 		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(domain))
 				.collect(Collectors.toList());
-		
 	}
-	
+
+	public List<SpecialLeaveGrantDto> getListDataByCheckState(String employeeId, int specialCode, Boolean checkState) {
+		List<SpecialLeaveGrantRemainingData> datalist = repo.getAll(employeeId, specialCode);
+		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(domain))
+				.collect(Collectors.toList());
+	}
 }

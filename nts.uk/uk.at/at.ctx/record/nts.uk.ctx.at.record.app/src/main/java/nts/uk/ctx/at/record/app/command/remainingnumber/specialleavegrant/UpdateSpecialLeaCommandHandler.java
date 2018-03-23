@@ -1,8 +1,39 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 
 @Stateless
-public class UpdateSpecialLeaCommandHandler {
+public class UpdateSpecialLeaCommandHandler extends AsyncCommandHandler<UpdateSpecialLeaCommand> {
+
+	@Inject
+	private SpecialLeaveGrantRepository repo;
+
+	@Override
+	protected void handle(CommandHandlerContext<UpdateSpecialLeaCommand> context) {
+		UpdateSpecialLeaCommand command = context.getCommand();
+		// 付与日＞使用期限の場合はエラー #Msg_1023
+		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
+			throw new BusinessException("Msg_1023");
+		}
+
+		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
+				command.getSpecialId(),command.getSid(), command.getSpecialLeaCode(),
+				command.getGrantDate(), command.getDeadlineDate(),
+				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
+				command.getNumberDayGrant(),command.getTimeGrant(), 
+				command.getNumberDayUse(), command.getTimeUse(),
+				null,
+				command.getNumberDaysOver(), command.getTimeOver(), 
+				command.getNumberDayRemain(),command.getTimeRemain());
+		repo.update(data);
+	}
 
 }

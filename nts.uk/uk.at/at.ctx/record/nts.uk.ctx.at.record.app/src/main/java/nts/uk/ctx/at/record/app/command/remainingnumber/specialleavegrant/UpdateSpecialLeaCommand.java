@@ -8,9 +8,10 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @Data
-public class AddSpecialLeaCommand {
+public class UpdateSpecialLeaCommand {
 
 	private String sid;
+	private String specialId;
 	private int specialLeaCode;
 	private GeneralDate grantDate;
 	private GeneralDate deadlineDate;
