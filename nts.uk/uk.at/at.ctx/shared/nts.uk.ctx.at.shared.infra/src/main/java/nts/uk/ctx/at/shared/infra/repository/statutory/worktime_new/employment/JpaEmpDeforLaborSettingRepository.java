@@ -79,9 +79,9 @@ public class JpaEmpDeforLaborSettingRepository extends JpaRepository implements 
 	 * @return the kshst emp defor lar set
 	 */
 	private KshstEmpDeforLarSet toEntity(EmpDeforLaborSetting domain) {
-		JpaEmpDeforLaborSettingSetMemento memento = new JpaEmpDeforLaborSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstEmpDeforLarSet entity = new KshstEmpDeforLarSet();
+		domain.saveToMemento(new JpaEmpDeforLaborSettingSetMemento(entity));
+		return entity;
 	}
 	
 	/**

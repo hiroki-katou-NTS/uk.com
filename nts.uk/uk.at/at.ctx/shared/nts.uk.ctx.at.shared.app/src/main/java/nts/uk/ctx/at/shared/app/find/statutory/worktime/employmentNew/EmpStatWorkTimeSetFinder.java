@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -75,12 +75,12 @@ public class EmpStatWorkTimeSetFinder {
 			dtoBuilder.deforLaborSetting(EmpDeforLaborSettingDto.fromDomain(optEmpDeforLaborSet.get()));
 		}
 		
-		Optional<EmpTransWorkTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, emplCode);
+		Optional<EmpTransLaborTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, emplCode);
 		if (optTransLaborTime.isPresent()) {
 			dtoBuilder.transLaborTime(EmpTransLaborHourDto.fromDomain(optTransLaborTime.get()));
 		}
 
-		Optional<EmpRegularWorkTime> optEmpRegular = this.regularWorkTimeRepository.findById(companyId, emplCode);
+		Optional<EmpRegularLaborTime> optEmpRegular = this.regularWorkTimeRepository.findById(companyId, emplCode);
 		if (optEmpRegular.isPresent()) {
 			dtoBuilder.regularLaborTime(EmpRegularWorkHourDto.fromDomain(optEmpRegular.get()));
 		}

@@ -18,21 +18,21 @@ public interface ShainRegularWorkTimeRepository {
 	 * @param EmpId the emp id
 	 * @return the optional
 	 */
-   Optional<ShainRegularWorkTime> find(String Cid, String EmpId);
+   Optional<ShainRegularLaborTime> find(String Cid, String EmpId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param empRegWorkHour the emp reg work hour
 	 */
-   void add(ShainRegularWorkTime empRegWorkHour);
+   void add(ShainRegularLaborTime empRegWorkHour);
 
 	/**
 	 * Update.
 	 *
 	 * @param EmpRegWorkHour the emp reg work hour
 	 */
-   void update(ShainRegularWorkTime EmpRegWorkHour);
+   void update(ShainRegularLaborTime EmpRegWorkHour);
 
 	/**
     * Delete.

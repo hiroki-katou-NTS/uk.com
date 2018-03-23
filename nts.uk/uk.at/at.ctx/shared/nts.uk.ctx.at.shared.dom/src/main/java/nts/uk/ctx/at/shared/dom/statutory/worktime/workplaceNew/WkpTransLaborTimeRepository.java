@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface WkpDeforLaborWorkHourRepository.
  */
-public interface WkpDeforLaborWorkTimeRepository {
+public interface WkpTransLaborTimeRepository {
 
 	/**
 	 * Find by cid and wkp id.
@@ -18,27 +18,27 @@ public interface WkpDeforLaborWorkTimeRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpDeforLaborWorkTime> findByCidAndWkpId(String cid, String wkpId);
+	Optional<WkpTransLaborTime> find(String cid, String wkpId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param wkpDeforLaborWorkHour the wkp defor labor work hour
 	 */
-	void add(WkpDeforLaborWorkTime wkpDeforLaborWorkHour);
+	void add(WkpTransLaborTime wkpDeforLaborWorkHour);
 
 	/**
 	 * Update.
 	 *
 	 * @param wkpDeforLaborWorkHour the wkp defor labor work hour
 	 */
-	void update(WkpDeforLaborWorkTime wkpDeforLaborWorkHour);
+	void update(WkpTransLaborTime wkpDeforLaborWorkHour);
 
 	/**
 	 * Delete.
 	 *
 	 * @param wkpDeforLaborWorkHour the wkp defor labor work hour
 	 */
-	void delete(WkpDeforLaborWorkTime wkpDeforLaborWorkHour);
+	void remove(String cid, String wkpId);
 
 }

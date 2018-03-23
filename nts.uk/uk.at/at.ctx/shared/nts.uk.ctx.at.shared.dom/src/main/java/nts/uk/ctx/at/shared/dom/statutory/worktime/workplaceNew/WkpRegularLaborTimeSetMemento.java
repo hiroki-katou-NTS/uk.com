@@ -9,29 +9,29 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
- * The Interface WkpDeforLaborWorkHourGetMemento.
+ * The Interface WkpNormalWorkingHourSetMemento.
  */
-public interface WkpDeforLaborWorkTimeGetMemento {
+public interface WkpRegularLaborTimeSetMemento {
 
 	/**
-	 * Gets the company id.
+	 * Sets the company id.
 	 *
-	 * @return the company id
+	 * @param companyId the new company id
 	 */
-	CompanyId getCompanyId();
+	void setCompanyId(CompanyId companyId);
 
 	/**
-	 * Gets the workplace id.
+	 * Sets the workplace id.
 	 *
-	 * @return the workplace id
+	 * @param workplaceId the new workplace id
 	 */
-	WorkplaceId getWorkplaceId();
+	void setWorkplaceId(WorkplaceId workplaceId);
 
 	/**
-	 * Gets the working time setting new.
+	 * Sets the working time setting new.
 	 *
-	 * @return the working time setting new
+	 * @param workingTimeSet the new working time setting new
 	 */
-	WorkingTimeSetting getWorkingTimeSet();
+	void setWorkingTimeSet(WorkingTimeSetting workingTimeSet);
 
 }

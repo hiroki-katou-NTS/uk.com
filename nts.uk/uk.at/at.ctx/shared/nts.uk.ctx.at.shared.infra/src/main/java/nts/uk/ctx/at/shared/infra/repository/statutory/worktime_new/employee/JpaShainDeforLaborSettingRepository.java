@@ -92,9 +92,9 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 * @return the kshst sha defor lar set
 	 */
 	private KshstShaDeforLarSet toEntity(ShainDeforLaborSetting domain) {
-		JpaShainDeforLaborSettingSetMemento memento = new JpaShainDeforLaborSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstShaDeforLarSet entity = new KshstShaDeforLarSet();
+		domain.saveToMemento(new JpaShainDeforLaborSettingSetMemento(entity));
+		return entity;
 	}
 
 }

@@ -37,6 +37,13 @@ public class KshstShaDeforLarSetPK implements Serializable {
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
+	
+	public KshstShaDeforLarSetPK(String cid, String sid, int year) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.year = year;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -75,22 +82,5 @@ public class KshstShaDeforLarSetPK implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Instantiates a new kshst sha defor lar set PK.
-	 *
-	 * @param cid
-	 *            the cid
-	 * @param sid
-	 *            the sid
-	 * @param year
-	 *            the year
-	 */
-	public KshstShaDeforLarSetPK(String cid, String sid, int year) {
-		super();
-		this.cid = cid;
-		this.sid = sid;
-		this.year = year;
 	}
 }

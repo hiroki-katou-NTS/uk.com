@@ -24,13 +24,6 @@ import lombok.Setter;
 @Embeddable
 public class KshstEmpNormalSetPK implements Serializable {
 
-	public KshstEmpNormalSetPK(String cid, String empCd, int year) {
-		super();
-		this.cid = cid;
-		this.empCd = empCd;
-		this.year = year;
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
@@ -45,42 +38,43 @@ public class KshstEmpNormalSetPK implements Serializable {
 	@Column(name = "YEAR")
 	private int year;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (empCd != null ? empCd.hashCode() : 0);
-		hash += (int) year;
-		return hash;
+	public KshstEmpNormalSetPK(String cid, String empCd, int year) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+		this.year = year;
 	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (empCd != null ? empCd.hashCode() : 0);
+        hash += (int) year;
+        return hash;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshstEmpNormalSetPK)) {
-			return false;
-		}
-		KshstEmpNormalSetPK other = (KshstEmpNormalSetPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
-			return false;
-		}
-		if ((this.empCd == null && other.empCd != null)
-				|| (this.empCd != null && !this.empCd.equals(other.empCd))) {
-			return false;
-		}
-		if (this.year != other.year) {
-			return false;
-		}
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof KshstEmpNormalSetPK)) {
+            return false;
+        }
+        KshstEmpNormalSetPK other = (KshstEmpNormalSetPK) object;
+        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+            return false;
+        }
+        if ((this.empCd == null && other.empCd != null) || (this.empCd != null && !this.empCd.equals(other.empCd))) {
+            return false;
+        }
+        if (this.year != other.year) {
+            return false;
+        }
+        return true;
+    }
+
 }

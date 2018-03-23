@@ -39,6 +39,14 @@ public class KshstShaNormalSetPK implements Serializable {
 	@Column(name = "YEAR")
 	private int year;
 
+	public KshstShaNormalSetPK(String cid, String sid, int year) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.year = year;
+	}
+
+	/* (non-Javadoc)
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -77,13 +85,6 @@ public class KshstShaNormalSetPK implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	public KshstShaNormalSetPK(String cid, String sid, int year) {
-		super();
-		this.cid = cid;
-		this.sid = sid;
-		this.year = year;
 	}
 
 }

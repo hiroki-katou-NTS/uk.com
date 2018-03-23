@@ -32,7 +32,7 @@ public class WkpDeforLaborSetting extends DeforLaborSetting
 	 * @param memento
 	 *            the memento
 	 */
-	public WkpDeforLaborSetting(WkpDeforLaborSetting memento) {
+	public WkpDeforLaborSetting(WkpDeforLaborSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.year = memento.getYear();

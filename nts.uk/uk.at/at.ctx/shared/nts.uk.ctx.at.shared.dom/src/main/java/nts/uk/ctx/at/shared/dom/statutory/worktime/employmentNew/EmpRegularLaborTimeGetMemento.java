@@ -9,9 +9,9 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
- * The Interface EmploymentDeforLaborWorkingHourGetMemento.
+ * The Interface EmploymentRegularWorkHourGetMemento.
  */
-public interface EmpTransWorkTimeGetMemento {
+public interface EmpRegularLaborTimeGetMemento {
 
 	/**
 	 * Gets the company id.

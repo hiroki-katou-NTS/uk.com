@@ -18,40 +18,40 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
  * The Class JpaComTransLaborTimeGetMemento.
  */
 public class JpaComTransLaborTimeGetMemento implements ComTransLaborTimeGetMemento {
-	
-	/** The company id. */
-	private CompanyId companyId;
 
-	/** The working time set. */
-	private WorkingTimeSetting workingTimeSet;
+	/** The company id. */
+	private KshstComTransLabTime entity;
 
 	/**
 	 * Instantiates a new jpa com trans labor time get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaComTransLaborTimeGetMemento(KshstComTransLabTime entity) {
-		this.companyId = new CompanyId(entity.getCid());
-		
-		WeeklyUnit weekyUnit = new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), WeekStart.valueOf(entity.getWeekStr()));
-		DailyUnit dailyTime = new DailyUnit(new TimeOfDay(entity.getDailyTime()));
-		this.workingTimeSet = new WorkingTimeSetting(weekyUnit, dailyTime);
+		this.entity = entity;
+
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeGetMemento#getCompanyId()
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
+	 * ComTransLaborTimeGetMemento#getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return this.companyId;
+		return new CompanyId(this.entity.getCid());
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeGetMemento#getWorkingTimeSet()
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
+	 * ComTransLaborTimeGetMemento#getWorkingTimeSet()
 	 */
 	@Override
 	public WorkingTimeSetting getWorkingTimeSet() {
-		return this.workingTimeSet;
+		WeeklyUnit weekyUnit = new WeeklyUnit(new WeeklyTime(this.entity.getWeeklyTime()),
+				WeekStart.valueOf(this.entity.getWeekStr()));
+		DailyUnit dailyTime = new DailyUnit(new TimeOfDay(this.entity.getDailyTime()));
+		return new WorkingTimeSetting(weekyUnit, dailyTime);
 	}
 
 }

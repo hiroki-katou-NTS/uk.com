@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
-
 /**
  * The Interface WkpDeforLaborSettingRepository.
  */
@@ -21,14 +19,14 @@ public interface WkpDeforLaborSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<WkpDeforLaborSetting> findByCidAndWkpIdAndYear(String cid, String wkpId, Year year);
+	Optional<WkpDeforLaborSetting> find(String cid, String wkpId, int year);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param wkpDeforLaborSetting the wkp defor labor setting
 	 */
-	void add(WkpDeforLaborSetting wkpDeforLaborSetting);
+	void insert(WkpDeforLaborSetting wkpDeforLaborSetting);
 
 	/**
 	 * Update.
@@ -42,6 +40,6 @@ public interface WkpDeforLaborSettingRepository {
 	 *
 	 * @param wkpDeforLaborSetting the wkp defor labor setting
 	 */
-	void delete(WkpDeforLaborSetting wkpDeforLaborSetting);
+	void remove(String cid, String wkpId, int year);
 
 }

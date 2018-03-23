@@ -21,8 +21,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class KshstEmpTransLabTimePK implements Serializable {
-
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
@@ -32,6 +30,12 @@ public class KshstEmpTransLabTimePK implements Serializable {
 	/** The emp cd. */
 	@Column(name = "EMP_CD")
 	private String empCd;
+	
+	public KshstEmpTransLabTimePK(String cid, String empCd) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -67,20 +71,6 @@ public class KshstEmpTransLabTimePK implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Instantiates a new kshst emp trans lab time PK.
-	 *
-	 * @param cid
-	 *            the cid
-	 * @param empCd
-	 *            the emp cd
-	 */
-	public KshstEmpTransLabTimePK(String cid, String empCd) {
-		super();
-		this.cid = cid;
-		this.empCd = empCd;
 	}
 
 }

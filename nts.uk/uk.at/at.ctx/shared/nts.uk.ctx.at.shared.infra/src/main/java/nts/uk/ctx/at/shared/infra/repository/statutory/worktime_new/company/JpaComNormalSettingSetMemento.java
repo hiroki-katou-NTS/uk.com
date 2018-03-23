@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComNormalSetPK;
 
 /**
  * The Class JpaComNormalSettingSetMemento.
@@ -27,35 +28,52 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
  */
 @Getter
 public class JpaComNormalSettingSetMemento implements ComNormalSettingSetMemento {
-	
+
 	/** The entity. */
 	private KshstComNormalSet entity;
-	
+
 	/**
 	 * Instantiates a new jpa com normal setting set memento.
+	 *
+	 * @param entity
+	 *            the entity
 	 */
-	public JpaComNormalSettingSetMemento() {
-		this.entity = new KshstComNormalSet();
+	public JpaComNormalSettingSetMemento(KshstComNormalSet entity) {
+		super();
+		if (entity.getKshstComNormalSetPK() == null) {
+			entity.setKshstComNormalSetPK(new KshstComNormalSetPK());
+		}
+		this.entity = entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
+	 * NormalSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
 	 */
 	@Override
 	public void setYear(Year year) {
 		this.entity.getKshstComNormalSetPK().setYear(year.v());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
+	 * ComNormalSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.
+	 * CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshstComNormalSetPK().setCid(companyId.v());;
+		this.entity.getKshstComNormalSetPK().setCid(companyId.v());
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingSetMemento#setStatutorySetting(java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
+	 * NormalSettingSetMemento#setStatutorySetting(java.util.List)
 	 */
 	@Override
 	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
@@ -73,15 +91,17 @@ public class JpaComNormalSettingSetMemento implements ComNormalSettingSetMemento
 		this.entity.setNovTime(map.get(Month.NOVEMBER));
 		this.entity.setDecTime(map.get(Month.DECEMBER));
 	}
-	
+
 	/**
 	 * To monthly estimate time map.
 	 *
-	 * @param statutorySetting the statutory setting
+	 * @param statutorySetting
+	 *            the statutory setting
 	 * @return the map
 	 */
-	private Map<Integer, Integer> toMonthlyEstimateTimeMap (List<MonthlyUnit> statutorySetting) {
-		return statutorySetting.stream().collect(Collectors.toMap(unit -> unit.getMonth().v(), unit -> unit.getMonthlyTime().v()));
+	private Map<Integer, Integer> toMonthlyEstimateTimeMap(List<MonthlyUnit> statutorySetting) {
+		return statutorySetting.stream().collect(
+				Collectors.toMap(unit -> unit.getMonth().v(), unit -> unit.getMonthlyTime().v()));
 	}
 
 }

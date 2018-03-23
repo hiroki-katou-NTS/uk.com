@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSe
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpDeforLarSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpDeforLarSetPK;
 import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingSetMemento;
 
 /**
@@ -33,8 +34,11 @@ public class JpaEmpDeforLaborSettingSetMemento extends JpaDefaultSettingSetMemen
 	/**
 	 * Instantiates a new jpa emp defor labor setting set memento.
 	 */
-	public JpaEmpDeforLaborSettingSetMemento() {
-		this.entity = new KshstEmpDeforLarSet(); 
+	public JpaEmpDeforLaborSettingSetMemento(KshstEmpDeforLarSet entity) {
+		if(entity.getKshstEmpDeforLarSetPK() == null) {
+			entity.setKshstEmpDeforLarSetPK(new KshstEmpDeforLarSetPK());
+		}
+		this.entity = entity; 
 	}
 
 	/* 

@@ -6,10 +6,11 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
 import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingSetMemento;
 
 /**
@@ -22,16 +23,17 @@ import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDef
  * @return the entity
  */
 @Getter
-public class JpaEmpTransLaborTimeSetMemento extends JpaDefaultSettingSetMemento implements EmpTransWorkTimeSetMemento{
+public class JpaEmpTransLaborTimeSetMemento extends JpaDefaultSettingSetMemento implements EmpTransLaborTimeSetMemento{
 	
 	/** The entity. */
 	private KshstEmpTransLabTime entity;
 
-	/**
-	 * Instantiates a new jpa emp trans labor time set memento.
-	 */
-	public JpaEmpTransLaborTimeSetMemento() {
-		this.entity = new KshstEmpTransLabTime();
+	public JpaEmpTransLaborTimeSetMemento(KshstEmpTransLabTime entity) {
+		super();
+		if(entity.getKshstEmpTransLabTimePK() == null) {
+			entity.setKshstEmpTransLabTimePK(new KshstEmpTransLabTimePK());
+		}
+		this.entity = entity;
 	}
 
 	/* 
@@ -59,5 +61,6 @@ public class JpaEmpTransLaborTimeSetMemento extends JpaDefaultSettingSetMemento 
 	public void setEmploymentCode(EmploymentCode employmentCode) {
 		this.entity.getKshstEmpTransLabTimePK().setEmpCd(employmentCode.v());;
 	}
+
 
 }

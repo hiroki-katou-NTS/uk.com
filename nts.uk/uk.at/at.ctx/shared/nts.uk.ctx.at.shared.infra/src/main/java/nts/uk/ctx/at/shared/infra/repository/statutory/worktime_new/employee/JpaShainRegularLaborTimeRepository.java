@@ -16,7 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
@@ -33,7 +33,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
-	public void add(ShainRegularWorkTime setting) {
+	public void add(ShainRegularLaborTime setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
@@ -41,7 +41,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
-	public void update(ShainRegularWorkTime setting) {
+	public void update(ShainRegularLaborTime setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
@@ -57,7 +57,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<ShainRegularWorkTime> find(String cid, String empId) {
+	public Optional<ShainRegularLaborTime> find(String cid, String empId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstShaRegLaborTime> cq = cb.createQuery(KshstShaRegLaborTime.class);
@@ -79,10 +79,10 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @param emplRegWorkHour the empl reg work hour
 	 * @return the kshst sha reg labor time
 	 */
-	private KshstShaRegLaborTime toEntity(ShainRegularWorkTime emplRegWorkHour) {
-		JpaShainRegularLaborTimeSetMemento memento = new JpaShainRegularLaborTimeSetMemento();
-		emplRegWorkHour.saveToMemento(memento);
-		return memento.getEntity();
+	private KshstShaRegLaborTime toEntity(ShainRegularLaborTime emplRegWorkHour) {
+		KshstShaRegLaborTime entity = new KshstShaRegLaborTime();
+		emplRegWorkHour.saveToMemento(new JpaShainRegularLaborTimeSetMemento(entity));
+		return entity;
 	}
 
 	/**
@@ -91,10 +91,10 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @param entity the entity
 	 * @return the shain regular work time
 	 */
-	private ShainRegularWorkTime toDomain(KshstShaRegLaborTime entity) {
+	private ShainRegularLaborTime toDomain(KshstShaRegLaborTime entity) {
 		if (entity == null) {
 			return null;
 		}
-		return new ShainRegularWorkTime(new JpaShainRegularLaborTimeGetMemento(entity));
+		return new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity));
 	}
 }

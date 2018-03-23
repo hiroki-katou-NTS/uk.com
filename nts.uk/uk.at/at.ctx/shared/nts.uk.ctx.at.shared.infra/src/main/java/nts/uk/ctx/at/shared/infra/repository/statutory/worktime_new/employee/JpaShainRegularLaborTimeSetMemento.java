@@ -7,9 +7,10 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
 
 /**
  * The Class JpaShainRegularLaborTimeSetMemento.
@@ -27,7 +28,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
  * @return the entity
  */
 @Getter
-public class JpaShainRegularLaborTimeSetMemento implements ShainRegularWorkTimeSetMemento {
+public class JpaShainRegularLaborTimeSetMemento implements ShainRegularLaborTimeSetMemento {
 
 	/** The entity. */
 	private KshstShaRegLaborTime entity;
@@ -35,6 +36,14 @@ public class JpaShainRegularLaborTimeSetMemento implements ShainRegularWorkTimeS
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
+
+	public JpaShainRegularLaborTimeSetMemento(KshstShaRegLaborTime entity) {
+		if(entity.getKshstShaRegLaborTimePK() == null) {
+			entity.setKshstShaRegLaborTimePK(new KshstShaRegLaborTimePK());
+		}
+		this.entity = entity;
+	}
+	
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.entity.getKshstShaRegLaborTimePK().setCid(companyId.v());
@@ -57,4 +66,5 @@ public class JpaShainRegularLaborTimeSetMemento implements ShainRegularWorkTimeS
 	public void setEmployeeId(EmployeeId employeeId) {
 		this.entity.getKshstShaRegLaborTimePK().setSid(employeeId.v());
 	}
+
 }

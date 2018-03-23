@@ -23,13 +23,6 @@ import lombok.Setter;
 @Embeddable
 public class KshstEmpDeforLarSetPK implements Serializable {
 
-	public KshstEmpDeforLarSetPK(String cid, String empCd, int year) {
-		super();
-		this.cid = cid;
-		this.empCd = empCd;
-		this.year = year;
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
@@ -44,6 +37,14 @@ public class KshstEmpDeforLarSetPK implements Serializable {
 	@Column(name = "YEAR")
 	private int year;
 
+	public KshstEmpDeforLarSetPK(String cid, String empCd, int year) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+		this.year = year;
+	}
+
+	/* (non-Javadoc)
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,5 +83,6 @@ public class KshstEmpDeforLarSetPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

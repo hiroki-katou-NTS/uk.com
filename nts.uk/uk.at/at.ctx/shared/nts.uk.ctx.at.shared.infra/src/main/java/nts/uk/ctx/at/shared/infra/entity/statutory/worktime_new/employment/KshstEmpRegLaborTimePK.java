@@ -24,12 +24,6 @@ import lombok.Setter;
 @Embeddable
 public class KshstEmpRegLaborTimePK implements Serializable {
 
-	public KshstEmpRegLaborTimePK(String cid, String empCd) {
-		super();
-		this.cid = cid;
-		this.empCd = empCd;
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
@@ -40,6 +34,13 @@ public class KshstEmpRegLaborTimePK implements Serializable {
 	@Column(name = "EMP_CD")
 	private String empCd;
 
+	public KshstEmpRegLaborTimePK(String cid, String empCd) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+	}
+	
+	/* (non-Javadoc)
 	/*
 	 * (non-Javadoc)
 	 * 

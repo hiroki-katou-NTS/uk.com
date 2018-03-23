@@ -19,7 +19,7 @@ public interface EmpRegularWorkTimeRepository {
 	 * @param cid the cid
 	 * @return the list
 	 */
-	List<EmpRegularWorkTime> findListByCid(String cid);
+	List<EmpRegularLaborTime> findListByCid(String cid);
 	
 	/**
 	 * Find by id.
@@ -28,21 +28,21 @@ public interface EmpRegularWorkTimeRepository {
 	 * @param employmentCode the employment code
 	 * @return the optional
 	 */
-	Optional<EmpRegularWorkTime> findById(String cid, String employmentCode);
+	Optional<EmpRegularLaborTime> findById(String cid, String employmentCode);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param emplRegWorkHour the empl reg work hour
 	 */
-	void add(EmpRegularWorkTime emplRegWorkHour);
+	void add(EmpRegularLaborTime emplRegWorkHour);
 
 	/**
 	 * Update.
 	 *
 	 * @param emplRegWorkHour the empl reg work hour
 	 */
-	void update(EmpRegularWorkTime emplRegWorkHour);
+	void update(EmpRegularLaborTime emplRegWorkHour);
 
 	/**
 	 * Delete.

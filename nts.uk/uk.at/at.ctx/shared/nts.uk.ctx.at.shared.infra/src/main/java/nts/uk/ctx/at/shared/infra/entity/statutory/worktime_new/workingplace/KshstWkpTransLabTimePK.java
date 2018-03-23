@@ -33,6 +33,12 @@ public class KshstWkpTransLabTimePK implements Serializable {
 	@Column(name = "WKP_ID")
 	private String wkpId;
 
+	public KshstWkpTransLabTimePK(String cid, String wkpId) {
+		super();
+		this.cid = cid;
+		this.wkpId = wkpId;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -67,5 +73,4 @@ public class KshstWkpTransLabTimePK implements Serializable {
 		}
 		return true;
 	}
-
 }

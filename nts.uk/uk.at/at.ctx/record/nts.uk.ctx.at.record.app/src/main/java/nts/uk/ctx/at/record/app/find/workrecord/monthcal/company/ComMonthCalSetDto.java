@@ -21,27 +21,8 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class ComMonthCalSetDto.
  */
-
-/**
- * Gets the defor aggr setting.
- *
- * @return the defor aggr setting
- */
 @Getter
-
-/**
- * Sets the reg aggr setting.
- *
- * @param regAggrSetting
- *            the new reg aggr setting
- */
 @Setter
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
- */
 @Builder
 public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento,
 		ComFlexMonthActCalSetSetMemento, ComDeforLaborMonthActCalSetSetMemento {

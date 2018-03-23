@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
  */
 @Getter
 // 職場別変形労働労働時間
-public class WkpDeforLaborWorkTime extends AggregateRoot implements StatutoryWorkTimeSet {
+public class WkpTransLaborTime extends AggregateRoot implements StatutoryWorkTimeSet {
 
 	/** The company id. */
 	// 会社ID
@@ -36,7 +36,7 @@ public class WkpDeforLaborWorkTime extends AggregateRoot implements StatutoryWor
 	 * @param memento
 	 *            the memento
 	 */
-	public WkpDeforLaborWorkTime(WkpDeforLaborWorkTimeGetMemento memento) {
+	public WkpTransLaborTime(WkpTransLaborTimeGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.workingTimeSet = memento.getWorkingTimeSet();
@@ -48,7 +48,7 @@ public class WkpDeforLaborWorkTime extends AggregateRoot implements StatutoryWor
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(WkpDeforLaborWorkTimeSetMemento memento) {
+	public void saveToMemento(WkpTransLaborTimeSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorkplaceId(this.workplaceId);
 		memento.setWorkingTimeSet(this.workingTimeSet);

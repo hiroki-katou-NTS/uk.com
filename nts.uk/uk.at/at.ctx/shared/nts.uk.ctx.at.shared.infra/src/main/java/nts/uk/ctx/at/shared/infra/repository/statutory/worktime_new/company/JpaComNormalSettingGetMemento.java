@@ -26,55 +26,68 @@ public class JpaComNormalSettingGetMemento implements ComNormalSettingGetMemento
 	/**
 	 * Instantiates a new jpa com normal setting get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaComNormalSettingGetMemento(KshstComNormalSet entity) {
 		this.entity = entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingGetMemento#getYear()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
+	 * NormalSettingGetMemento#getYear()
 	 */
 	@Override
 	public Year getYear() {
 		return new Year(this.entity.getKshstComNormalSetPK().getYear());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
+	 * ComNormalSettingGetMemento#getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.entity.getKshstComNormalSetPK().getCid());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.NormalSettingGetMemento#getStatutorySetting()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
+	 * NormalSettingGetMemento#getStatutorySetting()
 	 */
 	@Override
 	public List<MonthlyUnit> getStatutorySetting() {
-		return this.toMonthlyUnits();
-	}
-	
-	/**
-	 * To monthly units.
-	 *
-	 * @return the list
-	 */
-	private List<MonthlyUnit> toMonthlyUnits() {
 		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.JANUARY), new MonthlyEstimateTime(this.entity.getJanTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.FEBRUARY), new MonthlyEstimateTime(this.entity.getFebTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.MARCH), new MonthlyEstimateTime(this.entity.getMarTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.APRIL), new MonthlyEstimateTime(this.entity.getAprTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.MAY), new MonthlyEstimateTime(this.entity.getMayTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.JUNE), new MonthlyEstimateTime(this.entity.getJunTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.JULY), new MonthlyEstimateTime(this.entity.getJulTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.AUGUST), new MonthlyEstimateTime(this.entity.getAugTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.SEPTEMBER), new MonthlyEstimateTime(this.entity.getSepTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.OCTOBER), new MonthlyEstimateTime(this.entity.getOctTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.NOVEMBER), new MonthlyEstimateTime(this.entity.getNovTime())));
-		monthlyUnits.add(new MonthlyUnit( new Month(Month.DECEMBER), new MonthlyEstimateTime(this.entity.getDecTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.JANUARY),
+				new MonthlyEstimateTime(this.entity.getJanTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.FEBRUARY),
+				new MonthlyEstimateTime(this.entity.getFebTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.MARCH),
+				new MonthlyEstimateTime(this.entity.getMarTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.APRIL),
+				new MonthlyEstimateTime(this.entity.getAprTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.MAY),
+				new MonthlyEstimateTime(this.entity.getMayTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.JUNE),
+				new MonthlyEstimateTime(this.entity.getJunTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.JULY),
+				new MonthlyEstimateTime(this.entity.getJulTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.AUGUST),
+				new MonthlyEstimateTime(this.entity.getAugTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.SEPTEMBER),
+				new MonthlyEstimateTime(this.entity.getSepTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.OCTOBER),
+				new MonthlyEstimateTime(this.entity.getOctTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.NOVEMBER),
+				new MonthlyEstimateTime(this.entity.getNovTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.DECEMBER),
+				new MonthlyEstimateTime(this.entity.getDecTime())));
 		return monthlyUnits;
 	}
 

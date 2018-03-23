@@ -16,7 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
@@ -33,7 +33,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void add(EmpTransWorkTime emplDeforLaborWorkingHour) {
+	public void add(EmpTransLaborTime emplDeforLaborWorkingHour) {
 		commandProxy().insert(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
@@ -41,7 +41,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void update(EmpTransWorkTime emplDeforLaborWorkingHour) {
+	public void update(EmpTransLaborTime emplDeforLaborWorkingHour) {
 		commandProxy().update(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
@@ -57,7 +57,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#findByCidAndEmplId(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<EmpTransWorkTime> find(String cid, String emplId) {
+	public Optional<EmpTransLaborTime> find(String cid, String emplId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstEmpTransLabTime> cq = cb.createQuery(KshstEmpTransLabTime.class);
@@ -77,10 +77,10 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @param domain the domain
 	 * @return the kshst emp trans lab time
 	 */
-	private KshstEmpTransLabTime toEntity(EmpTransWorkTime domain) {
-		JpaEmpTransLaborTimeSetMemento memento = new JpaEmpTransLaborTimeSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+	private KshstEmpTransLabTime toEntity(EmpTransLaborTime domain) {
+		KshstEmpTransLabTime entity = new KshstEmpTransLabTime();
+		domain.saveToMemento(new JpaEmpTransLaborTimeSetMemento(entity));
+		return entity;
 	}
 	
 	/**
@@ -89,11 +89,11 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @param entity the entity
 	 * @return the emp trans work time
 	 */
-	private EmpTransWorkTime toDomain(KshstEmpTransLabTime entity) {
+	private EmpTransLaborTime toDomain(KshstEmpTransLabTime entity) {
 		if (entity == null) {
 			return null;
 		}
-		return new EmpTransWorkTime(new JpaEmpTransLaborTimeGetMemento(entity));
+		return new EmpTransLaborTime(new JpaEmpTransLaborTimeGetMemento(entity));
 	}
 
 }

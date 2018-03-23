@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Embeddable
 public class KshstComNormalSetPK implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,9 @@ public class KshstComNormalSetPK implements Serializable {
 		super();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -49,7 +51,9 @@ public class KshstComNormalSetPK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -58,13 +62,26 @@ public class KshstComNormalSetPK implements Serializable {
 			return false;
 		}
 		KshstComNormalSetPK other = (KshstComNormalSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if (this.year != other.year) {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Instantiates a new kshst com normal set PK.
+	 *
+	 * @param cid the cid
+	 * @param year the year
+	 */
+	public KshstComNormalSetPK(String cid, int year) {
+		super();
+		this.cid = cid;
+		this.year = year;
 	}
 
 }

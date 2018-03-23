@@ -18,9 +18,9 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -65,8 +65,8 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 		EmpNormalSetting empNormalSetting = command.getNormalSetting().toEmpDomain(year, emplCode);
 		EmpFlexSetting empFlexSetting = command.getFlexSetting().toEmpDomain(year, emplCode);
 		EmpDeforLaborSetting empDeforLaborSetting = command.getDeforLaborSetting().toEmpDomain(year, emplCode);
-		EmpRegularWorkTime empRegularLaborTime = command.getRegularLaborTime().toEmpRegularTimeDomain(emplCode);
-		EmpTransWorkTime empTransLaborTime = command.getTransLaborTime().toEmpTransTimeDomain(emplCode);
+		EmpRegularLaborTime empRegularLaborTime = command.getRegularLaborTime().toEmpRegularTimeDomain(emplCode);
+		EmpTransLaborTime empTransLaborTime = command.getTransLaborTime().toEmpTransTimeDomain(emplCode);
 		
 		Optional<EmpNormalSetting> optEmpNormalSet = this.empNormalSettingRepository.find(companyId, emplCode, year);
 		if(optEmpNormalSet.isPresent()){
@@ -89,14 +89,14 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 			this.empDeforLaborSettingRepository.add(empDeforLaborSetting);
 		}
 		
-		Optional<EmpRegularWorkTime> optEmpRegularSet = this.empRegularWorkTimeRepository.findById(companyId, emplCode);
+		Optional<EmpRegularLaborTime> optEmpRegularSet = this.empRegularWorkTimeRepository.findById(companyId, emplCode);
 		if(optEmpRegularSet.isPresent()){
 			this.empRegularWorkTimeRepository.update(empRegularLaborTime);
 		} else {
 			this.empRegularWorkTimeRepository.add(empRegularLaborTime);
 		}
 		
-		Optional<EmpTransWorkTime> optEmpTransSet = this.empTransWorkTimeRepository.find(companyId, emplCode);
+		Optional<EmpTransLaborTime> optEmpTransSet = this.empTransWorkTimeRepository.find(companyId, emplCode);
 		if(optEmpTransSet.isPresent()) {
 			this.empTransWorkTimeRepository.update(empTransLaborTime);
 		} else {

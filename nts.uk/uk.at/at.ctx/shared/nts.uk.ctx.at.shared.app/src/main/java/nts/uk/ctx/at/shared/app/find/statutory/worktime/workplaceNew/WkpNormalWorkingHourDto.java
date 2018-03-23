@@ -8,13 +8,13 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalWorkingTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeSetMemento;
 
 /**
  * The Class WkpNormalWorkingHourDto.
  */
 @Getter
-public class WkpNormalWorkingHourDto implements WkpNormalWorkingTimeSetMemento {
+public class WkpNormalWorkingHourDto implements WkpRegularLaborTimeSetMemento {
 
 
 	/** The workplace id. */

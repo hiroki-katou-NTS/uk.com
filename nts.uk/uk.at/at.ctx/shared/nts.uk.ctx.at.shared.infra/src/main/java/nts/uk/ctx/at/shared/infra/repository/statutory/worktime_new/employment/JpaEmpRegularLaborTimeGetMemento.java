@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WeeklyUnit;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.Kshst
 /**
  * The Class JpaEmpRegularLaborTimeGetMemento.
  */
-public class JpaEmpRegularLaborTimeGetMemento implements EmpRegularWorkTimeGetMemento {
+public class JpaEmpRegularLaborTimeGetMemento implements EmpRegularLaborTimeGetMemento {
 	
 	/** The entity. */
 	private KshstEmpRegLaborTime entity;

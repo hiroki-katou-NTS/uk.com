@@ -15,7 +15,31 @@ import lombok.Setter;
 /**
  * The Class KrcstShaDeforMCalSetPK.
  */
+
+/**
+ * Gets the sid.
+ *
+ * @return the sid
+ */
+
+/**
+ * Gets the sid.
+ *
+ * @return the sid
+ */
 @Getter
+
+/**
+ * Sets the sid.
+ *
+ * @param sid the new sid
+ */
+
+/**
+ * Sets the sid.
+ *
+ * @param sid the new sid
+ */
 @Setter
 @Embeddable
 public class KrcstShaDeforMCalSetPK implements Serializable {
@@ -30,6 +54,25 @@ public class KrcstShaDeforMCalSetPK implements Serializable {
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
+	
+	/**
+	 * Instantiates a new krcst sha defor M cal set PK.
+	 */
+	public KrcstShaDeforMCalSetPK() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new krcst sha defor M cal set PK.
+	 *
+	 * @param cid the cid
+	 * @param sid the sid
+	 */
+	public KrcstShaDeforMCalSetPK(String cid, String sid) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+	}
 
 	/*
 	 * (non-Javadoc)

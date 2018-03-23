@@ -24,13 +24,6 @@ import lombok.Setter;
 @Embeddable
 public class KshstShaFlexSetPK implements Serializable {
 
-	public KshstShaFlexSetPK(String cid, String sid, int year) {
-		super();
-		this.cid = cid;
-		this.sid = sid;
-		this.year = year;
-	}
-
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +39,14 @@ public class KshstShaFlexSetPK implements Serializable {
 	@Column(name = "YEAR")
 	private int year;
 
+	public KshstShaFlexSetPK(String cid, String sid, int year) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.year = year;
+	}
+
+	/* (non-Javadoc)
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,5 +85,6 @@ public class KshstShaFlexSetPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

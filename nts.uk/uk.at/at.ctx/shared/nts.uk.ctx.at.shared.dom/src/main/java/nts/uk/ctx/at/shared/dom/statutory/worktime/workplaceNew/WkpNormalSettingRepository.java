@@ -4,32 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
-import java.util.List;
 import java.util.Optional;
-
-import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * The Interface WkpNormalSettingRepository.
  */
 public interface WkpNormalSettingRepository {
-
-	/**
-	 * Find list by cid.
-	 *
-	 * @param cid the cid
-	 * @return the list
-	 */
-	List<WkpNormalSetting> findListByCid(String cid);
-
-	/**
-	 * Find by cid and wkp id.
-	 *
-	 * @param cid the cid
-	 * @param wkpId the wkp id
-	 * @return the optional
-	 */
-	Optional<WkpNormalSetting> findByCidAndWkpId(String cid, String wkpId);
 
 	/**
 	 * Find by cid and wkp id and year.
@@ -39,7 +19,7 @@ public interface WkpNormalSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<WkpNormalSetting> findByCidAndWkpIdAndYear(String cid, String wkpId, Year year);
+	Optional<WkpNormalSetting> find(String cid, String wkpId, int year);
 
 	/**
 	 * Adds the.
@@ -60,5 +40,5 @@ public interface WkpNormalSettingRepository {
 	 *
 	 * @param wkpNormalSetting the wkp normal setting
 	 */
-	void delete(WkpNormalSetting wkpNormalSetting);
+	void remove(String cid, String wkpId, int year);
 }
