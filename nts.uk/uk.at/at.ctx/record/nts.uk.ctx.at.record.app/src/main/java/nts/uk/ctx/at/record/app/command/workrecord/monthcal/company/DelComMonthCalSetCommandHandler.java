@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
  */
 @Stateless
-public class DelComMonthCalSetCommandHandler extends CommandHandler<Void> {
+public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthCalSetCommand> {
 
 	/** The com defor labor month act cal set repo. */
 	@Inject
@@ -40,9 +40,8 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<Void> {
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<Void> context) {
+	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
 		String cid = AppContexts.user().companyId();
-		comDeforLaborMonthActCalSetRepo.remove(companyId);
 	}
 
 }
