@@ -77,7 +77,7 @@ public class SaveComStatWorkTimeSetCommandHandler extends CommandHandler<SaveCom
 		if(optComDeforSet.isPresent()) {
 			this.comDeforLaborSettingRepository.update(comDeforLaborSetting);
 		} else {
-			this.comDeforLaborSettingRepository.create(comDeforLaborSetting);
+			this.comDeforLaborSettingRepository.insert(comDeforLaborSetting);
 		}
 		
 		Optional<ComRegularLaborTime> optComRegularSet = this.comRegularLaborTimeRepository.find(companyId);
