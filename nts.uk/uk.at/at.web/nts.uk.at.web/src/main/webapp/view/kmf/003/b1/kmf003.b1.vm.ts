@@ -229,6 +229,7 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         
             service.addYearHolidayGrant(dataTranfer).done(function(){
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
+                self.checkDataExisted(true);
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error){
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
