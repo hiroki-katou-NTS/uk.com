@@ -88,21 +88,21 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		entity.numberDayGrant = data.getDetails().getGrantNumber().getDayNumberOfGrant().v();
 		entity.timeGrant = data.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
 				? data.getDetails().getGrantNumber().getTimeOfGrant().get().v()
-				: null;
+				: 0;
 		// remain data
 		entity.numberDayRemain = data.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 		entity.timeRemain = data.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
 				? data.getDetails().getRemainingNumber().getTimeOfRemain().get().v()
-				: null;
+				: 0;
 		// use data
 		entity.numberDayUse = data.getDetails().getUsedNumber().getDayNumberOfUse().v();
 		entity.timeUse = data.getDetails().getUsedNumber().getTimeOfUse().isPresent()
 				? data.getDetails().getUsedNumber().getTimeOfUse().get().v()
-				: null;
+				: 0;
 		// use Saving data(tai lieu đang bảo truyền null vào)
 		entity.useSavingDays = data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
 				? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
-				: null;
+				: 0;
 		// Over
 		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
 			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
@@ -111,7 +111,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 					.isPresent()
 							? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
 									.get().v()
-							: null;
+							: 0;
 		}
 
 	}
