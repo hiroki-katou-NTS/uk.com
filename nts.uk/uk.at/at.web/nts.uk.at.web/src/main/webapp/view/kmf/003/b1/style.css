@@ -61,7 +61,7 @@ table.contents-header td.input-units {
 }
 
 table.contents-header td.input-units-last {
-	width: 33px;
+	width: 25px;
 }
 
 table.contents-header td.base-date {
@@ -78,12 +78,12 @@ table.contents-header td.allow-pay {
 }
 
 .contents-header {
-	width: 436px;
+	width: 418px;
     margin-top: 40px;
 }
 
 .contents-data {
-	width: 436px;
+	width: 418px;
 }
 
 .contents-data td {
