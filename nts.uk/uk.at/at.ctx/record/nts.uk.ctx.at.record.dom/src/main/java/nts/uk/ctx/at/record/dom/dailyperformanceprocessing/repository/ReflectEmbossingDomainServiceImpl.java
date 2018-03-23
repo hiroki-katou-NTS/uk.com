@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGat
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PCLogonLogoffReflectOuput;
@@ -618,8 +619,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// TimeWithDayAttr(x.getAttendanceTime().v());
 		// logonOrLogoff dang nhe TimeWithDayAttr nhung hien tai workStamp
 		// fixed
-		WorkStamp logonOrLogoff = new WorkStamp(new TimeWithDayAttr(x.getAttendanceTime().v()),
-				new TimeWithDayAttr(x.getAttendanceTime().v()), null, null);
+//		WorkStamp logonOrLogoff = new WorkStamp(new TimeWithDayAttr(x.getAttendanceTime().v()),
+//				new TimeWithDayAttr(x.getAttendanceTime().v()), null, null);
+		TimeWithDayAttr logonOrLogoff = new TimeWithDayAttr(x.getAttendanceTime().v());
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
@@ -627,10 +629,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		lstStamp.add(stampItem);
 		if (indexPCLogOnInfo == -1) {
 			if ("PCログオン".equals(inOrOutClass)) {
-				lstLogOnInfo.add(new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), null,
+				lstLogOnInfo.add(new LogOnInfo(new PCLogOnNo(worktNo), null,
 						logonOrLogoff));
 			} else {
-				lstLogOnInfo.add(new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo),
+				lstLogOnInfo.add(new LogOnInfo(new PCLogOnNo(worktNo),
 						logonOrLogoff, null));
 			}
 			return pcLogOnInfoOfDaily;
@@ -639,14 +641,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		LogOnInfo logOnInfo = lstLogOnInfo.get(indexPCLogOnInfo);
 		if ("PCログオン".equals(inOrOutClass)) {
 			lstLogOnInfo.set(indexPCLogOnInfo,
-					new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
+					new LogOnInfo(new PCLogOnNo(logOnInfo.getWorkNo().v()),
 							(logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent())
 									? logOnInfo.getLogOff().get() : null,
 							logonOrLogoff));
 			return pcLogOnInfoOfDaily;
 		}
 		lstLogOnInfo.set(indexPCLogOnInfo,
-				new LogOnInfo(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(logOnInfo.getWorkNo().v()),
+				new LogOnInfo(new PCLogOnNo(logOnInfo.getWorkNo().v()),
 						logonOrLogoff, (logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent())
 								? logOnInfo.getLogOn().get() : null));
 		return pcLogOnInfoOfDaily;
@@ -702,7 +704,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
 				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null
 						&& logOnInfo.getLogOn().isPresent()) {
-					inOrOutWork = logOnInfo.getLogOn().get().getTimeWithDay(); // fixed
+					inOrOutWork = logOnInfo.getLogOn().get(); // fixed
 																				// logOnInfo.getLogOn();
 					PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput = new PCLogonLogoffReflectOuput();
 					pcLogonLogoffReflectOuput.setTimeOfDay(inOrOutWork);
@@ -714,7 +716,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
 				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null
 						&& logOnInfo.getLogOff().isPresent()) {
-					inOrOutWork = logOnInfo.getLogOff().get().getTimeWithDay(); // fixed
+					inOrOutWork = logOnInfo.getLogOff().get(); // fixed
 																				// logOnInfo.getLogOff();
 					PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput = new PCLogonLogoffReflectOuput();
 					pcLogonLogoffReflectOuput.setTimeOfDay(inOrOutWork);

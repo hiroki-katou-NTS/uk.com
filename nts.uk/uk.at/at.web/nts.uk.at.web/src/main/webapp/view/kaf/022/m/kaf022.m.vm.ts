@@ -11,6 +11,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 0, name: nts.uk.resource.getText("KAF022_291") },
             { code: 1, name: nts.uk.resource.getText("KAF022_292") }
         ]);
+        otAppSettingFlgAtr = ko.observableArray([
+            { code: 0, name: nts.uk.resource.getText("KAF022_291") },
+            { code: 1, name: nts.uk.resource.getText("KAF022_292") }
+        ]);
         timeCalculationUseAtr = ko.observableArray([
             { code: 0, name: nts.uk.resource.getText("KAF022_295") },
             { code: 1, name: nts.uk.resource.getText("KAF022_296") }

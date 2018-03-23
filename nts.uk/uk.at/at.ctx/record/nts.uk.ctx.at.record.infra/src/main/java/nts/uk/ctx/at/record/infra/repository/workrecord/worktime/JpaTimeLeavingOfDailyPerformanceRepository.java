@@ -220,4 +220,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				.map(f -> f.toDomain()).collect(Collectors.toList());
 	}
 
+	@Override
+	public void updateFlush(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		this.update(timeLeavingOfDailyPerformance);
+		this.getEntityManager().flush();		
+	}
+
 }

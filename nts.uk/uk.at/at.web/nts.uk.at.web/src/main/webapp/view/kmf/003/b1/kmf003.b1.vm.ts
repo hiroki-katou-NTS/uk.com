@@ -177,23 +177,6 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                         };
                         self.items.push(new Item(item));
                     }
-                }            
-                
-                for(var j = data.length; j < 20; j++) {
-                    var item : IItem = {
-                        grantYearHolidayNo: j + 1,
-                        conditionNo: self.conditionData.conditionNo,
-                        yearHolidayCode: self.conditionData.code,
-                        lengthOfServiceYears: null,
-                        lengthOfServiceMonths: null,
-                        grantDays: null,
-                        limitedTimeHdDays: null,
-                        limitedHalfHdCnt: null,
-                        gdEnable: false,
-                        ltdEnable: false,
-                        lthEnable: false
-                    };
-                    self.items.push(new Item(item));    
                 }
                 
                 dfd.resolve(data);

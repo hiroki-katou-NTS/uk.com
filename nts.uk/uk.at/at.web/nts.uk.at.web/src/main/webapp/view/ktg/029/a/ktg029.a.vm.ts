@@ -12,6 +12,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
 
             console.log('abc');
             var dfd = $.Deferred();
+            dfd.resolve();
 
             return dfd.promise();
         }
