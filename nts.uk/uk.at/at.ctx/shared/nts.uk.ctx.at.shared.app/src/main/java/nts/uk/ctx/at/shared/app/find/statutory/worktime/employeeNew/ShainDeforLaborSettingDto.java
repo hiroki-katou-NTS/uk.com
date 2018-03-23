@@ -5,81 +5,45 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
  * The Class ShainDeforLaborSettingDto.
  */
-@Getter
-public class ShainDeforLaborSettingDto implements ShainDeforLaborSettingSetMemento {
+@Data
+public class ShainDeforLaborSettingDto {
 
 	/** The company id. */
 	/** 会社ID. */
-	private CompanyId companyId;
+	private String companyId;
 
 	/** The employee id. */
 	/** 社員ID. */
-	private EmployeeId employeeId;
+	private String employeeId;
 
 	/** The year. */
 	/** 年. */
-	private Year year;
+	private int year;
 
 	/** The statutory setting. */
 	/** 法定時間. */
-	private List<MonthlyUnit> statutorySetting;
+	private List<MonthlyUnitDto> statutorySetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmpDeforLaborSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
-	 * common.CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-          
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmpDeforLaborSettingSetMemento#setEmployeeId(nts.uk.ctx.at.shared.dom.
-	 * common.EmployeeId)
-	 */
-	@Override
-	public void setEmployeeId(EmployeeId employeeId) {
-		this.employeeId = employeeId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmpDeforLaborSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.
-	 * Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmpDeforLaborSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
+	public static ShainDeforLaborSettingDto fromDomain(ShainDeforLaborSetting domain) {
+		ShainDeforLaborSettingDto dto = new ShainDeforLaborSettingDto();
+		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
+		
+		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		}).collect(Collectors.toList());
+		dto.setStatutorySetting(monthlyUnitdtos);
+		return dto;
 	}
 }
