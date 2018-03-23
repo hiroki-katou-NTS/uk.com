@@ -42,6 +42,9 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 	@Override
 	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
 		String cid = AppContexts.user().companyId();
+		comDeforLaborMonthActCalSetRepo.remove(cid);
+		comFlexMonthActCalSetRepo.remove(cid);
+		comRegulaMonthActCalSetRepo.remove(cid);
 	}
 
 }
