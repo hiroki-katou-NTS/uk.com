@@ -17,6 +17,17 @@ public class JpaComFlexMonthActCalSetSetMemento implements ComFlexMonthActCalSet
 	/** The type value. */
 	private KrcstComFlexMCalSet typeValue;
 
+	/**
+	 * Instantiates a new jpa com flex month act cal set set memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaComFlexMonthActCalSetSetMemento(KrcstComFlexMCalSet typeValue) {
+		super();
+		this.typeValue = typeValue;
+	}
+
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.typeValue.setCid(companyId.v());
@@ -25,8 +36,10 @@ public class JpaComFlexMonthActCalSetSetMemento implements ComFlexMonthActCalSet
 	@Override
 	public void setFlexAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
 		this.typeValue.setAggrMethod(aggrSettingMonthlyOfFlxNew.getAggrMethod().value);
-		this.typeValue.setInsufficSet(aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
-		this.typeValue.setLegalAggrSet(aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
+		this.typeValue.setInsufficSet(
+				aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
+		this.typeValue.setLegalAggrSet(
+				aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
 		this.typeValue.setIncludeOt(aggrSettingMonthlyOfFlxNew.getIncludeOverTime().value);
 	}
 }

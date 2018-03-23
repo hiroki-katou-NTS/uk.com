@@ -22,13 +22,13 @@ public class JpaWkpDeforLaborMonthActCalSetGetMemento
 	}
 
 	@Override
-	public DeforWorkTimeAggrSet getAggrSetting() {
+	public WorkplaceId getWorkplaceId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public WorkplaceId getWorkplaceId() {
+	public DeforWorkTimeAggrSet getDeforAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

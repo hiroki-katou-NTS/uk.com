@@ -21,13 +21,13 @@ public class JpaEmpRegulaMonthActCalSetGetMemento implements EmpRegulaMonthActCa
 	}
 
 	@Override
-	public RegularWorkTimeAggrSet getAggrSetting() {
+	public EmploymentCode getEmploymentCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public EmploymentCode getEmploymentCode() {
+	public RegularWorkTimeAggrSet getRegularAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

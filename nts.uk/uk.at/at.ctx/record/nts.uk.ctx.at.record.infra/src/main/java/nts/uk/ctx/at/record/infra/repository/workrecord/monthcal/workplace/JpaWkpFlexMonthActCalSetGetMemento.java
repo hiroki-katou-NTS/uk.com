@@ -21,13 +21,13 @@ public class JpaWkpFlexMonthActCalSetGetMemento implements WkpFlexMonthActCalSet
 	}
 
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggrSetting() {
+	public WorkplaceId getWorkplaceId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public WorkplaceId getWorkplaceId() {
+	public FlexMonthWorkTimeAggrSet getFlexAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

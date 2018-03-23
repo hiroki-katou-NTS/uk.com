@@ -21,13 +21,13 @@ public class JpaShaFlexMonthActCalSetGetMemento implements ShaFlexMonthActCalSet
 	}
 
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggrSetting() {
+	public EmployeeId getEmployeeId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public EmployeeId getEmployeeId() {
+	public FlexMonthWorkTimeAggrSet getFlexAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

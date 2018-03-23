@@ -21,13 +21,13 @@ public class JpaEmpFlexMonthActCalSetGetMemento implements EmpFlexMonthActCalSet
 	}
 
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggrSetting() {
+	public EmploymentCode getEmploymentCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public EmploymentCode getEmploymentCode() {
+	public FlexMonthWorkTimeAggrSet getFlexAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

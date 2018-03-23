@@ -21,13 +21,13 @@ public class JpaWkpRegulaMonthActCalSetGetMemento implements WkpRegulaMonthActCa
 	}
 
 	@Override
-	public RegularWorkTimeAggrSet getAggrSetting() {
+	public WorkplaceId getWorkplaceId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public WorkplaceId getWorkplaceId() {
+	public RegularWorkTimeAggrSet getRegularAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

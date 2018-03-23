@@ -14,35 +14,84 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthAc
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComDeforMCalSet;
 
 /**
- * The Class JpaWorkfixedRepository.
+ * The Class JpaComDeforLaborMonthActCalSetRepository.
  */
 @Stateless
 public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements ComDeforLaborMonthActCalSetRepository {
 
-	private final String FIND_BY_COMPANY_ID = "SELECT a FROM KrcstDeforMCalSet a WHERE a.KrcstDeforMCalSet.companyId = :companyId";
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComDeforLaborMonthActCalSetRepository#find(java.lang.String)
+	 */
 	@Override
 	public Optional<ComDeforLaborMonthActCalSet> find(String companyId) {
-		return null;
+		// Get info
+		Optional<KrcstComDeforMCalSet> optEntity = this.queryProxy().find(companyId,
+				KrcstComDeforMCalSet.class);
+
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(new ComDeforLaborMonthActCalSet(
+				new JpaComDeforLaborMonthActCalSetGetMemento(optEntity.get())));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComDeforLaborMonthActCalSetRepository#add(nts.uk.ctx.at.record.dom.
+	 * workrecord.monthcal.company.ComDeforLaborMonthActCalSet)
+	 */
 	@Override
-	public void add(ComDeforLaborMonthActCalSet companyLaborDeforSetMonthly) {
-		// TODO Auto-generated method stub
+	public void add(ComDeforLaborMonthActCalSet domain) {
+		// Create new entity
+		KrcstComDeforMCalSet entity = new KrcstComDeforMCalSet();
 
+		// Transfer data
+		domain.saveToMemento(new JpaComDeforLaborMonthActCalSetSetMemento(entity));
+
+		// Insert into DB
+		this.commandProxy().insert(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComDeforLaborMonthActCalSetRepository#update(nts.uk.ctx.at.record.dom.
+	 * workrecord.monthcal.company.ComDeforLaborMonthActCalSet)
+	 */
 	@Override
-	public void update(ComDeforLaborMonthActCalSet companyLaborDeforSetMonthly) {
-		// TODO Auto-generated method stub
+	public void update(ComDeforLaborMonthActCalSet domain) {
+		// Get info
+		Optional<KrcstComDeforMCalSet> optEntity = this.queryProxy().find(domain.getCompanyId().v(),
+				KrcstComDeforMCalSet.class);
 
+		KrcstComDeforMCalSet entity = optEntity.get();
+
+		// Transfer data
+		domain.saveToMemento(new JpaComDeforLaborMonthActCalSetSetMemento(entity));
+
+		// Insert into DB
+		this.commandProxy().update(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComDeforLaborMonthActCalSetRepository#remove(java.lang.String)
+	 */
 	@Override
 	public void remove(String companyId) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().remove(KrcstComDeforMCalSet.class, companyId);
 	}
 
 }

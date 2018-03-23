@@ -22,18 +22,15 @@ public class JpaShaDeforLaborMonthActCalSetGetMemento
 	}
 
 	@Override
-	public DeforWorkTimeAggrSet getAggrSetting() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public EmployeeId getEmployeeId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/** The type value. */
-	// private KrcstWorkFixed typeValue;
+	@Override
+	public DeforWorkTimeAggrSet getDeforAggrSetting() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

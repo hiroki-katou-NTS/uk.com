@@ -21,13 +21,13 @@ public class JpaShaRegulaMonthActCalSetGetMemento implements ShaRegulaMonthActCa
 	}
 
 	@Override
-	public RegularWorkTimeAggrSet getAggrSetting() {
+	public EmployeeId getEmployeeId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public EmployeeId getEmployeeId() {
+	public RegularWorkTimeAggrSet getRegularAggrSetting() {
 		// TODO Auto-generated method stub
 		return null;
 	}

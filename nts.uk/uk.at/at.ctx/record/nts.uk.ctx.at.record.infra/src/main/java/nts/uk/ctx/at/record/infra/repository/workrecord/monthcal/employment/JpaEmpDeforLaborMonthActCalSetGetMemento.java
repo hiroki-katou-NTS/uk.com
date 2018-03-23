@@ -22,16 +22,15 @@ public class JpaEmpDeforLaborMonthActCalSetGetMemento
 	}
 
 	@Override
-	public DeforWorkTimeAggrSet getAggrSetting() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public EmploymentCode getEmploymentCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public DeforWorkTimeAggrSet getDeforAggrSetting() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
