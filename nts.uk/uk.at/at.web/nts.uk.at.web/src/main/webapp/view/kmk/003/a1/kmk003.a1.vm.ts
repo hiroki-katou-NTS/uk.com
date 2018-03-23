@@ -85,16 +85,19 @@ module a1 {
                 if (self.linkedWithDialogF()) {
                     self.predseting.predTime.addTime.oneDay(v);
                 }
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
             self.predseting.predTime.predTime.morning.subscribe((v) => {
                 if (self.linkedWithDialogF()) {
                     self.predseting.predTime.addTime.morning(v);
                 }
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
             self.predseting.predTime.predTime.afternoon.subscribe((v) => {
                 if (self.linkedWithDialogF()) {
                     self.predseting.predTime.addTime.afternoon(v);
                 }
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
         }
 
@@ -141,20 +144,11 @@ module a1 {
         public openDetailSetting() {
             let self = this;
             //open dialog F
-            let dialogDataObject = {
-                oneDayDialog: self.predseting.predTime.addTime.oneDay(),
-                morningDialog: self.predseting.predTime.addTime.morning(),
-                afternoonDialog: self.predseting.predTime.addTime.afternoon()
-            };
+            let dialogDataObject = self.collectDialog();
             self.linkedWithDialogF(self.checkLinked(dialogDataObject));
             
             //send data sang dialog
-            let dataObject: any = {
-                oneDayDialog: self.predseting.predTime.addTime.oneDay(),
-                morningDialog: self.predseting.predTime.addTime.morning(),
-                afternoonDialog: self.predseting.predTime.addTime.afternoon(),
-            };
-            nts.uk.ui.windows.setShared('KMK003_DIALOG_F_INPUT_DATA', dataObject);
+            nts.uk.ui.windows.setShared('KMK003_DIALOG_F_INPUT_DATA', dialogDataObject);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml", {
                 height: 350,
                 width: 300,
@@ -177,10 +171,18 @@ module a1 {
             });
         }
         
+        private collectDialog() {
+            let self = this;
+            return {
+                oneDayDialog: self.predseting.predTime.addTime.oneDay(),
+                morningDialog: self.predseting.predTime.addTime.morning(),
+                afternoonDialog: self.predseting.predTime.addTime.afternoon()
+            };
+        }
+        
         private checkLinked(dialogDataObject: any): boolean {
             let self = this;
-            let a = (dialogDataObject.oneDayDialog == self.predseting.predTime.predTime.oneDay()) && (dialogDataObject.morningDialog == self.predseting.predTime.predTime.morning()) && (dialogDataObject.afternoonDialog == self.predseting.predTime.predTime.afternoon());
-            return a;
+            return (dialogDataObject.oneDayDialog == self.predseting.predTime.predTime.oneDay()) && (dialogDataObject.morningDialog == self.predseting.predTime.predTime.morning()) && (dialogDataObject.afternoonDialog == self.predseting.predTime.predTime.afternoon());
         }
     }
     export class Item {
