@@ -199,7 +199,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     switch (data.itemType()) {
                         case model.ITEM_TYPE.NUMERIC:
                             if (data.numberFormatSetting() == null) {
-                                data.numberFormatSetting(new model.NumericDataFormatSetting());
+                                data.numberFormatSetting(new model.NumericDataFormatSetting(null, null, null, null, null, null, null, null, null, null));
                             }
                             data.numberFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -222,7 +222,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.CHARACTER:
                             if (data.charFormatSetting() == null) {
-                                data.charFormatSetting(new model.CharacterDataFormatSetting());
+                                data.charFormatSetting(new model.CharacterDataFormatSetting(null, null, null, null, null, null, null, null, null));
                             }
                             data.charFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -243,7 +243,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.DATE:
                             if (data.dateFormatSetting() == null) {
-                                data.dateFormatSetting(new model.DateDataFormatSetting());
+                                data.dateFormatSetting(new model.DateDataFormatSetting(null, null, null));
                             }
                             data.dateFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -254,7 +254,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.INS_TIME:
                             if (data.instTimeFormatSetting() == null) {
-                                data.instTimeFormatSetting(new model.InstantTimeDataFormatSetting());
+                                data.instTimeFormatSetting(new model.InstantTimeDataFormatSetting(null, null, null, null, null, null, null, null, null, null));
                             }
                             data.instTimeFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -279,7 +279,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.TIME:
                             if (data.timeFormatSetting() == null) {
-                                data.timeFormatSetting(new model.TimeDataFormatSetting());
+                                data.timeFormatSetting(new model.TimeDataFormatSetting(null, null, null, null, null, null, null, null, null, null));
                             }
                             data.timeFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {

@@ -32,11 +32,15 @@
 					<div style="padding-top: 10px; padding-left: 20px">
 						<div style="display: inline-block; width: 50%">
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
-								<span class="label" style="padding-right: 10px">#{i18n.getText('CMF001_134')}</span>
-								<span class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingCode"></span>
-								<span class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingName"></span>
-								<span class="label" style="padding: 0px 10px">#{i18n.getText('CMF001_135')}</span>
-								<span class="label" style="padding-right: 10px" data-bind="text: $parent.systemType.name"></span>
+								<div style="display: inline-block; margin-right: 10px">
+									<span class="label" style="padding-right: 10px">#{i18n.getText('CMF001_134')}</span>
+									<span class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingCode"></span>
+									<span class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingName"></span>
+								</div>
+								<div style="display: inline-block;">
+									<span class="label" style="padding-right: 10px">#{i18n.getText('CMF001_135')}</span>
+									<span class="label" style="padding-right: 10px" data-bind="text: $parent.systemType.name"></span>
+								</div>
 							</div>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
