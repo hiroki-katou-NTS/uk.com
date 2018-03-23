@@ -46,31 +46,32 @@ public class DelShaMonthCalSetCommandHandler extends CommandHandler<DelShaMonthC
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DelShaMonthCalSetCommand> context) {
-		
+
 		// get company id
 		String cid = AppContexts.user().companyId();
-		
+
 		// get employee id
 		DelShaMonthCalSetCommand command = context.getCommand();
 		String sid = command.getSid();
 
-		Optional<ShaDeforLaborMonthActCalSet> optShaDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo.find(cid,
-				sid);
-
+		Optional<ShaDeforLaborMonthActCalSet> optShaDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo
+				.find(cid, sid);
 		if (optShaDeforLaborMonthActCalSet.isPresent()) {
-			deforLaborMonthActCalSetRepo.remove(optShaDeforLaborMonthActCalSet.get());
+			deforLaborMonthActCalSetRepo.remove(cid, sid);
 		}
 
-		Optional<ShaFlexMonthActCalSet> optShaFlexMonthActCalSet = flexMonthActCalSetRepo.find(cid, sid);
+		Optional<ShaFlexMonthActCalSet> optShaFlexMonthActCalSet = flexMonthActCalSetRepo.find(cid,
+				sid);
 
 		if (optShaFlexMonthActCalSet.isPresent()) {
 			flexMonthActCalSetRepo.remove(cid, sid);
 		}
 
-		Optional<ShaRegulaMonthActCalSet> optShaRegulaMonthActCalSet = regulaMonthActCalSetRepo.find(cid, sid);
+		Optional<ShaRegulaMonthActCalSet> optShaRegulaMonthActCalSet = regulaMonthActCalSetRepo
+				.find(cid, sid);
 
 		if (optShaRegulaMonthActCalSet.isPresent()) {
-			regulaMonthActCalSetRepo.delete(optShaRegulaMonthActCalSet.get());
+			regulaMonthActCalSetRepo.remove(cid, sid);
 		}
 
 	}

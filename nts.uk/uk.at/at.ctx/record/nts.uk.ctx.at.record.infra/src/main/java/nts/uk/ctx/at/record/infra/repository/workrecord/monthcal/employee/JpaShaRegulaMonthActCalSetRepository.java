@@ -32,14 +32,13 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<ShaRegulaMonthActCalSet> find(String cid,
-			String empId) {
+	public Optional<ShaRegulaMonthActCalSet> find(String cid, String empId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(ShaRegulaMonthActCalSet empRegSetMonthlyActual) {
+	public void remove(String cid, String sId) {
 		// TODO Auto-generated method stub
 
 	}
