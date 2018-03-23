@@ -1,9 +1,9 @@
 module cps001.h.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    let parentPath = "at/record/remainnumber/resvLea/";
+    let parentPath = "record/remainnumber/resv-lea/";
     let paths: any = {
-            getAll: "getResvLea/{0}",
+            getAll: "get-resv-lea/{0}",
             getByGrantDate: "getResvLeaByGrantDate"
     };
     
@@ -16,4 +16,8 @@ module cps001.h.service {
         return ajax(parentPath + paths.getByGrantDate, grantDate);
     }
     
+    export function getItemDef(){
+        let ctgId: string = "a";
+        return ajax('com',format("ctx/pereg/person/info/ctgItem/findby/ctg-cd/{0}", ctgId));
+    }
 }

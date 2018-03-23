@@ -574,5 +574,11 @@ public class PerInfoItemDefFinder {
 
 	}
 	// lanlt end
+	
+	public List<SimpleItemDef> getSingpleItemDef(String ctgCd){
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getPerInfoItemByCtgCd(ctgCd, AppContexts.user().companyId());
+		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), true))
+				.collect(Collectors.toList());
+	}
 
 }

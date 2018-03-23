@@ -103,5 +103,7 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	List<String> getAllRequiredIdsByCtgId(String contract, String ctgId);
+	
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
 
 }
