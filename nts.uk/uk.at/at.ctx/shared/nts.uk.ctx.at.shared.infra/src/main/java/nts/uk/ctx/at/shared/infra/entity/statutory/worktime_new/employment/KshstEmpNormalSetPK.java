@@ -22,7 +22,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Embeddable
 public class KshstEmpNormalSetPK implements Serializable {
     

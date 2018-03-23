@@ -21,7 +21,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
 public class KshstShaFlexSetPK implements Serializable {

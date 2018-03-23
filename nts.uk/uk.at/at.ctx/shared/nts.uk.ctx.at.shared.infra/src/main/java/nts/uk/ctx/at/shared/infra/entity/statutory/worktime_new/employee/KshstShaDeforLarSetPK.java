@@ -10,8 +10,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -20,8 +20,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
 @Embeddable
+@NoArgsConstructor
 public class KshstShaDeforLarSetPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */

@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstDeforLarSet;
 
@@ -23,20 +24,22 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstDefor
 @Getter
 @Entity
 @Table(name = "KSHST_SHA_DEFOR_LAR_SET")
+@NoArgsConstructor
 public class KshstShaDeforLarSet extends KshstDeforLarSet implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The kshst sha defor lar set PK. */
 	@EmbeddedId
 	protected KshstShaDeforLarSetPK kshstShaDeforLarSetPK;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
 	 */
-	
-	
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -44,7 +47,9 @@ public class KshstShaDeforLarSet extends KshstDeforLarSet implements Serializabl
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
 	 */
 	@Override
@@ -61,7 +66,9 @@ public class KshstShaDeforLarSet extends KshstDeforLarSet implements Serializabl
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
@@ -69,7 +76,4 @@ public class KshstShaDeforLarSet extends KshstDeforLarSet implements Serializabl
 		return this.kshstShaDeforLarSetPK;
 	}
 
-	public KshstShaDeforLarSet() {
-		super();
-	}
 }

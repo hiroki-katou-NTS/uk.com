@@ -22,9 +22,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstRegLa
 
 @Setter
 @Getter
-@NoArgsConstructor
 @Entity
 @Table(name = "KSHST_SHA_REG_LABOR_TIME")
+@NoArgsConstructor
 public class KshstShaRegLaborTime extends KshstRegLaborTime implements Serializable {
 	
 	/** The Constant serialVersionUID. */
