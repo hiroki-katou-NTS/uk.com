@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforLaborSettlementPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSetGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
+import nts.uk.ctx.at.shared.dom.common.Month;
 
 /**
  * The Class JpaWorkfixedRepository.
@@ -35,25 +36,31 @@ public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 
 	@Override
 	public ExcessOutsideTimeSetReg getAggregateTimeSet() {
-		return null;
+		return new ExcessOutsideTimeSetReg(
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalAggr()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayAggr()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraAggr()));
 	}
 
 	@Override
 	public ExcessOutsideTimeSetReg getExcessOutsideTimeSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExcessOutsideTimeSetReg(
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalOt()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayOt()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()));
 	}
 
 	@Override
 	public DeforLaborCalSetting getDeforLaborCalSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DeforLaborCalSetting(BooleanGetAtr.getAtrByInteger(this.typeValue.getIsOtIrg()));
 	}
 
 	@Override
 	public DeforLaborSettlementPeriod getSettlementPeriod() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DeforLaborSettlementPeriod(
+				new Month(this.typeValue.getStrMonth()),
+				new Month(this.typeValue.getPeriod()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getRepeatAtr()));
 	}
 
 }

@@ -6,7 +6,9 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSetGetMemento;
@@ -20,28 +22,40 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaFlexMonthWorkTimeAggrSetGetMemento<T extends KrcstFlexMCalSet>
 		implements FlexMonthWorkTimeAggrSetGetMemento {
 
+	/** The type value. */
+	private T typeValue;
+	
+	/**
+	 * Instantiates a new jpa flex work time aggr set get memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaFlexMonthWorkTimeAggrSetGetMemento(T typeValue) {
+		super();
+		this.typeValue = typeValue;
+	}
+
 	@Override
 	public FlexAggregateMethod getAggrMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return FlexAggregateMethod.valueOf(this.typeValue.getAggrMethod());
 	}
 
 	@Override
 	public ShortageFlexSetting getInsufficSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return ShortageFlexSetting.of(
+				CarryforwardSetInShortageFlex.valueOf(this.typeValue.getInsufficSet()));
 	}
 
 	@Override
 	public AggregateTimeSetting getLegalAggrSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return AggregateTimeSetting.of(
+				AggregateSetting.valueOf(this.typeValue.getLegalAggrSet()));
 	}
 
 	@Override
 	public NotUseAtr getIncludeOverTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return NotUseAtr.valueOf(this.typeValue.getIncludeOt());
 	}
 
 }

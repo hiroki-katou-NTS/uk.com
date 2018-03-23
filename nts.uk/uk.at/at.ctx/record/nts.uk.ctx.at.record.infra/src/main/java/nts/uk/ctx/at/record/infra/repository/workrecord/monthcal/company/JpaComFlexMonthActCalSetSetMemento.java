@@ -19,14 +19,14 @@ public class JpaComFlexMonthActCalSetSetMemento implements ComFlexMonthActCalSet
 
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCid(companyId.v());
 	}
 
 	@Override
-	public void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
-		// TODO Auto-generated method stub
-
+	public void setFlexAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
+		this.typeValue.setAggrMethod(aggrSettingMonthlyOfFlxNew.getAggrMethod().value);
+		this.typeValue.setInsufficSet(aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
+		this.typeValue.setLegalAggrSet(aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
+		this.typeValue.setIncludeOt(aggrSettingMonthlyOfFlxNew.getIncludeOverTime().value);
 	}
-
 }

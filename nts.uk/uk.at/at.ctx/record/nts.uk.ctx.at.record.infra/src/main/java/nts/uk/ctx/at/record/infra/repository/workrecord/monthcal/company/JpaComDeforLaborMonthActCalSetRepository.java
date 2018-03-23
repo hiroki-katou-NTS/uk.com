@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComDeforMCalSet;
 
 /**
  * The Class JpaWorkfixedRepository.
@@ -19,9 +20,10 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthAc
 public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements ComDeforLaborMonthActCalSetRepository {
 
+	private final String FIND_BY_COMPANY_ID = "SELECT a FROM KrcstDeforMCalSet a WHERE a.KrcstDeforMCalSet.companyId = :companyId";
+	
 	@Override
 	public Optional<ComDeforLaborMonthActCalSet> find(String companyId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -48,7 +48,7 @@ public class JpaComDeforLaborMonthActCalSetGetMemento
 	 * ComDeforLaborMonthActCalSetGetMemento#getAggrSetting()
 	 */
 	@Override
-	public DeforWorkTimeAggrSet getAggrSetting() {
+	public DeforWorkTimeAggrSet getDeforAggrSetting() {
 		return new DeforWorkTimeAggrSet(new JpaDeforWorkTimeAggrSetGetMemento<>(this.typeValue));
 	}
 

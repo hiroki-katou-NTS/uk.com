@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComRegMCalSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 
 /**
  * The Class JpaWorkfixedGetMemento.
@@ -30,13 +31,14 @@ public class JpaComRegulaMonthActCalSetSetMemento implements ComRegulaMonthActCa
 
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCid(companyId.v());
 	}
 
 	@Override
-	public void setAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
-		// TODO Auto-generated method stub
+	public void setRegulaAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
+		this.typeValue.setIncludeLegalAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalOverTimeWork()));
+		this.typeValue.setIncludeHolidayAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalHoliday()));
+		this.typeValue.setIncludeExtraAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getSurchargeWeekMonth()));
 
 	}
 

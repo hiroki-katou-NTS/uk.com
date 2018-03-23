@@ -19,15 +19,31 @@ public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet> impl
 	/** The type value. */
 	private T typeValue;
 	
+	/**
+	 * Instantiates a new jpa regular work time aggr set get memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaRegularWorkTimeAggrSetGetMemento(T typeValue) {
+		super();
+		this.typeValue = typeValue;
+	}
+
 	@Override
 	public ExcessOutsideTimeSetReg getAggregateTimeSet() {
-		return null;
+		return new ExcessOutsideTimeSetReg(
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalAggr()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayAggr()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraAggr()));
 	}
 
 	@Override
 	public ExcessOutsideTimeSetReg getExcessOutsideTimeSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExcessOutsideTimeSetReg(
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalOt()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayOt()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()));
 	}
 
 }

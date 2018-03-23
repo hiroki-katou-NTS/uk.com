@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.company;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetGetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComRegMCalSet;
+import nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.JpaRegularWorkTimeAggrSetGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -30,14 +31,12 @@ public class JpaComRegulaMonthActCalSetGetMemento implements ComRegulaMonthActCa
 
 	@Override
 	public CompanyId getCompanyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyId(this.typeValue.getCid());
 	}
 
 	@Override
-	public RegularWorkTimeAggrSet getAggrSetting() {
-		// TODO Auto-generated method stub
-		return null;
+	public RegularWorkTimeAggrSet getRegulaAggrSetting() {
+		return new RegularWorkTimeAggrSet(new JpaRegularWorkTimeAggrSetGetMemento<>(typeValue));
 	}
 
 }

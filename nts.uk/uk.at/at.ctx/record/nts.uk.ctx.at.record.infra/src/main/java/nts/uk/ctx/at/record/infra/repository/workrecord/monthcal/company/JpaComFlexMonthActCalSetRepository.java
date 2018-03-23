@@ -19,9 +19,13 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSe
 public class JpaComFlexMonthActCalSetRepository extends JpaRepository
 		implements ComFlexMonthActCalSetRepository {
 
+	private final String FIND_BY_COMPANY_ID = "";
+	
 	@Override
 	public Optional<ComFlexMonthActCalSet> find(String companyId) {
 		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 

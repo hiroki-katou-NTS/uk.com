@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.company;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComDeforMCalSet;
+import nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -31,14 +32,14 @@ public class JpaComDeforLaborMonthActCalSetSetMemento
 
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCid(companyId.v());
 	}
 
 	@Override
-	public void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
-		// TODO Auto-generated method stub
-
+	public void setDeforAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
+		this.typeValue.setIncludeLegalAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getLegalOverTimeWork()));
+		this.typeValue.setIncludeHolidayAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getLegalHoliday()));
+		this.typeValue.setIncludeExtraAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getSurchargeWeekMonth()));
 	}
 
 }
