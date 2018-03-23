@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
@@ -24,7 +25,7 @@ public class JpaFlexMonthWorkTimeAggrSetGetMemento<T extends KrcstFlexMCalSet>
 
 	/** The type value. */
 	private T typeValue;
-	
+
 	/**
 	 * Instantiates a new jpa flex work time aggr set get memento.
 	 *
@@ -43,14 +44,14 @@ public class JpaFlexMonthWorkTimeAggrSetGetMemento<T extends KrcstFlexMCalSet>
 
 	@Override
 	public ShortageFlexSetting getInsufficSet() {
-		return ShortageFlexSetting.of(
-				CarryforwardSetInShortageFlex.valueOf(this.typeValue.getInsufficSet()));
+		return ShortageFlexSetting.of(EnumAdaptor.valueOf(this.typeValue.getInsufficSet(),
+				CarryforwardSetInShortageFlex.class));
 	}
 
 	@Override
 	public AggregateTimeSetting getLegalAggrSet() {
-		return AggregateTimeSetting.of(
-				AggregateSetting.valueOf(this.typeValue.getLegalAggrSet()));
+		return AggregateTimeSetting
+				.of(EnumAdaptor.valueOf(this.typeValue.getLegalAggrSet(), AggregateSetting.class));
 	}
 
 	@Override
