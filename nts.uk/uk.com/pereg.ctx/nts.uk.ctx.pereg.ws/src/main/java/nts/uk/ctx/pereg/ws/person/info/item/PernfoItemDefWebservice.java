@@ -201,12 +201,12 @@ public class PernfoItemDefWebservice extends WebService {
 	}
 	private List<SimpleItemDef> getItemsCS00039(){
 		List<SimpleItemDef> lst = new ArrayList<>();
-		lst.add(new SimpleItemDef("IS00409", "adf", true));
+		lst.add(new SimpleItemDef("IS00424", "test", true));
 		lst.add(new SimpleItemDef("IS00410", "sadf",  true));
 		lst.add(new SimpleItemDef("IS00411", "asdf", true));
 		lst.add(new SimpleItemDef("IS00412", "asf", true));
 		lst.add(new SimpleItemDef("IS00413", "asdf", true));
-		lst.add(new SimpleItemDef("IS00414", "", true));
+		lst.add(new SimpleItemDef("IS00414", "dfasd", true));
 		lst.add(new SimpleItemDef("IS00415", "ad", false));
 		lst.add(new SimpleItemDef("IS00416", "cas", true));
 		lst.add(new SimpleItemDef("IS00417", "dasf", true));

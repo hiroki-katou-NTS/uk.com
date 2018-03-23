@@ -39,10 +39,10 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	@Path("get-resv-lea/{empId}")
 	public List<SpecialLeaveGrantDto> getAll() {
 		List<SpecialLeaveGrantDto> datatest = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 1; i < 10; i++) {
 			SpecialLeaveGrantDto dto = SpecialLeaveGrantDto.createFromDomain(SpecialLeaveGrantRemainingData.createFromJavaType("", "", i, 
-					GeneralDate.legacyDate(Date.valueOf("2018/03/23")),
-					GeneralDate.legacyDate(Date.valueOf("2018/03/23")), 0, 0, 10, 12, 14.0, 15, 16.0, 17, 18, 19.0, 20));
+					GeneralDate.fromString("2018/03/0"+i, "yyyy/MM/dd"),
+					GeneralDate.fromString("2018/04/0"+i, "yyyy/MM/dd"), 0, 0, 10, 12, 14.0, 15, 16.0, 17, 18, 19.0, 20));
 			datatest.add(dto);
 		}
 		

@@ -20,7 +20,7 @@ module nts.uk.com.view.cps001.i.vm {
         checked: KnockoutObservable<boolean> = ko.observable(false);
 
         // list data
-        listData: KnockoutObservableArray<SpecialLeaveRemaining>;
+        listData: KnockoutObservableArray<ISpecialLeaveRemaining>;
         currentValue: KnockoutObservable<any> = ko.observable();
         //grant
         grantDateTitle: KnockoutObservable<string>;
@@ -145,36 +145,28 @@ module nts.uk.com.view.cps001.i.vm {
 
 
 
-        public startPage(): JQueryPromise<any> {
+        public startPage(){
 
             let self = this,
-                dfd = $.Deferred(),
                 lstData = self.listData,
                 currentValue = self.currentValue();
 
-            lstData.removeAll();
+           
             service.getAllList().done((data: Array<ISpecialLeaveRemaining>) => {
                if (data && data.length > 0) {
-                    _.each(data, (item) => {
-                        self.listData.push(item);
-                    });
+                     self.listData(data);
                     // Set focus
-                    self.currentValue(self.listData()[0].grantDate);
                 } else {
                     // Set to cr eate mode
                 }
                 $('#idGrantDate').focus();
-                
+                self.getItemDef();
             });
             
-            self.getItemDef();
-
-
-
-            return dfd.promise();
+            
         }
         
-        getItemDef(){
+       getItemDef(){
             let self = this;
             
             
@@ -183,42 +175,42 @@ module nts.uk.com.view.cps001.i.vm {
                     let itemCodes = $(this).attr('data-itemcode');
                     if(itemCodes){
                         let itemCodeArray = itemCodes.split(" ");
-                        _.forEach(itemCodeArray, (itemCode) => {
-                            let itemDef = _.find(data, (item)=>{
-                                return item.itemCode == itemCode;
+                            _.forEach(itemCodeArray, (itemCode) => {
+                                let itemDef = _.find(data, (item)=>{
+                                    return item.itemCode == itemCode;
+                                });
+                                if(itemDef){
+                                    if(itemDef.display){
+                                        $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+                                    }else{
+                                        $(this).parent().css("display", "none");
+                                        self.grantTimeH = ko.observable(false);
+                                        self.useTimeH = ko.observable(false);
+                                        self.timeExeededH = ko.observable(false);
+                                        self.timeReamH = ko.observable(false);
+                                    }
+                                    
+                                }
                             });
-                            if(itemDef){
-                                if(itemDef.display){
-                                    $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
-                                }else{
-                                    $(this).parent().css("display", "none");
-                                   self.gDh(true);
-                                    self.grantTimeH = ko.observable(false);
-                                    self.useTimeH = ko.observable(false);
-                                    self.timeExeededH = ko.observable(false);
-                                    self.timeReamH = ko.observable(false);
-                            self.columns = ko.observableArray([
+                        }
+                    });
+                     self.columns = ko.observableArray([
                                 { headerText: 'stt', key: 'code', width: 50 },
                                 { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 80 },
-                                { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadline', width: 80 },
-                                { headerText: nts.uk.resource.getText('CPS001_120'), key: 'dayNumberOfGrants', width: 80 },
-                                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'grantTime', width: 80, hidden: self.grantTimeH()},
-                                { headerText: nts.uk.resource.getText('CPS001_121'), key: 'dayNumberOfUse', width: 80 },
-                                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'useTime', width: 80, hidden: self.useTimeH()},
-                                { headerText: nts.uk.resource.getText('CPS001_130'), key: 'dayNumberOfExeeded', width: 80 },
-                                { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeExeeded', width: 80, hidden: self.timeExeededH()},
-                                { headerText: nts.uk.resource.getText('CPS001_123'), key: 'dayNumberOfReam', width: 80 },
-                                { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeReam', width: 80, hidden: self.timeReamH()},
-                                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'leavExpStatus', width: 80 }
-                            ]); 
-                                let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData,, primaryKey:\'grantDate\',showNumbering: true,columns:columns,multiple: false, value: currentValue}"></table>';
-                                $("#tbl").html(table);
-                                ko.applyBindings(self, $("#tbl")[0]);
-                                });
-                                }
-                            }
-                        });
-                    }
+                                { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadlineDate', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_120'), key: 'numberDayGrant', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'timeGrant', width: 80, hidden: self.grantTimeH()},
+                                { headerText: nts.uk.resource.getText('CPS001_121'), key: 'numberDayUse', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'timeUse', width: 80, hidden: self.useTimeH()},
+                                { headerText: nts.uk.resource.getText('CPS001_130'), key: 'numberDaysOver', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 80, hidden: self.timeExeededH()},
+                                { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeRemain', width: 80, hidden: self.timeReamH()},
+                                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
+                            ]);
+                    let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'grantDate\',showNumbering: true,columns:columns,multiple: false, value: currentValue}"></table>';
+                        $("#tbl").html(table);
+                        ko.applyBindings(self, $("#tbl")[0]);
                 });
         }
     }
