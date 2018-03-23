@@ -485,7 +485,7 @@ module a5 {
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFlexFlow);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml", {
-                    height: 500,
+                    height: 400,
                     width: 400,
                     title: nts.uk.resource.getText("KMK003_287"),
                     dialogClass: 'no-close'
@@ -530,7 +530,7 @@ module a5 {
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml", {
-                    height: 500,
+                    height: 400,
                     width: 400,
                     title: nts.uk.resource.getText("KMK003_287"),
                     dialogClass: 'no-close'

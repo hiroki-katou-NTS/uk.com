@@ -31,22 +31,24 @@
 						</div>
 					</div>
 					<div class="pad-left-20">
-						<div data-bind="ntsRadioBoxGroup: {
+						<div tabindex="1" id = "selected-actual" data-bind="ntsRadioBoxGroup: {
 										options: actualList,
+										name: '#[KMK003_238]',
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedActual,
 										enable: true}"></div>
 					</div>
-					<div>
+					<div class="pad-top-10">
 						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_234')}</div>
 						<div>
 							<hr />
 						</div>
 					</div>
 					<div class="pad-left-20">
-						<div data-bind="ntsRadioBoxGroup: {
+						<div tabindex = "5" data-bind="ntsRadioBoxGroup: {
 										options: lstRest,
+										name: '#[KMK003_234]',
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedRest,
@@ -56,8 +58,8 @@
 			</div>
 
 			<div id="functions-area-bottom">
-				<button tabindex="4" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="5" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

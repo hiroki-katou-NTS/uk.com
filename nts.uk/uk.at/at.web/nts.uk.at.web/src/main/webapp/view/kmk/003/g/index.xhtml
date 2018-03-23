@@ -31,14 +31,15 @@
 						</div>
 					</div>
 					<div class="pad-left-20">
-						<div data-bind="ntsRadioBoxGroup: {
+						<div tabindex ="1" data-bind="ntsRadioBoxGroup: {
 										options: lstRest,
+										name: '#[KMK003_234]',
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedRest,
 										enable: true}"></div>
 					</div>
-					<div>
+					<div class ="pad-top-10">
 						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_230')}</div>
 						<div>
 							<hr />
@@ -47,10 +48,11 @@
 					<div class = "pad-left-10">
 						<label>#{i18n.getText('KMK003_231')}</label>
 					</div>
-					<div class = "pad-left-10">
+					<div class = "pad-top-10 pad-left-10">
 						<table>
 							<tr>
-								<td class="td-cell-set"><span tabindex="1" class="cf"
+								<td class="td-cell-set"><span tabindex="4" class="cf"
+									id = "switch-btn"
 									data-bind="ntsSwitchButton: {
 									name: '#[KMK003_230]',
 									options: switchOptions,
@@ -59,9 +61,10 @@
 									value: switchValue,
 									enable: true }"></span>
 								</td>
-								<td class="td-cell-set"><span tabindex="2" style="width: 100px;"
+								<td class="td-cell-set"><span tabindex="5" style="width: 100px;"
 									data-bind="ntsComboBox: {
 									options: unitComboBoxOptions,
+									name: '#[KMK003_232]',
 									optionsValue: 'code',
 									visibleItemsCount: 8,
 									value: unitValue,
@@ -69,9 +72,10 @@
 									dropDownAttachedToBody: true,
 									editable: false,
 									enable: true }"></span></td>
-								<td class="td-cell-set"><span tabindex="3" style="width: 100px;"
+								<td class="td-cell-set"><span tabindex="6" style="width: 100px;"
 									data-bind="ntsComboBox: {
 									options: roundingComboBoxOptions,
+									name: '#[KMK003_233]',
 									optionsValue: 'code',
 									visibleItemsCount: 3,
 									value: roundingValue,
@@ -87,8 +91,8 @@
 			</div>
 
 			<div id="functions-area-bottom">
-				<button tabindex="4" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="5" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="7" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="8" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
