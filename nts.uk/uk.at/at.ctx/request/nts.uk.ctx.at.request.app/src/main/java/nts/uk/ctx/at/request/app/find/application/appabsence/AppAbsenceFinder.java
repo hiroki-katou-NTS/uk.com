@@ -155,6 +155,7 @@ public class AppAbsenceFinder {
 			throw new BusinessException("Msg_198");
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
+		 result = AppAbsenceDto.fromDomain(appAbsence);
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 				companyID, appAbsence.getApplication().getEmployeeID(), EmploymentRootAtr.APPLICATION.value,
@@ -190,8 +191,26 @@ public class AppAbsenceFinder {
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appAbsence.getApplication().getEmployeeID(),appAbsence.getApplication().getAppDate());
 		result.setWorkTimeCodes(listWorkTimeCodes);
+		// 1-1.起動時のエラーチェック
+		List<Integer> holidayAppTypes = new ArrayList<>();
+
+		if (!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
+			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
+				if (!appEmploymentSetting.getHolidayTypeUseFlg()) {
+					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
+				}
+			}
+		}
+		if (CollectionUtil.isEmpty(holidayAppTypes)) {
+			throw new BusinessException("Msg_473");
+		}
+		result.setHolidayAppTypes(holidayAppTypes);
 		getAppReason(result,companyID);
-		// 8.休暇系の設定を取得する
+		// get employeeName, employeeID
+		String employeeName = "";
+		employeeName = employeeAdapter.getEmployeeName(appAbsence.getApplication().getEmployeeID());
+		result.setEmployeeName(employeeName);
+		// 8.休暇系の設定を取得する :TODO
 		return result;
 	}
 	

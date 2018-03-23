@@ -3,13 +3,15 @@ module nts.uk.at.view.kaf006.b{
     import service = nts.uk.at.view.kaf006.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
-    export class ScreenModel {
+    import model = nts.uk.at.view.kaf000.b.viewmodel.model;
+    export module viewmodel {
+        export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
-        valueChecked : KnockoutObservable<boolean> = ko.observable(false);
+        displayEndDateFlg : KnockoutObservable<boolean> = ko.observable(false);
         //current Data
 //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
@@ -30,7 +32,7 @@ module nts.uk.at.view.kaf006.b{
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
 //        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(false);
-        displayStartFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayStartFlg: KnockoutObservable<boolean> = ko.observable(true);
         contentFlg: KnockoutObservable<boolean> = ko.observable(true);
         eblTimeStart1:  KnockoutObservable<boolean> = ko.observable(false);
         eblTimeEnd1:  KnockoutObservable<boolean> = ko.observable(false);
@@ -67,98 +69,43 @@ module nts.uk.at.view.kaf006.b{
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(true);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(true);
         
-        constructor() {
-            
+        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            super(listAppMetadata, currentApp);
             let self = this;
-            //KAF000_A
-            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            //startPage 005a AFTER start 000_A
-            self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
-                    self.approvalSource = self.kaf000_a.approvalList;
-                    $("#fixed-table").ntsFixedTable({ height: 120 });
-                })    
-            })
-            
+              self.startPage(self.appID()).done(function(){
+
+                });   
         }
         /**
          * 
          */
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
-            service.getAppForLeaveStart({
-                appDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                employeeID: null        
-            }).done((data) => {
-                self.initData(data);
-                self.holidayTypeCode.subscribe(function(value){
-                    if (nts.uk.ui.errors.hasError()){return;}
-                    if(!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())){
-                         var dfd = $.Deferred();
-                        service.getAllAppForLeave({
-                            startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                            endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
-                            employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-                            displayHalfDayValue: self.displayHalfDayValue(),
-                            holidayType: value,
-                            alldayHalfDay: self.selectedAllDayHalfDayValue()
-                        }).done((data) => {
-                            self.displayStartFlg(true);
-                            self.changeWorkHourValue(data.changeWorkHourFlg);
-                            if(nts.uk.util.isNullOrEmpty(data.workTypes)){
-                                self.typeOfDutys([]);
-                            }else{
-                                for (let i = 0; i < data.workTypes.length; i++) {
-                                    self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
-                                    self.workTypecodes.push(data.workTypes[i].workTypeCode);
-                                }
-                            }
-                            dfd.resolve(data);
-                        }).fail((res) =>{
-                            dfd.reject(res);  
-                        });
-                        return dfd.promise();
-                    }
-                });
-                // find changeDate
-                self.startAppDate.subscribe(function(value){
-                    self.findChangeAppDate(value);
-                });
-                //find by change AllDayHalfDay
-                self.selectedAllDayHalfDayValue.subscribe((value) =>{
-                    self.findChangeAllDayHalfDay(value);
-                });
-                // find change value A5_3
-                self.displayHalfDayValue.subscribe((value) =>{
-                   self.findChangeDisplayHalfDay(value); 
-                });
-                self.selectedTypeOfDuty.subscribe((value) =>{
-                   self.findChangeWorkType(value); 
-                });
-                nts.uk.ui.block.clear();
-                dfd.resolve(data);    
-            }).fail((res) => {
-                if(res.messageId == 'Msg_426'){
-                    dialog.alertError({messageId : res.messageId}).then(function(){
-                        nts.uk.ui.block.clear();
-                    });
-                }else if(res.messageId == 'Msg_473'){
-                   dialog.alertError({messageId : res.messageId}).then(function(){
-                        nts.uk.ui.block.clear();
-                    });
-                }else{
-                     nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+        startPage(appID: string): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
+                let self = this;
+                let dfd = $.Deferred();
+                service.findByAppID(appID).done((data) => { 
+                    self.initData(data);
+                    dfd.resolve(); 
+                })
+                .fail(function(res) {
+                    if (res.messageId == 'Msg_426') {
+                        dialog.alertError({ messageId: res.messageId }).then(function() {
                             nts.uk.ui.block.clear();
                         });
-                }
-                dfd.reject(res);     
-            });
-            return dfd.promise();
-            
-        }
+                    } else if (res.messageId == 'Msg_473') {
+                        dialog.alertError({ messageId: res.messageId }).then(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message).then(function() {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                            nts.uk.ui.block.clear();
+                        });
+                    }
+                    dfd.reject(res);  
+                });
+                return dfd.promise();
+            }
         // change by appDate
         findChangeAppDate(data: any){
             let self = this;
@@ -286,19 +233,31 @@ module nts.uk.at.view.kaf006.b{
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
             self.convertListHolidayType(data.holidayAppTypes);
-            self.holidayTypeCode(null);
+            self.holidayTypeCode(data.holidayAppType);
             self.displayPrePostFlg(data.prePostFlg);
-            self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
+            self.displayWorkTimeName(data.workTimeCode + data.workTimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
-                let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                let reasonID = data.applicationReasonDtos[0].reasonID;
                 self.selectedReason(reasonID);
                 
                 self.multilContent(data.application.applicationReason);
             }
+            self.workTimeCodes(data.workTimeCodes);
+            if (!nts.uk.util.isNullOrEmpty(data.workTypes)) {
+                for (let i = 0; i < data.workTypes.length; i++) {
+                    self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
+                    self.workTypecodes.push(data.workTypes[i].workTypeCode);
+                }
+                self.selectedTypeOfDuty(data.workTypeCode);
+            }
+            self.changeWorkHourValue(data.changeWorkHourFlg);
+            self.selectedAllDayHalfDayValue(data.allDayHalfDayLeaveAtr);
+            self.displayHalfDayValue(data.halfDayFlg);
+            self.startAppDate(data.application.applicationDate)
         }
-         registerClick(){
+         update(): JQueryPromise<any> {
              let self = this;
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
@@ -423,6 +382,6 @@ module nts.uk.at.view.kaf006.b{
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID});  
         }
     }
-    
+    }    
 }
 

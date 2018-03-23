@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -45,9 +47,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		// Create Application
+		
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, command.getStartDate(),
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),
-				ApplicationType.ABSENCE_APPLICATION, command.getStartDate(), command.getEndDate(),command.getEmployeeID());
+				ApplicationType.ABSENCE_APPLICATION, command.getStartDate(), command.isDisplayEndDateFlg() ? command.getEndDate() : null,command.getEmployeeID());
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
 				command.getHolidayAppType(),
