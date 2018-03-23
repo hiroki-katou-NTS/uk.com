@@ -38,6 +38,18 @@ public class KshstComDeforLarSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshst com defor lar set PK.
+	 *
+	 * @param cid the cid
+	 * @param year the year
+	 */
+	public KshstComDeforLarSetPK(String cid, int year) {
+		super();
+		this.cid = cid;
+		this.year = year;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

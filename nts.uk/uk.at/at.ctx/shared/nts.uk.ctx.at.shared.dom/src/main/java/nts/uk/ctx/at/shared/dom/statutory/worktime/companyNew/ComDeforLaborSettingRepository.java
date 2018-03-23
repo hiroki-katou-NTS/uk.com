@@ -16,7 +16,7 @@ public interface ComDeforLaborSettingRepository {
 	 *
 	 * @param setting the setting
 	 */
-	void create(ComDeforLaborSetting setting);
+	void insert(ComDeforLaborSetting setting);
 
 	/**
 	 * Update.
