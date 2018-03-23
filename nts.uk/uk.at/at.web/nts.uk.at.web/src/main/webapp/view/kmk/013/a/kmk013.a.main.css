@@ -58,7 +58,7 @@
 
 .btn-area-middle, .btn-deformed-labor {
 	margin-top: 10px;
-	width: 175px;
+	width: 200px;
 }
 
 .contents-area-right-caret {
@@ -71,10 +71,15 @@
 
 .panel.panel-gray-bg {
 	white-space: nowrap;
+	width: 230px;
 }
 
 .panel.panel-frame {
 	display: flex;
-    flex-direction: column;
-    align-items:  center;	
+	flex-direction: column;
+	align-items: left;
+}
+
+#contents-area > div:nth-child(2) {
+	margin-top: 25px
 }

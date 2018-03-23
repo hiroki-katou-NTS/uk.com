@@ -56,7 +56,7 @@ public class HolidayAddtionFinder {
 			holidayAddtimeDto.setFlexWork(convertToDbTypeFlexWork(holidayAddtime.getFlexWork()));
 			holidayAddtimeDto.setIrregularWork(convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork()));
 			holidayAddtimeDto.setHourlyPaymentAdditionSet(convertToDbTypeHourlyPaymentAdditionSet(holidayAddtime.getHourPaymentAddition()));
-			holidayAddtimeDto.setAddSetManageWorkHour(holidayAddtime.getAdditionSettingOfOvertime().getAdditionSettingOfOvertime().value);
+			holidayAddtimeDto.setAddSetManageWorkHour(holidayAddtime.getAdditionSettingOfOvertime() == null ? 0 : holidayAddtime.getAdditionSettingOfOvertime().getAdditionSettingOfOvertime().value);
 			holidayAddtimeDto.setAddingMethod1(holidayAddtime.getTimeHolidayAddition().get(0).getAddingMethod().value);
 			holidayAddtimeDto.setAddingMethod2(holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value);
 			holidayAddtimeDto.setWorkClass1(holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value);
