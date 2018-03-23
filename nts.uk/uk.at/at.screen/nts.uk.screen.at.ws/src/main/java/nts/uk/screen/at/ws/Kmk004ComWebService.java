@@ -7,13 +7,14 @@ package nts.uk.screen.at.ws;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComSaveCommand;
-import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComSaveCommandHandler;
 import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComDeleteCommand;
 import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComDeleteCommandHandler;
+import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComSaveCommand;
+import nts.uk.screen.at.app.kmk004.company.command.Kmk004ComSaveCommandHandler;
 import nts.uk.screen.at.app.kmk004.company.find.Kmk004ComDto;
 import nts.uk.screen.at.app.kmk004.company.find.Kmk004ComDtoFinder;
 
@@ -30,7 +31,7 @@ public class Kmk004ComWebService extends WebService {
 
 	/** The add. */
 	@Inject
-	private Kmk004ComSaveCommandHandler add;
+	private Kmk004ComSaveCommandHandler saveHandler;
 
 	/** The delete. */
 	@Inject
@@ -44,9 +45,9 @@ public class Kmk004ComWebService extends WebService {
 	 * @return the kmk 004 dto
 	 */
 	@POST
-	@Path("find")
-	public Kmk004ComDto finder(Kmk004ComDto cm) {
-		return this.find.findKmk004Dto();
+	@Path("getDetails/{year}")
+	public Kmk004ComDto getDetails(@PathParam("year") Integer year) {
+		return this.find.findKmk004Dto(year);
 	}
 
 	/**
@@ -56,9 +57,9 @@ public class Kmk004ComWebService extends WebService {
 	 *            the cm
 	 */
 	@POST
-	@Path("add")
+	@Path("save")
 	public void add(Kmk004ComSaveCommand cm) {
-		this.add.handle(cm);
+		this.saveHandler.handle(cm);
 	}
 
 	/**
