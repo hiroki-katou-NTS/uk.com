@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.command.divergence.time.history;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -51,14 +53,11 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"));
 		Integer count = this.historyRepo.countByDatePeriod(companyId, new BusinessTypeCode(command.getWorkTypeCodes()) ,period);
 		
-		//convert to domain
-		WorkTypeDivergenceReferenceTimeHistory domain = new WorkTypeDivergenceReferenceTimeHistory(command);
-		
-		//find
-		WorkTypeDivergenceReferenceTimeHistory find = this.historyRepo.findByKey(domain.getHistoryItems().get(0).identifier());
-		
 		// check and save
-		if(find.getHistoryItems().isEmpty()){
+		if(StringUtils.isEmpty(command.getHistoryId())){
+			//convert to domain
+			WorkTypeDivergenceReferenceTimeHistory domain = new WorkTypeDivergenceReferenceTimeHistory(command);
+			
 			// validate start date , end date
 			if (count.intValue() > 0){
 				exceptions.addMessage("Msg_106");
@@ -79,8 +78,14 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler extends CommandHand
 				exceptions.addMessage("Msg_107");
 				exceptions.throwExceptions();
 			}
+			//find
+			WorkTypeDivergenceReferenceTimeHistory find = this.historyRepo.findByKey(command.getHistoryId());
+			
+			//convert to domain
+			find.setHistoryItems(command.getHistoryItems());
+			
 			//update history
-			this.historyRepo.update(domain);
+			this.historyRepo.update(find);
 		}
 	}
 
