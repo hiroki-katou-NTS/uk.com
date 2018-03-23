@@ -28,15 +28,10 @@
 		<ui:define name="content">
 
 			<div id="functions-area" class="fixed-flex-layout">
-				<button tabindex="1"
-					data-bind="click: newMode ,  enable: enaBtnNew()" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
-				<button tabindex="2" data-bind="click: registerData"
-					class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
-				<button tabindex="3"
-					data-bind="click: remove ,  enable: enaBtnRemove()"
-					class="btnStyle">#{i18n.getText('CPS001_110')}</button>
-				<button tabindex="4" data-bind="click: close"
-					class="danger btnStyle">#{i18n.getText('CPS001_111')}</button>
+				<button tabindex="1" data-bind="click: newMode ,  enable: enaBtnNew()" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
+				<button tabindex="2" data-bind="click: saveData" class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
+				<button tabindex="3" data-bind="click: remove ,  enable: enaBtnRemove()" class="btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="4" data-bind="click: close" class="danger btnStyle">#{i18n.getText('CPS001_111')}</button>
 			</div>
 
 			<div id="contents-area">
