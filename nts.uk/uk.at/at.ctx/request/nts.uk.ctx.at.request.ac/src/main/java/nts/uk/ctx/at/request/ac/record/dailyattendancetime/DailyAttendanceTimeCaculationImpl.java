@@ -55,7 +55,7 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 	 * @return
 	 */
 	private TimeWithCalculationImport convert(TimeWithCalculation timeCal){
-		return new TimeWithCalculationImport(timeCal.getTime() == null ? 0 : timeCal.getTime().v(), timeCal.getCalcTime() == null ? 0 : timeCal.getCalcTime().v());
+		return new TimeWithCalculationImport(timeCal.getTime() == null ? null : timeCal.getTime().v(), timeCal.getCalcTime() == null ? null : timeCal.getCalcTime().v());
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 	private Map<Integer,Integer> convertBonusTime(Map<Integer,AttendanceTime> bonusTime){
 		Map<Integer,Integer> timeWithCal = new HashMap<>();
 		for(Map.Entry<Integer,AttendanceTime> entry : bonusTime.entrySet()){
-			timeWithCal.put(entry.getKey(), entry.getValue() == null ? 0 : entry.getValue().v());
+			timeWithCal.put(entry.getKey(), entry.getValue() == null ? null : entry.getValue().v());
 		}
 		return timeWithCal;
 	}

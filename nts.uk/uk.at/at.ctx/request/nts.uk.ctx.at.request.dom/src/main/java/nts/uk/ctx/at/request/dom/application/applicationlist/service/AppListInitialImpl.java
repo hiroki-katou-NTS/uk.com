@@ -317,6 +317,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			for (ApplicationFullOutput appFull : lstAppFilter2) {
 				ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
 				PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
+				//TH agent
 				boolean check = false;
 				if(status.getFrameStatus() == null && status.getPhaseStatus() == null){
 					continue;
@@ -870,22 +871,48 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 		}
 		List<Closure> lstClosureFil = lstClosure.stream().filter(c-> c.getClosureHistories() != null).collect(Collectors.toList());
-		Closure histMin = this.findHistMin(lstClosureFil);
-		CurrentMonth month = histMin.getClosureMonth();
+		//取得した、締め日及び当月より、締め日付を作成
 		GeneralDate start = null;
-		//最小日付に＋１日－１ヵ月して開始日付とする
-		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
-			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
-			start = tmp.addMonths(-1);
-		}else{//末締めではない場合
-			GeneralDate tmp = GeneralDate.
-					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
-			GeneralDate date = tmp.addDays(1);
-			start = date.addMonths(-1);
+//		List<GeneralDate>  lstDate = new ArrayList<>();
+		GeneralDate minDate = null;
+		for (Closure closure : lstClosureFil) {
+			List<ClosureHistory> closureHist = closure.getClosureHistories();
+			CurrentMonth month = closure.getClosureMonth();
+			for (ClosureHistory closureHistory : closureHist) {
+				if(closureHistory.getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+					GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+					start = tmp.addMonths(-1);
+				}else{//末締めではない場合
+					GeneralDate tmp = GeneralDate.
+							ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), closure.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+					GeneralDate date = tmp.addDays(1);
+					start = date.addMonths(-1);
+				}
+				if(minDate == null){
+					minDate = start;
+				}else{
+					minDate = start.afterOrEquals(minDate) ? minDate : start;
+				}
+//				lstDate.add(start);
+			}
 		}
+//		List<GeneralDate> lstFilter = lstDate.sort((x, y) -> x.equals(y));
+//		Closure histMin = this.findHistMin(lstClosureFil);
+//		CurrentMonth month = histMin.getClosureMonth();
+//		GeneralDate start = null;
+		//最小日付に＋１日－１ヵ月して開始日付とする
+//		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+//			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+//			start = tmp.addMonths(-1);
+//		}else{//末締めではない場合
+//			GeneralDate tmp = GeneralDate.
+//					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+//			GeneralDate date = tmp.addDays(1);
+//			start = date.addMonths(-1);
+//		}
 		//開始日付の4か月後を終了日付として取得
-		GeneralDate end = start.addMonths(4);
-		return new DatePeriod(start,end);
+		GeneralDate end = minDate.addMonths(4);
+		return new DatePeriod(minDate,end);
 	}
 	/**
 	 * find closure history min
@@ -994,7 +1021,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private boolean checkExistEmp(List<ApproverStateImport_New> listApprover, String sID){
 		boolean check = false;
 		for (ApproverStateImport_New approver : listApprover) {
-			if(approver.getApproverID().equals(sID)){
+			if(approver.getApproverID().equals(sID) || approver.getRepresenterID().equals(sID)){
 				check = true;
 				break;
 			}
@@ -1301,8 +1328,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//申請.申請日付　＝　代行者管理：代行承認.代行依頼期間 &&承認枠.承認者リスト（複数ID）＝　代行者管理：代行承認.代行依頼者\
 		List<String> lstId = new ArrayList<>();
 		for(AgentDataRequestPubImport agent : lstAgent){
-			if(agent.getStartDate().beforeOrEquals(app.getAppDate()) && agent.getEndDate().equals(app.getAppDate())
-					&& this.checkExistEmp(frame.getListApprover(), agent.getAgentSid1())){
+			if(agent.getStartDate().beforeOrEquals(app.getAppDate()) && agent.getEndDate().afterOrEquals(app.getAppDate())
+					&& this.checkExistEmp(frame.getListApprover(), agent.getEmployeeId())){
 				lstId.add(agent.getAgentSid1());
 			}
 		}
