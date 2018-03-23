@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -9,6 +10,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 /*時給者の加算設定*/
 public class HourlyPaymentAdditionSet extends DomainObject{
 	

@@ -149,7 +149,7 @@ module nts.uk.at.view.kmk013.b {
                 self.workClass2 = ko.observable(1);
                 
                 self.checkedB5_22 = ko.observable(false);
-                self.enableB5_22 = ko.observable(true);
+                self.enableB5_22 = ko.observable(false);
                 self.checkedB5_23 = ko.observable(false);
                 self.enableB5_23 = ko.observable(false);
                 
@@ -368,6 +368,9 @@ module nts.uk.at.view.kmk013.b {
                         if (self.checkedB8_13() == true) {
                             self.enableB8_22(true);
                         }
+                        if (self.checkedB8_7() == true) {
+                            self.enableB8_9(true);
+                        }
                     }
                 });
                 
@@ -443,9 +446,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB35 = ko.observable(false);
                 //B5 inner
                 self.enableB1 = ko.observable(false);
-                self.selectedValueB54 = ko.observable(0);
+                self.selectedValueB54 = ko.observable(1);
                 self.selectedValueB59 = ko.observable(0);
-                self.selectedValueB515 = ko.observable(0);
+                self.selectedValueB515 = ko.observable(1);
                 self.checkedB57 = ko.observable(false);
                 self.checkedB512 = ko.observable(false);
                 self.checkedB513 = ko.observable(false);
@@ -463,13 +466,13 @@ module nts.uk.at.view.kmk013.b {
                 self.enableB59 = ko.observable(false);
                 self.enableB515 = ko.observable(false);
                 //B6 inner
-                self.selectedValueB64 = ko.observable(0);
+                self.selectedValueB64 = ko.observable(1);
                 self.checkedB67 = ko.observable(false);
                 self.checkedB68 = ko.observable(false);
                 self.checkedB69 = ko.observable(false);
                 self.checkedB610 = ko.observable(false);
                 self.checkedB611 = ko.observable(false);
-                self.selectedValueB612 = ko.observable(0);
+                self.selectedValueB612 = ko.observable(1);
                 self.checkedB615 = ko.observable(false);
                 self.checkedB616 = ko.observable(false);
                 self.checkedB617 = ko.observable(false);
@@ -486,7 +489,7 @@ module nts.uk.at.view.kmk013.b {
                 self.enableB68 = ko.observable(false);
                 self.enableB616 = ko.observable(false);
                 //B7
-                self.selectedValueB74 = ko.observable(0);
+                self.selectedValueB74 = ko.observable(1);
                 self.itemListB74 = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText('KMK013_69')),
                     new BoxModel(1, nts.uk.resource.getText('KMK013_70')),
@@ -500,7 +503,7 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB712 = ko.observable(false);
                 self.checkedB713 = ko.observable(false);
                 self.checkedB714 = ko.observable(false);
-                self.selectedValueB715 = ko.observable(0);
+                self.selectedValueB715 = ko.observable(1);
                 self.checkedB718 = ko.observable(false);
                 self.checkedB719 = ko.observable(false);
                 self.checkedB720 = ko.observable(false);
@@ -838,6 +841,7 @@ module nts.uk.at.view.kmk013.b {
                 var self = this;
                 var dfd = $.Deferred();
                 self.initData();
+                $( "#b23" ).focus();
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -845,6 +849,33 @@ module nts.uk.at.view.kmk013.b {
                 let self = this;
                 service.findByCompanyId().done((data) => {
                     if (data[0] == null) {
+                        self.oldData({  "companyId":null, "referComHolidayTime":0, "oneDay":0, "morning":0, "afternoon":0, "referActualWorkHours":0, "notReferringAch":0,
+                                        "annualHoliday":0, "specialHoliday":0, "yearlyReserved":0,
+                                        "regularWork":{
+                                                "companyId":null, "calcActualOperationPre":0, "exemptTaxTimePre":0, "incChildNursingCarePre":0, "additionTimePre":0, 
+                                                "notDeductLateleavePre":0, "deformatExcValuePre":0, "exemptTaxTimeWork":0, "calcActualOperationWork":0, "incChildNursingCareWork":0, 
+                                                "notDeductLateleaveWork":0, "additionTimeWork":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
+                                                },
+                                        "flexWork":{
+                                                "companyId":null, "calcActualOperationPre":0, "exemptTaxTimePre":0, "incChildNursingCarePre":0, "predeterminedOvertimePre":0,
+                                                "additionTimePre":0, "notDeductLateleavePre":0, "exemptTaxTimeWork":0, "minusAbsenceTimeWork":0, "calcActualOperationWork":0, 
+                                                "incChildNursingCareWork":0,"notDeductLateleaveWork":0, "predeterminDeficiencyWork":0,"additionTimeWork":0, "enableSetPerWorkHour1":0, 
+                                                "enableSetPerWorkHour2":0, "additionWithinMonthlyStatutory":0
+                                                },
+                                        "irregularWork":{
+                                                "companyId":null, "calcActualOperationPre":0, "exemptTaxTimePre":0, "incChildNursingCarePre":0, "predeterminedOvertimePre":0,
+                                                "additionTimePre":0, "notDeductLateleavePre":0, "deformatExcValue":0, "exemptTaxTimeWork":0, "minusAbsenceTimeWork":0,
+                                                "calcActualOperationWork":0, "incChildNursingCareWork":0, "notDeductLateleaveWork":0, "predeterminDeficiencyWork":0,
+                                                "additionTimeWork":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
+                                                },
+                                        "hourlyPaymentAdditionSet":{
+                                                "companyId":null, "calcPremiumVacation":0, "addition1":0, "deformatExcValue":0, "incChildNursingCare":0, "deduct":0,
+                                                "calculateIncludeIntervalExemptionTime1":0, "calcWorkHourVacation":0, "addition2":0, "calculateIncludCareTime":0,
+                                                "notDeductLateLeaveEarly":0, "calculateIncludeIntervalExemptionTime2":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
+                                                },
+                                        "addSetManageWorkHour":0, "addingMethod1":0, "workClass1":0, "addingMethod2":0, "workClass2":1
+                                        })
+                                        self.notifyVarKnockoutchange();
                         return;
                     }
                     self.oldData(data[0]);
@@ -1006,8 +1037,23 @@ module nts.uk.at.view.kmk013.b {
                     
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
 //                    self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
+                    
+                    self.notifyVarKnockoutchange();
                 });
             }
+            
+            notifyVarKnockoutchange(): void {
+                let self = this;
+                self.selectedValueB54.valueHasMutated();
+                self.selectedValueB515.valueHasMutated();
+                self.selectedValueB8_5.valueHasMutated();
+                self.selectedValueB8_16.valueHasMutated();
+                self.selectedValueB64.valueHasMutated();
+                self.selectedValueB612.valueHasMutated();
+                self.selectedValueB74.valueHasMutated();
+                self.selectedValueB715.valueHasMutated();    
+            }
+            
             save(): void {
                 let self = this;
                 let obj :any = {};
@@ -1199,7 +1245,7 @@ module nts.uk.at.view.kmk013.b {
                     if (self.checkedB8_7() == true) {
                         obj.hourlyPaymentAddCommand.deformatExcValue = self.selectedIdB8_9();
                     } else {
-                        obj.hourlyPaymentAddCommand.calcPremiumVacation = self.oldData().hourlyPaymentAdditionSet.calcPremiumVacation;
+                        obj.hourlyPaymentAddCommand.deformatExcValue = self.oldData().hourlyPaymentAdditionSet.calcPremiumVacation;
                     }
                 }
                 
@@ -1226,6 +1272,7 @@ module nts.uk.at.view.kmk013.b {
                 service.save(obj).done(() => {
                     self.initData();
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
+                    $( "#b23" ).focus();
                 }
                 ).fail((error) => {
                    nts.uk.ui.dialog.alertError(error.message);

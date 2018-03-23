@@ -61,28 +61,9 @@
 	margin-top: 30px;
 }
 
-/* .row-1 {
-	margin-top: 15px;
-	margin-left: 27px;
-} */
-
-/* .name-switch {
-	display: inline-block;
-	width: 288px;
-	vertical-align: top;
-} */
-
-.cf {
-	/* margin-left: 20px; */
-}
-
 .goback {
 	margin-right: 35px;
 }
-
-/* .cf>button.nts-switch-button {
-	width: 90px;
-} */
 
 #contents-area {
 	display: flex;
@@ -130,4 +111,8 @@
 
 .out-manage {
 	margin-top: 10px
+}
+
+#h2_3 > .nts-switch-button{
+	width: 90px	
 }

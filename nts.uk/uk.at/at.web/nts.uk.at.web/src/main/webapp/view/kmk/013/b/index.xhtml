@@ -12,6 +12,10 @@
 			<com:scriptfile path="kmk013.b.vm.js" />
 			<com:scriptfile path="kmk013.b.service.js" />
 			<com:stylefile path="kmk013.b.main.css" />
+			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.DailyTime
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -19,7 +23,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_1')} </a>
-				<button class="proceed save" data-bind="click:save" >#{i18n.getText('KMK013_2')}</button>
+				<button class="proceed save" data-bind="enable: $root.errors.isEmpty, click:save" >#{i18n.getText('KMK013_2')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -30,7 +34,7 @@
 							<div>
 								<hr />
 							</div>
-							<div
+							<div id="b23"
 								data-bind="ntsRadioBoxGroup: {
 										name:'#{i18n.getText('KMK013_4')}',
 										options: itemsB23,
@@ -74,34 +78,38 @@
 										<span class="label">#{i18n.getText('KMK013_15')}</span> 
 										<input class="input-time" data-bind="ntsTimeEditor: {
 										value: timeB219,
-										constraint: 'SampleTimeDuration',
-										readonly: readonly,
-										immediate: false,
+										constraint: 'DailyTime',
+										
 										enable: enableB217,
 										inputFormat: 'time',
-										mode: 'time'}" />
+										mode: 'time',
+										name: '#[KMK013_16]',
+										required: true}" />
 									</div>
 									<div class="time">
 										<span class="label">#{i18n.getText('KMK013_17')}</span>
 										<input class="input-time" data-bind="ntsTimeEditor: {
 										value: timeB221,
-										constraint: 'SampleTimeDuration',
-										readonly: readonly,
-										immediate: false,
+										constraint: 'DailyTime',
+										
 										enable: enableB217,
 										inputFormat: 'time',
-										mode: 'time'}" />
+										mode: 'time',
+										name: '#[KMK013_17]',
+										required: true}" />
 									</div>
 									<div class="time">
 										<span class="label">#{i18n.getText('KMK013_19')}</span>
 										<input class="input-time" data-bind="ntsTimeEditor: {
 										value: timeB223,
-										constraint: 'SampleTimeDuration',
-										readonly: readonly,
-										immediate: false,
+										constraint: 'DailyTime',
+										
+										
 										enable: enableB217,
 										inputFormat: 'time',
-										mode: 'time'}" />
+										mode: 'time',
+										name: '#[KMK013_18]',
+										required: true}" />
 									</div>
 								</div>
 							</div>

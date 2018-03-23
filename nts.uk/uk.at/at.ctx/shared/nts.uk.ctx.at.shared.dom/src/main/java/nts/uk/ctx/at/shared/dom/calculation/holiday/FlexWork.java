@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -13,6 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class FlexWork extends DomainObject{
 
 	/** 会社ID */

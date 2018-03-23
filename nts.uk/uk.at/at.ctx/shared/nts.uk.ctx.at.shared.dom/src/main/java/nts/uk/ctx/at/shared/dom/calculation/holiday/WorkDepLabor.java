@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 
 /**
@@ -9,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
  * 変形労働勤務の加算設定
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class WorkDepLabor {
 	/** 会社ID */

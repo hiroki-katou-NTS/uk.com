@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 
 /**
@@ -11,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
  */
 @AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class RegularWork {
 	/** 会社ID */
 	private String companyId;
