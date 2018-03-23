@@ -6,30 +6,67 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.employee;
 
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetSetMemento;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employee.KrcstShaFlexMCalSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Class JpaWorkFixedSetMemento.
+ * The Class JpaShaFlexMonthActCalSetSetMemento.
  */
 public class JpaShaFlexMonthActCalSetSetMemento implements ShaFlexMonthActCalSetSetMemento {
 
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-		
+	/** The type value. */
+	private KrcstShaFlexMCalSet typeValue;
+
+	/**
+	 * Instantiates a new jpa sha flex month act cal set set memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaShaFlexMonthActCalSetSetMemento(KrcstShaFlexMCalSet typeValue) {
+		super();
+		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaFlexMonthActCalSetSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
+	 * common.CompanyId)
+	 */
+	@Override
+	public void setCompanyId(CompanyId cid) {
+		this.typeValue.getKrcstShaFlexMCalSetPK().setCid(cid.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaFlexMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.
+	 * workrecord.monthcal.FlexMonthWorkTimeAggrSet)
+	 */
 	@Override
 	public void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
-		// TODO Auto-generated method stub
-		
+		this.typeValue.setAggrMethod(aggrSettingMonthlyOfFlxNew.getAggrMethod().value);
+		this.typeValue.setInsufficSet(aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
+		this.typeValue.setLegalAggrSet(aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
+		this.typeValue.setIncludeOt(aggrSettingMonthlyOfFlxNew.getIncludeOverTime().value);
+
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.
+	 * ShaFlexMonthActCalSetSetMemento#setEmployeeId(nts.uk.ctx.at.shared.dom.
+	 * common.EmployeeId)
+	 */
 	@Override
-	public void setEmployeeId(EmployeeId employeeId) {
-		// TODO Auto-generated method stub
-		
+	public void setEmployeeId(EmployeeId sid) {
+		this.typeValue.getKrcstShaFlexMCalSetPK().setSid(sid.v());
 	}
 
 }

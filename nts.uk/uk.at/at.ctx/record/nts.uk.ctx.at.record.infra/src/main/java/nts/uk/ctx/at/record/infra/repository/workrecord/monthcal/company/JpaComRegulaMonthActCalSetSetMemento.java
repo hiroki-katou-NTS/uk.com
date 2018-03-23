@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 
 /**
- * The Class JpaWorkfixedGetMemento.
+ * The Class JpaComRegulaMonthActCalSetSetMemento.
  */
 public class JpaComRegulaMonthActCalSetSetMemento implements ComRegulaMonthActCalSetSetMemento {
 
@@ -29,16 +29,33 @@ public class JpaComRegulaMonthActCalSetSetMemento implements ComRegulaMonthActCa
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComRegulaMonthActCalSetSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
+	 * common.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.typeValue.setCid(companyId.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComRegulaMonthActCalSetSetMemento#setRegulaAggrSetting(nts.uk.ctx.at.
+	 * record.dom.workrecord.monthcal.RegularWorkTimeAggrSet)
+	 */
 	@Override
 	public void setRegulaAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
-		this.typeValue.setIncludeLegalAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalOverTimeWork()));
-		this.typeValue.setIncludeHolidayAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalHoliday()));
-		this.typeValue.setIncludeExtraAggr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getSurchargeWeekMonth()));
+		this.typeValue.setIncludeLegalAggr(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalOverTimeWork()));
+		this.typeValue.setIncludeHolidayAggr(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalHoliday()));
+		this.typeValue.setIncludeExtraAggr(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getSurchargeWeekMonth()));
 
 	}
 

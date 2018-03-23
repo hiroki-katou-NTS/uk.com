@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.JpaRegularWorkT
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class JpaWorkFixedSetMemento.
+ * The Class JpaComRegulaMonthActCalSetGetMemento.
  */
 public class JpaComRegulaMonthActCalSetGetMemento implements ComRegulaMonthActCalSetGetMemento {
 
@@ -29,11 +29,23 @@ public class JpaComRegulaMonthActCalSetGetMemento implements ComRegulaMonthActCa
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComRegulaMonthActCalSetGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.typeValue.getCid());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComRegulaMonthActCalSetGetMemento#getRegulaAggrSetting()
+	 */
 	@Override
 	public RegularWorkTimeAggrSet getRegulaAggrSetting() {
 		return new RegularWorkTimeAggrSet(new JpaRegularWorkTimeAggrSetGetMemento<>(typeValue));

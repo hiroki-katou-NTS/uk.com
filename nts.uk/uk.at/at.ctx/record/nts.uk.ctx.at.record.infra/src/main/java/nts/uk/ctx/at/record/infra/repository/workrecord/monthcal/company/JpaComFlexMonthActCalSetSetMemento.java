@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComFle
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class JpaWorkFixedSetMemento.
+ * The Class JpaComFlexMonthActCalSetSetMemento.
  */
 public class JpaComFlexMonthActCalSetSetMemento implements ComFlexMonthActCalSetSetMemento {
 
@@ -28,18 +28,30 @@ public class JpaComFlexMonthActCalSetSetMemento implements ComFlexMonthActCalSet
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComFlexMonthActCalSetSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
+	 * common.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.typeValue.setCid(companyId.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
+	 * ComFlexMonthActCalSetSetMemento#setFlexAggrSetting(nts.uk.ctx.at.record.
+	 * dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet)
+	 */
 	@Override
 	public void setFlexAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
 		this.typeValue.setAggrMethod(aggrSettingMonthlyOfFlxNew.getAggrMethod().value);
-		this.typeValue.setInsufficSet(
-				aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
-		this.typeValue.setLegalAggrSet(
-				aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
+		this.typeValue.setInsufficSet(aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
+		this.typeValue.setLegalAggrSet(aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
 		this.typeValue.setIncludeOt(aggrSettingMonthlyOfFlxNew.getIncludeOverTime().value);
 	}
 }
