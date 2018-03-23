@@ -183,6 +183,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			for(OvertimeInputCaculation caculation :overtimeInputCaculations){
 				if(caculationTime.getFrameNo() == caculation.getFrameNo()){
 					caculationTime.setCaculationTime(Integer.toString(caculation.getResultCaculation()));
+					caculationTime.setApplicationTime(caculation.getResultCaculation());
 				}
 			}
 		}
