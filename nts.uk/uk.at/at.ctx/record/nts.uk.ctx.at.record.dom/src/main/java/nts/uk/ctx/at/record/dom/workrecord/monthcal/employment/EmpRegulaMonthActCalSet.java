@@ -39,7 +39,7 @@ public class EmpRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 	public EmpRegulaMonthActCalSet(EmpRegulaMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getRegularAggrSetting();
 	}
 
 	/**

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Interface EmployeeRegularSetMonthlyActualGetMemento.
+ * The Interface ShaRegulaMonthActCalSetGetMemento.
  */
 
 public interface ShaRegulaMonthActCalSetGetMemento {
@@ -32,6 +32,6 @@ public interface ShaRegulaMonthActCalSetGetMemento {
 	 *
 	 * @return the legal aggr set of reg new
 	 */
-	RegularWorkTimeAggrSet getAggrSetting();
+	RegularWorkTimeAggrSet getRegularAggrSetting();
 
 }

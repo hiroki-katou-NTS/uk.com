@@ -39,7 +39,7 @@ public class WkpRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 	public WkpRegulaMonthActCalSet(WkpRegulaMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getRegularAggrSetting();
 	}
 
 	/**

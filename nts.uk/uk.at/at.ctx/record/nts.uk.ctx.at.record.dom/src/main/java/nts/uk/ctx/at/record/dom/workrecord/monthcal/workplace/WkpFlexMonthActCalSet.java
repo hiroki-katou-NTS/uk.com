@@ -50,7 +50,7 @@ public class WkpFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	public WkpFlexMonthActCalSet(WkpFlexMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getFlexAggrSetting();
 	}
 
 	/**

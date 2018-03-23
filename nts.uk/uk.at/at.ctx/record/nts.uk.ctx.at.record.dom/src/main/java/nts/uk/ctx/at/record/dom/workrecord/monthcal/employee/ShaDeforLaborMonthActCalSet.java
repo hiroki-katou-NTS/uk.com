@@ -51,7 +51,7 @@ public class ShaDeforLaborMonthActCalSet extends AggregateRoot
 	public ShaDeforLaborMonthActCalSet(ShaDeforLaborMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getDeforAggrSetting();
 	}
 
 	/**

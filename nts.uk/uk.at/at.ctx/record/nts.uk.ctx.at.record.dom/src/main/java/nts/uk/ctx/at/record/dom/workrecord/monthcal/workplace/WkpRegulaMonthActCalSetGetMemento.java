@@ -32,6 +32,6 @@ public interface WkpRegulaMonthActCalSetGetMemento {
 	 *
 	 * @return the legal aggr set of reg new
 	 */
-	RegularWorkTimeAggrSet getAggrSetting();
+	RegularWorkTimeAggrSet getRegularAggrSetting();
 
 }

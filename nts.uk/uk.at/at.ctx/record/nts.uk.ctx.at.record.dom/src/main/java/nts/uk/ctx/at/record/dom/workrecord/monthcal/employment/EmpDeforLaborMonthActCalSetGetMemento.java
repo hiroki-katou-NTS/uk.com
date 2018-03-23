@@ -32,6 +32,6 @@ public interface EmpDeforLaborMonthActCalSetGetMemento {
 	 *
 	 * @return the aggregate setting
 	 */
-	DeforWorkTimeAggrSet getAggrSetting();
+	DeforWorkTimeAggrSet getDeforAggrSetting();
 
 }

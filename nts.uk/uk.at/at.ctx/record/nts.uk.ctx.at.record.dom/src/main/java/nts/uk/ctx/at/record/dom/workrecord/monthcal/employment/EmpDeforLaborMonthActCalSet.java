@@ -51,7 +51,7 @@ public class EmpDeforLaborMonthActCalSet extends AggregateRoot implements DeforL
 	public EmpDeforLaborMonthActCalSet(EmpDeforLaborMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getDeforAggrSetting();
 	}
 
 	/**

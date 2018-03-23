@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class DeleteCompanyCalMonthlyFlexCommand.
+ * The Class DelWkpMonthCalSetCommand.
  */
 @Getter
 @Setter

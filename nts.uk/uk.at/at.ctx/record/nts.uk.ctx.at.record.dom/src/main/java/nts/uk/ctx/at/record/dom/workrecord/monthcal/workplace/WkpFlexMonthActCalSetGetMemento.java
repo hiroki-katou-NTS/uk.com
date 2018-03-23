@@ -32,6 +32,6 @@ public interface WkpFlexMonthActCalSetGetMemento {
 	 *
 	 * @return the aggr setting monthly of flx new
 	 */
-	FlexMonthWorkTimeAggrSet getAggrSetting();
+	FlexMonthWorkTimeAggrSet getFlexAggrSetting();
 
 }

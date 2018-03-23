@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Interface EmployeeLaborDeforSetTemporaryGetMemento.
+ * The Interface ShaDeforLaborMonthActCalSetGetMemento.
  */
 public interface ShaDeforLaborMonthActCalSetGetMemento {
 
@@ -32,6 +32,6 @@ public interface ShaDeforLaborMonthActCalSetGetMemento {
 	 *
 	 * @return the legal aggr set of irg new
 	 */
-	DeforWorkTimeAggrSet getAggrSetting();
+	DeforWorkTimeAggrSet getDeforAggrSetting();
 
 }

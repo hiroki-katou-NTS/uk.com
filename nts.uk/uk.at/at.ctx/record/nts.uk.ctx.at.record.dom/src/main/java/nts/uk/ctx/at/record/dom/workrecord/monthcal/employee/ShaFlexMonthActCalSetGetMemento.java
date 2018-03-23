@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
- * The Interface EmployeeCalSetMonthlyFlexGetMemento.
+ * The Interface ShaFlexMonthActCalSetGetMemento.
  */
 public interface ShaFlexMonthActCalSetGetMemento {
 
@@ -32,6 +32,6 @@ public interface ShaFlexMonthActCalSetGetMemento {
 	 *
 	 * @return the aggr setting monthly of flx new
 	 */
-	FlexMonthWorkTimeAggrSet getAggrSetting();
+	FlexMonthWorkTimeAggrSet getFlexAggrSetting();
 
 }

@@ -51,7 +51,7 @@ public class WkpDeforLaborMonthActCalSet extends AggregateRoot implements DeforL
 	public WkpDeforLaborMonthActCalSet(WkpDeforLaborMonthActCalSetGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
-		this.aggrSetting = memento.getAggrSetting();
+		this.aggrSetting = memento.getDeforAggrSetting();
 	}
 
 	/**
