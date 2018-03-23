@@ -395,21 +395,36 @@ module nts.uk.at.view.kmk011.e {
                 let _self = this;
 
                 let objTemp1: WorkTypeDivergenceTimeSettingDto;
-
-                for (let i = 1; i <= 10; i++) {
-                    objTemp1 = new WorkTypeDivergenceTimeSettingDto();
-                    let item = {
-                        divergenceTimeNo: i,
-                        notUseAtr: 0,
-                        divergenceReferenceTimeValue: {
-                            errorTime: 0,
-                            alarmTime: 0
-                        }
-                    };
-                    objTemp1.updateData(item);
-                    _self.mapObj.set(i, objTemp1);
+      
+                if (_self.mapObj.size == 0) {
+                    for (let i = 1; i <= 10; i++) {
+                        let item = {
+                            divergenceTimeNo: i,
+                            notUseAtr: 0,
+                            divergenceReferenceTimeValue: {
+                                errorTime: 0,
+                                alarmTime: 0
+                            }
+                        };
+                        let itemDto = new WorkTypeDivergenceTimeSettingDto();
+                        itemDto.updateData(item);
+                        _self.mapObj.set(item.divergenceTimeNo, itemDto);
+                    }
+                } else {
+                    for (let i = 1; i <= 10; i++) {
+                        let item = {
+                            divergenceTimeNo: i,
+                            notUseAtr: 0,
+                            divergenceReferenceTimeValue: {
+                                errorTime: 0,
+                                alarmTime: 0
+                            }
+                        };
+                        _self.mapObj.get(i).notUseAtr(item.notUseAtr);
+                        _self.mapObj.get(i).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                        _self.mapObj.get(i).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                   }
                 }
-
             }
 
             // history mode
@@ -418,7 +433,7 @@ module nts.uk.at.view.kmk011.e {
                 nts.uk.ui.windows.setShared('settingMode', HistorySettingMode.WORKTYPE);
                 nts.uk.ui.windows.setShared('workTypeCode', _self.currentCode());
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
-                    
+                    _self.fillListHistory(_self.currentCode());
                 });
             }
             public editMode(): void {
@@ -426,7 +441,7 @@ module nts.uk.at.view.kmk011.e {
                 nts.uk.ui.windows.setShared('settingMode', HistorySettingMode.WORKTYPE);
                 nts.uk.ui.windows.setShared('history', _self.selectedHist());
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
-                    
+                    _self.fillListHistory(_self.currentCode());
                 });
             }
             public deleteMode(): void {
@@ -436,7 +451,7 @@ module nts.uk.at.view.kmk011.e {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.deleteHistory(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            
+                            _self.fillListHistory(_self.currentCode());
                         });
                     });
                 });

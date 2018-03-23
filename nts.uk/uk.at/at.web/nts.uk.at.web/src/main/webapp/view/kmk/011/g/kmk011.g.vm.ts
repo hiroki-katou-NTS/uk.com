@@ -47,7 +47,7 @@ module nts.uk.at.view.kmk011.g {
                     // save company Hist
                     case HistorySettingMode.COMPANY:
 
-                        var data = new CreateHistoryCommand(nts.uk.ui.windows.getShared('history'), moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), false);
+                        var data = new CreateHistoryCommand(nts.uk.ui.windows.getShared('history'), moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), 0);
                         service.saveComHist(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
@@ -62,7 +62,7 @@ module nts.uk.at.view.kmk011.g {
                     case HistorySettingMode.WORKTYPE:
                         var workTypeCode: string = nts.uk.ui.windows.getShared('workTypeCode');
 
-                        let data1 = new CreateWkTypeHistoryCommand(workTypeCode, nts.uk.ui.windows.getShared('history'), moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), false);
+                        let data1 = new CreateWkTypeHistoryCommand(workTypeCode, nts.uk.ui.windows.getShared('history'), moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), 0);
                         service.saveWkTypeHist(data1).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
