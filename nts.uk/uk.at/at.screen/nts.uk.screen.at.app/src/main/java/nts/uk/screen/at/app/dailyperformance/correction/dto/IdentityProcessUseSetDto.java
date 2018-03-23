@@ -18,4 +18,9 @@ public class IdentityProcessUseSetDto {
 	 * 月の本人確認を利用する
 	 */
 	private boolean useIdentityOfMonth;
+	
+	/**
+	 * エラーがある場合の日の本人確認
+	 */
+	private Integer yourSelfConfirmError;
 }

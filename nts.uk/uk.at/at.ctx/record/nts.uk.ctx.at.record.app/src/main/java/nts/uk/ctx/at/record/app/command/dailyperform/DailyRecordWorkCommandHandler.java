@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.Affiliatio
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
@@ -171,6 +172,14 @@ public class DailyRecordWorkCommandHandler {
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 	
 	@Inject
+	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
+	private PCLogInfoOfDailyCommandAddHandler pcLogInfoAddHandler;
+	@Inject
+	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
+	private PCLogInfoOfDailyCommandUpdateHandler pcLogInfoUpdateHandler;
+	
+	
+	@Inject
 	private CalculateDailyRecordService calcService;
 	
 	@Inject 
@@ -212,7 +221,7 @@ public class DailyRecordWorkCommandHandler {
 //				){
 			IntegrationOfDaily calced = calcService.calculate(
 					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							Optional.empty(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
+							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
 							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
 							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
 							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
@@ -284,6 +293,9 @@ public class DailyRecordWorkCommandHandler {
 			break;
 		case "O":
 			handler = isUpdate ? this.temporaryTimeUpdateHandler : this.temporaryTimeAddHandler;
+			break;
+		case "P":
+			handler = isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
 			break;
 		default:
 			break;
