@@ -51,8 +51,12 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 		if (pubHDRemain.isPresent()){
 			dto.pubHdremainNumber = pubHDRemain.get().getRemainNumber().v();
 		}
-		
-		return null;
+		if (exLeavInfo.isPresent()){
+			dto.useAtr = exLeavInfo.get().getUseAtr().value;
+			dto.occurrenceUnit = exLeavInfo.get().getOccurrenceUnit().v();
+			dto.paymentMethod = exLeavInfo.get().getPaymentMethod().value;
+		}
+		return dto;
 	}
 
 }

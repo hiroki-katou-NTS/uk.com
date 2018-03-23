@@ -23,7 +23,8 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 	@Inject
 	private PublicHolidayRemainRepository publicHolidayRemainRepository;
 	
-	@Inject ExcessLeaveInfoRepository excessLeaveInfoRepository;
+	@Inject 
+	private ExcessLeaveInfoRepository excessLeaveInfoRepository;
 	
 	@Override
 	public String targetCategoryCode() {
@@ -43,7 +44,6 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) 
 	{
-		String companyId = AppContexts.user().companyId();
 		Optional<PublicHolidayRemain> holidayRemain = publicHolidayRemainRepository.get(query.getEmployeeId());
 		Optional<ExcessLeaveInfo> excessLeave = excessLeaveInfoRepository.get(query.getEmployeeId());
 		
