@@ -133,7 +133,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         //get object share
         shareObject: KnockoutObservable<ShareObject> = ko.observable(new ShareObject());
 
-        constructor() {
+        constructor(dataShare:any) {
             var self = this;
             self.initLegendButton();
             self.initDateRanger();
@@ -213,7 +213,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                      $("#tooltip").hide();
                 }
             });
-            self.shareObject().mapDataShare(nts.uk.ui.windows.getShared('DPCorrectionInitParam'),  nts.uk.ui.windows.getShared('DPCorrectionExtractionParam'));
+            self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam);
         }
          helps(event, data){
              var self = this;
@@ -1190,8 +1190,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         extraction() {
             var self = this;
-            self.destroyGrid();
             let start = performance.now();
+            self.destroyGrid();
+            console.log("destroy grid :" + (start- performance.now()));
+            start = performance.now();
             self.extractionData();
             console.log("calc load extractionData :" + (start- performance.now()));
             self.loadGrid();
@@ -1528,7 +1530,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.setHeaderColor();
             self.setColorWeekend();
-            console.log(self.formatDate(self.dailyPerfomanceData()));
+            //console.log(self.formatDate(self.dailyPerfomanceData()));
             let start = performance.now();
             let dataSource = self.formatDate(self.dailyPerfomanceData());
             $("#dpGrid").ntsGrid({
@@ -2447,11 +2449,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         targetClosure: any; //処理締め-締めID targetClosure lấy closureId 
         transitionDesScreen: any; //遷移先の画面 - Optional //truyền từ màn hình nào sang
 
-        dateStartUp: any; //日付別で起動- Optional ngày extract mode 2
+        dateTarget: any; //日付別で起動- Optional ngày extract mode 2
         displayFormat: any; //表示形式 mode hiển thị 
         individualStartUp: any; //個人別で起動 ngày bắt đầu
         lstExtratedEmployee: any;//抽出した社員一覧
-        period: any;//期間 khoảng thời gian
+        startDate: any;//期間 khoảng thời gian
+        endDate: any;//期間 khoảng thời gian
         constructor() {
         }
         mapDataShare(dataInit: any, dataExtract: any) {
@@ -2466,11 +2469,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 this.transitionDesScreen = dataInit.transitionDesScreen;
             }
             if (dataExtract != undefined) {
-                this.dateStartUp = dataExtract.dateStartUp;
+                this.dateTarget = dataExtract.dateTarget;
                 this.displayFormat = dataExtract.displayFormat;
                 this.individualStartUp = dataExtract.individualStartUp;
                 this.lstExtratedEmployee = dataExtract.lstExtratedEmployee;
-                this.period = dataExtract.period;
+                this.startDate = dataExtract.startDate;
+                this.endDate = dataExtract.endDate;
             }
         }
     }
