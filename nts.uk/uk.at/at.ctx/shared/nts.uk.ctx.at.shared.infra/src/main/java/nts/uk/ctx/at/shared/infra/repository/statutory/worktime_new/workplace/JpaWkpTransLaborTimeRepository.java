@@ -9,9 +9,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpTransLaborTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstWkpTransLabTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK;
 
 /**
  * The Class JpaWkpTransLaborTimeRepository.
@@ -21,77 +22,67 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 		implements WkpTransLaborTimeRepository {
 
 	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpTransLaborTimeRepository#create(nts.uk.ctx.at.shared.dom.statutory.
-	 * worktime.companyNew.WkpTransLaborTime)
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpTransLaborTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void create(WkpTransLaborTime setting) {
-		KshstWkpTransLabTime entity = new KshstWkpTransLabTime();
-		setting.saveToMemento(new JpaWkpTransLaborTimeSetMemento(entity));
-		this.commandProxy().insert(entity);
-	}
-
-	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpTransLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.
-	 * worktime.companyNew.WkpTransLaborTime)
-	 */
-	@Override
-	public void update(WkpTransLaborTime setting) {
-		KshstWkpTransLabTime entity = this.queryProxy().find(setting.getCompanyId().v(), KshstWkpTransLabTime.class).get();
-		setting.saveToMemento(new JpaWkpTransLaborTimeSetMemento(entity));
-		this.commandProxy().update(this.toEntity(setting));
-	}
-
-	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpTransLaborTimeRepository#remove(java.lang.String)
-	 */
-	@Override
-	public void remove(String companyId) {
-		this.commandProxy().remove(KshstWkpTransLabTime.class, companyId);
-	}
-
-	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpTransLaborTimeRepository#find(java.lang.String)
-	 */
-	@Override
-	public Optional<WkpTransLaborTime> find(String companyId) {
-
-		Optional<KshstWkpTransLabTime> optEntity = this.queryProxy().find(companyId,
-				KshstWkpTransLabTime.class);
+	public Optional<WkpTransLaborTime> find(String cid, String wkpId) {
+		// Get info
+		Optional<KshstWkpTransLabTime> optEntity = this.queryProxy()
+				.find(new KshstWkpTransLabTimePK(cid, wkpId), KshstWkpTransLabTime.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
 			return Optional.empty();
 		}
 
-		return Optional.ofNullable(this.toDomain(optEntity.get()));
+		// Return
+		return Optional
+				.of(new WkpTransLaborTime(new JpaWkpTransLaborTimeGetMemento(optEntity.get())));
+
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the kshst com trans lab time
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpTransLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.workplaceNew.WkpTransLaborTime)
 	 */
-	private KshstWkpTransLabTime toEntity(WkpTransLaborTime domain) {
+	@Override
+	public void add(WkpTransLaborTime domain) {
 		KshstWkpTransLabTime entity = new KshstWkpTransLabTime();
 		domain.saveToMemento(new JpaWkpTransLaborTimeSetMemento(entity));
-		return entity;
+		this.commandProxy().insert(entity);
 	}
 
-	/**
-	 * To domain.
-	 *
-	 * @param entity
-	 *            the entities
-	 * @return the com trans labor time
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpTransLaborTimeRepository#remove(java.lang.String, java.lang.String)
 	 */
-	private WkpTransLaborTime toDomain(KshstWkpTransLabTime entity) {
-		return new WkpTransLaborTime(new JpaWkpTransLaborTimeGetMemento(entity));
+	@Override
+	public void remove(String cid, String wkpId) {
+		this.commandProxy().remove(KshstWkpTransLabTimePK.class,
+				new KshstWkpTransLabTimePK(cid, wkpId));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpTransLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.workplaceNew.WkpTransLaborTime)
+	 */
+	@Override
+	public void update(WkpTransLaborTime domain) {
+		KshstWkpTransLabTime entity = this.queryProxy().find(
+				new KshstWkpTransLabTimePK(domain.getCompanyId().v(), domain.getWorkplaceId().v()),
+				KshstWkpTransLabTime.class).get();
+		domain.saveToMemento(new JpaWkpTransLaborTimeSetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 }

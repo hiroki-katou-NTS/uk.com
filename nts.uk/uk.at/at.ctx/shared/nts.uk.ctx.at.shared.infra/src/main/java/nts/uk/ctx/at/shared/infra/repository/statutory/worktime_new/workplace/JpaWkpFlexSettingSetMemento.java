@@ -25,6 +25,12 @@ public class JpaWkpFlexSettingSetMemento implements WkpFlexSettingSetMemento {
 	/** The entity. */
 	private KshstWkpFlexSet entity;
 
+	/**
+	 * Instantiates a new jpa wkp flex setting set memento.
+	 *
+	 * @param entity
+	 *            the entity
+	 */
 	public JpaWkpFlexSettingSetMemento(KshstWkpFlexSet entity) {
 		super();
 		if (entity.getKshstWkpFlexSetPK() == null) {

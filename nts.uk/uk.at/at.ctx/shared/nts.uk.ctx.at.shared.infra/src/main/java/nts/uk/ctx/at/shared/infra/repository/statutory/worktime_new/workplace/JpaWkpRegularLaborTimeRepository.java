@@ -4,23 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTime_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTimePK;
 
 /**
  * The Class JpaWkpRegularLaborTimeRepository.
@@ -30,15 +22,12 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository
 		implements WkpRegularLaborTimeRepository {
 
 	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpRegularLaborTimeRepository#create(nts.uk.ctx.at.shared.dom.statutory.
-	 * worktime.companyNew.WkpRegularLaborTime)
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpRegularLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.workplaceNew.WkpRegularLaborTime)
 	 */
-	@Override
-	public void create(WkpRegularLaborTime setting) {
-		commandProxy().insert(this.toEntity(setting));
-	}
-
 	/*
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
 	 * WkpRegularLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.
@@ -46,60 +35,59 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void update(WkpRegularLaborTime setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstWkpRegLaborTime entity = this.queryProxy()
+				.find(new KshstWkpRegLaborTimePK(setting.getCompanyId().v(),
+						setting.getWorkplaceId().v()), KshstWkpRegLaborTime.class)
+				.get();
+		setting.saveToMemento(new JpaWkpRegularLaborTimeSetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 
 	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpRegularLaborTimeRepository#remove(java.lang.String)
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpRegularLaborTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void remove(String companyId) {
-		commandProxy().remove(KshstWkpTransLabTime.class, companyId);
-	}
+	public Optional<WkpRegularLaborTime> find(String cid, String wkpId) {
+		// Get info
+		Optional<KshstWkpRegLaborTime> optEntity = this.queryProxy()
+				.find(new KshstWkpRegLaborTimePK(cid, wkpId), KshstWkpRegLaborTime.class);
 
-	/*
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
-	 * WkpRegularLaborTimeRepository#find(java.lang.String)
-	 */
-	@Override
-	public Optional<WkpRegularLaborTime> find(String companyId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstWkpRegLaborTime> cq = cb.createQuery(KshstWkpRegLaborTime.class);
-		Root<KshstWkpRegLaborTime> root = cq.from(KshstWkpRegLaborTime.class);
-
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.insert(cb.equal(root.get(KshstWkpRegLaborTime_.cid), companyId));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the kshst com reg labor time
-	 */
-	private KshstWkpRegLaborTime toEntity(WkpRegularLaborTime domain) {
-		JpaWkpRegularLaborTimeSetMemento memento = new JpaWkpRegularLaborTimeSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param entities
-	 *            the entities
-	 * @return the com regular labor time
-	 */
-	private WkpRegularLaborTime toDomain(List<KshstWkpRegLaborTime> entities) {
-		if (entities.isEmpty()) {
-			return null;
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
 		}
-		return new WkpRegularLaborTime(new JpaWkpRegularLaborTimeGetMemento(entities.get(0)));
+
+		// Return
+		return Optional
+				.of(new WkpRegularLaborTime(new JpaWkpRegularLaborTimeGetMemento(optEntity.get())));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpRegularLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.workplaceNew.WkpRegularLaborTime)
+	 */
+	@Override
+	public void add(WkpRegularLaborTime domain) {
+		KshstWkpRegLaborTime entity = new KshstWkpRegLaborTime();
+		domain.saveToMemento(new JpaWkpRegularLaborTimeSetMemento(entity));
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpRegularLaborTimeRepository#remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String cid, String wkpId) {
+		this.commandProxy().remove(KshstWkpRegLaborTimePK.class,
+				new KshstWkpRegLaborTimePK(cid, wkpId));
 	}
 }

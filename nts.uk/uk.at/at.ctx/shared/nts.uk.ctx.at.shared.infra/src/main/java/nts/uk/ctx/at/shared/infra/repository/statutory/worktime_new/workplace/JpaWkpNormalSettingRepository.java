@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTimePK;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpNormalSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpNormalSetPK;
 
 /**
  * The Class JpaWkpNormalSettingRepository.
@@ -29,21 +29,26 @@ public class JpaWkpNormalSettingRepository extends JpaRepository
 	 * worktime.companyNew.WkpNormalSetting)
 	 */
 	@Override
-	public void update(WkpNormalSetting setting) {
-		KshstWkpRegLaborTime entity = this.queryProxy()
-				.find(new KshstWkpRegLaborTimePK(setting.getCompanyId().v(),
-						setting.getWorkplaceId().v(), setting.getYear().v()),
-						KshstWkpRegLaborTime.class)
+	public void update(WkpNormalSetting domain) {
+		KshstWkpNormalSet entity = this.queryProxy()
+				.find(new KshstWkpNormalSetPK(domain.getCompanyId().v(),
+						domain.getWorkplaceId().v(), domain.getYear().v()), KshstWkpNormalSet.class)
 				.get();
-		setting.saveToMemento(new JpaWkpNormalSettingSetMemento(entity));
+		domain.saveToMemento(new JpaWkpNormalSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpNormalSettingRepository#find(java.lang.String, java.lang.String, int)
+	 */
 	@Override
 	public Optional<WkpNormalSetting> find(String cid, String wkpId, int year) {
 		// Get info
-		Optional<KshstWkpRegLaborTime> optEntity = this.queryProxy()
-				.find(new KshstWkpRegLaborTimePK(companyId, year), KshstWkpRegLaborTime.class);
+		Optional<KshstWkpNormalSet> optEntity = this.queryProxy()
+				.find(new KshstWkpNormalSetPK(cid, wkpId, year), KshstWkpNormalSet.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -55,17 +60,31 @@ public class JpaWkpNormalSettingRepository extends JpaRepository
 				.of(new WkpNormalSetting(new JpaWkpNormalSettingGetMemento(optEntity.get())));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpNormalSettingRepository#add(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.workplaceNew.WkpNormalSetting)
+	 */
 	@Override
-	public void add(WkpNormalSetting wkpNormalSetting) {
-		KshstWkpRegLaborTime entity = new KshstWkpRegLaborTime();
-		setting.saveToMemento(new JpaWkpNormalSettingSetMemento(entity));
+	public void add(WkpNormalSetting domain) {
+		KshstWkpNormalSet entity = new KshstWkpNormalSet();
+		domain.saveToMemento(new JpaWkpNormalSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
+	 * WkpNormalSettingRepository#remove(java.lang.String, java.lang.String,
+	 * int)
+	 */
 	@Override
 	public void remove(String cid, String wkpId, int year) {
-		this.commandProxy().remove(KshstWkpRegLaborTimePK.class,
-				new KshstWkpRegLaborTimePK(companyId, year));
+		this.commandProxy().remove(KshstWkpNormalSetPK.class,
+				new KshstWkpNormalSetPK(cid, wkpId, year));
 	}
 
 }

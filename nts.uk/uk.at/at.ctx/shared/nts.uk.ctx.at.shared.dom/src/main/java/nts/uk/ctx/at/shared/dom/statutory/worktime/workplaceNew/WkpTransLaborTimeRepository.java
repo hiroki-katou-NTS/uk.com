@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface WkpDeforLaborWorkHourRepository.
  */
-public interface WkpDeforLaborWorkTimeRepository {
+public interface WkpTransLaborTimeRepository {
 
 	/**
 	 * Find by cid and wkp id.
