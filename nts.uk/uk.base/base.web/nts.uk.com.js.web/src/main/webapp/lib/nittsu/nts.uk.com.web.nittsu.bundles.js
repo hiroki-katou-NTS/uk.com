@@ -4781,6 +4781,7 @@ var nts;
                 toBeResource.info = "情報";
                 toBeResource.warn = "警告";
                 toBeResource.error = "エラー";
+                toBeResource.confirm = "確認";
                 toBeResource.unset = "未設定";
                 toBeResource.errorContent = "エラー内容";
                 toBeResource.errorCode = "エラーコード";
@@ -5508,7 +5509,7 @@ var nts;
                                 }
                             });
                         }
-                        var $this = createNoticeDialog(message, buttons);
+                        var $this = createNoticeDialog(message, buttons, { text: ui_1.toBeResource.confirm });
                     });
                     return handlers;
                 }
