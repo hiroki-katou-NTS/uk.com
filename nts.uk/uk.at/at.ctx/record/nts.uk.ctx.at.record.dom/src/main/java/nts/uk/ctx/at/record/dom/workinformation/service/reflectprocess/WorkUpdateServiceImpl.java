@@ -352,12 +352,13 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 		OverTimeOfDaily workHolidayTime = optOverTimeOfDaily.get();
 		FlexTime flexTimeData = workHolidayTime.getFlexTime();
-		flexTimeData.getFlexTime().setTime(new AttendanceTimeOfExistMinus(flexTime));
+		FlexTime temp = new FlexTime(flexTimeData.getFlexTime(), new AttendanceTime(flexTime));
+		workHolidayTime.setFlexTime(temp);		
 		attendanceTime.updateFlush(attendanceTimeData);
 		//フレックス時間の編集状態を更新する
 		//日別実績の編集状態
 		List<Integer> lstItem = new ArrayList<Integer>();//フレックス時間の項目ID
-		lstItem.add(556);
+		lstItem.add(555);
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 		
 	}
