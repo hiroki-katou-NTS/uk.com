@@ -6,17 +6,18 @@ module nts.uk.com.view.cps001.i.vm {
         invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
     export class ScreenModel {
 
-        enaBtnNew : KnockoutObservable<boolean> = ko.observable(true);
-        enaBtnRemove : KnockoutObservable<boolean> = ko.observable(true);
-        visibleGrant : KnockoutObservable<boolean> = ko.observable(true);
-        visibleUse : KnockoutObservable<boolean> = ko.observable(true);
-        visibleOver : KnockoutObservable<boolean> = ko.observable(true);
-        visibleReam : KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnNew: KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnRemove: KnockoutObservable<boolean> = ko.observable(true);
+        visibleGrant: KnockoutObservable<boolean> = ko.observable(true);
+        visibleUse: KnockoutObservable<boolean> = ko.observable(true);
+        visibleOver: KnockoutObservable<boolean> = ko.observable(true);
+        visibleReam: KnockoutObservable<boolean> = ko.observable(true);
+
+        checked: KnockoutObservable<boolean> = ko.observable(false);
 
         // list data
         listData: KnockoutObservableArray<SpecialLeaveRemaining>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any> = ko.observable();
+        currentValue: KnockoutObservable<any> = ko.observable();
         //grant
         grantDateTitle: KnockoutObservable<string>;
         dateGrantInp: KnockoutObservable<string>;
@@ -59,6 +60,7 @@ module nts.uk.com.view.cps001.i.vm {
 
         constructor() {
             let self = this;
+
             self.grantDateTitle = ko.observable('grantDateTitle');
             self.dateGrantInp = ko.observable('20000101');
 
@@ -101,32 +103,34 @@ module nts.uk.com.view.cps001.i.vm {
 
             self.listData = ko.observableArray([]);
 
-            self.currentCode.subscribe((newValue) => {
+            self.currentValue.subscribe((newValue) => {
                 console.log(newValue);
 
-                self.dayNumberOfGrantsTitle(newValue);
-                self.dayNumberOfGrants(newValue);
-                self.grantTimeTitle(newValue);
-                self.grantTime(newValue);
 
-                // detail of Use
-                self.dayNumberOfUseTitle(newValue);
-                self.dayNumberOfUse(newValue);
-                self.useTimeTitle(newValue);
-                self.useTime(newValue);
-
-                // Exeeded detail
-                self.dayNumberOverTitle(newValue);
-                self.dayNumberOver(newValue);
-                self.timeOverTitle(newValue);
-                self.timeOver(newValue);
-
-                // Reaming detail
-                self.dayNumberOfReamTitle(newValue);
-                self.dayNumberOfReam(newValue);
-                self.timeReamTitle(newValue);
-                self.timeReam(newValue);
             });
+
+            self.currentValue = ko.observable(moment().toDate());
+
+            // Subsribe table
+            self.currentValue.subscribe(value => {
+                if (value) {
+                    service.getDetail(value).done((result: ISpecialLeaveRemaining) => {
+                        if (result) {
+                            self.bindingData(result);
+                        }
+                    });
+                    $('#idGrantDate').focus();
+                }
+
+            });
+
+            // Subscribe checkbox
+            self.checked.subscribe(value => {
+                console.log(value);
+                let sID = __viewContext.user.employeeId;
+
+            });
+
 
         }
 
@@ -137,14 +141,12 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this,
                 dfd = $.Deferred(),
                 lstData = self.listData,
-                currentCode = self.currentCode();
-
-            self.currentCode(10);
+                currentValue = self.currentValue();
 
             lstData.removeAll();
             service.getData().done((data) => {
                 self.listData(data);
-                self.currentCode(self.listData()[0].code);
+                self.currentValue(self.listData()[0].grantDate);
             });
 
 
@@ -160,6 +162,34 @@ module nts.uk.com.view.cps001.i.vm {
             self.visibleUse(false);
             self.visibleOver(false);
             self.visibleReam(false);
+        }
+
+        public bindingData(result: ISpecialLeaveRemaining): void {
+            let self = this;
+            self.dayNumberOfGrantsTitle("");
+            self.dayNumberOfGrants(result.numberDayGrant);
+            self.grantTimeTitle("");
+            self.grantTime(result.timeGrant);
+
+            // detail of Use
+            self.dayNumberOfUseTitle("");
+            self.dayNumberOfUse(result.numberDayUse);
+            self.useTimeTitle("");
+            self.useTime(result.timeUse);
+
+            // Exeeded detail
+            self.dayNumberOverTitle("");
+            self.dayNumberOver(result.numberOverDays);
+            self.timeOverTitle("");
+            self.timeOver(result.timeOver);
+
+            // Reaming detail
+            self.dayNumberOfReamTitle("");
+            self.dayNumberOfReam(result.numberDayRemain);
+            self.timeReamTitle("");
+            self.timeReam(result.timeRemain);
+
+
         }
 
 
@@ -195,46 +225,52 @@ module nts.uk.com.view.cps001.i.vm {
         deadlineDate: string;
         expStatus: string;
         registerType: string;
-        numberOfDayGrant: string;
-        timeGrant: string;
-        numberOfDayUse: string;
-        numberOfDayUseToLose: string;
-        timeUse: string;
-        numberOfExceededDays: string;
-        timeExceeded: string;
-        numberOfDayRemain: string;
-        timeRemain: string;
+        numberDayGrant: number;
+        timeGrant: number;
+        numberDayUse: number;
+        useSavingDays: number;
+        timeUse: number;
+        numberOverDays: number;
+        timeOver: number;
+        numberDayRemain: number;
+        timeRemain: number;
 
     }
 
     class SpecialLeaveRemaining {
         specialid: string;
-        code: string;
+        sid: string;
+        specialLeaCode: string;
         grantDate: string;
-        deadline: string;
-        dayNumberOfGrants: string;
-        grantTime: string;
-        dayNumberOfUse: string;
-        useTime: string;
-        dayNumberOfExeeded: string;
-        timeExeeded: string;
-        dayNumberOfReam: string;
-        timeReam: string;
-        leavExpStatus: string;
+        deadlineDate: string;
+        expStatus: string;
+        registerType: string;
+        numberDayGrant: number;
+        timeGrant: number;
+        numberDayUse: number;
+        useSavingDays: number;
+        timeUse: number;
+        numberOverDays: number;
+        timeOver: number;
+        numberDayRemain: number;
+        timeRemain: number;
         constructor(data: ISpecialLeaveRemaining) {
             this.specialid = data.specialid;
-            this.code = data.specialLeaCode;
+            this.sid = data.sid;
+            this.specialLeaCode = data.specialLeaCode;
             this.grantDate = data.grantDate;
-            this.deadline = data.deadlineDate;
-            this.dayNumberOfGrants = data.numberOfDayGrant;
-            this.grantTime = data.timeGrant;
-            this.dayNumberOfUse = data.numberOfDayUse;
-            this.useTime = data.timeUse;
-            this.dayNumberOfExeeded = data.numberOfExceededDays;
-            this.timeExeeded = data.timeExceeded;
-            this.dayNumberOfReam = data.numberOfDayRemain;
-            this.timeReam = data.timeRemain;
-            this.leavExpStatus = data.expStatus;
+            this.deadlineDate = data.deadlineDate;
+            this.expStatus = data.expStatus;
+            this.registerType = data.registerType;
+            this.numberDayGrant = data.numberDayGrant;
+            this.timeGrant = data.timeGrant;
+            this.numberDayUse = data.numberDayUse;
+            this.useSavingDays = data.useSavingDays;
+            this.timeUse = data.timeUse;
+            this.numberOverDays = data.numberOverDays;
+            this.timeOver = data.timeOver;
+            this.numberDayRemain = data.numberDayRemain;
+            this.timeRemain = data.timeRemain;
         }
     }
 
