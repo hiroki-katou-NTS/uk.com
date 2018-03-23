@@ -4,63 +4,40 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeSetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime;
 
 /**
- * Gets the working time setting new.
- *
- * @return the working time setting new
+ * The Class ShainSpeDeforLaborHourDto.
  */
-@Getter
-public class ShainSpeDeforLaborHourDto implements ShainSpeDeforLaborTimeSetMemento {
 
+/**
+ * Instantiates a new shain spe defor labor hour dto.
+ */
+@Data
+public class ShainSpeDeforLaborHourDto {
 
 	/** The employee id. */
 	private String employeeId;
 
-	/** The working time setting new. */
-	private WorkingTimeSetting workingTimeSetting;
+	/** The company id. */
+	private String companyId;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmployeeSpeDeforLaborHourSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom
-	 * .common.CompanyId)
+	/** The working time setting. */
+	/** 会社労働時間設定. */
+	private WorkingTimeSettingDto workingTimeSetting;
+
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the shain spe defor labor hour dto
 	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+	public static ShainSpeDeforLaborHourDto fromDomain(ShainSpeDeforLaborTime domain) {
+		ShainSpeDeforLaborHourDto dto = new ShainSpeDeforLaborHourDto();
+		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
+		dto.setWorkingTimeSetting(workingTimeSetting);
+		return dto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmployeeSpeDeforLaborHourSetMemento#setEmployeeId(nts.uk.ctx.at.shared.
-	 * dom.common.EmployeeId)
-	 */
-	@Override
-	public void setEmployeeId(EmployeeId employeeId) {
-		this.employeeId = employeeId.toString();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmployeeSpeDeforLaborHourSetMemento#setWorkingTimeSettingNew(nts.uk.ctx.
-	 * at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSettingNew)
-	 */
-	@Override
-	public void setWorkingTimeSet(WorkingTimeSetting workingTimeSetting) {
-		this.workingTimeSetting = workingTimeSetting;
-	}
-
 }

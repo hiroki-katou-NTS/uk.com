@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Gets the statutory setting.
@@ -22,6 +23,9 @@ public class ComDeforLaborSettingDto {
 	/** The year. */
 	/** 年. */
 	private int year;
+	
+	/** The company id. */
+	private String companyId;
 
 	/** The statutory setting. */
 	/** 法定時間. */
@@ -30,6 +34,7 @@ public class ComDeforLaborSettingDto {
 	public static ComDeforLaborSettingDto fromDomain(ComDeforLaborSetting domain) {
 		ComDeforLaborSettingDto dto = new ComDeforLaborSettingDto();
 		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
 		
 		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
 			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());

@@ -4,60 +4,32 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeSetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
 
 /**
  * The Class EmployeeRegularWorkHourDto.
  */
-@Getter
-public class ShainRegularWorkHourDto implements ShainRegularWorkTimeSetMemento {
+@Data
+public class ShainRegularWorkHourDto {
 
 	/** The employee id. */
 	/** 社員ID. */
 	private String employeeId;
+	
+	/** The company id. */
+	private String companyId;
 
 	/** The working time setting new. */
 	/** 会社労働時間設定. */
-	private WorkingTimeSetting workingTimeSetting;
+	private WorkingTimeSettingDto workingTimeSetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmployeeRegularWorkHourSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
-	 * common.CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+	public static ShainRegularWorkHourDto fromDomain(ShainRegularWorkTime domain) {
+		ShainRegularWorkHourDto dto = new ShainRegularWorkHourDto();
+		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
+		dto.setWorkingTimeSetting(workingTimeSetting);
+		return dto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmployeeRegularWorkHourSetMemento#setEmployeeId(nts.uk.ctx.at.shared.dom.
-	 * common.EmployeeId)
-	 */
-	@Override
-	public void setEmployeeId(EmployeeId employeeId) {
-		this.employeeId = employeeId.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
-	 * EmployeeRegularWorkHourSetMemento#setWorkingTimeSettingNew(nts.uk.ctx.at.
-	 * shared.dom.statutory.worktime.sharedNew.WorkingTimeSettingNew)
-	 */
-	@Override
-	public void setWorkingTimeSet(WorkingTimeSetting workingTimeSetting) {
-		this.workingTimeSetting = workingTimeSetting;
-	}
 }

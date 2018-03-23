@@ -60,20 +60,17 @@ public class ComStatWorkTimeSetFinder {
 		String companyId = AppContexts.user().companyId();
 		ComStatWorkTimeSetDtoBuilder dtoBuilder = ComStatWorkTimeSetDto.builder();
 
-		Optional<ComTransLaborTime> optTransLaborTime = this.transLaborTimeRepository
-				.find(companyId);
+		Optional<ComTransLaborTime> optTransLaborTime = this.transLaborTimeRepository.find(companyId);
 		if (optTransLaborTime.isPresent()) {
 			dtoBuilder.transLaborTime(ComTransLaborTimeDto.fromDomain(optTransLaborTime.get()));
 		}
 
-		Optional<ComRegularLaborTime> optComRegular = this.regularLaborTimeRepository
-				.find(companyId);
+		Optional<ComRegularLaborTime> optComRegular = this.regularLaborTimeRepository.find(companyId);
 		if (optComRegular.isPresent()) {
 			dtoBuilder.regularLaborTime(ComRegularLaborTimeDto.fromDomain(optComRegular.get()));
 		}
 
-		Optional<ComNormalSetting> optComNormalSet = this.normalSettingRepository.find(companyId,
-				year);
+		Optional<ComNormalSetting> optComNormalSet = this.normalSettingRepository.find(companyId, year);
 		if (optComNormalSet.isPresent()) {
 			dtoBuilder.normalSetting(ComNormalSettingDto.fromDomain(optComNormalSet.get()));
 		}
@@ -83,15 +80,12 @@ public class ComStatWorkTimeSetFinder {
 			dtoBuilder.flexSetting(ComFlexSettingDto.fromDomain(optComFlexSet.get()));
 		}
 
-		Optional<ComDeforLaborSetting> optComDeforLaborSet = this.deforLaborSettingRepository
-				.find(companyId, year);
+		Optional<ComDeforLaborSetting> optComDeforLaborSet = this.deforLaborSettingRepository.find(companyId, year);
 		if (optComDeforLaborSet.isPresent()) {
-			dtoBuilder.deforLaborSetting(
-					ComDeforLaborSettingDto.fromDomain(optComDeforLaborSet.get()));
+			dtoBuilder.deforLaborSetting(ComDeforLaborSettingDto.fromDomain(optComDeforLaborSet.get()));
 		}
 
 		return dtoBuilder.build();
-
 	}
 
 }
