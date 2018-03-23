@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
-
 /**
  * The Interface EmpMentNormalSettingRepository.
  */
@@ -21,7 +19,7 @@ public interface EmpNormalSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<EmpNormalSetting> find(String cid, String emplCode, Year year);
+	Optional<EmpNormalSetting> find(String cid, String emplCode, int year);
 
 	/**
 	 * Adds the.
@@ -42,5 +40,5 @@ public interface EmpNormalSettingRepository {
 	 *
 	 * @param empNormalSetting the emp ment normal setting
 	 */
-	void delete(EmpNormalSetting empNormalSetting);
+	void delete(String cid, String emplCode, int year);
 }

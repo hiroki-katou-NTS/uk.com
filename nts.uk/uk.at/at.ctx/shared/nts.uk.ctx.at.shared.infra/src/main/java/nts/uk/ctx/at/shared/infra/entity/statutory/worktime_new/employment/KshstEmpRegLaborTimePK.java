@@ -10,6 +10,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,19 +18,9 @@ import lombok.Setter;
  * The Class KshstEmpRegLaborTimePK.
  */
 
-/**
- * Sets the emp cd.
- *
- * @param empCd the new emp cd
- */
 @Setter
-
-/**
- * Gets the emp cd.
- *
- * @return the emp cd
- */
 @Getter
+@AllArgsConstructor
 @Embeddable
 public class KshstEmpRegLaborTimePK implements Serializable {
 	

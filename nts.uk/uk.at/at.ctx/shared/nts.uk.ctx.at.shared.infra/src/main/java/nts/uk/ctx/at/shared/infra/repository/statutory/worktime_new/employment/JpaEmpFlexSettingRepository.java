@@ -16,10 +16,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSetPK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSet_;
 
@@ -49,8 +49,8 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting)
 	 */
 	@Override
-	public void delete(EmpFlexSetting setting) {
-		commandProxy().remove(setting);
+	public void delete(String cid, String emplCode, int year) {
+		commandProxy().remove(KshstEmpFlexSet.class, new KshstEmpFlexSetPK(cid, emplCode, year));
 	}
 
 	
@@ -58,7 +58,7 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository#findByCidAndEmplCodeAndYear(java.lang.String, java.lang.String, nts.uk.ctx.at.shared.dom.common.Year)
 	 */
 	@Override
-	public Optional<EmpFlexSetting> findByCidAndEmplCodeAndYear(String cid, String emplCode, Year year) {
+	public Optional<EmpFlexSetting> find(String cid, String emplCode, int year) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstEmpFlexSet> cq = cb.createQuery(KshstEmpFlexSet.class);

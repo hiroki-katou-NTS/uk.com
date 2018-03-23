@@ -18,10 +18,15 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkT
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,7 +38,19 @@ import nts.uk.shr.com.context.AppContexts;
  *
  * @return the daily time
  */
+
+/**
+ * Gets the daily time.
+ *
+ * @return the daily time
+ */
 @Getter
+
+/**
+ * Sets the daily time.
+ *
+ * @param dailyTime the new daily time
+ */
 
 /**
  * Sets the daily time.
@@ -85,6 +102,125 @@ public class WorkingTimeSettingDto {
 	 */
 	public ShainSpeDeforLaborTime toShainSpeTimeDomain(String employeeId) {
 		return new ShainSpeDeforLaborTime(new ShainSpeDeforLaborTimeDtoMemento(employeeId, weeklyTime, dailyTime));
+	}
+	
+	/**
+	 * To emp spe time domain.
+	 *
+	 * @param employeeId the employee id
+	 * @return the emp trans work time
+	 */
+	public EmpTransWorkTime toEmpTransTimeDomain(String emplCode) {
+		return new EmpTransWorkTime(new EmpTransWorkTimeDtoMemento(emplCode, weeklyTime, dailyTime));
+	}
+	
+	public EmpRegularWorkTime toEmpRegularTimeDomain(String emplCode) {
+		return new EmpRegularWorkTime(new EmpRegularWorkTimeDtoMemento(emplCode, weeklyTime, dailyTime));
+	}
+	
+	private class EmpRegularWorkTimeDtoMemento implements EmpRegularWorkTimeGetMemento {
+		
+		/** The empl code. */
+		private String emplCode;
+		
+		/** The weekly time. */
+		private WeeklyUnitDto weeklyTime;
+		
+		/** The daily time. */
+		private DailyUnitDto dailyTime;
+		
+		/**
+		 * Instantiates a new emp trans work time dto memento.
+		 *
+		 * @param emplCode the empl code
+		 * @param weeklyTime the weekly time
+		 * @param dailyTime the daily time
+		 */
+		public EmpRegularWorkTimeDtoMemento(String emplCode, WeeklyUnitDto weeklyTime, DailyUnitDto dailyTime) {
+			this.emplCode = emplCode;
+			this.weeklyTime = weeklyTime;
+			this.dailyTime = dailyTime;
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(AppContexts.user().companyId());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento#getEmploymentCode()
+		 */
+		@Override
+		public EmploymentCode getEmploymentCode() {
+			return new EmploymentCode(this.emplCode);
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento#getWorkingTimeSet()
+		 */
+		@Override
+		public WorkingTimeSetting getWorkingTimeSet() {
+			WeeklyUnit weeklyUnit = new WeeklyUnit(new WeeklyTime(this.weeklyTime.getTime()), WeekStart.valueOf(this.weeklyTime.getStart()));
+			DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(this.dailyTime.getDailyTime()));
+			return new WorkingTimeSetting(weeklyUnit, dailyUnit);
+		}
+	}
+	
+	/**
+	 * The Class EmpTransWorkTimeDtoMemento.
+	 */
+	private class EmpTransWorkTimeDtoMemento implements EmpTransWorkTimeGetMemento {
+		
+		/** The empl code. */
+		private String emplCode;
+		
+		/** The weekly time. */
+		private WeeklyUnitDto weeklyTime;
+		
+		/** The daily time. */
+		private DailyUnitDto dailyTime;
+		
+		/**
+		 * Instantiates a new emp trans work time dto memento.
+		 *
+		 * @param emplCode the empl code
+		 * @param weeklyTime the weekly time
+		 * @param dailyTime the daily time
+		 */
+		public EmpTransWorkTimeDtoMemento(String emplCode, WeeklyUnitDto weeklyTime, DailyUnitDto dailyTime) {
+			this.emplCode = emplCode;
+			this.weeklyTime = weeklyTime;
+			this.dailyTime = dailyTime;
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(AppContexts.user().companyId());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento#getEmploymentCode()
+		 */
+		@Override
+		public EmploymentCode getEmploymentCode() {
+			return new EmploymentCode(this.emplCode);
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento#getWorkingTimeSet()
+		 */
+		@Override
+		public WorkingTimeSetting getWorkingTimeSet() {
+			WeeklyUnit weeklyUnit = new WeeklyUnit(new WeeklyTime(this.weeklyTime.getTime()), WeekStart.valueOf(this.weeklyTime.getStart()));
+			DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(this.dailyTime.getDailyTime()));
+			return new WorkingTimeSetting(weeklyUnit, dailyUnit);
+		}
 	}
 	
 	/**

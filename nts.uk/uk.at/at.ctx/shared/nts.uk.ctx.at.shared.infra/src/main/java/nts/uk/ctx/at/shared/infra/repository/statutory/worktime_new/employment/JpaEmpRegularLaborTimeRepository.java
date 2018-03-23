@@ -20,6 +20,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime_;
 
@@ -49,8 +50,8 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime)
 	 */
 	@Override
-	public void delete(EmpRegularWorkTime emplRegWorkHour) {
-		commandProxy().remove(emplRegWorkHour);
+	public void delete(String cid, String employmentCode) {
+		commandProxy().remove(KshstEmpRegLaborTime.class, new KshstEmpRegLaborTimePK(cid, employmentCode));
 	}
 
 	/* 

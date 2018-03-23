@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
-
 /**
  * The Interface EmpMentFlexSettingRepository.
  */
@@ -21,7 +19,7 @@ public interface EmpFlexSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<EmpFlexSetting> findByCidAndEmplCodeAndYear(String cid, String emplCode, Year year);
+	Optional<EmpFlexSetting> find(String cid, String emplCode, int year);
 
 	/**
 	 * Adds the.
@@ -42,6 +40,6 @@ public interface EmpFlexSettingRepository {
 	 *
 	 * @param empMentFlexSetting the emp ment flex setting
 	 */
-	void delete(EmpFlexSetting empMentFlexSetting);
+	void delete(String cid, String emplCode, int year);
 
 }

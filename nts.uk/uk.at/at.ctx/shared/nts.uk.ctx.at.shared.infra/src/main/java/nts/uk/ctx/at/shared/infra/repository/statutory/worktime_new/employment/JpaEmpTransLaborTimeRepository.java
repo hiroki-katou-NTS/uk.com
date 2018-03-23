@@ -19,6 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime_;
 
@@ -48,15 +49,15 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void delete(EmpTransWorkTime emplDeforLaborWorkingHour) {
-		commandProxy().remove(emplDeforLaborWorkingHour);
+	public void delete(String cid, String emplId) {
+		commandProxy().remove(KshstEmpTransLabTime.class, new KshstEmpTransLabTimePK(cid, emplId));
 	}
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#findByCidAndEmplId(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<EmpTransWorkTime> findByCidAndEmplId(String cid, String emplId) {
+	public Optional<EmpTransWorkTime> find(String cid, String emplId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstEmpTransLabTime> cq = cb.createQuery(KshstEmpTransLabTime.class);

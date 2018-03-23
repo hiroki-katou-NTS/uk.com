@@ -18,13 +18,28 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetti
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class DeforLaborSettingDto.
  */
+
+/**
+ * Gets the statutory setting.
+ *
+ * @return the statutory setting
+ */
 @Getter
+
+/**
+ * Sets the statutory setting.
+ *
+ * @param statutorySetting the new statutory setting
+ */
 @Setter
 public class DeforLaborSettingDto {
 
@@ -53,6 +68,80 @@ public class DeforLaborSettingDto {
 	 */
 	public ShainDeforLaborSetting toShainDomain(int year, String employeeId) {
 		return new ShainDeforLaborSetting(new ShainDeforLaborSettingMemento(year, employeeId, this.statutorySetting));
+	}
+	
+	/**
+	 * To emp domain.
+	 *
+	 * @param year the year
+	 * @param employeeId the employee id
+	 * @return the emp defor labor setting
+	 */
+	public EmpDeforLaborSetting toEmpDomain(int year, String employeeId) {
+		return new EmpDeforLaborSetting(new EmpDeforLaborSettingMemento(year, employeeId, this.statutorySetting));
+	}
+	
+	/**
+	 * The Class EmpDeforLaborSettingMemento.
+	 */
+	private class EmpDeforLaborSettingMemento implements EmpDeforLaborSettingGetMemento {
+		
+		/** The year. */
+		private Integer year;
+		
+		/** The empl code. */
+		private String emplCode;
+		
+		/** The statutory setting. */
+		private List<MonthlyUnitDto> statutorySetting;
+
+		/**
+		 * Instantiates a new emp defor labor setting memento.
+		 *
+		 * @param year the year
+		 * @param emplCode the empl code
+		 * @param statutorySetting the statutory setting
+		 */
+		public EmpDeforLaborSettingMemento(Integer year, String emplCode, List<MonthlyUnitDto> statutorySetting) {
+			this.year = year;
+			this.emplCode = emplCode;
+			this.statutorySetting = statutorySetting;
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getYear()
+		 */
+		@Override
+		public Year getYear() {
+			return new Year(this.year);
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getStatutorySetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getStatutorySetting() {
+			return this.statutorySetting.stream().map(dto -> {
+				return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
+			}).collect(Collectors.toList());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(AppContexts.user().companyId());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingGetMemento#getEmploymentCode()
+		 */
+		@Override
+		public EmploymentCode getEmploymentCode() {
+			return new EmploymentCode(this.emplCode);
+		}
+		
 	}
 
 	/**

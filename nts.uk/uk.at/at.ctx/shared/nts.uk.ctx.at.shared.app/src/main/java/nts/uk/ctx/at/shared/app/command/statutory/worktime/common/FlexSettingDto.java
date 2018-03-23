@@ -20,14 +20,33 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class FlexSettingDto.
  */
+
+/**
+ * Gets the specified setting.
+ *
+ * @return the specified setting
+ */
 @Getter
+
+/**
+ * Sets the specified setting.
+ *
+ * @param specifiedSetting the new specified setting
+ */
 @Setter
+
+/* 
+ * @see java.lang.Object#toString()
+ */
 @Builder
 public class FlexSettingDto {
 
@@ -56,6 +75,96 @@ public class FlexSettingDto {
 	 */
 	public ShainFlexSetting toShainDomain(int year, String employeeId) {
 		return new ShainFlexSetting(new ShainFlexSettingMemento(year, employeeId, this.statutorySetting, this.specifiedSetting));
+	}
+	
+	/**
+	 * To emp domain.
+	 *
+	 * @param year the year
+	 * @param employeeId the employee id
+	 * @return the emp flex setting
+	 */
+	public EmpFlexSetting toEmpDomain(int year, String employeeId) {
+		return new EmpFlexSetting(new EmpFlexSettingMemento(year, employeeId, this.statutorySetting, this.specifiedSetting));
+	}
+	
+	/**
+	 * The Class EmpFlexSettingMemento.
+	 */
+	private class EmpFlexSettingMemento implements EmpFlexSettingGetMemento {
+
+		/** The year. */
+		private int year;
+		
+		/** The empl code. */
+		private String emplCode;
+		
+		/** The statutory setting. */
+		private List<MonthlyUnitDto> statutorySetting;
+		
+		/** The specified setting. */
+		private List<MonthlyUnitDto> specifiedSetting;
+		
+		/**
+		 * Instantiates a new emp flex setting memento.
+		 *
+		 * @param year the year
+		 * @param emplCode the empl code
+		 * @param statutorySetting the statutory setting
+		 * @param specifiedSetting the specified setting
+		 */
+		public EmpFlexSettingMemento(int year, String emplCode, List<MonthlyUnitDto> statutorySetting, List<MonthlyUnitDto> specifiedSetting) {
+			this.year = year;
+			this.emplCode = emplCode;
+			this.statutorySetting = statutorySetting;
+			this.specifiedSetting = specifiedSetting;
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getYear()
+		 */
+		@Override
+		public Year getYear() {
+			return new Year(this.year);
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getStatutorySetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getStatutorySetting() {
+			return this.statutorySetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getSpecifiedSetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getSpecifiedSetting() {
+			return this.specifiedSetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(AppContexts.user().companyId());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingGetMemento#getEmploymentCode()
+		 */
+		@Override
+		public EmploymentCode getEmploymentCode() {
+			return new EmploymentCode(this.emplCode);
+		}
+		
+		/** The func map. */
+		private Function<MonthlyUnitDto, MonthlyUnit> funcMap = dto -> {
+			return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
+		};
+		
 	}
 	
 	/**

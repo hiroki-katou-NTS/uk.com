@@ -49,6 +49,6 @@ public interface EmpRegularWorkTimeRepository {
 	 *
 	 * @param emplRegWorkHour the empl reg work hour
 	 */
-	void delete(EmpRegularWorkTime emplRegWorkHour);
+	void delete(String cid, String employmentCode);
 
 }
