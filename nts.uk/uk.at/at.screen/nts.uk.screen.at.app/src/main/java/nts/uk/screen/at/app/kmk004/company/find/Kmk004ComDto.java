@@ -6,7 +6,8 @@ package nts.uk.screen.at.app.kmk004.company.find;
 
 import lombok.Getter;
 import lombok.Setter;
-
+import nts.uk.ctx.at.record.app.find.workrecord.monthcal.company.ComMonthCalSetDto;
+import nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew.ComStatWorkTimeSetDto;
 
 /**
  * The Class Kmk004ComDto.
@@ -15,6 +16,10 @@ import lombok.Setter;
 @Setter
 public class Kmk004ComDto {
 
-	// Todo:
+	/** The stat work time set dto. */
+	private ComStatWorkTimeSetDto statWorkTimeSetDto;
+
+	/** The month cal set dto. */
+	private ComMonthCalSetDto monthCalSetDto;
 
 }
