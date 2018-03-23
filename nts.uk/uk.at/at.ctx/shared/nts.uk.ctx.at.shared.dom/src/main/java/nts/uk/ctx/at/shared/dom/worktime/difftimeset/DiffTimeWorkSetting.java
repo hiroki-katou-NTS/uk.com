@@ -5,13 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -19,9 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * The Class DiffTimeWorkSetting.
@@ -166,21 +160,6 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	 *            the old domain
 	 */
 	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
-		// restore 平日勤務時間帯
-		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
-				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.DIFFTIME_WORK) {
-
-			// convert map
-			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getHalfDayWorkTimezones().stream()
-					.collect(Collectors.toMap(item -> ((DiffTimeHalfDayWorkTimezone) item).getAmPmAtr(),
-							Function.identity()));
-
-			this.halfDayWorkTimezones
-					.forEach(item -> item.restoreData(screenMode, this, mapFixHalfWork.get(item.getAmPmAtr())));
-		} else {
-			this.halfDayWorkTimezones = oldDomain.getHalfDayWorkTimezones();
-		}
-		
 		// Tab 8 -> 16
 		this.commonSet.restoreData(screenMode, oldDomain.getCommonSet());
 	}
