@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemain;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
@@ -41,7 +40,7 @@ implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 		PublicHolidayRemain pubHD = new PublicHolidayRemain(command.getEmployeeId(), command.getPubHdremainNumber());
 		publicHolidayRemainRepository.add(pubHD);
 		
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(command.getEmployeeId(), UseAtr.USE.value, command.getOccurrenceUnit(), command.getPaymentMethod());
+		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
 		excessLeaveInfoRepository.add(exLeav);
 		
 		return new PeregAddCommandResult(command.getEmployeeId());
