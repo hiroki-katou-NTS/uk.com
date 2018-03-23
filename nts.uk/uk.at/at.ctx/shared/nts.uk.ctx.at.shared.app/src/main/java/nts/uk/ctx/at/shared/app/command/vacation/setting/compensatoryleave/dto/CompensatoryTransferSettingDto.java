@@ -39,7 +39,8 @@ public class CompensatoryTransferSettingDto {
 	 * @return the transfer setting
 	 */
 	public SubHolTransferSet toDomain() {
-		return new SubHolTransferSet(new TransferSettingGetMementoImpl(this));
+//		return new SubHolTransferSet(new TransferSettingGetMementoImpl(this));
+		return new SubHolTransferSet(null);
 	}
 
 	/**
