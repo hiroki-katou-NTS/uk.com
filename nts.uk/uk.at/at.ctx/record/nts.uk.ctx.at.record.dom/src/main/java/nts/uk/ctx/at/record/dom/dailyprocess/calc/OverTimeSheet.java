@@ -112,7 +112,7 @@ public class OverTimeSheet {
 			AttendanceTime calcAppTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate);
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
 			OverTimeFrameTime getListItem = calcOverTimeWorkTimeList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1);
-			getListItem.addOverTime(calcAppTime,calcDedTime);
+			getListItem = getListItem.addOverTime(calcAppTime,calcDedTime);
 			calcOverTimeWorkTimeList.set(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1, getListItem);
 		}
 		return calcOverTimeWorkTimeList;
