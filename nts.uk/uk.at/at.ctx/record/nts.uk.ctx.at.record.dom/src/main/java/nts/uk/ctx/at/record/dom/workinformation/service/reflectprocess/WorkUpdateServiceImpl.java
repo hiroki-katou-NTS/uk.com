@@ -281,15 +281,16 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		// ドメインモデル「日別実績の残業時間」を取得する
 		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		ExcessOfStatutoryMidNightTime exMidNightTime = excessOfStatutory.getExcessOfStatutoryMidNightTime();
-		exMidNightTime.getTime().setTime(new AttendanceTime(timeNight));
+		ExcessOfStatutoryMidNightTime tmp = new ExcessOfStatutoryMidNightTime(exMidNightTime.getTime(), new AttendanceTime(timeNight));
+		excessOfStatutory.setExcessOfStatutoryMidNightTime(tmp);
 		attendanceTime.updateFlush(attendanceTimeData);
 		//所定外深夜時間の編集状態を更新する
 		List<Integer> lstNightItem = new ArrayList<Integer>();//所定外深夜時間の項目ID
-		lstNightItem.add(556);		
+		lstNightItem.add(565);		
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstNightItem);
 		
 		//休出時間(深夜)の反映
-		this.updateBreakNight(employeeId, dateData);
+		//this.updateBreakNight(employeeId, dateData);
 	}
 	@Override
 	public void updateBreakNight(String employeeId, GeneralDate dateData) {
