@@ -55,7 +55,7 @@ public class ComDeforLaborMonthActCalSet extends AggregateRoot implements DeforL
 	 */
 	public void saveToMemento(ComDeforLaborMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setAggrSetting(this.aggrSetting);
+		memento.setDeforAggrSetting(this.aggrSetting);
 	}
 
 }

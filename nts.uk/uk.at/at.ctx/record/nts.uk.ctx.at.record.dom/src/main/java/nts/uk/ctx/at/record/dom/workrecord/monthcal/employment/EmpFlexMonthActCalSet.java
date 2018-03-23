@@ -37,7 +37,7 @@ public class EmpFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	 * getAggrSettingMonthlyOfFlxNew()
 	 */
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggregateSetting() {
+	public FlexMonthWorkTimeAggrSet getFlexAggregateSetting() {
 		return aggrSetting;
 	}
 

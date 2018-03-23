@@ -44,7 +44,7 @@ public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	 */
 	public void saveToMemento(ComFlexMonthActCalSetSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setAggrSetting(this.aggrSetting);
+		memento.setFlexAggrSetting(this.aggrSetting);
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	 * getAggrSettings()
 	 */
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggregateSetting() {
+	public FlexMonthWorkTimeAggrSet getFlexAggregateSetting() {
 		return this.aggrSetting;
 	}
 

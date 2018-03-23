@@ -16,5 +16,5 @@ public interface FlexMonthActCalSet {
 	 * @return the aggr setting
 	 */
 	//	集計設定
-	FlexMonthWorkTimeAggrSet getAggregateSetting();
+	FlexMonthWorkTimeAggrSet getFlexAggregateSetting();
 }

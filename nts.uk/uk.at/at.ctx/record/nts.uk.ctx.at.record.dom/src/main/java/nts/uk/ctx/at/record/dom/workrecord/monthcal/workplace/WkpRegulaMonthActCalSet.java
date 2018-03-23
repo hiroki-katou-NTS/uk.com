@@ -30,17 +30,6 @@ public class WkpRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 	// 集計設定
 	private RegularWorkTimeAggrSet aggrSetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
-	 * SetRegularActualWorkMonthly#getLegalAggrSetOfRegNew()
-	 */
-	@Override
-	public RegularWorkTimeAggrSet getAggrSetting() {
-		return aggrSetting;
-	}
-
 	/**
 	 * Instantiates a new wkp regula month act cal set.
 	 *
@@ -63,6 +52,14 @@ public class WkpRegulaMonthActCalSet extends AggregateRoot implements RegulaMont
 		memento.setCompanyId(this.companyId);
 		memento.setWorkplaceId(this.workplaceId);
 		memento.setAggrSetting(this.aggrSetting);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.RegulaMonthActCalSet#getRegulaAggrSetting()
+	 */
+	@Override
+	public RegularWorkTimeAggrSet getRegulaAggrSetting() {
+		return this.aggrSetting;
 	}
 
 }

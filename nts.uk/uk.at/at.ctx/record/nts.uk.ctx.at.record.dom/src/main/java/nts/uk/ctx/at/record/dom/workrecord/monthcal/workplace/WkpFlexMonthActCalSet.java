@@ -37,7 +37,7 @@ public class WkpFlexMonthActCalSet extends AggregateRoot implements FlexMonthAct
 	 * getAggrSettingMonthlyOfFlxNew()
 	 */
 	@Override
-	public FlexMonthWorkTimeAggrSet getAggregateSetting() {
+	public FlexMonthWorkTimeAggrSet getFlexAggregateSetting() {
 		return aggrSetting;
 	}
 
