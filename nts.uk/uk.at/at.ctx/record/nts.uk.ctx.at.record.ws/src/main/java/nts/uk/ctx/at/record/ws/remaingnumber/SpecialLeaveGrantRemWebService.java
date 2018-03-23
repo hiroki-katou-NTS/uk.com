@@ -9,7 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumCommand;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.AddSpecialLeaCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.AddSpecialLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.UpdateSpecialLeaCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.UpdateSpecialLeaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantFinder;
 
@@ -20,6 +25,14 @@ public class SpecialLeaveGrantRemWebService {
 	@Inject
 	SpecialLeaveGrantFinder finder;	
 	
+	@Inject
+	AddSpecialLeaCommandHandler add;
+	
+	@Inject
+	UpdateSpecialLeaCommandHandler update;
+	
+	@Inject
+	DeleteSpecialLeaCommandHandler delete;
 
 
 	@POST
@@ -37,19 +50,19 @@ public class SpecialLeaveGrantRemWebService {
 	
 	@POST
 	@Path("add")
-	public void add(AnnLeaGrantRemnNumCommand command){
-		// todo
+	public void add(AddSpecialLeaCommand command){
+		add.handle(command);
 	}
 	
 	@POST
 	@Path("update")
-	public void update(AnnLeaGrantRemnNumCommand command){
-		//todo
+	public void update(UpdateSpecialLeaCommand command){
+		update.handle(command);
 	}
 	
 	@POST
 	@Path("delete")
-	public void remove(AnnLeaGrantRemnNumCommand command){
-		//todo
+	public void remove(DeleteSpecialLeaCommand command){
+		delete.handle(command);
 	}
 }
