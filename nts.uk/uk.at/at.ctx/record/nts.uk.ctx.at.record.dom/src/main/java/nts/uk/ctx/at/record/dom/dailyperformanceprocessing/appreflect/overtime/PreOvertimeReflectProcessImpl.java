@@ -55,18 +55,15 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				|| !para.isActualReflectFlg()) {
 			return false;
 		}
-		//ドメインモデル「日別実績の勤務情報」を取得する
-		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateInfo());
-		if(!optDailyPerfor.isPresent()) {
-			return false;
-		}
+				
 		//勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode()); 
 		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstItemRecord(), false);
-		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
+		//ドメインモデル「日別実績の勤務情報」を取得する
+		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateInfo()).get();
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
