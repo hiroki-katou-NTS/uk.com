@@ -10,7 +10,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.DelComMonthCalSetCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.DelComMonthCalSetCommandHandler;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.DeleteComStatWorkTimeSetCommand;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.DeleteComStatWorkTimeSetCommandHandler;
 
 /**
@@ -23,7 +25,7 @@ public class Kmk004ComDeleteCommandHandler extends CommandHandler<Kmk004ComDelet
 	/** The save com stat work time set command handler. */
 	@Inject
 	private DeleteComStatWorkTimeSetCommandHandler delStatCommand;
-		
+
 	/** The del flex command. */
 	@Inject
 	private DelComMonthCalSetCommandHandler delMonthCommand;
@@ -38,7 +40,11 @@ public class Kmk004ComDeleteCommandHandler extends CommandHandler<Kmk004ComDelet
 	@Override
 	protected void handle(CommandHandlerContext<Kmk004ComDeleteCommand> context) {
 		Kmk004ComDeleteCommand deleteCommand = context.getCommand();
-		this.delStatCommand.handle(deleteCommand.getDelStatCommand());
-		this.delMonthCommand.handle(deleteCommand.getDelMonthCommand());
+
+		DeleteComStatWorkTimeSetCommand delStatCommand = new DeleteComStatWorkTimeSetCommand();
+		DelComMonthCalSetCommand delMonthCommand = new DelComMonthCalSetCommand();
+		delStatCommand.setYear(deleteCommand.getYear());
+		this.delStatCommand.handle(delStatCommand);
+		this.delMonthCommand.handle(delMonthCommand);
 	}
 }

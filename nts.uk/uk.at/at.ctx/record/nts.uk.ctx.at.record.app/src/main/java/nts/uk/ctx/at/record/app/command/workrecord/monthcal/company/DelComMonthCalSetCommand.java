@@ -15,7 +15,4 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Setter
 public class DelComMonthCalSetCommand {
 
-	/** The company id. */
-	private CompanyId companyId;
-
 }

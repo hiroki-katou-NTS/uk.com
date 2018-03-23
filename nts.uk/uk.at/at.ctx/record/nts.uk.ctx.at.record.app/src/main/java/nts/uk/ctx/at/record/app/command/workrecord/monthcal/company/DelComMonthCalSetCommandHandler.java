@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class DeleteCompanyCalMonthlyFlexCommandHandler.
@@ -40,7 +41,7 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DelComMonthCalSetCommand> context) {
-		
+		String cid = AppContexts.user().companyId();
 	}
 
 }
