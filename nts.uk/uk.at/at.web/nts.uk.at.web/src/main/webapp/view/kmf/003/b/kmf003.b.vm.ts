@@ -187,8 +187,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     grantDays: null,
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
-                    grantReferenceDate: data[data.length - 1].grantSimultaneity() ? 1 : 0,
-                    grantReferenceDateEnable: data[data.length - 1].grantSimultaneity() ? false : true,
+                    grantReferenceDate: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? 1 : 0) : 0,
+                    grantReferenceDateEnable: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? false : true) : true,
                     grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
                     grantDate: ""
                 };
