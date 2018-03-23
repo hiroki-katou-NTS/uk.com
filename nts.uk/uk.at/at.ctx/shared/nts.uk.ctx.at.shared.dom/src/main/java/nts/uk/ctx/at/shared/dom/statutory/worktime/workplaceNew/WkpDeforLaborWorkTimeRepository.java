@@ -18,7 +18,7 @@ public interface WkpDeforLaborWorkTimeRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WkpDeforLaborWorkTime> findByCidAndWkpId(String cid, String wkpId);
+	Optional<WkpDeforLaborWorkTime> find(String cid, String wkpId);
 
 	/**
 	 * Adds the.
@@ -39,6 +39,6 @@ public interface WkpDeforLaborWorkTimeRepository {
 	 *
 	 * @param wkpDeforLaborWorkHour the wkp defor labor work hour
 	 */
-	void delete(WkpDeforLaborWorkTime wkpDeforLaborWorkHour);
+	void delete(String cid, String wkpId);
 
 }

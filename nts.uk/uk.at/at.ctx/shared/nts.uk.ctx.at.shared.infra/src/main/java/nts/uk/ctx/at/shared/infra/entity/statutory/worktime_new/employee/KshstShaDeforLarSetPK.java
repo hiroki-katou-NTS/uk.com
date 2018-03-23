@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee;
 
 import java.io.Serializable;
@@ -23,18 +22,18 @@ import lombok.Setter;
 @Embeddable
 @NoArgsConstructor
 public class KshstShaDeforLarSetPK implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
-	
+
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
@@ -46,7 +45,9 @@ public class KshstShaDeforLarSetPK implements Serializable {
 		this.year = year;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -58,7 +59,9 @@ public class KshstShaDeforLarSetPK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -67,10 +70,12 @@ public class KshstShaDeforLarSetPK implements Serializable {
 			return false;
 		}
 		KshstShaDeforLarSetPK other = (KshstShaDeforLarSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
-		if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
+		if ((this.sid == null && other.sid != null)
+				|| (this.sid != null && !this.sid.equals(other.sid))) {
 			return false;
 		}
 		if (this.year != other.year) {
@@ -78,6 +83,4 @@ public class KshstShaDeforLarSetPK implements Serializable {
 		}
 		return true;
 	}
-
-
 }

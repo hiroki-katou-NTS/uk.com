@@ -22,14 +22,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class KshstShaTransLabTimePK implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
@@ -41,6 +41,9 @@ public class KshstShaTransLabTimePK implements Serializable {
 	}
 
 	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -51,7 +54,9 @@ public class KshstShaTransLabTimePK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -60,10 +65,12 @@ public class KshstShaTransLabTimePK implements Serializable {
 			return false;
 		}
 		KshstShaTransLabTimePK other = (KshstShaTransLabTimePK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
-		if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
+		if ((this.sid == null && other.sid != null)
+				|| (this.sid != null && !this.sid.equals(other.sid))) {
 			return false;
 		}
 		return true;

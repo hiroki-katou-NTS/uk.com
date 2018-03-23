@@ -37,6 +37,11 @@ public class KshstWkpRegLaborTimePK implements Serializable {
 	@Column(name = "WKP_ID")
 	private String wkpId;
 
+	public KshstWkpRegLaborTimePK(String cid, String wkpId) {
+		super();
+		this.cid = cid;
+		this.wkpId = wkpId;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -65,4 +70,5 @@ public class KshstWkpRegLaborTimePK implements Serializable {
 		}
 		return true;
 	}
+
 }

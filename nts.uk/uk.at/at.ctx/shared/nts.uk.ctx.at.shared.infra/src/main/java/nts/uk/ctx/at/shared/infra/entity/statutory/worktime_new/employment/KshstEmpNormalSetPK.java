@@ -23,20 +23,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class KshstEmpNormalSetPK implements Serializable {
-    
+
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-    @Column(name = "CID")
-    private String cid;
-    
-    /** The emp cd. */
-    @Column(name = "EMP_CD")
-    private String empCd;
-    
-    /** The year. */
-    @Column(name = "YEAR")
-    private int year;
+	@Column(name = "CID")
+	private String cid;
+
+	/** The emp cd. */
+	@Column(name = "EMP_CD")
+	private String empCd;
+
+	/** The year. */
+	@Column(name = "YEAR")
+	private int year;
 
 	public KshstEmpNormalSetPK(String cid, String empCd, int year) {
 		super();

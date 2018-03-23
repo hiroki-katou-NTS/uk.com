@@ -14,6 +14,6 @@ public interface WkpNormalWorkingTimeRepository {
 	 *
 	 * @param wkpNormalWorkingHour the wkp normal working hour
 	 */
-	void delete(WkpNormalWorkingTime wkpNormalWorkingHour);
+	void delete(String cid, String wkpId);
 
 }

@@ -16,24 +16,24 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstWkpTransLabTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstWkpTransLabTimePK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstWkpTransLabTimePK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstWkpTransLabTime_;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeRepository;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK_;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime_;
 
 /**
  * The Class JpaWkpTransLaborTimeRepository.
  */
 @Stateless
-public class JpaWkpTransLaborTimeRepository extends JpaRepository implements WkpSpeDeforLaborTimeRepository {
+public class JpaWkpTransLaborTimeRepository extends JpaRepository implements WkpDeforLaborWorkTimeRepository {
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTime)
 	 */
 	@Override
-	public void add(WkpSpeDeforLaborTime emplDeforLaborWorkingHour) {
+	public void add(WkpDeforLaborWorkTime emplDeforLaborWorkingHour) {
 		commandProxy().insert(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
@@ -41,7 +41,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository implements Wkp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTime)
 	 */
 	@Override
-	public void update(WkpSpeDeforLaborTime emplDeforLaborWorkingHour) {
+	public void update(WkpDeforLaborWorkTime emplDeforLaborWorkingHour) {
 		commandProxy().update(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
@@ -49,15 +49,15 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository implements Wkp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTime)
 	 */
 	@Override
-	public void delete(String cid, String empId) {
-		commandProxy().remove(KshstWkpTransLabTime.class, new KshstWkpTransLabTimePK(cid, empId));
+	public void delete(String cid, String wkpId) {
+		commandProxy().remove(KshstWkpTransLabTime.class, new KshstWkpTransLabTimePK(cid, wkpId));
 	}
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpSpeDeforLaborTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<WkpSpeDeforLaborTime> find(String cid, String empId) {
+	public Optional<WkpDeforLaborWorkTime> find(String cid, String wkpId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstWkpTransLabTime> cq = cb.createQuery(KshstWkpTransLabTime.class);
@@ -65,7 +65,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository implements Wkp
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(cb.equal(root.get(KshstWkpTransLabTime_.kshstWkpTransLabTimePK).get(KshstWkpTransLabTimePK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstWkpTransLabTime_.kshstWkpTransLabTimePK).get(KshstWkpTransLabTimePK_.sid), empId));
+		predicateList.add(cb.equal(root.get(KshstWkpTransLabTime_.kshstWkpTransLabTimePK).get(KshstWkpTransLabTimePK_.wkpId), wkpId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
@@ -77,7 +77,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository implements Wkp
 	 * @param domain the domain
 	 * @return the kshst sha trans lab time
 	 */
-	private KshstWkpTransLabTime toEntity(WkpSpeDeforLaborTime domain) {
+	private KshstWkpTransLabTime toEntity(WkpDeforLaborWorkTime domain) {
 		JpaWkpTransLaborTimeSetMemento memento = new JpaWkpTransLaborTimeSetMemento();
 		domain.saveToMemento(memento);
 		return memento.getEntity();
@@ -89,11 +89,11 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository implements Wkp
 	 * @param entity the entity
 	 * @return the shain spe defor labor time
 	 */
-	private WkpSpeDeforLaborTime toDomain(KshstWkpTransLabTime entity) {
+	private WkpDeforLaborWorkTime toDomain(KshstWkpTransLabTime entity) {
 		if (entity == null) {
 			return null;
 		}
-		return new WkpSpeDeforLaborTime(new JpaWkpTransLaborTimeGetMemento(entity));
+		return new WkpDeforLaborWorkTime(new JpaWkpTransLaborTimeGetMemento(entity));
 	}
 
 }
