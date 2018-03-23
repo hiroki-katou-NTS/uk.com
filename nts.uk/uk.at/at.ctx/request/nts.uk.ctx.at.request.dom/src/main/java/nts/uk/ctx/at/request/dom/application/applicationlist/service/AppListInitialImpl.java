@@ -317,6 +317,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			for (ApplicationFullOutput appFull : lstAppFilter2) {
 				ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
 				PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
+				//TH agent
 				boolean check = false;
 				if(status.getFrameStatus() == null && status.getPhaseStatus() == null){
 					continue;
@@ -994,7 +995,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private boolean checkExistEmp(List<ApproverStateImport_New> listApprover, String sID){
 		boolean check = false;
 		for (ApproverStateImport_New approver : listApprover) {
-			if(approver.getApproverID().equals(sID)){
+			if(approver.getApproverID().equals(sID) || approver.getRepresenterID().equals(sID)){
 				check = true;
 				break;
 			}
@@ -1301,8 +1302,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//申請.申請日付　＝　代行者管理：代行承認.代行依頼期間 &&承認枠.承認者リスト（複数ID）＝　代行者管理：代行承認.代行依頼者\
 		List<String> lstId = new ArrayList<>();
 		for(AgentDataRequestPubImport agent : lstAgent){
-			if(agent.getStartDate().beforeOrEquals(app.getAppDate()) && agent.getEndDate().equals(app.getAppDate())
-					&& this.checkExistEmp(frame.getListApprover(), agent.getAgentSid1())){
+			if(agent.getStartDate().beforeOrEquals(app.getAppDate()) && agent.getEndDate().afterOrEquals(app.getAppDate())
+					&& this.checkExistEmp(frame.getListApprover(), agent.getEmployeeId())){
 				lstId.add(agent.getAgentSid1());
 			}
 		}
