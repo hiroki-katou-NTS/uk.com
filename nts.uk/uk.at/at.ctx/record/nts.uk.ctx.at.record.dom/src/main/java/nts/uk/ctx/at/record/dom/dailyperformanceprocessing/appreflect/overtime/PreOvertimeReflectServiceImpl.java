@@ -109,9 +109,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
-			//所定外深夜時間の反映 
-			//TODO : DuDT 2018.03.23 chua co 法定外残業深夜時間 nen tam thoi chua doi ung
-			//priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
+			//所定外深夜時間の反映
+			priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
 			//フレックス時間の反映
 			priorProcess.reflectOfFlexTime(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getFlexExessTime());
 			
