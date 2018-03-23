@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.ws.person.info.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemChangeDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFullEnumDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SimpleItemDef;
 
 @Path("ctx/pereg/person/info/ctgItem")
 @Produces("application/json")
@@ -176,4 +178,27 @@ public class PernfoItemDefWebservice extends WebService {
 	}
 	
 	// lanlt end
+	@POST
+	@Path("findby/ctg-cd/{ctgcd}")
+	public List<SimpleItemDef> getSimpleItemDefsByCtgCd(@PathParam("ctgcd") String ctgCd) {
+		return getItems();
+		//return itemDefFinder.getSingpleItemDef(ctgCd);
+	}
+	
+	private List<SimpleItemDef> getItems(){
+		List<SimpleItemDef> lst = new ArrayList<>();
+		lst.add(new SimpleItemDef("IS00398", "積立年休付与日", true));
+		lst.add(new SimpleItemDef("IS00399", "積立年休期限日",  true));
+		lst.add(new SimpleItemDef("IS00400", "積立年休期限切れ状態", false));
+		lst.add(new SimpleItemDef("IS00401", "積立年休使用状況", true));
+		lst.add(new SimpleItemDef("IS00403", "付与数", true));
+		lst.add(new SimpleItemDef("IS00404", "使用数", true));
+		lst.add(new SimpleItemDef("IS00405", "使用日数", true));
+		lst.add(new SimpleItemDef("IS00406", "上限超過消滅日数", true));
+		lst.add(new SimpleItemDef("IS00408", "残数", true));
+		return lst;
+		
+	}
+	
+	
 }

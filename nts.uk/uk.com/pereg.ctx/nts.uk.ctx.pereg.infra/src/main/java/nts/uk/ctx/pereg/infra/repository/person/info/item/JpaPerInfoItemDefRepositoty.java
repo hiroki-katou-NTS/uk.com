@@ -263,6 +263,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"AND i.perInfoCtgId =:perInfoCtgId");	
 	
 	// lanlt end
+	
+	private final static String SELECT_SIMPLE_ITEM_DEF = "select i.itemCd, i.itemName from PpemtPerInfoItem i " + 
+			" JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId" + 
+			" where c.categoryCd = :ctgCd and c.cid = :cid and i.abolitionAtr = 0";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -584,8 +588,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private PersonInfoItemDefinition toDomain(Object[] i) {
 		return PersonInfoItemDefinition.createFromJavaType(String.valueOf(i[1]), String.valueOf(i[0]));
-
 	}
+	
+	private PersonInfoItemDefinition toDomainWithCodeAndName(Object[] i) {
+		return PersonInfoItemDefinition.createFromEntityWithCodeAndName(String.valueOf(i[1]), String.valueOf(i[0]));
+	} 
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomain(PersonInfoItemDefinition perInfoItemDef) {
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
@@ -877,6 +884,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("contractCd", contract)
 				.setParameter("perInfoCtgId", ctgId)
 				.getList();
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId) {
+		return this.queryProxy().query(SELECT_SIMPLE_ITEM_DEF, Object[].class)
+				.setParameter("ctgCd", ctgCd)
+				.setParameter("cid", companyId)
+				.getList(x -> toDomainWithCodeAndName(x));
 	}
 
 }

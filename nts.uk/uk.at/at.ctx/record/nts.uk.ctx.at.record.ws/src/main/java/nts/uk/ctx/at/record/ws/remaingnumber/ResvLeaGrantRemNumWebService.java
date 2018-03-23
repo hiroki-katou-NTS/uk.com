@@ -53,7 +53,7 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	private List<ResvLeaGrantRemNumDto> getData(){
 		List<ResvLeaGrantRemNumDto> lst = new ArrayList<>();
 		for(int i = 1; i < 20; i++) {
-			lst.add(new ResvLeaGrantRemNumDto(GeneralDate.fromString("2018/10/" + i, "YYYY/MM/DD"), GeneralDate.fromString("2018/05/" + i, "YYYY/MM/DD"), 
+			lst.add(new ResvLeaGrantRemNumDto(GeneralDate.fromString("2018/10/" + (i/10>0?i: "0"+i), "YYYY/MM/DD"), GeneralDate.fromString("2018/05/" + (i/10>0?i: "0"+i), "YYYY/MM/DD"), 
 					EnumAdaptor.valueOf(i%2==0?1: 0, LeaveExpirationStatus.class), Double.parseDouble(i + ""), Double.parseDouble(i + ""), Double.parseDouble(i + ""), Double.parseDouble(i + "")));
 		}
 		return lst;
