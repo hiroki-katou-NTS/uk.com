@@ -18,7 +18,7 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 	
 	private KrcmtPubHolidayRemain toEntity(PublicHolidayRemain domain){
 		KrcmtPubHolidayRemain entity = new KrcmtPubHolidayRemain();
-		entity.employeeId = domain.getEmployeeId();
+		entity.employeeId = domain.getSID();
 		entity.remainNumber = domain.getRemainNumber().v();
 		return entity;
 	}

@@ -16,15 +16,15 @@ public class SpecialLeaveUsedNumber {
 
 	public Optional<TimeOfUse> timeOfUse;
 
-	public Optional<DayNumberOfUse> numberOfDayUseToLose;
+	public Optional<DayNumberOfUse> useSavingDays;
 
 	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
 
-	private SpecialLeaveUsedNumber(Double dayNumberOfUse, Integer timeOfUse, Double dayNumberOfUsed,
+	private SpecialLeaveUsedNumber(Double dayNumberOfUse, Integer timeOfUse, Double useSavingDays,
 			int dayNumberOfExeeded, Integer timeOfExeeded) {
 		this.dayNumberOfUse = new DayNumberOfUse(dayNumberOfUse);
 		this.timeOfUse = timeOfUse != null ? Optional.of(new TimeOfUse(timeOfUse)) : Optional.empty();
-		this.numberOfDayUseToLose = dayNumberOfUsed != null ? Optional.of(new DayNumberOfUse(dayNumberOfUsed))
+		this.useSavingDays = useSavingDays != null ? Optional.of(new DayNumberOfUse(useSavingDays))
 				: Optional.empty();
 		this.specialLeaveOverLimitNumber = Optional
 				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded, timeOfExeeded));

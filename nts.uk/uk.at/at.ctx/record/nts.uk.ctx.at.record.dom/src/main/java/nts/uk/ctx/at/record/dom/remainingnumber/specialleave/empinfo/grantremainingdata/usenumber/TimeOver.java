@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.TimeRange;
 
 // 時間 - 特別休暇付与時間
 @TimeRange(min = "00:00", max = "999:59")
-public class TimeOfExeeded extends TimeDurationPrimitiveValue<TimeOfExeeded> {
+public class TimeOver extends TimeDurationPrimitiveValue<TimeOver> {
 
 	/**
 	 * Instantiates a new time duration.
@@ -15,7 +15,7 @@ public class TimeOfExeeded extends TimeDurationPrimitiveValue<TimeOfExeeded> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TimeOfExeeded(int timeAsMinutes) {
+	public TimeOver(int timeAsMinutes) {
 		super(timeAsMinutes);
 	}
 

@@ -36,9 +36,9 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<AddSpecialLeaCom
 		
 		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(command.getSpecialLeaId(),command.getSid(), command.getSpecialLeaCode(), 
 				command.getGrantDate(), command.getDeadlineDate(), command.getExpStatus(),
-				command.getRegisterType(), command.getNumberOfDayGrant(), command.getTimeGrant(), 
-				command.getNumberOfDayUse(), command.getTimeUse(), command.getNumberOfDayUseToLose(), 
-				command.getNumberOfExceededDays(), command.getTimeExceeded(), command.getNumberOfDayRemain(), command.getTimeRemain());
+				command.getRegisterType(), command.getNumberDayGrant(), command.getTimeGrant(), 
+				command.getNumberDayUse(), command.getTimeUse(), command.getUseSavingDays(), 
+				command.getNumberDaysOver(), command.getTimeOver(), command.getNumberDayRemain(), command.getTimeRemain());
 		
 		repo.add(domain);
 			

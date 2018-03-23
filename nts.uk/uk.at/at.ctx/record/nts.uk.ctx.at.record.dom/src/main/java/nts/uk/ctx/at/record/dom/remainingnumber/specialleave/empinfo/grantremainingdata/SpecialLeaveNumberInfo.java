@@ -20,9 +20,9 @@ public class SpecialLeaveNumberInfo {
 	private SpecialLeaveRemainingNumber remainingNumber;
 	
 	public SpecialLeaveNumberInfo(int dayNumberOfGrant, Integer timeOfGrant,Double dayNumberOfUse, Integer timeOfUse,
-			Double dayNumberOfUsed, int dayNumberOfExeeded, Integer timeOfExeeded, Double dayNumberOfRemain, Integer timeOfRemain) {
+			Double useSavingDays, int numberOverDays, Integer timeOver, Double dayNumberOfRemain, Integer timeOfRemain) {
 		this.grantNumber = SpecialLeaveGrantNumber.createFromJavaType(dayNumberOfGrant, timeOfGrant);
-		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(dayNumberOfUse,timeOfUse,dayNumberOfUsed,dayNumberOfExeeded,timeOfExeeded);
+		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(dayNumberOfUse,timeOfUse,useSavingDays,numberOverDays,timeOver);
 		this.remainingNumber = SpecialLeaveRemainingNumber.createFromJavaType(dayNumberOfRemain, timeOfRemain);
 	}
 

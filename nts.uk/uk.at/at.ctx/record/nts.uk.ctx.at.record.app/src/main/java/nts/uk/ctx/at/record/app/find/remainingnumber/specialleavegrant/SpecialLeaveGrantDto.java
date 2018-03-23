@@ -48,7 +48,7 @@ public class SpecialLeaveGrantDto {
 	/**
 	 * 付与日数
 	 */
-	private int numberOfDayGrant;
+	private int numberDayGrant;
 
 	/**
 	 * 付与時間
@@ -58,30 +58,31 @@ public class SpecialLeaveGrantDto {
 	/**
 	 * 使用日数
 	 */
-	private double numberOfDayUse;
+	private double numberDayUse;
 
-	/**
-	 * 
-	 */
-	private double numberOfDayUseToLose;
 	/**
 	 * 使用時間
 	 */
 	private int timeUse;
+	
+	/**
+	 * 
+	 */
+	private double useSavingDays;
 
 	/**
 	 * 上限超過消滅日数
 	 */
-	private int numberOfExceededDays;
+	private int numberDaysOver;
 	/**
 	 * 上限超過消滅時間
 	 */
-	private int timeExceeded;
+	private int timeOver;
 
 	/**
 	 * 残日数
 	 */
-	private double numberOfDayRemain;
+	private double numberDayRemain;
 
 	/**
 	 * 残時間
@@ -97,27 +98,27 @@ public class SpecialLeaveGrantDto {
 		dto.deadlineDate = domain.getDeadlineDate();
 		dto.expStatus = domain.getExpirationStatus().value;
 		dto.registerType = domain.getRegisterType().value;
-		dto.numberOfDayGrant = domain.getDetails().getGrantNumber().getDayNumberOfGrant().v();
+		dto.numberDayGrant = domain.getDetails().getGrantNumber().getDayNumberOfGrant().v();
 		dto.timeGrant = domain.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
 				? domain.getDetails().getGrantNumber().getTimeOfGrant().get().v()
 				: null;
-		dto.numberOfDayRemain = domain.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
+		dto.numberDayRemain = domain.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 		dto.timeRemain = domain.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
 				? domain.getDetails().getRemainingNumber().getTimeOfRemain().get().v()
 				: null;
-		dto.numberOfDayUse = domain.getDetails().getUsedNumber().getDayNumberOfUse().v();
+		dto.numberDayUse = domain.getDetails().getUsedNumber().getDayNumberOfUse().v();
 		dto.timeUse = domain.getDetails().getUsedNumber().getTimeOfUse().isPresent()
 				? domain.getDetails().getUsedNumber().getTimeOfUse().get().v()
 				: null;
-		dto.numberOfDayUseToLose = domain.getDetails().getUsedNumber().getNumberOfDayUseToLose().isPresent()
-				? domain.getDetails().getUsedNumber().getNumberOfDayUseToLose().get().v()
+		dto.useSavingDays = domain.getDetails().getUsedNumber().getUseSavingDays().isPresent()
+				? domain.getDetails().getUsedNumber().getUseSavingDays().get().v()
 				: null;
-		dto.numberOfExceededDays = domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
-				? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getDayNumberOfExeeded().v()
+		dto.numberDaysOver = domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
+				? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getNumberOverDays().v()
 				: null;
-		dto.timeExceeded = (domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent() && domain
-				.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOfExeeded().isPresent())
-						? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOfExeeded()
+		dto.timeOver = (domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent() && domain
+				.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().isPresent())
+						? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
 								.get().v()
 						: null;
 		return dto;

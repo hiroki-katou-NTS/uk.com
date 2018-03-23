@@ -4,14 +4,14 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @IntegerRange(min = 0 , max = 366)
-public class DayNumberOfExeeded extends IntegerPrimitiveValue<DayNumberOfExeeded>{
+public class DayNumberOver extends IntegerPrimitiveValue<DayNumberOver>{
 
 	/**
 	 *  日数
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public DayNumberOfExeeded(Integer rawValue) {
+	public DayNumberOver(Integer rawValue) {
 		super(rawValue);
 	}
 

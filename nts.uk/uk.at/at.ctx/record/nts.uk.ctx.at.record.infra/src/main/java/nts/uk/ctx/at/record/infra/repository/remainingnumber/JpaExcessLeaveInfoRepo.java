@@ -18,7 +18,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	 * @return
 	 */
 	private ExcessLeaveInfo toDomain(KrcmtExcessLeaveInfo entity){
-		return new ExcessLeaveInfo(entity.employeeId, entity.useClassification, entity.occurrenceUnit, entity.paymentMethod);
+		return new ExcessLeaveInfo(entity.employeeId, entity.useAtr, entity.occurrenceUnit, entity.paymentMethod);
 	}
 	
 	/**
@@ -28,8 +28,8 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	 */
 	private KrcmtExcessLeaveInfo toEntity(ExcessLeaveInfo domain){
 		KrcmtExcessLeaveInfo entity = new KrcmtExcessLeaveInfo();
-		entity.employeeId = domain.getEmployeeId();
-		entity.useClassification = domain.getUseAtr().value;
+		entity.employeeId = domain.getSID();
+		entity.useAtr = domain.getUseAtr().value;
 		entity.occurrenceUnit = domain.getOccurrenceUnit().v();
 		entity.paymentMethod = domain.getPaymentMethod().value;
 		return entity;

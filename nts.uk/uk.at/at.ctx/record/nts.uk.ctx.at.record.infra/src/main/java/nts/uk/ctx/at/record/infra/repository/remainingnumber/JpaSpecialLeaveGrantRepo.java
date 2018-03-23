@@ -27,8 +27,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 		return entities.stream()
 				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.key.specialLeaID,x.employeeId, x.specialLeaCode, x.grantDate,
-						x.deadlineDate, x.expStatus, x.registerType, x.numberOfDayGrant, x.timeGrant, x.numberOfDayUse,
-						x.timeUse, x.numberOfDayUseToLose, x.numberOfExceededDays, x.timeExceeded, x.numberOfDayRemain,
+						x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant, x.timeGrant, x.numberDayUse,
+						x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver, x.numberDayRemain,
 						x.timeRemain))
 				.collect(Collectors.toList());
 	}
@@ -69,27 +69,27 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		entity.deadlineDate = data.getDeadlineDate();
 		entity.expStatus = data.getExpirationStatus().value;
 		entity.registerType = data.getRegisterType().value;
-		entity.numberOfDayGrant = data.getDetails().getGrantNumber().getDayNumberOfGrant().v();
+		entity.numberDayGrant = data.getDetails().getGrantNumber().getDayNumberOfGrant().v();
 		entity.timeGrant = data.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
 				? data.getDetails().getGrantNumber().getTimeOfGrant().get().v()
 				: null;
-		entity.numberOfDayRemain = data.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
+		entity.numberDayRemain = data.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 		entity.timeRemain = data.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
 				? data.getDetails().getRemainingNumber().getTimeOfRemain().get().v()
 				: null;
-		entity.numberOfDayUse = data.getDetails().getUsedNumber().getDayNumberOfUse().v();
+		entity.numberDayUse = data.getDetails().getUsedNumber().getDayNumberOfUse().v();
 		entity.timeUse = data.getDetails().getUsedNumber().getTimeOfUse().isPresent()
 				? data.getDetails().getUsedNumber().getTimeOfUse().get().v()
 				: null;
-		entity.numberOfDayUseToLose = data.getDetails().getUsedNumber().getNumberOfDayUseToLose().isPresent()
-				? data.getDetails().getUsedNumber().getNumberOfDayUseToLose().get().v()
+		entity.useSavingDays = data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
+				? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
 				: null;
-		entity.numberOfExceededDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
-				? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getDayNumberOfExeeded().v()
+		entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
+				? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getNumberOverDays().v()
 				: null;
-		entity.timeExceeded = (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent() && data
-				.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOfExeeded().isPresent())
-						? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOfExeeded()
+		entity.timeOver = (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent() && data
+				.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().isPresent())
+						? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
 								.get().v()
 						: null;
 
@@ -109,10 +109,10 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		return SpecialLeaveGrantRemainingData.createFromJavaType(e.key.specialLeaID,e.employeeId, e.specialLeaCode,
 				e.grantDate, e.deadlineDate, 
 				e.expStatus, e.registerType,
-				e.numberOfDayGrant, e.timeGrant, 
-				e.numberOfDayUse, e.timeUse, 
-				e.numberOfDayUseToLose, e.numberOfExceededDays,
-				e.timeExceeded, e.numberOfDayRemain, e.timeRemain);
+				e.numberDayGrant, e.timeGrant, 
+				e.numberDayUse, e.timeUse, 
+				e.useSavingDays, e.numberOverDays,
+				e.timeOver, e.numberDayRemain, e.timeRemain);
 	}
 
 }

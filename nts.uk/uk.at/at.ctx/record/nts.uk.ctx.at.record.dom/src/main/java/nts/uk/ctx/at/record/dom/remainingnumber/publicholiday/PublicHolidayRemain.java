@@ -18,13 +18,13 @@ import nts.arc.layer.dom.AggregateRoot;
 public class PublicHolidayRemain extends AggregateRoot{
 	
 	// 社員ID
-	private String employeeId;
+	private String sID;
 	
 	// 残数
 	private RemainNumber remainNumber;
 	
 	public PublicHolidayRemain(String sid, BigDecimal numberDaysRemain){
-		this.employeeId = sid;
+		this.sID = sid;
 		this.remainNumber = new RemainNumber(numberDaysRemain);
 	}
 }

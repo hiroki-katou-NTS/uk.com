@@ -21,7 +21,7 @@ public class SpecialLeaveBasicInfo extends AggregateRoot{
 	private String infoId;
 	
 	// 社員ID
-	private String employeeId;
+	private String sID;
 	
 	// 特別休暇コード
 	private SpecialLeaveCD specialLeaveCode;
@@ -38,7 +38,7 @@ public class SpecialLeaveBasicInfo extends AggregateRoot{
 	public SpecialLeaveBasicInfo(String infoId, String sid, String spLeaCD, int used, int appSet, GeneralDate grantDate,
 			Integer grantDay, String grantTbl) {
 		this.infoId = infoId;
-		this.employeeId = sid;
+		this.sID = sid;
 		this.specialLeaveCode = new SpecialLeaveCD(spLeaCD);
 		this.used = EnumAdaptor.valueOf(used, UseAtr.class);
 		this.applicationSet = EnumAdaptor.valueOf(appSet, SpecialLeaveAppSetting.class);
