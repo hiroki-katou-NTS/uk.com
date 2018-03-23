@@ -32,7 +32,7 @@
 		
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
-				<button id="A_BTN_002" class="proceed" data-bind="click: submit">#{i18n.getText('KMF003_4')}</button>
+				<button id="A_BTN_002" class="proceed" data-bind="click: submit, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
 				<button id="A_BTN_003" data-bind="click: cancel">#{i18n.getText('KMF003_56')}</button>
 			</div>
 			<!-- END FUNCTION AREA-->
@@ -99,7 +99,7 @@
 										enable: gdEnable,
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
-											width: '50',
+											width: '70',
 											decimallength: 1
 										})}" /></td>
 							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {

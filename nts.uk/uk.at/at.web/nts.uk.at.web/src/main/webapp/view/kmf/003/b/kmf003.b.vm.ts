@@ -65,19 +65,36 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 let combinedData = [];
                 
                 for(var i = 0; i < self.lengthOfServiceData.length; i++){
-                    var item : IItem = {
-                        grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
-                        conditionNo: self.grantHdData.length > 0 ? self.grantHdData[i].conditionNo : "",
-                        yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
-                        lengthOfServiceYears: self.lengthOfServiceData[i].year,
-                        lengthOfServiceMonths: self.lengthOfServiceData[i].month,
-                        grantDays: self.grantHdData.length > 0 ? self.grantHdData[i].grantDays : "",
-                        limitedTimeHdDays: self.grantHdData.length > 0 ? self.grantHdData[i].limitTimeHd : "",
-                        limitedHalfHdCnt: self.grantHdData.length > 0 ? self.grantHdData[i].limitDayYear : "",
-                        grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
-                        grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
-                        grantDate: ""
-                    };
+                    var gNum = self.grantHdData[i] != null ? self.grantHdData[i].grantNum : self.grantHdData[self.grantHdData.length - 1].grantNum;
+                    if(self.lengthOfServiceData[i].grantNum == gNum) {
+                        var item : IItem = {
+                            grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
+                            conditionNo: self.grantHdData[i] != null ? self.grantHdData[i].conditionNo : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].conditionNo : ""),
+                            yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
+                            lengthOfServiceYears: self.lengthOfServiceData[i].year,
+                            lengthOfServiceMonths: self.lengthOfServiceData[i].month,
+                            grantDays: self.grantHdData[i] != null ? self.grantHdData[i].grantDays : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].grantDays : ""),
+                            limitedTimeHdDays: self.grantHdData[i] != null ? self.grantHdData[i].limitTimeHd : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].limitTimeHd : ""),
+                            limitedHalfHdCnt: self.grantHdData[i] != null ? self.grantHdData[i].limitDayYear : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].limitDayYear : ""),
+                            grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
+                            grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
+                            grantDate: ""
+                        };
+                    } else {
+                        var item : IItem = {
+                            grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
+                            conditionNo: "",
+                            yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
+                            lengthOfServiceYears: self.lengthOfServiceData[i].year,
+                            lengthOfServiceMonths: self.lengthOfServiceData[i].month,
+                            grantDays: "",
+                            limitedTimeHdDays: "",
+                            limitedHalfHdCnt: "",
+                            grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
+                            grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
+                            grantDate: ""
+                        };
+                    }
                     
                     combinedData.push(new Item(item));
                 }
@@ -170,8 +187,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     grantDays: null,
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
-                    grantReferenceDate: 0,
-                    grantReferenceDateEnable: data.length == 0 ? true : false,
+                    grantReferenceDate: data[data.length - 1].grantSimultaneity() ? 1 : 0,
+                    grantReferenceDateEnable: data[data.length - 1].grantSimultaneity() ? false : true,
                     grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
                     grantDate: ""
                 };
@@ -357,7 +374,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             
             var checkMonths = self.checkTotalMonths(index);
-            if (!checkMonths) {
+            if (!checkMonths && value) {
                 self.count(1);
                 self.items()[index].grantSimultaneity(false);   
                 nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
