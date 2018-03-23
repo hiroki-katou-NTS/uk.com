@@ -253,9 +253,7 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
-                nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
-                window.location.href = "../../../kaf/000/b/index.xhtml";
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
             });
         }
 
@@ -373,9 +371,7 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
-                nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
-                window.location.href = "../../../kaf/000/b/index.xhtml";
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
             });
 
             $("#grid1").setupSearchScroll("igGrid", true);
