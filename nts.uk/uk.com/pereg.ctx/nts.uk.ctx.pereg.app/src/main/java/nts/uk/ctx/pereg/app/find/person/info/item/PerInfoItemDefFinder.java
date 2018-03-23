@@ -283,10 +283,15 @@ public class PerInfoItemDefFinder {
 			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
 			PerInfoItemDefDto perItemDefdto = mappingFromDomaintoDto(i, dispOrder);
 
-			if (perItemDefdto.getItemTypeState().getItemType() == 1
-					&& (((SetItemDto) perItemDefdto.getItemTypeState()).getItems() != null)) {
+			ItemTypeStateDto typeState = perItemDefdto.getItemTypeState();
+			int itemType = typeState.getItemType();
+
+			if (itemType == 1 && ((SetItemDto) typeState).getItems() != null) {
 				idsChild.addAll(((SetItemDto) perItemDefdto.getItemTypeState()).getItems());
+			} else if (itemType == 3 && ((SetTableItemDto) typeState).getItems() != null) {
+				idsChild.addAll(((SetTableItemDto) perItemDefdto.getItemTypeState()).getItems());
 			}
+
 			return perItemDefdto;
 		}).collect(Collectors.toList());
 
@@ -297,33 +302,33 @@ public class PerInfoItemDefFinder {
 			List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
 				int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
 						i.getPerInfoItemDefId());
-				PerInfoItemDefDto perItemDefdtochild =  mappingFromDomaintoDto(i, dispOrder);
-				
+				PerInfoItemDefDto perItemDefdtochild = mappingFromDomaintoDto(i, dispOrder);
+
 				if (perItemDefdtochild.getItemTypeState().getItemType() == 1
 						&& (((SetItemDto) perItemDefdtochild.getItemTypeState()).getItems() != null)) {
 					idsChildInChild.addAll(((SetItemDto) perItemDefdtochild.getItemTypeState()).getItems());
 				}
-				
+
 				return perItemDefdtochild;
 			}).collect(Collectors.toList());
 
 			result.addAll(listItemDefDtoChild);
 		}
-		
-		if(!idsChildInChild.isEmpty()) {
-			itemDfChildinChild  = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChildInChild,
+
+		if (!idsChildInChild.isEmpty()) {
+			itemDfChildinChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChildInChild,
 					AppContexts.user().contractCode());
-			
+
 			List<PerInfoItemDefDto> listItemDefDtoChildInChild = itemDfChildinChild.stream().map(i -> {
 				int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
 						i.getPerInfoItemDefId());
-				return  mappingFromDomaintoDto(i, dispOrder);
-				
+				return mappingFromDomaintoDto(i, dispOrder);
+
 			}).collect(Collectors.toList());
-			
+
 			result.addAll(listItemDefDtoChildInChild);
 		}
-		
+
 		return result;
 
 	}
@@ -352,7 +357,7 @@ public class PerInfoItemDefFinder {
 	public PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
-		return  new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
+		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(),
 				itemDef.getIsAbolition().value, itemDef.getIsFixed().value, itemDef.getIsRequired().value,
 				itemDef.getSystemRequired().value, itemDef.getRequireChangable().value, dispOrder,
@@ -401,11 +406,10 @@ public class PerInfoItemDefFinder {
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
 			return ItemTypeStateDto.createSingleItemDto(createDataTypeStateDto(singleItemDom.getDataTypeState()));
-		} else if(itemType == ItemType.SET_ITEM){
+		} else if (itemType == ItemType.SET_ITEM) {
 			SetItem setItemDom = (SetItem) itemTypeState;
 			return ItemTypeStateDto.createSetItemDto(setItemDom.getItems());
-		}
-		else {
+		} else {
 			SetTableItem setItemDom = (SetTableItem) itemTypeState;
 			return ItemTypeStateDto.createSetTableItemDto(setItemDom.getItems());
 		}
@@ -446,23 +450,23 @@ public class PerInfoItemDefFinder {
 		case 8:
 			SelectionButton bItem = (SelectionButton) dataTypeState;
 			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
-	
-		case 9: 
+
+		case 9:
 			ReadOnly rOnlyItem = (ReadOnly) dataTypeState;
 			return DataTypeStateDto.createReadOnly(rOnlyItem.getReadText().v());
-		
-		case 10: 
+
+		case 10:
 			RelatedCategory reCtgDto = (RelatedCategory) dataTypeState;
 			return DataTypeStateDto.createRelatedCategory(reCtgDto.getRelatedCtgCode().v());
 
-		case 11: 
+		case 11:
 			NumericButton numbtnItem = (NumericButton) dataTypeState;
 			return DataTypeStateDto.createNumericButtonDto(numbtnItem.getReadText().v());
-			
-		case 12: 
+
+		case 12:
 			ReadOnlyButton rOnlyButton = (ReadOnlyButton) dataTypeState;
 			return DataTypeStateDto.createReadOnlyButton(rOnlyButton.getReadText().v());
-			
+
 		default:
 			return null;
 		}
@@ -503,18 +507,16 @@ public class PerInfoItemDefFinder {
 		});
 		return itemRequiredLst;
 	}
-	
+
 	/**
-	 * @author lanlt
-	 * dung cho man hinh B cua CPS009
-	 * getAllItemRequiredIdsByCtgId
+	 * @author lanlt dung cho man hinh B cua CPS009 getAllItemRequiredIdsByCtgId
 	 * @param ctgId
 	 * @return
 	 */
 	public List<ItemRequiredBackGroud> getAllItemRequiredIdsByCtgId(String ctgId) {
 		String contractCd = AppContexts.user().contractCode();
 		List<ItemRequiredBackGroud> itemRequiredLst = new ArrayList<>();
-		
+
 		List<String> itemX = this.pernfoItemDefRep.getAllRequiredIdsByCtgId(contractCd, ctgId);
 		itemX.stream().forEach(item -> {
 
@@ -548,8 +550,7 @@ public class PerInfoItemDefFinder {
 	public boolean isCheckData(String itemId) {
 
 		String contractCd = AppContexts.user().contractCode();
-		
-		
+
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep.getPerInfoItemDefById(itemId, contractCd).orElse(null);
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(oldItem.getPerInfoCategoryId(), contractCd)
@@ -573,5 +574,11 @@ public class PerInfoItemDefFinder {
 
 	}
 	// lanlt end
+	
+	public List<SimpleItemDef> getSingpleItemDef(String ctgCd){
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getPerInfoItemByCtgCd(ctgCd, AppContexts.user().companyId());
+		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), true))
+				.collect(Collectors.toList());
+	}
 
 }

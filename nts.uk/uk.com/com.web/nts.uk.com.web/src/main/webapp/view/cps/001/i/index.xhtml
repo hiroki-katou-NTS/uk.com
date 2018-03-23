@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+
+
+			<script>
+				var dialogSize = {
+					width : 800,
+					height : 900
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="cps001.i.style.css" />
+			<com:scriptfile path="cps001.i.service.js" />
+			<com:scriptfile path="cps001.i.vm.js" />
+			<com:scriptfile path="cps001.i.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+
+			<div id="functions-area" class="fixed-flex-layout">
+				<button tabindex="1"
+					data-bind="click: newMode ,  enable: enaBtnNew()" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
+				<button tabindex="2" data-bind="click: registerData"
+					class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
+				<button tabindex="3"
+					data-bind="click: remove ,  enable: enaBtnRemove()"
+					class="btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="4" data-bind="click: close"
+					class="danger btnStyle">#{i18n.getText('CPS001_111')}</button>
+			</div>
+
+			<div id="contents-area">
+				<div class="grid-container">
+					<div data-bind="ntsCheckBox: { checked: true, enable: true}">#{i18n.getText('CPS001_125')}</div>
+					<table id="single-list"
+						data-bind="ntsGridList: {												
+						height: 250, 
+		 				dataSource: listData, 
+						primaryKey: 'code', 
+						columns: ko.observableArray([
+				                { headerText: 'stt', key: 'code', width: 50 },
+				                { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadline', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_120'), key: 'dayNumberOfGrants', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'grantTime', width: 80,},
+				                { headerText: nts.uk.resource.getText('CPS001_121'), key: 'dayNumberOfUse', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'useTime', width: 80},
+				                { headerText: nts.uk.resource.getText('CPS001_130'), key: 'dayNumberOfExeeded', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeExeeded', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_123'), key: 'dayNumberOfReam', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeReam', width: 80 },
+				                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'leavExpStatus', width: 80 }
+				            ]), 
+						features: [{optionsValue: 'code', optionsText: 'name'}], 
+						multiple: false, 
+			 		    value: currentCode 
+			 		}"></table>
+				</div>
+				<div style="padding-top: 20px" class="cls-detail">
+
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {required: true}">
+							<span data-bind="text: grantDateTitle"></span>
+						</div>
+						<div
+							data-bind="ntsDatePicker: {value: dateGrantInp, dateFormat: 'YYYY/MM/DD'}"></div>
+					</div>
+
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {required: true}">
+							<span data-bind="text: expDateTitle"></span>
+						</div>
+						<div
+							data-bind="ntsDatePicker: {value: deadlineDateInp, dateFormat: 'YYYY/MM/DD'}"></div>
+					</div>
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {required: true}">
+							<span data-bind="text: expStateTitle"></span>
+						</div>
+						<div tabindex="9" class="cf"
+							data-bind="ntsSwitchButton: {
+								name: 'Sample Switch',
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode,
+								required: true,
+								enable: true }"></div>
+
+					</div>
+					<div class="form-group">
+						<div class="inline" data-bind="ntsFormLabel: {required: true}">
+							<span data-bind="text: statusOfUse"></span>
+						</div>
+						<div class="inline">#{i18n.getText('CPS001_114')}</div>
+					</div>
+
+					<div style="padding-left: 125px">
+						<!-- line1 -->
+						<div class="form-group">
+							<div class="inline" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_115')}</div>
+							<div class="inline" data-bind="text: dayNumberOfGrantsTitle"></div>
+							<input
+								data-bind="ntsNumberEditor: {
+										value: dayNumberOfGrants,
+										constraint: '',
+										required: true,
+										option: {decimallength: 0},
+										enable: true,
+										readonly: false}" />
+							<div data-bind="visible: visibleGrant" class="inline">
+								<div class="inline" data-bind="text: grantTimeTitle"></div>
+								<input
+									data-bind="ntsTimeEditor: {
+										value: grantTime,
+										constraint: '',
+										inputFormat: 'time',
+										mode: 'time',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+							</div>
+
+						</div>
+						<!-- line 2 -->
+						<div class="form-group">
+							<div class="inline" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_116')}</div>
+							<div class="inline" data-bind="text: dayNumberOfUseTitle"></div>
+							<input
+								data-bind="ntsNumberEditor: {
+										value: dayNumberOfUse,
+										constraint: '',
+										required: true,
+										option: {decimallength: 0},
+										enable: true,
+										readonly: false}" />
+							<div data-bind="visible: visibleUse" class="inline">
+								<div class="inline" data-bind="text: useTimeTitle"></div>
+								<input
+									data-bind="ntsTimeEditor: {
+										value: useTime,
+										constraint: '',
+										inputFormat: 'time',
+										mode: 'time',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+
+							</div>
+
+						</div>
+						<!-- line 3 -->
+						<div class="form-group" style="padding-left: 125px">
+							<div class="inline" data-bind="text: dayNumberOverTitle"></div>
+							<input
+								data-bind="ntsNumberEditor: {
+										value: dayNumberOver,
+										constraint: '',
+										required: true,
+										option: {decimallength: 0},
+										enable: true,
+										readonly: false}" />
+							<div data-bind="visible: visibleOver"  class="inline">
+								<div class="inline" data-bind="text: timeOverTitle"></div>
+								<input
+									data-bind="ntsTimeEditor: {
+										value: timeOver,
+										constraint: '',
+										inputFormat: 'time',
+										mode: 'time',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+							</div>
+
+						</div>
+						<!-- line 4 -->
+						<div class="form-group">
+							<div class="inline" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_117')}</div>
+							<div class="inline" data-bind="text: dayNumberOfReamTitle"></div>
+							<input
+								data-bind="ntsNumberEditor: {
+										value: dayNumberOfReam,
+										constraint: '',
+										required: true,
+										option: {decimallength: 0},
+										enable: true,
+										readonly: false}" />
+							<div data-bind="visible: visibleReam" class="inline">
+								<div class="inline" data-bind="text: timeReamTitle"></div>
+								
+								<input
+									data-bind="ntsTimeEditor: {
+										value: timeReam,
+										constraint: '',
+										inputFormat: 'time',
+										mode: 'time',
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+							</div>
+
+						</div>
+
+
+
+
+					</div>
+
+
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

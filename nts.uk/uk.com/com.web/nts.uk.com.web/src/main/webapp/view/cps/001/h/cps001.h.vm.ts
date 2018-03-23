@@ -44,10 +44,28 @@ module cps001.h.vm {
         }
         start() {
             let self  = this;
-            service.getAll().done((data) => {
-                self.items(data);
-                self.currentItem(self.items()[0].grantDate);
+            service.getItemDef().done((data) => {
+                $(".detailContent td").each(function(){ 
+                    let code = $(this).attr('data-itemcode');
+                    if(code){
+                         let itemDef = _.find(data, (item)=>{
+                            return item.itemCode == code;
+                             });
+                        if(itemDef.display){
+                            $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+                        }else{
+                            $(this).parent().css("display", "none");
+                        }
+                        
+                    }
+                    console.log(code);
+                });
+                console.log(data);
             });
+//            service.getAll().done((data) => {
+//                self.items(data);
+//                self.currentItem(self.items()[0].grantDate);
+//            });
            
             
         }

@@ -46,15 +46,15 @@
 				<div class='detailContent'>
 					<table data-bind="with: resvLeaGrantRemNum">
 						<tr>
-							<td><div data-bind="ntsFormLabel: {required: true }">積立年休付与日</div></td>
+							<td data-itemCode="IS00398" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
 							<td><div tabindex='7' data-bind="ntsDatePicker: {value: grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
-							<td><div data-bind="ntsFormLabel: {required: false }">積立年休期限日</div></td>
+							<td data-itemCode="IS00399"><div data-bind="ntsFormLabel: {required: false }">2</div></td>
 							<td><div tabindex='8' data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
-							<td><div data-bind="ntsFormLabel: {required: true }">積立年休期限切れ状態</div></td>
+							<td data-itemCode="IS00400"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
 							<td><div tabindex='9' class="cf" data-bind="ntsSwitchButton: {
 										options: [
 							                 { code: '1', name: '使用可能'},
@@ -68,7 +68,7 @@
 										
 						</tr>
 						<tr>
-							<td style=" vertical-align: top !important;"><div data-bind="ntsFormLabel: {required: true }">積立年休使用状況</div></td>
+							<td style=" vertical-align: top !important;" data-itemCode="IS00401"><div data-bind="ntsFormLabel: {required: true }">4</div></td>
 							<td>
 								<table>
 									<tr>
@@ -97,8 +97,8 @@
 		                                    enable: true, 
 		                                    required: true,
 		                                    }"/></td>
-										<td class='paddingTd'>
-										<span>上限超過消滅日数</span><span><input class="realTxt" tabindex='12' data-bind="ntsNumberEditor: {
+										<td class='paddingTd' data-itemCode="IS00406">
+										<span>5</span><span><input class="realTxt" tabindex='12' data-bind="ntsNumberEditor: {
 											name: '',
 		                                    value: overLimitDays,
 		                                    option: {

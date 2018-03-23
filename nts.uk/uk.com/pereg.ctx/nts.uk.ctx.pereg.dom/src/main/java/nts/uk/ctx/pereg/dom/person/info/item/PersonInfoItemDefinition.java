@@ -147,6 +147,13 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	public static PersonInfoItemDefinition createFromEntityMap(String perInfoItemDefId, String perInfoCategoryId, String itemName) {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemName);
 	}
+	
+	public static PersonInfoItemDefinition createFromEntityWithCodeAndName(String itemCode, String itemName) {
+		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
+		item.setItemCode(new ItemCode(itemCode));
+		item.setItemName(itemName);
+		return item;
+	}
 
 	public void setItemTypeState(ItemTypeState itemTypeState) {
 		this.itemTypeState = itemTypeState;

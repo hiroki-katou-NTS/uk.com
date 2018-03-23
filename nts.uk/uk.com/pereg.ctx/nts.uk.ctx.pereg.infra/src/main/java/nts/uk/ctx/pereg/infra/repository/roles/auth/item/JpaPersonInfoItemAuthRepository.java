@@ -87,7 +87,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 		itemDetail.setItemParentCd(entity[10] == null ? null : entity[10].toString());
 		
-		itemDetail.setDataType(entity[11] == null ? null : Integer.valueOf(entity[11].toString()));
+		itemDetail.setDataType(entity[11] == null ? 1 : Integer.valueOf(entity[11].toString()));
 
 		return itemDetail;
 	}
