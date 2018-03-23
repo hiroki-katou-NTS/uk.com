@@ -153,6 +153,21 @@ module nts.uk.pr.view.kmf001.f {
                     return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.NotUse;
                 });
                 
+                self.checkWorkTime.subscribe(function(flag) {
+                    if (flag) {
+                        if (self.enableDesignWork()) {
+                            self.inputWorkOneDay.ntsError('check');
+                            self.inputWorkHalfDay.ntsError('check');
+                        } else {
+                            self.inputWorkAll.ntsError('check');
+                        }
+                    } else {
+                        if (self.inputWorkAll.ntsError("hasError")) self.inputWorkAll.ntsError('clear');
+                        if (self.inputWorkOneDay.ntsError("hasError")) self.inputWorkOneDay.ntsError('clear');
+                        if (self.inputWorkHalfDay.ntsError("hasError")) self.inputWorkHalfDay.ntsError('clear');
+                    }
+                });
+                
                 self.enableDesignWork.subscribe(function(flag) {
                     if (flag) {
                         if (self.inputWorkAll.ntsError("hasError")) self.inputWorkAll.ntsError('clear');
@@ -165,6 +180,21 @@ module nts.uk.pr.view.kmf001.f {
                     if (self.inputWorkHalfDay.ntsError("hasError")) self.inputWorkHalfDay.ntsError('clear');
                     
                     self.inputWorkAll.ntsError('check');
+                });
+                
+                self.checkOverTime.subscribe(function(flag) {
+                    if (flag) {
+                        if (self.enableDesignOver()) {
+                            self.inputOverOneDay.ntsError('check');
+                            self.inputOverHalfDay.ntsError('check')
+                        } else {
+                            self.inputOverAll.ntsError('check');
+                        }
+                    } else {
+                        if (self.inputOverAll.ntsError("hasError")) self.inputOverAll.ntsError('clear');
+                        if (self.inputOverOneDay.ntsError("hasError")) self.inputOverOneDay.ntsError('clear');
+                        if (self.inputOverHalfDay.ntsError("hasError")) self.inputOverHalfDay.ntsError('clear');
+                    }
                 });
                 
                 self.enableDesignOver.subscribe(function(flag) {
