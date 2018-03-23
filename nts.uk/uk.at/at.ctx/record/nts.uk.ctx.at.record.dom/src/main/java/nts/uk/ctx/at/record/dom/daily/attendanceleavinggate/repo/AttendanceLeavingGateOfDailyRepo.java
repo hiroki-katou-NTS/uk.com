@@ -20,4 +20,6 @@ public interface AttendanceLeavingGateOfDailyRepo {
 	public void update(AttendanceLeavingGateOfDaily domain);
 
 	public void add(AttendanceLeavingGateOfDaily domain);
+	
+	public void remove(AttendanceLeavingGateOfDaily domain);
 }

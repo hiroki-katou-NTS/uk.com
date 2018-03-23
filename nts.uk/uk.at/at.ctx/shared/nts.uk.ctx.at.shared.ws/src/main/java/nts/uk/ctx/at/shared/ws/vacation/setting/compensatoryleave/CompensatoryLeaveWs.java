@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 
 /**
  * The Class AnnualPaidLeaveWs.
@@ -136,7 +136,7 @@ public class CompensatoryLeaveWs extends WebService {
 	@POST
 	@Path("enum/transfersettingdivision")
 	public List<EnumConstant> getTransferSettingDivisionEnum() {
-		return EnumAdaptor.convertToValueNameList(TransferSettingDivision.class);
+		return EnumAdaptor.convertToValueNameList(SubHolTransferSetAtr.class);
 	}
 	
 	/**
