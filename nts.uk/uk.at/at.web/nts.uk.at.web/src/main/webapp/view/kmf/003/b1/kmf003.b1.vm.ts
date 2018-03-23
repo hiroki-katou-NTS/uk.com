@@ -128,18 +128,19 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         bindData(data: any, isNew: boolean){
             var self = this;
             var dfd = $.Deferred();
-            var flag = false;
+            var flagDay = false;
+            var flagYear = false;
             
             self.items.removeAll();
             
             service.checkData().done(function(check){
                 
                 if(check.manageType == 1 && check.reference == 1) {
-                    flag = true;
-                } else if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
-                    flag = true;
-                } else {
-                    flag = false;
+                    flagDay = true;
+                }
+
+                if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
+                    flagYear = true;
                 }
                 
                 //Update case
@@ -155,8 +156,8 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                             limitedTimeHdDays: null,
                             limitedHalfHdCnt: null,
                             gdEnable: true,
-                            ltdEnable: flag,
-                            lthEnable: flag 
+                            ltdEnable: flagYear,
+                            lthEnable: flagDay 
                         };
                         self.items.push(new Item(item));
                     }
@@ -172,8 +173,8 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
                             limitedTimeHdDays: data[i].limitedTimeHdDays(),
                             limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
                             gdEnable: true,
-                            ltdEnable: flag,
-                            lthEnable: flag
+                            ltdEnable: flagYear,
+                            lthEnable: flagDay 
                         };
                         self.items.push(new Item(item));
                     }

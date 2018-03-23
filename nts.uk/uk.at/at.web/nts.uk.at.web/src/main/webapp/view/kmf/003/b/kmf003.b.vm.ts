@@ -152,7 +152,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     grantDays: data[i].grantDays(),
                     limitedTimeHdDays: data[i].limitedTimeHdDays(),
                     limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
-                    grantReferenceDate: data[i].grantReferenceDate(),
+                    grantReferenceDate: data[i].grantSimultaneity() == 0 ? data[i].grantReferenceDate() : 1,
+                    grantReferenceDateEnable: data[i].grantSimultaneity() == 1 ? false : true,
                     grantSimultaneity: data[i].grantSimultaneity(),
                     grantDate: data[i].grantDate()
                 };
@@ -170,6 +171,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
                     grantReferenceDate: 0,
+                    grantReferenceDateEnable: data.length == 0 ? true : false,
                     grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
                     grantDate: ""
                 };
@@ -216,7 +218,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
                 
                 _.forEach(grantHolidayTblList, function(item) {
-                    if(item.month == null && item.year == null) {
+                    if(item.month != null && item.year != null && (item.grantDays == null || item.grantDays == "")) {
                         checkErr = false;
                         nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
                             $('#b2_1').focus();
@@ -309,16 +311,6 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", false);
                 return;
             }
-        
-            _.forEach(grantHolidayTblList, function(item) {
-                if(item.month != null && item.year != null && (item.grantDays == null || item.grantDays == "")) {
-                    checkErr = false;
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
-                        $('#b2_1').focus();
-                    });
-                    return;
-                }
-            });
             
             if(checkErr){
                 service.addYearHolidayGrant(grantHolidayTblList).done(function(){
@@ -376,10 +368,18 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             
             if (value) {
                 for (let i = index; i < self.items().length; i++) {
+                    self.items()[i].grantReferenceDate(1);
+                    self.items()[i].grantReferenceDateEnable(false);
                     self.items()[i].grantSimultaneity(value);
                 }
             } else {
+                if(index == 0) {
+                    self.items()[index].grantReferenceDateEnable(true);
+                    self.items()[index].grantSimultaneity(value);
+                }
                 for (let i = 0; i < index; i++) {
+                    self.items()[i].grantReferenceDateEnable(true);
+                    self.items()[i + 1].grantReferenceDateEnable(true);
                     self.items()[i].grantSimultaneity(value);
                 }    
             }
@@ -423,6 +423,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         limitedTimeHdDays: KnockoutObservable<number>;
         limitedHalfHdCnt: KnockoutObservable<number>;
         grantReferenceDate: KnockoutObservable<number>;
+        grantReferenceDateEnable: KnockoutObservable<boolean>;
         grantSimultaneity: KnockoutObservable<boolean>;
         grantDate: KnockoutObservable<string>;
         
@@ -437,6 +438,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.limitedTimeHdDays = ko.observable(param.limitedTimeHdDays);
             self.limitedHalfHdCnt = ko.observable(param.limitedHalfHdCnt);
             self.grantReferenceDate = ko.observable(param.grantReferenceDate);
+            self.grantReferenceDateEnable = ko.observable(param.grantReferenceDateEnable);
             self.grantSimultaneity = ko.observable(param.grantSimultaneity);    
             self.grantDate = ko.observable(param.grantDate);   
             self.grantSimultaneity.subscribe(function(value){
@@ -455,6 +457,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         limitedTimeHdDays: number;
         limitedHalfHdCnt: number;
         grantReferenceDate: number;
+        grantReferenceDateEnable: boolean;   
         grantSimultaneity: boolean;   
         grantDate: string;     
     }

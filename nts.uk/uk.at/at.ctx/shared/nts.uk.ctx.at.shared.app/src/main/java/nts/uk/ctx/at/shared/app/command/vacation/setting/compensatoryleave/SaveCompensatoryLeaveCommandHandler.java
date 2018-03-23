@@ -17,14 +17,15 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SaveCompensatoryLeaveCommandHandler.
  */
 @Stateless
-public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveCompensatoryLeaveCommand> {
+public class SaveCompensatoryLeaveCommandHandler
+		extends CommandHandler<SaveCompensatoryLeaveCommand> {
 
 	/** The compens leave com set repository. */
 	@Inject
@@ -48,7 +49,7 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 		if (findClsc != null) {
 			CompensatoryOccurrenceSetting overTime = null;
 			CompensatoryOccurrenceSetting workTime = null;
-			//get Occurrence from find domain
+			// get Occurrence from find domain
 			if (findClsc.getCompensatoryOccurrenceSetting().get(0)
 					.getOccurrenceType().value == CompensatoryOccurrenceDivision.FromOverTime.value) {
 				overTime = findClsc.getCompensatoryOccurrenceSetting().get(0);
@@ -57,26 +58,31 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 				workTime = findClsc.getCompensatoryOccurrenceSetting().get(0);
 				overTime = findClsc.getCompensatoryOccurrenceSetting().get(1);
 			}
-			//DigestiveTimeUnit
-			if (compensManage || (command.getCompensatoryDigestiveTimeUnit().getIsManageByTime() != ManageDistinct.YES.value)) {
-				CompensatoryDigestiveTimeUnitDto digest = command.getCompensatoryDigestiveTimeUnit();
-				digest.setDigestiveUnit(findClsc.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value);
+			// DigestiveTimeUnit
+			if (compensManage || (command.getCompensatoryDigestiveTimeUnit()
+					.getIsManageByTime() != ManageDistinct.YES.value)) {
+				CompensatoryDigestiveTimeUnitDto digest = command
+						.getCompensatoryDigestiveTimeUnit();
+				digest.setDigestiveUnit(
+						findClsc.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value);
 			}
-			
+
 			if (compensManage) {
-				//ExpirationTime
+				// ExpirationTime
 				CompensatoryAcquisitionUseDto acqui = command.getCompensatoryAcquisitionUse();
-				acqui.setExpirationTime(findClsc.getCompensatoryAcquisitionUse().getExpirationTime().value);
-				//PreemptionPermit
-				command.getCompensatoryAcquisitionUse()
-						.setPreemptionPermit(findClsc.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-				//ManageByTime
-				command.getCompensatoryDigestiveTimeUnit()
-						.setIsManageByTime(findClsc.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
+				acqui.setExpirationTime(
+						findClsc.getCompensatoryAcquisitionUse().getExpirationTime().value);
+				// PreemptionPermit
+				command.getCompensatoryAcquisitionUse().setPreemptionPermit(
+						findClsc.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
+				// ManageByTime
+				command.getCompensatoryDigestiveTimeUnit().setIsManageByTime(
+						findClsc.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
 			}
 
 			if (!command.getCompensatoryOccurrenceSetting().isEmpty()) {
-				for (CompensatoryOccurrenceSettingDto item : command.getCompensatoryOccurrenceSetting()) {
+				for (CompensatoryOccurrenceSettingDto item : command
+						.getCompensatoryOccurrenceSetting()) {
 					// Over time
 					if (item.getOccurrenceType() == CompensatoryOccurrenceDivision.FromOverTime.value) {
 						this.controllOccurrence(compensManage, item, overTime);
@@ -95,32 +101,36 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 			compensLeaveComSetRepository.update(clcs);
 		}
 	}
-	
-	public void controllOccurrence(boolean compensManage, CompensatoryOccurrenceSettingDto commandOccurrence,
+
+	public void controllOccurrence(boolean compensManage,
+			CompensatoryOccurrenceSettingDto commandOccurrence,
 			CompensatoryOccurrenceSetting findOccurrence) {
 		// for certain time
-		if (commandOccurrence.getTransferSetting().getTransferDivision() != TransferSettingDivision.CertainTime.value
+		if (commandOccurrence.getTransferSetting()
+				.getTransferDivision() != SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL.value
 				|| !commandOccurrence.getTransferSetting().isUseDivision() || compensManage) {
-			commandOccurrence.getTransferSetting()
-					.setCertainTime(findOccurrence.getTransferSetting().getCertainTime().v().intValue());
+			commandOccurrence.getTransferSetting().setCertainTime(
+					findOccurrence.getTransferSetting().getCertainTime().v().intValue());
 		}
 		// for half and one day time
-		if (commandOccurrence.getTransferSetting().getTransferDivision() != TransferSettingDivision.DesignTime.value
-				|| !commandOccurrence.getTransferSetting().isUseDivision()||compensManage) {
-//			commandOccurrence.getTransferSetting()
-//					.setHalfDayTime(findOccurrence.getTransferSetting().getHalfDayTime().v().intValue());
-//			commandOccurrence.getTransferSetting()
-//					.setOneDayTime(findOccurrence.getTransferSetting().getOneDayTime().v().intValue());
+		if (commandOccurrence.getTransferSetting()
+				.getTransferDivision() != SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL.value
+				|| !commandOccurrence.getTransferSetting().isUseDivision() || compensManage) {
+			commandOccurrence.getTransferSetting().setHalfDayTime(findOccurrence
+					.getTransferSetting().getDesignatedTime().getHalfDayTime().v().intValue());
+			commandOccurrence.getTransferSetting().setOneDayTime(findOccurrence.getTransferSetting()
+					.getDesignatedTime().getOneDayTime().v().intValue());
 		}
 		// for useDivision
 		if (compensManage) {
-			commandOccurrence.getTransferSetting().setUseDivision(findOccurrence.getTransferSetting().isUseDivision());
+			commandOccurrence.getTransferSetting()
+					.setUseDivision(findOccurrence.getTransferSetting().isUseDivision());
 		}
 
 		// for transferSetting Division
 		if (compensManage || !commandOccurrence.getTransferSetting().isUseDivision()) {
-//			commandOccurrence.getTransferSetting()
-//					.setTransferDivision(findOccurrence.getTransferSetting().getTransferDivision().value);
+			commandOccurrence.getTransferSetting().setTransferDivision(
+					findOccurrence.getTransferSetting().getSubHolTransferSetAtr().value);
 		}
 	}
 

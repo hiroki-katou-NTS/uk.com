@@ -92,8 +92,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
 			
-			//勤種・就時の反映
-			boolean changeFlg = priorProcess.changeFlg(param);
+			
 			//予定勤種・就時反映後の予定勤種・就時を取得する
 			//勤種・就時反映後の予定勤種・就時を取得する
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(param.getEmployeeId(), param.getDateInfo());
@@ -102,15 +101,17 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			}
 			//予定勤種・就時の反映
 			priorProcess.workTimeWorkTimeUpdate(param);
-			//予定開始終了時刻の反映
-			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
-			priorProcess.startAndEndTimeReflectSche(param, changeFlg, dailyData);
-			//開始終了時刻の反映
+			//勤種・就時の反映
+			boolean changeFlg = priorProcess.changeFlg(param);
+			//予定開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
+			priorProcess.startAndEndTimeReflectSche(param, changeFlg, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
+			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
 			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
-			//所定外深夜時間の反映
-			priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
+			//所定外深夜時間の反映 
+			//TODO : DuDT 2018.03.23 chua co 法定外残業深夜時間 nen tam thoi chua doi ung
+			//priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
 			//フレックス時間の反映
 			priorProcess.reflectOfFlexTime(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getFlexExessTime());
 			
