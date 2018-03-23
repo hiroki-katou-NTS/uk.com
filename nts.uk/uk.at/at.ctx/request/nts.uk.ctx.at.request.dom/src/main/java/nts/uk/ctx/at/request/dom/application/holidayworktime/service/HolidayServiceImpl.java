@@ -66,7 +66,7 @@ public class HolidayServiceImpl implements HolidayService {
 	// 4_c.初期選択
 	@Override
 	public void getWorkType(String companyID,WorkTypeHolidayWork workTypes, GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition){
-		if(personalLablorCodition.isPresent() && personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
+		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			// 先頭の勤務種類を選択する
 			if(!CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())){
 				workTypes.setWorkTypeCode(workTypes.getWorkTypeCodes().get(0));
