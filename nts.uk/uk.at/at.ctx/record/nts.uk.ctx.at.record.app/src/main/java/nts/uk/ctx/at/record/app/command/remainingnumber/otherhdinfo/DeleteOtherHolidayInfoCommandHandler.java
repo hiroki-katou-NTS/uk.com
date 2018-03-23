@@ -4,16 +4,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
-import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
-import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
 @Stateless
-public class AddOtherHolidayInfoCommandHandler extends CommandHandlerWithResult<AddOtherHolidayInfoCommand, PeregAddCommandResult>
-implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
+public class DeleteOtherHolidayInfoCommandHandler extends CommandHandler<AddOtherHolidayInfoCommand>
+implements PeregDeleteCommandHandler<AddOtherHolidayInfoCommand> {
 
 	@Inject
 	private PublicHolidayRemainRepository publicHolidayRemainRepository;
@@ -32,10 +31,9 @@ implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 	}
 
 	@Override
-	protected PeregAddCommandResult handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
+	protected void handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
 		
-		return null;
 	}
 
 }
