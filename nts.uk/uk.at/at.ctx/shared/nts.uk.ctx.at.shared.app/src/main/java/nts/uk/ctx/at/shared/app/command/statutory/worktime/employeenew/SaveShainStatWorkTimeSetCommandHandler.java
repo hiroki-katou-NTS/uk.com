@@ -12,86 +12,95 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class SaveComDeformationLaborSettingCommandHandler.
+ * The Class SaveShainStatWorkTimeSetCommandHandler.
  */
 @Stateless
 @Transactional
 public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveShainStatWorkTimeSetCommand> {
 
+	/** The shain normal setting repository. */
 	@Inject
-	private ComNormalSettingRepository comNormalSettingRepository;
+	private ShainNormalSettingRepository shainNormalSettingRepository;
 	
+	/** The shain flex setting repository. */
 	@Inject
-	private ComFlexSettingRepository comFlexSettingRepository;
+	private ShainFlexSettingRepository shainFlexSettingRepository;
 	
+	/** The shain defor labor setting repository. */
 	@Inject
-	private ComDeforLaborSettingRepository comDeforLaborSettingRepository;
+	private ShainDeforLaborSettingRepository shainDeforLaborSettingRepository;
 	
+	/** The shain regular work time repository. */
 	@Inject
-	private ComRegularLaborTimeRepository comRegularLaborTimeRepository;
+	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
 	
+	/** The shain spe defor labor time repository. */
 	@Inject
-	private ComTransLaborTimeRepository comTransLaborTimeRepository;
+	private ShainSpeDeforLaborTimeRepository shainSpeDeforLaborTimeRepository;
 
+	/* 
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<SaveShainStatWorkTimeSetCommand> context) {
 
 		SaveShainStatWorkTimeSetCommand command = context.getCommand();
 		int year = command.getYear();
+		String employeeId = command.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
 
-		ComNormalSetting comNormalSetting = command.getNormalSetting().toDomain(year);
-		ComFlexSetting comFlexSetting = command.getFlexSetting().toDomain(year);
-		ComDeforLaborSetting comDeforLaborSetting = command.getDeforLaborSetting().toDomain(year);
-		ComRegularLaborTime comRegularLaborTime = command.getRegularLaborTime().toComRegularLaborTimeDomain();
-		ComTransLaborTime comTransLaborTime = command.getTransLaborTime().toComTransLaborTimeDomain();
+		ShainNormalSetting shainNormalSetting = command.getNormalSetting().toShainDomain(year, employeeId);
+		ShainFlexSetting shainFlexSetting = command.getFlexSetting().toShainDomain(year, employeeId);
+		ShainDeforLaborSetting shainDeforLaborSetting = command.getDeforLaborSetting().toShainDomain(year, employeeId);
+		ShainRegularWorkTime shainRegularLaborTime = command.getRegularLaborTime().toShainRegularTimeDomain(employeeId);
+		ShainSpeDeforLaborTime shainTransLaborTime = command.getTransLaborTime().toShainSpeTimeDomain(employeeId);
 		
-		Optional<ComNormalSetting> optComNormalSet = this.comNormalSettingRepository.find(companyId, year);
+		Optional<ShainNormalSetting> optComNormalSet = this.shainNormalSettingRepository.find(companyId, employeeId, year);
 		if(optComNormalSet.isPresent()){
-			this.comNormalSettingRepository.update(comNormalSetting);
+			this.shainNormalSettingRepository.update(shainNormalSetting);
 		} else {
-			this.comNormalSettingRepository.create(comNormalSetting);
+			this.shainNormalSettingRepository.add(shainNormalSetting);
 		}
 		
-		Optional<ComFlexSetting> optComFlexSet = this.comFlexSettingRepository.find(companyId, year);
+		Optional<ShainFlexSetting> optComFlexSet = this.shainFlexSettingRepository.find(companyId, employeeId, year);
 		if(optComFlexSet.isPresent()) {
-			this.comFlexSettingRepository.update(comFlexSetting);
+			this.shainFlexSettingRepository.update(shainFlexSetting);
 		} else {
-			this.comFlexSettingRepository.create(comFlexSetting);
+			this.shainFlexSettingRepository.add(shainFlexSetting);
 		}
 		
-		Optional<ComDeforLaborSetting> optComDeforSet = this.comDeforLaborSettingRepository.find(companyId, year);
+		Optional<ShainDeforLaborSetting> optComDeforSet = this.shainDeforLaborSettingRepository.find(companyId, employeeId, year);
 		if(optComDeforSet.isPresent()) {
-			this.comDeforLaborSettingRepository.update(comDeforLaborSetting);
+			this.shainDeforLaborSettingRepository.update(shainDeforLaborSetting);
 		} else {
-			this.comDeforLaborSettingRepository.create(comDeforLaborSetting);
+			this.shainDeforLaborSettingRepository.add(shainDeforLaborSetting);
 		}
 		
-		Optional<ComRegularLaborTime> optComRegularSet = this.comRegularLaborTimeRepository.find(companyId);
+		Optional<ShainRegularWorkTime> optComRegularSet = this.shainRegularWorkTimeRepository.find(companyId, employeeId);
 		if(optComRegularSet.isPresent()){
-			this.comRegularLaborTimeRepository.update(comRegularLaborTime);
+			this.shainRegularWorkTimeRepository.update(shainRegularLaborTime);
 		} else {
-			this.comRegularLaborTimeRepository.create(comRegularLaborTime);
+			this.shainRegularWorkTimeRepository.add(shainRegularLaborTime);
 		}
 		
-		Optional<ComTransLaborTime> optComTransSet = this.comTransLaborTimeRepository.find(companyId);
+		Optional<ShainSpeDeforLaborTime> optComTransSet = this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId);
 		if(optComTransSet.isPresent()) {
-			this.comTransLaborTimeRepository.update(comTransLaborTime);
+			this.shainSpeDeforLaborTimeRepository.update(shainTransLaborTime);
 		} else {
-			this.comTransLaborTimeRepository.create(comTransLaborTime);
+			this.shainSpeDeforLaborTimeRepository.add(shainTransLaborTime);
 		}
 
 	}

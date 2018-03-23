@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,40 +27,142 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 public class DeforLaborSettingDto {
-	
+
 	/** The year. */
 	protected Integer year;
 
 	/** The statutory setting. */
 	protected List<MonthlyUnitDto> statutorySetting;
-	
+
+	/**
+	 * To domain.
+	 *
+	 * @param year the year
+	 * @return the com defor labor setting
+	 */
 	public ComDeforLaborSetting toDomain(int year) {
 		return new ComDeforLaborSetting(new ComDeforLaborSettingMemento(year, this.statutorySetting));
 	}
-	
+
+	/**
+	 * To shain domain.
+	 *
+	 * @param year the year
+	 * @param employeeId the employee id
+	 * @return the shain defor labor setting
+	 */
+	public ShainDeforLaborSetting toShainDomain(int year, String employeeId) {
+		return new ShainDeforLaborSetting(new ShainDeforLaborSettingMemento(year, employeeId, this.statutorySetting));
+	}
+
+	/**
+	 * The Class ComDeforLaborSettingMemento.
+	 */
 	private class ComDeforLaborSettingMemento implements ComDeforLaborSettingGetMemento {
-		
+
+		/** The year. */
 		private Integer year;
-		private List<MonthlyUnitDto> statutorySetting;
 		
+		/** The statutory setting. */
+		private List<MonthlyUnitDto> statutorySetting;
+
+		/**
+		 * Instantiates a new com defor labor setting memento.
+		 *
+		 * @param year the year
+		 * @param statutorySetting the statutory setting
+		 */
 		public ComDeforLaborSettingMemento(Integer year, List<MonthlyUnitDto> statutorySetting) {
 			this.year = year;
 			this.statutorySetting = statutorySetting;
 		}
-		
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getYear()
+		 */
 		@Override
 		public Year getYear() {
 			return new Year(this.year);
 		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getStatutorySetting()
+		 */
 		@Override
 		public List<MonthlyUnit> getStatutorySetting() {
 			return this.statutorySetting.stream().map(dto -> {
 				return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
 			}).collect(Collectors.toList());
 		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingGetMemento#getCompanyId()
+		 */
 		@Override
 		public CompanyId getCompanyId() {
 			return new CompanyId(AppContexts.user().companyId());
+		}
+	}
+
+	/**
+	 * The Class ShainDeforLaborSettingMemento.
+	 */
+	private class ShainDeforLaborSettingMemento implements ShainDeforLaborSettingGetMemento {
+
+		/** The year. */
+		private Integer year;
+		
+		/** The employee id. */
+		private String employeeId;
+		
+		/** The statutory setting. */
+		private List<MonthlyUnitDto> statutorySetting;
+
+		/**
+		 * Instantiates a new shain defor labor setting memento.
+		 *
+		 * @param year the year
+		 * @param employeeId the employee id
+		 * @param statutorySetting the statutory setting
+		 */
+		public ShainDeforLaborSettingMemento(Integer year, String employeeId, List<MonthlyUnitDto> statutorySetting) {
+			this.year = year;
+			this.employeeId = employeeId;
+			this.statutorySetting = statutorySetting;
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getYear()
+		 */
+		@Override
+		public Year getYear() {
+			return new Year(this.year);
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DeforLaborSettingGetMemento#getStatutorySetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getStatutorySetting() {
+			return this.statutorySetting.stream().map(dto -> {
+				return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
+			}).collect(Collectors.toList());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(AppContexts.user().companyId());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingGetMemento#getEmployeeId()
+		 */
+		@Override
+		public EmployeeId getEmployeeId() {
+			return new EmployeeId(this.employeeId);
 		}
 	}
 }

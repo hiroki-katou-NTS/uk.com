@@ -16,10 +16,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSetPK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSet_;
 
@@ -33,7 +33,7 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository#findEmpDeforLaborSettingByCidAndEmpIdAndYear(java.lang.String, java.lang.String, nts.uk.ctx.at.shared.dom.common.Year)
 	 */
 	@Override
-	public Optional<ShainDeforLaborSetting> findEmpDeforLaborSettingByCidAndEmpIdAndYear(String cid, String empId, Year year) {
+	public Optional<ShainDeforLaborSetting> find(String cid, String empId, int year) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstShaDeforLarSet> cq = cb.createQuery(KshstShaDeforLarSet.class);
@@ -68,8 +68,8 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting)
 	 */
 	@Override
-	public void delete(ShainDeforLaborSetting setting) {
-		commandProxy().remove(setting);
+	public void delete(String cid, String empId, int year) {
+		commandProxy().remove(KshstShaDeforLarSet.class, new KshstShaDeforLarSetPK(cid, empId, year));
 	}
 
 	/**

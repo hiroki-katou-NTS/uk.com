@@ -20,6 +20,9 @@ public class SaveShainStatWorkTimeSetCommand{
 
 	/** The year. */
 	private int year;
+	
+	/** The employee id. */
+	private String employeeId;
 
 	/** The normal setting. */
 	private NormalSettingDto normalSetting;

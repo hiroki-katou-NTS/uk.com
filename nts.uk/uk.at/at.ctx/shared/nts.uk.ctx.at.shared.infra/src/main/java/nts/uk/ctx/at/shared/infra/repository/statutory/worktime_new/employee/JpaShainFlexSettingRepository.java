@@ -16,10 +16,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSetPK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSet_;
 
@@ -49,15 +49,15 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting)
 	 */
 	@Override
-	public void delete(ShainFlexSetting setting) {
-		commandProxy().remove(setting);
+	public void delete(String cid, String empId, int year) {
+		commandProxy().remove(KshstShaFlexSet.class, new KshstShaFlexSetPK(cid, empId, year));
 	}
 	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository#find(java.lang.String, java.lang.String, nts.uk.ctx.at.shared.dom.common.Year)
 	 */
 	@Override
-	public Optional<ShainFlexSetting> find(String cid, String empId, Year year) {
+	public Optional<ShainFlexSetting> find(String cid, String empId, int year) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstShaFlexSet> cq = cb.createQuery(KshstShaFlexSet.class);

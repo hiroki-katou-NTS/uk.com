@@ -12,11 +12,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -34,45 +37,169 @@ public class FlexSettingDto {
 	/** The specified setting. */
 	protected List<MonthlyUnitDto> specifiedSetting;
 	
+	/**
+	 * To domain.
+	 *
+	 * @param year the year
+	 * @return the com flex setting
+	 */
 	public ComFlexSetting toDomain(int year) {
 		return new ComFlexSetting(new ComFlexSettingMemento(year, this.statutorySetting, this.specifiedSetting));
 	}
 	
+	/**
+	 * To shain domain.
+	 *
+	 * @param year the year
+	 * @param employeeId the employee id
+	 * @return the shain flex setting
+	 */
+	public ShainFlexSetting toShainDomain(int year, String employeeId) {
+		return new ShainFlexSetting(new ShainFlexSettingMemento(year, employeeId, this.statutorySetting, this.specifiedSetting));
+	}
+	
+	/**
+	 * The Class ComFlexSettingMemento.
+	 */
 	private class ComFlexSettingMemento implements ComFlexSettingGetMemento {
 
+		/** The year. */
 		private int year;
+		
+		/** The statutory setting. */
 		private List<MonthlyUnitDto> statutorySetting;
+		
+		/** The specified setting. */
 		private List<MonthlyUnitDto> specifiedSetting;
 
+		/**
+		 * Instantiates a new com flex setting memento.
+		 *
+		 * @param year the year
+		 * @param statutorySetting the statutory setting
+		 * @param specifiedSetting the specified setting
+		 */
 		public ComFlexSettingMemento(int year, List<MonthlyUnitDto> statutorySetting, List<MonthlyUnitDto> specifiedSetting) {
 			this.year = year;
 			this.statutorySetting = statutorySetting;
 			this.specifiedSetting = specifiedSetting;
 		}
 
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getYear()
+		 */
 		@Override
 		public Year getYear() {
 			return new Year(this.year);
 		}
 
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getStatutorySetting()
+		 */
 		@Override
 		public List<MonthlyUnit> getStatutorySetting() {
 			return this.statutorySetting.stream().map(funcMap).collect(Collectors.toList());
 		}
 
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getSpecifiedSetting()
+		 */
 		@Override
 		public List<MonthlyUnit> getSpecifiedSetting() {
 			return this.specifiedSetting.stream().map(funcMap).collect(Collectors.toList());
 		}
 
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingGetMemento#getCompanyId()
+		 */
 		@Override
 		public CompanyId getCompanyId() {
 			return new CompanyId(AppContexts.user().companyId());
 		}
 		
+		/** The func map. */
 		private Function<MonthlyUnitDto, MonthlyUnit> funcMap = dto -> {
 			return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
 		};
+		
+	}
+	
+	/**
+	 * The Class ShainFlexSettingMemento.
+	 */
+	private class ShainFlexSettingMemento implements ShainFlexSettingGetMemento {
+
+		/** The year. */
+		private int year;
+		
+		/** The employee id. */
+		private String employeeId;
+		
+		/** The statutory setting. */
+		private List<MonthlyUnitDto> statutorySetting;
+		
+		/** The specified setting. */
+		private List<MonthlyUnitDto> specifiedSetting;
+
+		/**
+		 * Instantiates a new shain flex setting memento.
+		 *
+		 * @param year the year
+		 * @param employeeId the employee id
+		 * @param statutorySetting the statutory setting
+		 * @param specifiedSetting the specified setting
+		 */
+		public ShainFlexSettingMemento(int year, String employeeId, List<MonthlyUnitDto> statutorySetting, List<MonthlyUnitDto> specifiedSetting) {
+			this.year = year;
+			this.employeeId = employeeId;
+			this.statutorySetting = statutorySetting;
+			this.specifiedSetting = specifiedSetting;
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getYear()
+		 */
+		@Override
+		public Year getYear() {
+			return new Year(this.year);
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getStatutorySetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getStatutorySetting() {
+			return this.statutorySetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getSpecifiedSetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getSpecifiedSetting() {
+			return this.specifiedSetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(AppContexts.user().companyId());
+		}
+		
+		/** The func map. */
+		private Function<MonthlyUnitDto, MonthlyUnit> funcMap = dto -> {
+			return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
+		};
+
+		/* 
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingGetMemento#getEmployeeId()
+		 */
+		@Override
+		public EmployeeId getEmployeeId() {
+			return new EmployeeId(this.employeeId);
+		}
 		
 	}
 }

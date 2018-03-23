@@ -39,5 +39,5 @@ public interface ShainRegularWorkTimeRepository {
     *
     * @param EmpRegWorkHour the emp reg work hour
     */
-   void delete(ShainRegularWorkTime EmpRegWorkHour);
+   void delete(String cid, String empId);
 }

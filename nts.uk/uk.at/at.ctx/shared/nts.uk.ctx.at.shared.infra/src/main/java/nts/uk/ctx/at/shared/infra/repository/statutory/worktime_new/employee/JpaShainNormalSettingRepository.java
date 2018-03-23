@@ -16,10 +16,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSetPK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSet_;
 
@@ -29,22 +29,27 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
 @Stateless
 public class JpaShainNormalSettingRepository extends JpaRepository implements ShainNormalSettingRepository {
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting)
+	 */
 	@Override
 	public void add(ShainNormalSetting setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
+	
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting)
+	 */
 	@Override
 	public void update(ShainNormalSetting setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository#find(java.lang.String, java.lang.String, int)
+	 */
 	@Override
-	public void delete(ShainNormalSetting setting) {
-		commandProxy().remove(setting);
-	}
-
-	@Override
-	public Optional<ShainNormalSetting> find(String cid, String empId, Year year) {
+	public Optional<ShainNormalSetting> find(String cid, String empId, int year) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstShaNormalSet> cq = cb.createQuery(KshstShaNormalSet.class);
@@ -59,15 +64,36 @@ public class JpaShainNormalSettingRepository extends JpaRepository implements Sh
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst sha normal set
+	 */
 	private KshstShaNormalSet toEntity(ShainNormalSetting domain) {
 		JpaShainNormalSettingSetMemento memento = new JpaShainNormalSettingSetMemento();
 		domain.saveToMemento(memento);
 		return memento.getEntity();
 	}
+	
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the shain normal setting
+	 */
 	private ShainNormalSetting toDomain(KshstShaNormalSet entity) {
 		if (entity == null) {
 			return null;
 		}
 		return new ShainNormalSetting(new JpaShainNormalSettingGetMemento(entity));
+	}
+	
+	/* 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository#delete(java.lang.String, java.lang.String, int)
+	 */
+	@Override
+	public void delete(String cid, String empId, int year) {
+		commandProxy().remove(KshstShaNormalSet.class, new KshstShaNormalSetPK(cid, empId, year));
 	}
 }

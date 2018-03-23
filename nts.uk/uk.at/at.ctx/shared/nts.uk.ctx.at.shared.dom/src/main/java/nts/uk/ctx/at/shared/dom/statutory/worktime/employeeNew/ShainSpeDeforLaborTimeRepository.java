@@ -39,5 +39,5 @@ public interface ShainSpeDeforLaborTimeRepository {
 	 *
 	 * @param empSpeDeforLaborHour the emp spe defor labor hour
 	 */
-	void delete(ShainSpeDeforLaborTime empSpeDeforLaborHour);
+	void delete(String cid, String empId);
 }

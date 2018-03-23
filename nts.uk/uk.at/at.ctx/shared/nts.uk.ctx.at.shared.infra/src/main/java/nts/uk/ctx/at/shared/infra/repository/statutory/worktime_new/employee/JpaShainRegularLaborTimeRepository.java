@@ -19,6 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime_;
 
@@ -48,8 +49,8 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
-	public void delete(ShainRegularWorkTime setting) {
-		commandProxy().remove(setting);
+	public void delete(String cid, String empId) {
+		commandProxy().remove(KshstShaRegLaborTime.class, new KshstShaRegLaborTimePK(cid, empId));
 	}
 
 	/* 

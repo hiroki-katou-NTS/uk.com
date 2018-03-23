@@ -8,13 +8,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class DeleteComDeformationLaborSettingCommand.
+ * The Class DeleteShainStatWorkTimeSetCommand.
  */
+
 @Setter
 @Getter
 public class DeleteShainStatWorkTimeSetCommand {
 
 	/** The year. */
 	private Integer year;
+	
+	/** The employee id. */
+	private String employeeId;
 
 }

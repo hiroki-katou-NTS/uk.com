@@ -9,8 +9,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,19 +18,9 @@ import lombok.Setter;
  * The Class KshstShaRegLaborTimePK.
  */
 
-/**
- * Sets the sid.
- *
- * @param sid the new sid
- */
 @Setter
-
-/**
- * Gets the sid.
- *
- * @return the sid
- */
 @Getter
+@AllArgsConstructor
 @Embeddable
 public class KshstShaRegLaborTimePK implements Serializable {
 	

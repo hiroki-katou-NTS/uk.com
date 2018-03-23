@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
-
 /**
  * The Interface EmpFlexSettingRepository.
  */
@@ -21,7 +19,7 @@ public interface ShainFlexSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<ShainFlexSetting> find(String cid, String empId, Year year);
+	Optional<ShainFlexSetting> find(String cid, String empId, int year);
 
 	/**
 	 * Adds the.
@@ -42,6 +40,6 @@ public interface ShainFlexSettingRepository {
 	 *
 	 * @param empFlexSetting the emp flex setting
 	 */
-	void delete(ShainFlexSetting empFlexSetting);
+	void delete(String cid, String empId, int year);
 
 }
