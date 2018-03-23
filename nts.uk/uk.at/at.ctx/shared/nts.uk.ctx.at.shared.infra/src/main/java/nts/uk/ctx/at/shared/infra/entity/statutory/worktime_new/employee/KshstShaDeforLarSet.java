@@ -35,6 +35,8 @@ public class KshstShaDeforLarSet extends KshstDeforLarSet implements Serializabl
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
 	 */
+	
+	
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -65,5 +67,9 @@ public class KshstShaDeforLarSet extends KshstDeforLarSet implements Serializabl
 	@Override
 	protected Object getKey() {
 		return this.kshstShaDeforLarSetPK;
+	}
+
+	public KshstShaDeforLarSet() {
+		super();
 	}
 }

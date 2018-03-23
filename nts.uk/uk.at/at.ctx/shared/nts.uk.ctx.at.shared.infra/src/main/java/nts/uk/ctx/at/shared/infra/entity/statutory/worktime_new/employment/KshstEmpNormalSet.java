@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstNormalSet;
 
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstNorma
 
 @Setter
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "KSHST_EMP_NORMAL_SET")
 public class KshstEmpNormalSet extends KshstNormalSet implements Serializable {

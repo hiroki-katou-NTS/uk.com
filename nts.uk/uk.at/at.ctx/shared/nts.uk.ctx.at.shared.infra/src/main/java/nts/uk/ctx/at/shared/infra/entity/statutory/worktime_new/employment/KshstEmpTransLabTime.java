@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstTransLabTime;
 
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstTrans
 
 @Setter
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "KSHST_EMP_TRANS_LAB_TIME")
 public class KshstEmpTransLabTime extends KshstTransLabTime implements Serializable {

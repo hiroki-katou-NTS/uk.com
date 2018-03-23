@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstFlexSet;
 
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstFlexS
 
 @Setter
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "KSHST_EMP_FLEX_SET")
 public class KshstEmpFlexSet extends KshstFlexSet implements Serializable {

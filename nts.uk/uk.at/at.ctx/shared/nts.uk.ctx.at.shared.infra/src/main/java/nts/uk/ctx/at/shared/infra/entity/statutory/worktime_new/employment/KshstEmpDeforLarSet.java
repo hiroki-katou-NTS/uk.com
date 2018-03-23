@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstDeforLarSet;
 
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstDefor
  */
 @Setter
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "KSHST_EMP_DEFOR_LAR_SET")
 public class KshstEmpDeforLarSet extends KshstDeforLarSet implements Serializable {
