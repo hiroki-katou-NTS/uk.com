@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDef
  * @return the entity
  */
 @Getter
-public class JpaEmpTransLaborTimeSetMemento extends JpaDefaultSettingSetMemento implements EmpTransWorkTimeSetMemento{
+public class JpaEmpTransLaborTimeSetMemento extends JpaDefaultSettingSetMemento implements EmpTransLaborTimeSetMemento{
 	
 	/** The entity. */
 	private KshstEmpTransLabTime entity;

@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +27,10 @@ public class KshstWkpRegLaborTimePK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
-	@Size(min = 1, max = 17)
 	@Column(name = "CID")
 	private String cid;
 	
 	/** The wkp id. */
-	@Size(min = 1, max = 36)
 	@Column(name = "WKP_ID")
 	private String wkpId;
 
@@ -42,6 +39,7 @@ public class KshstWkpRegLaborTimePK implements Serializable {
 		this.cid = cid;
 		this.wkpId = wkpId;
 	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

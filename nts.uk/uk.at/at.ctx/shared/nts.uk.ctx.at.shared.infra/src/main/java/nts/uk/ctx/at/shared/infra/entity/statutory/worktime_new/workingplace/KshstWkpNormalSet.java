@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshstNorma
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_WKP_NORMAL_SET")
-public class KshstWkpNormalSet extends KshstNormalSet implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

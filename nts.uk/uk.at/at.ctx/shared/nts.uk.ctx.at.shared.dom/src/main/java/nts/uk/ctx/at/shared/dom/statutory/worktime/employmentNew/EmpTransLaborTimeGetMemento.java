@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew;
+package nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
- * The Interface EmployeeSpeDeforLaborHourGetMemento.
+ * The Interface EmploymentDeforLaborWorkingHourGetMemento.
  */
-public interface ShainSpeDeforLaborTimeGetMemento {
+public interface EmpTransLaborTimeGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -21,11 +21,11 @@ public interface ShainSpeDeforLaborTimeGetMemento {
 	CompanyId getCompanyId();
 
 	/**
-	 * Gets the employee id.
+	 * Gets the employment code.
 	 *
-	 * @return the employee id
+	 * @return the employment code
 	 */
-	EmployeeId getEmployeeId();
+	EmploymentCode getEmploymentCode();
 
 	/**
 	 * Gets the working time setting new.

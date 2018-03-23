@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
  */
 @Getter
 // 職場別通常勤務労働時間
-public class WkpNormalWorkingTime extends AggregateRoot implements StatutoryWorkTimeSet {
+public class WkpRegularLaborTime extends AggregateRoot implements StatutoryWorkTimeSet {
 
 	/** The company id. */
 	// 会社ID
@@ -36,7 +36,7 @@ public class WkpNormalWorkingTime extends AggregateRoot implements StatutoryWork
 	 * @param memento
 	 *            the memento
 	 */
-	public WkpNormalWorkingTime(WkpNormalWorkingTimeGetMemento memento) {
+	public WkpRegularLaborTime(WkpRegularLaborTimeGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.workingTimeSet = memento.getWorkingTimeSet();
@@ -48,7 +48,7 @@ public class WkpNormalWorkingTime extends AggregateRoot implements StatutoryWork
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(WkpNormalWorkingTimeSetMemento memento) {
+	public void saveToMemento(WkpRegularLaborTimeSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorkplaceId(this.workplaceId);
 		memento.setWorkingTimeSet(this.workingTimeSet);

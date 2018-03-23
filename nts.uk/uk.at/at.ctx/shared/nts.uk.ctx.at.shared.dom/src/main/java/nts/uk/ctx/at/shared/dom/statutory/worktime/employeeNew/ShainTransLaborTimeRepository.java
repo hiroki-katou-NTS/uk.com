@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface EmployeeSpeDeforLaborHourRepository.
  */
-public interface ShainSpeDeforLaborTimeRepository {
+public interface ShainTransLaborTimeRepository {
 
 	/**
 	 * Find employee spe defor labor by cid and emp id.
@@ -18,21 +18,21 @@ public interface ShainSpeDeforLaborTimeRepository {
 	 * @param empId the emp id
 	 * @return the optional
 	 */
-	Optional<ShainSpeDeforLaborTime> find(String cid, String empId);
+	Optional<ShainTransLaborTime> find(String cid, String empId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param empSpeDeforLaborHour the emp spe defor labor hour
 	 */
-	void add(ShainSpeDeforLaborTime empSpeDeforLaborHour);
+	void add(ShainTransLaborTime empSpeDeforLaborHour);
 
 	/**
 	 * Update.
 	 *
 	 * @param empSpeDeforLaborHour the emp spe defor labor hour
 	 */
-	void update(ShainSpeDeforLaborTime empSpeDeforLaborHour);
+	void update(ShainTransLaborTime empSpeDeforLaborHour);
 
 	/**
 	 * Delete.

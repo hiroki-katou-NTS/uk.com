@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace;
 
 import java.io.Serializable;
@@ -21,24 +20,41 @@ import lombok.Setter;
 @Getter
 @Embeddable
 public class KshstWkpFlexSetPK implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
 	@Size(min = 1, max = 17)
 	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The wkp id. */
 	@Size(min = 1, max = 36)
 	@Column(name = "WKP_ID")
 	private String wkpId;
-	
+
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
 
+	/**
+	 * Instantiates a new kshst wkp flex set PK.
+	 */
+	public KshstWkpFlexSetPK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new kshst wkp flex set PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param wkpId
+	 *            the wkp id
+	 * @param year
+	 *            the year
+	 */
 	public KshstWkpFlexSetPK(String cid, String wkpId, int year) {
 		super();
 		this.cid = cid;
@@ -46,7 +62,9 @@ public class KshstWkpFlexSetPK implements Serializable {
 		this.year = year;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -58,7 +76,9 @@ public class KshstWkpFlexSetPK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -67,10 +87,12 @@ public class KshstWkpFlexSetPK implements Serializable {
 			return false;
 		}
 		KshstWkpFlexSetPK other = (KshstWkpFlexSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
-		if ((this.wkpId == null && other.wkpId != null) || (this.wkpId != null && !this.wkpId.equals(other.wkpId))) {
+		if ((this.wkpId == null && other.wkpId != null)
+				|| (this.wkpId != null && !this.wkpId.equals(other.wkpId))) {
 			return false;
 		}
 		if (this.year != other.year) {
@@ -78,5 +100,5 @@ public class KshstWkpFlexSetPK implements Serializable {
 		}
 		return true;
 	}
-	
+
 }

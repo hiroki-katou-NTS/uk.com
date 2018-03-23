@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,7 +42,7 @@ public class ShainStatWorkTimeSetFinder {
 
 	/** The trans labor time repository. */
 	@Inject
-	private ShainSpeDeforLaborTimeRepository speDeforLaborTimeRepository; 
+	private ShainTransLaborTimeRepository speDeforLaborTimeRepository; 
 
 	/** The regular labor time repository. */
 	@Inject
@@ -75,12 +75,12 @@ public class ShainStatWorkTimeSetFinder {
 			dtoBuilder.deforLaborSetting(ShainDeforLaborSettingDto.fromDomain(optComDeforLaborSet.get()));
 		}
 		
-		Optional<ShainSpeDeforLaborTime> optTransLaborTime = this.speDeforLaborTimeRepository.find(companyId, empId);
+		Optional<ShainTransLaborTime> optTransLaborTime = this.speDeforLaborTimeRepository.find(companyId, empId);
 		if (optTransLaborTime.isPresent()) {
 			dtoBuilder.speDeforLaborSetting(ShainSpeDeforLaborHourDto.fromDomain(optTransLaborTime.get()));
 		}
 
-		Optional<ShainRegularWorkTime> optComRegular = this.regularWorkTimeRepository.find(companyId, empId);
+		Optional<ShainRegularLaborTime> optComRegular = this.regularWorkTimeRepository.find(companyId, empId);
 		if (optComRegular.isPresent()) {
 			dtoBuilder.regularLaborTime(ShainRegularWorkHourDto.fromDomain(optComRegular.get()));
 		}

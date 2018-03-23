@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WeeklyUnit;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
 /**
  * The Class JpaShainRegularLaborTimeGetMemento.
  */
-public class JpaShainRegularLaborTimeGetMemento implements ShainRegularWorkTimeGetMemento {
+public class JpaShainRegularLaborTimeGetMemento implements ShainRegularLaborTimeGetMemento {
 
 	/** The entity. */
 	private KshstShaRegLaborTime entity;

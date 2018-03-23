@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSe
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -41,7 +41,7 @@ public class DeleteShainStatWorkTimeSetCommandHandler
 	
 	/** The shain spe defor labor time repository. */
 	@Inject
-	private ShainSpeDeforLaborTimeRepository shainSpeDeforLaborTimeRepository;
+	private ShainTransLaborTimeRepository shainSpeDeforLaborTimeRepository;
 	
 	/* 
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)

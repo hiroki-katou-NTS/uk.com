@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
 
 /**
  * The Class EmployeeRegularWorkHourDto.
@@ -25,7 +25,7 @@ public class ShainRegularWorkHourDto {
 	/** 会社労働時間設定. */
 	private WorkingTimeSettingDto workingTimeSetting;
 
-	public static ShainRegularWorkHourDto fromDomain(ShainRegularWorkTime domain) {
+	public static ShainRegularWorkHourDto fromDomain(ShainRegularLaborTime domain) {
 		ShainRegularWorkHourDto dto = new ShainRegularWorkHourDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
 		dto.setWorkingTimeSetting(workingTimeSetting);

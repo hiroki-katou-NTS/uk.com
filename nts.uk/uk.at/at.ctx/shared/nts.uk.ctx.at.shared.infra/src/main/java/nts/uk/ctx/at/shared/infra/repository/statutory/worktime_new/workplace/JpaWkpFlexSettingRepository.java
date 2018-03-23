@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpFlexSet;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpFlexSetPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpFlexSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpFlexSet_;
 
 /**
  * The Class JpaWkpFlexSettingRepository.
@@ -29,72 +20,58 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.Ksh
 @Stateless
 public class JpaWkpFlexSettingRepository extends JpaRepository implements WkpFlexSettingRepository {
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSettingRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
+	 * WkpFlexSettingRepository#create(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.companyNew.WkpFlexSetting)
 	 */
 	@Override
 	public void add(WkpFlexSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstWkpFlexSet entity = new KshstWkpFlexSet();
+		setting.saveToMemento(new JpaWkpFlexSettingSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSettingRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.
+	 * WkpFlexSettingRepository#update(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.companyNew.WkpFlexSetting)
 	 */
 	@Override
 	public void update(WkpFlexSetting setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstWkpFlexSet entity = this
+				.queryProxy().find(
+						new KshstWkpFlexSetPK(setting.getCompanyId().v(),
+								setting.getCompanyId().v(), setting.getYear().v()),
+						KshstWkpFlexSet.class)
+				.get();
+		setting.saveToMemento(new JpaWkpFlexSettingSetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSettingRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSetting)
-	 */
-	@Override
-	public void delete(String cid, String wkpId, int year) {
-		commandProxy().remove(KshstWkpFlexSet.class, new KshstWkpFlexSetPK(cid, wkpId, year));
-	}
-	
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpFlexSettingRepository#find(java.lang.String, java.lang.String, nts.uk.ctx.at.shared.dom.common.Year)
-	 */
 	@Override
 	public Optional<WkpFlexSetting> find(String cid, String wkpId, int year) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstWkpFlexSet> cq = cb.createQuery(KshstWkpFlexSet.class);
-		Root<KshstWkpFlexSet> root = cq.from(KshstWkpFlexSet.class);
+		// Get info
+		Optional<KshstWkpFlexSet> optEntity = this.queryProxy()
+				.find(new KshstWkpFlexSetPK(cid, wkpId, year), KshstWkpFlexSet.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstWkpFlexSet_.kshstWkpFlexSetPK).get(KshstWkpFlexSetPK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstWkpFlexSet_.kshstWkpFlexSetPK).get(KshstWkpFlexSetPK_.year), year));
-		predicateList.add(cb.equal(root.get(KshstWkpFlexSet_.kshstWkpFlexSetPK).get(KshstWkpFlexSetPK_.wkpId), wkpId));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst sha flex set
-	 */
-	private KshstWkpFlexSet toEntity(WkpFlexSetting domain) {
-		JpaWkpFlexSettingSetMemento memento = new JpaWkpFlexSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param entities the entities
-	 * @return the shain flex setting
-	 */
-	private WkpFlexSetting toDomain(KshstWkpFlexSet entities) {
-		if (entities == null) {
-			return null;
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
 		}
-		return new WkpFlexSetting(new JpaWkpFlexSettingGetMemento(entities));
+
+		// Return
+		return Optional.of(new WkpFlexSetting(new JpaWkpFlexSettingGetMemento(optEntity.get())));
+	}
+
+	@Override
+	public void remove(String cid, String wkpId, int year) {
+		this.commandProxy().remove(KshstWkpFlexSetPK.class,
+				new KshstWkpFlexSetPK(cid, wkpId, year));
 	}
 
 }

@@ -8,13 +8,13 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeSetMemento;
 
 /**
  * The Class WkpDeforLaborWorkHourDto.
  */
 @Getter
-public class WkpDeforLaborWorkHourDto implements WkpDeforLaborWorkTimeSetMemento {
+public class WkpDeforLaborWorkHourDto implements WkpTransLaborTimeSetMemento {
 
 
 	/** The workplace id. */

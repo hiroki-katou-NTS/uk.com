@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 import java.util.Optional;
 
 /**
- * The Interface WkpFlexSettingRepository.
+ * The Interface WkpNormalWorkingHourRepository.
  */
-public interface WkpFlexSettingRepository {
+public interface WkpRegularLaborTimeRepository {
 
 	/**
 	 * Find by cid and wkp id and year.
@@ -19,27 +19,26 @@ public interface WkpFlexSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<WkpFlexSetting> find(String cid, String wkpId, int year);
+	Optional<WkpRegularLaborTime> find(String cid, String wkpId);
 
 	/**
 	 * Adds the.
 	 *
-	 * @param wkpFlexSetting the wkp flex setting
+	 * @param wkpNormalSetting the wkp normal setting
 	 */
-	void add(WkpFlexSetting wkpFlexSetting);
+	void add(WkpRegularLaborTime domain);
 
 	/**
 	 * Update.
 	 *
-	 * @param wkpFlexSetting the wkp flex setting
+	 * @param wkpNormalSetting the wkp normal setting
 	 */
-	void update(WkpFlexSetting wkpFlexSetting);
+	void update(WkpRegularLaborTime domain);
 
 	/**
 	 * Delete.
 	 *
-	 * @param wkpFlexSetting the wkp flex setting
+	 * @param wkpNormalSetting the wkp normal setting
 	 */
-	void remove(String cid, String wkpId, int year);
-
+	void remove(String cid, String wkpId);
 }

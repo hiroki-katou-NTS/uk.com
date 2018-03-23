@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
@@ -34,7 +34,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime)
 	 */
 	@Override
-	public void add(EmpRegularWorkTime emplRegWorkHour) {
+	public void add(EmpRegularLaborTime emplRegWorkHour) {
 		commandProxy().insert(this.toEntity(emplRegWorkHour));
 	}
 
@@ -42,7 +42,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime)
 	 */
 	@Override
-	public void update(EmpRegularWorkTime emplRegWorkHour) {
+	public void update(EmpRegularLaborTime emplRegWorkHour) {
 		commandProxy().update(this.toEntity(emplRegWorkHour));
 	}
 
@@ -58,7 +58,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository#findListByCid(java.lang.String)
 	 */
 	@Override
-	public List<EmpRegularWorkTime> findListByCid(String cid) {
+	public List<EmpRegularLaborTime> findListByCid(String cid) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstEmpRegLaborTime> cq = cb.createQuery(KshstEmpRegLaborTime.class);
@@ -75,7 +75,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository#findById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<EmpRegularWorkTime> findById(String cid, String employmentCode) {
+	public Optional<EmpRegularLaborTime> findById(String cid, String employmentCode) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<KshstEmpRegLaborTime> cq = cb.createQuery(KshstEmpRegLaborTime.class);
@@ -95,7 +95,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @param emplRegWorkHour the empl reg work hour
 	 * @return the kshst emp reg labor time
 	 */
-	private KshstEmpRegLaborTime toEntity(EmpRegularWorkTime emplRegWorkHour) {
+	private KshstEmpRegLaborTime toEntity(EmpRegularLaborTime emplRegWorkHour) {
 		KshstEmpRegLaborTime entity = new KshstEmpRegLaborTime();
 		emplRegWorkHour.saveToMemento(new JpaEmpRegularLaborTimeSetMemento(entity));
 		return entity;
@@ -107,11 +107,11 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @param entities the entities
 	 * @return the list
 	 */
-	private List<EmpRegularWorkTime> toDomain(List<KshstEmpRegLaborTime> entities) {
+	private List<EmpRegularLaborTime> toDomain(List<KshstEmpRegLaborTime> entities) {
 		if (entities.isEmpty()) {
 			return null;
 		}
-		return entities.stream().map(entity -> new EmpRegularWorkTime(new JpaEmpRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
+		return entities.stream().map(entity -> new EmpRegularLaborTime(new JpaEmpRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
 	}
 	
 	/**
@@ -120,10 +120,10 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @param entity the entity
 	 * @return the emp regular work time
 	 */
-	private EmpRegularWorkTime toDomain(KshstEmpRegLaborTime entity) {
+	private EmpRegularLaborTime toDomain(KshstEmpRegLaborTime entity) {
 		if (entity == null) {
 			return null;
 		}
-		return new EmpRegularWorkTime(new JpaEmpRegularLaborTimeGetMemento(entity));
+		return new EmpRegularLaborTime(new JpaEmpRegularLaborTimeGetMemento(entity));
 	}
 }

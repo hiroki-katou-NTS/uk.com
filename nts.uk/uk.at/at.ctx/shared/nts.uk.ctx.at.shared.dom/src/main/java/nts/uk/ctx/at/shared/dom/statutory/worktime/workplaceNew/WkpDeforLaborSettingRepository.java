@@ -26,7 +26,7 @@ public interface WkpDeforLaborSettingRepository {
 	 *
 	 * @param wkpDeforLaborSetting the wkp defor labor setting
 	 */
-	void add(WkpDeforLaborSetting wkpDeforLaborSetting);
+	void insert(WkpDeforLaborSetting wkpDeforLaborSetting);
 
 	/**
 	 * Update.
@@ -40,6 +40,6 @@ public interface WkpDeforLaborSettingRepository {
 	 *
 	 * @param wkpDeforLaborSetting the wkp defor labor setting
 	 */
-	void delete(String cid, String wkpId, int year);
+	void remove(String cid, String wkpId, int year);
 
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  */
 @Getter
 // 雇用別変形労働労働時間.
-public class EmpTransWorkTime extends AggregateRoot implements StatutoryWorkTimeSet {
+public class EmpTransLaborTime extends AggregateRoot implements StatutoryWorkTimeSet {
 
 	/** The company id. */
 	// 会社ID
@@ -36,7 +36,7 @@ public class EmpTransWorkTime extends AggregateRoot implements StatutoryWorkTime
 	 * @param memento
 	 *            the memento
 	 */
-	public EmpTransWorkTime(EmpTransWorkTimeGetMemento memento) {
+	public EmpTransLaborTime(EmpTransLaborTimeGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
 		this.workingTimeSet = memento.getWorkingTimeSet();
@@ -48,7 +48,7 @@ public class EmpTransWorkTime extends AggregateRoot implements StatutoryWorkTime
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(EmpTransWorkTimeSetMemento memento) {
+	public void saveToMemento(EmpTransLaborTimeSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setWorkingTimeSet(this.workingTimeSet);

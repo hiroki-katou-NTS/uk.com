@@ -9,28 +9,29 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
- * The Interface EmployeeSpeDeforLaborHourSetMemento.
+ * The Interface EmployeeSpeDeforLaborHourGetMemento.
  */
-public interface ShainSpeDeforLaborTimeSetMemento {
+public interface ShainTransLaborTimeGetMemento {
 
 	/**
-	 * Sets the company id.
+	 * Gets the company id.
 	 *
-	 * @param companyId the new company id
+	 * @return the company id
 	 */
-	void setCompanyId(CompanyId companyId);
+	CompanyId getCompanyId();
 
 	/**
-	 * Sets the employee id.
+	 * Gets the employee id.
 	 *
-	 * @param employeeId the new employee id
+	 * @return the employee id
 	 */
-	void setEmployeeId(EmployeeId employeeId);
+	EmployeeId getEmployeeId();
 
 	/**
-	 * Sets the working time setting new.
+	 * Gets the working time setting new.
 	 *
-	 * @param workingTimeSet the new working time setting new
+	 * @return the working time setting new
 	 */
-	void setWorkingTimeSet(WorkingTimeSetting workingTimeSet);
+	WorkingTimeSetting getWorkingTimeSet();
+
 }

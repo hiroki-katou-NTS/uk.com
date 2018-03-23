@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTim
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WeeklyUnit;
@@ -90,8 +90,8 @@ public class WorkingTimeSettingDto {
 	 * @param employeeId the employee id
 	 * @return the shain regular work time
 	 */
-	public ShainRegularWorkTime toShainRegularTimeDomain(String employeeId) {
-		return new ShainRegularWorkTime(new ShainRegularWorkTimeDtoMemento(employeeId, weeklyTime, dailyTime));
+	public ShainRegularLaborTime toShainRegularTimeDomain(String employeeId) {
+		return new ShainRegularLaborTime(new ShainRegularWorkTimeDtoMemento(employeeId, weeklyTime, dailyTime));
 	}
 	
 	/**
@@ -100,8 +100,8 @@ public class WorkingTimeSettingDto {
 	 * @param employeeId the employee id
 	 * @return the shain spe defor labor time
 	 */
-	public ShainSpeDeforLaborTime toShainSpeTimeDomain(String employeeId) {
-		return new ShainSpeDeforLaborTime(new ShainSpeDeforLaborTimeDtoMemento(employeeId, weeklyTime, dailyTime));
+	public ShainTransLaborTime toShainSpeTimeDomain(String employeeId) {
+		return new ShainTransLaborTime(new ShainSpeDeforLaborTimeDtoMemento(employeeId, weeklyTime, dailyTime));
 	}
 	
 	/**
@@ -110,15 +110,15 @@ public class WorkingTimeSettingDto {
 	 * @param employeeId the employee id
 	 * @return the emp trans work time
 	 */
-	public EmpTransWorkTime toEmpTransTimeDomain(String emplCode) {
-		return new EmpTransWorkTime(new EmpTransWorkTimeDtoMemento(emplCode, weeklyTime, dailyTime));
+	public EmpTransLaborTime toEmpTransTimeDomain(String emplCode) {
+		return new EmpTransLaborTime(new EmpTransWorkTimeDtoMemento(emplCode, weeklyTime, dailyTime));
 	}
 	
-	public EmpRegularWorkTime toEmpRegularTimeDomain(String emplCode) {
-		return new EmpRegularWorkTime(new EmpRegularWorkTimeDtoMemento(emplCode, weeklyTime, dailyTime));
+	public EmpRegularLaborTime toEmpRegularTimeDomain(String emplCode) {
+		return new EmpRegularLaborTime(new EmpRegularWorkTimeDtoMemento(emplCode, weeklyTime, dailyTime));
 	}
 	
-	private class EmpRegularWorkTimeDtoMemento implements EmpRegularWorkTimeGetMemento {
+	private class EmpRegularWorkTimeDtoMemento implements EmpRegularLaborTimeGetMemento {
 		
 		/** The empl code. */
 		private String emplCode;
@@ -172,7 +172,7 @@ public class WorkingTimeSettingDto {
 	/**
 	 * The Class EmpTransWorkTimeDtoMemento.
 	 */
-	private class EmpTransWorkTimeDtoMemento implements EmpTransWorkTimeGetMemento {
+	private class EmpTransWorkTimeDtoMemento implements EmpTransLaborTimeGetMemento {
 		
 		/** The empl code. */
 		private String emplCode;
@@ -311,7 +311,7 @@ public class WorkingTimeSettingDto {
 	/**
 	 * The Class ShainRegularWorkTimeDtoMemento.
 	 */
-	private class ShainRegularWorkTimeDtoMemento implements ShainRegularWorkTimeGetMemento {
+	private class ShainRegularWorkTimeDtoMemento implements ShainRegularLaborTimeGetMemento {
 
 		/** The weekly time. */
 		private WeeklyUnitDto weeklyTime;
@@ -366,7 +366,7 @@ public class WorkingTimeSettingDto {
 	/**
 	 * The Class ShainSpeDeforLaborTimeDtoMemento.
 	 */
-	private class ShainSpeDeforLaborTimeDtoMemento implements ShainSpeDeforLaborTimeGetMemento {
+	private class ShainSpeDeforLaborTimeDtoMemento implements ShainTransLaborTimeGetMemento {
 
 		/** The weekly time. */
 		private WeeklyUnitDto weeklyTime;

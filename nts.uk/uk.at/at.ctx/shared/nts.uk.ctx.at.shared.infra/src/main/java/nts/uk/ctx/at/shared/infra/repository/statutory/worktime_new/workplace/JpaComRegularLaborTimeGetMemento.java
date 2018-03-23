@@ -7,42 +7,40 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
-import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstWkpRegLaborTime;
 
 /**
- * The Class JpaWkpTransLaborTimeGetMemento.
+ * The Class JpaWkpRegularLaborTimeGetMemento.
  */
-public class JpaWkpTransLaborTimeGetMemento extends JpaDefaultSettingGetMemento implements WkpDeforLaborWorkTimeGetMemento {
+public class JpaWkpRegularLaborTimeGetMemento implements WkpRegularLaborTimeGetMemento {
 	
 	/** The entity. */
-	private KshstWkpTransLabTime entity;
-
+	private KshstWkpRegLaborTime entity;
+	
 	/**
-	 * Instantiates a new jpa wkp trans labor time get memento.
+	 * Instantiates a new jpa com regular labor time get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpTransLaborTimeGetMemento(KshstWkpTransLabTime entity) {
+	public JpaWkpRegularLaborTimeGetMemento(KshstWkpRegLaborTime entity) {
 		this.entity = entity;
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeGetMemento#getCompanyId()
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeGetMemento#getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshstWkpTransLabTimePK().getCid());
+		return new CompanyId(this.entity.getCid());
 	}
-	
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeGetMemento#getWorkingTimeSet()
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeGetMemento#getWorkingTimeSet()
 	 */
 	@Override
 	public WorkingTimeSetting getWorkingTimeSet() {
@@ -51,11 +49,4 @@ public class JpaWkpTransLaborTimeGetMemento extends JpaDefaultSettingGetMemento 
 		return new WorkingTimeSetting(weekyUnit, dailyTime);
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborWorkTimeGetMemento#getWorkplaceId()
-	 */
-	@Override
-	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.entity.getKshstWkpTransLabTimePK().getWkpId());
-	}
 }

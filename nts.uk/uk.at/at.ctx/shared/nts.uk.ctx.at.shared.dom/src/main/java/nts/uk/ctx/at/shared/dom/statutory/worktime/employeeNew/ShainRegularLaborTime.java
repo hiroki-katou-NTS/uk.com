@@ -12,11 +12,11 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.StatutoryWorkTimeSe
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
- * The Class EmployeeSpeDeforLaborHour.
+ * The Class EmployeeRegularWorkHour.
  */
 @Getter
-// 社員別変形労働労働時間
-public class ShainSpeDeforLaborTime extends AggregateRoot implements StatutoryWorkTimeSet {
+// 社員別通常勤務労働時間.
+public class ShainRegularLaborTime extends AggregateRoot implements StatutoryWorkTimeSet {
 
 	/** The company id. */
 	// 会社ID
@@ -27,16 +27,16 @@ public class ShainSpeDeforLaborTime extends AggregateRoot implements StatutoryWo
 	private EmployeeId employeeId;
 
 	/** The working time setting new. */
-	// 時間
+	// 会社労働時間設定
 	private WorkingTimeSetting workingTimeSet;
 
 	/**
-	 * Instantiates a new employee spe defor labor hour.
+	 * Instantiates a new employee regular work hour.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public ShainSpeDeforLaborTime(ShainSpeDeforLaborTimeGetMemento memento) {
+	public ShainRegularLaborTime(ShainRegularLaborTimeGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
 		this.workingTimeSet = memento.getWorkingTimeSet();
@@ -48,7 +48,7 @@ public class ShainSpeDeforLaborTime extends AggregateRoot implements StatutoryWo
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(ShainSpeDeforLaborTimeSetMemento memento) {
+	public void saveToMemento(ShainRegularLaborTimeSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setWorkingTimeSet(this.workingTimeSet);

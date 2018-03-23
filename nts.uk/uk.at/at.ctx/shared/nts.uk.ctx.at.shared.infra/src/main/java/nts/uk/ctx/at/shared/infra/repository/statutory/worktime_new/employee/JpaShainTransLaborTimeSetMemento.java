@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTimePK;
@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDef
  */
 @Getter
 public class JpaShainTransLaborTimeSetMemento extends JpaDefaultSettingSetMemento
-		implements ShainSpeDeforLaborTimeSetMemento {
+		implements ShainTransLaborTimeSetMemento {
 
 	/** The entity. */
 	private KshstShaTransLabTime entity;

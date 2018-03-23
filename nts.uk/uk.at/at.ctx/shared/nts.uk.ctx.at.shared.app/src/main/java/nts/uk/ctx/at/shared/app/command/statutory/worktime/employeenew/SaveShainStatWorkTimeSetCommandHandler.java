@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -49,7 +49,7 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 	
 	/** The shain spe defor labor time repository. */
 	@Inject
-	private ShainSpeDeforLaborTimeRepository shainSpeDeforLaborTimeRepository;
+	private ShainTransLaborTimeRepository shainSpeDeforLaborTimeRepository;
 
 	/* 
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -65,8 +65,8 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		ShainNormalSetting shainNormalSetting = command.getNormalSetting().toShainDomain(year, employeeId);
 		ShainFlexSetting shainFlexSetting = command.getFlexSetting().toShainDomain(year, employeeId);
 		ShainDeforLaborSetting shainDeforLaborSetting = command.getDeforLaborSetting().toShainDomain(year, employeeId);
-		ShainRegularWorkTime shainRegularLaborTime = command.getRegularLaborTime().toShainRegularTimeDomain(employeeId);
-		ShainSpeDeforLaborTime shainTransLaborTime = command.getTransLaborTime().toShainSpeTimeDomain(employeeId);
+		ShainRegularLaborTime shainRegularLaborTime = command.getRegularLaborTime().toShainRegularTimeDomain(employeeId);
+		ShainTransLaborTime shainTransLaborTime = command.getTransLaborTime().toShainSpeTimeDomain(employeeId);
 		
 		Optional<ShainNormalSetting> optComNormalSet = this.shainNormalSettingRepository.find(companyId, employeeId, year);
 		if(optComNormalSet.isPresent()){
@@ -89,14 +89,14 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 			this.shainDeforLaborSettingRepository.add(shainDeforLaborSetting);
 		}
 		
-		Optional<ShainRegularWorkTime> optComRegularSet = this.shainRegularWorkTimeRepository.find(companyId, employeeId);
+		Optional<ShainRegularLaborTime> optComRegularSet = this.shainRegularWorkTimeRepository.find(companyId, employeeId);
 		if(optComRegularSet.isPresent()){
 			this.shainRegularWorkTimeRepository.update(shainRegularLaborTime);
 		} else {
 			this.shainRegularWorkTimeRepository.add(shainRegularLaborTime);
 		}
 		
-		Optional<ShainSpeDeforLaborTime> optComTransSet = this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId);
+		Optional<ShainTransLaborTime> optComTransSet = this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId);
 		if(optComTransSet.isPresent()) {
 			this.shainSpeDeforLaborTimeRepository.update(shainTransLaborTime);
 		} else {

@@ -18,21 +18,21 @@ public interface EmpTransWorkTimeRepository {
 	 * @param emplId the empl id
 	 * @return the optional
 	 */
-	Optional<EmpTransWorkTime> find(String cid, String emplId);
+	Optional<EmpTransLaborTime> find(String cid, String emplId);
 
 	/**
 	 * Adds the.
 	 *
 	 * @param emplDeforLaborWorkingHour the empl defor labor working hour
 	 */
-	void add(EmpTransWorkTime emplDeforLaborWorkingHour);
+	void add(EmpTransLaborTime emplDeforLaborWorkingHour);
 
 	/**
 	 * Update.
 	 *
 	 * @param emplDeforLaborWorkingHour the empl defor labor working hour
 	 */
-	void update(EmpTransWorkTime emplDeforLaborWorkingHour);
+	void update(EmpTransLaborTime emplDeforLaborWorkingHour);
 
 	/**
 	 * Delete.

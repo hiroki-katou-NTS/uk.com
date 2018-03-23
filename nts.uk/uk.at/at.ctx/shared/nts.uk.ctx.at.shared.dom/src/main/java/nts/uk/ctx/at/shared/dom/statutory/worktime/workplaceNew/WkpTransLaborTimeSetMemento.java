@@ -9,9 +9,9 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 
 /**
- * The Interface WkpNormalWorkingHourSetMemento.
+ * The Interface WkpDeforLaborWorkHourSetMemento.
  */
-public interface WkpNormalWorkingTimeSetMemento {
+public interface WkpTransLaborTimeSetMemento {
 
 	/**
 	 * Sets the company id.
@@ -33,5 +33,4 @@ public interface WkpNormalWorkingTimeSetMemento {
 	 * @param workingTimeSet the new working time setting new
 	 */
 	void setWorkingTimeSet(WorkingTimeSetting workingTimeSet);
-
 }

@@ -6,10 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalWorkingTimeSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstWkpRegLaborTime;
 
 /**
  * The Class JpaWkpRegularLaborTimeSetMemento.
@@ -20,28 +19,22 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.Ksh
  *
  * @return the entity
  */
-
-/**
- * Gets the entity.
- *
- * @return the entity
- */
 @Getter
-public class JpaWkpNormalWorkingTimeSetMemento implements WkpNormalWorkingTimeSetMemento {
-
+public class JpaWkpRegularLaborTimeSetMemento implements WkpRegularLaborTimeSetMemento {
+	
 	/** The entity. */
 	private KshstWkpRegLaborTime entity;
 
 	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpRegularWorkTimeSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshstWkpRegLaborTimePK().setCid(companyId.v());
+		this.entity.setCid(companyId.v());
 	}
 
 	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.WkpRegularWorkTimeSetMemento#setWorkingTimeSet(nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.WkpRegularLaborTimeSetMemento#setWorkingTimeSet(nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting)
 	 */
 	@Override
 	public void setWorkingTimeSet(WorkingTimeSetting workingTimeSettingNew) {
@@ -50,10 +43,4 @@ public class JpaWkpNormalWorkingTimeSetMemento implements WkpNormalWorkingTimeSe
 		this.entity.setWeekStr(workingTimeSettingNew.getWeeklyTime().getStart().value);
 	}
 
-	@Override
-	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.entity.getKshstWkpRegLaborTimePK().setWkpId(workplaceId.v());
-	}
-
-	
 }
