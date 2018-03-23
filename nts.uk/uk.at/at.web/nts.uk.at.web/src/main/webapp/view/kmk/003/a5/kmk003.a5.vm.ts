@@ -510,7 +510,7 @@ module a5 {
             else//difftime or fixed
             {
                 let dataFixedDiff: any = null;
-                if (self.isDiffTime) {//difftime
+                if (self.isDiffTime()) {//difftime
                     dataFixedDiff = {
                         workForm: EnumWorkForm.REGULAR,
                         settingMethod:SettingMethod.DIFFTIME,
