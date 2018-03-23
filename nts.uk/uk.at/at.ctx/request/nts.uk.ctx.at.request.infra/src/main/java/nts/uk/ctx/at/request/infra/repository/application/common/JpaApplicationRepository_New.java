@@ -73,8 +73,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("appID", application.getAppID())
 			.setParameter("reversionReason", application.getReversionReason().v())
 			.setParameter("appReason", application.getAppReason().v())
-			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)
-			.setParameter("notReasonReal", application.getReflectionInformation().getNotReasonReal().isPresent() == true ? application.getReflectionInformation().getNotReasonReal().get() : null)
+			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)			
 			.executeUpdate();
 		this.getEntityManager().flush();
 	}
