@@ -871,22 +871,48 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 		}
 		List<Closure> lstClosureFil = lstClosure.stream().filter(c-> c.getClosureHistories() != null).collect(Collectors.toList());
-		Closure histMin = this.findHistMin(lstClosureFil);
-		CurrentMonth month = histMin.getClosureMonth();
+		//取得した、締め日及び当月より、締め日付を作成
 		GeneralDate start = null;
-		//最小日付に＋１日－１ヵ月して開始日付とする
-		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
-			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
-			start = tmp.addMonths(-1);
-		}else{//末締めではない場合
-			GeneralDate tmp = GeneralDate.
-					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
-			GeneralDate date = tmp.addDays(1);
-			start = date.addMonths(-1);
+//		List<GeneralDate>  lstDate = new ArrayList<>();
+		GeneralDate minDate = null;
+		for (Closure closure : lstClosureFil) {
+			List<ClosureHistory> closureHist = closure.getClosureHistories();
+			CurrentMonth month = closure.getClosureMonth();
+			for (ClosureHistory closureHistory : closureHist) {
+				if(closureHistory.getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+					GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+					start = tmp.addMonths(-1);
+				}else{//末締めではない場合
+					GeneralDate tmp = GeneralDate.
+							ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), closure.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+					GeneralDate date = tmp.addDays(1);
+					start = date.addMonths(-1);
+				}
+				if(minDate == null){
+					minDate = start;
+				}else{
+					minDate = start.afterOrEquals(minDate) ? minDate : start;
+				}
+//				lstDate.add(start);
+			}
 		}
+//		List<GeneralDate> lstFilter = lstDate.sort((x, y) -> x.equals(y));
+//		Closure histMin = this.findHistMin(lstClosureFil);
+//		CurrentMonth month = histMin.getClosureMonth();
+//		GeneralDate start = null;
+		//最小日付に＋１日－１ヵ月して開始日付とする
+//		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+//			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+//			start = tmp.addMonths(-1);
+//		}else{//末締めではない場合
+//			GeneralDate tmp = GeneralDate.
+//					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+//			GeneralDate date = tmp.addDays(1);
+//			start = date.addMonths(-1);
+//		}
 		//開始日付の4か月後を終了日付として取得
-		GeneralDate end = start.addMonths(4);
-		return new DatePeriod(start,end);
+		GeneralDate end = minDate.addMonths(4);
+		return new DatePeriod(minDate,end);
 	}
 	/**
 	 * find closure history min
