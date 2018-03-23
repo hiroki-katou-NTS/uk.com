@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal;
 
-import javax.ejb.Stateless;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
@@ -22,7 +20,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @param <T>
  *            the generic type
  */
-@Stateless
 public class JpaFlexMonthWorkTimeAggrSetGetMemento<T extends KrcstFlexMCalSet>
 		implements FlexMonthWorkTimeAggrSetGetMemento {
 

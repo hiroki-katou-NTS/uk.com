@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.DeforLaborCalSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforLaborSettlementPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSetGetMemento;
@@ -19,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.common.Month;
  * @param <T>
  *            the generic type
  */
-@Stateless
 public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 		implements DeforWorkTimeAggrSetGetMemento {
 

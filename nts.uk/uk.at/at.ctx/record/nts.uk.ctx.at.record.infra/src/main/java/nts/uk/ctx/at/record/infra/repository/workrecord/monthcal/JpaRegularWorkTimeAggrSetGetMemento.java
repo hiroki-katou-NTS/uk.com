@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSetGetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstRegMCalSet;
@@ -16,7 +14,6 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstRegMCalSet;
  * @param <T>
  *            the generic type
  */
-@Stateless
 public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet>
 		implements RegularWorkTimeAggrSetGetMemento {
 
