@@ -6,7 +6,8 @@ module nts.uk.at.view.kmk011.g {
         var path: any = {
             saveComHist: "at/record/divergence/time/history/companyDivergenceRefTime/save",
             saveWkTypeHist: "at/record/divergence/time/history/workTypeDivergenceRefTime/save",
-            findByHistId: "at/record/divergence/time/history/companyDivergenceRefTime/find"
+            findComHistByHistId: "at/record/divergence/time/history/companyDivergenceRefTime/find",
+            findWkTypeHistByHistId: "at/record/divergence/time/history/workTypeDivergenceRefTime/find"
         };
         
        export function saveComHist(data: model.CreateComHistoryCommand): JQueryPromise<any> {
@@ -17,8 +18,12 @@ module nts.uk.at.view.kmk011.g {
             return nts.uk.request.ajax("at", path.saveWkTypeHist, data);
         }
         
-        export function findByHistoryId(historyId: string): JQueryPromise<model.CreateComHistoryCommand> {
-            return nts.uk.request.ajax("at", path.findByHistId + "/" + historyId);
+        export function findComHistByHistoryId(historyId: string): JQueryPromise<model.CreateComHistoryCommand> {
+            return nts.uk.request.ajax("at", path.findComHistByHistId + "/" + historyId);
+        }
+        
+        export function findWkTypeHistByHistoryId(historyId: string): JQueryPromise<model.CreateWkTypeHistoryCommand> {
+            return nts.uk.request.ajax("at", path.findWkTypeHistByHistId + "/" + historyId);
         }
     }
     

@@ -23,13 +23,27 @@ module nts.uk.at.view.kmk011.g {
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-
-                service.findByHistoryId(nts.uk.ui.windows.getShared('history')).done((res: CreateHistoryCommand) => {
-                    _self.startDate(res.startDate);
-                    _self.endDate(res.endDate);
-                    dfd.resolve();
-                });
-
+                
+                let mode: number = nts.uk.ui.windows.getShared('settingMode');
+                switch (mode) {
+                    // fill company Hist
+                    case HistorySettingMode.COMPANY:
+                        service.findComHistByHistoryId(nts.uk.ui.windows.getShared('history')).done((res: CreateHistoryCommand) => {
+                            _self.startDate(res.startDate);
+                            _self.endDate(res.endDate);
+                            dfd.resolve();
+                        });
+                        break;
+                        
+                    // fill work type Hist
+                    case HistorySettingMode.WORKTYPE:
+                        service.findWkTypeHistByHistoryId(nts.uk.ui.windows.getShared('history')).done((res: CreateWkTypeHistoryCommand) => {
+                            _self.startDate(res.startDate);
+                            _self.endDate(res.endDate);
+                            dfd.resolve();
+                        });
+                        break;
+                }
                 return dfd.promise();
             }
 
