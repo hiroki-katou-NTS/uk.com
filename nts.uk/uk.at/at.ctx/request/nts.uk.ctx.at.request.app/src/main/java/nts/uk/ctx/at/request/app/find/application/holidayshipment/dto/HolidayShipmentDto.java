@@ -23,39 +23,34 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- * 
- * @author Sonnlb
- *
- */
 public class HolidayShipmentDto {
 
 	/**
 	 * 申請承認設定
 	 */
-	ApplicationSettingDto applicationSetting;
+	private ApplicationSettingDto applicationSetting;
 
 	/**
 	 * 雇用別申請承認設定
 	 */
-	List<AppEmploymentSettingDto> appEmploymentSettings;
+	private List<AppEmploymentSettingDto> appEmploymentSettings;
 	/**
 	 * 申請承認機能設定
 	 */
-	ApprovalFunctionSettingDto approvalFunctionSetting;
+	private ApprovalFunctionSettingDto approvalFunctionSetting;
 	/**
 	 * 基準日
 	 */
-	GeneralDate refDate;
+	private GeneralDate refDate;
 
 	/**
 	 * 振出用勤務種類
 	 */
-	List<WorkTypeDto> takingOutWkTypes;
+	private List<WorkTypeDto> takingOutWkTypes;
 	/**
 	 * 振休用勤務種類
 	 */
-	List<WorkTypeDto> holidayWkTypes;
+	private List<WorkTypeDto> holidayWkTypes;
 	/**
 	 * 申請表示設定
 	 */
@@ -64,18 +59,18 @@ public class HolidayShipmentDto {
 	/**
 	 * 申請者社員ID
 	 */
-	String employeeID;
+	private String employeeID;
 
 	/**
 	 * 社員名
 	 */
-	String employeeName;
+	private String employeeName;
 
 	private boolean manualSendMailAtr;
 
-	List<ApplicationReasonDto> appReasons;
+	private List<ApplicationReasonDto> appReasons;
 
-	ChangeWorkTypeDto changeWkType;
+	private ChangeWorkTypeDto changeWkType;
 
 	/**
 	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null
@@ -84,18 +79,21 @@ public class HolidayShipmentDto {
 	/**
 	 * 振休振出申請設定
 	 */
-	WithDrawalReqSetDto drawalReqSet;
+	private WithDrawalReqSetDto drawalReqSet;
 
 	/**
 	 * 振休申請
 	 * 
 	 */
-	AbsenceLeaveAppDto absApp;
+	private AbsenceLeaveAppDto absApp;
 
 	/**
 	 * 振出申請
 	 */
-	RecruitmentAppDto recApp;
+	private RecruitmentAppDto recApp;
 
+	/**
+	 * 申請
+	 */
 	private ApplicationDto_New application;
 }

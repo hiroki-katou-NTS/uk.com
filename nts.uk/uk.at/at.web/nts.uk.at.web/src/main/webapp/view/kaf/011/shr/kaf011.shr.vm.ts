@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf011.shr {
     import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
+    import block = nts.uk.ui.block;
 
     export module common {
 
@@ -104,7 +105,9 @@ module nts.uk.at.view.kaf011.shr {
             constructor() {
                 let self = this;
                 self.wkTypeCD.subscribe((newWkType) => {
+
                     if (self.wkTimeCD()) {
+                        block.grayout();
                         let changeWkTypeParam = {
                             wkTypeCD: newWkType,
                             wkTimeCD: self.wkTimeCD()
@@ -117,6 +120,8 @@ module nts.uk.at.view.kaf011.shr {
                                     self.wkTime1().endTime(data.timezoneUseDtos[0].end);
                                 }
                             }
+                        }).always(() => {
+                            block.clear();
                         });
                     }
                 });

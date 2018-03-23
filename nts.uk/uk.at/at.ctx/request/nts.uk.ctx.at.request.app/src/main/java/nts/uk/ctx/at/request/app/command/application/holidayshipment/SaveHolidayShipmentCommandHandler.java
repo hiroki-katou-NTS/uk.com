@@ -17,8 +17,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -78,7 +78,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+	private ApplicationSettingRepository applicationSettingRepository;
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
 	@Inject
@@ -109,6 +109,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	private RecruitmentAppRepository recRepo;
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
+	@Inject
+	private ApplicationApprovalService_New appImp;
 
 	String companyID;
 
@@ -131,10 +133,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		recDate = GeneralDate.fromString(command.getRecCmd().getAppDate(), DATE_FORMAT);
 		// アルゴリズム「振休振出申請の新規登録」を実行する
 		createNewForHolidayBreakge(command);
-		if (true) {
-
-			throw new BusinessException("Msg_15");
-		}
+		
 
 	}
 
@@ -244,10 +243,10 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private String createNewAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
-		String absAppID = IdentifierUtil.randomUniqueId();
-		Application_New absApplication = Application_New.firstCreate(absAppID,
+		Application_New absApplication = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absDate, appType, sID,
 				new AppReason(appReason));
+		String absAppID = absApplication.getAppID();
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		CmProcessBeforeReg(command, absApplication);
 		// ドメイン「振出申請」を1件登録する
@@ -262,18 +261,22 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				EnumAdaptor.valueOf(absAppCmd.getChangeWorkHoursType(), NotUseAtr.class),
 				new WorkLocationCD(absAppCmd.getWorkLocationCD()), new WorkTimeCode(wkTime1Cmd.getWkTimeCD()),
 				workTime1, workTime2, Collections.emptyList(), Collections.emptyList());
-		appRepo.insert(absApplication);
+		appImp.insert(absApplication);
 		absRepo.insert(absApp);
+		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
+		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, absApplication);
+
 		return absAppID;
 
 	}
 
 	private String createNewRecApp(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「登録前共通処理（新規）」を実行する
-		String recAppID = IdentifierUtil.randomUniqueId();
-		Application_New recApplication = Application_New.firstCreate(recAppID,
+		Application_New recApplication = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), recDate, appType, sID,
 				new AppReason(appReason));
+		String recAppID = recApplication.getAppID();
+
 		CmProcessBeforeReg(command, recApplication);
 		// ドメイン「振出申請」を1件登録する
 		RecruitmentAppCommand recAppCmd = command.getRecCmd();
@@ -290,16 +293,16 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 						new WorkTime(wkTime2Cmd.getEndTime()),
 						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class)),
 				Collections.emptyList());
-		appRepo.insert(recApplication);
+		appImp.insert(recApplication);
 		recRepo.insert(recApp);
+		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
+		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, recApplication);
 		return recAppID;
 	}
 
 	private void CmProcessBeforeReg(SaveHolidayShipmentCommand command, Application_New application) {
 		// アルゴリズム「新規画面登録前の処理」を実行する
 		processBeforeRegister.processBeforeRegister(application);
-		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, application);
 
 	}
 
@@ -391,7 +394,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		// アルゴリズム「勤務種類別代休消化数の取得」を実行する
 		BigDecimal substitutionDay = getByWorkType(wkTypeCD, WorkTypeClassification.SubstituteHoliday);
 
-		// TODO comfirm tai lieu SubTargetDigestion
+		// TODO liên quan đến domain 暫定休出管理データ
 
 	}
 
@@ -477,7 +480,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private void workTypeContradictionCheck() {
-		// TODO tài liệu có vấn đề
+		// TODO tài liệu bị trống
 
 	}
 

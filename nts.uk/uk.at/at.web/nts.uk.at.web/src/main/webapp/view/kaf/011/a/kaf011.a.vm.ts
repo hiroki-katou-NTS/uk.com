@@ -5,9 +5,10 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import formatDate = nts.uk.time.formatDate;
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
+    import block = nts.uk.ui.block;
 
     export class ViewModel {
-        screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
+        screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         prePostTypes = ko.observableArray([
             { code: 0, text: text('KAF011_14') },
             { code: 1, text: text('KAF011_15') }]);
@@ -50,7 +51,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
         }
         changeDate() {
-
+            block.invisible();
             let vm: ViewModel = __viewContext['viewModel'],
                 changeDateParam = {
                     holidayDate: vm.holidayWk().appDate(),
@@ -61,10 +62,14 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
             service.changeDay(changeDateParam).done((data) => {
                 vm.employeeID(data.employeeID);
-            });
+            }).always(() => {
+                block.clear();
+
+            });;
         }
 
         start(): JQueryPromise<any> {
+            block.invisible();
             var self = this,
                 dfd = $.Deferred(),
                 startParam = {
@@ -80,6 +85,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
+                block.clear();
                 dfd.resolve();
 
             });
@@ -118,6 +124,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
 
         register() {
+            block.invisible();
             let self = this,
 
                 saveCmd: common.ISaveHolidayShipmentCommand = {
@@ -136,10 +143,14 @@ module nts.uk.at.view.kaf011.a.screenModel {
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
 
             service.save(saveCmd).done(() => {
+                dialog({ messageId: 'Msg_15' });
+
 
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
 
+            }).always(() => {
+                block.clear();
             });
         }
 
