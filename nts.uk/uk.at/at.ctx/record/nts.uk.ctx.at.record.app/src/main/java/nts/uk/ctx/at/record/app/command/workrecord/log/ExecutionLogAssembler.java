@@ -33,13 +33,12 @@ public class ExecutionLogAssembler {
 	@Inject 
 	CaseSpecExeContentRepository caseSpecExeContentRepository;
 	
-	public List<ExecutionLog> fromDTO(AddEmpCalSumAndTargetCommand command) {
-		String empCalAndSumExecLogID = IdentifierUtil.randomUniqueId();
+	public List<ExecutionLog> fromDTO(AddEmpCalSumAndTargetCommand command, String empCalAndSumExecLogID) {
 		
 		List<ExecutionLog> result = Collections.emptyList();
 		
 		if (command.getScreen().equals("B")) {
-			result.addAll(buildExecutionLog(empCalAndSumExecLogID, command));
+			result = buildExecutionLog(empCalAndSumExecLogID, command);
 		} else if (command.getScreen().equals("J")) {
 			CaseSpecExeContent caseSpecExeContent = caseSpecExeContentRepository.getCaseSpecExeContentById(command.getCaseSpecExeContentID()).get();
 			

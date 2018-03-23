@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**
  * The Class CompensatoryTransferSettingDto.
@@ -38,8 +38,8 @@ public class CompensatoryTransferSettingDto {
 	 *
 	 * @return the transfer setting
 	 */
-	public TransferSetting toDomain() {
-		return new TransferSetting(new TransferSettingGetMementoImpl(this));
+	public SubHolTransferSet toDomain() {
+		return new SubHolTransferSet(new TransferSettingGetMementoImpl(this));
 	}
 
 	/**

@@ -7,7 +7,7 @@ public interface WidgetService {
 	boolean isExist(String companyID, String toppagePartID);
 
 
-	void createWidget(OptionalWidget widget);
+	void addWidget(OptionalWidget widget);
 
 
 	void updateWidget(OptionalWidget widget);

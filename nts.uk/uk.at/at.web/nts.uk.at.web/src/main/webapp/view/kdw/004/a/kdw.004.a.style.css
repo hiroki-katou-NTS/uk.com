@@ -12,7 +12,7 @@ div[class='ui-widget-header ui-helper-reset'] {
 }
 
 .content-wrap {
-	width: 1306px;
+	width: 1250px;
 }
 
 .ui-iggrid-header {
@@ -23,7 +23,7 @@ div[class='ui-widget-header ui-helper-reset'] {
 	background-color: #BFEA60;
 	margin: -2px;
 	display: block;
-	height: 21px;
+	height: 100%;
 	text-align: center !IMPORTANT;
 }
 
@@ -31,7 +31,7 @@ div[class='ui-widget-header ui-helper-reset'] {
 	color: red !IMPORTANT;
 	margin: -2px;
 	display: block;
-	height: 21px;
+	height: 100%;
 	font-weight: bold;
 	text-align: center !IMPORTANT;
 }
@@ -39,7 +39,7 @@ div[class='ui-widget-header ui-helper-reset'] {
 .cannotApproved {
 	margin: -2px;
 	display: block;
-	height: 21px;
+	height: 100%;
 	text-align: center !IMPORTANT;
 }
 
@@ -47,11 +47,11 @@ div[class='ui-widget-header ui-helper-reset'] {
 	background-color: #DDDDD2;
 	margin: -2px;
 	display: block;
-	height: 21px;
+	height: 100%;
 }
 
 #colorBtn {
-	margin: 10px 0 10px 1096px;
+	margin: 10px 0 10px 1111px;
 }
 
 .nts-legendbutton-panel {

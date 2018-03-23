@@ -44,16 +44,23 @@ public class GrantHolidayTblFinder {
 	 */
 	public List<CalculateDateDto> calculateGrantDate(CalculateGrantHdTblParam param) {
 		List<CalculateDateDto> result = new ArrayList<>();
+		List<LengthServiceTbl> lengthServiceData = new ArrayList<>();
 		
 		// calculate date
 		for (CalculateDateDto item : param.getGrantHolidayTblList()) {
 			LengthServiceTbl lengthServiceTbl = LengthServiceTbl.createFromJavaType(item.getCompanyId(), item.getYearHolidayCode(), item.getGrantNum(), 
 					item.getAllowStatus(), item.getStandGrantDay(), item.getYear(), item.getMonth());
+			
+			lengthServiceData.add(lengthServiceTbl);
+			
 			lengthServiceTbl.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
+			
 			item.setGrantDate(lengthServiceTbl.getGrantDate());
 			
 			result.add(item);
 		}
+		
+		LengthServiceTbl.validateInput(lengthServiceData);
 		
 		return result;
 	}

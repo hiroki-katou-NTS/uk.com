@@ -828,6 +828,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var count = 0;
             
             self.A7_4SelectedRuleCode.subscribe(function(value) {
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
                 if(value == 0){
                     self.symbols("%");
                     self.limitedValue01("100");

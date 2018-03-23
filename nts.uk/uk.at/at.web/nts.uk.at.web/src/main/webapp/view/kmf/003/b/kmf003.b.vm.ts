@@ -182,6 +182,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         calculate() {
             var self = this;
+            var checkErr = true;
             
             if (nts.uk.ui.errors.hasError()) {
                 return;    
@@ -213,6 +214,16 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
                     return;
                 }
+                
+                _.forEach(grantHolidayTblList, function(item) {
+                    if(item.month == null && item.year == null) {
+                        checkErr = false;
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
+                            $('#b2_1').focus();
+                        });
+                        return;
+                    }
+                });
                     
                 var dataTranfer: any = {
                     grantHolidayTblList: grantHolidayTblList,
@@ -221,40 +232,42 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     simultaneousGrantDate: dateSelected
                 }
                 
-                service.calculateGrantDate(dataTranfer).done(function(res) {
-                    var results = [];
-                    for(var i = 0; i < res.length; i++){
-                        var item : IItem = {
-                            grantYearHolidayNo: res[i].grantNum,
-                            conditionNo: res[i].conditionNo,
-                            yearHolidayCode: res[i].yearHolidayCode,
-                            lengthOfServiceYears: res[i].year,
-                            lengthOfServiceMonths: res[i].month,
-                            grantDays: res[i].grantDays,
-                            limitedTimeHdDays: res[i].limitTimeHd,
-                            limitedHalfHdCnt: res[i].limitDayYear,
-                            grantReferenceDate: res[i].standGrantDay,
-                            grantSimultaneity: res[i].allowStatus,
-                            grantDate: res[i].grantDate
-                        };
-                        
-                        results.push(new Item(item));
-                    }
-                    
-                    self.bindData(results);
-                }).fail(function(error){
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
-                        if(error.messageId === "Msg_266") {
-                            $('.year-input1').focus();
-                        } else if(error.messageId === "Msg_268") {
+                if(checkErr) {
+                    service.calculateGrantDate(dataTranfer).done(function(res) {
+                        var results = [];
+                        for(var i = 0; i < res.length; i++){
+                            var item : IItem = {
+                                grantYearHolidayNo: res[i].grantNum,
+                                conditionNo: res[i].conditionNo,
+                                yearHolidayCode: res[i].yearHolidayCode,
+                                lengthOfServiceYears: res[i].year,
+                                lengthOfServiceMonths: res[i].month,
+                                grantDays: res[i].grantDays,
+                                limitedTimeHdDays: res[i].limitTimeHd,
+                                limitedHalfHdCnt: res[i].limitDayYear,
+                                grantReferenceDate: res[i].standGrantDay,
+                                grantSimultaneity: res[i].allowStatus,
+                                grantDate: res[i].grantDate
+                            };
                             
-                        } else if(error.messageId === "Msg_269") {
-                            $('.year-input1').focus();
-                        } else if(error.messageId === "Msg_270") {
-                            $('#b2_1').focus();
+                            results.push(new Item(item));
                         }
-                    }); 
-                });
+                        
+                        self.bindData(results);
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                            if(error.messageId === "Msg_266") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_268") {
+                                
+                            } else if(error.messageId === "Msg_269") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_270") {
+                                $('#b2_1').focus();
+                            }
+                        }); 
+                    });
+                }
             } else {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_272" }).then(() => {
                     $('#reference-date').focus();
