@@ -26,9 +26,12 @@ public interface WorkTypeDivergenceReferenceTimeHistoryRepository {
 	 *            the work type code
 	 * @param datePeriod
 	 *            the date period
+	 * @param histId
+	 *            the hist id
 	 * @return the integer
 	 */
-	public Integer countByDatePeriod(String companyId, BusinessTypeCode workTypeCode, DatePeriod datePeriod);
+	public Integer countByDatePeriod(String companyId, BusinessTypeCode workTypeCode, DatePeriod datePeriod,
+			String histId);
 
 	/**
 	 * Find all.

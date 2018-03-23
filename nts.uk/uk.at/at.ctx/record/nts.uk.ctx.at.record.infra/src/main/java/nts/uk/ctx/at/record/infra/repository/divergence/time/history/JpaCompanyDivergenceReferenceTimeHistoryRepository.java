@@ -14,6 +14,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
@@ -39,7 +41,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 * .GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Integer countByDatePeriod(String companyId, DatePeriod datePeriod) {
+	public Integer countByDatePeriod(String companyId, DatePeriod datePeriod, String histId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
@@ -55,6 +57,9 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+		if (!StringUtils.isEmpty(histId)) {
+			predicates.add(criteriaBuilder.notEqual(root.get(KrcstComDrtHist_.histId), histId));
+		}
 		predicates.add(criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate));
 		predicates.add(criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate));
 

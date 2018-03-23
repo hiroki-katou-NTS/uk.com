@@ -11,12 +11,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist_;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -36,7 +37,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 	 * time.GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Integer countByDatePeriod(String companyId, BusinessTypeCode workTypeCode, DatePeriod datePeriod) {
+	public Integer countByDatePeriod(String companyId, BusinessTypeCode workTypeCode, DatePeriod datePeriod, String histId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
@@ -53,6 +54,9 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
 		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode.v()));
+		if (!StringUtils.isEmpty(histId)) {
+			predicates.add(criteriaBuilder.notEqual(root.get(KrcstWorktypeDrtHist_.histId), histId));
+		}
 		predicates.add(criteriaBuilder.between(root.get(KrcstWorktypeDrtHist_.strD.getName()), startDate, endDate));
 		predicates.add(criteriaBuilder.between(root.get(KrcstWorktypeDrtHist_.endD.getName()), startDate, endDate));
 

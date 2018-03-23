@@ -56,7 +56,7 @@ public class ComDivergenceRefTimeHistSaveCommandHandler extends CommandHandler<C
 		// find duplicate history
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"),
 				GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"));
-		Integer count = this.historyRepo.countByDatePeriod(companyId, period);
+		Integer count = this.historyRepo.countByDatePeriod(companyId, period, command.getHistoryId());
 
 		// convert to domain
 		CompanyDivergenceReferenceTimeHistory domain = new CompanyDivergenceReferenceTimeHistory(command);
