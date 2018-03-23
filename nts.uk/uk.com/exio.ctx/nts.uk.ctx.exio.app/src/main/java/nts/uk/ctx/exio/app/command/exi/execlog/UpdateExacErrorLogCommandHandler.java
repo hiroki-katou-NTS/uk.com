@@ -7,15 +7,11 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
-import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
 
 @Stateless
 @Transactional
 public class UpdateExacErrorLogCommandHandler extends CommandHandler<ExacErrorLogCommand>
 {
-    
-    @Inject
-    private ExacErrorLogRepository repository;
     
     @Override
     protected void handle(CommandHandlerContext<ExacErrorLogCommand> context) {

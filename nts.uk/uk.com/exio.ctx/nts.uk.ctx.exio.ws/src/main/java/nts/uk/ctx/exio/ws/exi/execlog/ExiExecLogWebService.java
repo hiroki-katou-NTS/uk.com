@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.exio.ws.exi.execlog;
 
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,14 +29,14 @@ import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
 public class ExiExecLogWebService extends WebService {
 	@Inject
 	private ExacExeResultLogFinder exacExeResultLogFinder;
-	
+
 	@Inject
 	private ExacErrorLogFinder exacErrorLogFinder;
-	
-    @Inject
-    private ExiExecLogExportService exportService;
-    
-    /**
+
+	@Inject
+	private ExiExecLogExportService exportService;
+
+	/**
 	 * @param externalProcessId
 	 * @return
 	 */
@@ -46,16 +45,16 @@ public class ExiExecLogWebService extends WebService {
 	public List<ExacExeResultLogDto> getLogResults(@PathParam("processId") String externalProcessId) {
 		return this.exacExeResultLogFinder.getExacExeResultLogByProcessId(externalProcessId);
 	}
-	
+
 	@Path("getErrorLogs/{processId}")
 	@POST
 	public List<ExacErrorLogDto> getExacErrorLogByProcessId(@PathParam("processId") String externalProcessId) {
-    	return this.exacErrorLogFinder.getExacErrorLogByProcessId(externalProcessId);
-    }
-	
-    @POST
-    @Path("export")
-    public ExportServiceResult exportCsvError(List<ErrorContentDto> command) {    	
-        return this.exportService.start(command);
-    }
+		return this.exacErrorLogFinder.getExacErrorLogByProcessId(externalProcessId);
+	}
+
+	@POST
+	@Path("export")
+	public ExportServiceResult exportCsvError(List<ErrorContentDto> command) {
+		return this.exportService.start(command);
+	}
 }

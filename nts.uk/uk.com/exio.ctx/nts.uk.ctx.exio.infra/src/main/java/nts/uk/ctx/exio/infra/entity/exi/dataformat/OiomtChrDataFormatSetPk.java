@@ -11,18 +11,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 文字型データ形式設定: 主キー情報
-*/
+ * 文字型データ形式設定: 主キー情報
+ */
 
 @Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class OiomtChrDataFormatSetPk implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
+public class OiomtChrDataFormatSetPk implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * 会社ID
 	 */
 	@Basic(optional = false)
@@ -49,5 +48,5 @@ public class OiomtChrDataFormatSetPk implements Serializable
 	@Basic(optional = false)
 	@Column(name = "ACCEPT_ITEM_NUM")
 	public int acceptItemNumber;
-    
+
 }

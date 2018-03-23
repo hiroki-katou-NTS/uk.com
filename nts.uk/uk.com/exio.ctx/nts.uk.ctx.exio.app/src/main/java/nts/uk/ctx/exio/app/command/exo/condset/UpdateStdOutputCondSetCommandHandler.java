@@ -11,16 +11,18 @@ import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 @Stateless
 @Transactional
-public class UpdateStdOutputCondSetCommandHandler extends CommandHandler<StdOutputCondSetCommand>
-{
-    
-    @Inject
-    private StdOutputCondSetRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
-        StdOutputCondSetCommand updateCommand = context.getCommand();
-        repository.update(StdOutputCondSet.createFromJavaType(updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getCategoryId(), updateCommand.getDelimiter(), updateCommand.getItemOutputName(), updateCommand.getAutoExecution(), updateCommand.getConditionSetName(), updateCommand.getConditionOutputName(), updateCommand.getStringFormat()));
-    
-    }
+public class UpdateStdOutputCondSetCommandHandler extends CommandHandler<StdOutputCondSetCommand> {
+
+	@Inject
+	private StdOutputCondSetRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
+		StdOutputCondSetCommand updateCommand = context.getCommand();
+		repository.update(StdOutputCondSet.createFromJavaType(updateCommand.getCid(), updateCommand.getConditionSetCd(),
+				updateCommand.getCategoryId(), updateCommand.getDelimiter(), updateCommand.getItemOutputName(),
+				updateCommand.getAutoExecution(), updateCommand.getConditionSetName(),
+				updateCommand.getConditionOutputName(), updateCommand.getStringFormat()));
+
+	}
 }

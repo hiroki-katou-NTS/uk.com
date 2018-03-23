@@ -35,12 +35,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         fileDataTotalLine: KnockoutObservable<number> = ko.observable(null);
         onchange: (filename) => void;
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
-        
+
         constructor(data: any) {
             var self = this;
             let item = _.find(model.getSystemTypes(), x => { return x.code == data.systemType; });
             self.systemType = item;
-            
+
             self.stdCondSetCd(data.conditionCode);
 
             self.listCategory = ko.observableArray([]);
@@ -100,7 +100,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
-                    
                 } else {
                     return;
                 }
@@ -401,9 +400,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
                             });
                             self.listCategory(_rsList);
+                            if (!nts.uk.text.isNullOrEmpty(cond.categoryId)) {
+                                self.enableCategory(false);
+                                self.selectedCategory(self.stdCondSet().categoryId());
+                            } else {
+                                self.selectedCategory(self.listCategory()[0].categoryId);
+                            }
                             service.getAllData(self.systemType.code, self.stdCondSet().conditionSettingCode()).done(function(data: Array<any>) {
                                 if (data && data.length) {//co du lieu dang ki
-                                    self.selectedCategory(self.stdCondSet().categoryId());
                                     self.loadCategoryItemData(self.stdCondSet().categoryId()).done(() => {
                                         let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {
                                         let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
@@ -466,12 +470,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                             self.listSelectedCategoryItem.push(item);
                                             self.listCategoryItem.remove(item);
                                         });
-                                        self.enableCategory(false);
                                     });
-                                    
                                 } else {//chua co du lieu, dang ki moi
                                     self.startLoad(false);
-                                    self.selectedCategory(self.listCategory()[0].categoryId);
                                 }
                                 dfd.resolve();
                             }).fail(function(error) {
@@ -488,15 +489,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
-                }                
+                }
             }).fail((error) => {
                 alertError(error);
             }).always(() => {
                 block.clear();
-            });         
+            });
             return dfd.promise();
         }
-        
+
         private loadCategoryItemData(categoryId: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -535,7 +536,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 });
             }
         }
-        
+
         private screenFileCheck(): boolean {
             let self = this;
             //check csvDataLineNumber Not input or exceeding the number of lines of CSV data => msg 900

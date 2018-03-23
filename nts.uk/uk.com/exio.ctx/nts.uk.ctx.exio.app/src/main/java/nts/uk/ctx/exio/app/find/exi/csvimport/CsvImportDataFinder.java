@@ -36,7 +36,7 @@ public class CsvImportDataFinder {
 			// get input stream by fileId
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 
-			List<List<String>> data  = FileUtil.getRecordByIndex(inputStream, dataLineNum, startLine);
+			List<List<String>> data = FileUtil.getRecordByIndex(inputStream, dataLineNum, startLine);
 			inputStream.close();
 			for (int i = 0; i < data.size(); i++) {
 				result.add(new CsvMappingDataDto(i + 1, data.get(i).get(0), data.get(i).get(1)));
