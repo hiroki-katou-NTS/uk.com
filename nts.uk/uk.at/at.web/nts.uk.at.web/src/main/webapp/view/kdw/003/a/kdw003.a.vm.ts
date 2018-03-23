@@ -1229,30 +1229,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         signAll() {
             var self = this;
-            var lstSign = self.lstDisableSign();
-            var lstApp = self.lstDisableApproval();
-            _.forEach(self.dailyPerfomanceData(), (data) => {
-                if (self.isDisableSign("_"+data.id, lstSign).length == 0) {
-                    $("#dpGrid").ntsGrid("updateRow", "_" + data.id, { sign: true });
-                }
-                if (self.isDisableSign("_"+data.id, lstApp).length == 0) {
-                    $("#dpGrid").ntsGrid("updateRow", "_" + data.id, { approval: true });
-                }
-            });
-            self.dailyPerfomanceData.valueHasMutated();
+            $("#dpGrid").ntsGrid("checkAll", "sign");
+            $("#dpGrid").ntsGrid("checkAll", "approval");
         }
         releaseAll() {
             var self = this;
-            var lstSign = self.lstDisableSign();
-            var lstApp = self.lstDisableApproval();
-           _.forEach(self.dailyPerfomanceData(), (data) => {
-                if (self.isDisableSign("_"+data.id, lstSign).length == 0) {
-                    $("#dpGrid").ntsGrid("updateRow", "_" + data.id, { sign: false });
-                }
-                if (self.isDisableSign("_"+data.id, lstApp).length == 0) {
-                    $("#dpGrid").ntsGrid("updateRow", "_" + data.id, { approval: false });
-                }
-            });
+            $("#dpGrid").ntsGrid("uncheckAll", "sign");
+            $("#dpGrid").ntsGrid("uncheckAll", "approval");
         }
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
@@ -1313,6 +1296,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     error: data.error,
                     date: moment(data.date, "YYYY/MM/DD").format("MM/DD(dd)"),
                     sign: data.sign,
+                    approval: data.approval,
                     employeeId: data.employeeId,
                     employeeCode: data.employeeCode,
                     employeeName: data.employeeName,
