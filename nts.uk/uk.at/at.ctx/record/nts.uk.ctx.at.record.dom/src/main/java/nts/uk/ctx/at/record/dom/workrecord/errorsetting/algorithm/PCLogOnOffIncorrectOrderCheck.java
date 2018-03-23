@@ -50,8 +50,8 @@ public class PCLogOnOffIncorrectOrderCheck {
 			} else {
 				if (logOnInfos.get(0).getLogOn().isPresent() && logOnInfos.get(1).getLogOn().isPresent()) {
 
-					logOnInfos.sort((e1, e2) -> e1.getLogOn().get().getTimeWithDay().v()
-							.compareTo(e2.getLogOn().get().getTimeWithDay().v()));
+					logOnInfos.sort((e1, e2) -> e1.getLogOn().get().v()
+							.compareTo(e2.getLogOn().get().v()));
 					if (logOnInfos.get(0).getWorkNo().greaterThan(logOnInfos.get(1).getWorkNo())) {
 						attendanceItemIds.add(794);
 						attendanceItemIds.add(795);
@@ -62,12 +62,12 @@ public class PCLogOnOffIncorrectOrderCheck {
 					} else {
 						if (logOnInfos.get(0).getLogOff().isPresent() && logOnInfos.get(1).getLogOff().isPresent()) {
 
-							TimeWithDayAttr startFirstTime = logOnInfos.get(0).getLogOn().get().getTimeWithDay();
-							TimeWithDayAttr endFirstTime = logOnInfos.get(0).getLogOff().get().getTimeWithDay();
+							TimeWithDayAttr startFirstTime = logOnInfos.get(0).getLogOn().get();
+							TimeWithDayAttr endFirstTime = logOnInfos.get(0).getLogOff().get();
 							TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(startFirstTime, endFirstTime);
 
-							TimeWithDayAttr startSecondTime = logOnInfos.get(1).getLogOn().get().getTimeWithDay();
-							TimeWithDayAttr endSecondTime = logOnInfos.get(1).getLogOff().get().getTimeWithDay();
+							TimeWithDayAttr startSecondTime = logOnInfos.get(1).getLogOn().get();
+							TimeWithDayAttr endSecondTime = logOnInfos.get(1).getLogOff().get();
 							TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(startSecondTime, endSecondTime);
 
 							DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
@@ -112,8 +112,8 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 		for (LogOnInfo logOnInfo : logOnInfos) {
 			if (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOff().isPresent()) {
-				if (logOnInfo.getLogOn().get().getTimeWithDay()
-						.greaterThan(logOnInfo.getLogOff().get().getTimeWithDay())) {
+				if (logOnInfo.getLogOn().get()
+						.greaterThan(logOnInfo.getLogOff().get())) {
 					if (logOnInfo.getWorkNo().v() == 1) {
 						attendanceItemIds.add(794);
 						attendanceItemIds.add(795);
@@ -149,7 +149,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 			if (logOnInfos.get(0).getLogOn() != null && timeLeavingWorks.get(0).getAttendanceStamp().isPresent()
 					&& timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().isPresent()
 					&& timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
-				if (logOnInfos.get(0).getLogOn().get().getTimeWithDay().greaterThan(
+				if (logOnInfos.get(0).getLogOn().get().greaterThan(
 						timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay())) {
 					attendanceItemIds.add(794);
 					attendanceItemIds.add(31);
@@ -161,7 +161,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 			if (logOnInfos.get(0).getLogOff() != null && timeLeavingWorks.get(0).getLeaveStamp().isPresent()
 					&& timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().isPresent()
 					&& timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
-				if (logOnInfos.get(0).getLogOff().get().getTimeWithDay()
+				if (logOnInfos.get(0).getLogOff().get()
 						.lessThan(timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
 					attendanceItemIds.add(795);
 					attendanceItemIds.add(34);
@@ -173,7 +173,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 			if (logOnInfos.get(1).getLogOn() != null && timeLeavingWorks.get(1).getAttendanceStamp().isPresent()
 					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().isPresent()
 					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
-				if (logOnInfos.get(1).getLogOn().get().getTimeWithDay().greaterThan(
+				if (logOnInfos.get(1).getLogOn().get().greaterThan(
 						timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay())) {
 					attendanceItemIds.add(796);
 					attendanceItemIds.add(41);
@@ -185,7 +185,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 			if (logOnInfos.get(1).getLogOff() != null && timeLeavingWorks.get(1).getLeaveStamp().isPresent()
 					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().isPresent()
 					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
-				if (logOnInfos.get(1).getLogOff().get().getTimeWithDay()
+				if (logOnInfos.get(1).getLogOff().get()
 						.lessThan(timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
 					attendanceItemIds.add(797);
 					attendanceItemIds.add(44);
