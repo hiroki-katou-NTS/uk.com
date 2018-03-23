@@ -16,7 +16,7 @@
 			<button class="proceed" tabindex="1"
 				data-bind="click: saveDivergenceRefSetting, enable: enableSaveDivergenceRefSetting">#{i18n.getText('KMK011_3')}</button>
 			<!-- D1_3 -->
-			<button tabindex="2">#{i18n.getText('KMK011_75')}</button>
+			<button tabindex="2" data-bind="click: openRegisterErrMsgDialog">#{i18n.getText('KMK011_75')}</button>
 		</div>
 
 		<div class="contents-area fixed-flex-layout"

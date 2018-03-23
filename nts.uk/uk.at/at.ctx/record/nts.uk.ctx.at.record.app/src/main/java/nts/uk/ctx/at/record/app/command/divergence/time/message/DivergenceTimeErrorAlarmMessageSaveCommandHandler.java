@@ -44,7 +44,6 @@ public class DivergenceTimeErrorAlarmMessageSaveCommandHandler extends CommandHa
 		// save
 		if (opt.isPresent()) {
 			DivergenceTimeErrorAlarmMessage domain = opt.get();
-			domain.setDivergenceTimeNo(command.getDivergenceTimeNo());
 			domain.setAlarmMessage(Optional.of(new ErrorAlarmMessage(command.getAlarmMessage())));
 			domain.setErrorMessage(Optional.of(new ErrorAlarmMessage(command.getErrorMessage())));
 			this.repository.update(domain);

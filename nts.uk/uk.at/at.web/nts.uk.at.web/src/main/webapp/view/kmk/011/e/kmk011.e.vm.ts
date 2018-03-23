@@ -456,6 +456,12 @@ module nts.uk.at.view.kmk011.e {
                     });
                 });
             }
+            
+            public openRegisterErrMsgDialog(): void {
+                nts.uk.ui.windows.sub.modal("/view/kmk/011/i/index.xhtml").onClosed(function() {
+                       
+                });
+            }
         }
 
         export enum DivergenceTimeUseSet {

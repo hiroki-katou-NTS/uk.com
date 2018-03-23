@@ -5,11 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsg;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -30,7 +30,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository extends JpaRep
 	 */
 	@Override
 	public Optional<WorkTypeDivergenceTimeErrorAlarmMessage> getByDivergenceTimeNo(Integer divergenceTimeNo,
-			CompanyId cId, WorkTypeCode workTypeCode) {
+			CompanyId cId, BusinessTypeCode workTypeCode) {
 		KrcstWtdvgcTimeEaMsgPK pk = new KrcstWtdvgcTimeEaMsgPK(cId.v(), divergenceTimeNo, workTypeCode.v());
 
 		return this.queryProxy().find(pk, KrcstWtdvgcTimeEaMsg.class).map(item -> this.toDomain(item));

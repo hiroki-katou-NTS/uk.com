@@ -14,12 +14,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @AllArgsConstructor
 public class DivergenceTimeErrorAlarmMessageDto implements DivergenceTimeErrorAlarmMessageSetMemento {
 
+	/** The company id. */
 	private CompanyId companyId;
 
+	/** The divergence time no. */
 	private Integer divergenceTimeNo;
 
+	/** The alarm message. */
 	private String alarmMessage;
 
+	/** The error message. */
 	private String errorMessage;
 
 	/**

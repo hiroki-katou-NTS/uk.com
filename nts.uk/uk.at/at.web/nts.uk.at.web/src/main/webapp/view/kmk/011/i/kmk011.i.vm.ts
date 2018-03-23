@@ -23,6 +23,11 @@ module nts.uk.at.view.kmk011.i {
                 ]);
                 self.dataSource = ko.observableArray([]);
                 self.currentCode = ko.observable(1);
+                
+                let mode: number = nts.uk.ui.windows.getShared('settingMode');
+                if (SettingMode.WORKTYPE){
+                    
+                }
 
                 self.multilineeditorErr = {
                     errorMessage: ko.observable(''),
@@ -123,6 +128,11 @@ module nts.uk.at.view.kmk011.i {
 
                 return dfd.promise();
             }
+        }
+        
+        export enum SettingMode {
+            COMPANY = 0,
+            WORKTYPE = 1
         }
     }
 }

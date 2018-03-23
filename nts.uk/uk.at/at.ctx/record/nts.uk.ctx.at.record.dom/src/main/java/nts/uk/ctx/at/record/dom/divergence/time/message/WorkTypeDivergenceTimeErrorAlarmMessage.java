@@ -35,6 +35,13 @@ public class WorkTypeDivergenceTimeErrorAlarmMessage extends AggregateRoot {
 	/** The error message. */
 	// エラーメッセージ
 	private Optional<ErrorAlarmMessage> errorMessage;
+	
+	/**
+	 * Instantiates a new work type divergence time error alarm message.
+	 */
+	public WorkTypeDivergenceTimeErrorAlarmMessage(){
+		super();
+	}
 
 	/**
 	 * Instantiates a new divergence time error alarm message.
