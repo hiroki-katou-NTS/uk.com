@@ -27,7 +27,7 @@ public class UpdateAnnLeaCommandHandler extends AsyncCommandHandler<AnnLeaGrantR
 		}
 		
 		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(command.getAnnLeavId(),cid, command.getEmployeeId(), 
-				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus().value, GrantRemainRegisterType.MANUAL.value,
+				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
 				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);
 		annLeaRepo.update(data);

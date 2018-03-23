@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -26,9 +27,10 @@ public class AddAnnLeaCommandHandler extends AsyncCommandHandler<AnnLeaGrantRemn
 		if (command.getGrantDate().compareTo(command.getDeadline()) > 0){
 			throw new BusinessException("Msg_1023");
 		}
+		String annLeavId = IdentifierUtil.randomUniqueId();
 		
-		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(command.getAnnLeavId(), cid, command.getEmployeeId(), 
-				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus().value, GrantRemainRegisterType.MANUAL.value,
+		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid, command.getEmployeeId(), 
+				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
 				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);
 		annLeaRepo.add(data);

@@ -13,6 +13,8 @@ module nts.uk.com.view.cps001.g.vm {
         value: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
 
+        alllist: KnockoutObservableArray<AnnualLeaveGrantRemainingData> = ko.observableArray([]);
+        
         listAnnualLeaveGrantRemainData: KnockoutObservableArray<AnnualLeaveGrantRemainingData> = ko.observableArray([]);
         currentItem: KnockoutObservable<AnnualLeaveGrantRemainingData> = ko.observable(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
 
@@ -43,6 +45,7 @@ module nts.uk.com.view.cps001.g.vm {
             // Subsribe table
             _self.currentValue.subscribe(value => {
                 if (value) {
+                    _self.createMode(false);
                     service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData) => {
                         if (result) {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(result));
@@ -56,21 +59,22 @@ module nts.uk.com.view.cps001.g.vm {
             // Subscribe checkbox
             _self.checked.subscribe(value => {
                 console.log(value);
-                let sID = __viewContext.user.employeeId;
-                service.getAllListByCheckState(sID, value).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
-                    if (data && data.length > 0) {
-                         _self.createMode(false);
-                        _.each(data, (item) => {
-                            _self.listAnnualLeaveGrantRemainData.push(item);
-                        });
-                        // Set focus
-                        _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
-                        // Set to update mode
-                    } else {
-                        // Set to create mode
-                        _self.createMode(true);
-                    }
-                });
+                if (value){
+                    _self.listAnnualLeaveGrantRemainData(_self.alllist());
+                } else {
+                    _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(),function(item){
+                        return item.expirationStatus === 0;  
+                    }));
+                }
+                if (_self.listAnnualLeaveGrantRemainData().length) {
+                     _self.createMode(false);
+                    // Set focus
+                    _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
+                    _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]))
+                    // Set to update mode
+                } else {
+                    _self.create();                    
+                }
             });
 
 
@@ -81,16 +85,18 @@ module nts.uk.com.view.cps001.g.vm {
          */
         public startPage(): JQueryPromise<any> {
             let _self = this;
-            let sID = __viewContext.user.employeeId;
-
             service.getAllList().done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
                     _self.createMode(false);
-                    
+                    _self.alllist.removeAll();
                     _.each(data, (item) => {
-                        _self.listAnnualLeaveGrantRemainData.push(item);
+                        _self.alllist.push(item);
+                        
                     });
+                    _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(), function(item){
+                        return  item.expirationStatus === 0;
+                    }));
                     // Set focus
                     _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
                 } else {
@@ -110,16 +116,6 @@ module nts.uk.com.view.cps001.g.vm {
             _self.createMode(true);
         }
 
-        // Lost focus
-          public lostFocus(): void {
-            let _self = this;
-            if (_self.createMode()) {
-                return;
-            } else {
-
-
-            }
-        }
         public create(): void {
             let _self = this;
             _self.createMode(true);
@@ -132,7 +128,7 @@ module nts.uk.com.view.cps001.g.vm {
         public save(): void {
             let _self = this,
                 command = ko.toJS(_self.currentItem());
-
+            
             if (_self.createMode()) {
                 service.add(command).done((message: string) => {
                     info({ messageId: "Msg_15" }).then(function() {
@@ -210,8 +206,8 @@ module nts.uk.com.view.cps001.g.vm {
             let self = this;
             if (param) {
                 self.annLeavId(param.annLeavId || null);
-                self.grantDate(param.grantDate || null);
-                self.deadline(param.deadline || null);
+                self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
+                self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
                 self.expirationStatus(param.expirationStatus || 0);
                 self.grantDays(param.grantDays || null);
                 self.grantMinutes(param.grantMinutes || null);
@@ -223,9 +219,12 @@ module nts.uk.com.view.cps001.g.vm {
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
                 console.log(value);
+                console.log(self.grantDate());
                 if (value && __viewContext.viewModel.createMode()) {
                     service.lostFocus(value).done((data: Date) => {
-                        console.log(data);
+                        if (data){
+                            self.deadline(moment.utc(data,"YYYY/MM/DD"));                            
+                        }
                     });
                 }
             });

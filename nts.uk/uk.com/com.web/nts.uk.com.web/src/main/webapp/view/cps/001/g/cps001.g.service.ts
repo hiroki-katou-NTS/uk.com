@@ -8,7 +8,7 @@ module nts.uk.com.view.cps001.g {
          */
         var servicePath: any = {
             getAllList: "bs/employee/temporaryabsence/frame/getList",
-            getAllListByCheckState: "bs/employee/temporaryabsence/frame/getAnnLeaByCheckState",
+            getAllListByCheckState: "at/record/remainnumber/annlea/getAnnLeaByCheckState",
             getDetails: "bs/employee/temporaryabsence/frame/getDetail",
             lostFocus: "at/record/remainnumber/annlea/lostFocus",
             add: "at/record/remainnumber/annlea/add",
@@ -21,11 +21,11 @@ module nts.uk.com.view.cps001.g {
         }
         
         export function getAllListByCheckState(employeeId: string, checkState: boolean): JQueryPromise<any> {
-            return ajax(servicePath.getAllListByCheckState,employeeId,checkState);
+            return ajax('at', servicePath.getAllListByCheckState,employeeId,checkState);
         }
         
         export function lostFocus(grantDate: Date): JQueryPromise<any> {
-            return ajax(servicePath.lostFocus, moment.utc(grantDate,"YYYY/MM/DD"));
+            return ajax('at', servicePath.lostFocus, moment.utc(grantDate,"YYYY/MM/DD"));
         }
         
         export function getDetail(grantDate: Date) {
@@ -33,13 +33,13 @@ module nts.uk.com.view.cps001.g {
         }
         
         export function add(command: any) {
-            return ajax(servicePath.add, command);
+            return ajax('at', servicePath.add, command);
         }
         export function update(command: any) {
-            return ajax(servicePath.update, command);
+            return ajax('at', servicePath.update, command);
         }
         export function deleteLeav(command: any) {
-            return ajax(servicePath.delete, command);
+            return ajax('at', servicePath.deleteLeav, command);
         }
     }
 }
