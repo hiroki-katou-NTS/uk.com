@@ -16,7 +16,7 @@ import lombok.Setter;
  * The Class KrcstWkpRegMCalSetPK.
  */
 @Getter
-@S	etter
+@Setter
 @Embeddable
 public class KrcstWkpRegMCalSetPK implements Serializable {
 
