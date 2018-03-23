@@ -38,5 +38,22 @@ module nts.uk.com.view.cps009.b {
     });
 }
 
+$(document).delegate("#grid0", "iggridrowsrendered", function(evt, ui) {
+    if ($("#grid0").data("igGrid") === undefined) {
+        return;
+    }
+    _.each(ui.owner.dataSource.data(), (x, i) => {
+        if (x.itemName == '終了日') {
+            $("#grid0").ntsGrid("disableNtsControlAt",
+                x.perInfoItemDefId, "disabled", "CheckBox");
+            
+        } else {
+            $("#grid0").ntsGrid("enableNtsControlAt",
+                x.perInfoItemDefId, "disabled", "CheckBox");
+        }
+    });
+});
+
+
 
 

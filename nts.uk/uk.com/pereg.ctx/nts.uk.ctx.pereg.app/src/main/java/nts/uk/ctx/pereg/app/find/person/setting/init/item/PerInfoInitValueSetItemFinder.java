@@ -80,25 +80,16 @@ public class PerInfoInitValueSetItemFinder {
 		List<ItemDto> itemDto = new ArrayList<>();
 		if (item != null) {
 			item.stream().forEach(c -> {
-				itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
+				
 				boolean checkDisable = c.getItemName().equals("終了日")
 						&& (ctg != null ? (ctg.getCategoryType().value == 3 ? true : false) : false);
+				itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
 				ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
 				ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
 				itemNamebackGroud.setColumnKey("itemName");
 				itemNamebackGroud.setRowId(c.getPerInfoItemDefId());
 				disablebackGroud.setColumnKey("disabled");
 				disablebackGroud.setRowId(c.getPerInfoItemDefId());
-				if (checkDisable) {
-					
-					disablebackGroud.setState(toList("ntsgrid-disable"));
-					if (c.getIsRequired().value == 1) {
-						itemNamebackGroud.setState(toList("requiredCell"));
-					} else {
-						itemNamebackGroud.setState(toList("notrequiredCell"));
-					}
-					
-				} else {
 					
 					if (c.getIsRequired().value == 1) {
 						itemNamebackGroud.setState(toList("requiredCell"));
@@ -108,8 +99,6 @@ public class PerInfoInitValueSetItemFinder {
 						disablebackGroud.setState(toList("notrequiredCell"));
 
 					}
-
-				}
 				itemRequired.add(itemNamebackGroud);
 				itemRequired.add(disablebackGroud);
 			});
