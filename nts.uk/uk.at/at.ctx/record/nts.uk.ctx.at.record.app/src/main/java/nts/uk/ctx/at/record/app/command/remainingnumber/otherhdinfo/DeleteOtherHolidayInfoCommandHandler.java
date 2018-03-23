@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemai
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
 @Stateless
-public class DeleteOtherHolidayInfoCommandHandler extends CommandHandler<AddOtherHolidayInfoCommand>
-implements PeregDeleteCommandHandler<AddOtherHolidayInfoCommand> {
+public class DeleteOtherHolidayInfoCommandHandler extends CommandHandler<DeleteOtherHolidayInfoCommand>
+implements PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand> {
 
 	@Inject
 	private PublicHolidayRemainRepository publicHolidayRemainRepository;
@@ -27,13 +27,14 @@ implements PeregDeleteCommandHandler<AddOtherHolidayInfoCommand> {
 
 	@Override
 	public Class<?> commandClass() {
-		return AddOtherHolidayInfoCommand.class;
+		return DeleteOtherHolidayInfoCommand.class;
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
+	protected void handle(CommandHandlerContext<DeleteOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
-		
+		publicHolidayRemainRepository.delete(command.getEmployeeId());
+		excessLeaveInfoRepository.delete(command.getEmployeeId());
 	}
 
 }
