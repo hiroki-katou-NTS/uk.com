@@ -11,16 +11,15 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class RemoveAcceptCdConvertCommandHandler extends CommandHandler<AcceptCdConvertCommand>
-{
-    
-    @Inject
-    private AcceptCdConvertRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
-        String cid = AppContexts.user().companyId();
-        String convertCd = context.getCommand().getConvertCd();
-        repository.remove(cid, convertCd);
-    }
+public class RemoveAcceptCdConvertCommandHandler extends CommandHandler<AcceptCdConvertCommand> {
+
+	@Inject
+	private AcceptCdConvertRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
+		String cid = AppContexts.user().companyId();
+		String convertCd = context.getCommand().getConvertCd();
+		repository.remove(cid, convertCd);
+	}
 }

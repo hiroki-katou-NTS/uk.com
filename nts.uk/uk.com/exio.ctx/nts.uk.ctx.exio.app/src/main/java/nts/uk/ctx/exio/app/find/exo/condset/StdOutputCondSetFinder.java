@@ -9,17 +9,16 @@ import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 
 @Stateless
 /**
-* 出力条件設定（定型）
-*/
-public class StdOutputCondSetFinder
-{
+ * 出力条件設定（定型）
+ */
+public class StdOutputCondSetFinder {
 
-    @Inject
-    private StdOutputCondSetRepository finder;
+	@Inject
+	private StdOutputCondSetRepository finder;
 
-    public List<StdOutputCondSetDto> getAllStdOutputCondSet(){
-        return finder.getAllStdOutputCondSet().stream().map(item -> StdOutputCondSetDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
+	public List<StdOutputCondSetDto> getAllStdOutputCondSet() {
+		return finder.getAllStdOutputCondSet().stream().map(item -> StdOutputCondSetDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 
 }

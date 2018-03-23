@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.app.command.exi.condset.StdAcceptCondSetCommand;
 public class Cmf001DCommand {
 
 	private StdAcceptCondSetCommand conditionSetting;
-	
+
 	private List<StdAcceptItemCommand> listItem;
-	
+
 }

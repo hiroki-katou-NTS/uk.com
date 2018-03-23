@@ -15,10 +15,10 @@ import nts.uk.ctx.exio.app.command.exi.execlog.ExacExeResultLogCommand;
  */
 @Path("exio/exi/proccessLog")
 @Produces("application/json")
-public class ExiProccessLogWebService extends WebService{
+public class ExiProccessLogWebService extends WebService {
 	@Inject
 	private AddExacExeResultLogCommandHandler addExacExeResultLogCommandHandler;
-	
+
 	/**
 	 * @param exacErrorLogCommand
 	 */
@@ -27,5 +27,5 @@ public class ExiProccessLogWebService extends WebService{
 	public JavaTypeResult<String> addErrorLog(ExacExeResultLogCommand exacExeResultLogCommand) {
 		return new JavaTypeResult<String>(this.addExacExeResultLogCommandHandler.handle(exacExeResultLogCommand));
 	}
-	
+
 }

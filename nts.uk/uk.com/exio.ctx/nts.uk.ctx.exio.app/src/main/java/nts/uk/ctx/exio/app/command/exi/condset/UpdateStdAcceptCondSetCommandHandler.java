@@ -12,21 +12,20 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptCondSetCommand>
-{
-    
-    @Inject
-    private StdAcceptCondSetRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
-        StdAcceptCondSetCommand updateCommand = context.getCommand();
-        String companyId = AppContexts.user().companyId();
+public class UpdateStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptCondSetCommand> {
+
+	@Inject
+	private StdAcceptCondSetRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
+		StdAcceptCondSetCommand updateCommand = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		StdAcceptCondSet domain = new StdAcceptCondSet(companyId, updateCommand.getSystemType(),
 				updateCommand.getConditionSettingCode(), updateCommand.getConditionSettingName(),
-				updateCommand.getDeleteExistData(), updateCommand.getAcceptMode(), null,
-				updateCommand.getCategoryId(), updateCommand.getCsvDataItemLineNumber(), updateCommand.getCsvDataStartLine(),
+				updateCommand.getDeleteExistData(), updateCommand.getAcceptMode(), null, updateCommand.getCategoryId(),
+				updateCommand.getCsvDataItemLineNumber(), updateCommand.getCsvDataStartLine(),
 				updateCommand.getDeleteExistDataMethod());
-		this.repository.update(domain);  
-    }
+		this.repository.update(domain);
+	}
 }

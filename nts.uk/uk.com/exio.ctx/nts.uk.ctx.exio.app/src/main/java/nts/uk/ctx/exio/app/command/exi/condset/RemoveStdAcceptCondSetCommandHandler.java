@@ -18,14 +18,14 @@ public class RemoveStdAcceptCondSetCommandHandler extends CommandHandler<StdAcce
 
 	@Override
 	protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
-		//会社ＩＤ
+		// 会社ＩＤ
 		String cid = AppContexts.user().companyId();
-		//システム種類
+		// システム種類
 		int sysType = context.getCommand().getSystemType();
-		//選択中の条件設定コード
+		// 選択中の条件設定コード
 		String conditionSetCd = context.getCommand().getConditionSettingCode();
-		
-		//アルゴリズム「受入設定の削除」を実行する
+
+		// アルゴリズム「受入設定の削除」を実行する
 		condsetService.deleteConditionSetting(cid, sysType, conditionSetCd);
 	}
 }

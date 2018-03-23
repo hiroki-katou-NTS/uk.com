@@ -8,5 +8,5 @@ public class CsvMappingDataDto {
 	private int colNum;
 	private String colName;
 	private String sampleData;
-	
+
 }
