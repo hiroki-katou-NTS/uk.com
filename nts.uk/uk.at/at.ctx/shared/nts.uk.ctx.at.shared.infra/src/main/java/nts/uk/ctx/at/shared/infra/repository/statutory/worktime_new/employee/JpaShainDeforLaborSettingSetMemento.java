@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSetPK;
 import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingSetMemento;
 
 /**
@@ -29,8 +30,11 @@ public class JpaShainDeforLaborSettingSetMemento extends JpaDefaultSettingSetMem
 	/**
 	 * Instantiates a new jpa shain defor labor setting set memento.
 	 */
-	public JpaShainDeforLaborSettingSetMemento() {
-		this.entity = new KshstShaDeforLarSet();
+	public JpaShainDeforLaborSettingSetMemento(KshstShaDeforLarSet entity) {
+		if(entity.getKshstShaDeforLarSetPK() == null) {
+			entity.setKshstShaDeforLarSetPK(new KshstShaDeforLarSetPK());
+		}
+		this.entity = entity;
 	}
 
 	/* 

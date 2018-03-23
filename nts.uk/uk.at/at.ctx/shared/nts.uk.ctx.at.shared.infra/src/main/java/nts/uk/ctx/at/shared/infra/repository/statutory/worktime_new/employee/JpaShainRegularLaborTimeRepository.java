@@ -80,9 +80,9 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @return the kshst sha reg labor time
 	 */
 	private KshstShaRegLaborTime toEntity(ShainRegularWorkTime emplRegWorkHour) {
-		JpaShainRegularLaborTimeSetMemento memento = new JpaShainRegularLaborTimeSetMemento();
-		emplRegWorkHour.saveToMemento(memento);
-		return memento.getEntity();
+		KshstShaRegLaborTime entity = new KshstShaRegLaborTime();
+		emplRegWorkHour.saveToMemento(new JpaShainRegularLaborTimeSetMemento(entity));
+		return entity;
 	}
 
 	/**

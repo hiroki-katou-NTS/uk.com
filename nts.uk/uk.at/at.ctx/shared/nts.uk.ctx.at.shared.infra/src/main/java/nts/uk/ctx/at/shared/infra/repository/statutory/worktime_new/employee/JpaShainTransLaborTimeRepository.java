@@ -78,9 +78,9 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements S
 	 * @return the kshst sha trans lab time
 	 */
 	private KshstShaTransLabTime toEntity(ShainSpeDeforLaborTime domain) {
-		JpaShainTransLaborTimeSetMemento memento = new JpaShainTransLaborTimeSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstShaTransLabTime entity = new KshstShaTransLabTime();
+		domain.saveToMemento(new JpaShainTransLaborTimeSetMemento(entity));
+		return entity;
 	}
 	
 	/**

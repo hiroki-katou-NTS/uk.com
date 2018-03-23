@@ -79,9 +79,9 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	 * @return the kshst emp normal set
 	 */
 	private KshstEmpNormalSet toEntity(EmpNormalSetting domain) {
-		JpaEmpNormalSettingSetMemento memento = new JpaEmpNormalSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstEmpNormalSet entity = new KshstEmpNormalSet();
+		domain.saveToMemento(new JpaEmpNormalSettingSetMemento(entity));
+		return entity;
 	}
 	
 	/**

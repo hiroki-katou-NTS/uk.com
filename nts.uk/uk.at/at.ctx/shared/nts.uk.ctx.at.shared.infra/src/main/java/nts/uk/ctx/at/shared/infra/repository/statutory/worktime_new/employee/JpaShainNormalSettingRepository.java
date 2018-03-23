@@ -71,9 +71,9 @@ public class JpaShainNormalSettingRepository extends JpaRepository implements Sh
 	 * @return the kshst sha normal set
 	 */
 	private KshstShaNormalSet toEntity(ShainNormalSetting domain) {
-		JpaShainNormalSettingSetMemento memento = new JpaShainNormalSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstShaNormalSet entity = new KshstShaNormalSet();
+		domain.saveToMemento(new JpaShainNormalSettingSetMemento(entity));
+		return entity;
 	}
 	
 	/**

@@ -19,12 +19,28 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstCom
  *
  * @return the entity
  */
+
+/**
+ * Gets the entity.
+ *
+ * @return the entity
+ */
 @Getter
 public class JpaComRegularLaborTimeSetMemento implements ComRegularLaborTimeSetMemento {
 	
 	/** The entity. */
 	private KshstComRegLaborTime entity;
 
+	/**
+	 * Instantiates a new jpa com regular labor time set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaComRegularLaborTimeSetMemento(KshstComRegLaborTime entity) {
+		super();
+		this.entity = entity;
+	}
+	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */

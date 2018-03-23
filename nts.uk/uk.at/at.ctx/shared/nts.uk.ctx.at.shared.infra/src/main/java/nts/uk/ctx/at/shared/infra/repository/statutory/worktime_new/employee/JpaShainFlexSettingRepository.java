@@ -79,9 +79,9 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 * @return the kshst sha flex set
 	 */
 	private KshstShaFlexSet toEntity(ShainFlexSetting domain) {
-		JpaShainFlexSettingSetMemento memento = new JpaShainFlexSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstShaFlexSet entity = new KshstShaFlexSet();
+		domain.saveToMemento(new JpaShainFlexSettingSetMemento(entity));
+		return entity;
 	}
 
 	/**

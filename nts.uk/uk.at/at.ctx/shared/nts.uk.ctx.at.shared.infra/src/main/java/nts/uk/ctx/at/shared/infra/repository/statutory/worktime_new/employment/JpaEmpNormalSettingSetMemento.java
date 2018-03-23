@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettin
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpNormalSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpNormalSetPK;
 import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingSetMemento;
 
 /**
@@ -33,8 +34,11 @@ public class JpaEmpNormalSettingSetMemento extends JpaDefaultSettingSetMemento i
 	/**
 	 * Instantiates a new jpa emp normal setting set memento.
 	 */
-	public JpaEmpNormalSettingSetMemento() {
-		this.entity = new KshstEmpNormalSet();
+	public JpaEmpNormalSettingSetMemento(KshstEmpNormalSet entity) {
+		if(entity.getKshstEmpNormalSetPK() == null) {
+			entity.setKshstEmpNormalSetPK(new KshstEmpNormalSetPK());
+		}
+		this.entity = entity;
 	}
 
 	/* 

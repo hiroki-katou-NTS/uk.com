@@ -80,9 +80,9 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	 * @return the kshst emp flex set
 	 */
 	private KshstEmpFlexSet toEntity(EmpFlexSetting domain) {
-		JpaEmpFlexSettingSetMemento memento = new JpaEmpFlexSettingSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstEmpFlexSet entity = new KshstEmpFlexSet();
+		domain.saveToMemento(new JpaEmpFlexSettingSetMemento(entity));
+		return entity;
 	}
 	
 	/**

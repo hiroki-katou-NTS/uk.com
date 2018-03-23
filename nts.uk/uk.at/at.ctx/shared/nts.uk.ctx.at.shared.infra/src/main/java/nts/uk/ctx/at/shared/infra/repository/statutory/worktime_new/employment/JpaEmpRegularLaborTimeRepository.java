@@ -96,9 +96,9 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @return the kshst emp reg labor time
 	 */
 	private KshstEmpRegLaborTime toEntity(EmpRegularWorkTime emplRegWorkHour) {
-		JpaEmpRegularLaborTimeSetMemento memento = new JpaEmpRegularLaborTimeSetMemento();
-		emplRegWorkHour.saveToMemento(memento);
-		return memento.getEntity();
+		KshstEmpRegLaborTime entity = new KshstEmpRegLaborTime();
+		emplRegWorkHour.saveToMemento(new JpaEmpRegularLaborTimeSetMemento(entity));
+		return entity;
 	}
 	
 	/**

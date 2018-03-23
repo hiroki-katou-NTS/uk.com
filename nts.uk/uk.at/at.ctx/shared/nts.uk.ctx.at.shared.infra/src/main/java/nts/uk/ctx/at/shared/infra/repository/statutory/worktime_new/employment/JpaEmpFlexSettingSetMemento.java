@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingS
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSetPK;
 import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingSetMemento;
 
 /**
@@ -33,8 +34,11 @@ public class JpaEmpFlexSettingSetMemento extends JpaDefaultSettingSetMemento imp
 	/**
 	 * Instantiates a new jpa emp flex setting set memento.
 	 */
-	public JpaEmpFlexSettingSetMemento() {
-		this.entity = new KshstEmpFlexSet(); 
+	public JpaEmpFlexSettingSetMemento(KshstEmpFlexSet entity) {
+		if(entity.getKshstEmpFlexSetPK() == null) {
+			entity.setKshstEmpFlexSetPK(new KshstEmpFlexSetPK());
+		}
+		this.entity = entity;
 	}
 
 	/* 

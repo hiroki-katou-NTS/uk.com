@@ -77,9 +77,9 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	 * @return the kshst com reg labor time
 	 */
 	private KshstComRegLaborTime toEntity(ComRegularLaborTime domain) {
-		JpaComRegularLaborTimeSetMemento memento = new JpaComRegularLaborTimeSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstComRegLaborTime entity = new KshstComRegLaborTime();
+		domain.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
+		return entity;
 	}
 	
 	/**

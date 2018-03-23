@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSetPK;
 import nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.share.JpaDefaultSettingSetMemento;
 
 /**
@@ -39,8 +40,11 @@ public class JpaShainNormalSettingSetMemento extends JpaDefaultSettingSetMemento
 	/**
 	 * Instantiates a new jpa shain normal setting set memento.
 	 */
-	public JpaShainNormalSettingSetMemento() {
-		this.entity = new KshstShaNormalSet();
+	public JpaShainNormalSettingSetMemento(KshstShaNormalSet entity) {
+		if(entity.getKshstShaNormalSetPK() == null) {
+			entity.setKshstShaNormalSetPK(new KshstShaNormalSetPK());
+		}
+		this.entity = entity;
 	}
 
 	/* 

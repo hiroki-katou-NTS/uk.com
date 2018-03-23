@@ -78,9 +78,9 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @return the kshst emp trans lab time
 	 */
 	private KshstEmpTransLabTime toEntity(EmpTransWorkTime domain) {
-		JpaEmpTransLaborTimeSetMemento memento = new JpaEmpTransLaborTimeSetMemento();
-		domain.saveToMemento(memento);
-		return memento.getEntity();
+		KshstEmpTransLabTime entity = new KshstEmpTransLabTime();
+		domain.saveToMemento(new JpaEmpTransLaborTimeSetMemento(entity));
+		return entity;
 	}
 	
 	/**
