@@ -110,7 +110,11 @@ module nts.uk.at.view.ktg028.viewmodel {
             let self = this;
             let listWidgets = __viewContext.enums.WidgetDisplayItemType;
             self.items_A7(listWidgets);
-            self.findAll();
+            self.findAll().done(()=>{
+                if (self.items_A2().length > 0) {
+                    self.currentCode_A2(self.items_A2()[0].topPageCode);
+                }
+            });
         }
         findAll(): JQueryPromise<any> {
             let self = this;
@@ -137,6 +141,9 @@ module nts.uk.at.view.ktg028.viewmodel {
             self.texteditorA3_2.value("");
             self.texteditorA4_2.value("");
             self.currentCode_A2("");
+            self.texteditorA5_4.value("");
+            self.currentCodeList_A7([]);
+            $("#code").focus();
         }
         saveData(): void {
             let self = this;
@@ -145,26 +152,66 @@ module nts.uk.at.view.ktg028.viewmodel {
             $("#height").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.invisible();
-                let team = {
-                    workPlaceId: self.workPlaceId,
-                    teamCode: teamCode,
-                    teamName: teamName
-                };
-                service.saveTeam(self.isCreated(), team).done(function() {
-                    self.isCreated(false);
-                    self.findAll().done(function() {
-                        self.selectedTeam(teamCode);
+                let optionalWidget = _.find(self.allData, ['topPageCode', self.currentCode_A2()]);
+                let displayItemTypes: Array<number> = [];
+                let values = _.map(self.items_A7(), 'value');
+                _.forEach(values, (x => {
+                    let selectedList = _.map(self.currentCodeList_A7(), x => parseInt(x));
+                    if (_.includes(selectedList, x)) {
+                        displayItemTypes.push({
+                            'displayItemType': x,
+                            'notUseAtr': 1
+                        });
+                    } else {
+                        displayItemTypes.push({
+                            'displayItemType': x,
+                            'notUseAtr': 0
+                        });
+                    }
+                }));
+                if (optionalWidget) {
+                    let data: any = {};
+                    data.topPagePartID = optionalWidget.topPagePartID;
+                    data.topPageCode = optionalWidget.topPageCode;
+                    data.topPageName = self.texteditorA4_2.value();
+                    data.width = 6;
+                    data.height = parseInt(self.texteditorA5_4.value());
+                    data.displayItemTypes = displayItemTypes;
+                    service.update(data).done(function() {
+                        self.isCreated(false);
+                        self.findAll().done(function() {
+                            self.currentCode_A2(data.topPageCode);
+                        });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                        $("#name").focus();
                     });
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15')).then(() => {
-                        $("#input-teamName").focus();
-                    });;
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message).then(() => {
-                        $("#input-teamCode").focus();
+                } else {
+                    let data: any = {};
+                    data.topPageCode = self.texteditorA3_2.value();
+                    data.topPageName = self.texteditorA4_2.value();
+                    data.width = 6;
+                    data.height = parseInt(self.texteditorA5_4.value());
+                    data.displayItemTypes = displayItemTypes;
+                    service.add(data).done(function() {
+                        self.isCreated(false);
+                        self.findAll().done(function() {
+                            self.currentCode_A2(data.topPageCode);
+                        });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15')).then(() => {
+                            $("#name").focus();
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => {
+                            $("#code").focus();
+                        });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
                     });
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
+                }
             }
         }
         removeData(): any {
@@ -182,9 +229,9 @@ module nts.uk.at.view.ktg028.viewmodel {
                             if (self.items_A2().length == 0) {
                                 self.cleanForm();
                             } else if (self.index() == self.items_A2().length) {
-                                self.currentCode_A2(self.items_A2()[self.index() - 1].code);
+                                self.currentCode_A2(self.items_A2()[self.index() - 1].topPageCode);
                             } else {
-                                self.selectedTeam(self.items_A2()[self.index()].code);
+                                self.currentCode_A2(self.items_A2()[self.index()].topPageCode);
                             }
                         });
                     });
@@ -198,7 +245,7 @@ module nts.uk.at.view.ktg028.viewmodel {
         }
     class ItemA2 {
         serialNumber: string;
-        topPagePartID: KnockoutObservable<string>;
+        topPagePartID: string;
         topPageCode: string;
         topPageName: string;
         width: KnockoutObservable<number>;
@@ -206,7 +253,7 @@ module nts.uk.at.view.ktg028.viewmodel {
         listType: KnockoutObservableArray<any>;
         constructor(index: string, topPagePartID: string, topPageCode: string, topPageName: string, width: number, height: number, listType: Array<any>) {
             this.serialNumber = index;
-            this.topPagePartID = ko.observable(topPagePartID);
+            this.topPagePartID = topPagePartID;
             this.topPageCode = topPageCode;
             this.topPageName = topPageName;
             this.width = ko.observable(width);
