@@ -27,7 +27,7 @@ public class CompensatoryOccurrenceSettingDto implements CompensatoryOccurrenceS
 	@Override
 	public void setTransferSetting(SubHolTransferSet transferSetting) {
 		CompensatoryTransferSettingDto transfer = new CompensatoryTransferSettingDto();
-//		transferSetting.saveToMemento(transfer);
+		transferSetting.saveToMemento(transfer);
 		this.transferSetting = transfer;
 	}
 

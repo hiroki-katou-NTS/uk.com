@@ -25,7 +25,7 @@
 		<ui:define name="sidebar" id="left-sidebar">
 			<ul class="navigator" tabindex="1">
 				<li><a href="#whole-company-tab" role="tab-navigator" tabindex="-1" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#by-employment-tab" role="tab-navigator" tabindex="-1" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
+				<li data-bind="visible: employmentVisible"><a href="#by-employment-tab" role="tab-navigator" tabindex="-1" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -50,6 +50,21 @@
 							<TBODY>
 								<tr>
 									<td class="td-style">
+										<div>
+											<span>#{i18n.getText('KMF001_72')}</span>
+										</div>
+									</td>
+									<td>
+										<div id="switch-btn-anagement" class="cf" data-bind="ntsSwitchButton: {
+											options: managementOption,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedComManagement,
+											enable: isManaged}" tabindex="4"></div>
+									</td>
+								</tr>
+								<tr>
+									<td class="td-style">
 										<div class="margin-bottom">
 											<span>#{i18n.getText('KMF001_60')}</span>
 										</div>
@@ -62,10 +77,10 @@
 												name: '#[KMF001_60]',
 												constraint: 'RetentionYearsAmount',
 												option: {
-										width: '50px',
-										unitID: 'YEARS',
-										textalign: 'center'
-									},
+													width: '50px',
+													unitID: 'YEARS',
+													textalign: 'center'
+												},
 												required: true,
 												enable: isManaged,
 												readonly: false}"
@@ -127,20 +142,27 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 <!-- 					<button data-bind="click: backToHistorySelection">#{i18n.getText('KMF001_27')}</button> -->
-					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
-					<button class="proceed" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
+					<a class="goback" tabindex="5" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
+					<button class="proceed" tabindex="6" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
 					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div> -->
-					
+					<button class="danger register-button" tabindex="7" data-bind="click: deleteByEmployment, enable: deleteEnable">#{i18n.getText('KMF001_149')}</button>
 				</div>
 				<div class="ruledLine"></div>
 				<div id="by-employment-content">
-					<table style="margin: 50px">
+					<div style="margin: 20px 0px 0px 40px" class="label warning" id="label-warning"
+							data-bind="style: {display: !isManaged()? 'inlineBlock': 'none'}">#{i18n.getText('KMF001_136')}</div>
+					<table style="margin: 30px 50px">
 						<tr>
 							<td>
-								<div id="left-content" tabindex="1"></div>
+								<div id="left-content" tabindex="8"></div>
 							</td>
 
 							<td id="right-content">
+								<div class="employment-detail">
+									<span>#{i18n.getText('KMF001_150')}</span>
+									<span style="margin-left: 100px" data-bind="text: selectedItem"></span>
+									<span data-bind="text: selectedName"></span>
+								</div>
 								<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_71')}</div>
 								<div id="ruledLine2"></div>
 								<table id="right-table">
@@ -151,12 +173,12 @@
 											</div>
 										</td>
 										<td>
-											<div id="switch-btn" class="cf" data-bind="ntsSwitchButton: {
+											<div id="switch-btn" class="cf" style="width: 160px;" data-bind="ntsSwitchButton: {
 												options: managementOption,
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedManagement,
-												enable: hasSelectedEmp}" tabindex="2"></div>
+												enable: hasSelectedEmp}" tabindex="9"></div>
 										</td>
 									</tr>
 									
@@ -181,7 +203,7 @@
 									},
 													required: true,
 													enable: hasSelectedEmp,
-													readonly: false}" tabindex="3"/>
+													readonly: false}" tabindex="10"/>
 											</div>
 										</td>
 									</tr>
@@ -204,7 +226,7 @@
 									},
 													required: true,
 													enable: hasSelectedEmp,
-													readonly: false}" tabindex="4"/>
+													readonly: false}" tabindex="11"/>
 											</div>
 										</td>
 									</tr>
