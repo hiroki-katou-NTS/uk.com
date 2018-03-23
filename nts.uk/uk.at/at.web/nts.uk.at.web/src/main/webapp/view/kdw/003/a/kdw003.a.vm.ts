@@ -213,7 +213,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                      $("#tooltip").hide();
                 }
             });
-            self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam);
+            if (dataShare != undefined) {
+                self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam);
+            }
         }
          helps(event, data){
              var self = this;
