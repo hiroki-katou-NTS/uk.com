@@ -528,6 +528,13 @@ module nts.uk.at.view.kaf005.b {
              */
             openDialogKdl003() {
                 let self = this;
+                if (!nts.uk.util.isNullOrEmpty(self.appDate())) {
+                    nts.uk.ui.errors.clearAll();
+                    $("#inputdate").trigger("validate");
+                    if (nts.uk.ui.errors.hasError()) {
+                        return;
+                    }
+                }
                 nts.uk.ui.windows.setShared('parentCodes', {
                    workTypeCodes: self.workTypecodes(),
                 selectedWorkTypeCode: self.workTypeCd(),
