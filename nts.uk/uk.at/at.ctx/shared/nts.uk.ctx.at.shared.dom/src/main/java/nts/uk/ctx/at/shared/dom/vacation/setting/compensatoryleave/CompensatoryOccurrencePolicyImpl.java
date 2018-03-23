@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 
 /**
  * The Class CompensatoryOccurrencePolicyImpl.
@@ -24,10 +25,10 @@ public class CompensatoryOccurrencePolicyImpl implements CompensatoryOccurrenceP
 	 * java.util.List, nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(BundledBusinessException bundledBusinessExceptions,
-		List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting) {
+	public void validate(BundledBusinessException bundledBusinessExceptions, List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting) {
 		compensatoryOccurrenceSetting.forEach(c -> {
-			if (c.getTransferSetting().getOneDayTime().lessThan(c.getTransferSetting().getHalfDayTime())) {
+			DesignatedTime dt = c.getTransferSetting().getDesignatedTime();
+			if (dt.getOneDayTime().lessThan(dt.getHalfDayTime())) {
 				BusinessException be = new BusinessException("Msg_782");
 				be.setSuppliment("occurrenceType", c.getOccurrenceType().value);
 				bundledBusinessExceptions.addMessage(be);
