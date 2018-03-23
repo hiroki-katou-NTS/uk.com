@@ -117,26 +117,26 @@ public class SpecialLeaveGrantDto extends PeregDomainDto{
 		dto.numberDayGrant = domain.getDetails().getGrantNumber().getDayNumberOfGrant().v();
 		dto.timeGrant = domain.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
 				? domain.getDetails().getGrantNumber().getTimeOfGrant().get().v()
-				: null;
+				: 0;
 		dto.numberDayRemain = domain.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 		dto.timeRemain = domain.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
 				? domain.getDetails().getRemainingNumber().getTimeOfRemain().get().v()
-				: null;
+				: 0;
 		dto.numberDayUse = domain.getDetails().getUsedNumber().getDayNumberOfUse().v();
 		dto.timeUse = domain.getDetails().getUsedNumber().getTimeOfUse().isPresent()
 				? domain.getDetails().getUsedNumber().getTimeOfUse().get().v()
-				: null;
+				: 0;
 		dto.useSavingDays = domain.getDetails().getUsedNumber().getUseSavingDays().isPresent()
 				? domain.getDetails().getUsedNumber().getUseSavingDays().get().v()
-				: null;
+				: 0;
 		dto.numberDaysOver = domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
 				? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getNumberOverDays().v()
-				: null;
+				: 0;
 		dto.timeOver = (domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent() && domain
 				.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().isPresent())
 						? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
 								.get().v()
-						: null;
+						: 0;
 		return dto;
 
 	}

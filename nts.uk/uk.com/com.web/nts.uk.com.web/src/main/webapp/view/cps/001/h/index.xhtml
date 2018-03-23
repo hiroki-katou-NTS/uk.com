@@ -31,17 +31,8 @@
 				
 				<div class='ckb' data-bind="ntsCheckBox: { checked: true }" tabindex="5">#{i18n.getText('CPS001_125')}</div>
 				
-				<div class="tbl">
-					<table tabindex='5' id="sel_item_grid"
-							data-bind="ntsGridList: {
-								height: 282,
-								options: items,
-								primaryKey: 'grantDate',
-								showNumbering: true,
-								columns:columns,
-								multiple: false,
-								value: currentItem}">
-						</table>
+				<div id="tbl">
+					
 				</div>
 				<div class='detailContent'>
 					<table data-bind="with: resvLeaGrantRemNum">
@@ -54,7 +45,7 @@
 							<td><div tabindex='8' data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
-							<td data-itemCode="IS00400"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
+							<td data-itemCode="IS00400 grantDate"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
 							<td><div tabindex='9' class="cf" data-bind="ntsSwitchButton: {
 										options: [
 							                 { code: '1', name: '使用可能'},

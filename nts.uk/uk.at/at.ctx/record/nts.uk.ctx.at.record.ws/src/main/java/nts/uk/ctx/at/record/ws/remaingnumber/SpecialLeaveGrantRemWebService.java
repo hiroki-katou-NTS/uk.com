@@ -40,7 +40,7 @@ public class SpecialLeaveGrantRemWebService {
 
 	@POST
 	@Path("getall")
-	public List<SpecialLeaveGrantDto> getAll(@PathParam("sid") String sid ,@PathParam("ctgcd") int ctgcode) {
+	public List<SpecialLeaveGrantDto> getAll() {
 		List<SpecialLeaveGrantDto> datatest = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			SpecialLeaveGrantDto dto = SpecialLeaveGrantDto.createFromDomain(SpecialLeaveGrantRemainingData.createFromJavaType("", "", i, 
@@ -50,6 +50,7 @@ public class SpecialLeaveGrantRemWebService {
 		}
 		
 		//return finder.getListData(sid, ctgcode);
+		// @PathParam("sid") String sid ,@PathParam("ctgcd") int ctgcode
 		return datatest;
 	}
 	

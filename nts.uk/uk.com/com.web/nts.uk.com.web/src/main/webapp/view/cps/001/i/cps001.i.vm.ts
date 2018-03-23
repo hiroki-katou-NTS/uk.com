@@ -59,8 +59,11 @@ module nts.uk.com.view.cps001.i.vm {
         dayNumberOfReam: KnockoutObservable<number>;
         timeReamTitle: KnockoutObservable<string>;
         timeReam: KnockoutObservable<number>
-
-
+        columns: KnockoutObservableArray<any>;
+        useTimeH: KnockoutObservable<boolean>;
+        timeExeededH: KnockoutObservable<boolean>;
+        timeReamH: KnockoutObservable<boolean>;
+        grantTimeH: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -84,27 +87,27 @@ module nts.uk.com.view.cps001.i.vm {
 
             // detail of Grant
             self.dayNumberOfGrantsTitle = ko.observable('日数');
-            self.dayNumberOfGrants = ko.observable(12);
+            self.dayNumberOfGrants = ko.observable(1);
             self.grantTimeTitle = ko.observable('時間');
-            self.grantTime = ko.observable(120);
+            self.grantTime = ko.observable(1);
 
             // detail of Use
             self.dayNumberOfUseTitle = ko.observable('日数');
-            self.dayNumberOfUse = ko.observable(12);
+            self.dayNumberOfUse = ko.observable(2);
             self.useTimeTitle = ko.observable('時間');
-            self.useTime = ko.observable(120);
+            self.useTime = ko.observable(2);
 
             // Over detail
             self.dayNumberOverTitle = ko.observable('日数');
-            self.dayNumberOver = ko.observable(12);
+            self.dayNumberOver = ko.observable(3);
             self.timeOverTitle = ko.observable('時間');
-            self.timeOver = ko.observable(120);
+            self.timeOver = ko.observable(3);
 
             // Reaming detail
             self.dayNumberOfReamTitle = ko.observable('日数');
-            self.dayNumberOfReam = ko.observable(12);
+            self.dayNumberOfReam = ko.observable(4);
             self.timeReamTitle = ko.observable('時間');
-            self.timeReam = ko.observable(120);
+            self.timeReam = ko.observable(4);
 
 
             self.listData = ko.observableArray([]);
@@ -161,88 +164,62 @@ module nts.uk.com.view.cps001.i.vm {
                     // Set to cr eate mode
                 }
                 $('#idGrantDate').focus();
+                
             });
+            
+            self.getItemDef();
 
 
 
             return dfd.promise();
         }
-
-        public newMode(): void {
-            let self = this;
-            self.enaBtnNew(false);
-            self.enaBtnRemove(false);
-        }
-
         
-
-
-        public saveData(): void {
-            let self = this,
-                dataShare: any = getShared('CPS001B_PARAMS') || null;
-            let obj = {
-                sid: __viewContext.user.employeeId,
-                specialLeaCode: dataShare,
-                grantDate : self.dateGrantInp(),
-                deadlineDate : self.deadlineDateInp(),
-                expStatus : self.selectedRuleCode(),
-                registerType : 0,
-                numberDayGrant: self.dayNumberOfGrants(),
-                timeGrant : self.grantTime(),
-                numberDayUse: self.dayNumberOfUse(),
-                timeUse : self.useTime(),
-                useSavingDays : null,
-                numberDaysOver : self.dayNumberOver(),
-                timeOver : self.timeOver(),
-                numberDayRemain : self.dayNumberOfReam(),
-                timeRemain : self.timeReam()
-            };
+        getItemDef(){
+            let self = this;
             
             
-
-
-        }
-
-        public remove(): void {
-            let _self = this;
-
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
-                .ifYes(() => {
-
-
-                }).ifNo(() => {
-                    // Nothing happen
-                })
-        }
-        
-        public close(): void {
-            nts.uk.ui.windows.close();
-        }
-        
-        public bindingData(result: ISpecialLeaveRemaining): void {
-            let self = this;
-            self.dayNumberOfGrantsTitle("");
-            self.dayNumberOfGrants(result.numberDayGrant);
-            self.grantTimeTitle("");
-            self.grantTime(result.timeGrant);
-
-            // detail of Use
-            self.dayNumberOfUseTitle("");
-            self.dayNumberOfUse(result.numberDayUse);
-            self.useTimeTitle("");
-            self.useTime(result.timeUse);
-
-            // Exeeded detail
-            self.dayNumberOverTitle("");
-            self.dayNumberOver(result.numberOverDays);
-            self.timeOverTitle("");
-            self.timeOver(result.timeOver);
-
-            // Reaming detail
-            self.dayNumberOfReamTitle("");
-            self.dayNumberOfReam(result.numberDayRemain);
-            self.timeReamTitle("");
-            self.timeReam(result.timeRemain);
+            service.getItemDef().done((data) => {
+                $("div[data-itemCode]").each(function(){ 
+                    let itemCodes = $(this).attr('data-itemcode');
+                    if(itemCodes){
+                        let itemCodeArray = itemCodes.split(" ");
+                        _.forEach(itemCodeArray, (itemCode) => {
+                            let itemDef = _.find(data, (item)=>{
+                                return item.itemCode == itemCode;
+                            });
+                            if(itemDef){
+                                if(itemDef.display){
+                                    $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+                                }else{
+                                    $(this).parent().css("display", "none");
+                                   self.gDh(true);
+                                    self.grantTimeH = ko.observable(false);
+                                    self.useTimeH = ko.observable(false);
+                                    self.timeExeededH = ko.observable(false);
+                                    self.timeReamH = ko.observable(false);
+                            self.columns = ko.observableArray([
+                                { headerText: 'stt', key: 'code', width: 50 },
+                                { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadline', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_120'), key: 'dayNumberOfGrants', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'grantTime', width: 80, hidden: self.grantTimeH()},
+                                { headerText: nts.uk.resource.getText('CPS001_121'), key: 'dayNumberOfUse', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'useTime', width: 80, hidden: self.useTimeH()},
+                                { headerText: nts.uk.resource.getText('CPS001_130'), key: 'dayNumberOfExeeded', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeExeeded', width: 80, hidden: self.timeExeededH()},
+                                { headerText: nts.uk.resource.getText('CPS001_123'), key: 'dayNumberOfReam', width: 80 },
+                                { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeReam', width: 80, hidden: self.timeReamH()},
+                                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'leavExpStatus', width: 80 }
+                            ]); 
+                                let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData,, primaryKey:\'grantDate\',showNumbering: true,columns:columns,multiple: false, value: currentValue}"></table>';
+                                $("#tbl").html(table);
+                                ko.applyBindings(self, $("#tbl")[0]);
+                                });
+                                }
+                            }
+                        });
+                    }
+                });
         }
     }
 
