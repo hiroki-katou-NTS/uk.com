@@ -51,13 +51,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Override
-	public void updateWorkTimeType(ReflectParameter para, List<Integer> lstItem, boolean scheUpdate) {
-		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
-		if(!optDailyPerfor.isPresent()) {
-			return;
-		}
+	public void updateWorkTimeType(ReflectParameter para, List<Integer> lstItem, boolean scheUpdate) {		
 		//日別実績の勤務情報
-		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
+		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData()).get();
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		if(scheUpdate) {
 			dailyPerfor.setScheduleWorkInformation(workInfor);
@@ -304,8 +300,10 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 		AttendanceTimeOfDailyPerformance attendanceTimeData = optAttendanceTime.get();
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeData.getActualWorkingTimeOfDaily();
-		TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+		TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();		
 		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		//lam nham khong phair 休出深夜 ma la 法定外残業深夜時間
+		//TODO se lam lai khi co domain nay
 		Optional<HolidayWorkTimeOfDaily> optWorkHolidayTime = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
 		if(!optWorkHolidayTime.isPresent()) {
 			return;
