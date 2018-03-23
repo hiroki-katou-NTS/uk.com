@@ -50,7 +50,8 @@ public class JpaCompensOccurrenceSettingGetMemento implements CompensatoryOccurr
      */
     @Override
     public SubHolTransferSet getTransferSetting() {
-        return new SubHolTransferSet(new JpaTransferSettingGetMemento(this.entity));
+//        return new SubHolTransferSet(new JpaTransferSettingGetMemento(this.entity));
+    	return null;
     }
 
 }
