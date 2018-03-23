@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,23 +23,32 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class KshstShaFlexSetPK implements Serializable {
-	
+
+	public KshstShaFlexSetPK(String cid, String sid, int year) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.year = year;
+	}
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
-	
+
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -52,7 +60,9 @@ public class KshstShaFlexSetPK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -61,10 +71,12 @@ public class KshstShaFlexSetPK implements Serializable {
 			return false;
 		}
 		KshstShaFlexSetPK other = (KshstShaFlexSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
-		if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
+		if ((this.sid == null && other.sid != null)
+				|| (this.sid != null && !this.sid.equals(other.sid))) {
 			return false;
 		}
 		if (this.year != other.year) {

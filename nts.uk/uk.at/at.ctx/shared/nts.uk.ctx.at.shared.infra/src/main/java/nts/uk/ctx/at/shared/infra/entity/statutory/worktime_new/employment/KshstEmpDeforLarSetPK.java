@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,22 +22,31 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class KshstEmpDeforLarSetPK implements Serializable {
-	
+
+	public KshstEmpDeforLarSetPK(String cid, String empCd, int year) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+		this.year = year;
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The emp cd. */
 	@Column(name = "EMP_CD")
 	private String empCd;
-	
+
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -50,7 +58,9 @@ public class KshstEmpDeforLarSetPK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -59,10 +69,12 @@ public class KshstEmpDeforLarSetPK implements Serializable {
 			return false;
 		}
 		KshstEmpDeforLarSetPK other = (KshstEmpDeforLarSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
-		if ((this.empCd == null && other.empCd != null) || (this.empCd != null && !this.empCd.equals(other.empCd))) {
+		if ((this.empCd == null && other.empCd != null)
+				|| (this.empCd != null && !this.empCd.equals(other.empCd))) {
 			return false;
 		}
 		if (this.year != other.year) {

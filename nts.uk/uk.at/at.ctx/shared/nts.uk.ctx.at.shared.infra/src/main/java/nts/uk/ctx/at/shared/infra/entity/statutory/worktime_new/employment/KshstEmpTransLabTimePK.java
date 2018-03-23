@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment;
 
 import java.io.Serializable;
@@ -10,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,24 +16,26 @@ import lombok.Setter;
 /**
  * The Class KshstEmpTransLabTimePK.
  */
-
 @Setter
 @Getter
 @NoArgsConstructor
 @Embeddable
 public class KshstEmpTransLabTimePK implements Serializable {
-	
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The emp cd. */
 	@Column(name = "EMP_CD")
 	private String empCd;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -46,7 +46,9 @@ public class KshstEmpTransLabTimePK implements Serializable {
 		return hash;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -56,13 +58,29 @@ public class KshstEmpTransLabTimePK implements Serializable {
 			return false;
 		}
 		KshstEmpTransLabTimePK other = (KshstEmpTransLabTimePK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
-		if ((this.empCd == null && other.empCd != null) || (this.empCd != null && !this.empCd.equals(other.empCd))) {
+		if ((this.empCd == null && other.empCd != null)
+				|| (this.empCd != null && !this.empCd.equals(other.empCd))) {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Instantiates a new kshst emp trans lab time PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param empCd
+	 *            the emp cd
+	 */
+	public KshstEmpTransLabTimePK(String cid, String empCd) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
 	}
 
 }
