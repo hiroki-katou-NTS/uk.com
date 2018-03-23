@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -8,12 +9,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfo;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfoPK;
 
 @Stateless
 public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements SpecialLeaveBasicInfoRepository{
 
-	private String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.employeeId = :employeeId ";
+	private String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.key.employeeId = :employeeId ";
 	
+	private String FIND_QUERY_BYSIDCD = String.join(" ", FIND_QUERY, "AND s.key.spLeaveCD = :spLeaveCD");
 	
 	@Override
 	public List<SpecialLeaveBasicInfo> listSPLeav(String sid) {
@@ -37,8 +40,9 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	}
 
 	@Override
-	public void delete(String infoId) {
-		this.commandProxy().remove(KrcmtSpecialLeaveInfo.class, infoId);
+	public void delete(String sID, int spLeavCD) {
+		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(sID,spLeavCD);
+		this.commandProxy().remove(KrcmtSpecialLeaveInfo.class, key);
 	}
 	
 	/**
@@ -48,8 +52,8 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	 */
 	private KrcmtSpecialLeaveInfo toEntity(SpecialLeaveBasicInfo domain){
 		KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
-		entity.employeeId = domain.getSID();
-		entity.infoId = domain.getInfoId();
+		entity.key.employeeId = domain.getSID();
+		entity.key.spLeaveCD = domain.getSpecialLeaveCode().v();
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
 		if (domain.getGrantSetting().getGrantDays().isPresent()){
@@ -68,8 +72,16 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	 * @return
 	 */
 	private SpecialLeaveBasicInfo toDomain(KrcmtSpecialLeaveInfo entity) {
-		return new SpecialLeaveBasicInfo(entity.infoId, entity.employeeId, entity.spLeaveCD, entity.useCls,
+		return new SpecialLeaveBasicInfo(entity.key.employeeId, entity.key.spLeaveCD, entity.useCls,
 				entity.appSetting, entity.grantDate, entity.grantNumber, entity.grantTable);
+	}
+
+	@Override
+	public Optional<SpecialLeaveBasicInfo> getBySidLeaveCd(String sid, int spLeaveCD) {
+		Optional<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY_BYSIDCD,KrcmtSpecialLeaveInfo.class)
+				.setParameter("employeeId", sid)
+				.setParameter("spLeaveCD", spLeaveCD).getSingle(item->toDomain(item));
+		return result;
 	}
 
 }
