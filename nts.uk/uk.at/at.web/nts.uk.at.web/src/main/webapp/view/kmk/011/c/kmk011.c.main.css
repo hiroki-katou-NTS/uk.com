@@ -33,3 +33,7 @@
 	width: 25px !important;
 	text-align: center;
 }
+
+p span {
+	word-wrap: break-word;
+}

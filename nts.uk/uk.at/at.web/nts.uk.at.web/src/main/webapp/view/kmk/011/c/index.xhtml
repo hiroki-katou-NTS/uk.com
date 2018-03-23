@@ -27,7 +27,7 @@
 				<!-- C1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					data-bind="click: RegistrationDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: RegistrationDivReason">#{i18n.getText('KMK011_3')}</button>
 				<!-- C1_3: Button Delete -->
 				<button tabindex="3" id="btn_005"
 					class="button danger separate-button fix-button"
@@ -97,17 +97,20 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: requiredAtr,
-									enable: true }">
+									enable: mode}">
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
+							<p><span data-bind="text: textNotice01"></span></p>
+							<p><span data-bind="text: textNotice02"></span></p> 
 								<!-- B3_6: Text --> 
-								<!-- <label id="A_LBL_003">※#{i18n.getText('KMK011_27')}</label> -->
+								<!-- <p><span>#{i18n.getText('KMK011_78')}</span></p> -->
 							</td>
 						</tr>
+
 					</table>
 				</div>
 			</div>

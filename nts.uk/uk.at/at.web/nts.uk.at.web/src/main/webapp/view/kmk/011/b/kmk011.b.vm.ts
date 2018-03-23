@@ -21,12 +21,12 @@ module nts.uk.at.view.kmk011.b {
             timeItemName: KnockoutObservable<string>;//list name KDL021 - B3_7
 
             //B3_13:swith button, B3_15
-            selectSelect: KnockoutObservable<any>;//value B3_13
+            selectSelect: KnockoutObservable<boolean>;//value B3_13
             enableSelect: KnockoutObservable<boolean>; // for define enable for B3_15 checkbox
             checkErrorSelect: KnockoutObservable<boolean>; //value B3_15
 
             //B3_17:siwth button, B3_18
-            selectInput: KnockoutObservable<any>; //value B3_17
+            selectInput: KnockoutObservable<boolean>; //value B3_17
             enableInput: KnockoutObservable<boolean>;
             checkErrorInput: KnockoutObservable<boolean>;
 
@@ -75,8 +75,8 @@ module nts.uk.at.view.kmk011.b {
                 self.divergenceTimeId = ko.observable(null);
                 self.itemDivergenceTime = ko.observable(null);
 
-                self.selectSelect = ko.observable(0);
-                self.selectInput = ko.observable(0);
+                self.selectSelect = ko.observable(false);
+                self.selectInput = ko.observable(false);
 
                 self.checkErrorInput = ko.observable(false);
                 self.checkErrorSelect = ko.observable(false);
@@ -189,7 +189,7 @@ module nts.uk.at.view.kmk011.b {
                 self.enableUse(false);
                 self.divergenceTypeName('');
 
-                self.divTimeName(''); 
+                self.divTimeName('');
                 self.timeItemName('');
 
                 //B3_13:swith button, B3_15
@@ -262,14 +262,16 @@ module nts.uk.at.view.kmk011.b {
                         if (self.divergenceTimeId() == null) {
                             return;
                         }
-
                         var listIdSelect = [];
                         for (let i = 0; i < self.listItemSelected().length; i++) {
                             listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
                         }
+                        var bool: boolean;
+                        if (self.selectSelect() == 1) bool = true;
+                        else bool = false;
                         var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divTimeName(),
                             self.divergenceTypeName(), self.checkErrorInput(), self.checkErrorSelect(),
-                            self.selectInput(), self.selectSelect(), listIdSelect);
+                            self.selectInput(), bool, listIdSelect);
 
 
                         var listAdd = new Array<model.TimeItemSet>();
@@ -291,20 +293,14 @@ module nts.uk.at.view.kmk011.b {
 
                         }).fail(function(error) {
                             nts.uk.ui.block.clear();
-                            self.check = true;
-                            if (error.messageId == 'Msg_82') {
-                                $('#inpAlarmTime').ntsError('set', error);
-                            }
-                            if (error.messageId == 'Msg_32') {
-                                $('#inpDialog').ntsError('set', error);
-                            } else {
-                                $('#inpName').ntsError(error.message);
-                            }
                         })
                         dfd.resolve();
                         return dfd.promise();
                     }
                 })
+                if (self.listItemSelected().length == 0) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_1008" });
+                }
                 nts.uk.ui.block.clear();
             }
             private clearError(): void {
@@ -394,6 +390,13 @@ module nts.uk.at.view.kmk011.b {
                 var self = this;
                 blockUI.grayout();
                 setShared('KMK011_divTimeId', self.divergenceTimeId(), true);
+                var test :boolean;
+                if (self.selectInput()==1) {
+                    test =true;    
+                }
+                else test =false
+                    nts.uk.ui.windows.setShared('selectInput', test);
+                
                 nts.uk.ui.windows.sub.modal('/view/kmk/011/c/index.xhtml', { title: '選択肢の設定', }).onClosed(function(): any {
                     blockUI.clear();
                     if ($('#inpDialog').ntsError("hasError") == true) {
