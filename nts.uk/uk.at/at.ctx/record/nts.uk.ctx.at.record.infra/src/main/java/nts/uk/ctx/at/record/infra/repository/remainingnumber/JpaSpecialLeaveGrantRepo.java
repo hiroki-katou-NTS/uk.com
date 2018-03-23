@@ -18,6 +18,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	private String GET_ALL_BY_SID_SPECIALCODE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode order by a.grantDate DESC";
 
 	private String QUERY_WITH_SPECIALID = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.key.specialLeaID = :specialLeaId";
+	
+	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND e.expStatus = :expStatus order by a.grantDate";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a"
 			+ " WHERE a.employeeId = :employeeId and a.grantDate = :grantDate and a.specialLeaCode = :specialLeaCode";
@@ -119,6 +121,21 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		return SpecialLeaveGrantRemainingData.createFromJavaType(e.key.specialLeaID, e.employeeId, e.specialLeaCode,
 				e.grantDate, e.deadlineDate, e.expStatus, e.registerType, e.numberDayGrant, e.timeGrant, e.numberDayUse,
 				e.timeUse, e.useSavingDays, e.numberOverDays, e.timeOver, e.numberDayRemain, e.timeRemain);
+	}
+
+	@Override
+	public List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode, boolean expirationStatus) {
+		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
+				.query(GET_ALL_BY_SID_SPECIALCODE_STATUS, KrcmtSpecialLeaveReam.class).setParameter("employeeId", employeeId)
+				.setParameter("specialLeaCode", specialCode)
+				.setParameter("expStatus", expirationStatus? 1:0).getList();
+
+		return entities.stream()
+				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.key.specialLeaID,x.employeeId, x.specialLeaCode, x.grantDate,
+						x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant, x.timeGrant, x.numberDayUse,
+						x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver, x.numberDayRemain,
+						x.timeRemain))
+				.collect(Collectors.toList());
 	}
 
 }
