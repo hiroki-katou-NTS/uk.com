@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
-
 /**
  * The Interface WkpFlexSettingRepository.
  */
@@ -21,7 +19,7 @@ public interface WkpFlexSettingRepository {
 	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<WkpFlexSetting> findByCidAndWkpIdAndYear(String cid, String wkpId, Year year);
+	Optional<WkpFlexSetting> find(String cid, String wkpId, int year);
 
 	/**
 	 * Adds the.
@@ -42,6 +40,6 @@ public interface WkpFlexSettingRepository {
 	 *
 	 * @param wkpFlexSetting the wkp flex setting
 	 */
-	void delete(WkpFlexSetting wkpFlexSetting);
+	void delete(String cid, String wkpId, int year);
 
 }

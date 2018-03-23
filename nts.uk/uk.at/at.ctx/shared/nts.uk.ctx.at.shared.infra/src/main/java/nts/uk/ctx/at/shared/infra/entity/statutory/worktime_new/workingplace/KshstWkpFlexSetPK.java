@@ -12,7 +12,6 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -20,7 +19,6 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-@NoArgsConstructor
 @Embeddable
 public class KshstWkpFlexSetPK implements Serializable {
 	
@@ -39,7 +37,14 @@ public class KshstWkpFlexSetPK implements Serializable {
 	
 	/** The year. */
 	@Column(name = "YEAR")
-	private short year;
+	private int year;
+
+	public KshstWkpFlexSetPK(String cid, String wkpId, int year) {
+		super();
+		this.cid = cid;
+		this.wkpId = wkpId;
+		this.year = year;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -73,4 +78,5 @@ public class KshstWkpFlexSetPK implements Serializable {
 		}
 		return true;
 	}
+	
 }

@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +33,12 @@ public class KshstShaTransLabTimePK implements Serializable {
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
+
+	public KshstShaTransLabTimePK(String cid, String sid) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -63,4 +68,5 @@ public class KshstShaTransLabTimePK implements Serializable {
 		}
 		return true;
 	}
+
 }

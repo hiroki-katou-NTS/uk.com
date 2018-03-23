@@ -38,6 +38,13 @@ public class KshstShaDeforLarSetPK implements Serializable {
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
+	
+	public KshstShaDeforLarSetPK(String cid, String sid, int year) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.year = year;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -71,4 +78,6 @@ public class KshstShaDeforLarSetPK implements Serializable {
 		}
 		return true;
 	}
+
+
 }

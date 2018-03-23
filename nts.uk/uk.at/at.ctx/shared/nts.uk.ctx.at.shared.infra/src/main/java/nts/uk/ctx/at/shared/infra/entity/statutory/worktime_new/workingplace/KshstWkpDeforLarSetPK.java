@@ -39,8 +39,15 @@ public class KshstWkpDeforLarSetPK implements Serializable {
 	
 	/** The year. */
 	@Column(name = "YEAR")
-	private short year;
+	private int year;
 
+	public KshstWkpDeforLarSetPK(String cid, String wkpId, int year) {
+		super();
+		this.cid = cid;
+		this.wkpId = wkpId;
+		this.year = year;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -73,5 +80,6 @@ public class KshstWkpDeforLarSetPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +38,13 @@ public class KshstShaNormalSetPK implements Serializable {
 	/** The year. */
 	@Column(name = "YEAR")
 	private int year;
+
+	public KshstShaNormalSetPK(String cid, String sid, int year) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+		this.year = year;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -73,5 +79,6 @@ public class KshstShaNormalSetPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

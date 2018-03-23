@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class KshstEmpTransLabTimePK implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
@@ -34,6 +33,12 @@ public class KshstEmpTransLabTimePK implements Serializable {
 	/** The emp cd. */
 	@Column(name = "EMP_CD")
 	private String empCd;
+	
+	public KshstEmpTransLabTimePK(String cid, String empCd) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
