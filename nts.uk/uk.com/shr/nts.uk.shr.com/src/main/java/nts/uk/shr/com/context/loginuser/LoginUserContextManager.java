@@ -87,5 +87,6 @@ public interface LoginUserContextManager {
 		RoleIdSetter forOfficeHelper(String roleId);
 		RoleIdSetter forSystemAdmin(String roleId);
 		RoleIdSetter forCompanyAdmin(String roleId);
+		RoleIdSetter forGroupCompaniesAdmin(String roleId);
 	}
 }
