@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
@@ -46,7 +47,13 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 			LengthServiceTbl lengthService = LengthServiceTbl.createFromJavaType(companyId, data.getYearHolidayCode(), data.getGrantNum(), 
 					data.getAllowStatus(), data.getStandGrantDay(), data.getYear(), data.getMonth());
 			
-			lengthServiceData.add(lengthService);
+			if(data.getGrantDays() != null && lengthService.getYear() == null) {
+				throw new BusinessException("Msg_270");
+			}
+			
+			if(lengthService.getMonth() != null || lengthService.getYear() != null) {
+				lengthServiceData.add(lengthService);
+			}
 		}
 		
 		LengthServiceTbl.validateInput(lengthServiceData);
@@ -59,9 +66,12 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 		List<GrantHdTbl> grantDomain = new ArrayList<>();
 		for (GrantHolidayCommand data : command) {
 			GrantHdTbl newData = GrantHdTbl.createFromJavaType(companyId, data.getConditionNo(), data.getYearHolidayCode(), 
-					data.getGrantNum(), data.getGrantDays(), data.getLimitTimeHd(), data.getLimitDayYear());
+					data.getGrantNum(), data.getGrantDays(), data.getLimitTimeHd() != null ? data.getLimitTimeHd() : 0, 
+					data.getLimitDayYear() != null ? data.getLimitDayYear() : 0);
 			
-			grantDomain.add(newData);
+			if(newData.getGrantDays().v() != null && newData.getLimitTimeHd().isPresent() && newData.getLimitDayYear().isPresent()) {
+				grantDomain.add(newData);
+			}
 		}
 		
 		// Add to GrantHd

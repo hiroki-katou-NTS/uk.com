@@ -23,5 +23,5 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 
 	void insert(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
 
-
+	void updateFlush(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
 }

@@ -370,7 +370,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					//条件 bo sung:
 					int phaseOrderCur = status.getPhaseOrder().intValue();
 					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
-					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -2) == 1){//phase truoc do da approve
+					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -2) == new Integer(1)){//phase truoc do da approve
 						lstAppFilter3.add(appFull.getApplication());
 						lstAppFullFilter3.add(appFull);
 						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
@@ -815,17 +815,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
 			String empName = "";
 			String inpEmpName = null;
-			if(displaySet.equals(ShowName.SHOW)){
+//			if(displaySet.equals(ShowName.SHOW)){
 				 empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
 				 inpEmpName = app.getEmployeeID().equals(app.getEnteredPersonID()) ? null : empRequestAdapter.getEmployeeName(app.getEnteredPersonID());
-			}
+//			}
 			
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
 			String wkpID = "";
-			if(displaySet.equals(ShowName.SHOW) && wkp != null){
+			String wkpName = "";
+			if(wkp != null){
 				wkpID = wkp.getWorkplaceId();
+			}
+			
+			if(displaySet.equals(ShowName.SHOW) && wkp != null){
+				wkpName = wkp.getWkpDisplayName();
 			}
 //			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
@@ -841,7 +846,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
 			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
-					empName, inpEmpName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
+					empName, inpEmpName, wkpName, false, null, checkAddNote, 0));
 		}
 		return lstAppMasterInfo;
 	}

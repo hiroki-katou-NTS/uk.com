@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -14,7 +14,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 
-@Value
+@Data
 @AllArgsConstructor
 public class GrantHdTbl extends AggregateRoot {
 	/* 会社ID */

@@ -29,7 +29,11 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
@@ -347,7 +351,7 @@ public class PerInfoItemDefFinder {
 	public PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
-		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
+		return  new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(),
 				itemDef.getIsAbolition().value, itemDef.getIsFixed().value, itemDef.getIsRequired().value,
 				itemDef.getSystemRequired().value, itemDef.getRequireChangable().value, dispOrder,
@@ -437,6 +441,23 @@ public class PerInfoItemDefFinder {
 		case 8:
 			SelectionButton bItem = (SelectionButton) dataTypeState;
 			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
+	
+		case 9: 
+			ReadOnly rOnlyItem = (ReadOnly) dataTypeState;
+			return DataTypeStateDto.createReadOnly(rOnlyItem.getReadText().v());
+		
+		case 10: 
+			RelatedCategory reCtgDto = (RelatedCategory) dataTypeState;
+			return DataTypeStateDto.createRelatedCategory(reCtgDto.getRelatedCtgCode().v());
+
+		case 11: 
+			NumericButton numbtnItem = (NumericButton) dataTypeState;
+			return DataTypeStateDto.createNumericButtonDto(numbtnItem.getReadText().v());
+			
+		case 12: 
+			ReadOnlyButton rOnlyButton = (ReadOnlyButton) dataTypeState;
+			return DataTypeStateDto.createReadOnlyButton(rOnlyButton.getReadText().v());
+			
 		default:
 			return null;
 		}
@@ -449,11 +470,48 @@ public class PerInfoItemDefFinder {
 
 	// lanlt start
 	// return list id of item definition if it's require;
-	public List<ItemRequiredBackGroud> getAllRequiredIds() {
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCompanyID() {
 		String companyId = AppContexts.user().companyId();
 		String contractCd = AppContexts.user().contractCode();
 		List<ItemRequiredBackGroud> itemRequiredLst = new ArrayList<>();
 		this.pernfoItemDefRep.getAllRequiredIds(contractCd, companyId).stream().forEach(item -> {
+
+			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
+			itemNameRequired.setRowId(item);
+			itemNameRequired.setColumnKey("itemName");
+			itemNameRequired.setState(toList("ntsgrid-alarm"));
+
+			ItemRequiredBackGroud setting = new ItemRequiredBackGroud();
+			setting.setRowId(item);
+			setting.setColumnKey("setting");
+			setting.setState(toList("ntsgrid-alarm"));
+
+			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
+			other.setRowId(item);
+			other.setColumnKey("otherAuth");
+			other.setState(toList("ntsgrid-alarm"));
+
+			itemRequiredLst.add(itemNameRequired);
+			itemRequiredLst.add(setting);
+			itemRequiredLst.add(other);
+
+		});
+		return itemRequiredLst;
+	}
+	
+	/**
+	 * @author lanlt
+	 * dung cho man hinh B cua CPS009
+	 * getAllItemRequiredIdsByCtgId
+	 * @param ctgId
+	 * @return
+	 */
+	public List<ItemRequiredBackGroud> getAllItemRequiredIdsByCtgId(String ctgId) {
+		String contractCd = AppContexts.user().contractCode();
+		List<ItemRequiredBackGroud> itemRequiredLst = new ArrayList<>();
+		
+		List<String> itemX = this.pernfoItemDefRep.getAllRequiredIdsByCtgId(contractCd, ctgId);
+		itemX.stream().forEach(item -> {
 
 			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
 			itemNameRequired.setRowId(item);

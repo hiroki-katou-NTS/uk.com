@@ -199,6 +199,10 @@ public class OverTimeDto {
 	 */
 	private AppOvertimeReference appOvertimeReference;
 	
+	private boolean performanceDisplayAtr;
+	
+	private boolean preDisplayAtr;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -243,7 +247,7 @@ public class OverTimeDto {
 				false,
 				false, 
 				null,
-				null);
+				null,false,false);
 	}
 	
 }

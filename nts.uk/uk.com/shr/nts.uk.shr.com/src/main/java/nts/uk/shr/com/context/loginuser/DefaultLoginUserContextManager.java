@@ -103,6 +103,11 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 				roles.setRoleIdforCompanyAdmin(roleId);
 				return this;
 			}
+			@Override
+			public RoleIdSetter forGroupCompaniesAdmin(String roleId) {
+				roles.setRoleIdforGroupCompaniesAdmin(roleId);
+				return this;
+			}
 		};
 	}
 

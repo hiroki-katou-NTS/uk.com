@@ -40,7 +40,8 @@ public interface NewBeforeRegister_New {
 	 * @param startDate
 	 * @param endDate
 	 */
-	public void deadlineApplicationCheck(String companyID, Integer closureID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate);
+	public void deadlineApplicationCheck(String companyID, Integer closureID, String employeeID,
+			GeneralDate deadlineStartDate, GeneralDate deadlineEndDate, GeneralDate appStartDate, GeneralDate appEndDate);
 	
 	/**
 	 * 5.申請の受付制限をチェック

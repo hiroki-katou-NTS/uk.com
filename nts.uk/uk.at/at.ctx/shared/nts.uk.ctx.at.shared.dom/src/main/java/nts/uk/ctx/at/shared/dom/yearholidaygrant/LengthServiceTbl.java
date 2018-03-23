@@ -41,26 +41,25 @@ public class LengthServiceTbl extends AggregateRoot{
 	
 	private GeneralDate grantDate;
 	
-	
 	/**
 	 * validate length service table
 	 * @param grantHolidayList
 	 */
 	public static void validateInput(List<LengthServiceTbl> grantHolidayList) {
 		// 重複した勤続年数の登録不可	
-		List<YearMonthHoliday> yearMonths = new ArrayList<>();
+		List<Integer> years = new ArrayList<>();
 		
 		for (int i = 0; i < grantHolidayList.size(); i++) {
 			LengthServiceTbl currentCondition = grantHolidayList.get(i);
 			
 			// 年数が入力されており、月数が未入力の場合「X年0ヶ月」として登録する
-			if(currentCondition.getYear() != null &&  currentCondition.getMonth() == null){
-				currentCondition.setYear(new LimitedTimeHdDays(0));
+			if(currentCondition.getYear() != null && currentCondition.getMonth() == null){
+				currentCondition.setMonth(new Month(0));
 			}
 			
 			// 月数が入力されており、年数が未入力の場合「0年Xヶ月」として登録する
-			if(currentCondition.getYear() == null &&  currentCondition.getMonth() != null){
-				currentCondition.setMonth(new Month(0));
+			if(currentCondition.getYear() == null && currentCondition.getMonth() != null){
+				currentCondition.setYear(new LimitedTimeHdDays(0));
 			}
 			
 			if (currentCondition.getMonth() == null && currentCondition.getYear() == null) {
@@ -73,11 +72,12 @@ public class LengthServiceTbl extends AggregateRoot{
 			}
 			
 			// 重複した勤続年数の登録不可
-			YearMonthHoliday currentYearMonthHd = new YearMonthHoliday(currentCondition.getYear().v(), currentCondition.getMonth().v());
-			if (yearMonths.stream().anyMatch(x -> x.equals(currentYearMonthHd))) {
+			Integer currentYear = currentCondition.getYear().v();
+			
+			if (years.stream().anyMatch(x -> x.equals(currentYear))) {
 				throw new BusinessException("Msg_266");
 			}
-			yearMonths.add(new YearMonthHoliday(currentCondition.getYear().v(), currentCondition.getMonth().v()));
+			years.add(currentCondition.getYear().v());
 						
 			// 年数、月数ともに未入力の場合登録不可
 			if (currentCondition.getYear() == null && currentCondition.getMonth() == null) {
@@ -136,7 +136,7 @@ public class LengthServiceTbl extends AggregateRoot{
 
 	public LengthServiceTbl(String companyId, YearHolidayCode yearHolidayCode, GrantNum grantNum,
 			GrantSimultaneity allowStatus, GrantReferenceDate standGrantDay, LimitedTimeHdDays year, Month month) {
-		super();
+		
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
 		this.grantNum = grantNum;
