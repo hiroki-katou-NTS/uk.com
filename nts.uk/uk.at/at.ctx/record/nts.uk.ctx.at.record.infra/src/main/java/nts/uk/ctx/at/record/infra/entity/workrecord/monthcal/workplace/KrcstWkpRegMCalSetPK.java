@@ -15,7 +15,19 @@ import lombok.Setter;
 /**
  * The Class KrcstWkpRegMCalSetPK.
  */
+
+/**
+ * Gets the wkpid.
+ *
+ * @return the wkpid
+ */
 @Getter
+
+/**
+ * Sets the wkpid.
+ *
+ * @param wkpid the new wkpid
+ */
 @Setter
 @Embeddable
 public class KrcstWkpRegMCalSetPK implements Serializable {
@@ -36,6 +48,18 @@ public class KrcstWkpRegMCalSetPK implements Serializable {
 	 */
 	public KrcstWkpRegMCalSetPK() {
 		super();
+	}
+	
+	/**
+	 * Instantiates a new krcst wkp reg M cal set PK.
+	 *
+	 * @param cid the cid
+	 * @param wkpid the wkpid
+	 */
+	public KrcstWkpRegMCalSetPK(String cid, String wkpid) {
+		super();
+		this.cid = cid;
+		this.wkpid = wkpid;
 	}
 
 	/*

@@ -10,11 +10,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstDeforMCalSet;
 
 /**
  * The Class KrcstEmpDeforMCalSet.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KRCST_EMP_DEFOR_M_CAL_SET")
 public class KrcstEmpDeforMCalSet extends KrcstDeforMCalSet implements Serializable {

@@ -15,7 +15,19 @@ import lombok.Setter;
 /**
  * The Class KrcstEmpRegMCalSetPK.
  */
+
+/**
+ * Gets the emp cd.
+ *
+ * @return the emp cd
+ */
 @Getter
+
+/**
+ * Sets the emp cd.
+ *
+ * @param empCd the new emp cd
+ */
 @Setter
 @Embeddable
 public class KrcstEmpRegMCalSetPK implements Serializable {
@@ -38,6 +50,18 @@ public class KrcstEmpRegMCalSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new krcst emp reg M cal set PK.
+	 *
+	 * @param cid the cid
+	 * @param empCd the emp cd
+	 */
+	public KrcstEmpRegMCalSetPK(String cid, String empCd) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -71,6 +95,6 @@ public class KrcstEmpRegMCalSetPK implements Serializable {
 			return false;
 		}
 		return true;
-	}
+	}	
 
 }

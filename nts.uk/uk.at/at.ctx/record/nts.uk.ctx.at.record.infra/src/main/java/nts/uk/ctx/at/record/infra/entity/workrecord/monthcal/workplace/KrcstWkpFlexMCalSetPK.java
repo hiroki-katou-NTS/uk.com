@@ -15,7 +15,19 @@ import lombok.Setter;
 /**
  * The Class KrcstWkpFlexMCalSetPK.
  */
+
+/**
+ * Gets the wkp id.
+ *
+ * @return the wkp id
+ */
 @Getter
+
+/**
+ * Sets the wkp id.
+ *
+ * @param wkpId the new wkp id
+ */
 @Setter
 @Embeddable
 public class KrcstWkpFlexMCalSetPK implements Serializable {
@@ -38,6 +50,18 @@ public class KrcstWkpFlexMCalSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new krcst wkp flex M cal set PK.
+	 *
+	 * @param cid the cid
+	 * @param wkpId the wkp id
+	 */
+	public KrcstWkpFlexMCalSetPK(String cid, String wkpId) {
+		super();
+		this.cid = cid;
+		this.wkpId = wkpId;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

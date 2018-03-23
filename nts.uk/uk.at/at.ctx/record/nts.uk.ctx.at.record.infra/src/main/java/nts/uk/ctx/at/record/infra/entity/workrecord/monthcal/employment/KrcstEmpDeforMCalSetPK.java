@@ -15,7 +15,19 @@ import lombok.Setter;
 /**
  * The Class KrcstEmpDeforMCalSetPK.
  */
+
+/**
+ * Gets the emp cd.
+ *
+ * @return the emp cd
+ */
 @Getter
+
+/**
+ * Sets the emp cd.
+ *
+ * @param empCd the new emp cd
+ */
 @Setter
 @Embeddable
 public class KrcstEmpDeforMCalSetPK implements Serializable {
@@ -30,6 +42,18 @@ public class KrcstEmpDeforMCalSetPK implements Serializable {
 	/** The emp cd. */
 	@Column(name = "EMP_CD")
 	private String empCd;
+	
+	/**
+	 * Instantiates a new krcst emp defor M cal set PK.
+	 *
+	 * @param cid the cid
+	 * @param empCd the emp cd
+	 */
+	public KrcstEmpDeforMCalSetPK(String cid, String empCd) {
+		super();
+		this.cid = cid;
+		this.empCd = empCd;
+	}
 
 	/**
 	 * Instantiates a new krcst emp defor M cal set PK.
@@ -72,4 +96,5 @@ public class KrcstEmpDeforMCalSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }

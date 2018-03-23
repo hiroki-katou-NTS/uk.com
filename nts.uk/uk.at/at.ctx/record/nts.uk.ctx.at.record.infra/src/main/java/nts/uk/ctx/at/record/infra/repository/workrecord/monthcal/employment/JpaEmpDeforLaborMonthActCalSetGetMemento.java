@@ -6,31 +6,61 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.employment;
 
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetGetMemento;
+import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.employment.KrcstEmpDeforMCalSet;
+import nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.JpaDeforWorkTimeAggrSetGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
- * The Class JpaWorkfixedGetMemento.
+ * The Class JpaEmpDeforLaborMonthActCalSetGetMemento.
  */
-public class JpaEmpDeforLaborMonthActCalSetGetMemento
-		implements EmpDeforLaborMonthActCalSetGetMemento {
+public class JpaEmpDeforLaborMonthActCalSetGetMemento implements EmpDeforLaborMonthActCalSetGetMemento {
 
+	/** The type value. */
+	private KrcstEmpDeforMCalSet typeValue;
+
+	/**
+	 * Instantiates a new jpa emp defor labor month act cal set get memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaEmpDeforLaborMonthActCalSetGetMemento(KrcstEmpDeforMCalSet typeValue) {
+		super();
+		this.typeValue = typeValue;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
+	 * EmpDeforLaborMonthActCalSetGetMemento#getCompanyId()
+	 */
 	@Override
 	public CompanyId getCompanyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyId(this.typeValue.getKrcstEmpDeforMCalSetPK().getCid());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
+	 * EmpDeforLaborMonthActCalSetGetMemento#getEmploymentCode()
+	 */
 	@Override
 	public EmploymentCode getEmploymentCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new EmploymentCode(this.typeValue.getKrcstEmpDeforMCalSetPK().getEmpCd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.
+	 * EmpDeforLaborMonthActCalSetGetMemento#getDeforAggrSetting()
+	 */
 	@Override
 	public DeforWorkTimeAggrSet getDeforAggrSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DeforWorkTimeAggrSet(new JpaDeforWorkTimeAggrSetGetMemento<>(this.typeValue));
 	}
 
 }

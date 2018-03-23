@@ -17,8 +17,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.company.KrcstComFle
  * The Class JpaComFlexMonthActCalSetRepository.
  */
 @Stateless
-public class JpaComFlexMonthActCalSetRepository extends JpaRepository
-		implements ComFlexMonthActCalSetRepository {
+public class JpaComFlexMonthActCalSetRepository extends JpaRepository implements ComFlexMonthActCalSetRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -29,8 +28,7 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<ComFlexMonthActCalSet> find(String companyId) {
 		// Get info
-		Optional<KrcstComFlexMCalSet> optEntity = this.queryProxy().find(companyId,
-				KrcstComFlexMCalSet.class);
+		Optional<KrcstComFlexMCalSet> optEntity = this.queryProxy().find(companyId, KrcstComFlexMCalSet.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -38,8 +36,7 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository
 		}
 
 		// Return
-		return Optional.of(
-				new ComFlexMonthActCalSet(new JpaComFlexMonthActCalSetGetMemento(optEntity.get())));
+		return Optional.of(new ComFlexMonthActCalSet(new JpaComFlexMonthActCalSetGetMemento(optEntity.get())));
 	}
 
 	/*

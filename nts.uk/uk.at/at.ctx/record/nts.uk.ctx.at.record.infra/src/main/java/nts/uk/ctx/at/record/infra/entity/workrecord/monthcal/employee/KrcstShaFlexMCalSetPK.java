@@ -15,7 +15,19 @@ import lombok.Setter;
 /**
  * The Class KrcstShaFlexMCalSetPK.
  */
+
+/**
+ * Gets the sid.
+ *
+ * @return the sid
+ */
 @Getter
+
+/**
+ * Sets the sid.
+ *
+ * @param sid the new sid
+ */
 @Setter
 @Embeddable
 public class KrcstShaFlexMCalSetPK implements Serializable {
@@ -30,6 +42,18 @@ public class KrcstShaFlexMCalSetPK implements Serializable {
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
+	
+	/**
+	 * Instantiates a new krcst sha flex M cal set PK.
+	 *
+	 * @param cid the cid
+	 * @param sid the sid
+	 */
+	public KrcstShaFlexMCalSetPK(String cid, String sid) {
+		super();
+		this.cid = cid;
+		this.sid = sid;
+	}
 
 	/**
 	 * Instantiates a new krcst sha flex M cal set PK.
@@ -72,4 +96,5 @@ public class KrcstShaFlexMCalSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }
