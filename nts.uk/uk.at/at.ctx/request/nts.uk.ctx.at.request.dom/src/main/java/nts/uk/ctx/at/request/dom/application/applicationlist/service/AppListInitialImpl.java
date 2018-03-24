@@ -1416,11 +1416,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * check time pr < time post
 	 * @param timePre
 	 * @param timePost
-	 * @return
+	 * @return true : error -> fill color
 	 */
 	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost){
+		//loop by frame post
 		for (OverTimeFrame overTimeFrame : timePost) {
-			if(overTimeFrame.getApplicationTime() < this.findTimePre(timePre, overTimeFrame.getFrameNo())){
+			//frame pre
+			Integer checkColor = this.findTimePre(timePre, overTimeFrame.getFrameNo());
+			if(checkColor == null){
+				return overTimeFrame == null ? false : true;
+			}
+			if(overTimeFrame.getApplicationTime() == null){
+				return false;
+			}
+			if(overTimeFrame.getApplicationTime() < checkColor){
 				return true;
 			}
 		}
