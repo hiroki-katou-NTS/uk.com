@@ -53,6 +53,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
         heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
+        
+        overtimeAtr: KnockoutObservable<number> = ko.observable(null);
         //休出時間
         restTime: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
         //残業時間
@@ -350,14 +352,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             }
             //
-            if (data.appOvertimeNightFlg == 1) {
+            if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
                 self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), null, null, null,"#[KAF005_64]","",""));
             }
-            if(data.flexFLag){
+            if(data.flexFLag && data.overtimeAtr != 0){
                self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"#[KAF005_66]","","")); 
             }
+            self.overtimeAtr(data.overtimeAtr);
             if(data.overtimeAtr == 0){
-                self.heightOvertimeHours(180);   
+                self.heightOvertimeHours(56);   
             }else if(data.overtimeAtr == 1){
                 self.heightOvertimeHours(180);
             }else{
@@ -433,6 +436,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 flexExessTime: flexExessTimeTmp == null ? -1 : flexExessTimeTmp,
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
+                overtimeAtr: self.overtimeAtr(),
                 calculateFlag: self.calculateFlag()
             };
             //登録前エラーチェック
@@ -797,13 +801,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 }
             }
-            if(overtimeDto.overtimeAtr == 0){
-                self.heightOvertimeHours(58);   
-            }else if(overtimeDto.overtimeAtr == 1){
-                self.heightOvertimeHours(180);
-            }else{
-                self.heightOvertimeHours(216);
-            }
+//            if(overtimeDto.overtimeAtr == 0){
+//                self.heightOvertimeHours(56);   
+//            }else if(overtimeDto.overtimeAtr == 1){
+//                self.heightOvertimeHours(180);
+//            }else{
+//                self.heightOvertimeHours(216);
+//            }
         }
         
         convertpreAppOvertimeDto(data :any){

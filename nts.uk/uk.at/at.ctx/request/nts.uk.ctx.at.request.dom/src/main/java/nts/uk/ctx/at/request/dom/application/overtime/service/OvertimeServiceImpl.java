@@ -63,7 +63,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			}else if(url.equals("2")){
 				return OverTimeAtr.ALL.value;
 			}
-		return 3;
+		return 2;
 	}
 
 	/* (non-Javadoc)
