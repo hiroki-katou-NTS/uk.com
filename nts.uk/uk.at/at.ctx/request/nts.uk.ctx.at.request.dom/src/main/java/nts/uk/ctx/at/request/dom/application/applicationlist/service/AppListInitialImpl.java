@@ -347,17 +347,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				//申請一覧共通設定.承認状況＿承認がチェックあり(True)の場合 - A4_1_2: check
 				if(param.isApprovalStatus()){
-					if(state.equals(ReflectedState_New.NOTREFLECTED) && status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) 
-							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+					if(( state.equals(ReflectedState_New.NOTREFLECTED)|| state.equals(ReflectedState_New.WAITREFLECTION) || state.equals(ReflectedState_New.REFLECTED))
+							&& (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) || status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) 
+							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
 						check = true;
 					}
-					if(state.equals(ReflectedState_New.NOTREFLECTED) 
-							|| state.equals(ReflectedState_New.REFLECTED)){
-						if((status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) || status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED))
-								&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
-							check = true;
-						}
-					}
+//					if(state.equals(ReflectedState_New.NOTREFLECTED) 
+//							|| state.equals(ReflectedState_New.REFLECTED)){
+//						if((status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) || status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED))
+//								&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+//							check = true;
+//						}
+//					}
 				}
 				//申請一覧共通設定.承認状況＿否認がチェックあり(True)の場合 - A4_1_3: check
 				if(param.isDenialStatus() && state.equals(ReflectedState_New.DENIAL)){
