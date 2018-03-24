@@ -347,7 +347,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (data.appOvertimeNightFlg == 1) {
                 self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), null, null, null,"#[KAF005_64]","",""));
             }
-            self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"#[KAF005_66]","",""));
+            if(data.flexFLag){
+               self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"#[KAF005_66]","","")); 
+            }
             if(data.overtimeAtr == 0){
                 self.heightOvertimeHours(180);   
             }else if(data.overtimeAtr == 1){
