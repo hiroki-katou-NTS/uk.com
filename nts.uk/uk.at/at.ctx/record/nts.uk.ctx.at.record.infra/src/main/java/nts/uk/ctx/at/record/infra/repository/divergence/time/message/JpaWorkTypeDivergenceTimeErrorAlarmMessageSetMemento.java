@@ -91,7 +91,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 	 */
 	@Override
 	public void setErrorMessage(Optional<ErrorAlarmMessage> errorMessage) {
-		this.entity.setAlarmMessage(errorMessage.isPresent() ? errorMessage.get().v() : null);
+		this.entity.setErrorMessage(errorMessage.isPresent() ? errorMessage.get().v() : null);
 	}
 
 }
