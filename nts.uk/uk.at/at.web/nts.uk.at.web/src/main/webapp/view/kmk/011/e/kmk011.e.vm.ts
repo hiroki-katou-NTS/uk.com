@@ -457,7 +457,10 @@ module nts.uk.at.view.kmk011.e {
             }
             
             public openRegisterErrMsgDialog(): void {
+                let _self = this;
                 nts.uk.ui.windows.setShared('settingMode', HistorySettingMode.WORKTYPE);
+                nts.uk.ui.windows.setShared('wkTypeCode', _self.wkTypeCode);
+                nts.uk.ui.windows.setShared('wkTypeName', _self.wkTypeName);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/i/index.xhtml").onClosed(function() {
                        
                 });

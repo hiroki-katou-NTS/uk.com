@@ -56,7 +56,7 @@ public class WorkTypeDivergenceTimeErrorAlarmMessageWs {
 	 * @return the work type divergence time error alarm message dto
 	 */
 	@POST
-	@Path("findByDivergenceTimeNo/{divergenceTimeNo}/{workTypeCode}")
+	@Path("findByWorkTypeDivergenceTimeNo/{divergenceTimeNo}/{workTypeCode}")
 	public WorkTypeDivergenceTimeErrorAlarmMessageDto findByDivergenceTimeNo(
 			@PathParam("divergenceTimeNo") Integer divergenceTimeNo,
 			@PathParam("workTypeCode") BusinessTypeCode workTypeCode) {
