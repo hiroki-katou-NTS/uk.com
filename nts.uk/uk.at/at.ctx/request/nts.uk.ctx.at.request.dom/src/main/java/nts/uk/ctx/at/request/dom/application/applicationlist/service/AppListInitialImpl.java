@@ -851,13 +851,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 //			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
-			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID, companyId);
+//			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID, companyId);
 			boolean checkAddNote = false;
-			if(check == true){//必須(True)
-				//事前、事後の後ろに#CMM045_101(※)を追加
-				// TODO Auto-generated method stub
-				checkAddNote = true;
-			}
+//			if(check == true){//必須(True)
+//				//事前、事後の後ろに#CMM045_101(※)を追加
+//				// TODO Auto-generated method stub
+//				checkAddNote = true;
+//			}
 			String appDispNameStr = "";
 			if(appDispName.isPresent()){
 				appDispNameStr = appDispName.get().getDispName().v();
