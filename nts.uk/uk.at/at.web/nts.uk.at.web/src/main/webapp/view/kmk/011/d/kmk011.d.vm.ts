@@ -416,6 +416,7 @@ module nts.uk.at.view.kmk011.d {
             }
             
             public openRegisterErrMsgDialog(): void {
+                nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/i/index.xhtml").onClosed(function() {
                        
                 });

@@ -376,7 +376,6 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(false);
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.fillListItemSettingDefault();
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" });
                         blockUI.clear();
                         dfd.resolve();
                     }
@@ -458,6 +457,7 @@ module nts.uk.at.view.kmk011.e {
             }
             
             public openRegisterErrMsgDialog(): void {
+                nts.uk.ui.windows.setShared('settingMode', HistorySettingMode.WORKTYPE);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/i/index.xhtml").onClosed(function() {
                        
                 });
