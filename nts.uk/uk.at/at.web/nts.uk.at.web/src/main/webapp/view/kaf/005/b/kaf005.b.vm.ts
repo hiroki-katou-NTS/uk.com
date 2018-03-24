@@ -315,8 +315,8 @@ module nts.uk.at.view.kaf005.b {
                                     null,
                                     null, "#[KAF005_64]", "", color));
                         }
-                    } else if (item.frameNo == 12 && data.overtimeAtr != 0) {
-                        if (data.flexFLag) {
+                    } else if (item.frameNo == 12) {
+                        if (data.flexFLag && data.overtimeAtr != 0) {
                             self.overtimeHours.push(new common.OvertimeCaculation(
                                 item.companyID,
                                 item.appID,
