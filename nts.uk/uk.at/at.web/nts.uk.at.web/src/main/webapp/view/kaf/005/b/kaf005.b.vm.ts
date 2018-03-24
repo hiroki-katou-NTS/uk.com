@@ -128,6 +128,7 @@ module nts.uk.at.view.kaf005.b {
                 $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                 $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                 $("#fixed-table").ntsFixedTable({ height: 120 });
+                $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: 216 });
                 $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                 self.startPage(self.appID()).done(function(){
 //                    for(let i =0 ; i < self.datatest.length; i++){
@@ -294,44 +295,46 @@ module nts.uk.at.view.kaf005.b {
                         color = '#F69164';
                     }
                     if(item.frameNo == 11){
-                            if (data.appOvertimeNightFlg == 1) {
-                                if(item.errorCode)
+                        if (data.appOvertimeNightFlg == 1) {
+                            if (item.errorCode)
                                 self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID, 
-                                    item.appID, 
-                                    item.attendanceID, 
-                                    "", 
-                                    item.frameNo, 
-                                    item.timeItemTypeAtr, 
-                                    nts.uk.resource.getText("KAF005_63"), 
-                                    item.applicationTime, 
-                                    null, 
-                                    null,"#[KAF005_64]","",color));
-                             }
-                    }else if(item.frameNo == 12){
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID, 
-                                    item.appID, 
-                                    item.attendanceID, 
-                                    "", 
-                                    item.frameNo, 
-                                    item.timeItemTypeAtr, 
-                                    nts.uk.resource.getText("KAF005_65"), 
-                                    item.applicationTime, 
-                                    null, 
-                                    null,"#[KAF005_66]","",color));
-                     }else{
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID, 
-                                    item.appID, 
-                                    item.attendanceID, 
-                                    "", 
-                                    item.frameNo, 
-                                    item.timeItemTypeAtr, 
-                                    item.frameName, 
-                                    item.applicationTime, 
-                                    null, 
-                                    null, "#[KAF005_55]","",color));
+                                    item.companyID,
+                                    item.appID,
+                                    item.attendanceID,
+                                    "",
+                                    item.frameNo,
+                                    item.timeItemTypeAtr,
+                                    nts.uk.resource.getText("KAF005_63"),
+                                    item.applicationTime,
+                                    null,
+                                    null, "#[KAF005_64]", "", color));
+                        }
+                    } else if (item.frameNo == 12) {
+                        if (data.flexFLag) {
+                            self.overtimeHours.push(new common.OvertimeCaculation(
+                                item.companyID,
+                                item.appID,
+                                item.attendanceID,
+                                "",
+                                item.frameNo,
+                                item.timeItemTypeAtr,
+                                nts.uk.resource.getText("KAF005_65"),
+                                item.applicationTime,
+                                null,
+                                null, "#[KAF005_66]", "", color));
+                        }
+                    } else {
+                        self.overtimeHours.push(new common.OvertimeCaculation(
+                            item.companyID,
+                            item.appID,
+                            item.attendanceID,
+                            "",
+                            item.frameNo,
+                            item.timeItemTypeAtr,
+                            item.frameName,
+                            item.applicationTime,
+                            null,
+                            null, "#[KAF005_55]", "", color));
                     }
                    
                 }); 

@@ -137,6 +137,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
                     $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
+                    $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC')
                 })
             })
@@ -200,6 +201,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                 self.prePostSelected.subscribe(function(value){
                         let dfd =$.Deferred();
+                        if(value == 1){
+                           $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() }); 
+                        }else if(value == 0){
+                            $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
+                        }
                         if(!nts.uk.util.isNullOrEmpty(self.appDate())){
                             nts.uk.ui.errors.clearAll();
                             $("#inputdate").trigger("validate");
