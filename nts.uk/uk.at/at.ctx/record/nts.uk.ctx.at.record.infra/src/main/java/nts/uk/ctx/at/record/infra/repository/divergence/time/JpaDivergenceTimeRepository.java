@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,6 +12,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.zaxxer.hikari.metrics.CodaHaleMetricsTracker.Context;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.*;
@@ -21,6 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimePK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaDivergenceTimeRepository.
@@ -36,20 +41,39 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	@Override
 	public void update(DivergenceTime divTimeDomain) {
 
-		// Update Divergence Time Information
-		this.commandProxy().update(this.toEntity(divTimeDomain));
+		if (divTimeDomain.getDivTimeUseSet().value == 1) {
+			// Update Divergence Time Information
+			this.commandProxy().update(this.toEntity(divTimeDomain));
 
-		// Delete Divergence Attendance List
-		this.deleteAllAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId());
+			// Delete Divergence Attendance List
+			this.deleteAllAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId());
 
-		// Get Divergence Attendance Entity List
-		List<KrcstDvgcAttendance> attendanceList = divTimeDomain.getTargetItems().stream()
-				.map(e -> toEntityAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId(),
-						e.intValue()))
-				.collect(Collectors.toList());
+			// Get Divergence Attendance Entity List
+			List<KrcstDvgcAttendance> attendanceList = divTimeDomain.getTargetItems().stream()
+					.map(e -> toEntityAttendance(divTimeDomain.getDivergenceTimeNo(), divTimeDomain.getCompanyId(),
+							e.intValue()))
+					.collect(Collectors.toList());
 
-		// Add new Divergence Attendance List
-		this.addAttendance(attendanceList);
+			// Add new Divergence Attendance List
+			this.addAttendance(attendanceList);
+		} else {
+			//get primaty Key
+			KrcstDvgcTimePK PK = new KrcstDvgcTimePK(divTimeDomain.getDivergenceTimeNo(),
+					AppContexts.user().companyId());
+
+			// get optional entity
+			Optional<KrcstDvgcTime> optionalEntity = this.queryProxy().find(PK, KrcstDvgcTime.class);
+
+			//if entity is present
+			if (optionalEntity.isPresent()) {
+				KrcstDvgcTime entity = optionalEntity.get();
+				// update UsesageSet
+				entity.setDvgcTimeUseSet(new BigDecimal(divTimeDomain.getDivTimeUseSet().value));
+				this.commandProxy().update(entity);
+			}
+
+		}
+
 	}
 
 	@Override

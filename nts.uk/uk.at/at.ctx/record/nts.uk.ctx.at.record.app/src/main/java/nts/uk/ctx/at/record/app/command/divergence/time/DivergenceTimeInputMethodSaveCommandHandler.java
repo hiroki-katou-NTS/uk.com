@@ -51,7 +51,9 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 		DivergenceReasonInputMethod divReasonInput = new DivergenceReasonInputMethod(divReasonCommand);
 		// update
 		this.divTimeRepo.update(divTime);
-		this.divReasonInputRepo.update(divReasonInput);
+		if (command.getDivergenceTimeUseSet() == 1) {
+			this.divReasonInputRepo.update(divReasonInput);
+		}
 	}
 
 }
