@@ -66,6 +66,19 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 
 		this.commandProxy().update(entity);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * ComSubstVacationRepository#delete(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.subst.ComSubstVacation)
+	 */
+	@Override
+	public void delete(String companyId, String contractTypeCode) {
+		KsvstEmpSubstVacationPK key = new KsvstEmpSubstVacationPK(companyId, contractTypeCode);
+		this.commandProxy().remove(KsvstEmpSubstVacation.class, key);
+	}
 
 	/*
 	 * (non-Javadoc)

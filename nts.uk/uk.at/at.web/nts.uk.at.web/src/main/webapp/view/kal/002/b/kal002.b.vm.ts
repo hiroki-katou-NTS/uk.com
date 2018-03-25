@@ -1,4 +1,5 @@
 module nts.uk.at.view.kal002.b.viewmodel {
+    import block = nts.uk.ui.block;
     export class ScreenModel {
 
         MailAutoAndNormalDto: MailAutoAndNormalDto;
@@ -13,6 +14,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
 
             var dfd = $.Deferred();
             var MailSettingsDefault = ({subject : "", text : "", mailAddressCC : [], mailAddressBCC : [], mailRely : ""});
+            block.invisible();
             new service.Service().getAllMailSet().done(function(data: MailAutoAndNormalDto) {
                 //console.log(data);
                 if(data){
@@ -22,6 +24,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
                     data.mailSettingAutomaticDto.mailSettingAdmins = data.mailSettingAutomaticDto.mailSettingAdmins == null? MailSettingsDefault: data.mailSettingAutomaticDto.mailSettingAdmins;
                         
                     self.MailAutoAndNormalDto = data;
+                    block.clear();
                 }
                 dfd.resolve(); 
             });
@@ -100,7 +103,7 @@ module nts.uk.at.view.kal002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             var dto = self.MailAutoAndNormalDto;
-            
+            block.invisible();
             var mailSettingNormal = new MailSettingNormalCommand(new MailSettingsCommand(dto.mailSettingNormalDto.mailSettings), 
                 new MailSettingsCommand(dto.mailSettingNormalDto.mailSettingAdmins));
             
@@ -108,9 +111,10 @@ module nts.uk.at.view.kal002.b.viewmodel {
                 new MailSettingsCommand(dto.mailSettingAutomaticDto.mailSettingAdmins),dto.mailSettingAutomaticDto.senderAddress);
             
             var command = new MailAutoAndNormalCommand(mailSettingAutomatic, mailSettingNormal);
-            console.log(command);
+            //console.log(command);
             new service.Service().addMailSet(command).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                block.clear();
             });
             dfd.resolve(); 
             return dfd.promise();

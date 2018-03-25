@@ -7,9 +7,8 @@ module nts.uk.pr.view.kmf001.b {
             updateAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/update',
             findAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/find',
             categoryEnum: 'ctx/at/share/vacation/setting/acquisitionrule/enum/category',
-            acquisitionTypeEnum: 'ctx/at/share/vacation/setting/acquisitionrule/enum/type',
-            findSettingAll: 'ctx/at/share/vacation/setting/acquisitionrule/find/setting',
-        };
+        };        
+        
         /**
              * Update Acquisition Rule
              */
@@ -30,43 +29,24 @@ module nts.uk.pr.view.kmf001.b {
         export function categoryEnum(): JQueryPromise<model.Enum> {
             return nts.uk.request.ajax(paths.categoryEnum);
         }
-
-        /**
-         * Get AcquisitionType Enum.
-         */
-        export function acquisitionTypeEnum(): JQueryPromise<model.Enum> {
-            return nts.uk.request.ajax(paths.acquisitionTypeEnum);
-        }
-
-        /**
-         * Find Apply Setting All 
-         */
-        export function findSettingAll(): JQueryPromise<model.ApplySettingDto> {
-            return nts.uk.request.ajax(paths.findSettingAll);
-        }
         
         export module model {
             
-            export interface AcquisitionOrderDto {
-                annualPaidLeave: number;
-                compensatoryDayOff: number;
-                substituteHoliday: number;
-                fundedPaidHoliday: number;
-                exsessHoliday: number;
-                specialHoliday: number;
+            export interface AnnualHolidayItemDto {
+                priorityPause: boolean;
+                prioritySubstitute: boolean;
+                sixtyHoursOverrideHoliday: boolean;
+            }
+            
+            export interface HoursHolidayItemDto {
+                priorityOverpaid: boolean;
+                sixtyHoursOverrideHoliday: boolean;
             }
             
             export interface ListAcquisitionDto {
                 category: number;
-                listAcquisitionDto: AcquisitionOrderDto[];
-            }
-            
-            export interface ApplySettingDto {
-                paidLeaveSetting: boolean;
-                compensLeaveComSetSetting: boolean;
-                nursingSetting: boolean;
-                com60HSetting: boolean;
-                comSubtSetting: boolean;
+                annualHolidayDto: AnnualHolidayItemDto[];
+                hoursHolidayDto: HoursHolidayItemDto[];
             }
             
             export class Enum {
@@ -81,6 +61,5 @@ module nts.uk.pr.view.kmf001.b {
                 }
             }
         }
-
     }
 }

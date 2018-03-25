@@ -55,7 +55,7 @@ public class SacmtRoleSetGrantedJobTitle extends UkJpaEntity implements Serializ
 	
 	public static RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
 		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
-				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetGrantedJobTitleDetailPK.roleSetCd,
+				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetCd,
 						item.roleSetGrantedJobTitleDetailPK.jobTitleId, item.roleSetGrantedJobTitleDetailPK.companyId))
 				.collect(Collectors.toList()));
 	}

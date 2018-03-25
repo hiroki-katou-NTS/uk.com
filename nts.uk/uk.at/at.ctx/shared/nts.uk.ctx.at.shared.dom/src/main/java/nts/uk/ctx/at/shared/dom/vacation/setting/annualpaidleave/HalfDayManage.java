@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import lombok.Builder;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -19,6 +20,7 @@ public class HalfDayManage {
 
     /** The manage type. */
     // 管理区分
+    @Getter
     public ManageDistinct manageType;
 
     /** The reference. */
@@ -28,4 +30,7 @@ public class HalfDayManage {
     /** The max number uniform company. */
     // 会社一律上限回数
     public AnnualNumberDay maxNumberUniformCompany;
+    
+    //端数処理区分
+    public RoundProcessingClassification roundProcesCla;
 }

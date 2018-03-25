@@ -10,19 +10,22 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus.KfnmtAlarmListExtraProcessStatus;
-import nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus.KfnmtAlarmListExtraProcessStatusPK;
 
 @Stateless
 public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements AlarmListExtraProcessStatusRepository {
 
 	private final String SELECT_ALL_ALEX_PROCESS = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c ";
+	
+	private final String SELECT_ALL_ALEX_PRO_BY_ID = SELECT_ALL_ALEX_PROCESS 
+			+ " WHERE c.extraProcessStatusID = :extraProcessStatusID ";
 	private final String SELECT_ALL_ALEX_PROCESS_BY_CID = SELECT_ALL_ALEX_PROCESS 
-			+ " c.kfnmtAlarmListExtraProcessStatusPK.companyID = :companyID";
+			+ " WHERE c.companyID = :companyID";
+	
 	private final String SELECT_ALEX_PROCESS_BY_CODE = SELECT_ALL_ALEX_PROCESS_BY_CID 
-			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startDate = :startDate"
-			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startTime = :startTime";
+			+ " AND c.startDate = :startDate"
+			+ " AND c.startTime = :startTime";
 	private final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
-			+ "WHERE c.kfnmtAlarmListExtraProcessStatusPK.companyID = :companyID"
+			+ "WHERE c.companyID = :companyID"
 			+ " AND c.employeeID = :employeeID"
 			+ " AND c.endDate IS NULL"
 			+ " AND c.endTime IS NULL";
@@ -46,16 +49,16 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	}
 
 	@Override
-	public void addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
+	public String addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		this.commandProxy().insert(KfnmtAlarmListExtraProcessStatus.toEntity( alarmListExtraProcessStatus));
 		this.getEntityManager().flush();
-		
+		return alarmListExtraProcessStatus.getExtraProcessStatusID();
 	}
 
 	@Override
 	public void updateAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		KfnmtAlarmListExtraProcessStatus newEntity = KfnmtAlarmListExtraProcessStatus.toEntity(alarmListExtraProcessStatus);
-		KfnmtAlarmListExtraProcessStatus updateEntity = this.queryProxy().find(newEntity.kfnmtAlarmListExtraProcessStatusPK, KfnmtAlarmListExtraProcessStatus.class).get();
+		KfnmtAlarmListExtraProcessStatus updateEntity = this.queryProxy().find(newEntity.getExtraProcessStatusID(), KfnmtAlarmListExtraProcessStatus.class).get();
 		updateEntity.employeeID = newEntity.employeeID;
 		updateEntity.endDate = newEntity.endDate;
 		updateEntity.endTime = newEntity.endTime;
@@ -64,8 +67,8 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	}
 
 	@Override
-	public void deleteAlListExtaProcess(String companyID, GeneralDate startDate, int startTime) {
-		this.commandProxy().remove(KfnmtAlarmListExtraProcessStatus.class,new KfnmtAlarmListExtraProcessStatusPK(companyID,startDate,startTime));
+	public void deleteAlListExtaProcess(String extraProcessStatusID) {
+		this.commandProxy().remove(KfnmtAlarmListExtraProcessStatus.class,extraProcessStatusID);
 		
 	}
 
@@ -79,6 +82,14 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 			return Optional.ofNullable(null);
 		else
 			return Optional.of(listAlarmStatus.get(0));
+	}
+
+	@Override
+	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByID(String extraProcessStatusID) {
+		Optional<AlarmListExtraProcessStatus> listAlarmStatus = this.queryProxy().query(SELECT_ALL_ALEX_PRO_BY_ID,KfnmtAlarmListExtraProcessStatus.class)
+				.setParameter("extraProcessStatusID", extraProcessStatusID)
+				.getSingle(c->c.toDomain());
+		return listAlarmStatus;
 	}
 
 

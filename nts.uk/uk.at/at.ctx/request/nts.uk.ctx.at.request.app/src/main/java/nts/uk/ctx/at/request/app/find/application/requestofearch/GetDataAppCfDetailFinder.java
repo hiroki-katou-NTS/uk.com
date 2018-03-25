@@ -125,8 +125,7 @@ public class GetDataAppCfDetailFinder {
 		}
 		
 		//全部利用する
-		if(appDeadline.getUserAtr() == UseAtr.USE) {
-			message = approvalFunctionSetting.getAppUseSetting().getMemo().v();				
+		if(appDeadline.getUserAtr() == UseAtr.USE) {		
 			//締め切り期限日
 			GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, metaDto.getAppDate()).getEndDate();
 			//「申請締切設定」．締切基準が暦日

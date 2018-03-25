@@ -13,8 +13,10 @@ public enum AgreementTimeStatusOfMonthly {
 	EXCESS_LIMIT_ALARM(2),
 	/** 特例限度時間内 */
 	IN_EXCEPTION_LIMIT(3),
-	/** 特例限度時間超過 */
-	EXCESS_EXCEPTION_LIMIT(4);
+	/** 特例限度エラー時間超過 */
+	EXCESS_EXCEPTION_LIMIT_ERROR(4),
+	/** 特例限度アラーム時間超過 */
+	EXCESS_EXCEPTION_LIMIT_ALARM(5);
 	
 	public int value;
 	private AgreementTimeStatusOfMonthly(int value){

@@ -13,6 +13,7 @@
 				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay
 				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
 				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -25,9 +26,8 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-<!-- 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button> -->
 				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="1">#{i18n.getText('KMF001_27')}</a>
-				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
 				<div class="pull-right" style="display: inline; margin-right: 15px;">
 					<a class="goout" data-bind="ntsLinkButton: {jump: '/view/kmf/003/a/index.xhtml' }"
 						tabindex="3">#{i18n.getText('KMF001_29')}
@@ -46,7 +46,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: selectedAnnualManage,
-										enable: true }">
+										enable: true }, click: clearError">
 					</span>
 					<div class="hr_width">
 						<hr />
@@ -73,52 +73,13 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_34')}</label></td>
-							<td><div tabindex="6"
-									data-bind="ntsSwitchButton: {
-										options: manageDistinctList,
-										optionsValue: 'value',
-										optionsText: 'localizedName',
-										value: selectedMaxManageSemiVacation,
-										enable: enableAnnualVacation }"></div></td>
-							<td><div></div></td>
-							<td><div></div></td>
-						</tr>
-						<tr>
-							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_133')}</label></td>
-							<td><div tabindex="11" id="combo-box"
-									data-bind="ntsComboBox: {
-										options: maxDayReferenceList,
-										optionsValue: 'value',
-										value: selectedMaxNumberSemiVacation,
-										optionsText: 'localizedName',
-										editable: false,
-										enable: enableAnnualVacation,
-										columns: [
-											{prop: 'localizedName', length: 10 }
-										]}"></div></td>
-
-							<td style="min-width: 256px;"><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
-							<td><input tabindex="10" id="max-number-company"
-								class="nts-input" data-bind="ntsNumberEditor: {
-									value: maxNumberCompany,
-									constraint: 'AnnualNumberDay',
-									name: '#[KMF001_132]',
-									required: requiredMaxNumberCompany,
-									option: {
-										width: '70px',
-										unitID: 'TIMES'
-									},
-									enable: enableMaxNumberCompany}" /></td>
-						</tr>
-						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_35')}</label></td>
 							<td style="padding-left: 4px;"><div
 									style="display: inline-block;">
 									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_36')}</label>
 								</div>
 								<div style="display: inline-block; float: right;">
-									<input tabindex="7" id="max-grant-day" class="nts-input"
+									<input tabindex="6" id="max-grant-day" class="nts-input"
 										data-bind="ntsNumberEditor: {
 									value: maxGrantDay,
 									constraint: 'AnnualLeaveGrantDay',
@@ -133,7 +94,7 @@
 								</div></td>
 
 							<td><label class="content-label">#{i18n.getText('KMF001_37')}</label></td>
-							<td><input tabindex="8" id="max-remaining-day"
+							<td><input tabindex="7" id="max-remaining-day"
 								class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxRemainingDay,
 									constraint: 'MaxRemainingDay',
@@ -148,7 +109,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_38')}</label></td>
-							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="9"
+							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="8"
 								id="number-year-retain" class="nts-input"
 								data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
@@ -164,6 +125,85 @@
 							<td><div></div></td>
 							<td><div></div></td>
 						</tr>
+						
+						
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_151')}</label></td>
+							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="9"
+								id="yearLy-number-days" class="nts-input"
+								data-bind="ntsNumberEditor: {
+									value: yearlyOfNumberDays,
+									constraint: 'YearLyOfNumberDays',
+									name: '#[KMF001_151]',
+									required: enableAnnualVacation,
+									option: {
+										width: '80px',
+										decimallength: 1,
+										unitID: 'DAYS'
+									},
+									enable: enableTimeSetting}" /></div></td>
+
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_34')}</label></td>
+							<td><div tabindex="10"
+									data-bind="ntsSwitchButton: {
+										options: manageDistinctList,
+										optionsValue: 'value',
+										optionsText: 'localizedName',
+										value: selectedMaxManageSemiVacation,
+										enable: enableAnnualVacation }"></div></td>
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_133')}</label></td>
+							<td><div tabindex="11" id="combo-box"
+									data-bind="ntsComboBox: {
+										options: maxDayReferenceList,
+										optionsValue: 'value',
+										visibleItemsCount: 2,
+										value: selectedMaxNumberSemiVacation,
+										optionsText: 'localizedName',
+										editable: false,
+										enable: enableAnnualVacation,
+										columns: [
+											{prop: 'localizedName', length: 10 }
+										]}"></div></td>
+
+							<td style="min-width: 256px;"><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
+							<td><input tabindex="12" id="max-number-company"
+								class="nts-input" data-bind="ntsNumberEditor: {
+									value: maxNumberCompany,
+									constraint: 'AnnualNumberDay',
+									name: '#[KMF001_132]',
+									required: requiredMaxNumberCompany,
+									option: {
+										width: '70px',
+										unitID: 'TIMES'
+									},
+									enable: enableMaxNumberCompany}" /></td>
+						</tr>
+						<tr>
+							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_139')}</label></td>
+							<td><div tabindex="13" id="combo-box"
+									data-bind="ntsComboBox: {
+										options: roundProcessClassificationList,
+										optionsValue: 'value',
+										visibleItemsCount: 2,
+										value: selectedRoundProcessCla,
+										optionsText: 'localizedName',
+										editable: false,
+										enable: enableAnnualVacation,
+										columns: [
+											{prop: 'localizedName', length: 10 }
+										]}"></div></td>
+
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
 						<!-- END 年次有給休暇の扱い -->
 
 						<!-- BEGIN 年休取得の設定 -->
@@ -174,25 +214,13 @@
 								</div></td>
 						</tr>
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_40')}</label></td>
-							<td><div tabindex="12"
-									data-bind="ntsSwitchButton: {
-										options: applyPermissionList,
-										optionsValue: 'value',
-										optionsText: 'localizedName',
-										value: selectedApplyPermission,
-										enable: enableAnnualVacation }"></div></td>
-
-							<td><div></div></td>
-							<td><div></div></td>
-						</tr>
-						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_41')}</label></td>
-							<td><div tabindex="13"
+							<td><div tabindex="14"
 									id="combo-box-preem-permit"
 									data-bind="ntsComboBox: {
 										options: annualPriorityList,
 										optionsValue: 'value',
+										visibleItemsCount: 2,
 										value: selectedAnnualPriority,
 										optionsText: 'localizedName',
 										editable: false,
@@ -215,7 +243,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_129')}</label></td>
-							<td><div tabindex="20"
+							<td><div tabindex="15"
 									data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
 										optionsValue: 'value',
@@ -228,7 +256,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_130')}</label></td>
-							<td><div tabindex="21"
+							<td><div tabindex="16"
 									data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
 										optionsValue: 'value',
@@ -250,7 +278,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_52')}</label></td>
-							<td><div tabindex="22"
+							<td><div tabindex="17"
 									data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'value',
@@ -263,11 +291,12 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_53')}</label></td>
-							<td><div tabindex="23"
+							<td><div tabindex="18"
 									id="combo-box-time-unit"
 									data-bind="ntsComboBox: {
 										options: vacationTimeUnitList,
 										optionsValue: 'value',
+										visibleItemsCount: 5,
 										value: selectedVacationTimeUnit,
 										optionsText: 'localizedName',
 										editable: false,
@@ -281,7 +310,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_54')}</label></td>
-							<td><div tabindex="24"
+							<td><div tabindex="19"
 									data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'value',
@@ -294,10 +323,11 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
-							<td><div tabindex="25" id="combo-box"
+							<td><div tabindex="20" id="combo-box"
 									data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
 										optionsValue: 'value',
+										visibleItemsCount: 2,
 										value: selectedMaxDayVacation,
 										optionsText: 'localizedName',
 										editable: false,
@@ -307,7 +337,7 @@
 										]}"></div></td>
 
 							<td><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
-							<td><input tabindex="26" id="time-max-day-company"
+							<td><input tabindex="21" id="time-max-day-company"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
 									value: timeMaxNumberCompany,
@@ -321,10 +351,22 @@
 									enable: enableTimeMaxNumberCompany}" /></td>
 						</tr>
 						<tr>
-							<td colspan="4" style="padding-left: 50px;"><div tabindex="27"
-									data-bind="ntsCheckBox: { checked: isEnoughTimeOneDay,
-									enable: enableTimeMaxNumberCompany,
-									text: '#{i18n.getText('KMF001_55')}' }"></div></td>
+							<td><label class="content-label">#{i18n.getText('KMF001_140')}</label></td>
+							<td><div tabindex="22" id="combo-box"
+									data-bind="ntsComboBox: {
+										options: roundProcessClassificList,
+										optionsValue: 'value',
+										visibleItemsCount: 2,
+										value: selectedroundProcessClassific,
+										optionsText: 'localizedName',
+										editable: false,
+										enable: enableTimeMaxNumberCompany,
+										columns: [
+											{prop: 'localizedName', length: 10 }
+										]}"></div></td>
+
+							<td><div></div></td>
+							<td><div></div></td>
 						</tr>
 						<!-- END時間年休 -->
 					</table>

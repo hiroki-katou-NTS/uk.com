@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
  * The Interface RetentionYearlySettingSetMemento.
  */
@@ -29,4 +31,11 @@ public interface RetentionYearlySettingSetMemento {
 	 * @param leaveAsWorkDays the new leave as work days
 	 */
 	void setLeaveAsWorkDays(Boolean leaveAsWorkDays);
+	
+	/**
+	 * Sets the management category.
+	 *
+	 * @param managementCategory the new management category
+	 */
+	void setManagementCategory(ManageDistinct managementCategory);
 }
