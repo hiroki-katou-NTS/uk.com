@@ -13,8 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.zaxxer.hikari.metrics.CodaHaleMetricsTracker.Context;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.*;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
@@ -57,14 +55,14 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 			// Add new Divergence Attendance List
 			this.addAttendance(attendanceList);
 		} else {
-			//get primaty Key
+			// get primaty Key
 			KrcstDvgcTimePK PK = new KrcstDvgcTimePK(divTimeDomain.getDivergenceTimeNo(),
 					AppContexts.user().companyId());
 
 			// get optional entity
 			Optional<KrcstDvgcTime> optionalEntity = this.queryProxy().find(PK, KrcstDvgcTime.class);
 
-			//if entity is present
+			// if entity is present
 			if (optionalEntity.isPresent()) {
 				KrcstDvgcTime entity = optionalEntity.get();
 				// update UsesageSet
