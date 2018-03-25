@@ -122,7 +122,6 @@ module nts.uk.at.view.kmk011.e {
                 let _self = this;
                 var dfd = $.Deferred<any>();
 
-//                $.when(_self.fillListWorkType(), _self.fillListDivergenceTime()).done(() => {
                 _self.fillListWorkType().done(() => {
                     _self.currentCode(_self.listWorkType()[0].code);
                     _self.fillListHistory(_self.currentCode()).done(function() {
@@ -367,7 +366,7 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(true);
                         _self.enable_button_edit(true);
                         _self.enable_button_delete(true);
-                        _self.fillListItemSetting(_self.currentCode(), historyData[0].historyId).done(() => {
+                        _self.fillListItemSetting(_self.currentCode(), _self.selectedHist()).done(() => {
                             dfd.resolve();
                         });
                     } else {
@@ -430,6 +429,7 @@ module nts.uk.at.view.kmk011.e {
             public createMode(): void {
                 let _self = this;
                 nts.uk.ui.windows.setShared('settingMode', HistorySettingMode.WORKTYPE);
+                nts.uk.ui.windows.setShared('listHist', _self.histList());
                 nts.uk.ui.windows.setShared('workTypeCode', _self.currentCode());
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
                     _self.fillListHistory(_self.currentCode());

@@ -16,6 +16,7 @@ module nts.uk.at.view.kmk011.f {
             itemListRadio: KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<number>;
             enableRadio: KnockoutObservable<boolean>;
+            visibleRadio: KnockoutObservable<boolean>
             
             constructor(){
                 let _self = this;
@@ -31,12 +32,18 @@ module nts.uk.at.view.kmk011.f {
                 ]);
                 _self.selectedId = ko.observable(1);
                 _self.enableRadio = ko.observable(true);
-                
+                _self.visibleRadio = ko.observable(true);   
             }
             
             public start_page() : JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
+                
+                let listHist: any = nts.uk.ui.windows.getShared('listHist');
+                if (listHist.length == 0){
+                    _self.visibleRadio(false);
+                    _self.selectedId(1);
+                }
                 
                 dfd.resolve();
                 return dfd.promise();
