@@ -80,7 +80,7 @@ module nts.uk.at.view.ksm006.a {
                     alreadySettingList: self.classifiAlreadySetList,
                     maxRows: 12
                 };
-                $('#classification-list').ntsListComponent(self.classificationGrid);
+//                $('#classification-list').ntsListComponent(self.classificationGrid);
 
                 // Initialize on Company Tab
                 self.companyBWWorkingDay = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
@@ -616,8 +616,10 @@ module nts.uk.at.view.ksm006.a {
                     self.classifiAlreadySetList(areadySettingList);
                 }).then(function() {
                    // Reload Classification List
-                    $('#classification-list').ntsListComponent(self.classificationGrid)
-                    .done(function() {
+                        $('#classification-list').ntsListComponent(self.classificationGrid)
+                            .done(function() {
+                                $('#classification-list').focus();
+                            });
                         // SelectedClassification Subscribe
                         self.selectedClassifi.subscribe(function(data: string) {
                             blockUI.invisible();
@@ -626,7 +628,7 @@ module nts.uk.at.view.ksm006.a {
                                 service.findClassifyBasicWork(data).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
                                     self.bindClassifyBasicWork(classifyBasicWork);
                                 });
-        
+
                                 // Set Classification Name
                                 var classifyDataList = $('#classification-list').getDataList();
                                 var classify = classifyDataList.filter((item) => {
@@ -641,12 +643,8 @@ module nts.uk.at.view.ksm006.a {
                             }
                             blockUI.clear();
                         });
-                            
-                        $('#classification-list').focus();
+
                     });
-    
-                    
-                });
                 
                 blockUI.clear();
             }

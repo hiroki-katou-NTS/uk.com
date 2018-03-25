@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
 
 /**
@@ -49,8 +49,8 @@ public class JpaCompensOccurrenceSettingGetMemento implements CompensatoryOccurr
      * CompensatoryOccurrenceSettingGetMemento#getTransferSetting()
      */
     @Override
-    public TransferSetting getTransferSetting() {
-        return new TransferSetting(new JpaTransferSettingGetMemento(this.entity));
+    public SubHolTransferSet getTransferSetting() {
+        return new SubHolTransferSet(new JpaTransferSettingGetMemento(this.entity));
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedPerson;
@@ -50,6 +51,19 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	@Override
 	public Optional<RoleSetGrantedPerson> getByEmployeeId(String employeeId) {
 		return this.queryProxy().find(employeeId, SacmtRoleSetGrantedPerson.class).map(r -> r.toDomain());
+	}
+	private final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson"
+			+ " WHERE c.companyId = :companyId"
+			+ " AND c.employeeID = :employeeID"
+			+ "AND c.startDate <= :date AND c.endDate >= :date";
+	@Override
+											
+	public Optional<RoleSetGrantedPerson> findByIDAndDate(String companyId, String employeeID, GeneralDate date) {
+		
+		return this.queryProxy().query(SELECT_BY_ID_DATE ,SacmtRoleSetGrantedPerson.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeID", employeeID)
+				.setParameter("date", date).getSingle( c  -> c.toDomain());
 	}
 
 }

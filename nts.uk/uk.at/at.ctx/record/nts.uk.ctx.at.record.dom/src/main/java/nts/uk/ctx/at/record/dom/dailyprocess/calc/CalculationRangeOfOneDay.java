@@ -456,6 +456,7 @@ public class CalculationRangeOfOneDay {
 		 //控除時間帯の作成
 		 val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(outingTimeSheetofDaily,
 				 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flexWorkSetting.getOffdayWorkTime().getRestTimezone(),flexWorkSetting.getRestSetting());
+		 this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		 /*固定勤務の時間帯作成*/
 		 val fixedWorkTimeZoneSet = new CommonFixedWorkTimezoneSet();
 		 fixedWorkTimeZoneSet.forFlex(flexWorkSetting.getLstHalfDayWorkTimezone());
@@ -468,7 +469,7 @@ public class CalculationRangeOfOneDay {
 					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo);
 		 /*コアタイムのセット*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
-		 //this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+		 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 	 }
 	
 //	 /**

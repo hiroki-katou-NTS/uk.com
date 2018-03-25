@@ -37,21 +37,22 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	
 	
 	@Override
-	public ValueExtractAlarmWRPubExport checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
-		Optional<ValueExtractAlarmWRPubExport> data = Optional.of(convertToExport(workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD)));
+	public Optional<ValueExtractAlarmWRPubExport> checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
+		Optional<ValueExtractAlarmWR> data = workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD);
 		if(data.isPresent()) {
-			return data.get();
+			return Optional.of(convertToExport(data.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
-	public ValueExtractAlarmWRPubExport checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
-		Optional<ValueExtractAlarmWRPubExport> data = Optional.of(convertToExport(workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD)));
+	public Optional<ValueExtractAlarmWRPubExport> checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
+		Optional<ValueExtractAlarmWR> data = workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD);
+
 		if(data.isPresent()) {
-			return data.get();
+			return Optional.of(convertToExport(data.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -77,13 +78,13 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	
 	private ValueExtractAlarmWRPubExport convertToExport(ValueExtractAlarmWR valueExtractAlarmWR) {
 		return new ValueExtractAlarmWRPubExport(
-				valueExtractAlarmWR.getWorkplaceID(),
+				valueExtractAlarmWR.getWorkplaceID().orElse(null),
 				valueExtractAlarmWR.getEmployeeID(),
 				valueExtractAlarmWR.getAlarmValueDate(),
 				valueExtractAlarmWR.getClassification(),
 				valueExtractAlarmWR.getAlarmItem(),
 				valueExtractAlarmWR.getAlarmValueMessage(),
-				valueExtractAlarmWR.getComment()
+				valueExtractAlarmWR.getComment().orElse(null)
 				);
 	}
 	

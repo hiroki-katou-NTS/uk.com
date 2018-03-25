@@ -16,6 +16,9 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime
+			</com:ValidatorScript>
 			<script type="text/javascript">
 				
 			</script>
@@ -24,7 +27,7 @@
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
 				<li><a tabindex="-1" href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a tabindex="-1" href="#employment-tab" role="tab-navigator"
+				<li data-bind="visible: employmentVisible"><a tabindex="-1" href="#employment-tab" role="tab-navigator"
 					data-bind="click: switchToEmploymentTab" >#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
@@ -33,7 +36,6 @@
 			<div id="company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-<!-- 					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button> -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="2">#{i18n.getText('KMF001_27')}</a>
 					<button tabindex="3" data-bind="click: saveData"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
@@ -44,13 +46,13 @@
 				<div id="company-content">
 					<div data-bind="ntsFormLabel: {required: true}"
 						class="margin_right_125">#{i18n.getText('KMF001_75')}</div>
-					<span tabindex="5" id="compenManage"
+					<span tabindex="4" id="compenManage"
 						data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenManage,
-										enable: true }">
+										enable: true }, click: clearError">
 					</span>
 					<div class="hr_width">
 						<hr />
@@ -67,11 +69,12 @@
 						<tr>
 							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_76')}</label></td>
 							<td class="pad_over_left_80">
-								<div tabindex="6" class="combo-box"
+								<div tabindex="5" class="combo-box"
 									data-bind="ntsComboBox: {
 										options: expirationTimeEnums,
 										optionsValue: 'value',
 										value: expirationDateCode,
+										visibleItemsCount: 15,
 										optionsText: 'localizedName',
 										editable: false,
 										enable: isManageCompen,
@@ -82,7 +85,7 @@
 						</tr>
 						<tr>
 							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_77')}</label></td>
-							<td class="pad_over_left_80" colspan="2"><span tabindex="7"
+							<td class="pad_over_left_80" colspan="2"><span tabindex="6"
 								data-bind="ntsSwitchButton: {
 										options: applyPermissionEnums,
 										optionsValue: 'value',
@@ -95,7 +98,7 @@
 							<td colspan="6">
 								<div class ="margin_right_50" data-bind="ntsFormLabel: {}">
 									#{i18n.getText('KMF001_78')}</div> 
-									<span tabindex="8"
+									<span tabindex="7"
 										data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
@@ -112,7 +115,7 @@
 						<tr>
 							<td colspan="2"><label class="pad_left_30">#{i18n.getText('KMF001_102')}</label></td>
 							<td class="pad_over_left_80">
-								<div class="combo-box" tabindex="9"
+								<div class="combo-box" tabindex="8"
 									data-bind="ntsComboBox: {
 										options: timeVacationDigestiveUnitEnums,
 										optionsValue: 'value',
@@ -129,8 +132,8 @@
 							<td colspan="6">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_79')}</div>
 								<div class="float_right">
-									<button tabindex="10"
-										data-bind="ntsHelpButton: {image: 'KMF001_2.png', position: 'left top', enable: true }">?</button>
+									<button tabindex="9"
+										data-bind="ntsHelpButton: {image: 'KMF001_2.png', position: 'left top', enable: isManageCompen }">?</button>
 								</div>
 								<div class="hr_width">
 									<hr />
@@ -138,12 +141,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="11"
+							<td class="pad_left_30"><div tabindex="10"
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
 							<td class="radio_group_width pad_left_60" rowspan="2">
-								<div id="radio_group_work" tabindex="12"
+								<div id="radio_group_work" tabindex="11"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -154,22 +157,22 @@
 							<td colspan = "2" class="pad_left_70">
 							<div class="text_width" ><label>#{i18n.getText('KMF001_81')}</label></div>
 							<div class="input_width pad_left_30"><input id="workOneDay"
-								class="check_error float_right" tabindex="13"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
+								class="check_error float_right" tabindex="12"
+								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay, constraint: 'OneDayTime', option: inputOption, inputFormat: 'time', mode: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 							<td colspan = "2" class="pad_left_70">
 							<div class = "text_width"><label>#{i18n.getText('KMF001_82')}</label></div>
 							<div class="input_width pad_left_30">
 							<input id="workHalfDay"
-								class="check_error" tabindex="14"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
+								class="check_error" tabindex="13"
+								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
-									<input id="workAll" class="check_error" tabindex="15"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
+									<input id="workAll" class="check_error" tabindex="14"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 								<div class="text_width">
 									<label>#{i18n.getText('KMF001_83')}</label>
@@ -177,12 +180,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="16"
+							<td class="pad_left_30"><div tabindex="15"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div></td>
 						</tr>
 						<tr>
 							<td class=" radio_group_width pad_left_60" rowspan="2">
-								<div id="radio_group_over" tabindex="17"
+								<div id="radio_group_over" tabindex="16"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -195,8 +198,8 @@
 									<label>#{i18n.getText('KMF001_81')}</label>
 								</div>
 								<div class="input_width pad_left_30">
-									<input id="overOneDay" class="check_error" tabindex="18"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+									<input id="overOneDay" class="check_error" tabindex="17"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
 							<td colspan="2" class="pad_left_70">
@@ -204,16 +207,16 @@
 									<label>#{i18n.getText('KMF001_82')}</label>
 								</div>
 								<div class="input_width pad_left_30">
-									<input id="overHalfDay" class="check_error" tabindex="19"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+									<input id="overHalfDay" class="check_error" tabindex="18"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
-									<input id="overAll" class="check_error" tabindex="20"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
+									<input id="overAll" class="check_error" tabindex="19"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 								<div class="text_width">
 									<label>#{i18n.getText('KMF001_83')}</label>
@@ -225,16 +228,16 @@
 
 			</div>
 
-
-
 			<div id="employment-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 <!-- 					<button data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button> -->
-					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
-					<button
+					<a class="goback" tabindex="5" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
+					<button tabindex="6"
 						data-bind="click: saveEmployment,enable: !isEmptyEmployment()"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
+					<button tabindex="7" data-bind="click: deleteEmployment,enable: deleteEnable"
+						class="danger register-button" >#{i18n.getText('KMF001_149')}</button>
 					<!-- <div class="link_label">
 						<label data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div> -->
@@ -245,17 +248,26 @@
 						<tr>
 							<td>
 								<!-- left -->
-								<div tabindex ="1" id="list-employ-component"></div>
+								<div tabindex ="8" id="list-employ-component"></div>
 							</td>
 							<td id="main-scr-tbl-right">
 								<!-- right -->
 								<table class="em_table_with">
 									<tr>
+										<td colspan="2" style="padding-bottom: 20px;">
+											<div class="margin_right_50">#{i18n.getText('KMF001_150')}</div>
+										</td>
+										<td colspan="2" style="padding-bottom: 20px;">
+											<span data-bind="text: emSelectedCode"></span>:
+											<span class="margin_right_50" data-bind="text: emSelectedName"></span>
+										</td>
+									</tr>
+									<tr>
 										<td colspan="2">
 											<div data-bind="ntsFormLabel: {required: true}"
 												class="margin_right_50">#{i18n.getText('KMF001_85')}</div>
 										</td>
-										<td class="padding_over" style="width:160px;"><span tabindex="2" id="emCompenManage"
+										<td class="padding_over" style="width:160px;"><span tabindex="9" id="emCompenManage"
 											data-bind="ntsSwitchButton: {
 												options: manageDistinctEnums,
 												optionsValue: 'value',
@@ -289,11 +301,12 @@
 									<tr>
 										<td></td>
 										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_90')}</label></td>
-										<td class="padding_over"><div tabindex="3"
+										<td class="padding_over"><div tabindex="10"
 												class="combo-box"
 												data-bind="ntsComboBox: {
 												options: expirationTimeEnums,
 												optionsValue: 'value',
+												visibleItemsCount: 15,
 												value: emExpirationTime,
 												optionsText: 'localizedName',
 												editable: false,
@@ -305,7 +318,7 @@
 									<tr>
 										<td></td>
 										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_77')}</label></td>
-										<td class="padding_over"><span tabindex="4"
+										<td class="padding_over"><span tabindex="11"
 											data-bind="ntsSwitchButton: {
 												options: applyPermissionEnums,
 												optionsValue: 'value',
@@ -321,7 +334,7 @@
 										</td>
 										<td class="padding_over">
 											<div>
-												<span tabindex="5"
+												<span tabindex="12"
 													data-bind="ntsSwitchButton: {
 														options: manageDistinctEnums,
 														optionsValue: 'value',
@@ -343,7 +356,7 @@
 									<tr>
 										<td></td>
 										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_102')}</label></td>
-										<td class="padding_over"><div tabindex="6"
+										<td class="padding_over"><div tabindex="13"
 												class="combo-box"
 												data-bind="ntsComboBox: {
 												options: timeVacationDigestiveUnitEnums,

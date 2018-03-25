@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
@@ -21,13 +22,27 @@ public interface PreOvertimeReflectProcess {
 	 */
 	public boolean changeFlg(PreOvertimeParameter para);
 	/**
+	 * 予定勤種・就時反映後の予定勤種・就時を取得する
+	 * @param employeeId
+	 * @param dataData
+	 * @return
+	 */
+	public WorkTimeTypeOutput getScheWorkTimeType(String employeeId, GeneralDate dataData);
+	/**
+	 * 勤種・就時反映後の実績勤種・就時を取得する
+	 * @param employeeId
+	 * @param dataData
+	 * @return
+	 */
+	public WorkTimeTypeOutput getRecordWorkTimeType(String employeeId, GeneralDate dataData);
+	/**
 	 * 予定開始終了時刻の反映
 	 * @param para
 	 * @param changeFlg
 	 * @param dailyData
 	 * @return
 	 */
-	public boolean startAndEndTimeReflectSche(PreOvertimeParameter para,
+	public void startAndEndTimeReflectSche(PreOvertimeParameter para,
 			boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData);
 	/**
@@ -40,5 +55,26 @@ public interface PreOvertimeReflectProcess {
 	public boolean timeReflectCheck(PreOvertimeParameter para,
 			boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData);
+	/**
+	 * 残業時間の反映
+	 * @param para
+	 * @return
+	 */
+	public void getReflectOfOvertime(PreOvertimeParameter para);
+	/**
+	 * 所定外深夜時間の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param timeReflectFlg: 残業時間反映フラグ
+	 * @param overShiftNight: 外深夜時間
+	 */
+	public void overTimeShiftNight(String employeeId, GeneralDate dateData, boolean timeReflectFlg, Integer overShiftNight);
+	/**
+	 * フレックス時間の反映
+	 * @param employeeId
+	 * @param dateDate
+	 * @param timeReflectFlg
+	 */
+	public void reflectOfFlexTime(String employeeId, GeneralDate dateDate, boolean timeReflectFlg, Integer flexExessTime);
 
 }

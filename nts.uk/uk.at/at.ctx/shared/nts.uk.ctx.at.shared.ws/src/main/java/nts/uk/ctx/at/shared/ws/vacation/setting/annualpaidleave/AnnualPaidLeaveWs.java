@@ -20,10 +20,11 @@ import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.AnnualPaid
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.CheckAnnualKMF003Finder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto.AnnualPaidLeaveSettingFindDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto.CheckAnnualKMF003Dto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 
@@ -54,17 +55,6 @@ public class AnnualPaidLeaveWs extends WebService {
     @Path("find/managedistinct")
     public List<EnumConstant> findManageDistinct() {
         return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
-    }
-    
-    /**
-     * Find apply permission.
-     *
-     * @return the list
-     */
-    @POST
-    @Path("find/applypermission")
-    public List<EnumConstant> findApplyPermission() {
-        return EnumAdaptor.convertToValueNameList(ApplyPermission.class);
     }
     
     /**
@@ -109,6 +99,19 @@ public class AnnualPaidLeaveWs extends WebService {
     @Path("find/maxdayreference")
     public List<EnumConstant> findMaxDayReference() {
         return EnumAdaptor.convertToValueNameList(MaxDayReference.class);
+    }
+    
+    
+    @POST
+    @Path("find/roundProcessCla")
+    public List<EnumConstant> findRoundProcessClassification() {
+        return EnumAdaptor.convertToValueNameList(RoundProcessingClassification.class);
+    }
+    
+    @POST
+    @Path("find/roundProcessClassific")
+    public List<EnumConstant> findRoundProcessClassific() {
+        return EnumAdaptor.convertToValueNameList(TimeAnnualRoundProcesCla.class);
     }
     
     /**

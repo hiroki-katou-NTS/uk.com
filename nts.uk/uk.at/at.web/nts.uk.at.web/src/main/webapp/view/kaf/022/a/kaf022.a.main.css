@@ -1,6 +1,6 @@
 /* Override Base */
 .ui-widget.ui-tabs.vertical>.ui-tabs-panel {
-	overflow: visible !important;
+	overflow: hidden !important;
 	width: auto;
 }
 
@@ -13,8 +13,12 @@ td div {
 	vertical-align: middle;
 }
 
-#a4_7, #a4_8, #a5_16, #a7_row1 {
+#a4_7, #a4_8, #a7_row1 {
 	width: 80px;
+}
+
+#a5_16{
+	width: 135px;
 }
 
 .a4_checkbox .ntsCheckBox span.box {
@@ -53,6 +57,10 @@ td div {
 
 .a9_9 .ntsRadioBox span.label {
 	padding-right: 60px;
+}
+
+.a10_3 .ntsRadioBox span.label {
+	padding-right: 140px;
 }
 
 .a12_5 .ntsRadioBox span.label {
@@ -154,6 +162,14 @@ td div {
 	padding-right: 66px;
 }
 
+#c27>label:FIRST-CHILD {
+	width: 151px;
+}
+
+#c27>label:NTH-CHILD(2) {
+	width: 209px;
+}
+
 #c29 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
@@ -224,9 +240,9 @@ textarea {
 
 .contents-area-kaf022 {
 	height: 620px;
-	overflow-y: scroll;
 }
 
-#tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9, #tab-10, #tab-11, #tab-12{
+#tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,
+	#tab-10, #tab-11, #tab-12 {
 	width: 970px !important;
-} 
+}

@@ -36,9 +36,6 @@ public class AnnualPaidLeaveSettingFindDto {
     /** The number year retain. */
     public Integer numberYearRetain;
 
-    /** The permit type. */
-    public Integer permitType;
-
     /** The annual priority. */
     public Integer annualPriority;
 
@@ -63,7 +60,12 @@ public class AnnualPaidLeaveSettingFindDto {
     /** The max time day. */
     public Integer maxTimeDay;
 
-    /** The is enough time one day. */
-    public Boolean isEnoughTimeOneDay;
-
+    /** The round processing classification. */
+    public Integer roundProcessClassific;
+    
+    /** The yearly of date. */
+    public Double yearlyOfDays;
+    
+    /** The round processing classification. */
+    public Integer roundProcessCla;
 }

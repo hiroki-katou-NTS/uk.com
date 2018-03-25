@@ -37,6 +37,9 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSetPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
@@ -89,6 +92,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
@@ -194,6 +198,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final String SELECT_ALL_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c"
 			+ " WHERE c.kmkmtDivergenceReasonPK.companyId = :companyId";
+	
+	private final String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
+			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
+	        + " AND c.krcdtIdentificationStatusPK.employeeId IN :sids"
+	        + " AND c.krcdtIdentificationStatusPK.processingYmd IN :processingYmds";
 
 	static {
 		StringBuilder builderString = new StringBuilder();		
@@ -487,8 +496,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
 				KalmtAnnualPaidLeave.class);
 		if (entity.isPresent()) {
-			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false,
-					entity.get().getPermitAtr() == 1 ? true : false, entity.get().getPermitAtr());
+			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false, entity.get().getPriorityType());
 		}
 		return null;
 	}
@@ -1038,6 +1046,26 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			}).collect(Collectors.toList());
 		} else {
 			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId) {
+		return this.queryProxy().find(new KrcmtIdentityProceSetPK(comapnyId), KrcmtIdentityProceSet.class)
+				.map(x -> new IdentityProcessUseSetDto(x.useConfirmByYourself == 1 ? true : false, x.useIdentityOfMonth == 1 ? true : false));
+	}
+
+	@Override
+	public Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates) {
+		if (!sids.isEmpty()) {
+			return this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
+					.setParameter("companyID", companyId).setParameter("sids", sids)
+					.setParameter("processingYmds", dates.toListDate())
+					.getList(x -> x.krcdtIdentificationStatusPK.employeeId + "|"
+							+ x.krcdtIdentificationStatusPK.processingYmd)
+					.stream().collect(Collectors.toMap(y -> y, y -> true));
+		} else {
+			return Collections.emptyMap();
 		}
 	}
 

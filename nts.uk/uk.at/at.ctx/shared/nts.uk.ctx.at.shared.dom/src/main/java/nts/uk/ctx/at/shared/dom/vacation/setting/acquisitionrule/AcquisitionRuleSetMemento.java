@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
-import java.util.List;
-
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 
 /**
  * The Interface VaAcRuleSetMemento.
@@ -25,13 +23,18 @@ public interface AcquisitionRuleSetMemento {
 	 *
 	 * @param settingclassification the new settingclassification
 	 */
-	void  setCategory(ManageDistinct category);
-
+	void  setCategory(SettingDistinct category);
+	
 	/**
-	 * Sets the acquisition order.
-	 *
-	 * @param listVacationAcquisitionOrder the new acquisition order
+	 * Sets the AnnualHoliday.
+	 * @param annualHoliday
 	 */
-	void  setAcquisitionOrder(List<AcquisitionOrder> listVacationAcquisitionOrder);
-
+	void  setAnnualHoliday(AnnualHoliday annualHoliday);
+	
+	/**
+	 * Sets the HoursHoliday.
+	 *
+	 * @param hoursHoliday
+	 */
+	void  setHoursHoliday(HoursHoliday hoursHoliday);
 }

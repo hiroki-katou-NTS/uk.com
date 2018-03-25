@@ -79,6 +79,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -148,6 +149,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
 	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
 	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_ERROR ="ntsgrid-error";
 
 	/**
 	 * Get List Data include:<br/>
@@ -360,7 +362,9 @@ public class DailyPerformanceCorrectionProcessor {
 				appMapDateSid.put(key, x.getAppTypeName());
 			}
 		});
-		Map<String, ItemValue> itemValueMap = new HashMap<>();
+		//get  check box sign(Confirm day)
+		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
+		
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
 		screenDto.markLoginUser();
@@ -372,6 +376,7 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		// set cell data
 		long start2 = System.currentTimeMillis();
+		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
@@ -386,6 +391,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			//set checkbox sign
+			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
 				lockData(sId, screenDto, dailyRecOpeFun, data);
@@ -421,6 +428,9 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(lstData);
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
+		// identityProcessDto show button A2_6
+		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
+		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get() : new IdentityProcessUseSetDto(false, false));
 		return screenDto;
 	}
 
@@ -620,23 +630,29 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 			} else {
-				if (data.getError().contains("ER")) {
-					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
-					int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
-					//lock sign
-					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+				int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
+				int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
+				// lock sign
+				if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					if (data.getError().contains("ER")) {
+						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+					} else {
 						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-						// thieu check khi co data
-					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// co the dang ky data nhưng ko đăng ký được check box
 					}
-					//lock approval
-					if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					// thieu check khi co data
+				} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					// co the dang ky data nhưng ko đăng ký được check box
+				}
+				// lock approval
+				if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					if (data.getError().contains("ER")) {
+						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
+					} else {
 						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
-						// thieu check khi co data
-					} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// co the dang ky data nhưng ko đăng ký được check box
 					}
+					// thieu check khi co data
+				} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					// co the dang ky data nhưng ko đăng ký được check box
 				}
 			}
 		}
