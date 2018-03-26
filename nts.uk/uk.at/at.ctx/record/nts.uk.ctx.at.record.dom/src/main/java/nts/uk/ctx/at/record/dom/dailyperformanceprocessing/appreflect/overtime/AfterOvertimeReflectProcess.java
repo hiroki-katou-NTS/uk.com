@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 
 public interface AfterOvertimeReflectProcess {
 	/**
-	 * 予定勤種就時を反映できるかチェックする
+	 * 予定勤種・就時の反映
 	 * @param employeeId
 	 * @param baseDate
 	 * @param scheAndRecordSameChangeFlg
 	 * @param workTimeCode
 	 * @return
 	 */
-	public boolean checkScheReflect(String employeeId, GeneralDate baseDate, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg, String workTimeCode);
+	public void checkScheReflect(OvertimeParameter overtimePara);
+	
+	
 
 }
