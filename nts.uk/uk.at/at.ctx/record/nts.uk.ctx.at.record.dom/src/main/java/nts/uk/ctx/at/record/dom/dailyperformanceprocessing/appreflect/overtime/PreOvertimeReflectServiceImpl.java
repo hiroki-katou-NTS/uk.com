@@ -88,7 +88,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private CalculateDailyRecordService calculate;
 	
 	@Override
-	public ApplicationReflectOutput overtimeReflect(PreOvertimeParameter param) {
+	public ApplicationReflectOutput overtimeReflect(OvertimeParameter param) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
 			

@@ -30,7 +30,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	private ScheStartEndTimeReflect scheStartEndTimeReflect;
 	
 	@Override
-	public void workTimeWorkTimeUpdate(PreOvertimeParameter para) {
+	public void workTimeWorkTimeUpdate(OvertimeParameter para) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
 		//INPUT．勤種反映フラグ(予定)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
@@ -47,7 +47,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	}
 	
 	@Override
-	public boolean changeFlg(PreOvertimeParameter para) {
+	public boolean changeFlg(OvertimeParameter para) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
@@ -76,7 +76,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		
 	}
 	@Override
-	public void startAndEndTimeReflectSche(PreOvertimeParameter para, boolean changeFlg,
+	public void startAndEndTimeReflectSche(OvertimeParameter para, boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData) {
 		//設定による予定開始終了時刻を反映できるかチェックする
 		if(!this.timeReflectCheck(para, changeFlg, dailyData)) {
@@ -90,7 +90,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut);
 	}
 	@Override
-	public boolean timeReflectCheck(PreOvertimeParameter para, boolean changeFlg,
+	public boolean timeReflectCheck(OvertimeParameter para, boolean changeFlg,
 			WorkInfoOfDailyPerformance dailyData) {
 		//INPUT．勤種反映フラグ(予定)をチェックする
 		if(para.isScheReflectFlg()) {
@@ -139,7 +139,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	}
 
 	@Override
-	public void getReflectOfOvertime(PreOvertimeParameter para) {
+	public void getReflectOfOvertime(OvertimeParameter para) {
 		//INPUT．残業時間反映フラグをチェックする
 		if(!para.isTimeReflectFlg()) {
 			return;

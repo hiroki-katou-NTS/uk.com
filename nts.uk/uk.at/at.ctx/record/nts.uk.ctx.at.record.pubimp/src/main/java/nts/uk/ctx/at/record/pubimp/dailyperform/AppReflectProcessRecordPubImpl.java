@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.Pre
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
@@ -108,7 +108,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.getOvertimePara().getMapOvertimeFrame(),
 				param.getOvertimePara().getOverTimeShiftNight(),
 				param.getOvertimePara().getFlexExessTime());
-		PreOvertimeParameter overtimePara = new PreOvertimeParameter(param.getEmployeeId(), 
+		OvertimeParameter overtimePara = new OvertimeParameter(param.getEmployeeId(), 
 				param.getDateInfo(), 
 				param.isActualReflectFlg(), 
 				param.isScheReflectFlg(), 
