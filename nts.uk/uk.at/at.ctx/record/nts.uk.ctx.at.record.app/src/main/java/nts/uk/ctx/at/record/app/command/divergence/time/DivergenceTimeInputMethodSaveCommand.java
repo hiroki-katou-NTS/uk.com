@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class DivergenceTimeInputMethodSaveCommand.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

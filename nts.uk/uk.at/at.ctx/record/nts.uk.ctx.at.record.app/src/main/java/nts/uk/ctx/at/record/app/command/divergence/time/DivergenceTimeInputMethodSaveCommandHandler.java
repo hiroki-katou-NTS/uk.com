@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 
 /**
  * The Class DivergenceTimeInputMethodSaveCommandHandler.
@@ -28,6 +27,9 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 	@Inject
 	private DivergenceReasonInputMethodRepository divReasonInputRepo;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<DivergenceTimeInputMethodSaveCommand> context) {
 		// get command

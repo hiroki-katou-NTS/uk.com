@@ -30,7 +30,7 @@ public class KrcstDvgcReasonPK implements Serializable {
 	private String cid;
 
 	/** The reason code. */
-	@Column(name="REASON_CODE")
+	@Column(name="REASON_CD")
 	private String reasonCode;
 
 	/**

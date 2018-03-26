@@ -7,5 +7,11 @@ import java.util.List;
  */
 public interface DivergenceAttendanceNameAdapter {
 
+	/**
+	 * Gets the daily attendance item name.
+	 *
+	 * @param dailyAttendanceItemIds the daily attendance item ids
+	 * @return the daily attendance item name
+	 */
 	List<DivergenceAttendanceNameDto> getDailyAttendanceItemName(List<Integer> dailyAttendanceItemIds);
 }

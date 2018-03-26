@@ -4,17 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Checks if is reason selected.
- *
- * @return true, if is reason selected
+ * The Class DivergenceTimeErrorCancelMethod.
  */
 @Getter
-
-/**
- * Sets the reason selected.
- *
- * @param reasonSelected the new reason selected
- */
 @Setter
 public class DivergenceTimeErrorCancelMethod {
 
