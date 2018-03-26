@@ -7,6 +7,10 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class DivergenceTime.
+ */
+// 乖離時間
 @Getter
 public class DivergenceTime extends AggregateRoot {
 
@@ -73,6 +77,9 @@ public class DivergenceTime extends AggregateRoot {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -83,6 +90,9 @@ public class DivergenceTime extends AggregateRoot {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

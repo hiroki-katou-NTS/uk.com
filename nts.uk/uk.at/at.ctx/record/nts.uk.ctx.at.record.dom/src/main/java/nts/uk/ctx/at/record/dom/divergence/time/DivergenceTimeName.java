@@ -7,6 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class DivergenceTimeName.
  */
+//乖離時間名称
 @StringMaxLength(30)
 public class DivergenceTimeName extends StringPrimitiveValue<PrimitiveValue<String>> {
 

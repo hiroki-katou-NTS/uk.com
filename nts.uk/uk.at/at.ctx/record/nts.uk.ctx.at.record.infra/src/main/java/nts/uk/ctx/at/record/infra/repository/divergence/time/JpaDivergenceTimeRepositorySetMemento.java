@@ -35,6 +35,9 @@ public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetM
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivergenceTimeNo(int)
+	 */
 	@Override
 	public void setDivergenceTimeNo(int DivergenceTimeNo) {
 		this.entity.getId().setNo(DivergenceTimeNo);
@@ -42,30 +45,45 @@ public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetM
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setCompanyId(java.lang.String)
+	 */
 	@Override
 	public void setCompanyId(String CompanyId) {
 		// No coding
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivTimeUseSet(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet)
+	 */
 	@Override
 	public void setDivTimeUseSet(DivergenceTimeUseSet divTimeUset) {
 		this.entity.setDvgcTimeUseSet(new BigDecimal(divTimeUset.value));
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivTimeName(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName)
+	 */
 	@Override
 	public void setDivTimeName(DivergenceTimeName divTimeName) {
 		this.entity.setDvgcTimeName(divTimeName.toString());
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivType(nts.uk.ctx.at.record.dom.divergence.time.DivergenceType)
+	 */
 	@Override
 	public void setDivType(DivergenceType divType) {
 		this.entity.setDvgcType(new BigDecimal(divType.value));
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setErrorCancelMedthod(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod)
+	 */
 	@Override
 	public void setErrorCancelMedthod(DivergenceTimeErrorCancelMethod errorCancelMedthod) {
 
@@ -77,6 +95,9 @@ public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetM
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setTarsetItems(java.util.List)
+	 */
 	@Override
 	public void setTarsetItems(List<Double> targetItems) {
 		// no coding

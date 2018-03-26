@@ -31,11 +31,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getAllDivTime(java.lang.String)
+	 */
 	@Override
 	public List<DivergenceTime> getAllDivTime(String companyId) {
 		return this.findByCompanyId(companyId);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#update(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime)
+	 */
 	@Override
 	public void update(DivergenceTime divTimeDomain) {
 
@@ -74,12 +80,18 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getDivTimeInfo(java.lang.String, int)
+	 */
 	@Override
 	public DivergenceTime getDivTimeInfo(String companyId, int divTimeNo) {
 
 		return this.findByCode(companyId, divTimeNo);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#findAttendanceId(java.lang.String, int)
+	 */
 	@Override
 	public List<Integer> findAttendanceId(String companyId, int divTimeNo) {
 		EntityManager em = this.getEntityManager();

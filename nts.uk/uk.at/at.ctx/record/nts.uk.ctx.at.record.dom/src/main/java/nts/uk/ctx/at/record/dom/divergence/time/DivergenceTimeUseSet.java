@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
+/**
+ * The Enum DivergenceTimeUseSet.
+ */
+// 使用区分
 public enum DivergenceTimeUseSet {
 
 	/** The not use. */

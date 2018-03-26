@@ -27,12 +27,18 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 		implements DivergenceReasonInputMethodRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository#getAllDivTime(java.lang.String)
+	 */
 	@Override
 	public List<DivergenceReasonInputMethod> getAllDivTime(String companyId) {
 
 		return this.findByCompanyId(companyId);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository#getDivTimeInfo(java.lang.String, int)
+	 */
 	@Override
 	public DivergenceReasonInputMethod getDivTimeInfo(String companyId, int divTimeNo) {
 
