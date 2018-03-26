@@ -509,6 +509,7 @@ public class CommonApprovalRootFinder {
 	 */
 	public ManagerSettingDto getPsAppRootBySettingOfManager(String employeeId) {
 		String companyId = AppContexts.user().companyId();
+		String loginId   = AppContexts.user().employeeId();
 		GeneralDate startDate        = null;
 		GeneralDate endDate          = null;
 		GeneralDate startDateCommon  = null;
@@ -604,8 +605,10 @@ public class CommonApprovalRootFinder {
 		// TODO : Set lại ngày chốt
 		closingStartDate = GeneralDate.today();
 
-		// ログイン者の承認権限を取得する(Lấy thông tin quyền approver của người login)
-		// TODO
+		// ログイン者の承認権限を取得する
+		GeneralDate baseDate = Objects.isNull(startDate) ? closingStartDate : startDate;
+		hasAuthority = this.employeeAdapter.canApprovalOnBaseDate(companyId, loginId, baseDate);
+
 		return new ManagerSettingDto(startDate, endDate, isNewMode, departmentCode, departmentApproverId,
 				departmentName, dailyApprovalCode, dailyApproverId, dailyApprovalName, hasAuthority, closingStartDate);
 	}

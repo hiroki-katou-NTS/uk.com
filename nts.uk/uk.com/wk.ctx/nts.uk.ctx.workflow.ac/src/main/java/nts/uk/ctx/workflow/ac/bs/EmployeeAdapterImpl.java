@@ -126,4 +126,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	public PersonImport getEmployeeInformation(String sID){
 		return this.psInfor.getPersonInfo(sID);
 	}
+
+	@Override
+	public boolean canApprovalOnBaseDate(String companyId , String employeeID , GeneralDate date){
+		return this.roleSetPub.canApprovalOnBaseDate(companyId, employeeID, date);
+	}
 }
