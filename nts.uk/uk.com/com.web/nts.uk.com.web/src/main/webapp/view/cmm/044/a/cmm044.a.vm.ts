@@ -78,10 +78,10 @@ module cmm044.a.viewmodel {
             self.index_of_itemDelete = ko.observable(-1);
             self.currentItem = ko.observable(null);
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: nts.uk.resource.getText("CMM044_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) }
-//                { id: 'tab-2', title: nts.uk.resource.getText("CMM044_12"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-//                { id: 'tab-3', title: nts.uk.resource.getText("CMM044_37"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-//                { id: 'tab-4', title: nts.uk.resource.getText("CMM044_13"), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-1', title: nts.uk.resource.getText("CMM044_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: nts.uk.resource.getText("CMM044_12"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(false) },
+                { id: 'tab-3', title: nts.uk.resource.getText("CMM044_37"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(false) },
+                { id: 'tab-4', title: nts.uk.resource.getText("CMM044_13"), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(false) }
             ]);
 
             self.dateValue = ko.observable({});
