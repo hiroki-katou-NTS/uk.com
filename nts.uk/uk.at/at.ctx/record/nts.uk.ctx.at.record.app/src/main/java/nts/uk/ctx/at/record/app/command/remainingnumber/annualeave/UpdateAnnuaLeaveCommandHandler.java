@@ -12,8 +12,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
-public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<AnnuaLeaveCommand>
-		implements PeregUpdateCommandHandler<AnnuaLeaveCommand> {
+public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<UpdateAnnuaLeaveCommand>
+		implements PeregUpdateCommandHandler<UpdateAnnuaLeaveCommand> {
 
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
@@ -22,17 +22,19 @@ public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<AnnuaLeaveCom
 	private AnnLeaMaxDataRepository maxDataRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AnnuaLeaveCommand> context) {
-		AnnuaLeaveCommand c = context.getCommand();
+	protected void handle(CommandHandlerContext<UpdateAnnuaLeaveCommand> context) {
+		UpdateAnnuaLeaveCommand c = context.getCommand();
 
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
-				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(), c.getStandardDate());
-		annLeaBasicInfoRepo.add(basicInfo);
+				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(),
+				c.getStandardDate());
+		annLeaBasicInfoRepo.update(basicInfo);
 
-		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes().intValue(),
-				c.getUsedTimes().intValue(), c.getMaxTimes().intValue() - c.getUsedTimes().intValue(), c.getMaxMinutes().intValue(), c.getUsedMinutes().intValue(),
-				c.getMaxMinutes().intValue() - c.getUsedMinutes().intValue());
-		maxDataRepo.add(maxData);
+		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(),
+				c.getMaxTimes().intValue(), c.getUsedTimes().intValue(),
+				c.getMaxTimes().intValue() - c.getUsedTimes().intValue(), c.getMaxMinutes().intValue(),
+				c.getUsedMinutes().intValue(), c.getMaxMinutes().intValue() - c.getUsedMinutes().intValue());
+		maxDataRepo.update(maxData);
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<AnnuaLeaveCom
 
 	@Override
 	public Class<?> commandClass() {
-		return AnnuaLeaveCommand.class;
+		return UpdateAnnuaLeaveCommand.class;
 	}
 
 }

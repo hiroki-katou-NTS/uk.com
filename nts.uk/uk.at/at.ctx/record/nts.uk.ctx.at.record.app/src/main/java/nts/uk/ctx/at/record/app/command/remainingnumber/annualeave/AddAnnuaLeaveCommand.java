@@ -9,7 +9,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
 
 @Getter
-public class AnnuaLeaveCommand {
+public class AddAnnuaLeaveCommand {
 	
 	@PeregPersonId
 	private String personId;

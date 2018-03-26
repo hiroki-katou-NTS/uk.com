@@ -13,8 +13,8 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AnnuaLeaveCommand, PeregAddCommandResult>
-		implements PeregAddCommandHandler<AnnuaLeaveCommand> {
+public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AddAnnuaLeaveCommand, PeregAddCommandResult>
+		implements PeregAddCommandHandler<AddAnnuaLeaveCommand> {
 
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
@@ -23,8 +23,8 @@ public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AnnuaL
 	private AnnLeaMaxDataRepository maxDataRepo;
 
 	@Override
-	protected PeregAddCommandResult handle(CommandHandlerContext<AnnuaLeaveCommand> context) {
-		AnnuaLeaveCommand c = context.getCommand();
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddAnnuaLeaveCommand> context) {
+		AddAnnuaLeaveCommand c = context.getCommand();
 
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
 				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(), c.getStandardDate());
@@ -45,7 +45,7 @@ public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AnnuaL
 
 	@Override
 	public Class<?> commandClass() {
-		return AnnuaLeaveCommand.class;
+		return AddAnnuaLeaveCommand.class;
 	}
 
 }
