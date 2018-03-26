@@ -48,7 +48,7 @@ public class AppListExtractConditionDto {
 				GeneralDate.fromString(dto.getStartDate(), dateFormat),
 				GeneralDate.fromString(dto.getEndDate(), dateFormat),
 				EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
-				dto.getAppType() == null ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
+				dto.getAppType() == -1 ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
 				dto.isUnapprovalStatus(),
 				dto.isApprovalStatus(),
 				dto.isDenialStatus(),

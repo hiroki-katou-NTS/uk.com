@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.app.command.vacation.setting.subst.ComSubstVacationS
 import nts.uk.ctx.at.shared.app.command.vacation.setting.subst.ComSubstVacationSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.subst.EmpSubstVacationSaveCommand;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.subst.EmpSubstVacationSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.delete.vacation.setting.subst.DeleteSubstVacationUtil;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.SubstVacationFinder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.EmpSubstVacationDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.SubstVacationSettingDto;
@@ -47,6 +48,9 @@ public class SubstVacationWebService extends WebService {
 	/** The subst vacation finder. */
 	@Inject
 	private SubstVacationFinder substVacationFinder;
+	
+	@Inject
+	private DeleteSubstVacationUtil deleteSubstVacationUtil;
 
 	/**
 	 * Save.
@@ -110,6 +114,19 @@ public class SubstVacationWebService extends WebService {
 		// Return
 		return this.substVacationFinder.findEmpSetting(companyId, contractTypeCode);
 	}
+	
+	/**
+	 * Delete.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("emp/delete/{typeCode}")
+	public void delete(@PathParam("typeCode") String contractTypeCode) {
+		this.deleteSubstVacationUtil.delete(contractTypeCode);
+	}
+	
 	@POST
 	@Path("emp/findall")
 	public List<String> getAllEmployment() {

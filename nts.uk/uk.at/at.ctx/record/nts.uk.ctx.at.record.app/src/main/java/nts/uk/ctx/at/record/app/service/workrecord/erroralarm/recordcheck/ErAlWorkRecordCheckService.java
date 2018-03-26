@@ -91,8 +91,9 @@ public class ErAlWorkRecordCheckService {
 			return toEmptyResultMap();
 		}
 
-		return record.stream()
-				.collect(Collectors.toMap(c -> c.employeeId(), c -> checkErrorAlarmCondition(c, checkCondition)));
+		return record.stream().collect(Collectors.toMap(c -> c.employeeId(), c -> {
+			return checkErrorAlarmCondition(c, checkCondition);
+		}));
 	}
 
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds, String EACheckID) {
@@ -104,22 +105,27 @@ public class ErAlWorkRecordCheckService {
 
 		return toEmptyResultMap();
 	}
-	
-	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds, List<String> EACheckID) {
+
+	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
+			List<String> EACheckID) {
 		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
 
 		if (checkConditions != null) {
-			return checkConditions.stream().collect(Collectors.toMap(c -> c.getErrorAlarmCheckID(), c -> check(workingDate, employeeIds, c)));
+			return checkConditions.stream()
+					.collect(Collectors.toMap(c -> c.getErrorAlarmCheckID(), c -> check(workingDate, employeeIds, c)));
 		}
 
 		return toEmptyResultMap();
 	}
 
+	/** 大塚用連続休暇チェック */
 	public Map<GeneralDate, Integer> checkContinuousHolidays(String employeeId, DatePeriod range) {
 		Optional<ContinuousHolCheckSet> settingOp = checkSetting.find(AppContexts.user().companyId());
 		Map<GeneralDate, Integer> result = new HashMap<>();
 		settingOp.ifPresent(setting -> {
-			processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+			if(setting.isUseAtr()){
+				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+			}
 		});
 
 		return result;
@@ -132,6 +138,8 @@ public class ErAlWorkRecordCheckService {
 		List<WorkInfoOfDailyPerformance> workInfos = workInfo.findByPeriodOrderByYmd(employeeId, range).stream()
 				.sorted((w1, w2) -> w2.getYmd().compareTo(w1.getYmd())).collect(Collectors.toList());
 
+		if (workInfos.isEmpty()) { return; }
+		
 		for (WorkInfoOfDailyPerformance info : workInfos) {
 			WorkTypeCode currentWTC = info.getRecordWorkInformation().getWorkTypeCode();
 			if (setting.getTargetWorkType().contains(currentWTC)) {
@@ -144,7 +152,7 @@ public class ErAlWorkRecordCheckService {
 				if (count >= setting.getMaxContinuousDays()) {
 					result.put(markDate, count);
 				}
-				if (endMark.beforeOrEquals(info.getYmd())) {
+				if (endMark.afterOrEquals(info.getYmd())) {
 					break;
 				}
 				markPreviousDate = true;
@@ -152,33 +160,17 @@ public class ErAlWorkRecordCheckService {
 			}
 		}
 
-		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-15), range.start().addDays(-1));
+		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-16), range.start().addDays(-1));
 		processCheckContinuous(endMark, perviousRange, result, setting, employeeId, markDate, count, markPreviousDate);
 	}
 
 	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
-
-		/** 勤務種類をチェックする */
-		// TODO: uncomment
-		// if (condition.getWorkTypeCondition().isUse() &&
-		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-		if (true && !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-			return false;
-		}
-		/** 就業時間帯をチェックする */
-		// TODO: uncomment
-		// if (condition.getWorkTimeCondition().isUse() &&
-		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-		if (true && !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-			return false;
-		}
-		/** 勤怠項目をチェックする */
-		return condition.getAtdItemCondition().check(c -> {
-			if (c.isEmpty()) {
-				return c;
+		return condition.checkWith(workInfo, item -> {
+			if (item.isEmpty()) {
+				return item;
 			}
-			return AttendanceItemUtil.toItemValues(record, c).stream().map(iv -> getValue(iv))
+			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
 	}

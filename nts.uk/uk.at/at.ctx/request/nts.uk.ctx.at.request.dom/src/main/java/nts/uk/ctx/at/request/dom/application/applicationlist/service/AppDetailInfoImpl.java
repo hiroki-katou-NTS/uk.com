@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -58,6 +60,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private WorkTimeSettingRepository repoworkTime;
 	@Inject
 	private IAppWorkChangeRepository repoworkChange;
+	@Inject
+	private AppAbsenceRepository repoAbsence;
 	/**
 	 * get Application Over Time Info
 	 * appType = 0;
@@ -77,13 +81,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
 				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v()));
+						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
 				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
-						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v()));
+						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){
 				String name = "";
@@ -97,7 +105,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
 				}
 				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
-						name, null, overTime.getApplicationTime().v()));
+						name, null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 		}
 		return new AppOverTimeInfoFull(appId, 
@@ -138,7 +148,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 */
 	@Override
 	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId) {
-		// TODO Auto-generated method stub
 		Optional<AppHolidayWork> appHdWork = repoHolidayWork.getAppHolidayWorkFrame(companyId, appId);
 		AppHolidayWork hdWork = appHdWork.get();
 		List<HolidayWorkInput> lstOverTimeInput = hdWork.getHolidayWorkInputs();
@@ -149,13 +158,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
 				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v()));
+						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
 				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
-						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v()));
+						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){
 				String name = "";
@@ -169,7 +182,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
 				}
 				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
-						name, null, overTime.getApplicationTime().v()));
+						name, null, overTime.getApplicationTime().v(),
+						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
 			
 		}
@@ -214,6 +229,20 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appWkChange.getBreakTimeEnd1()));
 	}
 	/**
+	 * get Application Absence Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
+	@Override
+	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId) {
+		// TODO Auto-generated method stub
+		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyID, appId);
+		AppAbsence appAbsence = absence.get();
+		return null;
+//		return new AppAbsence(appId, appAbsence.getHolidayAppType(), 0, appAbsence.getWorkTimeCode(),);
+	}
+	/**
 	 * convert time from integer to Time_Short_HM
 	 * @param time
 	 * @return
@@ -225,4 +254,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
 		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
 	}
+
+
 }

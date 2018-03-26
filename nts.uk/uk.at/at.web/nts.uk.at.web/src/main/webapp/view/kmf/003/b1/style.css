@@ -1,11 +1,15 @@
 @CHARSET "UTF-8";
 
-thead {
-	background-color: #c7f391;
+.ui-widget-header {
+	background: #c7f391 !important;
 }
 
-tr {
+.top-tbl tr {
 	height: 10px;
+}
+
+.nts-fixed-table {
+	padding-top: 25px;
 }
 
 #contents-area {
@@ -61,7 +65,7 @@ table.contents-header td.input-units {
 }
 
 table.contents-header td.input-units-last {
-	width: 33px;
+	width: 25px;
 }
 
 table.contents-header td.base-date {
@@ -78,12 +82,12 @@ table.contents-header td.allow-pay {
 }
 
 .contents-header {
-	width: 436px;
+	width: 418px;
     margin-top: 40px;
 }
 
 .contents-data {
-	width: 436px;
+	width: 418px;
 }
 
 .contents-data td {

@@ -25,7 +25,7 @@ public class KrcctOtkWtNonTarget extends UkJpaEntity implements Serializable {
 	public KrcctOtkWtPK id;
 
 	@ManyToOne
-	@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false)
+	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
 	public KrcctOtkVacationCk krcctOtkVacationCk;
 	
 	public KrcctOtkWtNonTarget() {

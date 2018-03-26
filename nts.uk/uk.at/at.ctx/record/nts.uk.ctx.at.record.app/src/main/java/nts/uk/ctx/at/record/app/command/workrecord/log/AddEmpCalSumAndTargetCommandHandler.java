@@ -47,7 +47,7 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
 		
 		// Insert ExecutionLog
-		List<ExecutionLog> listExecutionLog = executionLogAssembler.fromDTO(command);
+		List<ExecutionLog> listExecutionLog = executionLogAssembler.fromDTO(command, empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 		executionLogRepository.addAllExecutionLog(listExecutionLog);
 
 		// Insert all TargetPersons

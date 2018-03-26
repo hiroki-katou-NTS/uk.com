@@ -27,6 +27,7 @@ public interface AppReflectProcessRecordPub {
 	 */
 	public AppReflectPubOutput afterGobackReflect(GobackReflectPubParameter para);
 	/**
+	 * 	勤務実績に反映
 	 * 事前申請の処理　残業申請
 	 * @param param
 	 * @return

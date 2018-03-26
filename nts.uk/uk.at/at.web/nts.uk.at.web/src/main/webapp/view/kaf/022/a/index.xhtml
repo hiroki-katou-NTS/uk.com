@@ -38,6 +38,9 @@
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
 				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+				nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr
+				nts.uk.ctx.at.request.dom.application.BreakReflect
+				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.UnitAssignmentOvertime
 			</com:EnumScript>
 		</ui:define>
 		<ui:define name="sidebar">
@@ -127,7 +130,7 @@
 												data-bind="ntsComboBox: {
 													options: $parent.itemListA4_8,
 													optionsValue: 'code',
-													visibleItemsCount: 32,
+													visibleItemsCount: 11,
 													value: a4_8,
 													optionsText: 'name',
 													editable: $parent.isEditable,
@@ -398,7 +401,7 @@
 										<td><span class="ntsControl"> <label
 												class="ntsRadioBox" tabindex="43"> <input 
 													type="radio" name="textRadioA7_18"
-													data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
+													data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,attr:{
 														tabindex:43
 													}" />
 													<span class="box"></span><span class="label">#{i18n.getText('KAF022_63')}</span>
@@ -423,7 +426,7 @@
 											<span class="ntsControl special-a7"> <label class="ntsRadioBox" >
 													<span tabindex="45">
 													<input  type="radio" name="textRadioA7_18"
-													data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,attr:{
+													data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
 														tabindex:45 
 													}" />
 													<span class="box"></span><span class="label">#{i18n.getText('KAF022_66')}</span>
@@ -605,7 +608,7 @@
 							<table class="viewmodel-a" id="fixed-table-a10">
 								<colgroup>
 									<col width="300px" />
-									<col width="600px" />
+									<col width="500px" />
 								</colgroup>
 								<thead>
 									<tr>
@@ -616,7 +619,7 @@
 									<tr>
 										<td class="color-header" id="a10_2">#{i18n.getText('KAF022_87')}</td>
 										<td>
-											<div id="a10_3" class="a9_9" tabindex="213"
+											<div id="a10_3" class="a10_3" tabindex="213"
 												data-bind="ntsRadioBoxGroup: {
 													options: itemListA10_3,
 													optionsValue: 'code',

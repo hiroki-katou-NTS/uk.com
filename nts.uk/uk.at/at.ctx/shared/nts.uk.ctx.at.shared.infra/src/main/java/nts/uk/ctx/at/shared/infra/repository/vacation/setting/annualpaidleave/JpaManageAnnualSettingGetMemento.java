@@ -9,12 +9,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGran
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
 
 /**
@@ -68,6 +70,7 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
                 .manageType(ManageDistinct.valueOf(this.entity.getHalfManageAtr()))
                 .reference(MaxDayReference.valueOf(this.entity.getHalfMaxReference()))
                 .maxNumberUniformCompany(new AnnualNumberDay(this.entity.getHalfMaxUniformComp()))
+                .roundProcesCla(RoundProcessingClassification.valueOf(this.entity.getRoundProcessCla()))
                 .build();
         return halfDay;
     }
@@ -113,4 +116,13 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
         return display;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingGetMemento#getYearLyOfDays()
+     */
+	@Override
+	public YearLyOfNumberDays getYearLyOfDays() {
+		return new YearLyOfNumberDays(entity.getYearlyOfDays());
+	}
 }

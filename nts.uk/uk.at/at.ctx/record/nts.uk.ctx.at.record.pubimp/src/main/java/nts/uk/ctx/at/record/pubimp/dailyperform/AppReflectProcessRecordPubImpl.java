@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.pubimp.dailyperform;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
@@ -99,14 +97,26 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput preOvertimeReflect(PreOvertimePubParameter param) {
-//		OvertimeAppParameter appOver = new OvertimeAppParameter(EnumAdaptor.valueOf(param.getOvertimePara().getReflectedState().value, ReflectedStateRecord.class),
-//				EnumAdaptor.valueOf(param.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectRecord.class),
-//				param.getOvertimePara().getWorkTypeCode(),
-//				param.getOvertimePara().getWorkTimeCode());
-		OvertimeAppParameter appOver = null;
-		PreOvertimeParameter overtimePara = new PreOvertimeParameter(param.getEmployeeId(), param.getDateInfo(), param.isActualReflectFlg(), param.isScheReflectFlg(), param.isTimeReflectFlg(), param.isAutoClearStampFlg(), EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
-				 param.isScheTimeOutFlg(),
-				 appOver);
+		OvertimeAppParameter appOver = new OvertimeAppParameter(EnumAdaptor.valueOf(param.getOvertimePara().getReflectedState().value, ReflectedStateRecord.class),
+				EnumAdaptor.valueOf(param.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectRecord.class),
+				param.getOvertimePara().getWorkTypeCode(), 
+				param.getOvertimePara().getWorkTimeCode(),
+				param.getOvertimePara().getStartTime1(), 
+				param.getOvertimePara().getEndTime1(),
+				param.getOvertimePara().getStartTime2(),
+				param.getOvertimePara().getEndTime2(),
+				param.getOvertimePara().getMapOvertimeFrame(),
+				param.getOvertimePara().getOverTimeShiftNight(),
+				param.getOvertimePara().getFlexExessTime());
+		PreOvertimeParameter overtimePara = new PreOvertimeParameter(param.getEmployeeId(), 
+				param.getDateInfo(), 
+				param.isActualReflectFlg(), 
+				param.isScheReflectFlg(), 
+				param.isTimeReflectFlg(), 
+				param.isAutoClearStampFlg(), 
+				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
+				param.isScheTimeOutFlg(),
+				appOver);
 		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(overtimePara);
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));

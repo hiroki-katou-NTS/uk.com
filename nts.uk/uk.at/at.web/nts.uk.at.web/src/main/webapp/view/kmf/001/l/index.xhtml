@@ -22,9 +22,8 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area" class="fix-on-top">
-<!-- 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button> -->
 				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }" tabindex="1">#{i18n.getText('KMF001_27')}</a>
-				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
 				<!-- <label class="pull-right" style="margin-right: 20px;" tabindex="3">#{i18n.getText('KMF001_29')}</label> -->
 			</div>
 
@@ -67,9 +66,9 @@
 							<tr>
 								<td><label>#{i18n.getText('KMF001_110')}</label></td>
 								<td class="target-child">
-									<div>
+									<div class="flexbox-space-between">
 										<label>#{i18n.getText('KMF001_111')}</label>
-										<div style="display: inline;float: right;"><input
+										<div style="display: inline;"><input
 											id="nursing-number-leave-day"
 											tabindex="6" class="nts-input"
 											data-bind="ntsNumberEditor: {
@@ -87,9 +86,9 @@
 							<tr>
 								<td><label></label></td>
 								<td>
-									<div>
+									<div class="flexbox-space-between">
 										<label>#{i18n.getText('KMF001_112')}</label>
-										<div style="display: inline;float: right;"><input
+										<div style="display: inline;"><input
 											id="nursing-number-person" tabindex="7"
 											class="nts-input"
 											data-bind="ntsNumberEditor: {
@@ -160,9 +159,9 @@
 							<tr>
 								<td><label>#{i18n.getText('KMF001_118')}</label></td>
 								<td class="target-child">
-									<div>
+									<div class="flexbox-space-between">
 										<label style="padding-left: 0px">#{i18n.getText('KMF001_119')}</label>
-										<div style="display: inline;float: right;"><input id="child-nursing-number-leave-day"
+										<div style="display: inline;"><input id="child-nursing-number-leave-day"
 											tabindex="11" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
@@ -179,9 +178,9 @@
 							<tr>
 								<td><label></label></td>
 								<td>
-									<div>
+									<div class="flexbox-space-between">
 										<label>#{i18n.getText('KMF001_120')}</label>
-										<div style="display: inline;float: right;"><input
+										<div style="display: inline;"><input
 											id="child-nursing-number-person"
 											tabindex="12" class="nts-input"
 											data-bind="ntsNumberEditor: {

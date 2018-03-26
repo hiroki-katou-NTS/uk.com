@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 750,
+					height : 450
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kaf018.h.main.css" />
+			<com:scriptfile path="kaf018.h.service.js" />
+			<com:scriptfile path="kaf018.h.vm.js" />
+			<com:scriptfile path="kaf018.h.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- H1_1 -->
+				<button tabindex="1" class="proceed" data-bind="click: close">#{i18n.getText('KAF018_74')}</button>
+				<!-- H1_2 -->
+				<button tabindex="2" data-bind="click: testMail">#{i18n.getText('KAF018_75')}</button>
+			</div>
+			<div id="contents-area">
+				<!-- H2 -->
+				<div id="tab-panel" tabindex="3"
+					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
+					<div class="tab-content-1" data-bind="with: appApprovalUnapproved">
+						<table class="tbl-control">
+							<colgroup>
+								<col width="130" />
+								<col />
+							</colgroup>
+							<tr>
+								<!-- H3_1 -->
+								<td>
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
+								</td>
+								<!-- H3_1_1 -->
+								<td><input tabindex="4"
+									data-bind="ntsTextEditor: {
+									constraint: '', 
+									name: '#KAF018_82', 
+									option: {
+										width: '378px'
+									},
+									value: mailSubject}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H3_2 -->
+								<td colspan="2">
+									<div data-bind="ntsFormLabel: {required: true, constraint: ''}">#{i18n.getText('KAF018_83')}</div>
+								</td>
+							</tr>
+							<tr>
+								<!-- H3_2_1 -->
+								<td colspan="2"><textarea tabindex="5"
+										data-bind="ntsMultilineEditor: {
+										constraint: '', 
+										name: '#KAF018_83', 
+										option: {
+											width: '508px'
+										},
+										value: mailContent}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H3_3 -->
+								<td colspan="2">
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="6">#{i18n.getText('KAF018_84')}</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="tab-content-2"
+						data-bind="with: dailyUnconfirmByPrincipal">
+						<table class="tbl-control">
+							<colgroup>
+								<col width="130" />
+								<col />
+							</colgroup>
+							<tr>
+								<!-- H4_1 -->
+								<td>
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
+								</td>
+								<!-- H4_1_1 -->
+								<td><input tabindex="7"
+									data-bind="ntsTextEditor: {
+									constraint: '', 
+									name: '#KAF018_82', 
+									option: {
+										width: '378px'
+									},
+									value: mailSubject}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H4_2 -->
+								<td colspan="2">
+									<div data-bind="ntsFormLabel: {required: true, constraint: ''}">#{i18n.getText('KAF018_83')}</div>
+								</td>
+							</tr>
+							<tr>
+								<!-- H4_2_1 -->
+								<td colspan="2"><textarea tabindex="8"
+										data-bind="ntsMultilineEditor: {
+										constraint: '', 
+										name: '#KAF018_83', 
+										option: {
+											width: '508px'
+										},
+										value: mailContent}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H4_3 -->
+								<td colspan="2">
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="9">#{i18n.getText('KAF018_84')}</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="tab-content-3"
+						data-bind="with: dailyUnconfirmByConfirmer">
+						<table class="tbl-control">
+							<colgroup>
+								<col width="130" />
+								<col />
+							</colgroup>
+							<tr>
+								<!-- H5_1 -->
+								<td>
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
+								</td>
+								<!-- H5_1_1 -->
+								<td><input tabindex="10"
+									data-bind="ntsTextEditor: {
+									constraint: '', 
+									name: '#KAF018_82', 
+									option: {
+										width: '378px'
+									},
+									value: mailSubject}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H5_2 -->
+								<td colspan="2">
+									<div data-bind="ntsFormLabel: {required: true, constraint: ''}">#{i18n.getText('KAF018_83')}</div>
+								</td>
+							</tr>
+							<tr>
+								<!-- H5_2_1 -->
+								<td colspan="2"><textarea tabindex="11"
+										data-bind="ntsMultilineEditor: {
+										constraint: '', 
+										name: '#KAF018_83', 
+										option: {
+											width: '508px'
+										},
+										value: mailContent}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H5_3 -->
+								<td colspan="2">
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="12">#{i18n.getText('KAF018_84')}</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="tab-content-4"
+						data-bind="with: monthlyUnconfirmByConfirmer">
+						<table class="tbl-control">
+							<colgroup>
+								<col width="130" />
+								<col />
+							</colgroup>
+							<tr>
+								<!-- H6_1 -->
+								<td>
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_82')}</div>
+								</td>
+								<!-- H6_1_1 -->
+								<td><input tabindex="13"
+									data-bind="ntsTextEditor: {
+									constraint: '', 
+									name: '#KAF018_82', 
+									option: {
+										width: '378px'
+									},
+									value: mailSubject}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H6_2 -->
+								<td colspan="2">
+									<div data-bind="ntsFormLabel: {required: true, constraint: ''}">#{i18n.getText('KAF018_83')}</div>
+								</td>
+							</tr>
+							<tr>
+								<!-- H6_2_1 -->
+								<td colspan="2"><textarea tabindex="14"
+										data-bind="ntsMultilineEditor: {
+										constraint: '', 
+										name: '#KAF018_83', 
+										option: {
+											width: '508px'
+										},
+										value: mailContent}" />
+								</td>
+							</tr>
+							<tr>
+								<!-- H6_3 -->
+								<td colspan="2">
+									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
+										tabindex="15">#{i18n.getText('KAF018_84')}</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

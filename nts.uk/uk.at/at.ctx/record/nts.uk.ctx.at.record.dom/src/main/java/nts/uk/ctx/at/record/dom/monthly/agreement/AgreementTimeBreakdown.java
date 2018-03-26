@@ -7,7 +7,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.TotalTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -87,13 +86,11 @@ public class AgreementTimeBreakdown {
 	 * 36協定時間の対象項目を取得
 	 * @param aggregateAtr 集計区分
 	 * @param monthlyCalculation 月別実績の月の計算
-	 * @param totalTime 時間外超過の丸め後合計時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void getTargetItemOfAgreement(
 			MonthlyAggregateAtr aggregateAtr,
 			MonthlyCalculation monthlyCalculation,
-			TotalTime totalTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		val companyId = monthlyCalculation.getCompanyId();
@@ -120,13 +117,7 @@ public class AgreementTimeBreakdown {
 		for (val attendanceItemId : outsideOTSet.getAllAttendanceItemIds()){
 			
 			// 対象項目の時間を取得　と　丸め処理
-			AttendanceTimeMonth targetItemTime = new AttendanceTimeMonth(0);
-			if (aggregateAtr == MonthlyAggregateAtr.MONTHLY){
-				targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
-			}
-			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
-				targetItemTime = totalTime.getTimeOfAttendanceItemId(attendanceItemId);
-			}
+			val targetItemTime = monthlyCalculation.getTimeOfAttendanceItemId(attendanceItemId, roundingSet);
 			
 			// 勤怠項目IDに対応する時間を加算する
 			this.addTimeByAttendanceItemId(attendanceItemId, targetItemTime);
