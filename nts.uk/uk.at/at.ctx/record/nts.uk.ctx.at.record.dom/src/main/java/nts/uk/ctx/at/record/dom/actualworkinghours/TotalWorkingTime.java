@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
@@ -94,7 +95,7 @@ public class TotalWorkingTime {
 	private BreakTimeOfDaily breakTimeOfDaily;
 	
 	//日別実績の外出時間	
-	private List<OutingTimeOfDaily> outingTimeOfDailyPerformance;
+	private List<OutingTimeOfDaily> outingTimeOfDailyPerformance = Collections.emptyList(); 
 		
 	//加給時間
 	private RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor;
@@ -316,11 +317,19 @@ public class TotalWorkingTime {
 									shotrTime);
 	}
 
+	public Optional<LateTimeOfDaily> getLateTimeNo(int no){
+		return this.lateTimeOfDaily.stream().filter(l -> l.getWorkNo().v() == no).findFirst();
+	}
 
+	public Optional<LeaveEarlyTimeOfDaily> getLeaveEarlyTimeNo(int no){
+		return this.leaveEarlyTimeOfDaily.stream().filter(l -> l.getWorkNo().v() == no).findFirst();
+	}
 
+	public Optional<OutingTimeOfDaily> getOutingTimeByReason(GoOutReason reason){
+		return getOutingTimeByReason(reason.value);
+	}
 
-
-
-
-
+	public Optional<OutingTimeOfDaily> getOutingTimeByReason(int reason){
+		return this.outingTimeOfDailyPerformance.stream().filter(o -> o.getReason().value == reason).findFirst();
+	}
 }

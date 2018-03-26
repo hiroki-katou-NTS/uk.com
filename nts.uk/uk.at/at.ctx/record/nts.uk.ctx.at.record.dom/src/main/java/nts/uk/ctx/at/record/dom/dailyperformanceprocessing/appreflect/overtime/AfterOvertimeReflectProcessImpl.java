@@ -12,17 +12,14 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Inject
 	private WorkTimeIsFluidWork workTimeService;
 	@Override
-	public boolean checkScheReflect(String employeeId, GeneralDate baseDate,
-			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg, String workTimeCode) {
-		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.NOTAUTO) {
-			return false;
-		} else if (scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAY) {
-			return true;
+	public void checkScheReflect(OvertimeParameter overtimePara) {
+		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
+		if((overtimePara.getOvertimePara().getWorkTimeCode().isEmpty()
+				&& overtimePara.getOvertimePara().getWorkTypeCode().isEmpty())
+				|| !overtimePara.isActualReflectFlg()) {
+			return;
 		}
-		//INPUT．予定と実績を同じに変更する区分が「流動勤務のみ自動変更する」
-		//流動勤務かどうかの判断処理
-		return workTimeService.checkWorkTimeIsFluidWork(workTimeCode);
+		
 	}
 
 }
