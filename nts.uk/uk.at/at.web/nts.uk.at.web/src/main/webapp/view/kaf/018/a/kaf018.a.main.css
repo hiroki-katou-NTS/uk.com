@@ -1,0 +1,33 @@
+.content-area-right {
+	width: 283px;
+	height: 408px;
+	float: left;
+	margin-top:50px;
+}
+
+.content-area-left {
+	margin-left: 20px;
+	margin-top:30px;
+	float: left;
+}
+
+.format-selected {
+	float: left;
+	padding: 20px;
+		
+}
+
+.format-checkbox {
+	float: left;
+	margin-left: 35px;
+}
+
+.btn-excute {
+	float: left;
+	margin-left: 20px;
+	margin-top: 230px;	
+}
+
+.clear {
+	clear:both;
+}

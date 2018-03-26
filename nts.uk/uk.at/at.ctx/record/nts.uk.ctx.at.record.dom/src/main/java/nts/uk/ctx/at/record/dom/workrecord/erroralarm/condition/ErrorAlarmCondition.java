@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 
 /**
  * @author hungnm

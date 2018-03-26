@@ -380,7 +380,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         //                        else{
                         //                            //self.setScreenAfterDelete();
                         //                        }
-                        nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
@@ -404,31 +404,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //if list # null    
             if (self.listAppMeta.length == 0) {
                 //nếu list null thì trả về màn hình mẹ
-                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             }
 
             if (self.listAppMeta.length == 1) {
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
-                    'listAppMeta': self.listAppMeta,
-                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[0].appID, self.listAppMeta[0].appType, self.listAppMeta[0].appDate)
-                });
-                return;
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             }
             //nếu vị trí vừa xóa khác vị trí cuối
             if (index != self.listAppMeta.length) {
                 //gán lại appId mới tại vị trí chính nó
                 //self.btnAfter();
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
-                    'listAppMeta': self.listAppMeta,
-                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[index].appID, self.listAppMeta[index].appType, self.listAppMeta[index].appDate)
-                });
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             } else {
                 //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
                 //                self.btnBefore();
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
-                    'listAppMeta': self.listAppMeta,
-                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[self.listAppMeta.length - 1].appID, self.listAppMeta[self.listAppMeta.length - 1].appType, self.listAppMeta[self.listAppMeta.length - 1].appDate)
-                });
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             }
 
         }

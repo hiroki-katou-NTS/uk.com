@@ -168,7 +168,7 @@ public class DailyPerformanceCorrectionProcessor {
 					result.add(new DPDataDto(
 							displayFormat + "_" + convertFormatString(employee.getId()) + "_" + convertFormatString(converDateToString(lstDate.get(i))) + "_"
 									+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId,
-							"", "", lstDate.get(i), false, employee.getId(), employee.getCode(),
+							"", "", lstDate.get(i), false, false, employee.getId(), employee.getCode(),
 							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}

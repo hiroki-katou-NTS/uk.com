@@ -40,8 +40,12 @@ public class OverTimeFrameTime {
 	}
 	
 	
-	public void addOverTime(AttendanceTime time,AttendanceTime calcTime) {
-		this.OverTimeWork = this.OverTimeWork.addMinutes(time, calcTime);
+	public OverTimeFrameTime addOverTime(AttendanceTime time,AttendanceTime calcTime) {
+		return new OverTimeFrameTime(this.OverWorkFrameNo,
+									 this.OverTimeWork.addMinutes(time, calcTime),
+									 this.TransferTime,
+									 this.BeforeApplicationTime,
+									 this.orderTime);
 	}
 
 
