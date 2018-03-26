@@ -376,12 +376,12 @@ module a2 {
             dataSource: KnockoutObservableArray<TimeZoneModel>) {
             let self = this;
             
-            // empty list
-            dataSource([]);
-            
-            if (!dataSourceModel) {
+            if (nts.uk.util.isNullOrEmpty(dataSourceModel())) {
                 return;
             }
+
+            // empty list
+            dataSource([]);
                     
             // fill data
             _.forEach(dataSourceModel(), (item: EmTimeZoneSetModel) => {
