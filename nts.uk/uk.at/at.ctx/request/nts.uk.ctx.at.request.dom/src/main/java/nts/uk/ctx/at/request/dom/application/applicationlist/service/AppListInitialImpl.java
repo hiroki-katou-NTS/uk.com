@@ -387,7 +387,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					//条件 bo sung:
 					int phaseOrderCur = status.getPhaseOrder().intValue();
 					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
-					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -2) == new Integer(1)){//phase truoc do da approve
+					if(phaseOrderCur == 1 || new Integer(1).equals(statusPhase.getPhaseAtr().get(phaseOrderCur -2))){//phase truoc do da approve
 						lstAppFilter3.add(appFull.getApplication());
 						lstAppFullFilter3.add(appFull);
 						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){

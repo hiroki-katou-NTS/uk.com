@@ -59,7 +59,7 @@ module cmm045.a.viewmodel {
                 character.save('AppListExtractCondition', null);
             }
             character.restore("AppListExtractCondition").done((obj) => {
-                console.log(obj);
+//                console.log(obj);
                 characterData = obj;
                 if (obj !== undefined && obj !== null) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
@@ -114,7 +114,7 @@ module cmm045.a.viewmodel {
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                             self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
                         character.save('AppListExtractCondition', paramSave);
-                        console.log(data);
+//                        console.log(data);
                         let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                         let lstAppGroup: Array<vmbase.AppPrePostGroup> = [];
                         self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
@@ -909,7 +909,7 @@ module cmm045.a.viewmodel {
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                 self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
             service.getApplicationList(param).done(function(data) {
-                console.log(data);
+//                console.log(data);
                 //reset data
                 self.lstAppCommon([]);
                 self.lstAppMaster([]);
