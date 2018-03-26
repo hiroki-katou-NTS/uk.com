@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmen
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
@@ -50,6 +51,8 @@ public class HolidayShipmentScreenBFinder {
 	private ApplicationRepository_New appRepo;
 	@Inject
 	private HolidayShipmentScreenAFinder aFinder;
+	@Inject
+	private EmployeeRequestAdapter empAdaptor;
 
 	/**
 	 * find by Id
@@ -70,12 +73,23 @@ public class HolidayShipmentScreenBFinder {
 		companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		boolean isRecApp = isRecApp(applicationID);
+		// 入力者
 		// 14-1.詳細画面起動前申請共通設定を取得する
 		Optional<Application_New> appOutputOpt = appRepo.findByID(companyID, applicationID);
 		// 14-2.詳細画面起動前モードの判断
 		if (appOutputOpt.isPresent()) {
 			Application_New appOutput = appOutputOpt.get();
+			String employeeName = "";
+			if (appOutput.getEmployeeID().equals(employeeID)) {
+				employeeName = empAdaptor.getEmployeeName(employeeID);
+			} else {
 
+				employeeName = empAdaptor.getEmployeeName(appOutput.getEmployeeID()) + " (入力者 : "
+						+ empAdaptor.getEmployeeName(employeeID) + ")";
+
+			}
+
+			output.setEmployeeName(employeeName);
 			output.setApplication(ApplicationDto_New.fromDomain(appOutput));
 			DetailedScreenPreBootModeOutput bootOutput = bootMode.judgmentDetailScreenMode(companyID, employeeID,
 					applicationID, appOutput.getAppDate());
@@ -168,7 +182,7 @@ public class HolidayShipmentScreenBFinder {
 	private SyncState getCompltLeaveSimMngFromRecID(String applicationID) {
 		// ドメインモデル「振休振出同時申請管理」を1件取得する
 		SyncState result = SyncState.ASYNCHRONOUS;
-		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(applicationID);
 		if (CompltLeaveSimMngOpt.isPresent()) {
 			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
 			result = compltLeaveSimMng.getSyncing();

@@ -6,4 +6,6 @@ public interface CompltLeaveSimMngRepository {
 	public void insert(CompltLeaveSimMng domain);
 
 	public Optional<CompltLeaveSimMng> findByRecID(String appID);
+
+	public Optional<CompltLeaveSimMng> findByAbsID(String applicationID);
 }

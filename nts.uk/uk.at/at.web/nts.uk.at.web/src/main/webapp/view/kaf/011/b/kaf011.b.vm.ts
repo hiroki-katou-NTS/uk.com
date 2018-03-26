@@ -7,7 +7,37 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import service = nts.uk.at.view.kaf011.shr.service;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+
         screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
+
+        employeeName: KnockoutObservable<string> = ko.observable('');
+
+        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+
+        recWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+
+        absWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+
+        prePostTypes = ko.observableArray([
+            { code: 0, text: text('KAF011_14') },
+            { code: 1, text: text('KAF011_15') }]);
+
+        prePostSelectedCode: KnockoutObservable<number> = ko.observable(0);
+
+        appComItems = ko.observableArray([
+            { code: 0, text: text('KAF011_19') },
+            { code: 1, text: text('KAF011_20') },
+            { code: 2, text: text('KAF011_21') },
+        ]);
+
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
+
+        appReasons = ko.observableArray([]);
+
+        appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
+
+        reason: KnockoutObservable<string> = ko.observable('');
+
         update() {
 
         }
@@ -39,7 +69,65 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         }
         setDataFromStart(data) {
+            let self = this;
+            if (data) {
 
+                self.employeeName(data.employeeName);
+                if (data.application) {
+                    self.setDataCommon(data);
+                }
+
+                if (data.absApp && data.recApp) {
+                    self.setDataBothApp(data);
+
+                } else {
+                    if (data.recApp) {
+                        self.setDataApp(self.recWk(), data.recApp, 1);
+
+                    }
+                    if (data.absApp) {
+                        self.setDataApp(self.absWk(), data.absApp, 2);
+
+                    }
+
+                }
+            }
+        }
+
+        setDataCommon(data) {
+            let self = this,
+                app = data.application;
+
+            self.prePostSelectedCode(app.prePostAtr);
+
+        }
+
+        setDataBothApp(data) {
+            let self = this;
+            self.appComSelectedCode(0);
+            self.setDataApp(self.absWk(), data.absApp, 2);
+            self.setDataApp(self.recWk(), data.recApp, 1);
+        }
+
+
+
+
+        setDataApp(control: common.WorkItems, data, comType) {
+            let self = this;
+            control.wkTypeCD(data.workTypeCD);
+            control.wkTimeCD(data.workTimeCD);
+            control.changeWorkHoursType(data.changeWorkHoursType);
+            control.workLocationCD(data.workLocationCD);
+            if (data.workTime1) {
+                control.wkTime1().startTime(data.workTime1.startTime);
+                control.wkTime1().endTime(data.workTime1.endTime);
+                if (data.workTime1.startType) {
+                    control.wkTime1().startType(data.workTime1.startType);
+                    control.wkTime1().startTime(data.workTime1.endType);
+                }
+            }
+
+            self.appComSelectedCode(comType);
         }
     }
 

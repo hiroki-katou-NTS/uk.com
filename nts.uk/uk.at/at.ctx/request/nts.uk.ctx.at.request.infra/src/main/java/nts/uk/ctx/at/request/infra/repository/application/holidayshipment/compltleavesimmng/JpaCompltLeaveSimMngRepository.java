@@ -20,7 +20,8 @@ import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.compltleav
 public class JpaCompltLeaveSimMngRepository extends JpaRepository implements CompltLeaveSimMngRepository {
 
 	private static final String FIND_ALL = "SELECT m FROM KrqdtCompltLeaveSimMana m";
-	private static final String FIND_BY_APPID = FIND_ALL + " WHERE m.pk.recAppID=:recAppID ";
+	private static final String FIND_BY_REC_APP_ID = FIND_ALL + " WHERE m.pk.recAppID=:recAppID ";
+	private static final String FIND_BY_ABS_APP_ID = FIND_ALL + " WHERE m.pk.absenceLeaveAppID=:absenceLeaveAppID ";
 
 	@Override
 	public void insert(CompltLeaveSimMng domain) {
@@ -40,13 +41,19 @@ public class JpaCompltLeaveSimMngRepository extends JpaRepository implements Com
 
 	@Override
 	public Optional<CompltLeaveSimMng> findByRecID(String recAppID) {
-		return this.queryProxy().query(FIND_BY_APPID, KrqdtCompltLeaveSimMana.class).setParameter("recAppID", recAppID)
-				.getSingle().map(x -> toDomain(x));
+		return this.queryProxy().query(FIND_BY_REC_APP_ID, KrqdtCompltLeaveSimMana.class)
+				.setParameter("recAppID", recAppID).getSingle().map(x -> toDomain(x));
 	}
 
 	private CompltLeaveSimMng toDomain(KrqdtCompltLeaveSimMana entity) {
 		return new CompltLeaveSimMng(entity.getPk().getRecAppID(), entity.getPk().getAbsenceLeaveAppID(),
 				EnumAdaptor.valueOf(entity.getSyncing(), SyncState.class));
+	}
+
+	@Override
+	public Optional<CompltLeaveSimMng> findByAbsID(String absAppID) {
+		return this.queryProxy().query(FIND_BY_ABS_APP_ID, KrqdtCompltLeaveSimMana.class)
+				.setParameter("absenceLeaveAppID", absAppID).getSingle().map(x -> toDomain(x));
 	}
 
 }

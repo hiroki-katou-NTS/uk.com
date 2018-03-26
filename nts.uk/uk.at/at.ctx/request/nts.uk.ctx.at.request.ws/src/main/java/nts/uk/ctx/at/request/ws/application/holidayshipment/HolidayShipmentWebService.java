@@ -19,22 +19,22 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShi
 public class HolidayShipmentWebService extends WebService {
 
 	@Inject
-	private HolidayShipmentScreenAFinder afinder;
+	private HolidayShipmentScreenAFinder aFinder;
 	@Inject
-	private HolidayShipmentScreenBFinder bfinder;
+	private HolidayShipmentScreenBFinder bFinder;
 	@Inject
 	private SaveHolidayShipmentCommandHandler handler;
 
 	@POST
 	@Path("start")
 	public HolidayShipmentDto startPage(StartAParam param) {
-		return this.afinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
+		return this.aFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
 	}
 
 	@POST
 	@Path("change_work_type")
 	public ChangeWorkTypeDto changeWorkType(ChangeWorkTypeParam param) {
-		return this.afinder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
+		return this.aFinder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
 	}
 
 	@POST
@@ -46,7 +46,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_day")
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
-		return this.afinder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
+		return this.aFinder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
 	}
 
@@ -59,7 +59,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("find_by_id")
 	public HolidayShipmentDto findByID(StartBParam param) {
-		return this.bfinder.findByID(param.getAppID());
+		return this.bFinder.findByID(param.getAppID());
 	}
 
 }

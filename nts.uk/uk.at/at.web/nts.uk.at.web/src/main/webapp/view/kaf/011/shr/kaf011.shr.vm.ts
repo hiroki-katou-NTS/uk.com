@@ -55,8 +55,8 @@ module nts.uk.at.view.kaf011.shr {
             appEmploymentSettings: Array<any>;
             approvalFunctionSetting: any;
             refDate: string;
-            takingOutWkTypes: Array<any>;
-            holidayWkTypes: Array<any>;
+            recWkTypes: Array<any>;
+            absWkTypes: Array<any>;
             preOrPostType: any;
             appReasons: Array<any>;
             employeeID: string;
@@ -125,13 +125,31 @@ module nts.uk.at.view.kaf011.shr {
                         });
                     }
                 });
+            }
 
+            parseText(date) {
+                return nts.uk.time.formatDate(new Date(date()), "yyyy/MM/dd");
+            }
+
+            parseTime(value) {
+                return nts.uk.time.parseTime(value, true).format()
+            }
+            genWorkingText(childData: common.IWorkTime) {
+                let self = this,
+                    result = childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName;
+                if (childData.first) {
+                    result += ' ' + self.parseTime(childData.first.start) + '~' + self.parseTime(childData.first.end);
+                    if (childData.second) {
+
+                    }
+                }
+                return result;
 
             }
 
             openKDL003() {
                 let self = this,
-                    vm = __viewContext['viewModel'],
+                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel,
                     workTypeCodes = self.wkTypes(),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
@@ -143,12 +161,13 @@ module nts.uk.at.view.kaf011.shr {
                     selectedWorkTimeCode: WorkTimeCd,
                 }, true);
 
+
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     var childData: IWorkTime = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
-                            self.wkText(vm.genWorkingText(childData));
+                            self.wkText(self.genWorkingText(childData));
                         }
                         self.wkTimeCD(childData.selectedWorkTimeCode);
                         if (childData.first) {

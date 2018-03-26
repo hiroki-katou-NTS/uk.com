@@ -38,11 +38,11 @@ public class RecruitmentAppDto {
 	/**
 	 * 勤務時間1
 	 */
-	private RecruitmentWorkingHourDto workTime1;
+	private RecruitmentWorkingHourDto wkTime1;
 	/**
 	 * 勤務時間2
 	 */
-	private RecruitmentWorkingHourDto workTime2;
+	private RecruitmentWorkingHourDto wkTime2;
 
 	/**
 	 * 消化対象代休管理

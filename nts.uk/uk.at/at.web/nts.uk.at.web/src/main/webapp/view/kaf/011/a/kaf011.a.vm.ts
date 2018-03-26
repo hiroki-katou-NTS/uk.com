@@ -24,29 +24,32 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
 
-        takingOutWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        recWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
 
-        holidayWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        absWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
 
         appReasons = ko.observableArray([]);
 
-        appReasonSelectedType: KnockoutObservable<string> = ko.observable('');
+        appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
 
         reason: KnockoutObservable<string> = ko.observable('');
 
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
 
         employeeID: KnockoutObservable<string> = ko.observable('');
+        
         employeeName: KnockoutObservable<string> = ko.observable('');
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(0);
+        
         comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+        
         constructor() {
             let self = this;
-            self.takingOutWk().appDate.subscribe((newDate) => {
+            self.recWk().appDate.subscribe((newDate) => {
                 self.changeDate();
             });
-            self.holidayWk().appDate.subscribe((newDate) => {
+            self.absWk().appDate.subscribe((newDate) => {
                 self.changeDate();
             });
         }
@@ -54,8 +57,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             let vm: ViewModel = __viewContext['viewModel'],
                 changeDateParam = {
-                    holidayDate: vm.holidayWk().appDate(),
-                    takingOutDate: vm.takingOutWk().appDate(),
+                    holidayDate: vm.absWk().appDate(),
+                    takingOutDate: vm.recWk().appDate(),
                     comType: vm.appComSelectedCode(),
                     uiType: 1
 
@@ -91,29 +94,14 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
             return dfd.promise();
         }
-        genWorkingText(childData: common.IWorkTime) {
-            let self = this,
-                result = childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName;
-            if (childData.first) {
-                result += ' ' + self.parseTime(childData.first.start) + '~' + self.parseTime(childData.first.end);
-                if (childData.second) {
-
-                }
-            }
-            return result;
-
-        }
-        parseTime(value) {
-            return nts.uk.time.parseTime(value, true).format()
-        }
 
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
-                self.takingOutWk().wkTypes(data.takingOutWkTypes || []);
-                self.holidayWk().wkTypes(data.holidayWkTypes || []);
+                self.recWk().wkTypes(data.recWkTypes || []);
+                self.absWk().wkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasons || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
@@ -126,14 +114,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
         register() {
             block.invisible();
             let self = this,
-
                 saveCmd: common.ISaveHolidayShipmentCommand = {
-                    recCmd: ko.mapping.toJS(self.takingOutWk()),
-                    absCmd: ko.mapping.toJS(self.holidayWk()),
+                    recCmd: ko.mapping.toJS(self.recWk()),
+                    absCmd: ko.mapping.toJS(self.absWk()),
                     comType: self.appComSelectedCode(),
                     usedDays: 1,
                     appCmd: {
-                        appReasonID: self.appReasonSelectedType(),
+                        appReasonID: self.appReasonSelectedID(),
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),

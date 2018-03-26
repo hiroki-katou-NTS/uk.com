@@ -41,11 +41,11 @@ public class AbsenceLeaveAppDto {
 	/**
 	 * 勤務時間1
 	 */
-	private AbsenceLeaveWorkingHourDto WorkTime1;
+	private AbsenceLeaveWorkingHourDto wkTime1;
 	/**
 	 * 勤務時間2
 	 */
-	private AbsenceLeaveWorkingHourDto WorkTime2;
+	private AbsenceLeaveWorkingHourDto wkTime2;
 	/**
 	 * 消化対象代休管理
 	 */
