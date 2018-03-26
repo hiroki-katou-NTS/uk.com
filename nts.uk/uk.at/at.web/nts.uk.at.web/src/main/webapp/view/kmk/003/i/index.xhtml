@@ -42,7 +42,7 @@
 					<!-- START setting items - delFromEmTime -->
 					<div class="dialog-block">
 						<div class="dialog-rows">
-							<div tabindex="1" data-bind="ntsCheckBox: { 
+							<div tabindex="1" id="delFromEmTime" data-bind="ntsCheckBox: { 
 									name: '#[KMK003_262]',
 									checked: delFromEmTime,
 									enable: !isFlow() }">#{i18n.getText('KMK003_262')}</div>			
@@ -62,7 +62,7 @@
 					<!-- START setting items - stampExactlyTimeIsLateEarly -->
 					<div class="dialog-block">
 						<div class="dialog-rows">
-							<div tabindex="2" data-bind="ntsCheckBox: { 
+							<div tabindex="2" id="lateStampExactlyTimeIsLateEarly" data-bind="ntsCheckBox: { 
 									name: '#[KMK003_263]',
 									checked: lateStampExactlyTimeIsLateEarly }">#{i18n.getText('KMK003_263')}</div>														
 						</div>	
