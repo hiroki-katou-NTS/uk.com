@@ -155,44 +155,60 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         bindData(data: any){
             var self = this;
+            var flagDay = false;
+            var flagYear = false;
             
             self.items.removeAll();
             
-            //Update case
-            for(var i = 0; i < data.length; i++){
-                var item : IItem = {
-                    grantYearHolidayNo: data[i].grantYearHolidayNo(),
-                    conditionNo: data[i].conditionNo(),
-                    yearHolidayCode: data[i].yearHolidayCode(),
-                    lengthOfServiceYears: data[i].lengthOfServiceYears(),
-                    lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
-                    grantDays: data[i].grantDays(),
-                    limitedTimeHdDays: data[i].limitedTimeHdDays(),
-                    limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
-                    grantReferenceDate: data[i].grantSimultaneity() == 0 ? data[i].grantReferenceDate() : 1,
-                    grantReferenceDateEnable: data[i].grantSimultaneity() == 1 ? false : true,
-                    grantSimultaneity: data[i].grantSimultaneity(),
-                    grantDate: data[i].grantDate()
-                };
-                self.items.push(new Item(item));
-            }
-            
-            for(var j = data.length; j < 20; j++) {
-                var item : IItem = {
-                    grantYearHolidayNo: j + 1,
-                    conditionNo: self.conditionData.conditionNo,
-                    yearHolidayCode: self.conditionData.code,
-                    lengthOfServiceYears: null,
-                    lengthOfServiceMonths: null,
-                    grantDays: null,
-                    limitedTimeHdDays: null,
-                    limitedHalfHdCnt: null,
-                    grantReferenceDate: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? 1 : 0) : 0,
-                    grantReferenceDateEnable: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? false : true) : true,
-                    grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
-                    grantDate: ""
-                };
-                self.items.push(new Item(item));    
+            service.checkData().done(function(check){
+                if(check.manageType == 1 && check.reference == 1) {
+                    flagDay = true;
+                }
+
+                if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
+                    flagYear = true;
+                }
+                
+                //Update case
+                for(var i = 0; i < data.length; i++){
+                    var item : IItem = {
+                        grantYearHolidayNo: data[i].grantYearHolidayNo(),
+                        conditionNo: data[i].conditionNo(),
+                        yearHolidayCode: data[i].yearHolidayCode(),
+                        lengthOfServiceYears: data[i].lengthOfServiceYears(),
+                        lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
+                        grantDays: data[i].grantDays(),
+                        limitedTimeHdDays: data[i].limitedTimeHdDays(),
+                        limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
+                        grantReferenceDate: data[i].grantSimultaneity() == 0 ? data[i].grantReferenceDate() : 1,
+                        grantReferenceDateEnable: data[i].grantSimultaneity() == 1 ? false : true,
+                        grantSimultaneity: data[i].grantSimultaneity(),
+                        grantDate: data[i].grantDate(),
+                        ltdEnable: flagYear,
+                        lthEnable: flagDay 
+                    };
+                    self.items.push(new Item(item));
+                }
+                
+                for(var j = data.length; j < 20; j++) {
+                    var item : IItem = {
+                        grantYearHolidayNo: j + 1,
+                        conditionNo: self.conditionData.conditionNo,
+                        yearHolidayCode: self.conditionData.code,
+                        lengthOfServiceYears: null,
+                        lengthOfServiceMonths: null,
+                        grantDays: null,
+                        limitedTimeHdDays: null,
+                        limitedHalfHdCnt: null,
+                        grantReferenceDate: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? 1 : 0) : 0,
+                        grantReferenceDateEnable: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? false : true) : true,
+                        grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
+                        grantDate: "",
+                        ltdEnable: flagYear,
+                        lthEnable: flagDay 
+                    };
+                    self.items.push(new Item(item));    
+                }
             }
         }
         
@@ -444,6 +460,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         grantReferenceDateEnable: KnockoutObservable<boolean>;
         grantSimultaneity: KnockoutObservable<boolean>;
         grantDate: KnockoutObservable<string>;
+        ltdEnable: KnockoutObservable<boolean>;
+        lthEnable: KnockoutObservable<boolean>;
         
         constructor(param: IItem) {
             var self = this;
@@ -462,6 +480,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.grantSimultaneity.subscribe(function(value){
                 checkAllowPayBelow(self);
             });
+            self.ltdEnable = ko.observable(param.ltdEnable);  
+            self.lthEnable = ko.observable(param.lthEnable);  
         }
     }
     
@@ -477,7 +497,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         grantReferenceDate: number;
         grantReferenceDateEnable: boolean;   
         grantSimultaneity: boolean;   
-        grantDate: string;     
+        grantDate: string;
+        ltdEnable: boolean;
+        lthEnable: boolean;   
     }
      
     export class GrantReferenceDateOption {
