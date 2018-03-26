@@ -16,7 +16,7 @@ module nts.uk.at.view.kmk011.h {
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-
+                
                 service.find().done(function(value: any) {
                     if (value != null) {
                         _self.selectWorkTypeCheck(value.workTypeUseSet)
@@ -37,8 +37,8 @@ module nts.uk.at.view.kmk011.h {
                         dfd.resolve();
                         nts.uk.ui.windows.close();
                     });
-                });            
-                
+                });
+
                 return dfd.promise();
             }
 
@@ -50,11 +50,6 @@ module nts.uk.at.view.kmk011.h {
                 return 0;
             }
 
-        }
-
-        export enum BoolValue {
-            TRUE = 1,
-            FALSE = 0
         }
     }
 }

@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitSetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtUseUnit;
 
+/**
+ * The Class JpaDivergenceReferenceTimeUsageUnitSetMemento.
+ */
 public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements DivergenceReferenceTimeUsageUnitSetMemento{
 
 	/** The entity. */

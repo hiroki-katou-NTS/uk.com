@@ -55,16 +55,17 @@
 							<col width="*" />
 						</colgroup>
 
-						<tr class="row" data-bind="if: settingMode" style="margin-bottom: 30px; margin-left: 50px;">
-							<td>
+						<tr class="row" data-bind="if: settingMode">
+							<td style="padding-bottom: 35px">
 								<!--I3-1 -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_72')}</div>
 							</td>
-							<td><span data-bind="text: wkTypeCode"></span>&#160;&#160;&#160;&#160;<span
-								data-bind="text: wkTypeName"></span></td>
+							<td style="padding-bottom: 35px"><span
+								style="padding-left: 35px" data-bind="text: wkTypeCode"></span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+								<span data-bind="text: wkTypeName"></span></td>
 						</tr>
-						<tr class="row" style="margin-bottom: 30px; margin-left: 50px;">
-							<td>
+						<tr class="row">
+							<td style="padding-bottom: 35px">
 								<!--I4-1 -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_76')}</div>
 							</td>
@@ -83,8 +84,8 @@
 							</td>
 						</tr>
 
-						<tr class="row" style="margin-top: 50px;">
-							<td>
+						<tr class="row">
+							<td style="padding-bottom: 35px">
 								<!--I5-1 -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_77')}</div>
 							</td>

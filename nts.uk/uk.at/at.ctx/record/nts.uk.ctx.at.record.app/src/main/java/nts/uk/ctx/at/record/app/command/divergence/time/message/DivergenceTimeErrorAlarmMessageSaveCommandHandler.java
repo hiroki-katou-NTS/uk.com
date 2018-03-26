@@ -18,14 +18,19 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class DivergenceTimeErrorAlarmMessageSaveCommandHandler.
  */
 @Stateless
-public class DivergenceTimeErrorAlarmMessageSaveCommandHandler extends CommandHandler<DivergenceTimeErrorAlarmMessageCommand> {
+public class DivergenceTimeErrorAlarmMessageSaveCommandHandler
+		extends CommandHandler<DivergenceTimeErrorAlarmMessageCommand> {
 
 	/** The repository. */
 	@Inject
 	private DivergenceTimeErrorAlarmMessageRepository repository;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional

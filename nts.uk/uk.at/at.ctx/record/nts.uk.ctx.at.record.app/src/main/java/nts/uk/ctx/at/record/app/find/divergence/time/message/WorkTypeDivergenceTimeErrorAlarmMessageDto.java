@@ -13,14 +13,17 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
+/**
+ * The Class WorkTypeDivergenceTimeErrorAlarmMessageDto.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
-public class WorkTypeDivergenceTimeErrorAlarmMessageDto implements WorkTypeDivergenceTimeErrorAlarmMessageSetMemento{
+public class WorkTypeDivergenceTimeErrorAlarmMessageDto implements WorkTypeDivergenceTimeErrorAlarmMessageSetMemento {
 
 	/** The company id. */
 	private CompanyId companyId;
-	
+
 	/** The work type code. */
 	private String workTypeCode;
 
@@ -32,7 +35,7 @@ public class WorkTypeDivergenceTimeErrorAlarmMessageDto implements WorkTypeDiver
 
 	/** The error message. */
 	private String errorMessage;
-	
+
 	/**
 	 * Instantiates a new work type divergence time error alarm message dto.
 	 */
@@ -40,41 +43,61 @@ public class WorkTypeDivergenceTimeErrorAlarmMessageDto implements WorkTypeDiver
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setCId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setCId(nts.uk.ctx.at.
+	 * shared.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCId(CompanyId cId) {
-			
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setWorkTypeCode(nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setWorkTypeCode(nts.uk.
+	 * ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode)
 	 */
 	@Override
 	public void setWorkTypeCode(BusinessTypeCode workTypeCode) {
-				
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setDivergenceTimeNo(java.lang.Integer)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setDivergenceTimeNo(
+	 * java.lang.Integer)
 	 */
 	@Override
-	public void setDivergenceTimeNo(Integer divergenceTimeNo) {		
-		
+	public void setDivergenceTimeNo(Integer divergenceTimeNo) {
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setAlarmMessage(java.util.Optional)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setAlarmMessage(java.
+	 * util.Optional)
 	 */
 	@Override
 	public void setAlarmMessage(Optional<ErrorAlarmMessage> alarmMessage) {
 		this.alarmMessage = alarmMessage.get().v();
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setErrorMessage(java.util.Optional)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * WorkTypeDivergenceTimeErrorAlarmMessageSetMemento#setErrorMessage(java.
+	 * util.Optional)
 	 */
 	@Override
 	public void setErrorMessage(Optional<ErrorAlarmMessage> errorMessage) {

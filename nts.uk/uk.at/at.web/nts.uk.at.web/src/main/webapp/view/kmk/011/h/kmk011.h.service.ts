@@ -1,5 +1,5 @@
 module nts.uk.at.view.kmk011.h {
-    
+
     export module service {
         /**
          * define path to service

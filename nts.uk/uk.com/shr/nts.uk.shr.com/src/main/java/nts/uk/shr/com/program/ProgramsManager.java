@@ -281,8 +281,18 @@ public class ProgramsManager {
 	/**
 	 * KMK011C
 	 */
-	public static final Program KMK011C = new Program(WebAppId.AT, ProgramIdConsts.KMK011C, "dfssdf",
+	public static final Program KMK011C = new Program(WebAppId.AT, ProgramIdConsts.KMK011C, "KMK011_2",
 			"/view/kmk/011/c/index.xhtml");
+	/**
+	 * KMK011H
+	 */
+	public static final Program KMK011H = new Program(WebAppId.AT, ProgramIdConsts.KMK011H, "KMK011_4",
+			"/view/kmk/011/h/index.xhtml");
+	/**
+	 * KMK011I
+	 */
+	public static final Program KMK011I = new Program(WebAppId.AT, ProgramIdConsts.KMK011I, "KMK011_5",
+			"/view/kmk/011/i/index.xhtml");
 	/**
 	 * KML001A
 	 */

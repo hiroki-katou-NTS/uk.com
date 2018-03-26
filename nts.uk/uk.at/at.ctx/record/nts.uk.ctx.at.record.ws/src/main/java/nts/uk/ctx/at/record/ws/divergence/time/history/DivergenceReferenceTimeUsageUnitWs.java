@@ -16,27 +16,28 @@ import nts.uk.ctx.at.record.app.find.divergence.time.history.DivergenceReference
  */
 @Path("at/record/divergence/time/history/divergenceRefTimeUsageUnit")
 @Produces("application/json")
-public class DivergenceReferenceTimeUsageUnitWs extends WebService{
-	
+public class DivergenceReferenceTimeUsageUnitWs extends WebService {
+
 	/** The save handler. */
-	@Inject 
+	@Inject
 	private DivergenceReferenceTimeUsageUnitSaveCommandHandler saveHandler;
-	
+
 	/** The finder. */
-	@Inject 
+	@Inject
 	private DivergenceReferenceTimeUsageUnitFinder finder;
-	
+
 	/**
 	 * Save.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("save")
-	public void save(DivergenceReferenceTimeUsageUnitCommand command){
+	public void save(DivergenceReferenceTimeUsageUnitCommand command) {
 		this.saveHandler.handle(command);
 	}
-	
+
 	/**
 	 * Find by company id.
 	 *
@@ -45,6 +46,6 @@ public class DivergenceReferenceTimeUsageUnitWs extends WebService{
 	@POST
 	@Path("find")
 	public DivergenceReferenceTimeUsageUnitDto findByCompanyId() {
-	    return this.finder.findByCompanyId();
+		return this.finder.findByCompanyId();
 	}
 }
