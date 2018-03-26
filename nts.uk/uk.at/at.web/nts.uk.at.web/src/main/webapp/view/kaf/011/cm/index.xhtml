@@ -68,12 +68,14 @@
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
-				<div class="div_line_col_2" data-bind="if:$parent.screenModeNew">
+				<div class="div_line_col_2"
+					data-bind="if:$parent.screenModeNew()==true">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
-				<div class="div_line_col_2">
-					<label class="text_line"></label>
+				<div data-bind="if:$parent.screenModeNew() ==false"
+					class="div_line_col_2 app_date">
+					<label class="text_line" data-bind="text:parseText(appDate)"></label>
 				</div>
 
 			</div>
@@ -167,17 +169,18 @@
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
 
-				<div class="div_line_col_2" data-bind="if:$parent.screenModeNew">
+				<div class="div_line_col_2"
+					data-bind="if:$parent.screenModeNew()==true">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
 
-				<div data-bind="if:!$parent.screenModeNew"
+				<div data-bind="if:$parent.screenModeNew() ==false"
 					class="div_line_col_2 app_date">
 					<label class="text_line" data-bind="text:parseText(appDate)"></label>
 				</div>
 
-				<div data-bind="if:!$parent.screenModeNew"
+				<div data-bind="if:$parent.screenModeNew() ==false"
 					class="div_line_col_3">
 					<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
 					<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
@@ -276,7 +279,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="div_line">
+		<div class="div_line" data-bind="if:showReason() ==true">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_17')}</div>
 			</div>

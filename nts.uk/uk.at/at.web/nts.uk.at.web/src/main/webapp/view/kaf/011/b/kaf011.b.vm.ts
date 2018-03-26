@@ -38,6 +38,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         reason: KnockoutObservable<string> = ko.observable('');
 
+        showReason: KnockoutObservable<boolean> = ko.observable(false);
+
         update() {
 
         }
@@ -72,6 +74,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             let self = this;
             if (data) {
 
+
+                self.showReason(data.applicationSetting.appReasonDispAtr);
+
+                self.comment(data.drawalReqSet || null);
+
                 self.employeeName(data.employeeName);
                 if (data.application) {
                     self.setDataCommon(data);
@@ -105,29 +112,31 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataBothApp(data) {
             let self = this;
             self.appComSelectedCode(0);
-            self.setDataApp(self.absWk(), data.absApp, 2);
-            self.setDataApp(self.recWk(), data.recApp, 1);
+            self.setDataApp(self.absWk(), data.absApp);
+            self.setDataApp(self.recWk(), data.recApp);
         }
 
 
 
 
-        setDataApp(control: common.WorkItems, data, comType) {
+        setDataApp(control: common.WorkItems, data, comType?) {
             let self = this;
             control.wkTypeCD(data.workTypeCD);
             control.wkTimeCD(data.workTimeCD);
             control.changeWorkHoursType(data.changeWorkHoursType);
             control.workLocationCD(data.workLocationCD);
-            if (data.workTime1) {
-                control.wkTime1().startTime(data.workTime1.startTime);
-                control.wkTime1().endTime(data.workTime1.endTime);
-                if (data.workTime1.startType) {
-                    control.wkTime1().startType(data.workTime1.startType);
-                    control.wkTime1().startTime(data.workTime1.endType);
+            control.appDate(data.appDate);
+            if (data.wkTime1) {
+                control.wkTime1().startTime(data.wkTime1.startTime);
+                control.wkTime1().endTime(data.wkTime1.endTime);
+                if (data.wkTime1.startType) {
+                    control.wkTime1().startType(data.wkTime1.startType);
+                    control.wkTime1().startTime(data.wkTime1.endType);
                 }
             }
-
-            self.appComSelectedCode(comType);
+            if (comType) {
+                self.appComSelectedCode(comType);
+            }
         }
     }
 

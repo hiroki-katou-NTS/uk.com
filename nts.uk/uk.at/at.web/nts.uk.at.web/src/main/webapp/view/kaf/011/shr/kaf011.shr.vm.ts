@@ -149,7 +149,6 @@ module nts.uk.at.view.kaf011.shr {
 
             openKDL003() {
                 let self = this,
-                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel,
                     workTypeCodes = self.wkTypes(),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
