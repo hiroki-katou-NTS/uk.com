@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -29,11 +28,7 @@ public class SgwmtLockoutData extends UkJpaEntity implements Serializable {
 
 	/** The id. */
 	@EmbeddedId
-	private SgwmtLockoutDataPK id;
-
-	/** The exclus ver. */
-	@Column(name="EXCLUS_VER")
-	private BigDecimal exclusVer;
+	private SgwmtLockoutDataPK sgwmtLockoutDataPK;
 
 	/** The lock type. */
 	@Column(name="LOCK_TYPE")
@@ -59,7 +54,7 @@ public class SgwmtLockoutData extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.id;
+		return this.sgwmtLockoutDataPK;
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +64,7 @@ public class SgwmtLockoutData extends UkJpaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((sgwmtLockoutDataPK == null) ? 0 : sgwmtLockoutDataPK.hashCode());
 		return result;
 	}
 
@@ -85,10 +80,10 @@ public class SgwmtLockoutData extends UkJpaEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SgwmtLockoutData other = (SgwmtLockoutData) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (sgwmtLockoutDataPK == null) {
+			if (other.sgwmtLockoutDataPK != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!sgwmtLockoutDataPK.equals(other.sgwmtLockoutDataPK))
 			return false;
 		return true;
 	}

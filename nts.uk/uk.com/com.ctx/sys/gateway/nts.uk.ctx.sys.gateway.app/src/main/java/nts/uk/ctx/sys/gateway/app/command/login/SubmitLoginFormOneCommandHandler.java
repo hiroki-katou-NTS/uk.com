@@ -30,7 +30,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
+	protected String internalHanler(CommandHandlerContext<SubmitLoginFormOneCommand> context) {
 		
 		SubmitLoginFormOneCommand command = context.getCommand();
 		if (command.isSignOn()) {
@@ -51,7 +51,10 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			}
 	
 			// check password
-			this.compareHashPassword(user.get(), password);
+			String msgErrorId = this.compareHashPassword(user.get(), password);
+			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
+				return msgErrorId;
+			} 
 	
 			// check time limit
 			this.checkLimitTime(user);
@@ -59,6 +62,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			//set info to session
 			this.initSession(user.get());
 		}
+		return null;
 	}
 
 	/**

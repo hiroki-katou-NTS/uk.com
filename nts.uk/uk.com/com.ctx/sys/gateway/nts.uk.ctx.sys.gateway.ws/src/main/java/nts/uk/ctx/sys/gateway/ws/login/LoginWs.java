@@ -15,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
@@ -124,10 +125,13 @@ public class LoginWs extends WebService {
 	 */
 	@POST
 	@Path("submit/form1")
-	public void submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
-		command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public JavaTypeResult<String> submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
+		if (request.getParameter("signon") != null){
+			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+		}
 		command.setRequest(request);
-		this.submitForm1.handle(command);
+		return new JavaTypeResult(this.submitForm1.handle(command));
 	}
 
 	/**
@@ -138,7 +142,9 @@ public class LoginWs extends WebService {
 	@POST
 	@Path("submit/form2")
 	public void submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
-		command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+		if (request.getParameter("signon") != null){
+			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+		}
 		command.setRequest(request);
 		this.submitForm2.handle(command);
 	}
@@ -162,7 +168,9 @@ public class LoginWs extends WebService {
 	@POST
 	@Path("submit/form3")
 	public void submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
-		command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+		if (request.getParameter("signon") != null){
+			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+		}
 		command.setRequest(request);
 		this.submitForm3.handle(command);
 	}

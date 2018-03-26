@@ -66,7 +66,7 @@ public class UserPublisherImpl implements UserPublisher {
 	public Optional<UserExport> getByUserId(String userId) {
 		Optional<User> optUser = userRepo.getByUserID(userId);
 		if (optUser.isPresent()) {
-			Optional.of(this.fromDomain(optUser.get()));
+			return Optional.of(this.fromDomain(optUser.get()));
 		}
 		return Optional.empty();
 	}

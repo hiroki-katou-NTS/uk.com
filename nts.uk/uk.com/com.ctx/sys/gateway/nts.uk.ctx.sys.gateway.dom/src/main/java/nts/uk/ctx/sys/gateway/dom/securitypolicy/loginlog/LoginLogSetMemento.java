@@ -36,12 +36,6 @@ public interface LoginLogSetMemento {
 	 */
 	public void setProcessDateTime(GeneralDateTime processDateTime);
 	
-	/**
-	 * Sets the remarks.
-	 *
-	 * @param remarks the new remarks
-	 */
-	public void setRemarks(String remarks);
 	
 	/**
 	 * Sets the success or fail.

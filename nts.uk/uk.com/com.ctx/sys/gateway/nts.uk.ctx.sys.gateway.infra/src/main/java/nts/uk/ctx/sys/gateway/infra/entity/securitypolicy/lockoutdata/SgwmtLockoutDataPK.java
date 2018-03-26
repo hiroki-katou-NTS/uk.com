@@ -5,11 +5,16 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The primary key class for the SGWMT_LOCKOUT_DATA database table.
  * 
  */
 @Embeddable
+@Getter
+@Setter
 public class SgwmtLockoutDataPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -28,6 +33,7 @@ public class SgwmtLockoutDataPK implements Serializable {
 	 * Instantiates a new sgwmt lockout data PK.
 	 */
 	public SgwmtLockoutDataPK() {
+		super();
 	}
 	
 	/* (non-Javadoc)

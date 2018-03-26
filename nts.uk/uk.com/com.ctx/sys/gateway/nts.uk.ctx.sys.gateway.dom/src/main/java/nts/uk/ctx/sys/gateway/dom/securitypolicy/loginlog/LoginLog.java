@@ -24,9 +24,6 @@ public class LoginLog {
 	/** The process date time. */
 	private GeneralDateTime processDateTime;
 	
-	/** The remarks. */
-	private String remarks;
-	
 	/** The success or fail. */
 	private SuccessFailureClassification successOrFail;
 	
@@ -43,7 +40,6 @@ public class LoginLog {
 		this.contractCode = memento.getContractCode();
 		this.programId = memento.getProgramId();
 		this.processDateTime = memento.getProcessDateTime();
-		this.remarks = memento.getRemarks();
 		this.successOrFail = memento.getSuccessOrFail();
 		this.operation = memento.getOperation();
 	}
@@ -58,7 +54,6 @@ public class LoginLog {
 		memento.setContractCode(this.contractCode);
 		memento.setProcessDateTime(this.processDateTime);
 		memento.setProgramId(this.programId);
-		memento.setRemarks(this.remarks);
 		memento.setSuccessOrFail(this.successOrFail);
 		memento.setOperation(this.operation);
 	}

@@ -45,7 +45,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
+	protected String internalHanler(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
 		SubmitLoginFormTwoCommand command = context.getCommand();
 		if (command.isSignOn()) {
@@ -77,7 +77,10 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			UserImport user = this.getUser(em.getPersonalId());
 			
 			// check password
-			this.compareHashPassword(user, password);
+			String msgErrorId = this.compareHashPassword(user, password);
+			if (msgErrorId != null){
+				return msgErrorId;
+			} 
 			
 			// check time limit
 			this.checkLimitTime(user);
@@ -88,6 +91,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			//set role Id for LoginUserContextManager
 			this.setRoleId(user.getUserId());
 		}
+		return null;
 	}
 
 	/**

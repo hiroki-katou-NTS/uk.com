@@ -1,22 +1,80 @@
 package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.loginlog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLogPK_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog_;
 
+/**
+ * The Class JpaLoginLogRepository.
+ */
 @Stateless
-public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepository{
-	
+@Transactional
+public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepository {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository#
+	 * getLoginLogByConditions(java.lang.String, nts.arc.time.GeneralDateTime)
+	 */
+	// ドメインモデル「ログインログ」を検索し、「失敗ログの件数」→「失敗回数」を取得する
 	@Override
-	public Integer getLoginLogByConditions(String userId, GeneralDateTime startTime){
-		return 0;
+	public Integer getLoginLogByConditions(String userId, GeneralDateTime startTime) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtLoginLog> query = builder.createQuery(SgwmtLoginLog.class);
+		Root<SgwmtLoginLog> root = query.from(SgwmtLoginLog.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList
+				.add(builder.equal(root.get(SgwmtLoginLog_.sgwmtLogoutDataPK).get(SgwmtLoginLogPK_.userId), userId));
+
+		predicateList
+				.add(builder.equal(root.get(SgwmtLoginLog_.successOrFailure), SuccessFailureClassification.Failure));
+
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.operationSection), OperationSection.Login));
+
+		predicateList.add(builder.greaterThan(
+				root.get(SgwmtLoginLog_.sgwmtLogoutDataPK).get(SgwmtLoginLogPK_.processDateTime), startTime));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<SgwmtLoginLog> result = em.createQuery(query).getResultList();
+
+		return result.size();
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository#add
+	 * (nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLog)
+	 */
 	@Override
-	public void add(LoginLog loginLog){
-		
+	public void add(LoginLog loginLog) {
+		SgwmtLoginLog entity = new SgwmtLoginLog();
+		loginLog.saveToMemento(new JpaLoginLogSetMemento(entity));
+		this.commandProxy().insert(entity);
 	}
 }

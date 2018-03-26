@@ -10,10 +10,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
@@ -59,7 +60,7 @@ import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
  *            the generic type
  */
 @Stateless
-public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
+public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResult<T, String> {
 
 	/** The employee adapter. */
 	@Inject
@@ -120,8 +121,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<T> context) {
-		this.internalHanler(context);
+	@Transactional
+	protected String handle(CommandHandlerContext<T> context) {
+		return this.internalHanler(context);
 	}
 
 	/**
@@ -129,7 +131,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 *
 	 * @param context the context
 	 */
-	protected abstract void internalHanler(CommandHandlerContext<T> context);
+	protected abstract String internalHanler(CommandHandlerContext<T> context);
 
 	/**
 	 * Re check contract.
@@ -351,12 +353,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @param password
 	 *            the password
 	 */
-	protected void compareHashPassword(UserImport user, String password) {
+	protected String compareHashPassword(UserImport user, String password) {
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			// アルゴリズム「ロックアウト」を実行する ※２次対応
 			this.lockOutExecuted(user);
-			throw new BusinessException("Msg_302");
+			return "Msg_302";
 		}
+		return null;
 	}
 
 	/**
@@ -385,7 +388,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		LoginLogDto dto = LoginLogDto.builder().userId(user.getUserId())
 				.contractCode(accountLockPolicy.getContractCode().v()).processDateTime(GeneralDateTime.now())
 				.successOrFail(SuccessFailureClassification.Failure.value).operation(OperationSection.Login.value)
-				.build();
+				.programId(AppContexts.programId()).build();
 		LoginLog loginLog = new LoginLog(dto);
 		this.loginLogRepository.add(loginLog);
 	}
@@ -405,7 +408,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		if (accountLockPolicy.getErrorCount().lessThanOrEqualTo(BigDecimal.ZERO)) {
 			startTime = GeneralDateTime.fromString("1901/01/01", "yyyy/MM/dd HH:mm:ss");
 		}
-		// Search the domain model [LoginLog] and acquire [number of failed logs] → [failed times]
+		// Search the domain model [LoginLog] and acquire [number of failed
+		// logs] → [failed times]
 		Integer countFailure = this.loginLogRepository.getLoginLogByConditions(userId, startTime);
 
 		// Return LockOut
@@ -427,11 +431,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		String hostname = AppContexts.windowsAccount().getDomain();
 
 		// ドメインモデル「Windowsアカウント情報」を取得する
-		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from 「Windowsアカウント」
+		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from
+		// 「Windowsアカウント」
 		Optional<WindowAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username,
 				hostname);
 
-		if (opWindowAccount.isPresent()) {
+		if (!opWindowAccount.isPresent()) {
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
 		} else {
@@ -456,7 +461,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 
 		// Validate limit time
 		if (optUserImport.isPresent()) {
-			if (optUserImport.get().getExpirationDate().after(GeneralDate.today())) {
+			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
 				throw new BusinessException("Msg_316");
 			}
 			// set info to session

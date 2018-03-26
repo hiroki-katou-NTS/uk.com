@@ -37,13 +37,6 @@ public interface LoginLogGetMemento {
 	public GeneralDateTime getProcessDateTime();
 	
 	/**
-	 * Gets the remarks.
-	 *
-	 * @return the remarks
-	 */
-	public String getRemarks();
-	
-	/**
 	 * Gets the success or fail.
 	 *
 	 * @return the success or fail

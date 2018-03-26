@@ -18,8 +18,7 @@ module nts.uk.pr.view.ccg007.b {
         /**
           * Function is used to copy new Top Page.
           */
-        export function submitLogin(data: SubmitData): JQueryPromise<any> {
-            console.log(servicePath.submitLogin + location.search);
+        export function submitLogin(data: SubmitData): JQueryPromise<string> {
             return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
 

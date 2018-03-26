@@ -1,15 +1,15 @@
 package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import java.math.BigDecimal;
 
 
 /**
@@ -27,20 +27,11 @@ public class SgwmtLoginLog extends UkJpaEntity implements Serializable {
 
 	/** The id. */
 	@EmbeddedId
-	private SgwmtLoginLogPK id;
-
-	/** The exclus ver. */
-	@Column(name="EXCLUS_VER")
-	private BigDecimal exclusVer;
+	private SgwmtLoginLogPK sgwmtLoginLogPK;
 
 	/** The operation section. */
 	@Column(name="OPERATION_SECTION")
 	private Integer operationSection;
-
-	/** The process date time. */
-	@Column(name="PROCESS_DATE_TIME")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime processDateTime;
 
 	/** The success or failure. */
 	@Column(name="SUCCESS_OR_FAILURE")
@@ -57,7 +48,7 @@ public class SgwmtLoginLog extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.id;
+		return this.sgwmtLoginLogPK;
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +58,7 @@ public class SgwmtLoginLog extends UkJpaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((sgwmtLoginLogPK == null) ? 0 : sgwmtLoginLogPK.hashCode());
 		return result;
 	}
 
@@ -83,10 +74,10 @@ public class SgwmtLoginLog extends UkJpaEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SgwmtLoginLog other = (SgwmtLoginLog) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (sgwmtLoginLogPK == null) {
+			if (other.sgwmtLoginLogPK != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!sgwmtLoginLogPK.equals(other.sgwmtLoginLogPK))
 			return false;
 		return true;
 	}

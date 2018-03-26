@@ -88,17 +88,21 @@ module nts.uk.pr.view.ccg007.b {
                 submitData.contractPassword = _.escape(self.contractPassword());
                 
                 blockUI.invisible();
-                service.submitLogin(submitData).done(function() {
-                    nts.uk.request.login.keepUsedLoginPage();
-                    nts.uk.characteristics.remove("form1LoginInfo").done(function() {
-                        if (self.isSaveLoginInfo()) {
-                            nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                service.submitLogin(submitData).done(function(isError) {
+                    if (!nts.uk.util.isNullOrEmpty(isError)){
+                        nts.uk.ui.dialog.alertError({ messageId: isError });
+                    } else {
+                        nts.uk.request.login.keepUsedLoginPage();
+                        nts.uk.characteristics.remove("form1LoginInfo").done(function() {
+                            if (self.isSaveLoginInfo()) {
+                                nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
+                                });
+                            } else {
                                 nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
-                            });
-                        } else {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
-                        }
-                    });
+                            }
+                        });
+                    }
                     blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

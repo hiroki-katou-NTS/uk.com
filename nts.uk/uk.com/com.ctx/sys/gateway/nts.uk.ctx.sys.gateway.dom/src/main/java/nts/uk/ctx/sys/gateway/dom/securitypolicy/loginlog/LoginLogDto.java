@@ -21,9 +21,6 @@ public class LoginLogDto implements LoginLogGetMemento{
 	/** The process date time. */
 	private GeneralDateTime processDateTime;
 	
-	/** The remarks. */
-	private String remarks;
-	
 	/** The success or fail. */
 	private Integer successOrFail;
 	
@@ -69,14 +66,6 @@ public class LoginLogDto implements LoginLogGetMemento{
 	@Override
 	public SuccessFailureClassification getSuccessOrFail() {
 		return SuccessFailureClassification.valueOf(this.successOrFail);
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogGetMemento#getRemarks()
-	 */
-	@Override
-	public String getRemarks() {
-		return this.remarks;
 	}
 	
 	/* (non-Javadoc)

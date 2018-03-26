@@ -7,6 +7,8 @@ package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDateTime;
+
 /**
  * The Class SgwmtLogoutDataPK_.
  */
@@ -19,7 +21,10 @@ public class SgwmtLoginLogPK_ {
 	/** The contract cd. */
 	public static volatile SingularAttribute<SgwmtLoginLogPK, String> contractCd;
 	
-	/** The login method. */
+	/** The program id. */
 	public static volatile SingularAttribute<SgwmtLoginLogPK, String> programId;
+	
+	/** The process date time. */
+	public static volatile SingularAttribute<SgwmtLoginLogPK, GeneralDateTime> processDateTime;
 	
 }
