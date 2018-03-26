@@ -19974,28 +19974,39 @@ var nts;
                 (function (accordion) {
                     $.widget("ui.accordion", $.ui.accordion, {
                         _create: function () {
-                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
+                            this["tabindex"] = parseInt(this.element.attr("tabindex"), 10);
+                            this["useTabindex"] = this["tabindex"] >= 0;
                             this.element.removeAttr("tabindex");
                             return this._super();
                         },
                         _refresh: function () {
                             this._super();
-                            if (!this.active.length) {
-                                this.headers.eq(0).attr("tabIndex", this.tabindex);
+                            if (this.useTabindex) {
+                                if (!this.active.length) {
+                                    this.headers.eq(0).attr("tabindex", this.tabindex);
+                                }
+                                else {
+                                    this.active.attr({
+                                        tabIndex: this.tabindex
+                                    });
+                                }
                             }
                             else {
-                                this.active.attr({
-                                    tabIndex: this.tabindex
-                                });
+                                this.headers.eq(0).removeAttr("tabindex");
                             }
                         },
                         _toggle: function (data) {
                             this._super(data);
                             var toShow = data.newPanel;
-                            toShow.prev().attr({ tabIndex: this.tabindex });
+                            if (this.useTabindex) {
+                                toShow.prev().attr({ tabIndex: this.tabindex });
+                            }
+                            else {
+                                toShow.prev().removeAttr("tabindex");
+                            }
                         },
                         _keydown: function (event) {
-                            if (event.altKey || event.ctrlKey) {
+                            if (event.altKey || event.ctrlKey || !this.useTabindex) {
                                 return;
                             }
                             var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
@@ -20020,8 +20031,8 @@ var nts;
                                     break;
                             }
                             if (toFocus) {
-                                $(event.target).attr("tabIndex", -1);
-                                $(toFocus).attr("tabIndex", this.tabindex);
+                                $(event.target).removeAttr("tabindex");
+                                $(toFocus).attr("tabindex", this.tabindex);
                                 $(toFocus).trigger("focus");
                                 event.preventDefault();
                             }
