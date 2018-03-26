@@ -6,50 +6,50 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.shr.pereg.app.PeregItem;
 
 @Getter
-public class ResvLeaGrantRemNumCommand {
+public class AddResvLeaRemainCommand {
 	
-	private String employeeId;
+	protected String employeeId;
 	
 	/**
 	 * 積立年休付与日
 	 */
 	@PeregItem("IS00398")
-	private GeneralDate grantDate;
+	protected GeneralDate grantDate;
 
 	/**
 	 * 積立年休期限日
 	 */
 	@PeregItem("IS00399")
-	private GeneralDate deadline;
+	protected GeneralDate deadline;
 
 	/**
 	 * 積立年休期限切れ状態
 	 */
 	@PeregItem("IS00400")
-	private LeaveExpirationStatus expirationStatus;
+	protected LeaveExpirationStatus expirationStatus;
 
 	/**
 	 * 付与数
 	 */
 	@PeregItem("IS00403")
-	private Double grantDays;
+	protected Double grantDays;
 
 	/**
 	 * 使用日数
 	 */
 	@PeregItem("IS00405")
-	private Double useDays;
+	protected Double useDays;
 
 	/**
 	 * 上限超過消滅日数
 	 */
 	@PeregItem("IS00406")
-	private Double overLimitDays;
+	protected Double overLimitDays;
 
 	/**
 	 * 残数
 	 */
 	@PeregItem("IS00408")
-	private Double remainingDays;
+	protected Double remainingDays;
 
 }

@@ -17,6 +17,8 @@ import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.AnnuaLeaveCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
@@ -73,7 +75,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddWorkingConditionCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddEmployeeInfoContactCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddPerContactCommand>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddPerContactCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AnnuaLeaveCommand>>(){}
 			);
 	
 	/** Update handlers */
@@ -91,7 +94,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingConditionCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeInfoContactCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerContactCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdatePerContactCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<AnnuaLeaveCommand>>(){}
 			);
 	
 	/** Delete handlers */
@@ -107,7 +111,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmployeeInfoContactCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeletePerContactCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeletePerContactCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAnnuaLeaveCommand>>(){}
 			);
 	
 	@Override

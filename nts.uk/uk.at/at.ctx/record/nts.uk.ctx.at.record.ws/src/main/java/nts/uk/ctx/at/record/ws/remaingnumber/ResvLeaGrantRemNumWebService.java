@@ -1,21 +1,20 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -53,13 +52,13 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	
 	@POST
 	@Path("add")
-	public void add(ResvLeaGrantRemNumCommand command) {
+	public void add(AddResvLeaRemainCommand command) {
 		addHandler.handle(command);
 	}
 	
 	@POST
 	@Path("update")
-	public void update(ResvLeaGrantRemNumCommand command) {
+	public void update(UpdateResvLeaRemainCommand command) {
 		updateHandler.handle(command);
 	}
 	

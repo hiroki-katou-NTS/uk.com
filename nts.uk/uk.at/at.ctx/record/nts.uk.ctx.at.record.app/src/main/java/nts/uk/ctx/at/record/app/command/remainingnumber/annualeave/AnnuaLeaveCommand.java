@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.annualeave;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
@@ -31,36 +33,36 @@ public class AnnuaLeaveCommand {
 	 * 年間所定労働日数
 	 */
 	@PeregItem("IS00284")	
-	private int workingDaysPerYear;
+	private BigDecimal workingDaysPerYear;
 	
 	/**
 	 * 導入前労働日数
 	 */
 	@PeregItem("IS00285")	
-	private int workingDayBeforeIntro;
+	private BigDecimal workingDayBeforeIntro;
 	
 	/**
 	 * 時間年休上限時間
 	 */
 	@PeregItem("IS00287")	
-	private int maxMinutes;
+	private BigDecimal maxMinutes;
 	
 	/**
 	 * 時間年休使用時間
 	 */
 	@PeregItem("IS00288")	
-	private int usedMinutes;
+	private BigDecimal usedMinutes;
 	
 	/**
 	 * 半休上限回数
 	 */
 	@PeregItem("IS00291")	
-	private int maxTimes;
+	private BigDecimal maxTimes;
 	
 	/**
 	 * 半休使用回数
 	 */
 	@PeregItem("IS00292")	
-	private int usedTimes;
+	private BigDecimal usedTimes;
 	
 }
