@@ -17,7 +17,11 @@ module nts.uk.com.view.cps001.g.vm {
         
         listAnnualLeaveGrantRemainData: KnockoutObservableArray<AnnualLeaveGrantRemainingData> = ko.observableArray([]);
         currentItem: KnockoutObservable<AnnualLeaveGrantRemainingData> = ko.observable(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
-
+        grantMinutesH: KnockoutObservable<boolean>;
+        usedMinutesH: KnockoutObservable<boolean>;
+        remainingMinutesH: KnockoutObservable<boolean>;
+        
+        
         constructor() {
             let _self = this;
 
@@ -90,22 +94,81 @@ module nts.uk.com.view.cps001.g.vm {
                     // Set to update mode
                     _self.createMode(false);
                     _self.alllist.removeAll();
-                    _.each(data, (item) => {
-                        _self.alllist.push(item);
-                        
-                    });
+                    _self.alllist(data);
                     _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(), function(item){
                         return  item.expirationStatus === 0;
                     }));
                     // Set focus
-                    _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
+                    //_self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
                 } else {
                     // Set to cr eate mode
                     _self.createMode(true);
                 }
                 $('#idGrantDate').focus();
-
+                _self.getItemDef();
             });
+        }
+         getItemDef(){
+            let self = this;
+           
+            service.getItemDef().done((data) => {
+                self.setItemDefValue(data).done(() => {
+                    self.setGridList();
+                    });
+                });
+        }
+        setItemDefValue(data: any):JQueryPromise<any>{
+            let self = this, dfd = $.Deferred();
+            $("td[data-itemCode]").each(function(){ 
+                    let itemCodes = $(this).attr('data-itemcode');
+                    if(itemCodes){
+                        let itemCodeArray = itemCodes.split(" ");
+                            _.forEach(itemCodeArray, (itemCode) => {
+                                let itemDef = _.find(data, (item)=>{
+                                    return item.itemCode == itemCode;
+                                });
+                                if(itemDef){
+                                    if(itemDef.display){
+                                        $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+                                    }else{
+                                        $(this).parent().css("display", "none");
+                                    }
+                                    let timeType = itemCodeArray[itemCodeArray.length - 1];
+                                        switch(timeType){
+                                            case "grantMinutes": 
+                                                self.grantMinutesH = ko.observable(!itemDef.display);
+                                                break;
+                                            case "usedMinutes":
+                                                self.usedMinutesH = ko.observable(!itemDef.display);
+                                                break;
+                                            case "remainingMinutes":
+                                                self.remainingMinutesH = ko.observable(!itemDef.display);
+                                                break;
+                                        }
+                                }
+                            });
+                        }
+                 dfd.resolve();
+                    });
+           
+            return dfd.promise();
+        }
+        setGridList(){
+            let self = this;
+            self.columns = ko.observableArray([
+                { headerText: getText('CPS001_110'), type: 'date', key: 'grantDate', width: 100 },
+                { headerText: getText('CPS001_111'), type: 'date', key: 'deadline', width: 100 },
+                { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
+                { headerText: getText('CPS001_128'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
+                { headerText: getText('CPS001_121'), key: 'grantMinutes', width: 60, hidden: self.grantMinutesH()},
+                { headerText: getText('CPS001_122'), type: 'string', formatter: formatDate, key: 'usedDays', width: 60 },
+                { headerText: getText('CPS001_123'), key: 'usedMinutes', width: 60, hidden: self.usedMinutesH()},
+                { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 60 },
+                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', width: 60, hidden: self.remainingMinutesH()}
+            ]);
+                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'grantDate\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:5}"></table>';
+                    $("#tbl").html(table);
+                    ko.applyBindings(self, $("#tbl")[0]);
         }
 
         /**

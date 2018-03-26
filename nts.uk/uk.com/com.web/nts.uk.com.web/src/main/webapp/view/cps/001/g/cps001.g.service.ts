@@ -7,7 +7,7 @@ module nts.uk.com.view.cps001.g {
          *  Service paths
          */
         var servicePath: any = {
-            getAllList: "bs/employee/temporaryabsence/frame/getList",
+            getAllList: 'record/remainnumber/resv-lea/get-resv-lea/{0}',
             getAllListByCheckState: "at/record/remainnumber/annlea/getAnnLeaByCheckState",
             getDetails: "bs/employee/temporaryabsence/frame/getDetail",
             lostFocus: "at/record/remainnumber/annlea/lostFocus",
@@ -17,7 +17,8 @@ module nts.uk.com.view.cps001.g {
         };
         
         export function getAllList(): JQueryPromise<any> {
-            return ajax(servicePath.getAllList);
+            let employeeId: string = "a";
+            return ajax('at',format(servicePath.getAllList, employeeId));
         }
         
         export function getAllListByCheckState(employeeId: string, checkState: boolean): JQueryPromise<any> {
@@ -40,6 +41,11 @@ module nts.uk.com.view.cps001.g {
         }
         export function deleteLeav(command: any) {
             return ajax('at', servicePath.deleteLeav, command);
+        }
+        
+        export function getItemDef(){
+            let ctgId: string = "CS00037";
+            return ajax('com',format("ctx/pereg/person/info/ctgItem/findby/ctg-cd/{0}", ctgId));
         }
     }
 }

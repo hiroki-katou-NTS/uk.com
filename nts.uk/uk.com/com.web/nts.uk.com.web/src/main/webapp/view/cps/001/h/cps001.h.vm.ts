@@ -18,24 +18,26 @@ module cps001.h.vm {
         currentItem: KnockoutObservable<string> = ko.observable("");
         leaveExpirationStatus:  KnockoutObservableArray<any>;
         resvLeaGrantRemNum: KnockoutObservable<ResvLeaGrantRemNum> = ko.observable(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
-        gDh: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             let self = this;
             service.getItemDef().done((data) => {
-                
-            
-            self.currentItem.subscribe((gDate)=>{
-                service.getByGrantDate(moment.utc(gDate, "YYYY/MM/DD")).done((curItem) => {
-                    self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
+                self.currentItem.subscribe((gDate)=>{
+                    service.getByGrantDate(moment.utc(gDate, "YYYY/MM/DD")).done((curItem) => {
+                        self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
+                    });
+                    
                 });
-                
             });
-            
-            self.leaveExpirationStatus = ko.observableArray([
-                 { code: '1', name: '使用可能'},
-                 { code: '0', name: '期限切れ'}
-             ]);
+            self.columns = ko.observableArray([
+               { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD'},
+               { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD'}, 
+               { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70}, 
+               { headerText: text("CPS001_121"), key: 'grantDays', width: 70},
+               { headerText: text("CPS001_130"), key: 'useDays', width: 70},
+               { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70},
+               { headerText: text("CPS001_129"), key: 'remainingDays', width: 70}
+           ]); 
         }
         start() {
             let self  = this;
@@ -58,22 +60,6 @@ module cps001.h.vm {
                             if(itemDef){
                                 if(itemDef.display){
                                     $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
-                                }else{
-                                    $(this).parent().css("display", "none");
-                                   self.gDh(true);
-                                    self.columns = ko.observableArray([
-                                       { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD', hidden: self.gDh()},
-                                       { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD'}, 
-                                       { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70}, 
-                                       { headerText: text("CPS001_121"), key: 'grantDays', width: 70},
-                                       { headerText: text("CPS001_130"), key: 'useDays', width: 70},
-                                       { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70},
-                                       { headerText: text("CPS001_129"), key: 'remainingDays', width: 70}
-                                   ]); 
-                                let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: items, primaryKey:\'grantDate\',showNumbering: true,columns:columns,multiple: false, value: currentItem}"></table>';
-                                $("#tbl").html(table);
-                                ko.applyBindings(self, $("#tbl")[0]);
-                                });
                                 }
                             }
                         });

@@ -5,7 +5,7 @@
 	margin-bottom: 20px;
 }
 
-#A1_004 {
+/* #A1_004 {
 	margin-left: 15px !important;
 }
 
@@ -224,4 +224,31 @@
 }
 #fixed_table tr>td:NTH-CHILD(5) {
 	width:80px !important;
+} */
+
+#single-list_container{
+	margin: 10px 0px !important;
+}
+td{padding:5px 0px;}
+.verTop{
+	vertical-align: top;
+}
+.resize_Edittor{
+	width: 70px !important;
+}
+.formularStyle{
+	font-weight: bold;
+	padding: 10px;
+}
+
+#subContent td.tdTxt{
+	padding: 0px 40px; 
+}
+
+#subContent table>tbody>tr>td:nth-child(1){
+	width: 70px;
+}
+
+th.ui-iggrid-header{
+	white-space: unset !important;
 }
