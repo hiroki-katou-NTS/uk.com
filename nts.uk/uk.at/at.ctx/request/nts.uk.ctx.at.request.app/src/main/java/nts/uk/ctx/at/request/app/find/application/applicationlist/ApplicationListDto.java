@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppAbsenceFull;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppGoBackInfoFull;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
@@ -24,14 +26,12 @@ public class ApplicationListDto {
 	private List<AppGoBackInfoFull> lstAppGoBack;
 	//TH: approval (count)
 	private	ApplicationStatus appStatusCount;
-//	private List<AppStatusApproval> lstStatusApproval;
-//	private List<String> lstTimeColor; 
-//	private List<String> lstFramStatus;
 	private List<AppPrePostGroup> lstAppGroup;
-//	private List<Integer> lstAppType;
 	//phuc vu cho viec loc theo aptype, dem lai trang thai don
 	private List<ApproveAgent> lstAgent;
 	private List<AppHolidayWorkFull> lstAppHdWork;
 	private List<AppWorkChangeFull> lstAppWorkChange;
+	private List<AppAbsenceFull> lstAppAbsence;
 	private List<AppInfor> lstAppInfor;
+	private HdAppSetDto hdAppSet;
 }

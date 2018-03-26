@@ -16,8 +16,13 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 
 	@Override
 	public Optional<AppAbsence> getAbsenceById(String companyID, String appId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<KrqdtAppForLeave> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appId), KrqdtAppForLeave.class);
+		if(!opKrqdtAppForLeave.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppForLeave krqdtAppAbsence = opKrqdtAppForLeave.get();
+		AppAbsence appAbsence = krqdtAppAbsence.toDomain();
+		return Optional.of(appAbsence);
 	}
 
 	@Override

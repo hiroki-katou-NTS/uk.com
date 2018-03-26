@@ -145,7 +145,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
-			if(entry.getValue() < 0) {
+			if(entry.getValue() <= 0) {
 				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
 			}			
 		}
@@ -159,7 +159,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			Integer overShiftNight) {
 		// INPUT．残業時間反映フラグをチェックする
 		//INPUT．外深夜時間をチェックする
-		if(!timeReflectFlg || overShiftNight < 0) {
+		if(!timeReflectFlg || overShiftNight <= 0) {
 			return;
 		}
 		//所定外深夜時間の反映
@@ -171,7 +171,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//INPUT．残業時間反映フラグをチェックする
 		//INPUT．フレックス時間をチェックする
 		if(!timeReflectFlg
-				|| flexExessTime < 0) {
+				|| flexExessTime <= 0) {
 			return;
 		}
 		//フレックス時間を反映する

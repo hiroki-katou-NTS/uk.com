@@ -12,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.relationship.Relationship;
+import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -62,6 +65,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private IAppWorkChangeRepository repoworkChange;
 	@Inject
 	private AppAbsenceRepository repoAbsence;
+	@Inject
+	private RelationshipRepository repoRelationship;
 	/**
 	 * get Application Over Time Info
 	 * appType = 0;
@@ -190,7 +195,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 		String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" : 
 						repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v()).get().getName().v();
-		String workTimeName = hdWork.getWorkTimeCode().v().equals("000") ? "" :
+		String workTimeName =  hdWork.getWorkTimeCode() == null || hdWork.getWorkTimeCode().v().equals("000") ? "" :
 			repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
 		
 //		     .orElseGet(()->{
@@ -235,12 +240,28 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @return
 	 */
 	@Override
-	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId) {
+	public AppAbsenceFull getAppAbsenceInfo(String companyId, String appId) {
 		// TODO Auto-generated method stub
-		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyID, appId);
+		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, appId);
 		AppAbsence appAbsence = absence.get();
-		return null;
-//		return new AppAbsence(appId, appAbsence.getHolidayAppType(), 0, appAbsence.getWorkTimeCode(),);
+//		String workTypeName = appAbsence.getWorkTypeCode() == null ||  Strings.isBlank(appAbsence.getWorkTypeCode().v()) ? "" : 
+//			repoWorkType.findByPK(companyId, appAbsence.getWorkTypeCode().v()).get().getName().v();
+		String workTimeName = appAbsence.getWorkTimeCode().v().equals("000") ? "" :
+			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
+		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
+				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
+		String endTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
+				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
+		String startTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
+				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
+		String endTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
+				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
+		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
+		String relaName = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : 
+			repoRelationship.findByCode(companyId, appForSpec.getRelationshipCD().v()).get().getRelationshipName().v();
+		return new AppAbsenceFull(appId, appAbsence.getHolidayAppType() == null ? null : appAbsence.getHolidayAppType().value, 0,
+				workTimeName, appAbsence.getAllDayHalfDayLeaveAtr().value, startTime1, endTime1,startTime2, endTime2,
+				"", relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
 	}
 	/**
 	 * convert time from integer to Time_Short_HM

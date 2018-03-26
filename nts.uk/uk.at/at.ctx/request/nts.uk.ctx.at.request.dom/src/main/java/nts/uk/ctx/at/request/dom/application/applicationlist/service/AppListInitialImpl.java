@@ -50,6 +50,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -100,10 +101,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AppCommonSetRepository repoAppCommonSet;
 	@Inject
 	private AppDispNameRepository repoAppDispName;
-	@Inject
-	private HdAppSetRepository repoHdAppSet;
-	@Inject
-	private RelationshipRepository repoRelationship;
+//	@Inject
+//	private HdAppSetRepository repoHdAppSet;
+//	@Inject
+//	private RelationshipRepository repoRelationship;
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	@Inject
@@ -161,7 +162,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//取得した一覧の申請種類(単一化）でリストを作成する - create list for drop-down list (A4_4_1)
 		
 		// TODO Auto-generated method stub
-		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
+//		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
 //		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		return appFull;
 	}
@@ -183,10 +184,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				.collect(Collectors.toList());
 		List<Application_New> lstWkChange = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION))
 				.collect(Collectors.toList());
+		List<Application_New> lstAbsence = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.ABSENCE_APPLICATION))
+				.collect(Collectors.toList());
 		List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 		List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
 		List<AppHolidayWorkFull> lstAppHdWork = new ArrayList<>();
 		List<AppWorkChangeFull> lstAppWkChange = new ArrayList<>();
+		List<AppAbsenceFull> lstAppAbsence = new ArrayList<>();
 //		boolean overTimeDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.OVER_TIME_APPLICATION);
 //		boolean goBackDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION);
 		//残業申請: get full info (0)
@@ -209,10 +213,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			AppWorkChangeFull appwrkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
 			lstAppWkChange.add(appwrkChange);
 		}
+		//休暇申請: get full info(1);
+		for (Application_New app : lstAbsence) {
+			AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID());
+			lstAppAbsence.add(appAbsence);
+		}
 		List<Application_New> lstAppFilter = lstOverTime;
 		lstAppFilter.addAll(lstGoBack);
 		lstAppFilter.addAll(lstHdWork);
 		lstAppFilter.addAll(lstWkChange);
+		lstAppFilter.addAll(lstAbsence);
 //		for (Application_New application : lstAppFilter) {
 //			//get app xin lam them
 //			if(overTimeDisplay && application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
@@ -247,7 +257,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//get status app
 //		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstAppFilter);
 		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack,lstAppHdWork, 
-				lstAppWkChange,null, null, null, null, null, null);// NOTE
+				lstAppWkChange,lstAppAbsence,null, null, null, null, null, null);// NOTE
 	}
 	/**
 	 * 3 - 申請一覧リスト取得承認
@@ -412,10 +422,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					.collect(Collectors.toList());
 			List<Application_New> lstWkChange = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION))
 					.collect(Collectors.toList());
+			List<Application_New> lstAbsence = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.ABSENCE_APPLICATION))
+					.collect(Collectors.toList());
 			List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 			List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
 			List<AppHolidayWorkFull> lstAppHdWork = new ArrayList<>();
 			List<AppWorkChangeFull> lstAppWorkChange = new ArrayList<>();
+			List<AppAbsenceFull> lstAppAbsence = new ArrayList<>();
 			//get info full
 			for (Application_New app : lstOverTime) {
 				AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, app.getAppID());
@@ -433,10 +446,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				AppWorkChangeFull appWkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
 				lstAppWorkChange.add(appWkChange);
 			}
+			//休暇申請: get full info(1);
+			for (Application_New app : lstAbsence) {
+				AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID());
+				lstAppAbsence.add(appAbsence);
+			}
 			List<Application_New> lstAppFilter = lstOverTime;
 			lstAppFilter.addAll(lstGoBack);
 			lstAppFilter.addAll(lstHdWork);
 			lstAppFilter.addAll(lstWkChange);
+			lstAppFilter.addAll(lstAbsence);
 			//アルゴリズム「申請一覧リスト取得出張」を実行する
 			// TODO Auto-generated method stub
 //		}
@@ -450,7 +469,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
 		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack,lstAppHdWork, lstAppWorkChange,
-				timeOutput.getAppStatus(),timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), 
+				lstAppAbsence, timeOutput.getAppStatus(),timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), 
 				lstFrameUn, lstPhaseStatus, timeOutput.getLstAppGroup());
 	}
 //	private boolean findAppPre(String preAppID){
@@ -812,7 +831,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String relationshipCd = "";
 		// TODO Auto-generated method stub
 		//imported(就業.Shared)「続柄」を取得する
-		Optional<Relationship> relShip = repoRelationship.findByCode(companyID, relationshipCd);
+//		Optional<Relationship> relShip = repoRelationship.findByCode(companyID, relationshipCd);
 		return null;
 	}
 
