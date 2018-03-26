@@ -108,11 +108,11 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
 			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			
-			Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(param.getEmployeeId(), param.getDateInfo());
+			/*Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(param.getEmployeeId(), param.getDateInfo());
 			if(!optAttendanceTime.isPresent()) {
 				IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(workRepository.find(param.getEmployeeId(), param.getDateInfo()).get(), param.getEmployeeId(), param.getDateInfo()));
 				attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			}
+			}*/
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
 			//所定外深夜時間の反映
