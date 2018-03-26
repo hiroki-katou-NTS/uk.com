@@ -271,7 +271,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                         data.instTimeFormatSetting().roundProcCls(fs.roundProcCls);
                                     }
                                 } else {
-                                    data.instTimeFormatSetting().hourMinSelect(fs.effectiveDigitLength);
+                                    data.instTimeFormatSetting().hourMinSelect(fs.hourMinSelect);
                                 }
                                 data.instTimeFormatSetting().delimiterSet(fs.delimiterSet);
                             }
