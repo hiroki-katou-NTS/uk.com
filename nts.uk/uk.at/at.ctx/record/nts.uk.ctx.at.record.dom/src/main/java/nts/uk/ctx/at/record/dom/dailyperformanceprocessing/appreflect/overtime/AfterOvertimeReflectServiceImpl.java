@@ -18,10 +18,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	private ScheWorkUpdateService workUpdate;
 	@Override
 	public void scheReflectJobType(OvertimeParameter overtimePara) {
-		if(!afterOvertimeProcess.checkScheReflect(overtimePara.getEmployeeId(), 
-				overtimePara.getDateInfo(), 
-				overtimePara.getScheAndRecordSameChangeFlg(), 
-				overtimePara.getOvertimePara().getWorkTimeCode())) {
+		if(!afterOvertimeProcess.checkScheReflect(overtimePara) ) {
 			return;
 		}
 		//予定勤種・就時の反映
