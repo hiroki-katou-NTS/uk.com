@@ -37,13 +37,15 @@ module nts.uk.at.view.kaf011.a.screenModel {
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
 
         employeeID: KnockoutObservable<string> = ko.observable('');
-        
+
         employeeName: KnockoutObservable<string> = ko.observable('');
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(0);
-        
+
         comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
-        
+
+        showReason: KnockoutObservable<boolean> = ko.observable(true);
+
         constructor() {
             let self = this;
             self.recWk().appDate.subscribe((newDate) => {
@@ -105,9 +107,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.appReasons(data.appReasons || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
-                if (data.drawalReqSet) {
-                    self.comment(data.drawalReqSet);
-                }
+                self.comment(data.drawalReqSet || null);
+                self.showReason(data.applicationSetting.appReasonDispAtr);
             }
         }
 
