@@ -17,7 +17,7 @@ module nts.uk.com.view.cmf001.k.viewmodel {
         /* screen */
         constructor() {
             var self = this;
-            let firstItem = new model.AcceptanceCodeConvert("", getText('CMF001_268'), 0);
+            let firstItem = new model.AcceptanceCodeConvert("", getText('CMF001_381'), 0);
             self.listConvertCode = ko.observableArray([firstItem]);
             self.selectedConvertCode = ko.observable("");
             //ドメインモデル「受入コード変換」を取得する
