@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmk004.a {
 //    import WorktimeSettingDto = kmk004.a.viewmodel.ScreenModel.WorktimeSettingDto;
     import WorktimeSettingDto = kmk004.a.viewmodel.WorktimeSettingDto;
+    import WorktimeSettingDtoSaveCommand = kmk004.a.viewmodel.WorktimeSettingDtoSaveCommand;
     export module service {
         /**
          *  Service paths
@@ -12,8 +13,8 @@ module nts.uk.at.view.kmk004.a {
 //            removeCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/remove',
             
             findCompanySetting: 'screen/at/kmk004/company/getDetails',
-            saveCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/save',
-            removeCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/delete',
+            saveCompanySetting: 'screen/at/kmk004/company/save',
+            removeCompanySetting: 'screen/at/kmk004/company/delete',
             
             findEmploymentSetting: 'ctx/at/shared/employment/statutory/worktime/employment/find',
             findAllEmploymentSetting: 'ctx/at/shared/employment/statutory/worktime/employment/findall',
@@ -50,7 +51,7 @@ module nts.uk.at.view.kmk004.a {
             return nts.uk.request.ajax(servicePath.findCompanySetting + '/' + year);
         }
         
-        export function saveCompanySetting(command: WorktimeSettingDto): JQueryPromise<any> {
+        export function saveCompanySetting(command: WorktimeSettingDtoSaveCommand): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveCompanySetting, command);
         }
 

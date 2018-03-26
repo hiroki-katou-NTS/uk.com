@@ -39,42 +39,6 @@ module nts.uk.at.view.kmk004.a {
             aggrSelectionItemList: KnockoutObservableArray<any>;// FlexAggregateMethod フレックス集計方法
             selectedAggrSelection: KnockoutObservable<number>;
             
-            companyWTDetailSetting: CompanyWTDetailSetting;
-            employeeWTDetailSetting: EmployeeWTDetailSetting;
-            employmentWTDetailSetting: EmploymentWTDetailSetting;
-            workplaceWTDetailSetting: WorkplaceWTDetailSetting;
-            
-            // =========DETAIL COMPANY SETTING (screen A)
-            // Normal Setting
-            companyNormalMonthlySet: CompanyNormalMonthlySet;
-            // Flex Setting
-            companyFlexMonthlySet: CompanyFlexMonthlySet;
-            // Deform labor Setting
-            companyDeformMonthlySet: CompanyDeformMonthlySet;
-            
-            // =========DETAIL EMPLOYEE SETTING (screen B)
-            // Normal Setting
-            employeeNormalMonthlySet: EmployeeNormalMonthlySet;
-            // Flex Setting
-            employeeFlexMonthlySet: EmployeeFlexMonthlySet;
-            // Deform labor Setting
-            employeeDeformMonthlySet: EmployeeDeformMonthlySet;
-            
-            // =========DETAIL EMPLOYMENT SETTING (screen C)
-            // Normal Setting
-            employmentNormalMonthlySet: EmploymentNormalMonthlySet;
-            // Flex Setting
-            employmentFlexMonthlySet: EmploymentFlexMonthlySet;
-            // Deform labor Setting
-            employmentDeformMonthlySet: EmploymentDeformMonthlySet;
-            
-            // =========DETAIL WORKPLACE SETTING (screen D)
-            // Normal Setting
-            workplaceNormalMonthlySet: WorkplaceNormalMonthlySet;
-            // Flex Setting
-            workplaceFlexMonthlySet: WorkplaceFlexMonthlySet;
-            // Deform labor Setting
-            workplaceDeformMonthlySet: WorkplaceDeformMonthlySet;
             
             //=========================NEWEST===========================
             // For Scr ABCD
@@ -167,38 +131,19 @@ module nts.uk.at.view.kmk004.a {
                 self.selectedAggrSelection = ko.observable(1);
                 
                 //==================UPDATE==================
-                self.companyWTDetailSetting = new CompanyWTDetailSetting();
-                self.employeeWTDetailSetting = new EmployeeWTDetailSetting();
-                self.employmentWTDetailSetting = new EmploymentWTDetailSetting();
-                self.workplaceWTDetailSetting = new WorkplaceWTDetailSetting();
                 
-                // Company Detail Setting
-                self.companyNormalMonthlySet = new CompanyNormalMonthlySet();
-                self.companyFlexMonthlySet = new CompanyFlexMonthlySet();
-                self.companyDeformMonthlySet = new CompanyDeformMonthlySet();
-                // Employee Detail Setting
-                self.employeeNormalMonthlySet = new EmployeeNormalMonthlySet();
-                self.employeeFlexMonthlySet = new EmployeeFlexMonthlySet();
-                self.employeeDeformMonthlySet = new EmployeeDeformMonthlySet();
-                // Employment Detail Setting
-                self.employmentNormalMonthlySet = new EmploymentNormalMonthlySet();
-                self.employmentFlexMonthlySet = new EmploymentFlexMonthlySet();
-                self.employmentDeformMonthlySet = new EmploymentDeformMonthlySet();
-                // Workplace Detail Setting
-                self.workplaceNormalMonthlySet = new WorkplaceNormalMonthlySet();
-                self.workplaceFlexMonthlySet = new WorkplaceFlexMonthlySet();
-                self.workplaceDeformMonthlySet = new WorkplaceDeformMonthlySet();
                 
-                self.companyWTDetailSetting.year.subscribe(val => {
+                //=================================NEWEST===============================
+                self.worktimeSetting = new WorktimeSetting();
+                
+                self.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
                     if ($('#companyYearPicker').ntsError('hasError')) {
                         return;
                     } else {
-                        self.loadCompanySetting();
+                        self.loadCompanySettingNewest();
                     }
                 });
-                //=================================NEWEST===============================
-                self.worktimeSetting = new WorktimeSetting();
                 
                 self.employeeID = ko.observable('');
                 self.employeeCode = ko.observable('');
@@ -210,6 +155,8 @@ module nts.uk.at.view.kmk004.a {
                 self.wkpID = ko.observable('');
                 self.wkpCode = ko.observable('');
                 self.wkpName = ko.observable('');
+                
+                
             }
 
             /**
@@ -247,16 +194,16 @@ module nts.uk.at.view.kmk004.a {
                         if (self.isEmploymentSelected()) {
 //                            self.employmentWTSetting.selectedTab('tab-2');
                             // Update
-                            self.employmentWTDetailSetting.selectedTab('tab-2');
+//                            self.employmentWTDetailSetting.selectedTab('tab-2');
                         }
                         if (self.isWorkplaceSelected()) {
 //                            self.workplaceWTSetting.selectedTab('tab-2');
                             // Update
-                            self.workplaceWTDetailSetting.selectedTab('tab-2');
+//                            self.workplaceWTDetailSetting.selectedTab('tab-2');
                         }
                         if (self.isEmployeeSelected()) {
                             // Update
-                            self.employeeWTDetailSetting.selectedTab('tab-2');
+//                            self.employeeWTDetailSetting.selectedTab('tab-2');
                         }
                     }
                 });
@@ -273,16 +220,16 @@ module nts.uk.at.view.kmk004.a {
                         if (self.isEmploymentSelected()) {
 //                            self.employmentWTSetting.selectedTab('tab-3');
                             // Update
-                            self.employmentWTDetailSetting.selectedTab('tab-3');
+//                            self.employmentWTDetailSetting.selectedTab('tab-3');
                         }
                         if (self.isWorkplaceSelected()) {
 //                            self.workplaceWTSetting.selectedTab('tab-3');
                             // Update
-                            self.workplaceWTDetailSetting.selectedTab('tab-3');
+//                            self.workplaceWTDetailSetting.selectedTab('tab-3');
                         }
                         if (self.isEmployeeSelected()) {
                             // Update
-                            self.employeeWTDetailSetting.selectedTab('tab-3');
+//                            self.employeeWTDetailSetting.selectedTab('tab-3');
                         }
                     }
                 });
@@ -298,16 +245,16 @@ module nts.uk.at.view.kmk004.a {
                         if (self.isEmploymentSelected()) {
 //                            self.employmentWTSetting.selectedTab('tab-1');
                             // Update
-                            self.employmentWTDetailSetting.selectedTab('tab-1');
+//                            self.employmentWTDetailSetting.selectedTab('tab-1');
                         }
                         if (self.isWorkplaceSelected()) {
 //                            self.workplaceWTSetting.selectedTab('tab-1');
                             // Update
-                            self.workplaceWTDetailSetting.selectedTab('tab-1');
+//                            self.workplaceWTDetailSetting.selectedTab('tab-1');
                         }
                         if (self.isEmployeeSelected()) {
                             // Update
-                            self.employeeWTDetailSetting.selectedTab('tab-1');
+//                            self.employeeWTDetailSetting.selectedTab('tab-1');
                         }
                     }
                 });
@@ -473,7 +420,9 @@ module nts.uk.at.view.kmk004.a {
                 if (self.hasError()) {
                     return;
                 }
-                service.saveCompanySetting(ko.toJS(self.worktimeSetting)).done(() => {
+                let saveCommand: WorktimeSettingDtoSaveCommand = new WorktimeSettingDtoSaveCommand();
+                saveCommand.updateData(self.worktimeSetting);
+                service.saveCompanySetting(ko.toJS(saveCommand)).done(() => {
                     self.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
@@ -686,7 +635,7 @@ module nts.uk.at.view.kmk004.a {
                         self.clearError();
                         // update mode.
                         // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
-                        if (data.statutoryWorktimeSettingDto && data.statutoryWorktimeSettingDto.regularLaborTime) {
+                        if (data.statWorkTimeSetDto && data.statWorkTimeSetDto.regularLaborTime) {
                             self.isNewMode(false);
                             // Update Full Data
                             self.worktimeSetting.updateFullData(data);
@@ -1911,8 +1860,8 @@ module nts.uk.at.view.kmk004.a {
             // Update Full Data: 8 Models
             public updateFullData(dto: WorktimeSettingDto): void {
                 let self = this;
-                self.updateDataDependOnYear(dto.statutoryWorktimeSettingDto);
-                self.updateDetailData(dto.monthlyCalSettingDto);
+                self.updateDataDependOnYear(dto.statWorkTimeSetDto);
+                self.updateDetailData(dto.monthCalSetDto);
             }
             
             public updateYear(year: number): void {
@@ -2047,19 +1996,51 @@ module nts.uk.at.view.kmk004.a {
         //===================================WorkTimeSetting DTO========================================================
         export class WorktimeSettingDto {
             // Cuc 5 cais
-            statutoryWorktimeSettingDto: StatutoryWorktimeSettingDto;
+            statWorkTimeSetDto: StatutoryWorktimeSettingDto;
             // Cuc 3 cai
-            monthlyCalSettingDto: MonthlyCalSettingDto;
+            monthCalSetDto: MonthlyCalSettingDto;
             
             constructor() {
                 let self = this;
-                self.statutoryWorktimeSettingDto = new StatutoryWorktimeSettingDto();
-                self.monthlyCalSettingDto = new MonthlyCalSettingDto();
+                self.statWorkTimeSetDto = new StatutoryWorktimeSettingDto();
+                self.monthCalSetDto = new MonthlyCalSettingDto();
             }
             
             public updateYear(year: number): void {
                 let self = this;
-                self.statutoryWorktimeSettingDto.year = year;
+                self.statWorkTimeSetDto.year = year;
+            }
+            
+            public updateData(model: WorktimeSetting): void {
+                let self = this;
+                self.statWorkTimeSetDto.updateData(model);
+                self.monthCalSetDto.updateData(model);
+            }
+        }
+        
+        export class WorktimeSettingDtoSaveCommand {
+
+            /** The save com stat work time set command. */
+            saveStatCommand: StatutoryWorktimeSettingDto;;
+
+            /** The save com flex command. */
+            saveMonthCommand: MonthlyCalSettingDto;
+
+            constructor() {
+                let self = this;
+                self.saveStatCommand = new StatutoryWorktimeSettingDto();
+                self.saveMonthCommand = new MonthlyCalSettingDto();
+            }
+            
+            public updateYear(year: number): void {
+                let self = this;
+                self.saveStatCommand.year = year;
+            }
+            
+            public updateData(model: WorktimeSetting): void {
+                let self = this;
+                self.saveStatCommand.updateData(model);
+                self.saveMonthCommand.updateData(model);
             }
         }
         
@@ -2088,6 +2069,17 @@ module nts.uk.at.view.kmk004.a {
                 self.flexSetting = new WorktimeFlexSetting1Dto();
                 self.deforLaborSetting = new WorktimeNormalDeformSettingDto();
             }
+            
+            // WorktimeNormalDeformSetting
+            public updateData(model: WorktimeSetting): void {
+                let self = this;
+                self.year = model.normalSetting().year();
+                self.regularLaborTime.updateData(model.normalWorktime());
+                self.transLaborTime.updateData(model.deformLaborWorktime());
+                self.normalSetting.updateData(model.normalSetting());
+                self.flexSetting.updateData(model.flexSetting());
+                self.deforLaborSetting.updateData(model.deformLaborSetting());
+            }
         }
         
         export class MonthlyCalSettingDto {
@@ -2105,6 +2097,13 @@ module nts.uk.at.view.kmk004.a {
                 self.deforAggrSetting = new DeformWorktimeAggrSettingDto();
                 self.flexAggrSetting = new FlexWorktimeAggrSettingDto();
             }
+            
+            public updateData(model: WorktimeSetting): void {
+                let self = this;
+                self.regAggrSetting.updateData(model.normalAggrSetting());
+                self.flexAggrSetting.updateData(model.flexAggrSetting());
+                self.flexAggrSetting.updateData(model.flexAggrSetting());
+            }
         }
         
         export class NormalWorktimeDto {
@@ -2118,6 +2117,13 @@ module nts.uk.at.view.kmk004.a {
                 self.dailyTime = new DailyUnitDto();
                 self.weeklyTime = new WeeklyUnitDto();
 //                self.startWeek = ko.observable(StartWeek.SUNDAY);
+            }
+            
+            public updateData(model: NormalWorktime): void {
+                let self = this;
+                self.dailyTime.dailyTime = model.dailyTime();
+                self.weeklyTime.time = model.weeklyTime();
+                self.weeklyTime.start = model.startWeek();
             }
         }
         
@@ -2160,6 +2166,14 @@ module nts.uk.at.view.kmk004.a {
                 }
             }
             
+            public updateData(model: WorktimeNormalDeformSetting): void {
+                let self = this;
+                self.statutorySetting.forEach(i => {
+                    let updatedData: MonthlyTime = model.statutorySetting().filter(j => i.month == j.month())[0];
+                    i.updateData(updatedData);
+                });
+            }
+            
 //            public sortMonth(startMonth: number): void {
 //                let self = this;
 //                let sortedList: Array<any> = new Array<any>();
@@ -2189,6 +2203,12 @@ module nts.uk.at.view.kmk004.a {
                 self.month = new Date().getMonth();
                 self.monthlyTime = 0;
             }
+            
+            public updateData(model: MonthlyTime): void {
+                let self = this;
+                self.month = model.month();
+                self.monthlyTime = model.time();
+            }
         }
         
         
@@ -2213,6 +2233,26 @@ module nts.uk.at.view.kmk004.a {
                     self.statutorySetting.push(m);
                     self.specifiedSetting.push(m);
                 }
+            }
+            
+            public updateData(model: WorktimeFlexSetting1): void {
+                let self = this;
+                self.statutorySetting.forEach(i => {
+                    let flexData: FlexMonthlyTime = model.flexSettingDetail().filter(j => i.month == j.month())[0];
+                    let updatedData: MonthlyTime = new MonthlyTime();
+                    updatedData.month(flexData.month());
+                    updatedData.time(flexData.statutoryTime());
+                    
+                    i.updateData(updatedData);
+                });
+                
+                self.specifiedSetting.forEach(i => {
+                    let flexData: FlexMonthlyTime = model.flexSettingDetail().filter(j => i.month == j.month())[0];
+                    let updatedData: MonthlyTime = new MonthlyTime();
+                    updatedData.month(flexData.month());
+                    updatedData.time(flexData.specifiedTime());
+                    i.updateData(updatedData);
+                });
             }
 //            public sortMonth(startMonth: number): void {
 //                let self = this;
@@ -2258,6 +2298,12 @@ module nts.uk.at.view.kmk004.a {
                 self.excessOutsideTimeSet = new ExcessOutsideTimeSetDto();
                 self.aggregateTimeSet = new ExcessOutsideTimeSetDto();
             }
+            // NormalWorktimeAggrSetting
+            public updateData(model: NormalWorktimeAggrSetting): void {
+                let self = this;
+                self.excessOutsideTimeSet.updateData(model.excessOutsideTimeSet);
+                self.aggregateTimeSet.updateData(model.aggregateOutsideTimeSet);
+            }
         }
         
         /**
@@ -2273,6 +2319,14 @@ module nts.uk.at.view.kmk004.a {
                 self.legalHoliday = false;
                 self.surchargeWeekMonth = false;
             }
+            
+            // ExcessOutsideTimeSet
+            public updateData(model: ExcessOutsideTimeSet): void {
+                let self = this;
+                self.legalOverTimeWork = model.includeLegal();
+                self.legalHoliday = model.includeHoliday();
+                self.surchargeWeekMonth = model.includeExtra();
+            }
         }
         
         /**
@@ -2286,10 +2340,6 @@ module nts.uk.at.view.kmk004.a {
             isOtTransCriteria: boolean;
             settlementPeriod: DeforLaborSettlementPeriodDto;
             
-//            period: KnockoutObservable<number>;
-//            repeatCls: KnockoutObservable<boolean>;
-//            startMonth: KnockoutObservable<number>;
-            
             constructor() {
                 let self = this;
                 self.excessOutsideTimeSet = new ExcessOutsideTimeSetDto();
@@ -2297,10 +2347,15 @@ module nts.uk.at.view.kmk004.a {
                 
                 self.isOtTransCriteria = false;
                 self.settlementPeriod = new DeforLaborSettlementPeriodDto();
+            }
+            
+            public updateData(model: DeformWorktimeAggrSetting): void {
+                let self = this;
+                self.excessOutsideTimeSet.updateData(model.excessOutsideTimeSet);
+                self.aggregateTimeSet.updateData(model.aggregateOutsideTimeSet);
+                self.isOtTransCriteria = model.isDeformedOT();
+                self.settlementPeriod.updateData(model);
                 
-//                self.period = ko.observable(1);
-//                self.repeatCls = ko.observable(false);
-//                self.startMonth = ko.observable(new Date().getMonth());
             }
         }
         
@@ -2319,6 +2374,13 @@ module nts.uk.at.view.kmk004.a {
                 self.period = 1
                 self.repeatAtr = false;
                 self.startMonth = new Date().getMonth();
+            }
+            
+            public updateData(model: DeformWorktimeAggrSetting): void {
+                let self = this;
+                self.startMonth = model.startMonth();
+                self.period = model.period();
+                self.repeatAtr = model.repeatCls();
             }
         }
         
@@ -2341,6 +2403,14 @@ module nts.uk.at.view.kmk004.a {
                 self.includeOverTime = false;
                 self.legalAggrSet = AggrregateSetting.MANAGED_AS_FLEX_TIME;
                 self.aggrMethod = FlexAggregateMethod.PRINCIPLE;
+            }
+            // 
+            public updateData(model: FlexWorktimeAggrSetting): void {
+                let self = this;
+                self.insufficSet = model.shortageSetting();
+                self.includeOverTime = model.includeOT();
+                self.legalAggrSet = model.legalAggrSet();
+                self.aggrMethod = model.aggregateMethod();
             }
         }
         

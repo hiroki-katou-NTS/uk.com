@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.company;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-@Builder
+@AllArgsConstructor
 public class SaveComMonthCalSetCommand implements ComRegulaMonthActCalSetGetMemento,
 		ComFlexMonthActCalSetGetMemento, ComDeforLaborMonthActCalSetGetMemento {
 
