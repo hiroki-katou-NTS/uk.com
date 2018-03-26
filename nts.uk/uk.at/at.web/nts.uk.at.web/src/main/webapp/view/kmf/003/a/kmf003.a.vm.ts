@@ -506,7 +506,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     _.forEach(check, function(item, index) {
                         var value = check[index + 1] != null ? check[index + 1].conditionValue : 0;
                         
-                        if(item.conditionValue <= value) {
+                        if(flag && item.conditionValue <= value) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_264" });
                             flag = false;
                             return;
