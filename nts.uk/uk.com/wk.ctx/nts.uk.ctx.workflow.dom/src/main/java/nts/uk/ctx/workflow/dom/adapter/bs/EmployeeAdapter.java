@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 
 public interface EmployeeAdapter {
 
@@ -51,4 +52,11 @@ public interface EmployeeAdapter {
 	 */
 	// RequestList #77
 	List<ConcurrentEmployeeImport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
+
+	/**
+	 * getEmployeeInformation
+	 * @param sID
+	 * @return
+	 */
+	PersonImport getEmployeeInformation(String sID);
 }
