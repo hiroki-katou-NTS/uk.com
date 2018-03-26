@@ -205,7 +205,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: PredetemineTimeSettingDto) {
-                    this.rangeTimeDay(data.rangeTimeDay);
+                    this.rangeTimeDayInHours(data.rangeTimeDay / PredetemineTimeSettingModel.TIME_UNIT); // minutes to hours
                     this.workTimeCode(data.workTimeCode);
                     this.predTime.updateData(data.predTime);
                     this.nightShift(data.nightShift);
