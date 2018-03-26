@@ -40,6 +40,16 @@ module nts.uk.at.view.kmk003.h {
                 return dfd.promise();
             }
 
+            public setInitialFocus(): void {
+                const focusIndex = $('#initial-focus-h');
+                const focusIndex2 = $('#initial-focus-h2');
+                if (focusIndex.length > 0) {
+                    focusIndex.focus();
+                } else {
+                    focusIndex2.focus();
+                }
+            }
+
             /**
              * Binding data
              */
