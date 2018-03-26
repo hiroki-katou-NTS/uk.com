@@ -1,10 +1,10 @@
-.title {
-	height: 50px;
-	min-width: auto !important;
-}
-
 #contents-area {
 	height: auto !important;
+}
+
+#btn-close {
+	float: right;
+	margin-right: 15px;
 }
 
 .tbl-control {
