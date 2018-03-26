@@ -190,22 +190,23 @@ public class ErAlWorkRecordCheckService {
 	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(GeneralDate workingDate,
 			ErrorAlarmCondition checkCondition) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
+		boolean isFixed = checkCondition.getCheckTargetCondtion() == null;
 		query.setBaseDate(workingDate);
 		query.setReferenceRange(EmployeeReferenceRange.ALL_EMPLOYEE.value);
-		query.setFilterByEmployment(checkCondition.getCheckTargetCondtion().getFilterByEmployment());
-		query.setEmploymentCodes(checkCondition.getCheckTargetCondtion().getLstEmploymentCode().stream().map(c -> c.v())
+		query.setFilterByEmployment(isFixed ? false : checkCondition.getCheckTargetCondtion().getFilterByEmployment());
+		query.setEmploymentCodes(isFixed ? new ArrayList<>() : checkCondition.getCheckTargetCondtion().getLstEmploymentCode().stream().map(c -> c.v())
 				.collect(Collectors.toList()));
 		query.setFilterByDepartment(false);
 		// query.setDepartmentCodes(departmentCodes);
 		query.setFilterByWorkplace(false);
 		// query.setWorkplaceCodes(workplaceCodes);
-		query.setFilterByClassification(checkCondition.getCheckTargetCondtion().getFilterByClassification());
-		query.setClassificationCodes(checkCondition.getCheckTargetCondtion().getLstClassificationCode().stream()
+		query.setFilterByClassification(isFixed ? false : checkCondition.getCheckTargetCondtion().getFilterByClassification());
+		query.setClassificationCodes(isFixed ? new ArrayList<>() : checkCondition.getCheckTargetCondtion().getLstClassificationCode().stream()
 				.map(c -> c.v()).collect(Collectors.toList()));
-		query.setFilterByJobTitle(checkCondition.getCheckTargetCondtion().getFilterByJobTitle());
-		query.setJobTitleCodes(checkCondition.getCheckTargetCondtion().getLstJobTitleId());
-		query.setFilterByWorktype(checkCondition.getCheckTargetCondtion().getFilterByBusinessType());
-		query.setWorktypeCodes(checkCondition.getCheckTargetCondtion().getLstBusinessTypeCode().stream().map(c -> c.v())
+		query.setFilterByJobTitle(isFixed ? false : checkCondition.getCheckTargetCondtion().getFilterByJobTitle());
+		query.setJobTitleCodes(isFixed ? new ArrayList<>() : checkCondition.getCheckTargetCondtion().getLstJobTitleId());
+		query.setFilterByWorktype(isFixed ? false : checkCondition.getCheckTargetCondtion().getFilterByBusinessType());
+		query.setWorktypeCodes(isFixed ? new ArrayList<>() : checkCondition.getCheckTargetCondtion().getLstBusinessTypeCode().stream().map(c -> c.v())
 				.collect(Collectors.toList()));
 		query.setPeriodStart(workingDate.toString());
 		query.setPeriodEnd(workingDate.toString());
