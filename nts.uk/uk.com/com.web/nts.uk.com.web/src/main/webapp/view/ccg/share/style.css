@@ -167,7 +167,7 @@
 }
 
 #hor-scroll-button-hide {
-	z-index: 998;
+	z-index: 997;
 	position: fixed;
 	display: table;
 }
