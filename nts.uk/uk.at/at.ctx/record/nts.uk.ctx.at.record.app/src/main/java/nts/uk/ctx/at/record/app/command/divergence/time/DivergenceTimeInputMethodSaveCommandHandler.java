@@ -27,6 +27,9 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 	@Inject
 	private DivergenceReasonInputMethodRepository divReasonInputRepo;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<DivergenceTimeInputMethodSaveCommand> context) {
 		// get command

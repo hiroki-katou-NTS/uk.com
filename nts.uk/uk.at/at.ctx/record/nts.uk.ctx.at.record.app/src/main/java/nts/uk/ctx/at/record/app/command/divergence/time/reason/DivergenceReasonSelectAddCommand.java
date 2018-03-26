@@ -32,16 +32,34 @@ public class DivergenceReasonSelectAddCommand implements DivergenceReasonSelectG
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectGetMemento#getDivergenceReasonCode()
+	 */
 	@Override
 	public DivergenceReasonCode getDivergenceReasonCode() {
 		return new DivergenceReasonCode(divergenceReasonCode);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectGetMemento#getReason()
+	 */
 	@Override
 	public DivergenceReason getReason() {
 		return new DivergenceReason(reason);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectGetMemento#getReasonRequired()
+	 */
 	@Override
 	public DivergenceInputRequired getReasonRequired() {
 		return DivergenceInputRequired.valueOf(reasonRequired);

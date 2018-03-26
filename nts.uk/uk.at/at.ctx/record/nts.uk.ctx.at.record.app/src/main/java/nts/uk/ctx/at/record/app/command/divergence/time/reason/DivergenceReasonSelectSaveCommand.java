@@ -6,6 +6,15 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
 
+/**
+ * The Class DivergenceReasonSelectSaveCommand.
+ */
+
+/**
+ * Gets the divergence time no.
+ *
+ * @return the divergence time no
+ */
 @Getter
 public class DivergenceReasonSelectSaveCommand implements DivergenceReasonSelectGetMemento {
 	/** The divergence time no. */
@@ -27,16 +36,34 @@ public class DivergenceReasonSelectSaveCommand implements DivergenceReasonSelect
 		super();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectGetMemento#getDivergenceReasonCode()
+	 */
 	@Override
 	public DivergenceReasonCode getDivergenceReasonCode() {
 		return new DivergenceReasonCode(divergenceReasonCode);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectGetMemento#getReason()
+	 */
 	@Override
 	public DivergenceReason getReason() {
 		return new DivergenceReason(reason);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectGetMemento#getReasonRequired()
+	 */
 	@Override
 	public DivergenceInputRequired getReasonRequired() {
 		return DivergenceInputRequired.valueOf(reasonRequired);
