@@ -149,6 +149,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                                     
                         self.setFocus();  
                         
+                        self.setConditionValueChanges();
+                        
                         // clear all error
                         nts.uk.ui.errors.clearAll();
                     }).fail(function(res) {
