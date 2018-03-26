@@ -44,7 +44,7 @@ public class LateDecisionClock {
 			TimeLeavingWork timeLeavingWork,
 			Optional<CoreTimeSetting> coreTimeSetting) {
 
-		TimezoneUse predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+		TimezoneUse predetermineTimeSheet = predetermineTimeSet.getTimeSheets().get(workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		//計算範囲取得

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -15,7 +14,6 @@ import nts.uk.shr.com.context.AppContexts;
  * @author keisuke_hoshina
  *
  */
-@Stateless
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
 
 	@Inject
@@ -28,9 +26,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		for(ErrorAlarmWorkRecord errorItem : errorItemList) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
-//			val addItem = (errorItem.getFixedAtr())?/*システム固定エラーチェック*/:/*ユーザエラーチェック(Tinさんの処理呼ぶ)*/;
-//			if(addItem.isPresent())
-//				integrationOfDaily.getEmployeeError().add(addItem.get());
+			//val addItem = (errorItem.getFixedAtr())?/*システム固定エラーチェック*/:/*ユーザエラーチェック(Tinさんの処理呼ぶ)*/;
+			//integrationOfDaily.getEmployeeError().add(addItem);
 		}
 		return integrationOfDaily;
 	}
