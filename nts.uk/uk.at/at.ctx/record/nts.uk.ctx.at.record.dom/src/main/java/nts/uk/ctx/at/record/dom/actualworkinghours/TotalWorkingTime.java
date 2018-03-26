@@ -169,10 +169,10 @@ public class TotalWorkingTime {
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType workType,
-			   LateTimeSheet lateTimeSheet,
-			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-			   LateTimeOfDaily lateTimeOfDaily,
-			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+//			   LateTimeSheet lateTimeSheet,
+//			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+//			   LateTimeOfDaily lateTimeOfDaily,
+//			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
@@ -197,10 +197,10 @@ public class TotalWorkingTime {
 				   																      personalCondition,
 				   																      vacationClass,
 				   																      workType,
-				   																      lateTimeSheet,
-				   																      leaveEarlyTimeSheet,
-				   																      lateTimeOfDaily,
-				   																      leaveEarlyTimeOfDaily,
+//				   																      lateTimeSheet,
+//				   																      leaveEarlyTimeSheet,
+//				   																      lateTimeOfDaily,
+//				   																      leaveEarlyTimeOfDaily,
 				   																      late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   																      leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   																      workingSystem,
@@ -226,8 +226,10 @@ public class TotalWorkingTime {
 																									,vacationClass,oneDay.getTimeVacationAdditionRemainingTime().get(),
 																									StatutoryDivision.Nomal,
 																									workTimeCode,
-																									personalCondition, lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-																									leaveEarlyTimeOfDaily,late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+																									personalCondition,
+//																									lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
+//																									leaveEarlyTimeOfDaily,
+																									late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																									leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																									workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
 																									vacationAddTimeSet,workTimeDailyAtr,
@@ -237,13 +239,18 @@ public class TotalWorkingTime {
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
 		holidayWorkTime += excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTransTotalFrameTime():0;
-		//2018.02.14　一時的対応 byホシナ ↓
+		
 		//日別実績の遅刻時間
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
 		for(TimeLeavingWork work : oneDay.getAttendanceLeavingWork().getTimeLeavingWorks())
 			lateTime.add(LateTimeOfDaily.calcLateTime(oneDay, work.getWorkNo(),late,holidayCalcMethodSet));
-
-						
+		
+		//日別実績の早退時間
+		List<LeaveEarlyTimeOfDaily> leaveEarlyTime = new ArrayList<>();
+		for(TimeLeavingWork work : oneDay.getAttendanceLeavingWork().getTimeLeavingWorks())
+			leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(oneDay, work.getWorkNo(),leaveEarly,holidayCalcMethodSet));
+		
+//		//2018.02.14　一時的対応 byホシナ ↓				
 //		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 //										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
 //										 new WorkNo(1),
@@ -256,23 +263,24 @@ public class TotalWorkingTime {
 //										new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
 //										new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
 //				 						));
-			 
-			
-		//日別実績の早退時間
-		List<LeaveEarlyTimeOfDaily> earlyTime = new ArrayList<>();
-		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-									    TimeWithCalculation.sameTime(new AttendanceTime(0)),
-									    new WorkNo(1),
-									    new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-									    new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-										));
-		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										  TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										  new WorkNo(2),
-										  new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-										  new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-					));
-		//2018.02.14　一時的対応 byホシナ ↑
+//			 		
+//		//日別実績の早退時間
+//		List<LeaveEarlyTimeOfDaily> earlyTime = new ArrayList<>();
+//		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//									    TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//									    new WorkNo(1),
+//									    new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+//									    new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+//										));
+//		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//										  TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//										  new WorkNo(2),
+//										  new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+//										  new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+//					));
+//		//2018.02.14　一時的対応 byホシナ ↑
+
+		
 		//日別実績の休憩時間
 		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(oneDay);
 

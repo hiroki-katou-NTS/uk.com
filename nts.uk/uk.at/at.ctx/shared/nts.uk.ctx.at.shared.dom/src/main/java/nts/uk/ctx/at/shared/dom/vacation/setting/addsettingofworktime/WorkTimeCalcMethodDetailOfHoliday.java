@@ -24,6 +24,13 @@ public class WorkTimeCalcMethodDetailOfHoliday {
 		IncludeHolidaysWorkCalcDetailSet = includeHolidaysWorkCalcDetailSet;
 	}
 	
+	public WorkTimeCalcMethodDetailOfHoliday(int deductLateLeaveEarly,
+			int includeHolidaysWorkCalcDetailSet) {
+		super();
+		this.deductLateLeaveEarly = deductLateLeaveEarly==0?NotUseAtr.Donot:NotUseAtr.To;
+		IncludeHolidaysWorkCalcDetailSet = new  IncludeHolidaysWorkCalcDetailSet(includeHolidaysWorkCalcDetailSet==0?NotUseAtr.Donot:NotUseAtr.To);
+	}
+	
 	/**
 	 * 就業時間内時間帯から控除するか判断
 	 * @param deductTime

@@ -384,10 +384,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   PredetermineTimeSetForCalc predetermineTimeSet,
 			   Optional<WorkTimeCode> siftCode,
 			   Optional<PersonalLaborCondition> personalCondition, 
-			   LateTimeSheet lateTimeSheet,
-			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-			   LateTimeOfDaily lateTimeOfDaily,
-			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+//			   LateTimeSheet lateTimeSheet,
+//			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+//			   LateTimeOfDaily lateTimeOfDaily,
+//			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
@@ -406,10 +406,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				    predetermineTimeSet,
 				   siftCode,
 				    personalCondition, 
-				    lateTimeSheet,
-				    leaveEarlyTimeSheet,
-				    lateTimeOfDaily,
-				    leaveEarlyTimeOfDaily,
+//				    lateTimeSheet,
+//				    leaveEarlyTimeSheet,
+//				    lateTimeOfDaily,
+//				    leaveEarlyTimeOfDaily,
 				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
@@ -431,10 +431,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 									   PredetermineTimeSetForCalc predetermineTimeSet,
 									   Optional<WorkTimeCode> siftCode,
 									   Optional<PersonalLaborCondition> personalCondition, 
-									   LateTimeSheet lateTimeSheet,
-									   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-									   LateTimeOfDaily lateTimeOfDaily,
-									   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+//									   LateTimeSheet lateTimeSheet,
+//									   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+//									   LateTimeOfDaily lateTimeOfDaily,
+//									   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 									   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 									   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 									   WorkingSystem workingSystem,
@@ -448,8 +448,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		AttendanceTime workTime = calcWorkTimeBeforeDeductPremium(holidayAddition ,timevacationUseTimeOfDaily,
 																  workingSystem,addSettingOfRegularWork,addSettingOfIrregularWork, 
-																  addSettingOfFlexWork,lateTimeSheet,leaveEarlyTimeSheet,
-																  lateTimeOfDaily,leaveEarlyTimeOfDaily,vacationAddTimeSet,
+																  addSettingOfFlexWork,
+//																  lateTimeSheet,leaveEarlyTimeSheet,
+//																  lateTimeOfDaily,leaveEarlyTimeOfDaily,
+																  vacationAddTimeSet,
 																  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																  holidayCalcMethodSet,
@@ -486,10 +488,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 														  AddSettingOfRegularWork addSettingOfRegularWork,
 														  AddSettingOfIrregularWork addSettingOfIrregularWork, 
 														  AddSettingOfFlexWork addSettingOfFlexWork,
-														  LateTimeSheet lateTimeSheet,
-														  LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-														  LateTimeOfDaily lateTimeOfDaily,
-														  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+//														  LateTimeSheet lateTimeSheet,
+//														  LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+//														  LateTimeOfDaily lateTimeOfDaily,
+//														  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 														  VacationAddTimeSet vacationAddTimeSet,
 														  boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 														  boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -505,10 +507,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																							  addSettingOfRegularWork,
 																							  addSettingOfIrregularWork, 
 																							  addSettingOfFlexWork,
-																							  lateTimeSheet,
-																							  leaveEarlyTimeSheet,
-																							  lateTimeOfDaily,
-																							  leaveEarlyTimeOfDaily,
+//																							  lateTimeSheet,
+//																							  leaveEarlyTimeSheet,
+//																							  lateTimeOfDaily,
+//																							  leaveEarlyTimeOfDaily,
 																							  vacationAddTimeSet,
 																							  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退

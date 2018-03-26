@@ -7,14 +7,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -155,6 +158,40 @@ public class LeaveEarlyTimeSheet {
 		timeSheet.setDeductionTimeSheet(dudctionList);
 		return Optional.of(timeSheet);
 	}
+	
+	/**
+	 * 早退計上時間の計算
+	 * @return
+	 */
+	public TimeWithCalculation calcForRecordTime(
+			boolean leaveEarly //日別実績の計算区分.遅刻早退の自動計算設定.早退
+			) {
+		//早退時間の計算
+		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		//インターバル免除時間を控除する
+		
+		//早退計上時間の作成
+		TimeWithCalculation leaveEarlyTime = leaveEarly?TimeWithCalculation.sameTime(new AttendanceTime(calcforRecordTime.minute())):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcforRecordTime.minute()));	
+		return leaveEarlyTime;
+	}
+	
+	/**
+	 * 早退控除時間の計算
+	 * @return
+	 */
+	public TimeWithCalculation calcDedctionTime(
+			boolean leaveEarly, //日別実績の計算区分.遅刻早退の自動計算設定.早退
+			HolidayCalcMethodSet holidayCalcMethodSet
+			) {
+		TimeWithCalculation leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly().isUse()) {//控除する場合
+			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.get().calcTotalTime();
+			leaveEarlyDeductionTime =  leaveEarly?TimeWithCalculation.sameTime(new AttendanceTime(calcDeductionTime.minute())):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcDeductionTime.minute()));
+		}
+		return leaveEarlyDeductionTime;
+	}
+	
+	
 	
 	
 //	/**

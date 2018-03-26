@@ -134,7 +134,7 @@ public class LateTimeSheet{
 				,deductionTimeSheet);
 			
 		//遅刻時間を計算
-
+		
 		//遅刻時間帯を再度補正
 		
 		return instance;
@@ -193,7 +193,7 @@ public class LateTimeSheet{
 		TimeWithCalculation lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly().isUse()) {//控除する場合
 			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.get().calcTotalTime();
-			lateDeductionTime =  late?TimeWithCalculation.sameTime(new AttendanceTime(calcDeductionTime.minute())):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcDeductionTime.minute()));
+			lateDeductionTime =  late?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}
 		return lateDeductionTime;
 	}
