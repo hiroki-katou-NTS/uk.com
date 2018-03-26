@@ -143,8 +143,10 @@
 										<td style ="text-align: right;background-color: #CFF1A5;"><span class="label" data-bind="text: acceptItemNumber"></span></td>
 										<td><span class="label" data-bind="text: acceptItemName"></span></td>
 										<td>
-											<span style="width: 142px; vertical-align: middle;" data-bind="text: csvItemName"></span>
-											<button style="float: right" tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
+											<div class="csvItemName">
+												<span data-bind="text: csvItemName"></span>
+											</div>
+											<button tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
 										</td>
 										<td><span class="label" data-bind="text: sampleData"></span></td>
 										<td>
