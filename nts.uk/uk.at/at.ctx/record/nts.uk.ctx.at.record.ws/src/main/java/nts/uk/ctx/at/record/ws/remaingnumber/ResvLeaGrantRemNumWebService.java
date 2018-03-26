@@ -16,9 +16,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResv
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
-import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 @Path("record/remainnumber/resv-lea")
 @Produces("application/json")
@@ -36,7 +34,19 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	
 	@POST
 	@Path("get-resv-lea/{empId}")
-	public List<SpecialLeaveGrantDto> getAll() {
+	public List<ResvLeaGrantRemNumDto> getAll(){
+		return getData();
+	}
+	/*public List<AnnLeaGrantRemnNumDto> getAll() {
+		List<AnnLeaGrantRemnNumDto> datatest = new ArrayList<>();
+		for (int i = 1; i < 10; i++) {
+			AnnLeaGrantRemnNumDto item = new AnnLeaGrantRemnNumDto(GeneralDate.fromString("2014/02/0"+i, "yyyy/MM/dd"),  GeneralDate.fromString("2014/03/0"+i, "yyyy/MM/dd"), 
+					0, Double.parseDouble("1.4"), i, Double.parseDouble("1.4" + i), i, Double.parseDouble("2.5" + i), i);
+			datatest.add(item);
+		}
+		return datatest;
+	}*/
+	/*public List<SpecialLeaveGrantDto> getAll() {
 		List<SpecialLeaveGrantDto> datatest = new ArrayList<>();
 		for (int i = 1; i < 10; i++) {
 			SpecialLeaveGrantDto dto = SpecialLeaveGrantDto.createFromDomain(SpecialLeaveGrantRemainingData.createFromJavaType("", "", i, 
@@ -48,7 +58,7 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 		//return finder.getListData(sid, ctgcode);
 		// @PathParam("sid") String sid ,@PathParam("ctgcd") int ctgcode
 		return datatest;
-	}
+	}*/
 	
 	@POST
 	@Path("add")
