@@ -53,6 +53,7 @@ public class DeleteShainStatWorkTimeSetCommandHandler
 		int year = command.getYear();
 		String employeeId = command.getEmployeeId();
 		
+		// remove with companyId, employeeId & year
 		this.shainNormalSettingRepository.delete(companyId, employeeId, year);
 		this.shainFlexSettingRepository.delete(companyId, employeeId, year);
 		this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year);

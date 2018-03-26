@@ -53,6 +53,7 @@ public class DeleteEmpStatWorkTimeSetCommandHandler
 		int year = command.getYear();
 		String emplCode = command.getEmploymentCode();
 		
+		// remove with companyId, employmentCode & year
 		this.empNormalSettingRepository.delete(companyId, emplCode, year);
 		this.empFlexSettingRepository.delete(companyId, emplCode, year);
 		this.empDeforLaborSettingRepository.delete(companyId, emplCode, year);

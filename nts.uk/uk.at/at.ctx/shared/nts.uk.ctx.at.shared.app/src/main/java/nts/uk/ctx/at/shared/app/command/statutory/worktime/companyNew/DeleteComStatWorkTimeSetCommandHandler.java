@@ -44,6 +44,7 @@ public class DeleteComStatWorkTimeSetCommandHandler
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
 		
+		// remove ComNormalSetting, ComFlexSetting, ComDeforLaborSetting, ComRegularLaborTime, ComTransLaborTime with companyID & year
 		this.comNormalSettingRepository.remove(companyId, year);
 		this.comFlexSettingRepository.remove(companyId, year);
 		this.comDeforLaborSettingRepository.remove(companyId, year);

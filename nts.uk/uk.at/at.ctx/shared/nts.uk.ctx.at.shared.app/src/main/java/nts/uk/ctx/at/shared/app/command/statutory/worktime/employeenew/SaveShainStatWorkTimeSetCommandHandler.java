@@ -69,6 +69,7 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		ShainTransLaborTime shainTransLaborTime = command.getTransLaborTime().toShainSpeTimeDomain(employeeId);
 		
 		Optional<ShainNormalSetting> optComNormalSet = this.shainNormalSettingRepository.find(companyId, employeeId, year);
+		// Check info ShainNormalSetting if exist -> update into db / not exist -> insert into DB
 		if(optComNormalSet.isPresent()){
 			this.shainNormalSettingRepository.update(shainNormalSetting);
 		} else {
@@ -76,6 +77,7 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		}
 		
 		Optional<ShainFlexSetting> optComFlexSet = this.shainFlexSettingRepository.find(companyId, employeeId, year);
+		// Check info ShainFlexSetting if exist -> update into db / not exist -> insert into DB
 		if(optComFlexSet.isPresent()) {
 			this.shainFlexSettingRepository.update(shainFlexSetting);
 		} else {
@@ -83,6 +85,7 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		}
 		
 		Optional<ShainDeforLaborSetting> optComDeforSet = this.shainDeforLaborSettingRepository.find(companyId, employeeId, year);
+		// Check info ShainDeforLaborSetting if exist -> update into db / not exist -> insert into DB
 		if(optComDeforSet.isPresent()) {
 			this.shainDeforLaborSettingRepository.update(shainDeforLaborSetting);
 		} else {
@@ -90,6 +93,7 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		}
 		
 		Optional<ShainRegularLaborTime> optComRegularSet = this.shainRegularWorkTimeRepository.find(companyId, employeeId);
+		// Check info ShainRegularLaborTime if exist -> update into db / not exist -> insert into DB
 		if(optComRegularSet.isPresent()){
 			this.shainRegularWorkTimeRepository.update(shainRegularLaborTime);
 		} else {
@@ -97,6 +101,7 @@ public class SaveShainStatWorkTimeSetCommandHandler extends CommandHandler<SaveS
 		}
 		
 		Optional<ShainTransLaborTime> optComTransSet = this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId);
+		// Check info ShainTransLaborTime if exist -> update into db / not exist -> insert into DB
 		if(optComTransSet.isPresent()) {
 			this.shainSpeDeforLaborTimeRepository.update(shainTransLaborTime);
 		} else {

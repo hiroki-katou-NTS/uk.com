@@ -53,6 +53,7 @@ public class DeleteWkpStatWorkTimeSetCommandHandler
 		int year = command.getYear();
 		String wkpId = command.getWkpId();
 		
+		// remove with companyId, workplaceId & year
 		this.wkpNormalSettingRepository.remove(companyId, wkpId, year);
 		this.wkpFlexSettingRepository.remove(companyId, wkpId, year);
 		this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year);

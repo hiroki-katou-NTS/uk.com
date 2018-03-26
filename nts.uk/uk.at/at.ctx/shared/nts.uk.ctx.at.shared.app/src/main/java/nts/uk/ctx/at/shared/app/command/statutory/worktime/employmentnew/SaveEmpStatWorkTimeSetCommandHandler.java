@@ -69,6 +69,7 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 		EmpTransLaborTime empTransLaborTime = command.getTransLaborTime().toEmpTransTimeDomain(emplCode);
 		
 		Optional<EmpNormalSetting> optEmpNormalSet = this.empNormalSettingRepository.find(companyId, emplCode, year);
+		// Check info EmpNormalSetting if exist -> update into db / not exist -> insert into DB
 		if(optEmpNormalSet.isPresent()){
 			this.empNormalSettingRepository.update(empNormalSetting);
 		} else {
@@ -83,6 +84,7 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 		}
 		
 		Optional<EmpDeforLaborSetting> optEmpDeforSet = this.empDeforLaborSettingRepository.find(companyId, emplCode, year);
+		// Check info EmpDeforLaborSetting if exist -> update into db / not exist -> insert into DB
 		if(optEmpDeforSet.isPresent()) {
 			this.empDeforLaborSettingRepository.update(empDeforLaborSetting);
 		} else {
@@ -90,6 +92,7 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 		}
 		
 		Optional<EmpRegularLaborTime> optEmpRegularSet = this.empRegularWorkTimeRepository.findById(companyId, emplCode);
+		// Check info EmpRegularLaborTime if exist -> update into db / not exist -> insert into DB
 		if(optEmpRegularSet.isPresent()){
 			this.empRegularWorkTimeRepository.update(empRegularLaborTime);
 		} else {
@@ -97,6 +100,7 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 		}
 		
 		Optional<EmpTransLaborTime> optEmpTransSet = this.empTransWorkTimeRepository.find(companyId, emplCode);
+		// Check info EmpTransLaborTime if exist -> update into db / not exist -> insert into DB
 		if(optEmpTransSet.isPresent()) {
 			this.empTransWorkTimeRepository.update(empTransLaborTime);
 		} else {
@@ -106,3 +110,4 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 	}
 
 }
+

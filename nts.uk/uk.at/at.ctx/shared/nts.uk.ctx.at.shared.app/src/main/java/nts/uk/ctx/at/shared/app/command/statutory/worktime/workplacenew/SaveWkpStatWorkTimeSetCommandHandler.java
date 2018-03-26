@@ -69,6 +69,7 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 		WkpTransLaborTime wkpTransLaborTime = command.getTransLaborTime().toWkpTransTimeDomain(wkpId);
 		
 		Optional<WkpNormalSetting> optWkpNormalSet = this.wkpNormalSettingRepository.find(companyId, wkpId, year);
+		// Check info WkpNormalSetting if exist -> update into db / not exist -> insert into DB
 		if(optWkpNormalSet.isPresent()){
 			this.wkpNormalSettingRepository.update(wkpNormalSetting);
 		} else {
@@ -76,6 +77,7 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 		}
 		
 		Optional<WkpFlexSetting> optWkpFlexSet = this.wkpFlexSettingRepository.find(companyId, wkpId, year);
+		// Check info WkpFlexSetting if exist -> update into db / not exist -> insert into DB
 		if(optWkpFlexSet.isPresent()) {
 			this.wkpFlexSettingRepository.update(wkpFlexSetting);
 		} else {
@@ -83,6 +85,7 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 		}
 		
 		Optional<WkpDeforLaborSetting> optWkpDeforSet = this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year);
+		// Check info WkpDeforLaborSetting if exist -> update into db / not exist -> insert into DB
 		if(optWkpDeforSet.isPresent()) {
 			this.wkpDeforLaborSettingRepository.update(wkpDeforLaborSetting);
 		} else {
@@ -90,6 +93,7 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 		}
 		
 		Optional<WkpRegularLaborTime> optWkpRegularSet = this.wkpRegularWorkTimeRepository.find(companyId, wkpId);
+		// Check info WkpRegularLaborTime if exist -> update into db / not exist -> insert into DB
 		if(optWkpRegularSet.isPresent()){
 			this.wkpRegularWorkTimeRepository.update(wkpRegularLaborTime);
 		} else {
@@ -97,6 +101,7 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 		}
 		
 		Optional<WkpTransLaborTime> optWkpTransSet = this.wkpSpeDeforLaborTimeRepository.find(companyId, wkpId);
+		// Check info WkpTransLaborTime if exist -> update into db / not exist -> insert into DB
 		if(optWkpTransSet.isPresent()) {
 			this.wkpSpeDeforLaborTimeRepository.update(wkpTransLaborTime);
 		} else {
