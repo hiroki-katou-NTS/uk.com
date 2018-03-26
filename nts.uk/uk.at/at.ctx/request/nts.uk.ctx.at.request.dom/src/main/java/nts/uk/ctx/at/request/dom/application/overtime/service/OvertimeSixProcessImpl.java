@@ -249,11 +249,19 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			}
 		}else{
 			// 出勤または退勤打刻なし
+			List<CaculationTime> overtimecheck = new ArrayList<>();
 			for(CaculationTime caculationTime : overtimeHours){
 				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() >= 0){
 					overtimeCheckResult.setFrameNo(caculationTime.getFrameNo());
 					overtimeCheckResult.setErrorCode(2);
-					overtimeHours.add(overtimeCheckResult);
+					overtimecheck.add(overtimeCheckResult);
+				}
+			}
+			for(CaculationTime caculationTime : overtimeHours){
+				for(CaculationTime caculation : overtimecheck){
+					if(caculationTime.getFrameNo() == caculation.getFrameNo()){
+						caculationTime.setErrorCode(caculation.getErrorCode());
+					}
 				}
 			}
 		}

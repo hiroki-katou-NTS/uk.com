@@ -55,10 +55,13 @@ module cmm045.a.viewmodel {
             let urlParam: number = url.split("=")[1];
             let characterData = null;
             let appCHeck = null;
+            if (urlParam !== undefined) {
+                character.save('AppListExtractCondition', null);
+            }
             character.restore("AppListExtractCondition").done((obj) => {
                 console.log(obj);
                 characterData = obj;
-                if (obj !== undefined) {
+                if (obj !== undefined && obj !== null) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
                     self.dateValue(date);
                     self.selectedIds([]);

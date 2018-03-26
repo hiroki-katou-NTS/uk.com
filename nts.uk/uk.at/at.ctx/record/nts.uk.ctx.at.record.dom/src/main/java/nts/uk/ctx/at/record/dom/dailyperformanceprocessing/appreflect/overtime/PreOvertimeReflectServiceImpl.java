@@ -88,7 +88,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private CalculateDailyRecordService calculate;
 	
 	@Override
-	public ApplicationReflectOutput overtimeReflect(PreOvertimeParameter param) {
+	public ApplicationReflectOutput overtimeReflect(OvertimeParameter param) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
 			
@@ -120,7 +120,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			//dang lay nham thong tin enum
-			output.setReasonNotReflect(ReasonNotReflectRecord.WORK_FIXED);
+			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 			return output;
 	
 		} catch (Exception ex) {

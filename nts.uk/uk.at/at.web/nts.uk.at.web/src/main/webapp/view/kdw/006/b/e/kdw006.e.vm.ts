@@ -12,6 +12,7 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             self.roleItems = ko.observableArray([]);
             self.functionalRestriction = ko.observableArray([]);
             self.selectedItem = ko.observable();
+            self.availability = ko.observable(true);
 
             self.columns1 = ko.observableArray([
                 { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
@@ -19,9 +20,6 @@ module nts.uk.at.view.kdw006.e.viewmodel {
                 { headerText: getText('KDW006_45'), key: 'roleName', width: 150 }
             ]);
 
-            self.selectedItem.subscribe(function(newValue) {
-                self.getFuncRest(newValue);
-            });
 
         }
 
@@ -30,32 +28,38 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             $("#grid2").ntsGrid({
                 //width: 780,
                 height: 450,
-                rows: 15,
+                // rows: 15,
                 dataSource: self.functionalRestriction(),
                 primaryKey: 'functionNo',
+                hidePrimaryKey: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px', hidden: true },
+                    { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px' },
                     { headerText: getText('KDW006_49'), key: 'displayName', dataType: 'string', width: '320px' },
-                    { headerText: getText('KDW006_50'), key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
+                    { headerText: getText('KDW006_50'), key: 'availability', dataType: 'boolean', width: '80px', showHeaderCheckbox: false, ntsControl: 'availability' },
                     { headerText: getText('KDW006_51'), key: 'description', dataType: 'string', width: '370px' }
                 ],
-                features: [  { 
-                                            name: 'Selection',
-                                            mode: 'row',
-                                            multipleSelection: true
-                                        }],
-               // ntsFeatures: [{ name: 'CopyPaste' }],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
+                features: [{
+                    name: 'Selection',
+                    mode: 'row',
+                    multipleSelection: true
+                }],
+                // ntsFeatures: [{ name: 'CopyPaste' }],
+                ntsControls: [{ name: 'availability', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
             });
         }
 
-        saveData() {
+        saveData(): JQueryPromise<any> {
             let self = this;
+            let dfd = $.Deferred();
             service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
             });
+            return dfd.promise();
         }
 
         start(): JQueryPromise<any> {
@@ -64,11 +68,17 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             service.getRoleList().done(function(res: Array<RoleItem>) {
                 self.roleItems(_.sortBy(res, ['roleCode']));
                 self.selectedItem(self.roleItems()[0].roleId);
-                self.initGrid();
-                self.getFuncRest(self.selectedItem()).done(function() {
-                    dfd.resolve();
+                self.selectedItem.subscribe(function(newValue) {
+                    self.getFuncRest(newValue);
                 });
-
+                service.findFuncRest(self.selectedItem()).done(function(res: Array<FuncRestItem>) {
+                    //#90479 get dataSource before initGrid (keyindex will have data)
+                    self.functionalRestriction(res);
+                    self.initGrid();
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
             });
