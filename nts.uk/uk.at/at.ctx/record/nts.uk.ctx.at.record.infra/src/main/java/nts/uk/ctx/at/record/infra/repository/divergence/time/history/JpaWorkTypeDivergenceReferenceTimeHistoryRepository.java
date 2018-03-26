@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist_;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -57,8 +58,10 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		if (!StringUtils.isEmpty(histId)) {
 			predicates.add(criteriaBuilder.notEqual(root.get(KrcstWorktypeDrtHist_.histId), histId));
 		}
-		predicates.add(criteriaBuilder.between(root.get(KrcstWorktypeDrtHist_.strD.getName()), startDate, endDate));
-		predicates.add(criteriaBuilder.between(root.get(KrcstWorktypeDrtHist_.endD.getName()), startDate, endDate));
+		
+		predicates.add(criteriaBuilder.or(
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate),
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate)));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
