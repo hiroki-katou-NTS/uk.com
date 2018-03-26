@@ -349,14 +349,21 @@ module nts.uk.at.view.kmk011.d {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 service.getUseUnitSetting().done((response) => {
-                    _self.useUnitSetting(response.workTypeUseSet);
+                    if(response.workTypeUseSet == 0){
+                         _self.useUnitSetting(false);
+                    }
                 });
                 dfd.resolve();
                 return dfd.promise();
             }
 
             private isDisableTab(): boolean {
-                return false;
+                let _self = this;
+                
+                if (_self.useUnitSetting() == false)
+                    return false;
+                
+                return true;
             }
 
             /**
