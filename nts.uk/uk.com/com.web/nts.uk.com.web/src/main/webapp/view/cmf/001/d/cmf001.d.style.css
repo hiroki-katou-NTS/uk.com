@@ -19,7 +19,10 @@
 #fixed-table > tbody > tr > td{
 	padding-top: 3px;
 }
-.csvItemName {
+#fixed-table > tbody > tr > td.csvItemName {
+	padding: 0 2px;
+}
+.csvItemName div {
 	display: inline-block;
 	width: 70%;
 	overflow: hidden;

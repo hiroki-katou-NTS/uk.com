@@ -542,12 +542,16 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         private screenFileCheck(): boolean {
             let self = this;
             //check csvDataLineNumber Not input or exceeding the number of lines of CSV data => msg 900
-            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataItemLineNumber(), false) || self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
+            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataItemLineNumber(), false) ||
+                self.stdCondSet().csvDataItemLineNumber() == 0 ||
+                self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_900"});
                 return false;
             }
             //check csvDataStartLine Not input or exceeding the number of lines of CSV data => msg 901
-            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataStartLine(), false) || self.stdCondSet().csvDataStartLine() > self.fileDataTotalLine()) {
+            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataStartLine(), false) ||
+                self.stdCondSet().csvDataStartLine() == 0 ||
+                self.stdCondSet().csvDataStartLine() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_901"});
                 return false;
             }
