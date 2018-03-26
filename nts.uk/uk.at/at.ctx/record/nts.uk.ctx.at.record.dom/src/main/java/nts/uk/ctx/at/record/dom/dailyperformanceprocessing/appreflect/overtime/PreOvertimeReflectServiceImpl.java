@@ -91,21 +91,22 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	public ApplicationReflectOutput overtimeReflect(PreOvertimeParameter param) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
-			//予定勤種・就時の反映
-			priorProcess.workTimeWorkTimeUpdate(param);
-			//勤種・就時の反映
-			boolean changeFlg = priorProcess.changeFlg(param);
+			
+			
 			//予定勤種・就時反映後の予定勤種・就時を取得する
 			//勤種・就時反映後の予定勤種・就時を取得する
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(param.getEmployeeId(), param.getDateInfo());
 			if(!optDailyData.isPresent()) {
 				return output;
 			}
-			//予定開始終了時刻の反映
-			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
-			priorProcess.startAndEndTimeReflectSche(param, changeFlg, dailyData);
-			//開始終了時刻の反映
-			startEndtimeOffReflect.startEndTimeOffReflect(param, dailyData);
+			//予定勤種・就時の反映
+			priorProcess.workTimeWorkTimeUpdate(param);
+			//勤種・就時の反映
+			boolean changeFlg = priorProcess.changeFlg(param);
+			//予定開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
+			priorProcess.startAndEndTimeReflectSche(param, changeFlg, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
+			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
+			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
 			//所定外深夜時間の反映
@@ -115,7 +116,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			calculate.calculate(this.calculateForAppReflect(dailyData, param.getEmployeeId(), param.getDateInfo()));
+			calculate.calculate(this.calculateForAppReflect(workRepository.find(param.getEmployeeId(), param.getDateInfo()).get(), param.getEmployeeId(), param.getDateInfo()));
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			//dang lay nham thong tin enum

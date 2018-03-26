@@ -643,6 +643,10 @@ module nts.uk.at.view.kaf010.b {
                         siftCD: self.siftCD(),
                         workTypeCode: self.workTypeCd(),
                         inputDate: self.inputDate(),
+                        startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
+                        endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime(),
+                        startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
+                        endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                         employeeID: self.employeeID()
                     }
                     //setting work content

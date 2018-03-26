@@ -153,4 +153,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		this.commandProxy().insert(KrcdtDaiPerWorkInfo.toEntity(workInfoOfDailyPerformance));
 	}
 
+	@Override
+	public void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
+		this.updateByKey(workInfoOfDailyPerformance);
+		this.getEntityManager().flush();
+		
+	}
+
 }
