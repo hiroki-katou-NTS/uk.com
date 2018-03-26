@@ -33,38 +33,15 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WorkingTimeSettingDto.
  */
 
-/**
- * Gets the daily time.
- *
- * @return the daily time
- */
-
-/**
- * Gets the daily time.
- *
- * @return the daily time
- */
 @Getter
-
-/**
- * Sets the daily time.
- *
- * @param dailyTime the new daily time
- */
-
-/**
- * Sets the daily time.
- *
- * @param dailyTime the new daily time
- */
 @Setter
 public class WorkingTimeSettingDto {
 
 	/** The weekly time. */
-	private WeeklyUnitDto weeklyTime;
+	protected WeeklyUnitDto weeklyTime;
 
 	/** The daily time. */
-	private DailyUnitDto dailyTime;
+	protected DailyUnitDto dailyTime;
 
 	/**
 	 * To com regular labor time domain.

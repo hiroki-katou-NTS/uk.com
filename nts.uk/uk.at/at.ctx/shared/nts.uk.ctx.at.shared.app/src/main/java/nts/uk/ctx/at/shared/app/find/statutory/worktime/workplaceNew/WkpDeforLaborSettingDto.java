@@ -5,78 +5,46 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingSetMemento;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
+import nts.uk.shr.com.context.AppContexts;
+
 
 /**
- * The Class WkpDeforLaborSettingDto.
+ * The Class ShainDeforLaborSettingDto.
  */
-@Getter
-public class WkpDeforLaborSettingDto implements WkpDeforLaborSettingSetMemento {
+@Data
+public class WkpDeforLaborSettingDto {
 
-	/** The workplace id. */
-	private String workplaceId;
+	/** The company id. */
+	/** 会社ID. */
+	private String companyId;
+
+	/** The employee id. */
+	/** 社員ID. */
+	private String wkpId;
 
 	/** The year. */
+	/** 年. */
 	private int year;
 
 	/** The statutory setting. */
-	private List<MonthlyUnit> statutorySetting;
+	/** 法定時間. */
+	private List<MonthlyUnitDto> statutorySetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpDeforLaborSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
-	 * common.CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+	public static WkpDeforLaborSettingDto fromDomain(WkpDeforLaborSetting domain) {
+		WkpDeforLaborSettingDto dto = new WkpDeforLaborSettingDto();
+		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setWkpId(domain.getWorkplaceId().v());
+		
+		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		}).collect(Collectors.toList());
+		dto.setStatutorySetting(monthlyUnitdtos);
+		return dto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpDeforLaborSettingSetMemento#setWorkplaceId(nts.uk.ctx.at.shared.dom.
-	 * common.WorkplaceId)
-	 */
-	@Override
-	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.workplaceId = workplaceId.toString();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpDeforLaborSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.
-	 * Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year.v();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpDeforLaborSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
-
-	}
-
 }

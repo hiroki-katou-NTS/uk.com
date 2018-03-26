@@ -5,92 +5,56 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
+import nts.uk.shr.com.context.AppContexts;
+
 
 /**
- * The Class WkpFlexSettingDto.
+ * The Class ShainFlexSettingDto.
  */
-@Getter
-public class WkpFlexSettingDto implements WkpFlexSettingSetMemento {
-
-	/** The workplace id. */
-	private String workplaceId;
-
+@Data
+public class WkpFlexSettingDto{
+	
+	/** The employee id. */
+	/** 社員ID. */
+	private String wkpId;
+	
 	/** The year. */
+	/** 年. */
 	private int year;
-
+	
+	/** The company id. */
+	private String companyId;
+	
 	/** The statutory setting. */
-	private List<MonthlyUnit> statutorySetting;
-
+	/** 法定時間. */
+	private List<MonthlyUnitDto> statutorySetting;
+	
 	/** The specified setting. */
-	private List<MonthlyUnit> specifiedSetting;
+	/** 所定時間. */
+	private List<MonthlyUnitDto> specifiedSetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpFlexSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.
-	 * CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+	public static WkpFlexSettingDto fromDomain(WkpFlexSetting domain) {
+		WkpFlexSettingDto dto = new WkpFlexSettingDto();
+		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setWkpId(domain.getWorkplaceId().v());
+		
+		Function<MonthlyUnit, MonthlyUnitDto> funMap = monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		};
+		
+		List<MonthlyUnitDto> statutoryMonthlys = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setStatutorySetting(statutoryMonthlys);
+		
+		List<MonthlyUnitDto> specMonthlys = domain.getSpecifiedSetting().stream().map(funMap).collect(Collectors.toList());
+		dto.setSpecifiedSetting(specMonthlys);
+		return dto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpFlexSettingSetMemento#setWorkplaceId(nts.uk.ctx.at.shared.dom.common.
-	 * WorkplaceId)
-	 */
-	@Override
-	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.workplaceId = workplaceId.toString();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpFlexSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year.v();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpFlexSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpFlexSettingSetMemento#setSpecifiedSetting(java.util.List)
-	 */
-	@Override
-	public void setSpecifiedSetting(List<MonthlyUnit> specifiedSetting) {
-		this.specifiedSetting = specifiedSetting;
-
-	}
-
 }

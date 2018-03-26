@@ -29,7 +29,7 @@ public class JpaWkpDeforLaborSettingRepository extends JpaRepository
 	 * worktime.companyNew.WkpDeforLaborSetting)
 	 */
 	@Override
-	public void insert(WkpDeforLaborSetting setting) {
+	public void add(WkpDeforLaborSetting setting) {
 		KshstWkpDeforLarSet entity = new KshstWkpDeforLarSet();
 		setting.saveToMemento(new JpaWkpDeforLaborSettingSetMemento(entity));
 		this.commandProxy().insert(entity);

@@ -26,7 +26,7 @@ public interface WkpDeforLaborSettingRepository {
 	 *
 	 * @param wkpDeforLaborSetting the wkp defor labor setting
 	 */
-	void insert(WkpDeforLaborSetting wkpDeforLaborSetting);
+	void add(WkpDeforLaborSetting wkpDeforLaborSetting);
 
 	/**
 	 * Update.

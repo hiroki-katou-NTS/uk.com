@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -29,25 +28,8 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class FlexSettingDto.
  */
-
-/**
- * Gets the specified setting.
- *
- * @return the specified setting
- */
 @Getter
-
-/**
- * Sets the specified setting.
- *
- * @param specifiedSetting the new specified setting
- */
 @Setter
-
-/* 
- * @see java.lang.Object#toString()
- */
-@Builder
 public class FlexSettingDto {
 
 	/** The statutory setting. */
@@ -55,6 +37,10 @@ public class FlexSettingDto {
 
 	/** The specified setting. */
 	protected List<MonthlyUnitDto> specifiedSetting;
+
+	public FlexSettingDto() {
+		super();
+	}
 	
 	/**
 	 * To domain.
@@ -311,4 +297,5 @@ public class FlexSettingDto {
 		}
 		
 	}
+
 }

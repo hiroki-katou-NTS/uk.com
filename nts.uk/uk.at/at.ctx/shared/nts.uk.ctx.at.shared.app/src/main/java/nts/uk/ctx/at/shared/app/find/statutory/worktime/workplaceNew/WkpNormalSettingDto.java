@@ -5,75 +5,40 @@
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingSetMemento;
+import lombok.Data;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WkpNormalSettingDto.
  */
-@Getter
-public class WkpNormalSettingDto implements WkpNormalSettingSetMemento {
-
-	/** The workplace id. */
-	private String workplaceId;
+@Data
+public class WkpNormalSettingDto {
+	/** The employee id. */
+	private String wkpId;
 
 	/** The year. */
 	private int year;
+	
+	/** The company id. */
+	private String companyId;
 
 	/** The statutory setting. */
-	private List<MonthlyUnit> statutorySetting;
+	private List<MonthlyUnitDto> statutorySetting;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpNormalSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.
-	 * CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.
-	 * WkpNormalSettingSetMemento#setWorkplaceId(nts.uk.ctx.at.shared.dom.common
-	 * .WorkplaceId)
-	 */
-	@Override
-	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.workplaceId = workplaceId.toString();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
-	 * NormalSettingSetMemento#setYear(nts.uk.ctx.at.shared.dom.common.Year)
-	 */
-	@Override
-	public void setYear(Year year) {
-		this.year = year.v();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
-	 * NormalSettingSetMemento#setStatutorySetting(java.util.List)
-	 */
-	@Override
-	public void setStatutorySetting(List<MonthlyUnit> statutorySetting) {
-		this.statutorySetting = statutorySetting;
+	public static WkpNormalSettingDto fromDomain(WkpNormalSetting domain) {
+		WkpNormalSettingDto dto = new WkpNormalSettingDto();
+		dto.setYear(domain.getYear().v());
+		dto.setCompanyId(AppContexts.user().companyId());
+		dto.setWkpId(domain.getWorkplaceId().v());
+		
+		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
+			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
+		}).collect(Collectors.toList());
+		dto.setStatutorySetting(monthlyUnitdtos);
+		return dto;
 	}
 }

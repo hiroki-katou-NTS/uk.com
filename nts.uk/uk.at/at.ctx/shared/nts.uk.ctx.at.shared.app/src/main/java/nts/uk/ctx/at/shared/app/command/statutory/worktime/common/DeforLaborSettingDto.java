@@ -27,19 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class DeforLaborSettingDto.
  */
-
-/**
- * Gets the statutory setting.
- *
- * @return the statutory setting
- */
 @Getter
-
-/**
- * Sets the statutory setting.
- *
- * @param statutorySetting the new statutory setting
- */
 @Setter
 public class DeforLaborSettingDto {
 
