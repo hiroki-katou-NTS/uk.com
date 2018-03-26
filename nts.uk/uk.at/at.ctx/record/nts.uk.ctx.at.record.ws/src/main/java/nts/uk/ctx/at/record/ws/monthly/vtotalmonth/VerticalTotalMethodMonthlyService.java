@@ -9,7 +9,6 @@ import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddVerticalTotalMet
 import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddVerticalTotalMethodOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyFinder;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 
 /**
  * 
