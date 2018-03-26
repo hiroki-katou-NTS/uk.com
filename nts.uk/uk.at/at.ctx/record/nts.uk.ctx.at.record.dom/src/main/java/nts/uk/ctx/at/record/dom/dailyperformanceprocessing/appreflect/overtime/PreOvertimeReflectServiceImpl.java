@@ -107,6 +107,12 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			priorProcess.startAndEndTimeReflectSche(param, changeFlg, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
 			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
+			
+			Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(param.getEmployeeId(), param.getDateInfo());
+			if(!optAttendanceTime.isPresent()) {
+				IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(workRepository.find(param.getEmployeeId(), param.getDateInfo()).get(), param.getEmployeeId(), param.getDateInfo()));
+				attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			}
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
 			//所定外深夜時間の反映
@@ -116,7 +122,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			calculate.calculate(this.calculateForAppReflect(workRepository.find(param.getEmployeeId(), param.getDateInfo()).get(), param.getEmployeeId(), param.getDateInfo()));
+			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(workRepository.find(param.getEmployeeId(), param.getDateInfo()).get(), param.getEmployeeId(), param.getDateInfo()));
+			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			//dang lay nham thong tin enum
