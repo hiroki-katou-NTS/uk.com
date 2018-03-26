@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.isDetailMode = ko.observable(false);
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewMode, self.useHalfDay);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDay);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
