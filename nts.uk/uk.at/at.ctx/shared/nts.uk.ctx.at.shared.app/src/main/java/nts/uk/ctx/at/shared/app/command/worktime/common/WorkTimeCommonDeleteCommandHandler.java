@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,6 +29,10 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 	/** The work time setting repository. */
 	@Inject 
 	private WorkTimeSettingRepository workTimeSettingRepository; 
+	
+	/** The work time display mode repository. */
+	@Inject
+	private WorkTimeDisplayModeRepository workTimeDisplayModeRepository;
 	
 	/** The predetemine time setting repository. */
 	@Inject 
@@ -66,6 +71,9 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 		
 		//remove worktimeset
 		this.workTimeSettingRepository.remove(companyId,workTimeCode);
+		
+		//remove worktimeset
+		this.workTimeDisplayModeRepository.remove(companyId, workTimeCode);
 		
 		//remove fixed
 		if(this.fixedWorkSettingRepository.findByKey(companyId, workTimeCode).isPresent()){

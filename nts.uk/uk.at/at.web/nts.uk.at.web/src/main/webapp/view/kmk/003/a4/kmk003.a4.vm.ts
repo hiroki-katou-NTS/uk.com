@@ -5,6 +5,8 @@ module a4 {
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import PrioritySettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.PrioritySettingModel;
+    import StampPiorityAtr = nts.uk.at.view.kmk003.a.service.model.common.StampPiorityAtr;
+    
     class ScreenModel {
 
         selectedTab: KnockoutObservable<string>;
@@ -94,14 +96,14 @@ module a4 {
             let workForm = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr();
 
             let stamp = self.mainSettingModel.commonSetting.stampSet;
-            self.priorityGoWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
-            self.priorityLeaveWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
+            self.priorityGoWork = stamp.getPrioritySetsGoWork().priorityAtr;
+            self.priorityLeaveWork = stamp.getPrioritySetsLeaveWork().priorityAtr;
             //                
-            self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
-            self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
+            self.stampRoundingGoWork = stamp.getRoundingSetsAttendance().roundingSet.roundingTimeUnit;
+            self.stampRoundingLeaveWork = stamp.getRoundingSetsOfficeWork().roundingSet.roundingTimeUnit;
             
-            self.stampGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
-            self.stampLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
+            self.stampGoWork = stamp.getRoundingSetsAttendance().roundingSet.fontRearSection;
+            self.stampLeaveWork = stamp.getRoundingSetsOfficeWork().roundingSet.fontRearSection;
             //check mode screen
         }
 
@@ -145,7 +147,7 @@ module a4 {
             if (_self.mainSettingModel.workTimeSetting.isFlow()) {
                 dataObject.stampTwoTimeReflect = _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.twoTimesWorkReflectBasicTime();
                 if (_self.mainSettingModel.isInterlockDialogJ()) {
-                    let oneDayEndTime: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + _self.mainSettingModel.predetemineTimeSetting.rangeTimeDay();
+                    let oneDayEndTime: number = _self.mainSettingModel.predetemineTimeSetting.startDateClock() + (_self.mainSettingModel.predetemineTimeSetting.rangeTimeDay());
                     dataObject.stampGoWorkFlowStart = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
                     dataObject.stampGoWorkFlowEnd = oneDayEndTime;                    
                     dataObject.stampLeavingWorkFlowStart = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
@@ -256,11 +258,6 @@ module a4 {
             this.code = code;
             this.name = name;
         }
-    }
-
-    export enum EnumStampPiorityAtr {
-        GOING_WORK,
-        LEAVE_WORK
     }
     
     class KMK003A4BindingHandler implements KnockoutBindingHandler {

@@ -54,6 +54,8 @@ module nts.uk.at.view.kmk003.a {
     import WorkSystemAtr = service.model.common.WorkSystemAtr;
     import SubHolidayOriginAtr = service.model.common.SubHolidayOriginAtr;
     import SubHolTransferSetAtr = service.model.common.SubHolTransferSetAtr;
+    import StampPiorityAtr = service.model.common.StampPiorityAtr;
+    import Superiority = service.model.common.Superiority;
 
     export module viewmodel {
         export module common {
@@ -1389,7 +1391,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor(stampAtr: number) {
                     this.stampAtr = ko.observable(stampAtr);
-                    this.priorityAtr = ko.observable((this.stampAtr() == 1 || this.stampAtr() == 3 || this.stampAtr() == 5) ? 1 : 0);
+                    this.priorityAtr = ko.observable((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
                 }
 
                 updateData(data: PrioritySettingDto) {
@@ -1406,7 +1408,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.priorityAtr = ko.observable((this.stampAtr() == 1 || this.stampAtr() == 3 || this.stampAtr() == 5) ? 1 : 0);
+                    this.priorityAtr = ko.observable((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
                 }
             }
 
@@ -1422,29 +1424,21 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 initPrioritySets() {
-                    var dataPriorityModel1: PrioritySettingModel = new PrioritySettingModel(0);
-                    var dataPriorityModel2: PrioritySettingModel = new PrioritySettingModel(1);
-                    var dataPriorityModel3: PrioritySettingModel = new PrioritySettingModel(2);
-                    var dataPriorityModel4: PrioritySettingModel = new PrioritySettingModel(3);
-                    var dataPriorityModel5: PrioritySettingModel = new PrioritySettingModel(4);
-                    var dataPriorityModel6: PrioritySettingModel = new PrioritySettingModel(5);
-                    this.prioritySets.push(dataPriorityModel1);
-                    this.prioritySets.push(dataPriorityModel2);
-                    this.prioritySets.push(dataPriorityModel3);
-                    this.prioritySets.push(dataPriorityModel4);
-                    this.prioritySets.push(dataPriorityModel5);
-                    this.prioritySets.push(dataPriorityModel6);                  
+                    for (let item in StampPiorityAtr) {
+                        if (!isNaN(Number(item))) {    
+                            let dataPriorityModel: PrioritySettingModel = new PrioritySettingModel(Number(item));
+                            this.prioritySets.push(dataPriorityModel);
+                        }
+                    }
                 }
 
                 initRoundingSets() {
-                    var dataRoundingModel1: RoundingSetModel = new RoundingSetModel(0);
-                    var dataRoundingModel2: RoundingSetModel = new RoundingSetModel(1);
-                    var dataRoundingModel3: RoundingSetModel = new RoundingSetModel(2);
-                    var dataRoundingModel4: RoundingSetModel = new RoundingSetModel(3);
-                    this.roundingSets.push(dataRoundingModel1);
-                    this.roundingSets.push(dataRoundingModel2);
-                    this.roundingSets.push(dataRoundingModel3);
-                    this.roundingSets.push(dataRoundingModel4);
+                    for (let item in Superiority) {
+                        if (!isNaN(Number(item))) {   
+                            let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
+                            this.roundingSets.push(dataRoundingModel);
+                        }
+                    }
                 }
 
                 updateData(data: WorkTimezoneStampSetDto) {
@@ -1485,17 +1479,17 @@ module nts.uk.at.view.kmk003.a {
                     });
                 }
                 
-                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 0) }                
-                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 1) }              
-                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 2) }              
-                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 3) }             
-                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 4) }           
-                getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == 5) }
+                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.GOING_WORK) }                
+                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.LEAVE_WORK) }              
+                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.ENTERING) }              
+                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.EXIT) }             
+                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PCLOGIN) }           
+                getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PC_LOGOUT) }
                 
-                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 0) }               
-                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 1) }               
-                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 2) }             
-                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == 3) }
+                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.ATTENDANCE) }               
+                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }               
+                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.GO_OUT) }             
+                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.TURN_BACK) }
             }
 
             export class WorkTimezoneLateNightTimeSetModel {

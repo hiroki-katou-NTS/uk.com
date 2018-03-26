@@ -333,6 +333,22 @@ module nts.uk.at.view.kmk003.a {
                     DAY_SHIFT,
                     NIGHT_SHIFT
                 }
+                
+                export enum StampPiorityAtr {
+                    GOING_WORK,
+                    LEAVE_WORK,
+                    ENTERING,
+                    EXIT,
+                    PCLOGIN,
+                    PC_LOGOUT
+                }
+                
+                export enum Superiority {
+                    ATTENDANCE,
+                    OFFICE_WORK,
+                    GO_OUT,
+                    TURN_BACK
+                }
             }
         }
     }
