@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         reason: KnockoutObservable<string> = ko.observable('');
 
-        showReason: KnockoutObservable<boolean> = ko.observable(false);
+        showReason: KnockoutObservable<number> = ko.observable(0);
 
         update() {
 
@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             if (data) {
 
 
-                self.showReason(data.applicationSetting.appReasonDispAtr);
+
 
                 self.comment(data.drawalReqSet || null);
 
@@ -104,8 +104,10 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataCommon(data) {
             let self = this,
                 app = data.application;
-
+            self.appReasons(data.appReasons || []);
             self.prePostSelectedCode(app.prePostAtr);
+            self.showReason(data.applicationSetting.appReasonDispAtr);
+            self.reason(data.application.applicationReason);
 
         }
 

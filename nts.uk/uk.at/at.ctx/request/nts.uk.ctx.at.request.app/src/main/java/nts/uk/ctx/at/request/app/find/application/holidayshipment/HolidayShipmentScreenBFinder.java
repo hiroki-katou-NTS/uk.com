@@ -128,7 +128,7 @@ public class HolidayShipmentScreenBFinder {
 				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD().v() : null;
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
-				aFinder.commonProcessAtStartup(employeeID, employeeID, refDate, recAppDate, recWorkTypeCD,
+				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD,
 						recWorkTimeCD, absAppDate, absWorkTypeCD, absWorkTimeCD, output);
 
 			}
