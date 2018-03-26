@@ -182,7 +182,8 @@ module nts.uk.at.view.kmk003.a {
 
 
             export class PredetemineTimeSettingModel {
-                rangeTimeDay: KnockoutObservable<number>;
+                rangeTimeDay: KnockoutComputed<number>; // in minutes
+                rangeTimeDayInHours: KnockoutObservable<number>; // in hours
                 workTimeCode: KnockoutObservable<string>;
                 predTime: PredetermineTimeModel;
                 nightShift: KnockoutObservable<number>;
@@ -193,7 +194,8 @@ module nts.uk.at.view.kmk003.a {
                 static TIME_UNIT = 60;
 
                 constructor() {
-                    this.rangeTimeDay = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 
+                    this.rangeTimeDayInHours = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 
+                    this.rangeTimeDay = ko.computed(() => this.rangeTimeDayInHours() * PredetemineTimeSettingModel.TIME_UNIT);
                     this.workTimeCode = ko.observable('');
                     this.predTime = new PredetermineTimeModel();
                     this.nightShift = ko.observable(0);
@@ -203,7 +205,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: PredetemineTimeSettingDto) {
-                    this.rangeTimeDay(data.rangeTimeDay / PredetemineTimeSettingModel.TIME_UNIT); // minutes to hours
+                    this.rangeTimeDay(data.rangeTimeDay);
                     this.workTimeCode(data.workTimeCode);
                     this.predTime.updateData(data.predTime);
                     this.nightShift(data.nightShift);
@@ -214,7 +216,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): PredetemineTimeSettingDto {
                     var dataDTO: PredetemineTimeSettingDto = {
-                        rangeTimeDay: this.rangeTimeDay() * PredetemineTimeSettingModel.TIME_UNIT, // hours to minutes
+                        rangeTimeDay: this.rangeTimeDay(),
                         workTimeCode: this.workTimeCode(),
                         predTime: this.predTime.toDto(),
                         nightShift: this.nightShift(),
