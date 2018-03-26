@@ -18,6 +18,8 @@ module cmm045.a.viewmodel {
         lstListAgent: KnockoutObservableArray<vmbase.ApproveAgent> = ko.observableArray([]);
         lstAppHdWork: KnockoutObservableArray<vmbase.AppHolidayWorkFull> = ko.observableArray([]);
         lstAppWorkChange: KnockoutObservableArray<vmbase.AppWorkChangeFull> = ko.observableArray([]);
+        lstAppAbsence: KnockoutObservableArray<vmbase.AppAbsenceFull> = ko.observableArray([]);
+        hdAppSet: KnockoutObservable<vmbase.HdAppSet> = ko.observable(null);
         
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
@@ -171,8 +173,20 @@ module cmm045.a.viewmodel {
                                 wkChange.goWorkAtr1, wkChange.workTimeStart1, wkChange.backHomeAtr1, wkChange.workTimeEnd1, wkChange.goWorkAtr2,
                                 wkChange.workTimeStart2, wkChange.backHomeAtr2, wkChange.workTimeEnd2, wkChange.breakTimeStart1, wkChange.breakTimeEnd1));
                         });
+                        _.each(data.lstAppAbsence, function(absence) {
+                            self.lstAppAbsence.push(new vmbase.AppAbsenceFull(absence.appID, absence.holidayAppType, absence.day, absence.workTimeName,
+                                absence.allDayHalfDayLeaveAtr, absence.startTime1, absence.endTime1, absence.startTime2,
+                                absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
+                        });
+                        if(data.hdAppSet != null){
+                            self.hdAppSet(new vmbase.HdAppSet(data.hdAppSet.obstacleName, data.hdAppSet.hdName, data.hdAppSet.yearHdName, data.hdAppSet.furikyuName,
+                                data.hdAppSet.timeDigest, data.hdAppSet.absenteeism, data.hdAppSet.specialVaca, data.hdAppSet.yearResig));
+                        }else{
+                            self.hdAppSet(new vmbase.HdAppSet('', '', '', '', '', '', '', ''));    
+                        }
+                        
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), 
-                            lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange());
+                            lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange(), self.lstAppAbsence());
 //                        let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                         self.lstApp(lstData);
                         self.items(vmbase.ProcessHandler.orderByList(lstData));
@@ -695,10 +709,11 @@ module cmm045.a.viewmodel {
         }
         //※特別休暇申請.続柄コード　＝　入力ありの場合
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
-            let hdAppSet = null;
+            let self = this;
             let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
-            let result = getText('CMM045_279') + getText('CMM045_248') + hdAppSet.specialVaca  
+            //hdAppSet.specialVaca
+            let result = getText('CMM045_279') + getText('CMM045_248') + self.hdAppSet().specialVaca
             + absence.relationshipName + day + reason;
             return result;
         }
@@ -712,24 +727,24 @@ module cmm045.a.viewmodel {
             return result;
         }
         convertNameHoliday(holidayType: number): string{
-            let hdAppSet = null;
+            let self = this;
             switch(holidayType){
                 case 0:// 年休名称 - 0
-                    return hdAppSet.yearHdName;
+                    return self.hdAppSet().yearHdName;
                 case 1:// 代表者名 - 1
-                    return hdAppSet.obstacleName;
+                    return self.hdAppSet().obstacleName;
                 case 2:// 欠勤名称 - 2
-                    return hdAppSet.absenteeism;
+                    return self.hdAppSet().absenteeism;
                 case 3:// 特別休暇名称 - 3
-                    return hdAppSet.specialVaca;
+                    return self.hdAppSet().specialVaca;
                 case 4:// 積立年休名称  - 4
-                    return hdAppSet.yearResig;
+                    return self.hdAppSet().yearResig;
                 case 5:// 休日名称 - 5
-                    return hdAppSet.hdName;
+                    return self.hdAppSet().hdName;
                 case 6:// 時間消化名称 - 6
-                    return hdAppSet.timeDigest;
+                    return self.hdAppSet().timeDigest;
                 case 7:// 振休名称 - 7
-                    return hdAppSet.furikyuName;
+                    return self.hdAppSet().furikyuName;
                 default:
                     return "";
             }
@@ -739,7 +754,7 @@ module cmm045.a.viewmodel {
          */
         mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,
             lstOverTime: Array<vmbase.AppOverTimeInfoFull>, lstAppGroup: Array<vmbase.AppPrePostGroup>, lstHdWork: Array<vmbase.AppHolidayWorkFull>,
-            lstWorkChange: Array<vmbase.AppWorkChangeFull>): Array<vmbase.DataModeApp> {
+            lstWorkChange: Array<vmbase.AppWorkChangeFull>, lstAppAbsence: Array<vmbase.AppAbsenceFull>): Array<vmbase.DataModeApp> {
             let self = this;
             let lstData: Array<vmbase.DataModeApp> = [];
             _.each(lstApp, function(app: vmbase.ApplicationDto_New) {
@@ -770,6 +785,10 @@ module cmm045.a.viewmodel {
                     let wkChange = self.findWorkChange(app.applicationID, lstWorkChange);
                     data = self.formatWorkChange(app, wkChange, masterInfo);
                 }
+                if(app.applicationType == 1){//absence
+                    let absence = self.findAbsence(app.applicationID, lstAppAbsence);
+                    data = self.formatAbsence(app, absence, masterInfo);
+                }
                 lstData.push(data);
             });
             return lstData;
@@ -788,6 +807,14 @@ module cmm045.a.viewmodel {
         findWorkChange(appId: string, lstWorkChange: Array<vmbase.AppWorkChangeFull>){
             return _.find(lstWorkChange, function(workChange) {
                 return workChange.appId == appId;
+            });
+        }
+        /**
+         * find application work change by id
+         */
+        findAbsence(appId: string, lstAppAbsence: Array<vmbase.AppAbsenceFull>){
+            return _.find(lstAppAbsence, function(absence) {
+                return absence.appID == appId;
             });
         }
         /**
@@ -972,8 +999,13 @@ module cmm045.a.viewmodel {
                         wkChange.goWorkAtr1, wkChange.workTimeStart1, wkChange.backHomeAtr1, wkChange.workTimeEnd1, wkChange.goWorkAtr2,
                         wkChange.workTimeStart2, wkChange.backHomeAtr2, wkChange.workTimeEnd2, wkChange.breakTimeStart1, wkChange.breakTimeEnd1));
                 });
+                _.each(data.lstAppAbsence, function(absence) {
+                    self.lstAppAbsence.push(new vmbase.AppAbsenceFull(absence.appID, absence.holidayAppType, absence.day, absence.workTimeName,
+                        absence.allDayHalfDayLeaveAtr, absence.startTime1, absence.endTime1, absence.startTime2,
+                        absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
+                });
                 let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), 
-                    lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange());
+                    lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange(), self.lstAppAbsence());
                 self.lstApp(lstData);
                 if (self.selectedCode() != -1) {
                     self.filterByAppType(self.selectedCode());

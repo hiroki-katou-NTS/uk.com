@@ -26,5 +26,5 @@ public class AppAbsenceFull {
 	/**続柄コード - Name*/
 	private String relationshipName;
 	/**喪主フラグ*/
-	private boolean mournerFlag;
+	private Boolean mournerFlag;
 }
