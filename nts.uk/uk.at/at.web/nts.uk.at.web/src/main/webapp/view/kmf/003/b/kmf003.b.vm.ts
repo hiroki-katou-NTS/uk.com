@@ -345,6 +345,34 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 return;
             }
             
+            _.forEach(grantHolidayTblList, function(item) {
+                if(checkErr) {
+                    if((item.year != null || item.month != null) && item.grantDays == null) {
+                        if(Number(item.year) == 0 && Number(item.month) == 0) {
+                            checkErr = false;
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_268" }).then(() => {
+                                $('#b2_1').focus();
+                            });
+                            return;
+                        } else {
+                            checkErr = false;
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
+                                $('#b2_1').focus();
+                            });
+                            return;
+                        }                        
+                    } else if((item.year == null || item.month == null) && item.grantDays != null) {
+                        if(Number(item.year) == 0 && Number(item.month) == 0) {
+                            checkErr = false;
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_268" }).then(() => {
+                                $('#b2_1').focus();
+                            });
+                            return;
+                        }                       
+                    }
+                }
+            });
+            
             if(checkErr){
                 service.addYearHolidayGrant(grantHolidayTblList).done(function(){
                     nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
