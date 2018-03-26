@@ -11,17 +11,10 @@ public interface OptionalWidgetRepository {
 
 	void update(OptionalWidget widget);
 
-	void remove(String companyID, String topPagePartID);
+	void remove(String companyID, String topPagePartID, List<Integer> displayItemTypes);
 
 	Optional<OptionalWidget> findByCode(String companyID, String topPagePartID);
 
-	List<WidgetDisplay> findAllWidget(String companyID, String widgetCode);
-
-	void add(WidgetDisplay widget);
-
-	void update(WidgetDisplay display);
-
-	void removeWidget(String companyID, String widgetCode);
-
+	boolean isExist(String companyId, String code);
 
 }

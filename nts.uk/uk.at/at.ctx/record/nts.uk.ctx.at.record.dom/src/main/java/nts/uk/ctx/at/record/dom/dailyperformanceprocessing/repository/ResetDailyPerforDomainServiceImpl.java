@@ -7,10 +7,16 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -60,7 +66,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getCalAtr(),
 									baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getUpLimitORtSet());
 							
-//							AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(salaryCalSetting, specificSalaryCalSetting)
+							AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(SalaryCalAttr.NOT_USE, SpecificSalaryCalAttr.NOT_USE);
 
 							// number 3
 							AutoCalHolidaySetting holidayTimeSetting = new AutoCalHolidaySetting(
@@ -94,10 +100,14 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 											baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime()
 													.getUpLimitORtSet()));
+							
+							AutoCalOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalOfLeaveEarlySetting(LeaveAttr.NOT_USE, LeaveAttr.NOT_USE);
+							
+							AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.NOT_USE);
 
 							CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(
-									employeeID, processingDate, flexExcessTime, null, holidayTimeSetting, overtimeSetting, null,
-									null);
+									employeeID, processingDate, flexExcessTime, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting, autoCalOfLeaveEarlySetting,
+									autoCalcSetOfDivergenceTime);
 
 						}
 						// 特定日を日別実績に反映する(Reflect 日別実績)

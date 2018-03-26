@@ -16,8 +16,7 @@ public class OutputDetailCheckDto {
 		private boolean alternateExpiration;
 		//ドメインモデル「申請」．入力者 == ログイン者社員ID OR ドメインモデル「申請」．申請者 == ログイン者社員ID
 		private boolean loginInputOrApproval;
-		
-		private int screenMode;
+	
 		public static OutputDetailCheckDto fromDomain(DetailedScreenPreBootModeOutput domain) {
 			return new OutputDetailCheckDto(
 					domain.getUser().value,
@@ -25,8 +24,7 @@ public class OutputDetailCheckDto {
 					domain.isAuthorizableFlags(),
 					domain.getApprovalATR().value,
 					domain.isAlternateExpiration(),
-					domain.isLoginInputOrApproval(),
-					domain.getScreenMode().value
+					domain.isLoginInputOrApproval()
 					);
 		}
 }

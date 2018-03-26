@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -14,6 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author keisuke_hoshina
  *
  */
+@Stateless
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
 
 	@Inject

@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.Column;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseSet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
@@ -73,6 +73,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTypeChang
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
@@ -497,8 +498,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
 				KalmtAnnualPaidLeave.class);
 		if (entity.isPresent()) {
-			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false,
-					entity.get().getPermitAtr() == 1 ? true : false, entity.get().getPermitAtr());
+			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false, entity.get().getPriorityType());
 		}
 		return null;
 	}
@@ -1054,7 +1054,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId) {
 		return this.queryProxy().find(new KrcmtIdentityProceSetPK(comapnyId), KrcmtIdentityProceSet.class)
-				.map(x -> new IdentityProcessUseSetDto(x.useConfirmByYourself == 1 ? true : false, x.useIdentityOfMonth == 1 ? true : false));
+				.map(x -> new IdentityProcessUseSetDto(x.useConfirmByYourself == 1 ? true : false,
+						x.useIdentityOfMonth == 1 ? true : false,
+						x.yourSelfConfirmError != null ? x.yourSelfConfirmError : null));
 	}
 
 	@Override
@@ -1069,6 +1071,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		} else {
 			return Collections.emptyMap();
 		}
+	}
+
+	@Override
+	public Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId) {
+		return this.queryProxy().find(comapnyId, KrcstAppProUseSet.class)
+				.map(x -> new ApprovalUseSettingDto(x.dayApproverComfirmAtr.intValue() == 1 ? true : false,
+						x.monthApproverComfirmAtr.intValue() == 1 ? true : false,
+						x.comfirmErrorAtr != null ? x.comfirmErrorAtr.intValue() : null));
 	}
 
 }

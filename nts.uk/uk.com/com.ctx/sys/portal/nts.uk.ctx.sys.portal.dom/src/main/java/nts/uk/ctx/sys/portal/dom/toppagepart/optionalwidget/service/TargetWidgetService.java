@@ -47,7 +47,7 @@ public class TargetWidgetService implements WidgetService{
 	}
 
 	@Override
-	public void createWidget(OptionalWidget widget) {
+	public void addWidget(OptionalWidget widget) {
 		if (topPagePartService.isExist(widget.getCompanyID(), widget.getCode().v(), TopPagePartType.OptionalWidget.value)) {
 			throw new BusinessException("Msg_3");
 		}

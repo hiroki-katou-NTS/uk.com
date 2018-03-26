@@ -135,7 +135,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLate = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true);
 			//開始時刻を反映する 
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate, 1, true);
-			scheUpdateService.updateReflectStartEndTime(timeData, commonService.lstWorkItem());			
+			scheUpdateService.updateReflectStartEndTime(timeData);			
 		}
 		//退勤時刻を反映できるか
 		if(this.checkAttendenceReflect(para, 1, false)) {
@@ -143,7 +143,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLeave = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false);
 			//終了時刻の反映
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave, 1, false);
-			scheUpdateService.updateReflectStartEndTime(timeData, commonService.lstWorkItem());
+			scheUpdateService.updateReflectStartEndTime(timeData);
 		}
 		//TODO 出勤時刻２を反映できるか, 退勤時刻２を反映できるか
 	}

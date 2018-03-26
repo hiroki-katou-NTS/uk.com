@@ -19,7 +19,7 @@
 			<ul tabindex="1" class="navigator">
 				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator"
 					class="active"> #{i18n.getText('Com_Company')} </a></li>
-				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator"
+				<li data-bind="visible: employmentVisible"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator"
 					data-bind="click: checkComManaged">
 						#{i18n.getText('Com_Employment')} </a></li>
 			</ul>
@@ -29,7 +29,6 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-<!-- 					<button tabindex="2" data-bind="click: back">#{i18n.getText('KMF001_27')}</button> -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }" tabindex="2">#{i18n.getText('KMF001_27')}</a>
 					<button tabindex="3" class="proceed"
 						data-bind="click: saveComSetting">
@@ -47,7 +46,7 @@
 									#{i18n.getText('KMF001_93')}</div></td>
 							<td class="row_head">
 								<!-- ＃KMF001_93 enum  管理区分 -->
-								<div id = "company-manage" tabindex="5" class="btn-switch"
+								<div id = "company-manage" tabindex="4" class="btn-switch"
 									data-bind="ntsSwitchButton: {
 									options: $parent.manageDistinctEnums,
 									optionsValue: 'value',
@@ -76,10 +75,11 @@
 												<tr>
 													<td>#{i18n.getText('KMF001_94')}</td>
 													<td>
-														<div tabindex="6"
+														<div tabindex="5"
 															data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
 																			optionsValue: 'value',
+																			visibleItemsCount: 15,
 																			value: expirationDate,
 																			optionsText: 'localizedName',
 																			editable: false,
@@ -91,7 +91,7 @@
 												</tr>
 												<tr>
 													<td>#{i18n.getText('KMF001_95')}</td>
-													<td><div tabindex="7"
+													<td><div tabindex="6"
 															data-bind="ntsSwitchButton: {
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',
@@ -114,29 +114,39 @@
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 <!-- 					<button data-bind="click: back"> -->
 <!-- 						#{i18n.getText('KMF001_27')}</button> -->
-					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
-					<button class="proceed"
+					<a class="goback" tabindex="5" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
+					<button class="proceed" tabindex="6"
 						data-bind="click: saveEmpSetting , enable: saveDisable">
 						#{i18n.getText('KMF001_28')}</button>
 
 					<!-- <span class="title" style="float: right; font-size: 15px;">
 						#{i18n.getText('KMF001_29')} </span> -->
+					<button class="danger register-button" tabindex="7" data-bind="click: deleteEmpSetting, enable: deleteEnable">#{i18n.getText('KMF001_149')}</button>
 				</div>
 				<div class="contents-area">
 					<table>
 						<tr>
 							<td>
-								<div tabindex ="1" id="left-content"></div>
+								<div tabindex ="8" id="left-content"></div>
 							</td>
 							<td id="right-content">
 								<table class="form-default" data-bind="with: empSettingModel"
 									style="margin-left: 87px;">
 									<tr>
+										<td colspan="2" style="padding-bottom: 20px;">
+											<div>#{i18n.getText('KMF001_150')}</div>
+										</td>
+										<td colspan="2" style="padding-bottom: 20px;">
+											<span data-bind="text: $parent.selectedItem"></span>
+											<span data-bind="text: $parent.selectedName"></span>
+										</td>
+									</tr>
+									<tr>
 										<td colspan="3">
 											<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_93')}</div>
 										</td>
 										<td>
-											<div id="employment-manage" tabindex="2" class="btn-switch"
+											<div id="employment-manage" tabindex="9" class="btn-switch"
 												data-bind="ntsSwitchButton: {
 																options: $parent.manageDistinctEnums,
 																optionsValue: 'value',
@@ -169,12 +179,13 @@
 										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_94')}</td>
 										<td>
 											<div>
-												<div tabindex="3"
+												<div tabindex="10"
 													data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
 																			optionsValue: 'value',
 																			value: expirationDate,
 																			optionsText: 'localizedName',
+																			visibleItemsCount: 15,
 																			editable: false,
 																			enable: $parent.isEmpManaged,
 																			columns: [
@@ -185,7 +196,7 @@
 									</tr>
 									<tr>
 										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_95')}</td>
-										<td><div tabindex="4"
+										<td><div tabindex="11"
 												data-bind="ntsSwitchButton: {
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',

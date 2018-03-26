@@ -6,7 +6,7 @@ import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalRange;
 
-@DecimalRange(min = "0", max = "999")
+@DecimalRange(min = "0", max = "99.5")
 @DecimalMantissaMaxLength(1)
 public class GrantDays extends DecimalPrimitiveValue<GrantDays> {
 

@@ -66,7 +66,8 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 		List<GrantHdTbl> grantDomain = new ArrayList<>();
 		for (GrantHolidayCommand data : command) {
 			GrantHdTbl newData = GrantHdTbl.createFromJavaType(companyId, data.getConditionNo(), data.getYearHolidayCode(), 
-					data.getGrantNum(), data.getGrantDays(), data.getLimitTimeHd(), data.getLimitDayYear());
+					data.getGrantNum(), data.getGrantDays(), data.getLimitTimeHd() != null ? data.getLimitTimeHd() : 0, 
+					data.getLimitDayYear() != null ? data.getLimitDayYear() : 0);
 			
 			if(newData.getGrantDays().v() != null && newData.getLimitTimeHd().isPresent() && newData.getLimitDayYear().isPresent()) {
 				grantDomain.add(newData);

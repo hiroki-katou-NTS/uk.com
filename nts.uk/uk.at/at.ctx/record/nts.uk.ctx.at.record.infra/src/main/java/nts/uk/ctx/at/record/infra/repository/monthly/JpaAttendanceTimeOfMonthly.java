@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingT
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
@@ -139,6 +140,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			+ "AND a.PK.yearMonth = :yearMonth "
 			+ "ORDER BY a.startYmd ";
 
+	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "ORDER BY a.startYmd ";
+
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
@@ -169,6 +176,18 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.getList(c -> toDomain(c));
 	}
 
+	/** 検索　（年月と締めID） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
+			ClosureId closureId) {
+		
+		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.getList(c -> toDomain(c));
+	}
+	
 	/**
 	 * エンティティ→ドメイン
 	 * @param entity エンティティ：月別実績の勤怠時間
@@ -254,7 +273,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(entity.excessFlexAtr, ExcessFlexAtr.class),
 						new AttendanceTimeMonth(entity.principleTime),
-						new AttendanceTimeMonth(entity.forConvenienceTime)));
+						new AttendanceTimeMonth(entity.forConvenienceTime)),
+				FlexShortDeductTime.of(
+						new AttendanceDaysMonth(entity.annualLeaveDeductDays),
+						new AttendanceTimeMonth(entity.absenceDeductTime),
+						new AttendanceTimeMonth(entity.shotTimeBeforeDeduct))
+			);
 		return domain;
 	}
 	
@@ -807,6 +831,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		val flexTime = flexTimeOfMonthly.getFlexTime();
 		val flexCarryForwardTime = flexTimeOfMonthly.getFlexCarryforwardTime();
 		val flexTimeOfExcessOutsideTime = flexTimeOfMonthly.getFlexTimeOfExcessOutsideTime();
+		val flexShortDeductTime = flexTimeOfMonthly.getFlexShortDeductTime();
 		if (entity.krcdtMonFlexTime == null){
 			entity.krcdtMonFlexTime = new KrcdtMonFlexTime();
 			entity.krcdtMonFlexTime.PK = key;
@@ -825,6 +850,9 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entityFlexTime.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
 		entityFlexTime.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
 		entityFlexTime.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
+		entityFlexTime.annualLeaveDeductDays = flexShortDeductTime.getAnnualLeaveDeductDays().v();
+		entityFlexTime.absenceDeductTime = flexShortDeductTime.getAbsenceDeductTime().v();
+		entityFlexTime.shotTimeBeforeDeduct = flexShortDeductTime.getFlexShortTimeBeforeDeduct().v();
 		
 		// 総労働時間：月別実績の休暇使用時間
 		val totalWorkingTime = monthlyCalculation.getTotalWorkingTime();

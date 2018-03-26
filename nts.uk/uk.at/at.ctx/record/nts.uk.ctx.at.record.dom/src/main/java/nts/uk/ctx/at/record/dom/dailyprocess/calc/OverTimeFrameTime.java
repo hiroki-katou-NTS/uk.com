@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  */
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -20,6 +21,7 @@ public class OverTimeFrameTime {
 	/** 振替時間: 計算付き時間 */
 	private TimeWithCalculation TransferTime;
 	/** 事前申請時間: 勤怠時間 */
+	@Setter
 	private AttendanceTime BeforeApplicationTime;
 	/** 指示時間: 勤怠時間 */
 	private AttendanceTime orderTime;
@@ -38,8 +40,12 @@ public class OverTimeFrameTime {
 	}
 	
 	
-	public void addOverTime(AttendanceTime time,AttendanceTime calcTime) {
-		this.OverTimeWork = this.OverTimeWork.addMinutes(time, calcTime);
+	public OverTimeFrameTime addOverTime(AttendanceTime time,AttendanceTime calcTime) {
+		return new OverTimeFrameTime(this.OverWorkFrameNo,
+									 this.OverTimeWork.addMinutes(time, calcTime),
+									 this.TransferTime,
+									 this.BeforeApplicationTime,
+									 this.orderTime);
 	}
 
 

@@ -334,7 +334,12 @@ module nts.uk.com.view.cmm021.a {
                     { headerText: nts.uk.resource.getText('CMM021_13'), key: 'loginId', width: 135 },
                     { headerText: nts.uk.resource.getText('CMM021_14'), key: 'employeeCode', width: 135 },
                     { headerText: nts.uk.resource.getText('CMM021_15'), key: 'businessName', width: 135 },
-                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 60, formatter: lockIcon }
+                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'isSetting', width: 60, formatter: function(isSetting: string): any {
+                        if (isSetting == 'true') {
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
+                        }
+                        return '';
+                    } }
                 ]);
             }
 
@@ -735,13 +740,11 @@ module nts.uk.com.view.cmm021.a {
                 nts.uk.ui.block.invisible();
                 service.findListUserInfo(_self.baseDate, false)
                     .done((data: UserDto[]) => {
-                        _self.listUserDto = [];
                         _self.listUserDto = data;
                         if (_.isEmpty(_self.listUserDto)) {
                             _self.findUserDtoByEmployeeId("");
                             _self.unLoadListWinAcc();
-                        }
-                        if (!_.isEmpty(_self.listUserDto)) {
+                        } else {
                             if (_self.selectedEmployeeId() == _self.listUserDto[0].employeeId) {
                                 _self.selectedEmployeeId.valueHasMutated();
                             } else {
@@ -994,19 +997,11 @@ module nts.uk.com.view.cmm021.a {
                 _self.listUserInfos([]);
                 // check user info loaded is not empty
                 if (!_.isEmpty(_self.listUserDto)) {
-                    for (let userDto of _self.listUserDto) {
-                        if (userDto.isSetting) {
-                            _self.listUserInfos.push(new ItemModel(userDto.businessName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 1));
-
-                        } else {
-                            _self.listUserInfos.push(new ItemModel(userDto.businessName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 0));
-                        }
-                    }
-                    // if user info loaded is empty, set unselected mode    
+                    _self.listUserInfos(_self.listUserDto);
+                // if user info loaded is empty, set unselected mode    
                 } else {
                     _self.unselectedMode();
                 }
-
             }
 
             private loadUserDtoForScreenC() {
@@ -1014,15 +1009,8 @@ module nts.uk.com.view.cmm021.a {
                 _self.listUserInfos([]);
                 // check user info loaded is not empty
                 if (!_.isEmpty(_self.listUserDtoScreenAC)) {
-                    for (let userDto of _self.listUserDtoScreenAC) {
-                        if (userDto.isSetting) {
-                            _self.listUserInfos.push(new ItemModel(userDto.businessName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 1));
-
-                        } else {
-                            _self.listUserInfos.push(new ItemModel(userDto.businessName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 0));
-                        }
-                    }
-                    // if user info loaded is empty, set unselected mode 
+                    _self.listUserInfos(_self.listUserDtoScreenAC);
+                // if user info loaded is empty, set unselected mode 
                 } else {
                     _self.unselectedMode();
                 }
@@ -1254,7 +1242,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
                 _self.selectUse(1);
-                _self.listUserInfos([]);
+                _self.listUserInfos([]);                
                 _self.loadUserInfoForOtherAcc();
                 
             }
@@ -1396,14 +1384,6 @@ module nts.uk.com.view.cmm021.a {
             }
         }
     }
-
-    function lockIcon(value: any) {
-        let _self = this;
-        if (value == 1)
-            return "<i class='icon-78 icon'></i>";
-        return '';
-    }
-
 
     class ItemModel {
         businessName: string;
