@@ -9,22 +9,29 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
 
 /**
- * The Class WkployeeRegularWorkHourDto.
+ * The Class WkpRegularWorkHourDto.
  */
+
 @Data
 public class WkpRegularWorkHourDto {
 
-	/** The employee id. */
+	/** The wkp id. */
 	/** 社員ID. */
 	private String wkpId;
 	
 	/** The company id. */
 	private String companyId;
 
-	/** The working time setting new. */
+	/** The working time setting. */
 	/** 会社労働時間設定. */
 	private WorkingTimeSettingDto workingTimeSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the wkp regular work hour dto
+	 */
 	public static WkpRegularWorkHourDto fromDomain(WkpRegularLaborTime domain) {
 		WkpRegularWorkHourDto dto = new WkpRegularWorkHourDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());

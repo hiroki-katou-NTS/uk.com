@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 
 /**
- * The Class ShainDeforLaborSettingDto.
+ * The Class WkpDeforLaborSettingDto.
  */
 @Data
 public class WkpDeforLaborSettingDto {
@@ -23,7 +23,7 @@ public class WkpDeforLaborSettingDto {
 	/** 会社ID. */
 	private String companyId;
 
-	/** The employee id. */
+	/** The wkp id. */
 	/** 社員ID. */
 	private String wkpId;
 
@@ -35,6 +35,12 @@ public class WkpDeforLaborSettingDto {
 	/** 法定時間. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the wkp defor labor setting dto
+	 */
 	public static WkpDeforLaborSettingDto fromDomain(WkpDeforLaborSetting domain) {
 		WkpDeforLaborSettingDto dto = new WkpDeforLaborSettingDto();
 		dto.setYear(domain.getYear().v());

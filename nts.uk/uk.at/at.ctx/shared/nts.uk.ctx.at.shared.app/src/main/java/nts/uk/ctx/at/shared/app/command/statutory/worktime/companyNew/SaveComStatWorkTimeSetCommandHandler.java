@@ -25,27 +25,35 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeR
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class SaveComDeformationLaborSettingCommandHandler.
+ * The Class SaveComStatWorkTimeSetCommandHandler.
  */
 @Stateless
 @Transactional
 public class SaveComStatWorkTimeSetCommandHandler extends CommandHandler<SaveComStatWorkTimeSetCommand> {
 
+	/** The com normal setting repository. */
 	@Inject
 	private ComNormalSettingRepository comNormalSettingRepository;
 	
+	/** The com flex setting repository. */
 	@Inject
 	private ComFlexSettingRepository comFlexSettingRepository;
 	
+	/** The com defor labor setting repository. */
 	@Inject
 	private ComDeforLaborSettingRepository comDeforLaborSettingRepository;
 	
+	/** The com regular labor time repository. */
 	@Inject
 	private ComRegularLaborTimeRepository comRegularLaborTimeRepository;
 	
+	/** The com trans labor time repository. */
 	@Inject
 	private ComTransLaborTimeRepository comTransLaborTimeRepository;
 
+	/* 
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<SaveComStatWorkTimeSetCommand> context) {
 

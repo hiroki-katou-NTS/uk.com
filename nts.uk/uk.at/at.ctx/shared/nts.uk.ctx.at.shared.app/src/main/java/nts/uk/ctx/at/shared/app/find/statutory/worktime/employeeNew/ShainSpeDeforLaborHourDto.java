@@ -12,9 +12,6 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTi
  * The Class ShainSpeDeforLaborHourDto.
  */
 
-/**
- * Instantiates a new shain spe defor labor hour dto.
- */
 @Data
 public class ShainSpeDeforLaborHourDto {
 

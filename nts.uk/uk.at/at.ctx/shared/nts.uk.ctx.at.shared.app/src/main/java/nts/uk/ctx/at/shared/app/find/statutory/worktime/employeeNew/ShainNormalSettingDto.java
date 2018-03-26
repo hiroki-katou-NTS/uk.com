@@ -13,10 +13,12 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettin
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class EmpNormalSettingDto.
+ * The Class ShainNormalSettingDto.
  */
+
 @Data
 public class ShainNormalSettingDto {
+	
 	/** The employee id. */
 	private String employeeId;
 
@@ -29,6 +31,12 @@ public class ShainNormalSettingDto {
 	/** The statutory setting. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the shain normal setting dto
+	 */
 	public static ShainNormalSettingDto fromDomain(ShainNormalSetting domain) {
 		ShainNormalSettingDto dto = new ShainNormalSettingDto();
 		dto.setYear(domain.getYear().v());

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTim
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class ComStatWorkTimeSetFinder.
+ * The Class EmpStatWorkTimeSetFinder.
  */
 @Stateless
 public class EmpStatWorkTimeSetFinder {
@@ -40,19 +40,19 @@ public class EmpStatWorkTimeSetFinder {
 	@Inject
 	private EmpDeforLaborSettingRepository deforLaborSettingRepository;
 
-	/** The trans labor time repository. */
+	/** The trans work time repository. */
 	@Inject
 	private EmpTransWorkTimeRepository transWorkTimeRepository; 
 
-	/** The regular labor time repository. */
+	/** The regular work time repository. */
 	@Inject
 	private EmpRegularWorkTimeRepository regularWorkTimeRepository;
 
 	/**
 	 * Gets the details.
 	 *
-	 * @param year
-	 *            the year
+	 * @param year the year
+	 * @param emplCode the empl code
 	 * @return the details
 	 */
 	public EmpStatWorkTimeSetDto getDetails(Integer year, String emplCode) {

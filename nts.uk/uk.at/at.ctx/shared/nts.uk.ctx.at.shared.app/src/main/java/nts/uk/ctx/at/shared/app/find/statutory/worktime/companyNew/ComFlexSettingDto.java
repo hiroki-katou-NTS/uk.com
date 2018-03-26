@@ -16,6 +16,10 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 /**
  * The Class ComFlexSettingDto.
  */
+
+/**
+ * Instantiates a new com flex setting dto.
+ */
 @Data
 public class ComFlexSettingDto {
 
@@ -31,6 +35,12 @@ public class ComFlexSettingDto {
 	/** 所定時間. */
 	private List<MonthlyUnitDto> specifiedSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the com flex setting dto
+	 */
 	public static ComFlexSettingDto fromDomain(ComFlexSetting domain) {
 		ComFlexSettingDto dto = new ComFlexSettingDto();
 		dto.setYear(domain.getYear().v());

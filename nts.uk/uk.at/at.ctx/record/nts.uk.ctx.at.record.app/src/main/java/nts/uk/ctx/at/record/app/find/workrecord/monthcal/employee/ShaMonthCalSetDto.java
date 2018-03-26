@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 /**
  * The Class ShaMonthCalSetDto.
  */
+
 @Getter
 @Setter
 @Builder
@@ -44,26 +45,41 @@ public class ShaMonthCalSetDto implements ShaRegulaMonthActCalSetSetMemento,
 	private DeforWorkTimeAggrSetDto deforAggrSetting;
 
 
+	/* 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet)
+	 */
 	@Override
 	public void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
 		deforAggrSetting.fromDomain(legalAggrSetOfIrgNew);
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet)
+	 */
 	@Override
 	public void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
 		flexAggrSetting.fromDomain(aggrSettingMonthlyOfFlxNew);
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet)
+	 */
 	@Override
 	public void setAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
 		regAggrSetting.fromDomain(legalAggrSetOfRegNew);
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.companyId = companyId.v();
 	}
 
+	/* 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetSetMemento#setEmployeeId(nts.uk.ctx.at.shared.dom.common.EmployeeId)
+	 */
 	@Override
 	public void setEmployeeId(EmployeeId employeeId) {
 		this.employeeId = employeeId.v();

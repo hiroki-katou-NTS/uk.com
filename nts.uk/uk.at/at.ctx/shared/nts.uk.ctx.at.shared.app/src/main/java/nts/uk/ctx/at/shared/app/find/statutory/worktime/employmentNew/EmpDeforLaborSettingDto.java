@@ -14,8 +14,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 
 /**
- * The Class ShainDeforLaborSettingDto.
+ * The Class EmpDeforLaborSettingDto.
  */
+
 @Data
 public class EmpDeforLaborSettingDto {
 
@@ -23,7 +24,7 @@ public class EmpDeforLaborSettingDto {
 	/** 会社ID. */
 	private String companyId;
 
-	/** The employee id. */
+	/** The employment code. */
 	/** 社員ID. */
 	private String employmentCode;
 
@@ -35,6 +36,12 @@ public class EmpDeforLaborSettingDto {
 	/** 法定時間. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the emp defor labor setting dto
+	 */
 	public static EmpDeforLaborSettingDto fromDomain(EmpDeforLaborSetting domain) {
 		EmpDeforLaborSettingDto dto = new EmpDeforLaborSettingDto();
 		dto.setYear(domain.getYear().v());

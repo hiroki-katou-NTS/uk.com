@@ -15,9 +15,11 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class WkpNormalSettingDto.
  */
+
 @Data
 public class WkpNormalSettingDto {
-	/** The employee id. */
+	
+	/** The wkp id. */
 	private String wkpId;
 
 	/** The year. */
@@ -29,6 +31,12 @@ public class WkpNormalSettingDto {
 	/** The statutory setting. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the wkp normal setting dto
+	 */
 	public static WkpNormalSettingDto fromDomain(WkpNormalSetting domain) {
 		WkpNormalSettingDto dto = new WkpNormalSettingDto();
 		dto.setYear(domain.getYear().v());

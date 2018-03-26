@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 /**
  * The Class ComNormalSettingDto.
  */
+
 @Data
 public class ComNormalSettingDto {
 
@@ -27,6 +28,12 @@ public class ComNormalSettingDto {
 	/** 法定時間. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the com normal setting dto
+	 */
 	public static ComNormalSettingDto fromDomain(ComNormalSetting domain) {
 		ComNormalSettingDto dto = new ComNormalSettingDto();
 		dto.setYear(domain.getYear().v());

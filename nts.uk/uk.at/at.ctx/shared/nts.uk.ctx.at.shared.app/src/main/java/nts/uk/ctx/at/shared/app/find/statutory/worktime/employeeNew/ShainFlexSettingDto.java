@@ -18,6 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class ShainFlexSettingDto.
  */
+
 @Data
 public class ShainFlexSettingDto{
 	
@@ -40,6 +41,12 @@ public class ShainFlexSettingDto{
 	/** 所定時間. */
 	private List<MonthlyUnitDto> specifiedSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the shain flex setting dto
+	 */
 	public static ShainFlexSettingDto fromDomain(ShainFlexSetting domain) {
 		ShainFlexSettingDto dto = new ShainFlexSettingDto();
 		dto.setYear(domain.getYear().v());

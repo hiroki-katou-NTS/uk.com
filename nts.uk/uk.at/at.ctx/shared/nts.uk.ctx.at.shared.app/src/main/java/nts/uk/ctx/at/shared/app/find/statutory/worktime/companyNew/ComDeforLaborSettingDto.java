@@ -13,10 +13,9 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetti
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Gets the statutory setting.
- *
- * @return the statutory setting
+ * The Class ComDeforLaborSettingDto.
  */
+
 @Data
 public class ComDeforLaborSettingDto {
 
@@ -31,6 +30,12 @@ public class ComDeforLaborSettingDto {
 	/** 法定時間. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the com defor labor setting dto
+	 */
 	public static ComDeforLaborSettingDto fromDomain(ComDeforLaborSetting domain) {
 		ComDeforLaborSettingDto dto = new ComDeforLaborSettingDto();
 		dto.setYear(domain.getYear().v());

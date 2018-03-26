@@ -9,14 +9,22 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
 
 /**
- * The Class CompanyRegularLaborHourDto.
+ * The Class ComRegularLaborTimeDto.
  */
+
 @Data
 public class ComRegularLaborTimeDto {
-	/** The working time setting new. */
+	
+	/** The working time setting. */
 	/** 会社労働時間設定. */
 	private WorkingTimeSettingDto workingTimeSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param comRegularLaborTime the com regular labor time
+	 * @return the com regular labor time dto
+	 */
 	public static ComRegularLaborTimeDto fromDomain(ComRegularLaborTime comRegularLaborTime) {
 		ComRegularLaborTimeDto dto = new ComRegularLaborTimeDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(comRegularLaborTime.getWorkingTimeSet());

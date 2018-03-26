@@ -9,16 +9,13 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 
 /**
- * The Class ShainSpeDeforLaborHourDto.
+ * The Class EmpTransLaborHourDto.
  */
 
-/**
- * Instantiates a new shain spe defor labor hour dto.
- */
 @Data
 public class EmpTransLaborHourDto {
 
-	/** The employee id. */
+	/** The employment code. */
 	private String employmentCode;
 
 	/** The company id. */
@@ -32,7 +29,7 @@ public class EmpTransLaborHourDto {
 	 * From domain.
 	 *
 	 * @param domain the domain
-	 * @return the shain spe defor labor hour dto
+	 * @return the emp trans labor hour dto
 	 */
 	public static EmpTransLaborHourDto fromDomain(EmpTransLaborTime domain) {
 		EmpTransLaborHourDto dto = new EmpTransLaborHourDto();

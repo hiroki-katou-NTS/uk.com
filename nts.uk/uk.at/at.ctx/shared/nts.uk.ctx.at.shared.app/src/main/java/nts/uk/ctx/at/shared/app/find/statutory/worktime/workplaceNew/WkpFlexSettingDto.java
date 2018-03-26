@@ -16,12 +16,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 
 /**
- * The Class ShainFlexSettingDto.
+ * The Class WkpFlexSettingDto.
  */
+
 @Data
 public class WkpFlexSettingDto{
 	
-	/** The employee id. */
+	/** The wkp id. */
 	/** 社員ID. */
 	private String wkpId;
 	
@@ -40,6 +41,12 @@ public class WkpFlexSettingDto{
 	/** 所定時間. */
 	private List<MonthlyUnitDto> specifiedSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the wkp flex setting dto
+	 */
 	public static WkpFlexSettingDto fromDomain(WkpFlexSetting domain) {
 		WkpFlexSettingDto dto = new WkpFlexSettingDto();
 		dto.setYear(domain.getYear().v());

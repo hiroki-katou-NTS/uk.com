@@ -16,12 +16,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 
 /**
- * The Class ShainFlexSettingDto.
+ * The Class EmpFlexSettingDto.
  */
+
 @Data
 public class EmpFlexSettingDto{
 	
-	/** The employee id. */
+	/** The employment code. */
 	/** 社員ID. */
 	private String employmentCode;
 	
@@ -40,6 +41,12 @@ public class EmpFlexSettingDto{
 	/** 所定時間. */
 	private List<MonthlyUnitDto> specifiedSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the emp flex setting dto
+	 */
 	public static EmpFlexSettingDto fromDomain(EmpFlexSetting domain) {
 		EmpFlexSettingDto dto = new EmpFlexSettingDto();
 		dto.setYear(domain.getYear().v());

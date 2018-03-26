@@ -35,6 +35,12 @@ public class ShainDeforLaborSettingDto {
 	/** 法定時間. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the shain defor labor setting dto
+	 */
 	public static ShainDeforLaborSettingDto fromDomain(ShainDeforLaborSetting domain) {
 		ShainDeforLaborSettingDto dto = new ShainDeforLaborSettingDto();
 		dto.setYear(domain.getYear().v());

@@ -9,16 +9,12 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
 
 /**
- * The Class ShainSpeDeforLaborHourDto.
- */
-
-/**
- * Instantiates a new shain spe defor labor hour dto.
+ * The Class WkpTransLaborHourDto.
  */
 @Data
 public class WkpTransLaborHourDto {
 
-	/** The employee id. */
+	/** The wkp id. */
 	private String wkpId;
 
 	/** The company id. */
@@ -32,7 +28,7 @@ public class WkpTransLaborHourDto {
 	 * From domain.
 	 *
 	 * @param domain the domain
-	 * @return the shain spe defor labor hour dto
+	 * @return the wkp trans labor hour dto
 	 */
 	public static WkpTransLaborHourDto fromDomain(WkpTransLaborTime domain) {
 		WkpTransLaborHourDto dto = new WkpTransLaborHourDto();

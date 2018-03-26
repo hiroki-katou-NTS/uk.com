@@ -17,7 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Data
 public class EmpNormalSettingDto {
-	/** The employee id. */
+	
+	/** The employment code. */
 	private String employmentCode;
 
 	/** The year. */
@@ -29,6 +30,12 @@ public class EmpNormalSettingDto {
 	/** The statutory setting. */
 	private List<MonthlyUnitDto> statutorySetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the emp normal setting dto
+	 */
 	public static EmpNormalSettingDto fromDomain(EmpNormalSetting domain) {
 		EmpNormalSettingDto dto = new EmpNormalSettingDto();
 		dto.setYear(domain.getYear().v());

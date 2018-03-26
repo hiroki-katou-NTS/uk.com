@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
 
 /**
- * The Class ComTransLaborHourDto.
+ * The Class ComTransLaborTimeDto.
  */
 @Getter
 @Setter
@@ -20,6 +20,12 @@ public class ComTransLaborTimeDto {
 	/** 会社労働時間設定. */
 	private WorkingTimeSettingDto workingTimeSetting;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the com trans labor time dto
+	 */
 	public static ComTransLaborTimeDto fromDomain(ComTransLaborTime domain) {
 		ComTransLaborTimeDto dto = new ComTransLaborTimeDto();
 		WorkingTimeSettingDto workingTimeSetting = WorkingTimeSettingDto.fromDomain(domain.getWorkingTimeSet());
