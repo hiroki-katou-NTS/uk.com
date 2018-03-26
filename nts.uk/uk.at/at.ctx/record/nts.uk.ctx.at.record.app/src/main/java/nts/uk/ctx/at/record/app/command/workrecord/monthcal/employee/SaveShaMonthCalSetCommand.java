@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.employee;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
@@ -25,7 +24,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-@Builder
 public class SaveShaMonthCalSetCommand implements ShaRegulaMonthActCalSetGetMemento, ShaFlexMonthActCalSetGetMemento,
 		ShaDeforLaborMonthActCalSetGetMemento {
 
