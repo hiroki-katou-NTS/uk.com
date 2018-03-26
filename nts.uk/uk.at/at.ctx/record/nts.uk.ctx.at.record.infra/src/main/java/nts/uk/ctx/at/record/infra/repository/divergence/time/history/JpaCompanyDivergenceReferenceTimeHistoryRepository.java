@@ -63,7 +63,9 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 
 		predicates.add(criteriaBuilder.or(
 				criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate),
-				criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate)));
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate),
+				criteriaBuilder.and(criteriaBuilder.lessThan(root.get(KrcstComDrtHist_.strD.getName()), startDate),
+						criteriaBuilder.greaterThan(root.get(KrcstComDrtHist_.endD.getName()), endDate))));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
