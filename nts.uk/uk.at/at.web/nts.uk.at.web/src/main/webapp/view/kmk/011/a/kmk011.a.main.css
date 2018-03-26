@@ -48,6 +48,11 @@
 
 .master_setting_caret.caret-right:after {
 	color: #97D155;
-	border-width: 51px 26px;
+	border-width: 51px 20px;
 	margin-top: 95px;
+	margin-left: 3px;
+}
+
+.large.btnconfig.caret-bottom:after {
+	margin-top: 0.4em;
 }
