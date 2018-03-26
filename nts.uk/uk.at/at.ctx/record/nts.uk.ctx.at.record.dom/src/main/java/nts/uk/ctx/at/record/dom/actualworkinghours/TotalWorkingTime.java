@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -202,8 +203,8 @@ public class TotalWorkingTime {
 				   																      addSettingOfFlexWork,
 				   																      addSettingOfRegularWork,
 				   																      vacationAddTimeSet,
-				   																      AutoCalAtrOvertime.CALCULATEMBOSS
-				   																      );
+				   																      AutoCalAtrOvertime.CALCULATEMBOSS,
+				   																      holidayCalcMethodSet);
 		Optional<WorkTimeCode> workTimeCode = Optional.empty();
 		//日別実績の所定外時間
 		if(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode() != null) {
@@ -232,18 +233,24 @@ public class TotalWorkingTime {
 		//2018.02.14　一時的対応 byホシナ ↓
 		//日別実績の遅刻時間
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
-		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										 new WorkNo(1),
-										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-										 ));
-		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										TimeWithCalculation.sameTime(new AttendanceTime(0)),
-										new WorkNo(2),
-										new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-										new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-				 						));
+		for(TimeLeavingWork work : oneDay.getAttendanceLeavingWork().getTimeLeavingWorks())
+			lateTime.add(LateTimeOfDaily.calcLateTime(oneDay, work.getWorkNo(),late,holidayCalcMethodSet));
+
+						
+//		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//										 new WorkNo(1),
+//										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+//										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+//										 ));
+//		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//										TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//										new WorkNo(2),
+//										new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+//										new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+//				 						));
+			 
+			
 		//日別実績の早退時間
 		List<LeaveEarlyTimeOfDaily> earlyTime = new ArrayList<>();
 		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),

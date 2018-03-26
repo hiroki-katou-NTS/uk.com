@@ -70,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.OvertimeTimesheetCalculationSetti
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -187,6 +188,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject
 	private CalculationErrorCheckService calculationErrorCheckService;
+	
+	@Inject
+	private HolidayAddtionRepository holidayAddtionRepository;
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -336,13 +340,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),sharedOtSet,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
-												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo
+												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,flexWorkSetOpt.get().getCoreTimeSetting(),
 											   );
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().v());
+				val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().v());
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
 						RestClockManageAtr.IS_CLOCK_MANAGE, goOutTimeSheetList,
 						new CommonRestSetting(RestTimeOfficeWorkCalcMethod.OFFICE_WORK_APPROP_ALL),
@@ -369,7 +374,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						workTime.get(),
 						breakTimeOfDailyList,
 						midNightTimeSheet,
-						personalInfo);
+						personalInfo,
+						flexWorkSetOpt.get().getCoreTimeSetting(),
+						);
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -438,7 +445,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		WorkTimeCalcMethodDetailOfHoliday workDetailSet = new WorkTimeCalcMethodDetailOfHoliday(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
 																							new IncludeHolidaysWorkCalcDetailSet(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		WorkTimeCalcMethodOfHoliday workTimeClacMethodOfHoliday = new WorkTimeCalcMethodOfHoliday(CalculationByActualTimeAtr.CalculationByActualTime,workDetailSet);
-		PremiumCalcMethodDetailOfHoliday preDetailSet = new PremiumCalcMethodDetailOfHoliday(new IncludeHolidaysPremiumCalcDetailSet(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
+		PremiumCalcMethodDetailOfHoliday preDetailSet = new PremiumCalcMethodDetailOfHoliday(new IncludeHolidaysPremiumCalcDetailSet(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To),
+																								nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To);
 		PremiumCalcMethodOfHoliday premiumCalcMethodOfHoliday = new PremiumCalcMethodOfHoliday(preDetailSet,CalculationByActualTimeAtr.CalculationByActualTime);
 		HolidayCalcMethodSet holidaycalcMethodSet = new HolidayCalcMethodSet(workTimeClacMethodOfHoliday,premiumCalcMethodOfHoliday);
 		val illegularAddSetting = new AddSettingOfIrregularWork(new CompanyId(companyId),holidaycalcMethodSet);
@@ -452,7 +460,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.empty(),
 														Optional.empty(),
 														1,
-														Optional.empty(),
 														Optional.empty());
 		//日別実績の遅刻時間帯
 		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
@@ -590,8 +597,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*1日の計算範囲取得*/
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
 												   ,predetermineTimeSet.get().getStartDateClock().forwardByMinutes(predetermineTimeSet.get().getRangeTimeDay().valueAsMinutes()));
-		
-		WorkInfoOfDailyPerformance toDayWorkInfo = workInformationRepository.find(employeeId, targetDate).get();
 		
 		WorkInfoOfDailyPerformance toDayWorkInfo = integrationOfDaily.getWorkInformation();
 		

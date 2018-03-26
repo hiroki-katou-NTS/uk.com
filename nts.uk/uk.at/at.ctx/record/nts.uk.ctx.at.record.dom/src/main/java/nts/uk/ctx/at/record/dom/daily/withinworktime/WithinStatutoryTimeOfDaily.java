@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
@@ -77,11 +78,12 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AddSettingOfFlexWork addSettingOfFlexWork,
 			   												   AddSettingOfRegularWork addSettingOfRegularWork,
 			   												   VacationAddTimeSet vacationAddTimeSet,
-			   												   AutoCalAtrOvertime autoCalcSet) {
+			   												   AutoCalAtrOvertime autoCalcSet,
+			   												   HolidayCalcMethodSet holidayCalcMethodSet) {
 		//法定内時間の計算
 		AttendanceTime workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,lateTimeSheet,leaveEarlyTimeSheet,
 														  lateTimeOfDaily,leaveEarlyTimeOfDaily,late,leaveEarly,workingSystem,addSettingOfIrregularWork,
-														  addSettingOfFlexWork,addSettingOfRegularWork,vacationAddTimeSet);
+														  addSettingOfFlexWork,addSettingOfRegularWork,vacationAddTimeSet,holidayCalcMethodSet);
 		//所定内深夜時間の計算
 		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay,autoCalcSet);
 
@@ -106,7 +108,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AddSettingOfIrregularWork addSettingOfIrregularWork,
 			   												   AddSettingOfFlexWork addSettingOfFlexWork,
 			   												   AddSettingOfRegularWork addSettingOfRegularWork,
-			   												   VacationAddTimeSet vacationAddTimeSet) {
+			   												   VacationAddTimeSet vacationAddTimeSet,
+			   												   HolidayCalcMethodSet holidayCalcMethodSet) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		Optional<DeductionTimeSheet> dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
 												?oneDay.getTemporaryDeductionTimeSheet()
@@ -127,7 +130,8 @@ public class WithinStatutoryTimeOfDaily {
 																						   addSettingOfIrregularWork,
 																						   addSettingOfFlexWork,
 																						   addSettingOfRegularWork,
-																						   vacationAddTimeSet);
+																						   vacationAddTimeSet,
+																						   holidayCalcMethodSet);
 		}
 		return workTime;
 	}

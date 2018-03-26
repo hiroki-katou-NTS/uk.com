@@ -163,7 +163,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				    addSettingOfIrregularWork,
 				    addSettingOfFlexWork,
 				    addSettingOfRegularWork,
-				    vacationAddTimeSet).valueAsMinutes());
+				    vacationAddTimeSet,
+				    holidayCalcMethodSet).valueAsMinutes());
 		/*実働時間の算出(割増時間含む)*/
 		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(calcWorkTime(PremiumAtr.Premium, CalculationByActualTimeAtr.CalculationByActualTime,vacationClass, timevacationUseTimeOfDaily,
 				    statutoryDivision,
@@ -181,7 +182,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				    addSettingOfIrregularWork,
 				    addSettingOfFlexWork,
 				    addSettingOfRegularWork,
-				    vacationAddTimeSet).valueAsMinutes());
+				    vacationAddTimeSet,
+				    holidayCalcMethodSet).valueAsMinutes());
 		
 		AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
