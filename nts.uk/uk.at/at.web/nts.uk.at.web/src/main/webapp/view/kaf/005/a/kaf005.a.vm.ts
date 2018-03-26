@@ -329,6 +329,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.instructInfor(data.overtimeInstructInformation);
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
+            self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);

@@ -196,6 +196,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 							.getAppTypeDiscreteSettingByAppType(companyID, appType);
 					if (discreteSetting.isPresent()) {
 						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
+						result.setPrePostCanChangeFlg(discreteSetting.get().getPrePostCanChangeFlg().value == 1 ? true : false);
 					}
 				} else {
 					// 事後申請として起動する(khoi dong cai xin sau len)

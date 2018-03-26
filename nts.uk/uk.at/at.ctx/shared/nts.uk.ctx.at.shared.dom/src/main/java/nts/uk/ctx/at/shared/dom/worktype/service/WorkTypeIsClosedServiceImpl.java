@@ -51,13 +51,26 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 		if(!optWorkTypeData.isPresent()) {
 			return false;
 		}
-		WorkType workTypeData = optWorkTypeData.get();		
+		WorkType workTypeData = optWorkTypeData.get();
+		final WorkAtr workAtrTmp;
+		if(workTypeData.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay
+				&& workTypeData.getDailyWork().getOneDay() == WorkTypeClassification.Attendance) {
+			workAtrTmp = WorkAtr.OneDay;
+		} else if (workTypeData.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon
+				&& workTypeData.getDailyWork().getMorning() == WorkTypeClassification.Attendance) {
+			workAtrTmp = WorkAtr.Monring;
+		} else if(workTypeData.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon
+				&& workTypeData.getDailyWork().getMorning() == WorkTypeClassification.Attendance) {
+			workAtrTmp = WorkAtr.Afternoon;
+		} else {
+			workAtrTmp = WorkAtr.OneDay;
+		}
 		List<WorkTypeSet> lstAttendance = workTypeData.getWorkTypeSetList();
 		if(lstAttendance.isEmpty()) {
 			return false;			
 		}
 		List<WorkTypeSet> lst1Day = lstAttendance.stream()
-				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode) && x.getWorkAtr() == WorkAtr.Monring || x.getWorkAtr() == WorkAtr.OneDay)
+				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode) && x.getWorkAtr() == workAtrTmp)
 				.collect(Collectors.toList());
 		if(lst1Day.isEmpty()) {
 			return false;
