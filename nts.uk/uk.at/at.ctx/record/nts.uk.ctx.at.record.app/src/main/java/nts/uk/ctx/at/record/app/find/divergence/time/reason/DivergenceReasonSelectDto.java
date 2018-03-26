@@ -8,6 +8,9 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectSetMemento;
 
+/**
+ * The Class DivergenceReasonSelectDto.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

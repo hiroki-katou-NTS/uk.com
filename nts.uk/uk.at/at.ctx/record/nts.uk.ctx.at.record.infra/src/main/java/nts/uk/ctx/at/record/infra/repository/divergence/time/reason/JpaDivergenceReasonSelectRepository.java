@@ -28,6 +28,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaDivergenceReasonSelectRepository extends JpaRepository implements DivergenceReasonSelectRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectRepository#findAllReason(int, java.lang.String)
+	 */
 	@Override
 	public List<DivergenceReasonSelect> findAllReason(int divTimeNo, String companyId) {
 
@@ -57,6 +63,13 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 		return new ArrayList<DivergenceReasonSelect>();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectRepository#findReasonInfo(int, java.lang.String,
+	 * java.lang.String)
+	 */
 	@Override
 	public Optional<DivergenceReasonSelect> findReasonInfo(int divTimeNo, String companyId, String reasonCode) {
 
@@ -67,12 +80,26 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectRepository#update(int,
+	 * nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect)
+	 */
 	@Override
 	public void update(int divTimeNo, DivergenceReasonSelect divergenceReasonSelect) {
 		this.commandProxy().update(this.toEntity(divTimeNo, divergenceReasonSelect));
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectRepository#delete(java.lang.Integer,
+	 * nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect)
+	 */
 	@Override
 	public void delete(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
 
@@ -91,6 +118,13 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectRepository#add(java.lang.Integer,
+	 * nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect)
+	 */
 	@Override
 	public void add(Integer divTimeNo, DivergenceReasonSelect divReasonSelect) {
 

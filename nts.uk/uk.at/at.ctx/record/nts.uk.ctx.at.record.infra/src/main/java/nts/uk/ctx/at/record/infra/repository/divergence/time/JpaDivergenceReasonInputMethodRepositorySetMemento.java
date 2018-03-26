@@ -32,18 +32,36 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 		this.entity = entity;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceReasonInputMethodSetMemento#setDivergenceTimeNo(int)
+	 */
 	@Override
 	public void setDivergenceTimeNo(int DivergenceTimeNo) {
 
 		this.entity.getId().setNo(DivergenceTimeNo);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceReasonInputMethodSetMemento#setCompanyId(java.lang.String)
+	 */
 	@Override
 	public void setCompanyId(String companyId) {
 		// No code
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceReasonInputMethodSetMemento#setDivergenceReasonInputed(boolean)
+	 */
 	@Override
 	public void setDivergenceReasonInputed(boolean divergenceReasonInputed) {
 
@@ -51,6 +69,13 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceReasonInputMethodSetMemento#setDivergenceReasonSelected(
+	 * boolean)
+	 */
 	@Override
 	public void setDivergenceReasonSelected(boolean divergenceReasonSelected) {
 
@@ -58,6 +83,12 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceReasonInputMethodSetMemento#setReasons(java.util.List)
+	 */
 	@Override
 	public void setReasons(List<DivergenceReasonSelect> reason) {
 		// no code

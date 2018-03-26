@@ -96,7 +96,8 @@
                                          required: true,
                                          constraint: 'DivergenceTimeName',
                                          enable: enableUse,
-                                         readonly:true}" />
+                                         option: {width: '180px'}}" 
+                                 />
 							</td>
 						</tr>
 						<tr class="row">
@@ -109,7 +110,7 @@
 								<button tabindex="6"
 									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
 								<!-- B3_7: Time item name --> <input class="nts-input"
-								id="inpName" style="width: 350px"
+								id="inpName" style="width: 300px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: timeItemName,
