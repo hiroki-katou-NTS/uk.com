@@ -15,7 +15,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class SgwmtLoginLog_ {
     
     /** The sgwmt logout data PK. */
-    public static volatile SingularAttribute<SgwmtLoginLog, SgwmtLoginLogPK> sgwmtLogoutDataPK;
+    public static volatile SingularAttribute<SgwmtLoginLog, SgwmtLoginLogPK> sgwmtLoginLogPK;
     
     /** The operation section. */
     public static volatile SingularAttribute<SgwmtLoginLog, Integer> operationSection;

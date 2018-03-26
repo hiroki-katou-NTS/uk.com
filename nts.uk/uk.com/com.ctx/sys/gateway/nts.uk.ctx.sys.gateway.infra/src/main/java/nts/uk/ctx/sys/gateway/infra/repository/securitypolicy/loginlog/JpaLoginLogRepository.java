@@ -46,22 +46,19 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList
-				.add(builder.equal(root.get(SgwmtLoginLog_.sgwmtLogoutDataPK).get(SgwmtLoginLogPK_.userId), userId));
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.sgwmtLoginLogPK).get(SgwmtLoginLogPK_.userId), userId));
 
-		predicateList
-				.add(builder.equal(root.get(SgwmtLoginLog_.successOrFailure), SuccessFailureClassification.Failure));
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.successOrFailure), SuccessFailureClassification.Failure.value));
 
-		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.operationSection), OperationSection.Login));
+		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.operationSection), OperationSection.Login.value));
 
-		predicateList.add(builder.greaterThan(
-				root.get(SgwmtLoginLog_.sgwmtLogoutDataPK).get(SgwmtLoginLogPK_.processDateTime), startTime));
+		predicateList.add(builder.greaterThanOrEqualTo(root.get(SgwmtLoginLog_.sgwmtLoginLogPK).get(SgwmtLoginLogPK_.processDateTime), startTime));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtLoginLog> result = em.createQuery(query).getResultList();
-
-		return result.size();
+		
+		return result.isEmpty() ? 0 : result.size();
 	}
 
 	/*

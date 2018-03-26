@@ -406,7 +406,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		GeneralDateTime startTime = GeneralDateTime.now();
 		// Check the domain model [Account lock policy. Error interval]
 		if (accountLockPolicy.getErrorCount().lessThanOrEqualTo(BigDecimal.ZERO)) {
-			startTime = GeneralDateTime.fromString("1901/01/01", "yyyy/MM/dd HH:mm:ss");
+			startTime = GeneralDateTime.fromString("1901/01/01 00:00:00", "yyyy/MM/dd HH:mm:ss");
 		}
 		// Search the domain model [LoginLog] and acquire [number of failed
 		// logs] → [failed times]

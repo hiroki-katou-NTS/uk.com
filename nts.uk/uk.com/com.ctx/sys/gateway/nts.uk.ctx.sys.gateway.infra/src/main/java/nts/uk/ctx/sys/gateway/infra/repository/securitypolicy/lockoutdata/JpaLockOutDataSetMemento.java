@@ -75,7 +75,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLoginMethod(LoginMethod loginMethod) {
-		this.sgwmtLockoutData.setLoginMethod(loginMethod.value);;
+		this.sgwmtLockoutData.setLoginMethod(loginMethod == null ? null : loginMethod.value);
 	}
 
 }
