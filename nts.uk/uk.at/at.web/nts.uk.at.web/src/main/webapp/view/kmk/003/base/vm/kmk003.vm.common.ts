@@ -744,21 +744,24 @@ module nts.uk.at.view.kmk003.a {
                         self.originalListTemp = self.toListOriginalDto(newList);
 
                         // check new converted list vs converted list temp
-                        let newConverted = self.fromOriginalListToConvertedList();
-                        let newConvertedTemp = self.fromListConvertedToListOriginalDto(newConverted);
+                        const newConverted = self.fromOriginalListToConvertedList();
+                        const newConvertedTemp = _.cloneDeep(self.originalListTemp);
                         if (self.isNotEqual(newConvertedTemp, self.convertedListTemp)) {
-                            self.convertedList(newConverted); // update new converted list
+                            // update new converted list
+                            self.convertedList(newConverted);
                         }
                     });
 
                     self.convertedList.subscribe(newList => {
                         const firstItemSize = _.size(newList[0]);
-                        let newOriginal = self.toListOriginalModel(newList);
+                        const newOriginal = self.toListOriginalModel(newList);
+
+                        // convert all rows to full columns
                         if (self.convertedListTemp.length == 0 || _.some(newList, i => _.size(i) != firstItemSize)) {
                             // update convertedListTemp length
                             self.convertedListTemp.push("");
 
-                            // update converted list
+                            // update converted list with full columns
                             self.convertedList(self.toListConvertedModel(newOriginal));
                         }
                         else {
@@ -766,9 +769,10 @@ module nts.uk.at.view.kmk003.a {
                             self.convertedListTemp = self.fromListConvertedToListOriginalDto(newList);
 
                             // check new original list vs original list temp
-                            let newOriginalTemp = self.toListOriginalDto(newOriginal);
+                            let newOriginalTemp = _.cloneDeep(self.convertedListTemp);
                             if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
-                                self.originalList(newOriginal); // update new original list
+                                // update new original list
+                                self.originalList(newOriginal);
                             }
                         }
                     });
