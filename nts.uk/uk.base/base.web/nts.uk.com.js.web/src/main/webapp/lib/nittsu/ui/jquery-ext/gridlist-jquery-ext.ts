@@ -104,7 +104,7 @@ module nts.uk.ui.jqueryExtentions {
                                 let index = $(selected["element"]).attr("data-row-idx");
                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                             }   
-                        }  
+                        });
                     });    
                 }
             });
