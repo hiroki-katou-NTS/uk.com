@@ -100,8 +100,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	
 	@Override
 	public void updateStartTimeOfReflect(TimeReflectParameter para) {
-		//予定開始時刻を反映する
-		//日別実績の勤務情報
+		
+		//日別実績の勤務情報		
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
 		if(!optDailyPerfor.isPresent()) {
 			return;
@@ -131,6 +131,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		lstTimeSheetFrameNo.add(para.getFrameNo(), timeSheet); //can xac nhan lai
 		dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
 		workRepository.updateByKeyFlush(dailyPerfor);
+		
+		
 		//日別実績の編集状態
 		//予定開始時刻の項目ID
 		List<Integer> lstItem = new ArrayList<Integer>();
@@ -160,7 +162,13 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			return;
 		}
 		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
-		Optional<TimeActualStamp> optTimeAttendance = timeLeavingWork.getAttendanceStamp();
+		Optional<TimeActualStamp> optTimeAttendance;
+		if(para.isPreCheck()) {
+			optTimeAttendance = timeLeavingWork.getAttendanceStamp();	
+		}else {
+			optTimeAttendance = timeLeavingWork.getLeaveStamp();
+		}
+		
 		if(!optTimeAttendance.isPresent()) {
 			return;
 		}
@@ -177,21 +185,29 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendance.getActualStamp().isPresent() ? timeAttendance.getActualStamp().get() : null,
 				stampTmp,
 				timeAttendance.getNumberOfReflectionStamp());
-		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-				Optional.of(timeActualStam), 
-				timeLeavingWork.getLeaveStamp());
-		lstTimeLeavingWorks.add(lstTimeLeavingWorks.indexOf(timeLeavingWork), timeLeavingWorkTmp);
-		TimeLeavingOfDailyPerformance tmpData = new TimeLeavingOfDailyPerformance(para.getEmployeeId(), timeLeavingOfDailyData.getWorkTimes(), lstTimeLeavingWorks, para.getDateData());
+		TimeLeavingWork timeLeavingWorkTmp;
+		if(para.isPreCheck()) {
+			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
+					Optional.of(timeActualStam), 
+					timeLeavingWork.getLeaveStamp());
+		} else {
+			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
+					timeLeavingWork.getAttendanceStamp(),
+					Optional.of(timeActualStam));
+		}
+		List<TimeLeavingWork> lstTimeLeavingWorksTmp = new ArrayList<>();
+		lstTimeLeavingWorksTmp.add(timeLeavingWorkTmp);
+		TimeLeavingOfDailyPerformance tmpData = new TimeLeavingOfDailyPerformance(para.getEmployeeId(), timeLeavingOfDailyData.getWorkTimes(), lstTimeLeavingWorksTmp, para.getDateData());
 		timeLeavingOfDaily.updateFlush(tmpData);
 		//開始時刻の編集状態を更新する		
 		//予定項目ID=出勤の項目ID	
 		List<Integer> lstItem = new ArrayList<Integer>();
 		if(para.isPreCheck()) {
 			lstItem.add(31);
-			lstItem.add(41);	
+			//lstItem.add(34);	
 		} else {
 			lstItem.add(34);
-			lstItem.add(44);
+			//lstItem.add(44);
 		}
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
