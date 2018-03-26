@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import lombok.Getter;
-import lombok.Value;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;

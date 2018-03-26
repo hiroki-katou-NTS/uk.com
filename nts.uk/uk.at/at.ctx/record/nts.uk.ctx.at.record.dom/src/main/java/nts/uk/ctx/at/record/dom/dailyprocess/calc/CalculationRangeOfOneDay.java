@@ -28,7 +28,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -49,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
