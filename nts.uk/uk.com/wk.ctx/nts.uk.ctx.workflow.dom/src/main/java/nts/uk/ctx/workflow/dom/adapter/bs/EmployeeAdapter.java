@@ -59,4 +59,12 @@ public interface EmployeeAdapter {
 	 * @return
 	 */
 	PersonImport getEmployeeInformation(String sID);
+	/**
+	 * 指定社員が基準日に承認権限を持っているかチェックする 
+	 * @param companyId
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	boolean canApprovalOnBaseDate(String companyId, String employeeID, GeneralDate date);
 }
