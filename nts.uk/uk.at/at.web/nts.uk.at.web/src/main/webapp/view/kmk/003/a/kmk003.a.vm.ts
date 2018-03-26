@@ -1127,8 +1127,8 @@ module nts.uk.at.view.kmk003.a {
         }
         
         export enum TabMode {
-            SIMPLE,
-            DETAIL
+            DETAIL,
+            SIMPLE
         }
         
         export enum ScreenMode {
