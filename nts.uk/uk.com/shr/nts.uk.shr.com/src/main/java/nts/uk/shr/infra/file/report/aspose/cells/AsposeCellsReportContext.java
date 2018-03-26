@@ -14,6 +14,7 @@ import com.aspose.cells.PageSetup;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.SaveOptions;
 import com.aspose.cells.TxtSaveOptions;
+import com.aspose.cells.TxtValueQuoteType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.WorksheetCollection;
