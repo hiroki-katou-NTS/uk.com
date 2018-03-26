@@ -120,7 +120,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			//dang lay nham thong tin enum
-			output.setReasonNotReflect(ReasonNotReflectRecord.WORK_FIXED);
+			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 			return output;
 	
 		} catch (Exception ex) {

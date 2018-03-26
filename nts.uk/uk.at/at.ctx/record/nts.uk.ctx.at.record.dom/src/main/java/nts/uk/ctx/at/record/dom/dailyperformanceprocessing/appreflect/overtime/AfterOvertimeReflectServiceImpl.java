@@ -47,7 +47,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			workUpdate.updateWorkTimeType(reflectInfo, false);
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			//dang lay nham thong tin enum
-			output.setReasonNotReflect(ReasonNotReflectRecord.WORK_FIXED);
+			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 			return output;
 		} catch (Exception e) {
 			return new ApplicationReflectOutput(overtimePara.getOvertimePara().getReflectedState(), overtimePara.getOvertimePara().getReasonNotReflect());
