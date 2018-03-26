@@ -209,6 +209,11 @@ public class OverTimeDto {
 	 */
 	private boolean flexFLag;
 	
+	/**
+	 * prePostCanChangeFlg
+	 */
+	private boolean prePostCanChangeFlg;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -253,7 +258,10 @@ public class OverTimeDto {
 				false,
 				false, 
 				null,
-				null,false,false,false);
+				null,
+				false,
+				false,
+				false,false);
 	}
 	
 }
