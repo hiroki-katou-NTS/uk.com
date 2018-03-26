@@ -26,12 +26,12 @@ public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<AnnuaLeaveCom
 		AnnuaLeaveCommand c = context.getCommand();
 
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
-				c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate());
+				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(), c.getStandardDate());
 		annLeaBasicInfoRepo.add(basicInfo);
 
-		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
-				c.getUsedTimes(), c.getMaxTimes() - c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes(),
-				c.getMaxMinutes() - c.getUsedMinutes());
+		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes().intValue(),
+				c.getUsedTimes().intValue(), c.getMaxTimes().intValue() - c.getUsedTimes().intValue(), c.getMaxMinutes().intValue(), c.getUsedMinutes().intValue(),
+				c.getMaxMinutes().intValue() - c.getUsedMinutes().intValue());
 		maxDataRepo.add(maxData);
 	}
 

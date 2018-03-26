@@ -10,17 +10,18 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 
 @Stateless
-public class UpdateResvLeaCommandHandler extends AsyncCommandHandler<ResvLeaGrantRemNumCommand> {
+public class UpdateResvLeaCommandHandler extends AsyncCommandHandler<UpdateResvLeaRemainCommand> {
 
 	@Inject
 	private RervLeaGrantRemDataRepository resvLeaRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<ResvLeaGrantRemNumCommand> context) {
-		ResvLeaGrantRemNumCommand c = context.getCommand();
-		ReserveLeaveGrantRemainingData data = ReserveLeaveGrantRemainingData.createFromJavaType(c.getEmployeeId(),
-				c.getGrantDate(), c.getDeadline(), c.getExpirationStatus().value, GrantRemainRegisterType.MANUAL.value,
-				c.getGrantDays(), c.getUseDays(), c.getOverLimitDays(), c.getRemainingDays());
+	protected void handle(CommandHandlerContext<UpdateResvLeaRemainCommand> context) {
+		UpdateResvLeaRemainCommand c = context.getCommand();
+		ReserveLeaveGrantRemainingData data = ReserveLeaveGrantRemainingData.createFromJavaType(c.getRvsLeaId(),
+				c.getEmployeeId(), c.getGrantDate(), c.getDeadline(), c.getExpirationStatus().value,
+				GrantRemainRegisterType.MANUAL.value, c.getGrantDays(), c.getUseDays(), c.getOverLimitDays(),
+				c.getRemainingDays());
 		resvLeaRepo.update(data);
 	}
 

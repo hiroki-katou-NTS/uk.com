@@ -4,16 +4,17 @@ import lombok.Getter;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 
 @Getter
-public class RelatedCategoryDto extends DataTypeStateDto{
-	private String relatedCode;	
-	public RelatedCategoryDto(String relatedCode) {
+public class RelatedCategoryDto extends DataTypeStateDto {
+	private String relatedCtgCode;
+
+	public RelatedCategoryDto(String relatedCtgCode) {
 		super();
 		this.dataTypeValue = DataTypeValue.RELATE_CATEGORY.value;
-		this.relatedCode = relatedCode;
+		this.relatedCtgCode = relatedCtgCode;
 	}
 
-	public static RelatedCategoryDto createFromJavaType(String relatedCode) {
-		return new RelatedCategoryDto(relatedCode);
+	public static RelatedCategoryDto createFromJavaType(String relatedCtgCode) {
+		return new RelatedCategoryDto(relatedCtgCode);
 	}
-	
+
 }

@@ -16,7 +16,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private String perInfoItemDefId;
 	private String perInfoCategoryId;
 	private ItemCode itemCode;
-	
+
 	private ItemCode itemParentCode;
 	private ItemName itemName;
 	private IsAbolition isAbolition;
@@ -25,10 +25,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private SystemRequired systemRequired;
 	private RequireChangable requireChangable;
 	private ItemTypeState itemTypeState;
-    private BigDecimal  selectionItemRefType;
+	private BigDecimal selectionItemRefType;
 
 	public static String ROOT_CONTRACT_CODE = "000000000000";
-	public PersonInfoItemDefinition(){};
+
+	public PersonInfoItemDefinition() {
+	};
 
 	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName,
 			int isAbolition, int isFixed, int isRequired) {
@@ -47,7 +49,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
-			int requireChangable, BigDecimal  selectionItemRefType) {
+			int requireChangable, BigDecimal selectionItemRefType) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.perInfoCategoryId = perInfoCategoryId;
@@ -61,9 +63,8 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
 		this.selectionItemRefType = selectionItemRefType;
 	}
-	
-	
-	//lanlt
+
+	// lanlt
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
 			int requireChangable) {
@@ -94,7 +95,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}
-	
+
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemName) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
@@ -108,13 +109,13 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}
-	
-	private PersonInfoItemDefinition(String ctgID,String itemId) {
+
+	private PersonInfoItemDefinition(String ctgID, String itemId) {
 		super();
 		this.perInfoItemDefId = itemId;
 		this.perInfoCategoryId = ctgID;
 	}
-	
+
 	public static PersonInfoItemDefinition createFromJavaType(String ctgId, String itemId) {
 		return new PersonInfoItemDefinition(ctgId, itemId);
 	}
@@ -131,10 +132,11 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemCode, itemParentCode, itemName,
 				isAbolition, isFixed, isRequired, systemRequired, requireChangable);
 	}
-	 //lanlt
+
+	// lanlt
 	public static PersonInfoItemDefinition createFromEntity(String perInfoItemDefId, String perInfoCategoryId,
 			String itemCode, String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired,
-			int systemRequired, int requireChangable, BigDecimal selectionItemRefType ) {
+			int systemRequired, int requireChangable, BigDecimal selectionItemRefType) {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemCode, itemParentCode, itemName,
 				isAbolition, isFixed, isRequired, systemRequired, requireChangable, selectionItemRefType);
 	}
@@ -143,11 +145,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			String itemParentCode, String itemName) {
 		return new PersonInfoItemDefinition(perInfoCategoryId, itemCode, itemParentCode, itemName);
 	}
-	
-	public static PersonInfoItemDefinition createFromEntityMap(String perInfoItemDefId, String perInfoCategoryId, String itemName) {
+
+	public static PersonInfoItemDefinition createFromEntityMap(String perInfoItemDefId, String perInfoCategoryId,
+			String itemName) {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemName);
 	}
-	
+
 	public static PersonInfoItemDefinition createFromEntityWithCodeAndName(String itemCode, String itemName) {
 		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
 		item.setItemCode(new ItemCode(itemCode));
@@ -162,5 +165,4 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	public void setItemName(String name) {
 		this.itemName = new ItemName(name);
 	}
-
 }

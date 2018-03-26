@@ -4,16 +4,18 @@ import lombok.Getter;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryCode;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+
 @Getter
-public class RelatedCategory extends DataTypeState{
+public class RelatedCategory extends DataTypeState {
 	private CategoryCode relatedCtgCode;
-	private RelatedCategory(String relatedCtgText) {
+
+	private RelatedCategory(String relatedCtgCode) {
 		super();
 		this.dataTypeValue = DataTypeValue.RELATE_CATEGORY;
-		this.relatedCtgCode = new CategoryCode(relatedCtgText);
+		this.relatedCtgCode = new CategoryCode(relatedCtgCode);
 	}
 
-	public static RelatedCategory createFromJavaType(String relatedCtgText) {
-		return new RelatedCategory(relatedCtgText);
+	public static RelatedCategory createFromJavaType(String relatedCtgCode) {
+		return new RelatedCategory(relatedCtgCode);
 	}
 }

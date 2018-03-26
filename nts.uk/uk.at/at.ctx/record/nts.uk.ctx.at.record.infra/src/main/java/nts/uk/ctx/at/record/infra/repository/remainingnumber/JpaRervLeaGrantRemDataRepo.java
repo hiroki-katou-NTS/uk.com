@@ -7,19 +7,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveNumberInfo;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLeaRemain;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLeaRemainPK;
 
 @Stateless
 public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLeaGrantRemDataRepository {
 
-	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.key.sid = :employeeId";
-	
-	private String QUERY_WITH_EMP_ID_NOT_EXP = QUERY_WITH_EMP_ID + " AND a.expStatus = 1 ORDER BY a.key.grantDate";
+	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId";
+
+	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate";
 
 	@Override
 	public List<ReserveLeaveGrantRemainingData> find(String employeeId) {
@@ -37,20 +35,21 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	}
 
 	private ReserveLeaveGrantRemainingData toDomain(KrcmtReverseLeaRemain ent) {
-		return ReserveLeaveGrantRemainingData.createFromJavaType(ent.key.sid, ent.key.grantDate, ent.deadline,
+		return ReserveLeaveGrantRemainingData.createFromJavaType(ent.rvsLeaId, ent.sid, ent.grantDate, ent.deadline,
 				ent.expStatus, ent.registerType, ent.grantDays, ent.usedDays, ent.overLimitDays, ent.remainingDays);
 	}
 
 	@Override
 	public void add(ReserveLeaveGrantRemainingData data) {
 		KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
-		e.key.sid = data.getEmployeeId();
-		e.key.grantDate = data.getGrantDate();
+		e.rvsLeaId = data.getRsvLeaID();
 		updateDetail(e, data);
 		this.commandProxy().update(e);
 	}
 
 	private void updateDetail(KrcmtReverseLeaRemain e, ReserveLeaveGrantRemainingData data) {
+		e.sid = data.getEmployeeId();
+		e.grantDate = data.getGrantDate();
 		e.deadline = data.getDeadline();
 		e.expStatus = data.getExpirationStatus().value;
 		e.registerType = data.getRegisterType().value;
@@ -64,8 +63,8 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public void update(ReserveLeaveGrantRemainingData data) {
-		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(
-				new KrcmtReverseLeaRemainPK(data.getEmployeeId(), data.getGrantDate()), KrcmtReverseLeaRemain.class);
+		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getRsvLeaID(),
+				KrcmtReverseLeaRemain.class);
 		if (entityOpt.isPresent()) {
 			updateDetail(entityOpt.get(), data);
 			this.commandProxy().update(entityOpt.get());
@@ -73,9 +72,8 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	}
 
 	@Override
-	public void delete(String employeeId, GeneralDate grantDate) {
-		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy()
-				.find(new KrcmtReverseLeaRemainPK(employeeId, grantDate), KrcmtReverseLeaRemain.class);
+	public void delete(String rsvLeaId) {
+		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(rsvLeaId, KrcmtReverseLeaRemain.class);
 		if (entityOpt.isPresent()) {
 			this.commandProxy().remove(entityOpt.get());
 		}
