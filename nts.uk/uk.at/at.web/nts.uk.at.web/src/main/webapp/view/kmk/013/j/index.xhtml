@@ -8,14 +8,43 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.j.start.js" />
+			<com:scriptfile path="kmk013.j.vm.js" />
+			<com:scriptfile path="kmk013.j.service.js" />
+			<com:stylefile path="kmk013.j.main.css" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
+				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
 			</div>
 			<div id="contents-area">
-				screen	
+				<table>
+					<TBODY>
+						<tr>
+							<td>
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_206')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
+								<hr />
+							</td>
+							<td class="td-content">
+    								<div data-bind="ntsRadioButton: {
+    									checked: selectedValue2,
+    									enable: true, 
+    									option: option, 
+    									optionValue: 'value',
+    									group: 'ntsControl'}"></div>
+							</td>
+						</tr>
+					</TBODY>
+				</table>
 			</div>
 		</ui:define>
 	</ui:composition>
