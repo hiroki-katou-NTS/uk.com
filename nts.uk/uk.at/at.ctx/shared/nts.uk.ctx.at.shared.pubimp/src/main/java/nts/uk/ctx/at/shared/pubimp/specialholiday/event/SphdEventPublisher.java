@@ -1,9 +1,12 @@
-package nts.uk.ctx.at.shared.pubimp.holiday.event;
+package nts.uk.ctx.at.shared.pubimp.specialholiday.event;
+
+import javax.ejb.Stateless;
 
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.pub.specialholiday.SphdHolidayEventPub;
 
+@Stateless
 public class SphdEventPublisher implements DomainEventSubscriber<SpecialHolidayEvent> {
 
 	@Override

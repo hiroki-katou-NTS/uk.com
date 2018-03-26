@@ -3,15 +3,14 @@ package nts.uk.ctx.at.record.dom.worktime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
  * 
@@ -45,6 +44,15 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 			throw new RuntimeException("Exist duplicate workNo : " + workNo);
 		}	
 		return attendanceLeavingWorkList.get();		
+	}
+	
+	/**
+	 * 指定した勤怠Noのデータを取得する
+	 * @param workNo 勤怠No
+	 * @return　出退勤クラス
+	 */
+	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
+		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
 	}
 	
 	/**
