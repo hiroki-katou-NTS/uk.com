@@ -4,9 +4,9 @@ module nts.uk.at.view.kmk003.i {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             if (screenModel.isFlow()) {
-                $('#lateStampExactlyTimeIsLateEarly').focus();
+                _.defer(() => $('#lateStampExactlyTimeIsLateEarly').focus());
             } else {
-                $('#delFromEmTime').focus();
+                _.defer(() => $('#delFromEmTime').focus());
             }
         });
     });

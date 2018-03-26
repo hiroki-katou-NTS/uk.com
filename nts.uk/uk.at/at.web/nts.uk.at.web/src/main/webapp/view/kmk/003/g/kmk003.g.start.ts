@@ -7,10 +7,10 @@ module nts.uk.at.view.kmk003.g {
             __viewContext.bind(screenModel);
             if ((screenModel.dataObject().workForm == EnumWorkForm.FLEX) || ((screenModel.dataObject().workForm == EnumWorkForm.REGULAR) && (screenModel.dataObject().settingMethod == SettingMethod.FLOW)))//case flow or flex
             {
-                $('#switch-btn').focus();
+                _.defer(() => $('#switch-btn').focus());
             }
             else {
-                $('#selected-actual').focus();
+                _.defer(() => $('#selected-actual').focus());
             }
         });
     });

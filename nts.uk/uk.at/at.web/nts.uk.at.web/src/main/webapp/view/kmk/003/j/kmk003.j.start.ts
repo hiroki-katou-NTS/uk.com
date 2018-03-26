@@ -4,9 +4,9 @@ module nts.uk.at.view.kmk003.j {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             if (screenModel.isFlow()) {
-                $('[tabindex=9]').focus();
+                _.defer(() => $('[tabindex=9]').focus());
             } else {
-                $('[tabindex=1]').focus();
+                _.defer(() => $('[tabindex=1]').focus());
             }
         });
     });
