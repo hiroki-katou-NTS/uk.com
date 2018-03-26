@@ -2,6 +2,9 @@ package nts.uk.ctx.at.record.infra.repository.monthly.vtotalmethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -19,29 +22,34 @@ import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstVertMonMethod
 /**
  * The Class JpaVerticalTotalMethodOfMonthly.
  */
+@Stateless
 public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements VerticalTotalMethodOfMonthlyRepository {
 
 	/** The Constant FIND_BY_CID. */
 	private static final String FIND_BY_CID =
 			"SELECT a FROM KrcstVertMonMethod a "
-			+ "WHERE a.companyId = :companyId ";
+			+ "WHERE a.cid = :companyId ";
 	
 	private static final String REMOVE_BY_CID =
 			"DELETE FROM KrcstVertMonMethod a "
-			+ "WHERE a.companyId = :companyId ";
+			+ "WHERE a.cid = :companyId ";
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyRepository#findByCid(java.lang.String)
 	 */
 	@Override
-	public VerticalTotalMethodOfMonthly findByCid(String companyId) {
+	public Optional<VerticalTotalMethodOfMonthly> findByCid(String companyId) {
 		
 		val vertDaysList = this.queryProxy()
 				.query(FIND_BY_CID, KrcstVertMonMethod.class)
 				.setParameter("companyId", companyId)
 				.getList();
 		
-		return toDomain(vertDaysList);
+		if (vertDaysList == null || vertDaysList.size() == 0) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toDomain(vertDaysList));
 	}
 	
 	

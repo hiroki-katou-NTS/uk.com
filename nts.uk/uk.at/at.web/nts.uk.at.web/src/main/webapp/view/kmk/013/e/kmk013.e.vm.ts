@@ -21,14 +21,14 @@ module nts.uk.at.view.kmk013.e {
                 var self = this;
                 self.listData = ko.observableArray([]);
                 self.itemListUnit = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_RoundingTime_1Min").slice(0,1)),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_RoundingTime_5Min").slice(0,1)),
-                    new ItemModel(2, nts.uk.resource.getText("Enum_RoundingTime_6Min").slice(0,1)),
-                    new ItemModel(3, nts.uk.resource.getText("Enum_RoundingTime_10Min").slice(0,1)),
-                    new ItemModel(4, nts.uk.resource.getText("Enum_RoundingTime_15Min").slice(0,1)),
-                    new ItemModel(5, nts.uk.resource.getText("Enum_RoundingTime_20Min").slice(0,1)),
-                    new ItemModel(6, nts.uk.resource.getText("Enum_RoundingTime_30Min").slice(0,1)),
-                    new ItemModel(7, nts.uk.resource.getText("Enum_RoundingTime_60Min").slice(0,1))
+                    new ItemModel(0, nts.uk.resource.getText("Enum_RoundingTime_1Min"),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_RoundingTime_5Min"),
+                    new ItemModel(2, nts.uk.resource.getText("Enum_RoundingTime_6Min"),
+                    new ItemModel(3, nts.uk.resource.getText("Enum_RoundingTime_10Min"),
+                    new ItemModel(4, nts.uk.resource.getText("Enum_RoundingTime_15Min"),
+                    new ItemModel(5, nts.uk.resource.getText("Enum_RoundingTime_20Min"),
+                    new ItemModel(6, nts.uk.resource.getText("Enum_RoundingTime_30Min"),
+                    new ItemModel(7, nts.uk.resource.getText("Enum_RoundingTime_60Min")
                 ]);
 
                 self.itemListRounding = ko.observableArray([

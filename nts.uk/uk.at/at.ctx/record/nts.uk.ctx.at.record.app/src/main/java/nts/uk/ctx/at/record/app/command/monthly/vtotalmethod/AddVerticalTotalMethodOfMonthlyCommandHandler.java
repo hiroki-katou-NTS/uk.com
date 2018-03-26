@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.app.command.monthly.vtotalmethod;
 
+import java.util.Optional;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -8,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthl
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class AddVerticalTotalMethodOfMonthlyCommandHandler extends CommandHandler<AddVerticalTotalMethodOfMonthlyCommand> {
 	@Inject
 	VerticalTotalMethodOfMonthlyRepository repository;
@@ -18,6 +22,15 @@ public class AddVerticalTotalMethodOfMonthlyCommandHandler extends CommandHandle
 		
 		String companyId = AppContexts.user().companyId();
 		
+		VerticalTotalMethodOfMonthly setting = command.toDomain(companyId);
 		
+		Optional<VerticalTotalMethodOfMonthly> optSetting = repository.findByCid(companyId);
+		
+		if (optSetting.isPresent()) {
+			repository.update(setting);
+		}
+		else {
+			repository.insert(setting);
+		}
 	}
 }

@@ -2,7 +2,9 @@ module nts.uk.at.view.kmk013.j {
     export module viewmodel {
         export class ScreenModel {
             transAttendMethod: KnockoutObservableArray<ItemModel>;
-            selectedItem: KnockoutObservable<number>;
+            selectedItem: KnockoutObservable<number>; // J2_4
+            givenDays: KnockoutObservable<string>; // J4_5
+            attendanceDays: KnockoutObservable<string>; // J4_9
             
             constructor() {
                 var self = this;
@@ -11,6 +13,8 @@ module nts.uk.at.view.kmk013.j {
                     new ItemModel(1, nts.uk.resource.getText("KMK013_312"))
                 ]);
                 self.selectedItem = ko.observable(0);
+                self.givenDays = ko.observable('');
+                self.attendanceDays = ko.observable('');
             }
             
             // Start Page
@@ -18,7 +22,8 @@ module nts.uk.at.view.kmk013.j {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 service.loadAllSetting().done(function(data) {
-                    self.selectedItem(data.flexWorkManagement);
+                    self.selectedItem(data.attendanceItemCountingMethod);
+                    // TODO: fill the rest of other fields
                     dfd.resolve();
                 })
                 .fail(function(res) {

@@ -31,16 +31,65 @@
 						</tr>
 						<tr>
 							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
+								<div class="child-lb">#{i18n.getText('KMK013_225')}</div>
 								<hr />
 							</td>
+						</tr>
+						<tr>
 							<td class="td-content">
     								<div data-bind="ntsRadioButton: {
-    									checked: selectedValue2,
+    									checked: selectedItem,
     									enable: true, 
     									option: option, 
     									optionValue: 'value',
     									group: 'ntsControl'}"></div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_335')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_336')}</div>
+								<hr />
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<button>#{i18n.getText('KMK013_337')}</button>
+							</td>
+							<td class="td-content">
+								<input tabindex="5"
+								class="nts-input" id="itemname"
+								data-bind="ntsTextEditor:{
+                                         value: givenDays,
+                                         required: true,
+                                         enable: true,
+                                         readonly:true}" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_338')}</div>
+								<hr />
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<button>#{i18n.getText('KMK013_347')}</button>
+							</td>
+							<td class="td-content">
+								<input tabindex="5"
+								class="nts-input" id="itemname"
+								data-bind="ntsTextEditor:{
+                                         value: givenDays,
+                                         required: true,
+                                         enable: true,
+                                         readonly:true}" />
 							</td>
 						</tr>
 					</TBODY>

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vtotalmethod;
 
+import java.util.Optional;
+
 /**
  * The Interface VerticalTotalMethodOfMonthlyRepository.
  *
@@ -13,7 +15,7 @@ public interface VerticalTotalMethodOfMonthlyRepository {
 	 * @param companyId the company id
 	 * @return the vertical total method of monthly
 	 */
-	public VerticalTotalMethodOfMonthly findByCid(String companyId);
+	public Optional<VerticalTotalMethodOfMonthly> findByCid(String companyId);
 	
 	/**
 	 * Insert.

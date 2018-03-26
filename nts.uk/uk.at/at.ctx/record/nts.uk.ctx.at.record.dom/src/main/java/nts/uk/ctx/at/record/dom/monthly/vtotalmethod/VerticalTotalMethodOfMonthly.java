@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.vtotalmethod;
 
-import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;

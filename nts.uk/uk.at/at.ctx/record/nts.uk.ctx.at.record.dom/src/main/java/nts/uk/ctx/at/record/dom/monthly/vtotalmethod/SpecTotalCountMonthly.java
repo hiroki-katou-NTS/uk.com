@@ -6,6 +6,7 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 
 /**
@@ -15,6 +16,7 @@ import nts.arc.enums.EnumAdaptor;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SpecTotalCountMonthly {
 	
 	// 勤務種類のカウント条件
