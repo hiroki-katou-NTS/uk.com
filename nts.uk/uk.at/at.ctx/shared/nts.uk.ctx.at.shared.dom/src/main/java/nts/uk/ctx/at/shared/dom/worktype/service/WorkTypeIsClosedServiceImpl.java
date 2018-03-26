@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -50,13 +51,13 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 		if(!optWorkTypeData.isPresent()) {
 			return false;
 		}
-		WorkType workTypeData = optWorkTypeData.get();
+		WorkType workTypeData = optWorkTypeData.get();		
 		List<WorkTypeSet> lstAttendance = workTypeData.getWorkTypeSetList();
 		if(lstAttendance.isEmpty()) {
 			return false;			
 		}
 		List<WorkTypeSet> lst1Day = lstAttendance.stream()
-				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode))
+				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode) && x.getWorkAtr() == WorkAtr.Monring || x.getWorkAtr() == WorkAtr.OneDay)
 				.collect(Collectors.toList());
 		if(lst1Day.isEmpty()) {
 			return false;

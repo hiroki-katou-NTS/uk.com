@@ -10,7 +10,7 @@ public interface AfterOvertimeReflectProcess {
 	 * @param workTimeCode
 	 * @return
 	 */
-	public void checkScheReflect(OvertimeParameter overtimePara);
+	public boolean checkScheReflect(OvertimeParameter overtimePara);
 	
 	
 

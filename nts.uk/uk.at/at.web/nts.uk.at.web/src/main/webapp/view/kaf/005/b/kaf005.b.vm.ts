@@ -132,6 +132,7 @@ module nts.uk.at.view.kaf005.b {
                     $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-pre").ntsFixedTable({ height: self.heightOvertimeHours() });
+                    $("#fixed-bonus_time-table-pre").ntsFixedTable({ height: 120 });
                     $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                     });
             }
@@ -164,7 +165,7 @@ module nts.uk.at.view.kaf005.b {
             
             initData(data: any) {
                 var self = this;
-                self.version = data.version;
+                self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);

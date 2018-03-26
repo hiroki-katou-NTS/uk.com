@@ -12,14 +12,14 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Inject
 	private WorkTimeIsFluidWork workTimeService;
 	@Override
-	public void checkScheReflect(OvertimeParameter overtimePara) {
+	public boolean checkScheReflect(OvertimeParameter overtimePara) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		if((overtimePara.getOvertimePara().getWorkTimeCode().isEmpty()
 				&& overtimePara.getOvertimePara().getWorkTypeCode().isEmpty())
 				|| !overtimePara.isActualReflectFlg()) {
-			return;
+			return true;
 		}
-		
+		return false;
 	}
 
 }
