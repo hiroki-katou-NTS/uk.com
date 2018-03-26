@@ -246,7 +246,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
-                    if (this.useHalfDayShift() || this.displayMode() == 0) {
+                    if (this.displayMode() == 1 && this.useHalfDayShift()) {
                         lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
                     } else {
                         lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();

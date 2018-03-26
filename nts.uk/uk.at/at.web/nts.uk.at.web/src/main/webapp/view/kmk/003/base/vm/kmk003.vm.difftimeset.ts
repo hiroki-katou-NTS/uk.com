@@ -595,7 +595,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): DiffTimeWorkSettingDto {
                     var halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[] = [];
-                    if (this.isUseHalfDayShift() || this.displayMode() == 0) {
+                    if (this.displayMode() == 1 && this.isUseHalfDayShift()) {
                         halfDayWorkTimezones = _.map(this.halfDayWorkTimezones, item => item.toDto());
                     } else {
                         halfDayWorkTimezones = this.getHDWtzOneday().toListDto();
