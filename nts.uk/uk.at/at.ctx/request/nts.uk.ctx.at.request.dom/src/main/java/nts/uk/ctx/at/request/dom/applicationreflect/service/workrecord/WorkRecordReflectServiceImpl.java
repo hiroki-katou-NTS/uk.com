@@ -35,7 +35,9 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				return reflectRecord.gobackReflectRecord(gobackpara, true);
 			}
 		} else {
-			
+			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
+				//return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), false);
+			}
 		}
 		
 		return null;
