@@ -27,6 +27,8 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	private final String SELECT_ALL_TOPPAGEPART = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID ORDER BY c.code";
 	private final String SELECT_WIDGET_DISPLAY = "SELECT s FROM SptstWidgetDisplay AS s where s.sptstWidgetDisplayPK.companyID = :companyID "
 			+ "AND s.sptstWidgetDisplayPK.topPagePartID =:topPagePartID ";
+	private final String FIND_BY_CODE = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
+			+ "AND c.code =:code ";
 
 	@Override
 	public List<OptionalWidget> findByCompanyId(String companyID) {
@@ -140,6 +142,13 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		this.getEntityManager().flush();
 		this.commandProxy().remove(SptstOptionalWidget.class, new SptstOptionalWidgetPK(companyID, topPagePartID));
 		this.commandProxy().remove(CcgmtTopPagePart.class, new CcgmtTopPagePartPK(companyID, topPagePartID));
+	}
+
+	@Override
+	public boolean isExist(String companyId, String code) {
+		Optional<CcgmtTopPagePart> optional = this.queryProxy().query(FIND_BY_CODE, CcgmtTopPagePart.class)
+				.setParameter("companyID", companyId).setParameter("code", code).getSingle();
+		return optional.isPresent();
 	}
 
 }

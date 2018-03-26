@@ -36,6 +36,10 @@ public class ApprovalSet extends DomainObject{
 	private MsgAdvance msgExceeded;
 	/** 申請対象日に対して警告表示 */
 	private WarnDateDisp warnDateDisp;
+	
+	
+	
+	// domain khac AppReflectAfterConfirm
 	/** スケジュールが確定されている場合 */
 	private Confirm scheduleCon;
 	/** 実績が確定されている場合 */
