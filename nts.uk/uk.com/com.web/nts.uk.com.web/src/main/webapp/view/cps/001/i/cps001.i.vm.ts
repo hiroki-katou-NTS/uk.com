@@ -168,10 +168,16 @@ module nts.uk.com.view.cps001.i.vm {
         
        getItemDef(){
             let self = this;
-            
-            
+           
             service.getItemDef().done((data) => {
-                $("div[data-itemCode]").each(function(){ 
+                self.setItemDefValue(data).done(() => {
+                    self.setGridList();
+                    });
+                });
+        }
+        setItemDefValue(data: any):JQueryPromise<any>{
+            let self = this, dfd = $.Deferred();
+            $("td[data-itemCode]").each(function(){ 
                     let itemCodes = $(this).attr('data-itemcode');
                     if(itemCodes){
                         let itemCodeArray = itemCodes.split(" ");
@@ -184,18 +190,33 @@ module nts.uk.com.view.cps001.i.vm {
                                         $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
                                     }else{
                                         $(this).parent().css("display", "none");
-                                        self.grantTimeH = ko.observable(false);
-                                        self.useTimeH = ko.observable(false);
-                                        self.timeExeededH = ko.observable(false);
-                                        self.timeReamH = ko.observable(false);
                                     }
-                                    
+                                    let timeType = itemCodeArray[itemCodeArray.length - 1];
+                                        switch(timeType){
+                                            case "grantTime": 
+                                                self.grantTimeH = ko.observable(!itemDef.display);
+                                                break;
+                                            case "useTime":
+                                                self.useTimeH = ko.observable(!itemDef.display);
+                                                break;
+                                            case "timeOver":
+                                                self.timeExeededH = ko.observable(!itemDef.display);
+                                                break;
+                                            case "timeReam":
+                                                self.timeReamH = ko.observable(!itemDef.display);
+                                                break;
+                                        }
                                 }
                             });
                         }
+                 dfd.resolve();
                     });
-                     self.columns = ko.observableArray([
-                                { headerText: 'stt', key: 'code', width: 50 },
+           
+            return dfd.promise();
+        }
+        setGridList(){
+            let self = this;
+             self.columns = ko.observableArray([
                                 { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 80 },
                                 { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadlineDate', width: 80 },
                                 { headerText: nts.uk.resource.getText('CPS001_120'), key: 'numberDayGrant', width: 80 },
@@ -211,7 +232,6 @@ module nts.uk.com.view.cps001.i.vm {
                     let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'grantDate\',showNumbering: true,columns:columns,multiple: false, value: currentValue}"></table>';
                         $("#tbl").html(table);
                         ko.applyBindings(self, $("#tbl")[0]);
-                });
         }
     }
 
