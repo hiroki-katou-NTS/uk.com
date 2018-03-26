@@ -415,6 +415,10 @@ module cmm044.a.viewmodel {
                 self.employeeNameScreen2("");
                 self.employeeNameScreen3("");
                 self.employeeNameScreen4("");
+				self.agentSid1("");
+				self.agentSid2("");
+				self.agentSid3("");
+				self.agentSid4("");
 
                 self.selectedTab('tab-1');
                 self.histSelectedItem("");
