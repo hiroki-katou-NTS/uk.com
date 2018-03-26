@@ -49,9 +49,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.listCategoryItem = ko.observableArray([]);
 
             self.selectedCategory.subscribe((data) => {
-                if (data && !self.startLoad()) {
+                if (data) {
                     self.loadCategoryItemData(data);
-                    self.listAcceptItem.removeAll();
+                    if (!self.startLoad()) {
+                        self.listAcceptItem.removeAll();
+                    }
                 }
             });
 
