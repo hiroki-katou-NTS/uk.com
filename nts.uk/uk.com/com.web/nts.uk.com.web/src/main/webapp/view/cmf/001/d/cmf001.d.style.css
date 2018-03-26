@@ -16,3 +16,6 @@
 	width: 95px
 }
 
+#fixed-table > tbody > tr > td{
+	padding-top: 3px;
+}

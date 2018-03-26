@@ -112,7 +112,7 @@
 							</div>
 						</div>
 						<div class="pull-left" style="width: 70px; margin-right: 10px; text-align: center; padding-top: 240px;">
-							<button data-bind="click: btnRightClick"><i class="icon icon-button-arrow-right"></i></button>
+							<button style="margin-bottom: 10px" data-bind="click: btnRightClick"><i class="icon icon-button-arrow-right"></i></button>
 							<button data-bind="click: btnLeftClick"><i class="icon icon-button-arrow-left"></i></button>
 						</div>
 						<div class="fixed-flex-layout-right" style="padding-top: 20px;">
@@ -139,7 +139,7 @@
 									</tr>
 								</thead>
 								<tbody data-bind="foreach: listAcceptItem">
-									<tr data-bind="attr: { 'data-id': acceptItemNumber }">
+									<tr style="height: 36px" data-bind="attr: { 'data-id': acceptItemNumber }">
 										<td style ="text-align: right;background-color: #CFF1A5;"><span class="label" data-bind="text: acceptItemNumber"></span></td>
 										<td><span class="label" data-bind="text: acceptItemName"></span></td>
 										<td>
