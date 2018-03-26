@@ -100,7 +100,8 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		//控除置き換え
 		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(),breakTimeSheets,outingTimeSheets,shortWorkingTimeSheets,employeeId,targetDate);
 		//ドメインモデル「日別実績の勤怠時間」を返す
-		return Optional.of(calculateDailyRecordService.calculate(provisionalDailyRecord));
+		val test = calculateDailyRecordService.calculate(provisionalDailyRecord);
+		return Optional.of(test);
 
 	}
 	/**
@@ -135,8 +136,9 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		for(Map.Entry<Integer, TimeZone> key : timeSheets.entrySet()) {
 			WorkStamp attendance = new WorkStamp(key.getValue().getStart(),key.getValue().getStart(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 			WorkStamp leaving = new WorkStamp(key.getValue().getEnd(),key.getValue().getEnd(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-			TimeActualStamp stamp = new TimeActualStamp(attendance,leaving,key.getKey());
-			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(key.getKey()),Optional.of(stamp),Optional.of(stamp));
+			TimeActualStamp attendanceStamp = new TimeActualStamp(attendance,attendance,key.getKey());
+			TimeActualStamp leavingStamp = new TimeActualStamp(leaving,leaving,key.getKey());
+			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(key.getKey()),Optional.of(attendanceStamp),Optional.of(leavingStamp));
 			
 			timeLeavingWorks.add(timeLeavingWork);
 		}

@@ -196,7 +196,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		val copyIntegrationOfDaily = integrationOfDaily;
 		if (integrationOfDaily.getAffiliationInfor() == null) return integrationOfDaily;
 		// 実績データの計算
-		return this.calcDailyAttendancePerformance(integrationOfDaily);		
+		val test = this.calcDailyAttendancePerformance(integrationOfDaily); 
+		return test;
 	}
 
 	
@@ -545,12 +546,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
         .distinct()
         .collect(Collectors.toList());
 
-		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
-		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		
-		DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);	
-		afterDailyRecordDto.merge(itemValueList);
-		//手修正された項目の値を計算前に戻す 		
-		IntegrationOfDaily calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;
+		
+		if(!attendanceItemIdList.isEmpty()) {
+			DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
+			List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		
+			DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);	
+			afterDailyRecordDto.merge(itemValueList);
+			//手修正された項目の値を計算前に戻す 		
+			calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		}
 			
 		/*日別実績への項目移送*/
 		//eturn integrationOfDaily;

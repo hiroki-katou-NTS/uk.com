@@ -62,9 +62,9 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 						if(overtimeInput.getApplicationTime() != null && overtimeInput.getApplicationTime() != overtimeInputCaculation.getResultCaculation()){
 							overtimeInput.setErrorCode(3); // 色定義名：計算値
 						}
-						if(overtimeInputCaculation.getResultCaculation() == 0){
+						if(overtimeInputCaculation.getResultCaculation()!= null && overtimeInputCaculation.getResultCaculation() == 0){
 							continue;
-						}else if(overtimeInputCaculation.getResultCaculation() > 0){
+						}else if(overtimeInputCaculation.getResultCaculation()!= null && overtimeInputCaculation.getResultCaculation() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.IErrorCheckBeforeRegister.preApplicationExceededCheck(overtimeInput.getCompanyID(),appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), overtimeInputCaculation.getAttendanceID(), convert(overtimeInput));
 							overtimeInput.setErrorCode(overtimeCheckResult.getErrorCode());
@@ -182,7 +182,6 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		for(CaculationTime caculationTime : caculationTimes){
 			for(OvertimeInputCaculation caculation :overtimeInputCaculations){
 				if(caculationTime.getFrameNo() == caculation.getFrameNo()){
-					caculationTime.setCaculationTime(Integer.toString(caculation.getResultCaculation()));
 					caculationTime.setApplicationTime(caculation.getResultCaculation());
 				}
 			}
@@ -250,11 +249,19 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			}
 		}else{
 			// 出勤または退勤打刻なし
+			List<CaculationTime> overtimecheck = new ArrayList<>();
 			for(CaculationTime caculationTime : overtimeHours){
-				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() < 0){
+				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() >= 0){
 					overtimeCheckResult.setFrameNo(caculationTime.getFrameNo());
 					overtimeCheckResult.setErrorCode(2);
-					overtimeHours.add(overtimeCheckResult);
+					overtimecheck.add(overtimeCheckResult);
+				}
+			}
+			for(CaculationTime caculationTime : overtimeHours){
+				for(CaculationTime caculation : overtimecheck){
+					if(caculationTime.getFrameNo() == caculation.getFrameNo()){
+						caculationTime.setErrorCode(caculation.getErrorCode());
+					}
 				}
 			}
 		}
@@ -320,7 +327,10 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 					if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() > overtimeInput.getResultCaculation()){
 						caculationTime.setFrameNo(caculationTime.getFrameNo());
 						caculationTime.setErrorCode(2);
-						caculationTime.setCaculationTime(Integer.toString(overtimeInput.getResultCaculation()));
+						caculationTime.setCaculationTime(overtimeInput.getResultCaculation() == null ? null : Integer.toString(overtimeInput.getResultCaculation()));
+					}else{
+						caculationTime.setFrameNo(caculationTime.getFrameNo());
+						caculationTime.setCaculationTime(overtimeInput.getResultCaculation() == null ? null : Integer.toString(overtimeInput.getResultCaculation()));
 					}
 				}
 			}

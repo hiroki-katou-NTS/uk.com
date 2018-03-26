@@ -55,10 +55,13 @@ module cmm045.a.viewmodel {
             let urlParam: number = url.split("=")[1];
             let characterData = null;
             let appCHeck = null;
+            if (urlParam !== undefined) {
+                character.save('AppListExtractCondition', null);
+            }
             character.restore("AppListExtractCondition").done((obj) => {
                 console.log(obj);
                 characterData = obj;
-                if (obj !== undefined) {
+                if (obj !== undefined && obj !== null) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
                     self.dateValue(date);
                     self.selectedIds([]);
@@ -253,9 +256,7 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
-                nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
-                window.location.href = "../../../kaf/000/b/index.xhtml";
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
             });
         }
 
@@ -373,9 +374,7 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
-                nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
-                window.location.href = "../../../kaf/000/b/index.xhtml";
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
             });
 
             $("#grid1").setupSearchScroll("igGrid", true);
@@ -579,7 +578,7 @@ module cmm045.a.viewmodel {
 
 
             let appInfor = {
-                appPre: appPre == null ? '' : getText('CMM045_272') + appPre,
+                appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
                 appRes: lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;

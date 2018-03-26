@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -37,7 +36,6 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -51,14 +49,19 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Override
-	public void updateWorkTimeType(ReflectParameter para, List<Integer> lstItem, boolean scheUpdate) {		
+	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate) {
 		//日別実績の勤務情報
 		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData()).get();
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
+		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
+			lstItem.add(1);
+			lstItem.add(2);
 			dailyPerfor.setScheduleWorkInformation(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
+			lstItem.add(28);
+			lstItem.add(29);
 			dailyPerfor.setRecordWorkInformation(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}

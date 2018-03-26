@@ -899,8 +899,8 @@ module nts.uk.at.view.kmf022 {
                 ]);
 
                 self.itemListA9_9 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_84')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_85'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_84')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_85'))
                 ]);
 
                 self.selectedIdA9_5 = ko.observable(0);
@@ -1656,6 +1656,7 @@ module nts.uk.at.view.kmf022 {
                 service.findAllData().done((data: any)=> {
                     self.initDataA4(data);
                     self.initDataA5(data);
+                    self.initDataA5_24(data);
                     self.initDataA6(data);
                     self.initDataA7AndA8(data);
                     self.initDataA10(data);
@@ -1710,21 +1711,38 @@ module nts.uk.at.view.kmf022 {
             
             initDataA5(allData:any): void {
                 let self = this;
-                let data = allData.appSet;
+                let data = allData.appliSet;
                 if(data) {
                     self.companyId(data.companyId);
-                    self.selectedIdA5_14(data.reasonDisp);
-                    self.selectedCodeA5_16(data.warnDateDisp);
-                    self.selectedIdA5_18(data.overtimePre);
-                    self.selectedIdA5_19(data.hdPre);
-                    self.selectedIdA5_20(data.msgAdvance);
-                    self.selectedIdA5_21(data.overtimePerfom);
-                    self.selectedIdA5_22(data.hdPerform);
-                    self.selectedIdA5_23(data.msgExceeded)
+                    // reasonDisp
+                    self.selectedIdA5_14(data.appReasonDispAtr);
+                    // warnDateDisp
+                    self.selectedCodeA5_16(data.warningDateDispAtr);
+                    // overtimePre
+                    self.selectedIdA5_18(data.otAdvanceDispAtr);
+                    // hdPre
+                    self.selectedIdA5_19(data.hwAdvanceDispAtr);
+                    // msgAdvance
+                    self.selectedIdA5_20(data.advanceExcessMessDispAtr);
+                    // overtimePerfom
+                    self.selectedIdA5_21(data.otActualDispAtr);
+                    // hdPerform
+                    self.selectedIdA5_22(data.hwActualDispAtr);
+                    // msgExceeded
+                    self.selectedIdA5_23(data.actualExcessMessDispAtr);
+                }
+            }
+            
+            initDataA5_24(allData: any): void{
+                let self = this;
+                let data = allData.appSet;
+                if(data){
+                    // scheduleCon
                     self.selectedIdA5_24(data.scheduleCon);
                     self.selectedIdA5_25(data.achiveCon);
                 }
             }
+            
             initDataA6(allData:any): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;

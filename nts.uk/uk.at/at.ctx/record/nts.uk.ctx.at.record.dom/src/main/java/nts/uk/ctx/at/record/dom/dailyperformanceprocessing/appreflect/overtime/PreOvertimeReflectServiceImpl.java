@@ -88,7 +88,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private CalculateDailyRecordService calculate;
 	
 	@Override
-	public ApplicationReflectOutput overtimeReflect(PreOvertimeParameter param) {
+	public ApplicationReflectOutput overtimeReflect(OvertimeParameter param) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
 			
@@ -109,9 +109,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
-			//所定外深夜時間の反映 
-			//TODO : DuDT 2018.03.23 chua co 法定外残業深夜時間 nen tam thoi chua doi ung
-			//priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
+			//所定外深夜時間の反映
+			priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
 			//フレックス時間の反映
 			priorProcess.reflectOfFlexTime(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getFlexExessTime());
 			
@@ -121,7 +120,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			//dang lay nham thong tin enum
-			output.setReasonNotReflect(ReasonNotReflectRecord.WORK_FIXED);
+			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 			return output;
 	
 		} catch (Exception ex) {
