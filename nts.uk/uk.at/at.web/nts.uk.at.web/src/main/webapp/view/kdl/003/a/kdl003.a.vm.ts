@@ -521,13 +521,10 @@ module nts.uk.at.view.kdl003.a {
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
 
-                // Set work time = ã�ªã�— if list work time is empty.
+                // Set work time = null if list work time is empty.
                 if (!workTimeCode || nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     workTimeCode = '000';
-                    time1.start = null;
-                    time1.end = null;
-                    time2.start = null;
-                    time2.end = null;
+                    time1.start = time1.end = time2.start = time2.end = null;
                 }
 
                 // Check pair work type & work time.
@@ -535,10 +532,7 @@ module nts.uk.at.view.kdl003.a {
 
                     if (workTimeCode === '000') {
                         workTimeCode = '';
-                        time1.start = null;
-                        time1.end = null;
-                        time2.start = null;
-                        time2.end = null;
+                        time1.start = time1.end = time2.start = time2.end = null;
                     }
 
                     // Set shared data.
@@ -549,10 +543,6 @@ module nts.uk.at.view.kdl003.a {
                         selectedWorkTypeName: workTypeName,
                         selectedWorkTimeCode: workTimeCode,
                         selectedWorkTimeName: workTimeName,
-                        firstStartTime: time1.start,
-                        firstEndTime: time1.end,
-                        secondStartTime: time2.start,
-                        secondEndTime: time2.end,
                         first: time1,
                         second: time2
                     };
@@ -642,10 +632,6 @@ module nts.uk.at.view.kdl003.a {
             selectedWorkTypeName: string;
             selectedWorkTimeCode: string;
             selectedWorkTimeName: string;
-            firstStartTime: number;
-            firstEndTime: number;
-            secondStartTime: number;
-            secondEndTime: number;
             first: first;
             second: second;
 
