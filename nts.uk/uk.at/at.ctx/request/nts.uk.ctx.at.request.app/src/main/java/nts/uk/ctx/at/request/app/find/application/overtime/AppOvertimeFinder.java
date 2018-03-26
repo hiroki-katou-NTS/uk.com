@@ -670,6 +670,7 @@ public class AppOvertimeFinder {
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);
+		result.setPrePostCanChangeFlg(displayPrePost.isPrePostCanChangeFlg());
 				
 		//String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
