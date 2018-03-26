@@ -917,7 +917,7 @@ module nts.uk.at.view.kmk003.a {
                 if (_self.isInterlockDialogJ()) {
                     if (_self.workTimeSetting.isFixed()) {                     
                         let workStart: number = _self.predetemineTimeSetting.startDateClock();
-                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + (_self.predetemineTimeSetting.rangeTimeDay());
                         let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
                         let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
                         
@@ -940,7 +940,7 @@ module nts.uk.at.view.kmk003.a {
                     }   
                     if (_self.workTimeSetting.isFlex()) {
                         let workStart: number = _self.predetemineTimeSetting.startDateClock();
-                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + (_self.predetemineTimeSetting.rangeTimeDay());
                         _self.flexWorkSetting.getGoWork1Stamp().startTime(workStart);
                         _self.flexWorkSetting.getGoWork1Stamp().endTime(workEnd);
                         _self.flexWorkSetting.getLeaveWork1Stamp().startTime(workStart);
@@ -948,7 +948,7 @@ module nts.uk.at.view.kmk003.a {
                     }  
                     if (_self.workTimeSetting.isFlow()) {
                         let workStart: number = _self.predetemineTimeSetting.startDateClock();
-                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + (_self.predetemineTimeSetting.rangeTimeDay());
                         _self.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime(workStart);
                         _self.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime(workEnd);
                         _self.flowWorkSetting.stampReflectTimezone.getLeaveWorkFlowStamp().startTime(workStart);
@@ -956,7 +956,7 @@ module nts.uk.at.view.kmk003.a {
                     } 
                     if (_self.workTimeSetting.isDiffTime()) {
                         let workStart: number = _self.predetemineTimeSetting.startDateClock();
-                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + _self.predetemineTimeSetting.rangeTimeDay();
+                        let workEnd: number = _self.predetemineTimeSetting.startDateClock() + (_self.predetemineTimeSetting.rangeTimeDay());
                         _self.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime(workStart);
                         _self.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime(workEnd);
                         _self.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime(workStart);
