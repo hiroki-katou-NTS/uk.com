@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
  */
 public interface ReflectWorkInforDomainService {
 
-	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate, String empCalAndSumExecLogID, ExecutionType reCreateAttr);
+	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate, String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType);
 	
 	AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,String empCalAndSumExecLogID);
 	
