@@ -98,7 +98,6 @@ public class PernfoItemDefWebservice extends WebService {
 		return itemDefFinder.getPerInfoItemDefByIdForLayout(Id);
 	}
 
-
 	@POST
 	@Path("layout/findby/listItemId")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
@@ -106,7 +105,7 @@ public class PernfoItemDefWebservice extends WebService {
 	}
 
 	// to anh Vuong
-	//test hieu nang Layout
+	// test hieu nang Layout
 	@POST
 	@Path("layout/findby/listItemIdv2")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutV2(List<String> listItemDefId) {
@@ -164,31 +163,32 @@ public class PernfoItemDefWebservice extends WebService {
 	public List<ItemRequiredBackGroud> getAllRequiredIdsByCid() {
 		return itemDefFinder.getAllRequiredIdsByCompanyID();
 	}
-	
+
 	@POST
 	@Path("layout/findAll/required/{ctgId}")
 	public List<ItemRequiredBackGroud> getAllRequiredIdsByCtgId(@PathParam("ctgId") String ctgId) {
 		return itemDefFinder.getAllItemRequiredIdsByCtgId(ctgId);
 	}
-	
+
 	@POST
 	@Path("check/itemData/{itemId}")
 	public boolean checkItemData(@PathParam("itemId") String itemId) {
 		return this.itemDefFinder.isCheckData(itemId);
 	}
-	
+
 	// lanlt end
+	
 	@POST
 	@Path("findby/ctg-cd/{ctgcd}")
 	public List<SimpleItemDef> getSimpleItemDefsByCtgCd(@PathParam("ctgcd") String ctgCd) {
 		return getItemsCS00039();
-		//return itemDefFinder.getSingpleItemDef(ctgCd);
+		// return itemDefFinder.getSingpleItemDef(ctgCd);
 	}
-	
-	private List<SimpleItemDef> getItems(){
+
+	private List<SimpleItemDef> getItems() {
 		List<SimpleItemDef> lst = new ArrayList<>();
 		lst.add(new SimpleItemDef("IS00398", "積立年休付与日", true));
-		lst.add(new SimpleItemDef("IS00399", "積立年休期限日",  true));
+		lst.add(new SimpleItemDef("IS00399", "積立年休期限日", true));
 		lst.add(new SimpleItemDef("IS00400", "積立年休期限切れ状態", false));
 		lst.add(new SimpleItemDef("IS00401", "積立年休使用状況", true));
 		lst.add(new SimpleItemDef("IS00403", "付与数", true));
@@ -196,13 +196,14 @@ public class PernfoItemDefWebservice extends WebService {
 		lst.add(new SimpleItemDef("IS00405", "使用日数", true));
 		lst.add(new SimpleItemDef("IS00406", "上限超過消滅日数", true));
 		lst.add(new SimpleItemDef("IS00408", "残数", true));
+
 		return lst;
-		
 	}
-	private List<SimpleItemDef> getItemsCS00039(){
+
+	private List<SimpleItemDef> getItemsCS00039() {
 		List<SimpleItemDef> lst = new ArrayList<>();
 		lst.add(new SimpleItemDef("IS00424", "test", true));
-		lst.add(new SimpleItemDef("IS00410", "sadf",  true));
+		lst.add(new SimpleItemDef("IS00410", "sadf", true));
 		lst.add(new SimpleItemDef("IS00411", "asdf", true));
 		lst.add(new SimpleItemDef("IS00412", "asf", true));
 		lst.add(new SimpleItemDef("IS00413", "asdf", true));
@@ -216,9 +217,7 @@ public class PernfoItemDefWebservice extends WebService {
 		lst.add(new SimpleItemDef("IS00421", "asdf", true));
 		lst.add(new SimpleItemDef("IS00422", "wrq", false));
 		lst.add(new SimpleItemDef("IS00423", "asdf", true));
+
 		return lst;
-		
 	}
-	
-	
 }

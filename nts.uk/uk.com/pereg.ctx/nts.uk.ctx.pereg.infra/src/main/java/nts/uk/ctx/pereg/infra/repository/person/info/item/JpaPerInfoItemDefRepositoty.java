@@ -355,16 +355,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoItemDef.getPerInfoCategoryId());
-		
+
 		PpemtPerInfoCtg perInfoCtg = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
-		
+
 		if (perInfoCtg == null) {
 			return;
 		}
 
 		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd, perInfoCtg.categoryCd,
 				perInfoItemDef.getItemCode().v());
-		
+
 		PpemtPerInfoItemCm itemCmOld = this.queryProxy().find(perInfoItemCmPK, PpemtPerInfoItemCm.class).orElse(null);
 
 		if (itemCmOld == null) {
@@ -373,7 +373,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 		PpemtPerInfoItemCm itemCmNew = createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd,
 				perInfoCtg.categoryCd);
-		
+
 		itemCmNew.setInsCcd(itemCmOld.getInsCcd());
 		itemCmNew.setInsDate(itemCmOld.getInsDate());
 		itemCmNew.setInsScd(itemCmOld.getInsScd());
@@ -382,7 +382,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		itemCmNew.setUpdCcd(itemCmOld.getUpdCcd());
 		itemCmNew.setUpdScd(itemCmOld.getUpdScd());
 		itemCmNew.setUpdPg(itemCmOld.getUpdPg());
-		
+
 		this.commandProxy().update(itemCmNew);
 
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
@@ -393,7 +393,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		}
 
 		perInfoItem.itemName = perInfoItemDef.getItemName().v();
-		
+
 		this.commandProxy().update(perInfoItem);
 	}
 
