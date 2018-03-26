@@ -25,8 +25,6 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	@Inject
 	private ScheWorkUpdateService workUpdate;
 	@Inject
-	private CommonProcessCheckService commonService;
-	@Inject
 	private ScheStartEndTimeReflect scheStartEndTimeReflect;
 	
 	@Override
@@ -43,7 +41,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode()); 
-		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstScheWorkTimeType(), true);		
+		workUpdate.updateWorkTimeType(reflectInfo, true);	
 	}
 	
 	@Override
@@ -61,7 +59,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode()); 
-		workUpdate.updateWorkTimeType(reflectInfo, commonService.lstItemRecord(), false);
+		workUpdate.updateWorkTimeType(reflectInfo, false);
 		//ドメインモデル「日別実績の勤務情報」を取得する
 		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateInfo()).get();
 		//反映前後勤就に変更があるかチェックする
