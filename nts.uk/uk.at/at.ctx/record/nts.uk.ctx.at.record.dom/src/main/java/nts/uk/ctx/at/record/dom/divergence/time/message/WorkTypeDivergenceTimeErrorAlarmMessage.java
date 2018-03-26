@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 @Getter
 @Setter
+// 勤務種別ごとの乖離時間のエラーアラームメッセージ
 public class WorkTypeDivergenceTimeErrorAlarmMessage extends AggregateRoot {
 
 	/** The c id. */

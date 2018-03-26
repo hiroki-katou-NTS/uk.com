@@ -33,18 +33,39 @@ public class JpaDivergenceReasonSelectRepositorySetMemento implements Divergence
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectSetMemento#setDivergenceReasonCode(nts.uk.ctx.at.
+	 * record.dom.divergence.time.reason.DivergenceReasonCode)
+	 */
 	@Override
 	public void setDivergenceReasonCode(DivergenceReasonCode divergenceReasonCode) {
 		this.entity.getId().setReasonCode(divergenceReasonCode.toString());
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectSetMemento#setReason(nts.uk.ctx.at.record.dom.
+	 * divergence.time.reason.DivergenceReason)
+	 */
 	@Override
 	public void setReason(DivergenceReason reason) {
 		this.entity.setReason(reason.toString());
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.reason.
+	 * DivergenceReasonSelectSetMemento#setReasonRequired(nts.uk.ctx.at.record.
+	 * dom.divergence.time.reason.DivergenceInputRequired)
+	 */
 	@Override
 	public void setReasonRequired(DivergenceInputRequired reasonRequired) {
 		this.entity.setReasonRequired(new BigDecimal(reasonRequired.value));
