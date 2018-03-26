@@ -120,7 +120,7 @@ module nts.uk.com.view.cps001.g.vm {
         setItemDefValue(data: any):JQueryPromise<any>{
             let self = this, dfd = $.Deferred();
             $("td[data-itemCode]").each(function(){ 
-                    let itemCodes = $(this).attr('data-itemcode');
+                    let itemCodes = $(this).attr('data-itemCode');
                     if(itemCodes){
                         let itemCodeArray = itemCodes.split(" ");
                             _.forEach(itemCodeArray, (itemCode) => {

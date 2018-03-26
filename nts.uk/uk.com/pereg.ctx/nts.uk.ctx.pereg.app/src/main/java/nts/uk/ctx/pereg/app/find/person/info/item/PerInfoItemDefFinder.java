@@ -19,6 +19,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
@@ -580,11 +581,16 @@ public class PerInfoItemDefFinder {
 	}
 	// lanlt end
 
+	/**
+	 * 
+	 * @param ctgCd
+	 * @return
+	 */
 	public List<SimpleItemDef> getSingpleItemDef(String ctgCd) {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getPerInfoItemByCtgCd(ctgCd,
 				AppContexts.user().companyId());
 
-		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), true))
+		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), x.getIsAbolition() == IsAbolition.NOT_ABOLITION))
 				.collect(Collectors.toList());
 	}
 }

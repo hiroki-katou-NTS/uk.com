@@ -56,14 +56,14 @@
 		 				rows:5
 			 		}"></table> -->
 				</div>
-				<table id="tbl-detail" data-bind="with: currentItem">
+				<table id="tbl-detail">
 					<tr>
 						<td data-itemCode="IS00385"><div
 								data-bind="ntsFormLabel: {required: true }">abc</div></td>
 
 						<td>
 							<div tabindex="7" id="idGrantDate"
-								data-bind="ntsDatePicker: {value: grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
+								data-bind="ntsDatePicker: {value: currentItem().grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
 					<tr>
@@ -71,7 +71,7 @@
 								data-bind="ntsFormLabel: {required: false }">abc</div></td>
 						<td>
 							<div tabindex="8"
-								data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+								data-bind="ntsDatePicker: {value: currentItem().deadline, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
 					<tr>
@@ -83,7 +83,7 @@
 								options: $parent.expirationStatus,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: expirationStatus,
+								value: currentItem().expirationStatus,
 								required: true,
 								enable: true }"></div>
 						</td>
@@ -102,7 +102,7 @@
 									<td><input class="resize_Edittor" tabindex="10"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
-	                                      value: grantDays,
+	                                      value: currentItem().grantDays,
 	                                      option: {
 	                                       decimallength: 1
 	                                      },
@@ -115,7 +115,7 @@
 												<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div>abc</div></td>
 												<td><input class="resize_Edittor" tabindex="11"
 													data-bind="ntsTimeEditor: {
-															value: grantMinutes,
+															value: currentItem().grantMinutes,
 															required: true,
 															enable: true,
 															mode: 'time',
@@ -134,7 +134,7 @@
 									<td><input tabindex="12" class="resize_Edittor"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
-	                                      value: usedDays,
+	                                      value: currentItem().usedDays,
 	                                      option: {
 	                                       decimallength: 1
 	                                      },
@@ -147,7 +147,7 @@
 												<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div>abc</div></td>
 												<td><input class="resize_Edittor" tabindex="13"
 													data-bind="ntsTimeEditor: {
-										value: usedMinutes,
+										value: currentItem().usedMinutes,
 										required: true,
 										enable: true,
 										mode: 'time',
@@ -166,7 +166,7 @@
 									<td><input class="resize_Edittor" tabindex="14"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
-	                                      value:remainingDays,
+	                                      value: currentItem().remainingDays,
 	                                      option: {
 	                                       decimallength: 1
 	                                      },
@@ -179,7 +179,7 @@
 												<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div>abc</div></td>
 												<td><input class="resize_Edittor" tabindex="15"
 													data-bind="ntsTimeEditor: {
-										value: remainingMinutes,
+										value: currentItem().remainingMinutes,
 										required: true,
 										enable: true,
 										readonly: false,

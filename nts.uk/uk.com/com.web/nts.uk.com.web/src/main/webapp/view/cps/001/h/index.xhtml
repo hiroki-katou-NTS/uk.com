@@ -32,20 +32,29 @@
 				<div class='ckb' data-bind="ntsCheckBox: { checked: true }" tabindex="5">#{i18n.getText('CPS001_125')}</div>
 				
 				<div id="tbl">
-					
+			 		<table id="single-list" data-bind="ntsGridList: {								
+						height: 350,
+						dataSource: items,
+						primaryKey: 'id',
+						columns: columns,
+						multiple: false,
+						value: currentItem,
+		 				showNumbering: true,
+		 				rows:10
+						}"></table>
 				</div>
 				<div class='detailContent'>
-					<table data-bind="with: resvLeaGrantRemNum">
+					<table>
 						<tr>
 							<td data-itemCode="IS00398" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
-							<td><div tabindex='7' data-bind="ntsDatePicker: {value: grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td><div tabindex='7' data-bind="ntsDatePicker: {value: resvLeaGrantRemNum().grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
-							<td data-itemCode="IS00399"><div data-bind="ntsFormLabel: {required: false }">2</div></td>
-							<td><div tabindex='8' data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td data-itemCode="IS00399"><div data-bind="ntsFormLabel: {required: true }">2</div></td>
+							<td><div tabindex='8' data-bind="ntsDatePicker: {value: resvLeaGrantRemNum().deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
-							<td data-itemCode="IS00400 grantDate"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
+							<td data-itemCode="IS00400"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
 							<td><div tabindex='9' class="cf" data-bind="ntsSwitchButton: {
 										options: [
 							                 { code: '1', name: '使用可能'},
@@ -53,7 +62,7 @@
 							             ],
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: expirationStatus,
+										value: resvLeaGrantRemNum().expirationStatus,
 										required: true,
 										enable: true }"></div></td>
 										
@@ -63,13 +72,13 @@
 							<td>
 								<table>
 									<tr>
-										<td colspan='3' style='font-weight: bold;padding-top: 10px;'>#{i18n.getText('CPS001_114')}</td>
+										<td colspan='3' style='font-weight: bold;padding: 10px;'>#{i18n.getText('CPS001_114')}</td>
 									</tr>
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
 										<td class='paddingTd'><input class="realTxt" tabindex='10' data-bind="ntsNumberEditor: {
 											name: '',
-		                                    value: grantDays,
+		                                    value: resvLeaGrantRemNum().grantDays,
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
@@ -81,7 +90,7 @@
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_116')}</div></td>
 										<td class='paddingTd'><input class="realTxt" tabindex='11' data-bind="ntsNumberEditor: {
 											name: '',
-		                                    value: useDays,
+		                                    value: resvLeaGrantRemNum().useDays,
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
@@ -91,7 +100,7 @@
 										<td class='paddingTd' data-itemCode="IS00406">
 										<span>5</span><span><input class="realTxt" tabindex='12' data-bind="ntsNumberEditor: {
 											name: '',
-		                                    value: overLimitDays,
+		                                    value: resvLeaGrantRemNum().overLimitDays,
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
@@ -103,7 +112,7 @@
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_117')}</div></td>
 										<td class='paddingTd'><input class="realTxt" tabindex='13' data-bind="ntsNumberEditor: {
 											name: '',
-		                                    value: remainingDays,
+		                                    value: resvLeaGrantRemNum().remainingDays,
 		                                    option: {
 			                                    decimallength: 1
 		                                    },

@@ -21,15 +21,13 @@ module cps001.h.vm {
         
         constructor() {
             let self = this;
-            service.getItemDef().done((data) => {
-                self.currentItem.subscribe((gDate)=>{
-                    service.getByGrantDate(moment.utc(gDate, "YYYY/MM/DD")).done((curItem) => {
+            self.currentItem.subscribe((id: string)=>{                 
+                    service.getByGrantDate(id).done((curItem) => {
                         self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
-                    });
-                    
+                    });                 
                 });
-            });
             self.columns = ko.observableArray([
+               { headerText: "", key: 'id', hidden: true},
                { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD'},
                { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD'}, 
                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70}, 
@@ -40,17 +38,17 @@ module cps001.h.vm {
            ]); 
         }
         start() {
-            let self  = this;
+           let self  = this;
+             self.setDef();
            service.getAll().done((data) => {
                 self.items(data);
-               self.setDef();
             });    
         }
         setDef(){
             let self = this;
             service.getItemDef().done((data) => {
-                $(".detailContent td").each(function(){ 
-                    let itemCodes = $(this).attr('data-itemcode');
+                $("td[data-itemCode]").each(function(){ 
+                    let itemCodes = $(this).attr('data-itemCode');
                     if(itemCodes){
                         let itemCodeArray = itemCodes.split(" ");
                         _.forEach(itemCodeArray, (itemCode) => {
@@ -82,17 +80,19 @@ module cps001.h.vm {
 
     }
     class ResvLeaGrantRemNum{
+        id:  KnockoutObservable<string> = ko.observable("");
         grantDate:  KnockoutObservable<string> = ko.observable("");
         deadline:  KnockoutObservable<string> = ko.observable("");
-        expirationStatus:  KnockoutObservable<string> = ko.observable("");
+        expirationStatus:  KnockoutObservable<number> = ko.observable(1);
         grantDays:  KnockoutObservable<string> = ko.observable("");
         useDays:  KnockoutObservable<string> = ko.observable("");
         overLimitDays:  KnockoutObservable<string> = ko.observable("");
         remainingDays:  KnockoutObservable<string> = ko.observable("");       
         constructor(data: IResvLeaGrantRemNum){
+            this.id(data && data.id || "");
             this.grantDate(data && data.grantDate || "");
-            this.deadline(data &&data.deadline || "");
-            this.expirationStatus(data == undefined ? "1" : (data.expirationStatus == undefined ? "1":data.expirationStatus));
+            this.deadline(data && data.deadline || "");
+            this.expirationStatus(data == undefined ? 1 : (data.expirationStatus == undefined ? 1: data.expirationStatus));
             this.grantDays(data &&data.grantDays || "");
             this.useDays(data &&data.useDays || "");
             this.overLimitDays(data &&data.overLimitDays || "");
@@ -101,9 +101,10 @@ module cps001.h.vm {
     }
     
     interface IResvLeaGrantRemNum{
+        id: string;
         grantDate: string;
         deadline: string;
-        expirationStatus: string;
+        expirationStatus: number;
         grantDays: string;
         useDays: string;
         overLimitDays: string;

@@ -208,8 +208,7 @@ public class PernfoItemDefWebservice extends WebService {
 		lst.add(new SimpleItemDef("IS00405", "使用日数", true));
 		lst.add(new SimpleItemDef("IS00406", "上限超過消滅日数", true));
 		lst.add(new SimpleItemDef("IS00408", "残数", true));
-		return lst;
-		
+		return lst;		
 	}
 	private List<SimpleItemDef> getItemsCS00039(){
 		List<SimpleItemDef> lst = new ArrayList<>();

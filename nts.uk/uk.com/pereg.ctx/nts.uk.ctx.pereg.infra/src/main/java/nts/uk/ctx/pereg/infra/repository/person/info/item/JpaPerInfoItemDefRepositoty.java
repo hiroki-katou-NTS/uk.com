@@ -264,9 +264,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	// lanlt end
 
-	private final static String SELECT_SIMPLE_ITEM_DEF = "select i.itemCd, i.itemName from PpemtPerInfoItem i "
+	private final static String SELECT_SIMPLE_ITEM_DEF = "select i.itemCd, i.itemName, i.abolitionAtr from PpemtPerInfoItem i "
 			+ " JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " where c.categoryCd = :ctgCd and c.cid = :cid and i.abolitionAtr = 0";
+			+ " where c.categoryCd = :ctgCd and c.cid = :cid";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -600,7 +600,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	private PersonInfoItemDefinition toDomainWithCodeAndName(Object[] i) {
-		return PersonInfoItemDefinition.createFromEntityWithCodeAndName(String.valueOf(i[1]), String.valueOf(i[0]));
+		return PersonInfoItemDefinition.createFromEntityWithCodeAndName(String.valueOf(i[0]), String.valueOf(i[1]), Integer.parseInt(i[2].toString()));
 	}
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomain(PersonInfoItemDefinition perInfoItemDef) {
