@@ -44,7 +44,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
 
-        showReason: KnockoutObservable<boolean> = ko.observable(true);
+        showReason: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
