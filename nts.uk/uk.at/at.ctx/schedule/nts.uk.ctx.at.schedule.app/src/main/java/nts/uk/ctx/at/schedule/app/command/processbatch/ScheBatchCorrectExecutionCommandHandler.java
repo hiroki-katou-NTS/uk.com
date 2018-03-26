@@ -192,6 +192,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 						errorList.clear();
 					}
 					errorList.add(errorContentDto);
+					setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
+					if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
 				} else {
 					countSuccess++;
 					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
@@ -209,16 +211,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 			setter.setData(DATA_PREFIX + errorRecordCount, dto);
 		}
 		
-		// Count amount of error
-		if (errorList.size() > 0) {
-			dto.setWithError(WithError.WITH_ERROR);
-			setter.updateData(NUMBER_OF_ERROR, errorList.size());
-		}
-		// If there is completely no error, set to NO_ERROR
-		else {
-			dto.setWithError(WithError.NO_ERROR);
-		}
-
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.DONE);
 		//setter.updateData(DATA_EXECUTION, dto);

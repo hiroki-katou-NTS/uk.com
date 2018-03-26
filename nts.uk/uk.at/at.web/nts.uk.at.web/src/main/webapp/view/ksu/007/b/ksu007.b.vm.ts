@@ -144,7 +144,7 @@ module nts.uk.at.view.ksu007.b {
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled || res.status == "REQUESTED_CANCEL") {
                             self.errorLogs.sort(function(a,b) {
-                                return (a.employeeId - b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
+                                return a.employeeId.localeCompare(b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
                             });
                             
                             self.executionState('完了');
@@ -161,11 +161,10 @@ module nts.uk.at.view.ksu007.b {
                             self.numberFail(self.errorLogs().length);
                             self.readIndex.removeAll();
                             self.isFinish(true);
-                            break;
                         }
                     });
                 }).while(infor => {
-                    return infor.pending || infor.running;
+                    return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
                 }).pause(1000));
             }
 
