@@ -16346,7 +16346,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (String($grid.attr("filtered")) === "true" && $grid.data("ui-changed") !== true) {
+                        if (String($grid.attr("filtered")) === "true") {
                             var filteredSource_1 = [];
                             _.forEach(gridSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
@@ -16361,7 +16361,7 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        else if ($grid.data("ui-changed") !== true) {
+                        else {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -18946,11 +18946,15 @@ var nts;
                         }
                         else {
                             // Compare value.
-                            var olds = _.map($treegrid.igTreeGridSelection("selectedRow"), function (row) {
-                                return row.id;
-                            });
+                            var uiSR = $treegrid.ntsTreeView('getSelected');
+                            //                _.map($treegrid.igTreeGridSelection("selectedRow") as Array<any>, function(row: any) {
+                            //                    return row.id;
+                            //                });
                             // Not change, do nothing.
                             if (multiple) {
+                                var olds = _.map(uiSR, function (row) {
+                                    return row.id;
+                                });
                                 if (_.isEqual(selectedValues.sort(), olds.sort())) {
                                     return;
                                 }
@@ -18961,7 +18965,7 @@ var nts;
                                 });
                             }
                             else {
-                                if (olds.length > 1 && olds[0] === singleValue) {
+                                if (uiSR !== undefined && uiSR.id === singleValue) {
                                     return;
                                 }
                                 $treegrid.igTreeGridSelection("clearSelection");
@@ -20966,7 +20970,10 @@ var nts;
                                 _.defer(function () {
                                     var selected = getSelectRow($grid);
                                     if (!nts.uk.util.isNullOrEmpty(selected)) {
-                                        var $scrollContainer = $grid.igGrid("scrollContainer");
+                                        selected = oldSelected;
+                                    }
+                                    var $scrollContainer = $grid.igGrid("scrollContainer");
+                                    _.defer(function () {
                                         if ($scrollContainer.length > 0) {
                                             var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
                                             var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
@@ -20976,7 +20983,7 @@ var nts;
                                             var index = $(selected["element"]).attr("data-row-idx");
                                             $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                         }
-                                    }
+                                    });
                                 });
                             }
                         });
