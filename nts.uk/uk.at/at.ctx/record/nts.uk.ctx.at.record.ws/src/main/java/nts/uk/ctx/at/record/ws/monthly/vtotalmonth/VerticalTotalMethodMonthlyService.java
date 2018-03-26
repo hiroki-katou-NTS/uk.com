@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddVerticalTotalMethodOfMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddVerticalTotalMethodOfMonthlyCommandHandler;
+import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyFinder;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 
@@ -26,7 +27,7 @@ public class VerticalTotalMethodMonthlyService {
 	
 	@Path("read")
 	@POST
-	public VerticalTotalMethodOfMonthly findSetting() {
+	public VerticalTotalMethodOfMonthlyDto findSetting() {
 		return finder.findSetting();
 	}
 	
