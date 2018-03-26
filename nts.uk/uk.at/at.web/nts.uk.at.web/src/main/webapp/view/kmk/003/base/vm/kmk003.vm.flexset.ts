@@ -373,7 +373,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
                     var lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[] = [];
-                    if (this.displayMode() == 1 && this.useHalfDayShift()) {
+                    if (this.displayMode() == TabMode.DETAIL && this.useHalfDayShift()) {
                         lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
                     } else {
                         lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
