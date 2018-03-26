@@ -33,9 +33,9 @@ public class AddDeformLaborOTCommandHandler extends CommandHandler<AddDeformLabo
 		if (optional.isPresent()) {
 			// update deform labor Overtime
 			this.repository.update(deformLaborOT);
-		}else {
+		} else {
 			// add deform labor overtime
 			this.repository.add(deformLaborOT);
-		};
+		}
 	}
 }

@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOT;
 
+/**
+ * The class AddDeformLaborOTCommand 
+ * @author yennh
+ *
+ */
 @Data
 @AllArgsConstructor
 public class AddDeformLaborOTCommand {

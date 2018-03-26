@@ -8,14 +8,38 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.n.start.js" />
+			<com:scriptfile path="kmk013.n.vm.js" />
+			<com:scriptfile path="kmk013.n.service.js" />
+			<com:stylefile path="kmk013.n.main.css" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				
+				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }" tabindex="1"> #{i18n.getText('KMK013_224')} </a>
+				<button class="proceed save" data-bind="click: saveData" tabindex="2">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area">
-				screen	
+				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_363')}</div>
+				<div class="row-1">
+					<div class="time-name">#{i18n.getText('KMK013_364')}</div>
+					<input class="input-time" data-bind="ntsTimeWithDayEditor: { 
+						name: '#{i18n.getText('KMK013_365')}',
+						constraint:'TimeWithDayAttr', 
+						value: start,
+						enable: enable, 
+						required: true }" />
+				</div>
+				<div class="row-1">
+					<div class="time-name">#{i18n.getText('KMK013_366')}</div>
+					<input class="input-time" data-bind="ntsTimeWithDayEditor: { 
+						name: '#{i18n.getText('KMK013_367')}', 
+						constraint:'TimeWithDayAttr', 
+						value: end, 
+						enable: enable, 
+						required: true }" />
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
