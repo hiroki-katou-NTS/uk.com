@@ -58,7 +58,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 					// 状態を確認する
 					// status from activity ⑤社員の日別実績を作成する
 					status = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext, employee,
-							periodTime, companyId, empCalAndSumExecLogID, executionLog);
+							periodTime, companyId, empCalAndSumExecLogID, executionLog, false);
 					if (status == ProcessState.SUCCESS) {
 						dailyCreateCount++;
 						// ログ情報（実行内容の完了状態）を更新する
