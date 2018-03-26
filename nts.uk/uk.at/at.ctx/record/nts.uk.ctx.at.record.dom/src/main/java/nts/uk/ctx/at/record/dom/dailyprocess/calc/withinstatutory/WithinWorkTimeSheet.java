@@ -306,7 +306,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * コアタイムのセット
 	 * @param coreTimeSetting コアタイム時間設定
 	 */
-	public FlexWithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
+	public WithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
 		List<TimeSpanForCalc> duplicateCoreTimeList = new ArrayList<>();
 		for(WithinWorkTimeFrame workTimeFrame : this.withinWorkTimeFrame) {
 			Optional<TimeSpanForCalc> duplicateSpan = workTimeFrame.getCalcrange().getDuplicatedWith(new TimeSpanForCalc(coreTimeSetting.getCoreTimeSheet().getStartTime(),
@@ -315,10 +315,17 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				duplicateCoreTimeList.add(duplicateSpan.get());
 			}
 		}
-		TimeWithDayAttr startTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(0).getStart();
-		TimeWithDayAttr endTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(duplicateCoreTimeList.size() - 1).getEnd();
-		/*フレックス時間帯に入れる*/
-		return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,new TimeSpanForCalc(startTime, endTime));
+		TimeWithDayAttr startTime = new TimeWithDayAttr(0);
+		TimeWithDayAttr endTime = new TimeWithDayAttr(0);
+		if(!duplicateCoreTimeList.isEmpty()) {
+			startTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(0).getStart();
+			endTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(duplicateCoreTimeList.size() - 1).getEnd();
+			/*フレックス時間帯に入れる*/
+			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,new TimeSpanForCalc(startTime, endTime));
+		}
+		else {
+			return this;
+		}
 	}
 	
 	
@@ -328,7 +335,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param dedTimeSheet　控除時間帯
 	 * @return 就業時間の計算結果
 	 */
-	public AttendanceTime calcWorkTimeForStatutory(PremiumAtr premiumAtr,CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,
+	public AttendanceTime calcWorkTimeForStatutory(PremiumAtr premiumAtr,CalculationByActualTimeAtr calcActualTime,Optional<DeductionTimeSheet> dedTimeSheet,
 			   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   VacationClass vacationClass,
 			   StatutoryDivision statutoryDivision,
@@ -376,7 +383,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 就業時間の計算(控除時間差し引いた後)
 	 * @return 就業時間
 	 */
-	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, CalculationByActualTimeAtr calcActualTime,Optional<DeductionTimeSheet> dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 									   StatutoryDivision statutoryDivision,
 									   WorkType workType,
 									   PredetermineTimeSetForCalc predetermineTimeSet,
@@ -430,7 +437,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return 就業時間
 	 */
 	public AttendanceTime calcWorkTimeBeforeDeductPremium(HolidayAdditionAtr holidayAdditionAtr,
-														  DeductionTimeSheet dedTimeSheet,
+														  Optional<DeductionTimeSheet> dedTimeSheet,
 														  TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 														  WorkingSystem workingSystem,
 														  AddSettingOfRegularWork addSettingOfRegularWork,
@@ -833,10 +840,22 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 */
 	public AttendanceTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
 		int totalMidNightTime = 0;
+		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
-											   .filter(tg -> tg.getMidNightTimeSheet().isPresent())
-											   .map(ts -> ts.getMidNightTimeSheet().get().calcMidNight(autoCalcSet).valueAsMinutes())
+											   .filter(tc -> tc.getMidNightTimeSheet().isPresent())
+											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
 											   .collect(Collectors.summingInt(tc -> tc));
+		
+		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
+			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Appropriate, ConditionAtr.BREAK);
+			if(frametime.getMidNightTimeSheet().isPresent()) {
+				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
+										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
+										 .collect(Collectors.summingInt(tc->tc));
+			}
+		}
+		
+		totalMidNightTime -= totalDedTime;
 		return new AttendanceTime(totalMidNightTime);
 	}
 	
@@ -852,5 +871,19 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		return totalTime;
 	}
+	
+//	/**
+//	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)
+//	 * @param dedAtr
+//	 * @param conAtr
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getDedTimeSheetByDedAtr(DeductionAtr dedAtr,ConditionAtr conAtr){
+//		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+//		for(WithinWorkTimeFrame timeSheet : this.getWithinWorkTimeFrame()) {
+//			returnList.addAll(timeSheet.getDedTimeSheetByDedAtr(dedAtr, conAtr));
+//		}
+//		return returnList;
+//	}
 
 }

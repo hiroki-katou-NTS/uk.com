@@ -130,6 +130,7 @@ public class AsposeCellsReportContext implements AutoCloseable {
 	public void saveAsCSV(OutputStream outputStream) {
 		try {
 			TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
+			opts.setAlwaysQuoted(true);
 			opts.setEncoding(Encoding.getUTF8());
 			this.workbook.save(outputStream, opts);
 		} catch (Exception e) {

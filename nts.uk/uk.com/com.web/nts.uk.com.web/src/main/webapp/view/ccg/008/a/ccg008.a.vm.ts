@@ -1,6 +1,8 @@
- module nts.uk.com.view.ccg008.a.viewmodel {  
-  import commonModel = ccg.model;
-     export class ScreenModel {
+module nts.uk.com.view.ccg008.a.viewmodel {
+    import commonModel = ccg.model;
+    import ntsFile = nts.uk.request.file; 
+    
+    export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
         flowmenu: KnockoutObservable<model.Placement>;
@@ -9,8 +11,8 @@
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
-        topPageCode: KnockoutObservable<string>; 
-        constructor() { 
+        topPageCode: KnockoutObservable<string>;
+        constructor() {
             var self = this;
             self.topPageCode = ko.observable('');
             self.displayButton = true;
@@ -20,18 +22,18 @@
             self.placementsTopPage = ko.observableArray([]);
             self.placementsMyPage = ko.observableArray([]);
             self.tabs = ko.observableArray([
-                {id: 'tab-1', title: nts.uk.resource.getText("CCG008_1"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage}
+                { id: 'tab-1', title: nts.uk.resource.getText("CCG008_1"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage }
             ]);
             self.selectedTab = ko.observable(null);
-            self.selectedTab.subscribe(function(codeChange){
-                if(codeChange=='tab-1'){//display data top page
+            self.selectedTab.subscribe(function(codeChange) {
+                if (codeChange == 'tab-1') {//display data top page
                     self.placementsTopPage([]);
                     self.showToppage(self.dataSource().topPage);
                 }
-                if(codeChange=='tab-2'){//display data my page
+                if (codeChange == 'tab-2') {//display data my page
                     self.placementsMyPage([]);
-                 self.showMypage(self.dataSource().myPage);   
+                    self.showMypage(self.dataSource().myPage);
                 }
             });
         }
@@ -45,105 +47,106 @@
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);
                 self.dataSource(data);
-                if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
+                if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
                     var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                    nts.uk.request.jump(res);
+                    data.topPage.standardMenuUrl.includes(".at.") ? nts.uk.request.jump("at", res) : nts.uk.request.jump(res);
                 }
-                if(data.checkMyPage == false ){//k hien thi my page
+                if (data.checkMyPage == false) {//k hien thi my page
                     self.visibleMyPage(false);
                 }
-                if(data.check==true){//hien thi top page truoc
+                if (data.check == true) {//hien thi top page truoc
                     self.selectedTab('tab-1');
-                }else{
+                } else {
                     self.selectedTab('tab-2');
                 }
-                if(data.checkMyPage == false && data.checkTopPage == false){
-                    self.displayButton = false;    
+                if (data.checkMyPage == false && data.checkTopPage == false) {
+                    self.displayButton = false;
                 }
                 dfd.resolve();
             });
             return dfd.promise();
         }
- 
+
         //display top page
-        showToppage(data: model.LayoutForTopPageDto){
-            var self = this;            
+        showToppage(data: model.LayoutForTopPageDto) {
+            var self = this;
             self.buildLayout(data, model.TOPPAGE);
         }
         //display my page
-        showMypage(data: model.LayoutForMyPageDto){
+        showMypage(data: model.LayoutForMyPageDto) {
             var self = this;
             self.buildLayout(data, model.MYPAGE);
         }
-         
-         /** Build layout for top page or my page **/
+
+        /** Build layout for top page or my page **/
         buildLayout(data: any, pgType: string) {
             var self = this;
             if (!data) {
-                return;    
-            }    
-            
+                return;
+            }
+
             let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                    var html = '<iframe src="'+ item.placementPartDto.externalUrl +'"/>';
-                    return new model.Placement(item.placementID, item.placementPartDto.name,
-                        item.row, item.column,
-                        item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
-                        item.placementPartDto.topPagePartID, item.placementPartDto.type, html);
-                });
-            
-            if(data.flowMenu != null){
+                var html = '<iframe src="' + item.placementPartDto.externalUrl + '"/>';
+                return new model.Placement(item.placementID, item.placementPartDto.name,
+                    item.row, item.column,
+                    item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
+                    item.placementPartDto.topPagePartID, item.placementPartDto.type, html);
+            });
+
+            if (data.flowMenu != null) {
                 _.map(data.flowMenu, (items) => {
-                    var html = '<iframe style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
-                    listPlacement.push( new model.Placement(items.fileID, items.topPageName,
-                    items.row, items.column,
-                    items.widthSize, items.heightSize, null,
-                    items.toppagePartID, model.TopPagePartType.FLOWMENU, html));
+                    let flowMenuUrl = ntsFile.liveViewUrl(items.fileID, "index.htm");
+                    let html = '<iframe style="width:' + ((items.widthSize * 150) - 13) + 'px;height:' + ((items.heightSize * 150) - 50) + 'px" src="' + flowMenuUrl + '"/>';
+                    listPlacement.push(new model.Placement(items.fileID, items.topPageName,
+                        items.row, items.column,
+                        items.widthSize, items.heightSize, null,
+                        items.toppagePartID, model.TopPagePartType.FLOWMENU, html));
                 });
             }
             listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
             if (listPlacement !== undefined) {
-                if (model.MYPAGE == pgType) { 
+                if (model.MYPAGE == pgType) {
                     self.placementsMyPage(listPlacement);
                 } else {
-                    self.placementsTopPage(listPlacement);    
+                    self.placementsTopPage(listPlacement);
                 }
-            } 
+            }
             _.defer(() => { self.setupPositionAndSizeAll(pgType); });
         }
-            
+
         //for setting dialog
-        openDialogB(){
+        openDialogB() {
             var self = this;
             let dialogTitle = nts.uk.resource.getText("CCG008_2");
             nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
             nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
-            if(self.dataSource().myPage==null){
-                var transferData: commonModel.TransferLayoutInfo = {parentCode: '', layoutID: '', pgType: 2};
-            }else{
-                var transferData: commonModel.TransferLayoutInfo = {parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2};
+            if (self.dataSource().myPage == null) {
+                var transferData: commonModel.TransferLayoutInfo = { parentCode: '', layoutID: '', pgType: 2 };
+            } else {
+                var transferData: commonModel.TransferLayoutInfo = { parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2 };
             }
-            
+
             nts.uk.ui.windows.setShared('CCG008_layout', transferData);
-            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: dialogTitle}).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", { title: dialogTitle }).onClosed(() => {
                 var transferData = __viewContext.transferred.value;
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
-                    self.showMypage(self.dataSource().myPage); 
+                    self.showMypage(self.dataSource().myPage);
                     self.showToppage(self.dataSource().topPage);
-                });    
+                });
             });
         }
         /** Setup position and size for all Placements */
         private setupPositionAndSizeAll(name: string): void {
             var self = this;
             var placements = model.MYPAGE == name ? self.placementsMyPage() : self.placementsTopPage();
-            
+
             _.forEach(placements, (placement, index) => {
                 self.setupPositionAndSize(name, placement, index);
             });
         }
- 
+
         /** Setup position and size for a Placement */
         private setupPositionAndSize(name: string, placement: model.Placement, index: number): void {
             var $placement = $("#" + name + "_" + placement.placementID + "_" + index);
@@ -154,9 +157,9 @@
                 height: (placement.height * 150) + ((placement.height - 1) * 10)
             });
         }
-    }  
+    }
     export module model {
-         /** Client Placement class */
+        /** Client Placement class */
         export class Placement {
             // Required
             placementID: string;
@@ -186,15 +189,15 @@
                 this.partType = partType;
                 this.html = html;
             }
-        }    
-         /** Server LayoutDto */
+        }
+        /** Server LayoutDto */
         export interface LayoutDto {
             companyID: string;
             layoutID: string;
             pgType: number;
             placements: Array<PlacementDto>;
         }
-         /** Server PlacementDto */
+        /** Server PlacementDto */
         export interface PlacementDto {
             companyID: string,
             placementID: string;
@@ -203,7 +206,7 @@
             row: number;
             placementPartDto: PlacementPartDto;
         }
-         /** Server PlacementPartDto */
+        /** Server PlacementPartDto */
         export interface PlacementPartDto {
             companyID: string;
             width: number;
@@ -214,22 +217,22 @@
             "type"?: number;
             externalUrl?: string;
         }
-         export interface LayoutForMyPageDto{
+        export interface LayoutForMyPageDto {
             employeeID: string;
             layoutID: string;
             pgType: number;
             flowMenu: Array<FlowMenuPlusDto>;
             placements: Array<PlacementDto>;
-         }
-         export interface LayoutForTopPageDto{
+        }
+        export interface LayoutForTopPageDto {
             companyID: string;
             layoutID: string;
             pgType: number;
             flowMenu: Array<FlowMenuPlusDto>;
             placements: Array<PlacementDto>;
             standardMenuUrl: string;
-         }
-         export interface FlowMenuPlusDto{
+        }
+        export interface FlowMenuPlusDto {
             widthSize: number;
             heightSize: number;
             toppagePartID: string;
@@ -241,8 +244,8 @@
             storedAt: string;
             row: number;
             column: number;
-         }
-         export interface LayoutAllDto{
+        }
+        export interface LayoutAllDto {
             /**my page*/
             myPage: LayoutForMyPageDto;
             /**top page*/
@@ -256,9 +259,9 @@
         }
         export enum TopPagePartType {
             WIDGET = 0,
-            DASHBOARD, 
+            DASHBOARD,
             FLOWMENU,
-            EXTERNAL_URL   
+            EXTERNAL_URL
         }
         export const MYPAGE = 'mypage';
         export const TOPPAGE = 'toppage';

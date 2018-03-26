@@ -6,19 +6,18 @@ module nts.uk.at.view.kal001.b {
             columns: KnockoutObservableArray<any>;
             currentSelectedRow: KnockoutObservable<any>;
 
-            dataSource : KnockoutObservableArray<model.ExtractAlarmData>;
+            dataSource : Array<model.ValueExtractAlarmDto>=[];
             constructor() {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
-                self.dataSource = ko.observableArray([]);
                 
                 self.columns = ko.observableArray([
-                    { headerText: '', key: 'GUID', width: 1 ,hidden :true },
+                    { headerText: '', key: 'guid', width: 1 ,hidden :true },
                     { headerText: getText('KAL001_20'), key: 'workplaceName', width: 100 },
                     { headerText: getText('KAL001_13'), key: 'employeeCode', width: 150 },
                     { headerText: getText('KAL001_14'), key: 'employeeName', width: 150 },
-                    { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                    { headerText: getText('KAL001_16'), key: 'category', width: 120},
+                    { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100},
+                    { headerText: getText('KAL001_16'), key: 'categoryName', width: 120},
                     { headerText: getText('KAL001_17'), key: 'alarmItem', width: 150 },
                     { headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 150 },
                     { headerText: getText('KAL001_19'), key: 'comment', width: 200 }
@@ -30,25 +29,29 @@ module nts.uk.at.view.kal001.b {
                 let self = this;
                 let dfd = $.Deferred();
                 
-                for (let i = 1; i < 100; i++) {
-                    let temp = new model.ExtractAlarmData({
-                                    workplaceName: "workplaceName" +i,
-                                    employeeID: "employeeId" +i,
-                                    employeeCode: "employeeCode" +i,
-                                    employeeName: "employeeName" +i,
-                                    alarmValueDate: '2018/01/'+(i%30+1),
-                                    category: "category" +i,
-                                    alarmItem: "alarm pattern" +i,            
-                                    alarmValueMessage: "message" +i,
-                                    comment: "comment" +i,      
-                                });
-                    self.dataSource.push(temp);
-                }
+//                for (let i = 1; i < 100; i++) {
+//                    let temp = {
+//                                gUID: '' +i,
+//                                workplaceID : "workplaceID" +i,
+//                                hierarchyCd : "hierarchyCd"+i,
+//                                workplaceName : "workplaceName"+i,
+//                                employeeID : "employeeID"+i,
+//                                employeeCode : "employeeCode"+i,
+//                                employeeName : "employeeName" +i,
+//                                alarmValueDate : "alarmValueDate" +i,
+//                                category : i,
+//                                categoryName: "category" +i,
+//                                alarmItem : "alarmItem" +i,
+//                                alarmValueMessage : "alarmValueMessage" +i,
+//                                comment : "comment" +i,                                
+//                              };
+//                    self.dataSource.push(temp);
+//                }
                 
                 $("#grid").igGrid({ 
                         height: '500px',
-                        dataSource: self.dataSource(),
-                        primaryKey: 'GUID',
+                        dataSource: self.dataSource,
+                        primaryKey: 'guid',
                         columns: self.columns(), 
                         features: [
                             { name: 'Paging', type: 'local', pageSize: 15 },
@@ -70,7 +73,7 @@ module nts.uk.at.view.kal001.b {
 
             exportExcel(): void {
                 let self = this;
-                service.saveAsExcel(self.dataSource());
+                service.saveAsExcel(self.dataSource);
             }
             
             sendEmail(): void {
@@ -85,35 +88,29 @@ module nts.uk.at.view.kal001.b {
 
         }
     }
+    
+            
+
 
 
     export module model {
-        export class ExtractAlarmData {
-            GUID : string;
-            employeeID: string;
-            workplaceName: string;
-            comment: string;
-            alarmValueMessage: string;
-            alarmValueDate: string;
-            alarmItem: string;
-            employeeCode: string;
-            employeeName: string;
-            category: string;
-            constructor(dto: service.ExtractAlarmDto ) {
-                this.GUID = nts.uk.util.randomId();
-                this.employeeID = dto.employeeID;
-                this.workplaceName = dto.workplaceName;
-                this.comment = dto.comment;
-                this.alarmValueMessage = dto.alarmValueMessage;
-                this.alarmValueDate = dto.alarmValueDate;
-                this.alarmItem = dto.alarmItem;
-                this.employeeCode = dto.employeeCode;
-                this.employeeName = dto.employeeName;
-                this.category = dto.category;
-            }
-        }
-        
-        
+
+        export interface ValueExtractAlarmDto{
+            guid: string;
+            workplaceID : string;
+            hierarchyCd : string;
+            workplaceName : string;
+            employeeID : string;
+            employeeCode : string;
+            employeeName : string;
+            alarmValueDate : string;
+            category : number;
+            categoryName: string;
+            alarmItem : string;
+            alarmValueMessage : string;
+            comment : string;            
+        }                
     }
+    
 
 }

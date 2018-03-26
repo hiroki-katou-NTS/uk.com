@@ -56,15 +56,16 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 				.map(item -> {
 					KrqdtHolidayWorkInputPK pk =  new KrqdtHolidayWorkInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo());
-					return new KrqdtHolidayWorkInput(pk, item.getStartTime().v(), item.getEndTime().v(),
+					return new KrqdtHolidayWorkInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() ==  null? null : item.getEndTime().v(),
 							item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
 
 		return new KrqdtAppHolidayWork(new KrqdtAppHolidayWorkPK(domain.getCompanyID(), domain.getAppID()),
-				domain.getVersion(), domain.getWorkTypeCode().v(), domain.getWorkTimeCode().v(),
-				domain.getWorkClock1().getStartTime().v(),
-				domain.getWorkClock1().getEndTime().v(),
+				domain.getVersion(), domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().v(),
+				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v(),
+				domain.getWorkClock1().getStartTime() == null ? null : domain.getWorkClock1().getStartTime().v(),
+				domain.getWorkClock1().getEndTime() == null ? null : domain.getWorkClock1().getEndTime().v(),
 				domain.getWorkClock1().getGoAtr().value,
 				domain.getWorkClock1().getBackAtr().value,
 				domain.getWorkClock2().getStartTime() == null ? null : domain.getWorkClock2().getStartTime().v(),
@@ -107,5 +108,22 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
 		this.commandProxy().remove(KrqdtAppHolidayWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
+	}
+	/**
+	 * get Application Holiday Work and Frame
+	 * @author hoatt
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public Optional<AppHolidayWork> getAppHolidayWorkFrame(String companyID, String appID) {
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		if(!opKrqdtAppHolidayWork.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
+		return Optional.of(appHolidayWork);
 	}
 }

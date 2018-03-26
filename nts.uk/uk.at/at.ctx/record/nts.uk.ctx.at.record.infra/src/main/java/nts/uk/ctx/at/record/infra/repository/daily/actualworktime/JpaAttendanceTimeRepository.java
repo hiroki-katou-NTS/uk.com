@@ -41,7 +41,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository {
-
+	
 	@Override
 	public void add(AttendanceTimeOfDailyPerformance attendanceTime) {
 		/* 勤怠時間 */
@@ -344,5 +344,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		return queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateFlush(AttendanceTimeOfDailyPerformance attendanceTime) {
+		this.update(attendanceTime);
+		this.getEntityManager().flush();
+		
 	}
 }

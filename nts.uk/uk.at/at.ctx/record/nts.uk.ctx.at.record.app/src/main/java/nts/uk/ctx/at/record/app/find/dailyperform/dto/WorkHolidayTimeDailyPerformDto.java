@@ -61,7 +61,7 @@ public class WorkHolidayTimeDailyPerformDto {
 		return c == null ? null : new TimeSpanForCalcDto(c.getStart().valueAsMinutes(), c.getEnd().valueAsMinutes());
 	}
 	
-	private static int getAttendanceTime(AttendanceTime time) {
+	private static Integer getAttendanceTime(AttendanceTime time) {
 		return time == null ? null : time.valueAsMinutes();
 	}
 	
@@ -82,7 +82,7 @@ public class WorkHolidayTimeDailyPerformDto {
 	}
 
 	private Finally<TimeWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? Finally.empty() : Finally.of(TimeWithCalculation.sameTime(toAttendanceTime(c.getTime())));
+		return c == null ? Finally.empty() : Finally.of(c.createTimeWithCalc());
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {

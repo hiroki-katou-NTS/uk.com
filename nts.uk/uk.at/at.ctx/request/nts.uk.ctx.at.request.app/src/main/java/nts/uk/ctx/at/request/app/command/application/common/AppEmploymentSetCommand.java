@@ -28,7 +28,7 @@ public class AppEmploymentSetCommand {
 	/**
 	 * 休暇種類を利用しない
 	 */
-	private boolean holidayTypeUseFlg;
+	private Boolean holidayTypeUseFlg;
 	/**
 	 * 表示する勤務種類を設定する
 	 */

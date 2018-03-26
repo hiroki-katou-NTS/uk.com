@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.function.ws.alarm;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CheckConditionTimeFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CodeNameAlarmDto;
@@ -49,7 +46,6 @@ public class KAL001WebService {
 	@POST
 	@Path("extract/alarm")
 	public ExtractedAlarmDto extractAlarm(ExtractAlarmQuery query) {
-		//extractAlarmFinder.extractAlarm(query);
-		return new ExtractedAlarmDto(new ArrayList<>(), false, false);
+		return extractAlarmFinder.extractAlarm(query);
 	}
 }

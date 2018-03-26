@@ -36,5 +36,4 @@ public class UserWebService extends WebService {
 		return this.userFinder.findByKey(userKeyDto);
 	}
 	
-	
 }

@@ -39,9 +39,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
 	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and (a.appType = 0 or a.appType = 4)";
 	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate ORDER BY a.inputDate ASC";
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and (a.appType = 0 or a.appType = 4) ORDER BY a.inputDate ASC";
 	private final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	
 	@Override
@@ -73,7 +73,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("appID", application.getAppID())
 			.setParameter("reversionReason", application.getReversionReason().v())
 			.setParameter("appReason", application.getAppReason().v())
-			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)
+			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)			
 			.executeUpdate();
 		this.getEntityManager().flush();
 	}
@@ -86,6 +86,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
+		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
 		this.commandProxy().update(krqdtApplication);
 		this.getEntityManager().flush();
 	}

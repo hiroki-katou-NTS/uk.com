@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -9,6 +11,8 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -106,7 +110,20 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			
 			// 月の計算
 			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-			monthlyCalculation.aggregate(this.repositories);
+			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY,
+					Optional.empty(), Optional.empty(), this.repositories);
+			
+			// 36協定時間の集計
+			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
+			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
+					companyId, employeeId, yearMonth, closureId, closureDate, procPeriod,
+					workingSystem, isRetireMonth, this.repositories);
+			if (agreementTimeOpt.isPresent()){
+				val agreementTime = agreementTimeOpt.get();
+				val agreementTimeList = returnValue.getAgreementTimeList();
+				agreementTimeList.removeIf(c -> { return (c.getYearMonth() == agreementTime.getYearMonth());});
+				agreementTimeList.add(agreementTime);
+			}
 			
 			// 縦計
 			val verticalTotal = attendanceTime.getVerticalTotal();
@@ -118,7 +135,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
 			// 計算結果を戻り値に蓄積
-			returnValue.getAttendanceTimes().add(attendanceTime);
+			returnValue.getAttendanceTimeList().add(attendanceTime);
 		}
 		
 		return returnValue;

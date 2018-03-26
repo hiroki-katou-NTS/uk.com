@@ -15,7 +15,7 @@ module nts.uk.at.view.kal001.a.service {
               return nts.uk.request.ajax("at", paths.getCheckConditionTime, alarmCode);
         }
         
-        export function extractAlarm(listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<void>{
+        export function extractAlarm(listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
             
@@ -59,4 +59,27 @@ module nts.uk.at.view.kal001.a.service {
                 this.listPeriodByCategory = listPeriodByCategory;
             }
         }
+        
+        export interface ValueExtractAlarmDto{
+            guid : string;
+            workplaceID : string;
+            hierarchyCd : string;
+            workplaceName : string;
+            employeeID : string;
+            employeeCode : string;
+            employeeName : string;
+            alarmValueDate : string;
+            category : number;
+            categoryName: string;
+            alarmItem : string;
+            alarmValueMessage : string;
+            comment : string;            
+        }
+        
+        export interface ExtractedAlarmDto{
+            extractedAlarmData: Array<ValueExtractAlarmDto>;
+            extracting: boolean;
+            nullData: boolean;
+        }
+    
 }

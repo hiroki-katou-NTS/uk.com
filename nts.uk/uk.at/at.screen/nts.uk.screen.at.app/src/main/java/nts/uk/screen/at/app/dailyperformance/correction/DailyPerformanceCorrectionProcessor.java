@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +79,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -128,6 +130,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_EMP_NAME = "employeeName";
 	private static final String LOCK_ERROR = "error";
 	private static final String LOCK_SIGN = "sign";
+	private static final String LOCK_APPROVAL = "approval";
 	private static final String LOCK_PIC = "picture-person";
 	private static final String SCREEN_KDW003 = "KDW/003/a";
 	private static final String ADD_CHARACTER = "A";
@@ -146,6 +149,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
 	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
 	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_ERROR ="ntsgrid-error";
 
 	/**
 	 * Get List Data include:<br/>
@@ -189,6 +193,12 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
+		
+		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
+		getHolidaySettingData(screenDto);
+		
+		//<<Public>> パラメータに初期値を設定する
+		///期間を変更する
 		if (dateRange == null) {
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, GeneralDate.today()), sId));
@@ -198,23 +208,27 @@ public class DailyPerformanceCorrectionProcessor {
 				if (closingPeriod.isPresent()) {
 					dateRange = new DateRange(closingPeriod.get().getClosureStartDate(),
 							closingPeriod.get().getClosureEndDate());
+				}else{
+					dateRange = new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1), GeneralDate.legacyDate(new Date()));
 				}
+			}else{
+				dateRange = new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1), GeneralDate.legacyDate(new Date()));
 			}
 		}
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
 		screenDto.setDateRange(dateRange);
-
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
 		screenDto.setAuthorityDto(getAuthority(screenDto));
 		// get employmentCode
 		screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
-		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
-		getHolidaySettingData(screenDto);
-
+		///TODO 表示形式を変更する -- get from Characteristic - Chưa biết lấy Characteristic ở đâu
+		
+		///TODO 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
+		
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
 		 * display format"
@@ -232,7 +246,10 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(getListData(lstEmployeeData, dateRange, displayFormat));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
 		List<String> listEmployeeId = lstEmployeeData.stream().map(e -> e.getId()).collect(Collectors.toList());
-
+        
+		//パラメータ「表示形式」をチェックする - Đã thiết lập truyền từ UI nên không cần check lấy theo định dạng nào , nhân viên đã được truyền
+		
+		// Lấy thành tích nhân viên theo ngày 
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
@@ -263,6 +280,7 @@ public class DailyPerformanceCorrectionProcessor {
 		// tích theo ngày")
 
 		// check show column 本人
+		// check show column 承認
 		DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId).orElse(null);
 
 		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
@@ -344,28 +362,21 @@ public class DailyPerformanceCorrectionProcessor {
 				appMapDateSid.put(key, x.getAppTypeName());
 			}
 		});
-		Map<String, ItemValue> itemValueMap = new HashMap<>();
+		//get  check box sign(Confirm day)
+		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
+		
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
 		screenDto.markLoginUser();
-		service = Executors.newFixedThreadPool(1);
-		CountDownLatch latch1 = new CountDownLatch(1);
-		// set disable cell
-		service.submit(new Runnable() {
-			@Override
-			public void run() {
-				long start1 = System.currentTimeMillis();
-				screenDto.createAccessModifierCellState(mapDP);
-				screenDto.getLstFixedHeader().forEach(column -> {
-					screenDto.getLstControlDisplayItem().getColumnSettings()
-							.add(new ColumnSetting(column.getKey(), false));
-				});
-				System.out.println("time disable : " + (System.currentTimeMillis() - start1));
-				latch1.countDown();
-			}
+		long start1 = System.currentTimeMillis();
+		screenDto.createAccessModifierCellState(mapDP);
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
+		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		// set cell data
 		long start2 = System.currentTimeMillis();
+		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
@@ -380,6 +391,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			//set checkbox sign
+			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
 				lockData(sId, screenDto, dailyRecOpeFun, data);
@@ -413,9 +426,11 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start2));
 		screenDto.setLstData(lstData);
-		latch1.await();
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
+		// identityProcessDto show button A2_6
+		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
+		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get() : new IdentityProcessUseSetDto(false, false));
 		return screenDto;
 	}
 
@@ -613,15 +628,31 @@ public class DailyPerformanceCorrectionProcessor {
 		if (dailyRecOpeFun != null) {
 			if (!sId.equals(data.getEmployeeId())) {
 				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 			} else {
-				if (data.getError().contains("ER")) {
-					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
-					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+				int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
+				int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
+				// lock sign
+				if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					if (data.getError().contains("ER")) {
+						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+					} else {
 						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-						// thieu check khi co data
-					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// thieu tra ve message khi dang ky
 					}
+					// thieu check khi co data
+				} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					// co the dang ky data nhưng ko đăng ký được check box
+				}
+				// lock approval
+				if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+					if (data.getError().contains("ER")) {
+						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
+					} else {
+						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+					}
+					// thieu check khi co data
+				} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					// co the dang ky data nhưng ko đăng ký được check box
 				}
 			}
 		}
@@ -679,9 +710,12 @@ public class DailyPerformanceCorrectionProcessor {
 		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(companyId);
 		if (findDailyRecOpeFun.isPresent()) {
 			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
+			screenDto.setShowSupervisor(findDailyRecOpeFun.get().getUseSupervisorConfirm() == 0 ? false : true);
 		} else {
 			screenDto.setShowPrincipal(false);
+			screenDto.setShowSupervisor(false);
 		}
+		
 		return findDailyRecOpeFun;
 	}
 

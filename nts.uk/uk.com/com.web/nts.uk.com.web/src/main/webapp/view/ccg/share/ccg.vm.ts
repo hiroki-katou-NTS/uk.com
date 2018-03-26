@@ -286,8 +286,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.filterByWorktype = false;
                 param.worktypeCodes = [];
                 param.includeIncumbents = true;
-                param.includeWorkersOnLeave = false;
-                param.includeOccupancy = false;
+                param.includeWorkersOnLeave = true;
+                param.includeOccupancy = true;
                 param.includeRetirees = false;
                 param.systemType = self.systemType;
                 param.sortOrderNo = 1; // 並び順NO＝1
@@ -454,9 +454,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // start component
                 nts.uk.ui.block.invisible(); // block ui
                 self.startComponent().done(() => {
-                    // set advanced search tab flag
-                    self.showAdvancedSearchTab = data.showAdvancedSearchTab &&
-                        (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
+                    self.setShowHideByReferenceRange();
 
                     // Initial tab panel
                     self.tabs(self.updateTabs());
@@ -489,6 +487,23 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
 
                 return dfd.promise();
+            }
+
+            private setShowHideByReferenceRange(): void {
+                let self = this;
+                // set advanced search tab flag
+                self.showAdvancedSearchTab = self.showAdvancedSearchTab &&
+                    (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
+                // always show quick search if advanced search is hidden
+                self.showQuickSearchTab = self.showAdvancedSearchTab ? self.showQuickSearchTab : true;
+
+                self.showAllReferableEmployee = self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF
+                    && self.showAllReferableEmployee;
+                self.showSameWorkplace = self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF
+                    && self.showSameWorkplace;
+                self.showSameWorkplaceAndChild = (self.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE
+                    || self.referenceRange == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD)
+                    && self.showSameWorkplaceAndChild;
             }
 
             /**
@@ -551,8 +566,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Common properties */
                 self.showEmployeeSelection = options.showEmployeeSelection;
                 self.systemType = options.systemType;
-                // always show quick search if advanced search is hidden
-                self.showQuickSearchTab = options.showAdvancedSearchTab ? options.showQuickSearchTab : true;
+                self.showQuickSearchTab = options.showQuickSearchTab;
+                self.showAdvancedSearchTab = options.showAdvancedSearchTab;
                 // showBaseDate and showPeriod can not hide at the same time
                 self.showBaseDate = !options.showBaseDate && !options.showPeriod ? true : options.showBaseDate;
                 self.showClosure = options.showClosure;
@@ -574,7 +589,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Quick search tab options */
                 self.showAllReferableEmployee = options.showAllReferableEmployee;
-                self.showOnlyMe = options.showOnlyMe;
+                self.showOnlyMe = true;
                 self.showSameWorkplace = options.showSameWorkplace;
                 self.showSameWorkplaceAndChild = options.showSameWorkplaceAndChild;
 
@@ -1031,7 +1046,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private loadWorktypePart(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                if (self.showEmployment) {
+                if (self.showWorktype) {
                     service.searchAllWorkType().done((workTypeList: Array<BusinessType>) => {
                         self.listWorkType(workTypeList);
                         self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.businessTypeCode));
@@ -1320,7 +1335,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return self.selectedCodeEmployee();
                 } else {
                     let employeeCodes = [];
-                    if (self.selectedCodeEmployee()) {
+                    if (!nts.uk.util.isNullOrEmpty(self.selectedCodeEmployee())) {
                         employeeCodes.push(self.selectedCodeEmployee());
                     }
                     return employeeCodes;

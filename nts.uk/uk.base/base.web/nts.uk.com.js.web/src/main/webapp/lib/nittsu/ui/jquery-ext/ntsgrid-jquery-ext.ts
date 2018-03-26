@@ -100,7 +100,10 @@ module nts.uk.ui.jqueryExtentions {
             // Cell color
             let cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
             
-            $self.addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
+            $self.addClass('compact-grid nts-grid');
+            if ($self.closest(".nts-grid-wrapper").length === 0) {
+                $self.wrap($("<div class='nts-grid-wrapper'/>"));
+            }
             
             let columnControlTypes = {};
             let columnSpecialTypes = {};
@@ -248,11 +251,13 @@ module nts.uk.ui.jqueryExtentions {
                             let c = {
                                 id: rowId,
                                 columnKey: column.key,
-                                $element: $gridCell    
+                                $element: $gridCell,
+                                element: $gridCell[0]    
                             };
                             // Format cell
                             cellFormatter.style($self, c);
                             color.rememberDisabled($self, c);
+                            color.markIfEdit($self, c);
                         }
                     }, 0);
     
@@ -287,6 +292,9 @@ module nts.uk.ui.jqueryExtentions {
             sheet.load.setup($self, options);
             
             if (!onDemand.initial($self, options)) {
+                if (!$self.data(internal.ORIG_DS)) {
+                    $self.data(internal.ORIG_DS, _.cloneDeep(options.dataSource));
+                }
                 $self.igGrid(options);
             }
             // Window resize
@@ -623,6 +631,7 @@ module nts.uk.ui.jqueryExtentions {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
+                let origDs = $grid.data(internal.ORIG_DS);
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
@@ -635,7 +644,11 @@ module nts.uk.ui.jqueryExtentions {
                             time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                     } catch(e) {}
                 }
-                let origData = gridUpdate._getLatestValues(rId);
+                
+                let setting = $grid.data(internal.SETTINGS);
+                let idx = setting.descriptor.keyIdxes[rId];
+                if (util.isNullOrUndefined(idx)) return;
+                let origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
                 if (!isControl || forceRender) renderCell($grid, rId, columnKey);
@@ -656,7 +669,11 @@ module nts.uk.ui.jqueryExtentions {
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                let origData = gridUpdate._getLatestValues(rId);
+                let origDs = $grid.data(internal.ORIG_DS);
+                let setting = $grid.data(internal.SETTINGS);
+                let idx = setting.descriptor.keyIdxes[rId];
+                if (util.isNullOrUndefined(idx)) return;
+                let origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
                     notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
@@ -690,7 +707,46 @@ module nts.uk.ui.jqueryExtentions {
              * Notify update.
              */
             function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any, origData: any) {
-                if (origData && origData[columnKey] === value) return;
+                if (origData && (origData[columnKey] === value
+                    || (util.isNullOrUndefined(origData[columnKey]) && _.isEmpty(value)))) {
+                    let updatedCells = $grid.data(internal.UPDATED_CELLS);
+                    if (updatedCells) {
+                        _.remove(updatedCells, function(c, i) {
+                            return c.rowId === rowId && c.columnKey === columnKey;
+                        });
+                    }
+                    
+                    let options = $grid.data(internal.GRID_OPTIONS);
+                    if (!options || !options.getUserId || !options.userId) return;
+                    
+                    let id; 
+                    if (util.isNullOrUndefined(id = origData[options.primaryKey])) {
+                        let record = $grid.igGrid("findRecordByKey", rowId);
+                        if (!record) return;
+                        id = record[options.primaryKey];
+                    }
+                    let userId = options.getUserId(id);
+                    let $cell = internal.getCellById($grid, rowId, columnKey);
+                    
+                    let cols;
+                    if (userId === options.userId) {
+                        $cell.removeClass(color.ManualEditTarget);
+                        let targetEdits = $grid.data(internal.TARGET_EDITS);
+                        if (targetEdits && (cols = targetEdits[rowId])) {
+                            _.remove(cols, c => c === columnKey);
+                            if (cols.length === 0) delete targetEdits[rowId]; 
+                        }
+                    } else {
+                        $cell.removeClass(color.ManualEditOther);
+                        let otherEdits = $grid.data(internal.OTHER_EDITS);
+                        if (otherEdits && (cols = otherEdits[rowId])) {
+                            _.remove(cols, c => c === columnKey);
+                            if (cols.length === 0) delete otherEdits[rowId];
+                        }
+                    }
+                    return;
+                }
+                
                 let updatedCells = $grid.data(internal.UPDATED_CELLS);
                 if (!updatedCells) {
                     $grid.data(internal.UPDATED_CELLS, []);
@@ -709,8 +765,13 @@ module nts.uk.ui.jqueryExtentions {
                 let options = $grid.data(internal.GRID_OPTIONS);
                 if (!options || !options.getUserId || !options.userId) return;
                 
-                let record = $grid.igGrid("findRecordByKey", rowId);
-                let userId = options.getUserId(record[options.primaryKey]);
+                let id;
+                if (!origData || util.isNullOrUndefined(id = origData[options.primaryKey])) {
+                    let record = $grid.igGrid("findRecordByKey", rowId);
+                    if (!record) return;
+                    id = record[options.primaryKey];
+                }
+                let userId = options.getUserId(id);
                 let $cell = internal.getCellById($grid, rowId, columnKey);
                 
                 if (userId === options.userId) {
@@ -1471,8 +1532,21 @@ module nts.uk.ui.jqueryExtentions {
                 let ds = $grid.igGrid("option", "dataSource");
                 let primaryKey = $grid.igGrid("option", "primaryKey");
                 if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX) return;
+                let setting = $grid.data(internal.SETTINGS);
+                let states = setting.disableStates;
                 for (let i = 0; i < ds.length; i++) {
                     let id = ds[i][primaryKey];
+                    let cols;
+                    if (states && (cols = states[id])) {
+                        let found = false;
+                        cols.forEach(function(c, i) {
+                            if (c === key) {
+                                found = true;
+                                return false;
+                            }
+                        });
+                        if (found) continue;
+                    }
                     updating.updateCell($grid, id, key, true, undefined, true);
                 }
             }
@@ -1484,8 +1558,21 @@ module nts.uk.ui.jqueryExtentions {
                 let ds = $grid.igGrid("option", "dataSource");
                 let primaryKey = $grid.igGrid("option", "primaryKey");
                 if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX) return;
+                let setting = $grid.data(internal.SETTINGS);
+                let states = setting.disableStates;
                 for (let i = 0; i < ds.length; i++) {
                     let id = ds[i][primaryKey];
+                    let cols;
+                    if (states && (cols = states[id])) {
+                        let found = false;
+                        cols.forEach(function(c, i) {
+                            if (c === key) {
+                                found = true;
+                                return false;
+                            }
+                        });
+                        if (found) continue;
+                    }
                     updating.updateCell($grid, id, key, false, undefined, true);
                 }
             }
@@ -2206,7 +2293,7 @@ module nts.uk.ui.jqueryExtentions {
                 
                 draw(data: any): JQuery {
                     return $('<div/>').addClass(this.containerClass()).append($("<a/>")
-                                        .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
+                                        .addClass("link-button").css({ backgroundColor: "inherit", color: "#0066CC" })
                                         .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey)))
                                         .data("click", data.controlDef.click);
                 }
@@ -2914,7 +3001,7 @@ module nts.uk.ui.jqueryExtentions {
                         } else if (evt.ctrlKey && utils.isCopyKey(evt)) {
                             processor.copyHandler();
                         } else if (evt.ctrlKey && utils.isCutKey(evt)) {
-                            processor.cutHandler();   
+//                            processor.cutHandler();   
                         }
                     });
                     return this;
@@ -3365,7 +3452,11 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(errorsLog)) return;
                 let sheets: any = $grid.data(internal.SHEETS);
                 let sheetErrors = errorsLog[sheets.currentSheet];
-                if (util.isNullOrUndefined(sheetErrors)) return;
+                if (util.isNullOrUndefined(sheetErrors)) {
+                    removeErrorBasedOtherSheet(sheets, errorsLog, cell);
+                    return;
+                }
+                
                 let cellErrorIdx;
                 _.forEach(sheetErrors, function(errorCell: any, i: number) {
                     if (cellEquals(errorCell, cell)) {
@@ -3375,6 +3466,22 @@ module nts.uk.ui.jqueryExtentions {
                 });
                 if (!util.isNullOrUndefined(cellErrorIdx)) {
                     errorsLog[sheets.currentSheet].splice(cellErrorIdx, 1);
+                } else {
+                    removeErrorBasedOtherSheet(sheets, errorsLog, cell);
+                }
+            }
+            
+            function removeErrorBasedOtherSheet(sheets: any, errorsLog: any, cell: any) {
+                let sheetsIn = sheets.columnsInSheetImme[cell.columnKey];
+                if (sheetsIn && sheetsIn.size > 1) {
+                    _.forEach(Array.from(sheetsIn), function(s, i) {
+                        if (s !== sheets.currentSheet) {
+                            let oErrs = errorsLog[s];
+                            if (oErrs) {
+                                _.remove(oErrs, e => cellEquals(e, cell));
+                            }
+                        } 
+                    });
                 }
             }
             
@@ -3383,13 +3490,42 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(errorsLog)) return;
                 let sheets: any = $grid.data(internal.SHEETS);
                 let sheetErrors = errorsLog[sheets.currentSheet];
-                if (util.isNullOrUndefined(sheetErrors)) return;
+                if (util.isNullOrUndefined(sheetErrors)) {
+                    markBasedOtherSheet(sheets, errorsLog, cell);
+                    return;
+                }
+                
+                let marked = false;
                 _.forEach(sheetErrors, function(c: any) {
                     if (cellEquals(c, cell)) {
                         decorate($(cell.element));
+                        marked = true;
                         return false;
                     }
                 });
+                
+                if (!marked) {
+                    markBasedOtherSheet(sheets, errorsLog, cell);
+                }
+            }
+            
+            function markBasedOtherSheet(sheets: any, errorsLog: any, cell: any) {
+                let sheetsIn = sheets.columnsInSheetImme[cell.columnKey];
+                if (sheetsIn && sheetsIn.size > 1) {
+                    _.forEach(Array.from(sheetsIn), function(s, i) {
+                        if (s !== sheets.currentSheet) {
+                            let marked = false;
+                            _.forEach(errorsLog[s], function(c) {
+                                if (cellEquals(c, cell)) {
+                                    decorate($(cell.element));
+                                    marked = true;
+                                    return false;
+                                }
+                            });
+                            if (marked) return false;
+                        }
+                    });
+                }
             }
             
             function cellEquals(one: any, other: any) {
@@ -3496,12 +3632,20 @@ module nts.uk.ui.jqueryExtentions {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: true };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) {
+                                        try {
+                                            value = formatter.format(minutes);
+                                        } catch(e) {}
+                                    }
                                 } else if (valueType === "Clock") {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: false };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    if (!util.isNullOrUndefined(minutes)) value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) {
+                                        try {
+                                            value = formatter.format(minutes);
+                                        } catch(e) {}
+                                    }
                                 } else if (valueType === "Currency") { 
                                     let currencyOpts: any = new ui.option.CurrencyEditorOption();
                                     currencyOpts.grouplength = constraint.groupLength | 3;
@@ -3510,7 +3654,9 @@ module nts.uk.ui.jqueryExtentions {
                                     let groupSeparator = constraint.groupSeparator || ",";
                                     let rawValue = text.replaceAll(value, groupSeparator, "");
                                     let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                    value = formatter.format(Number(rawValue));
+                                    let numVal = Number(rawValue);
+                                    if (!isNaN(numVal)) value = formatter.format(numVal);
+                                    else value = rawValue;
                                 }
                             }
                         }
@@ -3541,8 +3687,10 @@ module nts.uk.ui.jqueryExtentions {
                             // Disable row
                             if (!util.isNullOrUndefined(self.disableRows)) {
                                 let disableRow = self.disableRows[cell.id];
-                                if (!util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable)
+                                if (!util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                     $gridCell.addClass(color.Disable);
+                                    self.addDisableState(cell.id, cell.columnKey);
+                                }
                             }
                             // Set cell states
                             if (!util.isNullOrUndefined(statesTable) && !util.isNullOrUndefined(rowIdName) 
@@ -3552,6 +3700,7 @@ module nts.uk.ui.jqueryExtentions {
                                 if (util.isNullOrUndefined(cellState) || cellState.length === 0) return;
                                 _.forEach(cellState[0][stateName], function(stt: any) {
                                     $gridCell.addClass(stt);
+                                    if (stt === color.Disable) self.addDisableState(cell.id, cell.columnKey);
                                 });
                             }
                         }, 0);
@@ -3561,9 +3710,35 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 /**
+                 * Add disable state.
+                 */
+                addDisableState(id: any, key: any) {
+                    let self = this;
+                    let setting = self.$grid.data(internal.SETTINGS);
+                    if (!setting) return;
+                    if (!setting.disableStates) {
+                        setting.disableStates = {};
+                        let cs = new Set();
+                        cs.add(key);
+                        setting.disableStates[id] = cs;
+                        return;
+                    }
+                    
+                    let cols = setting.disableStates[id];
+                    if (!cols) {
+                        let cs = new Set();
+                        cs.add(key);
+                        setting.disableStates[id] = cs;
+                    } else {
+                        setting.disableStates[id].add(key);
+                    }
+                }
+                
+                /**
                  * Style common controls.
                  */
                 style($grid: JQuery, cell: any) {
+                    let self = this;
                     if (util.isNullOrUndefined(this.cellStateFeatureDef)) return;
                     let rowIdName: string = this.cellStateFeatureDef.rowId;
                     let columnKeyName: string = this.cellStateFeatureDef.columnKey;
@@ -3577,6 +3752,7 @@ module nts.uk.ui.jqueryExtentions {
                         if (!util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                             cell.$element.addClass(color.Disable);
                             utils.disableNtsControl($grid, cell, controlType);
+                            self.addDisableState(cell.id, cell.columnKey);
                         }
                     }
                     // Set cell states
@@ -3588,6 +3764,7 @@ module nts.uk.ui.jqueryExtentions {
                         _.forEach(cellState[0][stateName], function(stt: any) {
                             if (stt === Disable && !cell.$element.hasClass(Disable)) {
                                 utils.disableNtsControl($grid, cell, controlType);
+                                self.addDisableState(cell.id, cell.columnKey);
                             }
                             cell.$element.addClass(stt);
                         });
@@ -3801,10 +3978,14 @@ module nts.uk.ui.jqueryExtentions {
                 displayScrollTop: any;
                 sheets: any;
                 sheetColumns: any;
+                columnsInSheetImme: any;
+                columnsInSheet: any;
                 
                 constructor(currentSheet: string, sheets: any) {
                     this.currentSheet = currentSheet;
                     this.sheets = sheets;
+                    this.columnsInSheetImme = {};
+                    this.columnsInSheet = {};
                 }
                 
                 /**
@@ -3947,7 +4128,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     columns = sheetMng.sheetColumns[sheet[0].name];
                     if (!columns) {
-                        columns = getSheetColumns(options.columns, sheet[0], options.features);
+                        columns = getSheetColumns(options.columns, sheet[0], options.features, sheetMng);
                         sheetMng.sheetColumns[sheet[0].name] = columns.all;
                         let idxes = {};
                         utils.analyzeColumns(columns.unfixed)
@@ -3990,7 +4171,7 @@ module nts.uk.ui.jqueryExtentions {
                             let settings = $grid.data(internal.SETTINGS);
                             columns = sheetMng.sheetColumns[sheet.name];
                             if (!columns) {
-                                columns = getSheetColumns(options.columns, sheet, options.features);
+                                columns = getSheetColumns(options.columns, sheet, options.features, sheetMng);
                                 sheetMng.sheetColumns[sheet.name] = columns.all;
                                 let idxes = {};
                                 utils.analyzeColumns(columns.unfixed)
@@ -4042,22 +4223,46 @@ module nts.uk.ui.jqueryExtentions {
                 /**
                  * Get sheet columns
                  */
-                function getSheetColumns(allColumns: any, displaySheet: any, features: any) {
+                function getSheetColumns(allColumns: any, displaySheet: any, features: any, sheetMng: any) {
                     let fixedColumns = [];
                     let columns = [];
                     _.forEach(allColumns, function(column: any) {
-                        if (column.group !== undefined && _.find(displaySheet.columns, function(col) {
-                                return col === column.group[0].key;
+                        let index;
+                        if (column.group !== undefined && _.find(displaySheet.columns, function(col, i) {
+                                if (col === column.group[0].key) {
+                                    index = i;
+                                    return true;
+                                }
                             }) !== undefined) {
-                            columns.push(column);
+                            columns[index] = column;
+                            
+                            column.group.forEach(function(sc) {
+                                if (!sheetMng.columnsInSheetImme[sc.key]) {
+                                    let mSet = new Set();
+                                    mSet.add(displaySheet.name);
+                                    sheetMng.columnsInSheetImme[sc.key] = mSet;
+                                } else {
+                                    sheetMng.columnsInSheetImme[sc.key].add(displaySheet.name);
+                                }
+                            });
                             return;
                         }
                         
-                        let belongToSheet = _.find(displaySheet.columns, function(col) {
-                            return col === column.key;
+                        let belongToSheet = _.find(displaySheet.columns, function(col, i) {
+                            if (col === column.key) {
+                                index = i;
+                                return true;
+                            }
                         }) !== undefined;
                         if (belongToSheet) {
-                            columns.push(column);
+                            columns[index] = column;
+                            if (!sheetMng.columnsInSheetImme[column.key]) {
+                                let mSet = new Set();
+                                mSet.add(displaySheet.name);
+                                sheetMng.columnsInSheetImme[column.key] = mSet;
+                            } else {
+                                sheetMng.columnsInSheetImme[column.key].add(displaySheet.name);
+                            }
                             return;
                         }
                         
@@ -4072,6 +4277,8 @@ module nts.uk.ui.jqueryExtentions {
                             }
                         }
                     });
+                    
+                    _.remove(columns, c => util.isNullOrUndefined(c));
                     return { fixed: fixedColumns,
                              unfixed: columns,
                              all: _.concat(fixedColumns, columns) };
@@ -4117,15 +4324,27 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Load data
              */
-            export function loadLazy(path: any, keys: Array<any>, startIndex: number, endIndex: number, 
-                dataSource: any, primaryKey: any) {
+            export function loadLazy($grid: JQuery, path: any, keys: Array<any>, 
+                startIndex: number, endIndex: number, dataSource: any, primaryKey: any) {
                 let dfd = $.Deferred();
                 request.ajax(path, keys).done(function(data) {
+                    let origDs = $grid.data(internal.ORIG_DS);
+                    if (!origDs) {
+                        $grid.data(internal.ORIG_DS, []);
+                        origDs = $grid.data(internal.ORIG_DS);
+                    }
+                    
+                    let add = true;
+                    if (origDs.length >= endIndex) {
+                        add = false;
+                    }
                     _.forEach(data, function(rData, index) {
                         for (let i = startIndex; i < endIndex; i++) {
                             if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
+                                rData = _.merge(rData, dataSource[i]);
                                 rData.loaded = true;
                                 dataSource.splice(i, 1, rData); 
+                                if (add) origDs[i] = _.cloneDeep(rData);
                             }
                         }
                     });
@@ -4171,7 +4390,7 @@ module nts.uk.ui.jqueryExtentions {
                     let firstRecordIndex = (pagingFt.currentPageIndex || 0) * pageSize;
                     let lastRecordIndex = firstRecordIndex + pageSize;
                     let firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
-                    loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex,
+                    loadLazy($grid, demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex,
                         ds, primaryKey).done(function(data) {
                         options.dataSource = options.dataSourceAdapter ? options.dataSourceAdapter(data) : data;
                         $grid.igGrid(options);
@@ -4215,7 +4434,7 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     }
                     if (newKeys.length === 0) return;
-                    loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
+                    loadLazy($grid, loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
                         let ds = settings.dataSourceAdapter ? settings.dataSourceAdapter(data) : data;
                         $grid.igGrid("option", "dataSource", ds);
                         ui.owner.pageIndex(ui.newPageIndex);
@@ -4241,7 +4460,7 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     }
                     if (newKeys.length === 0) return;
-                    loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
+                    loadLazy($grid, loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
                         let ds = setting.dataSourceAdapter ? setting.dataSourceAdapter(data) : data;
                         $grid.igGrid("option", "dataSource", ds);
                         ui.owner.pageSize(ui.newPageSize);
@@ -4370,6 +4589,7 @@ module nts.uk.ui.jqueryExtentions {
         }
         
         module internal {
+            export let ORIG_DS = "ntsOrigDs";
             export let CONTROL_TYPES = "ntsControlTypesGroup";
             export let COMBO_SELECTED = "ntsComboSelection";
             export let CB_SELECTED = "ntsCheckboxSelection";
@@ -4807,6 +5027,7 @@ module nts.uk.ui.jqueryExtentions {
             export function outsideGrid($grid: JQuery, target) {
                 return !$grid.is(target) && $grid.has(target).length === 0;
             }
+            
         }
     }
 }

@@ -4,51 +4,37 @@ import java.math.BigDecimal;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
 
 /**
  * 
- * @author TanLV
+ * @author yennth
  *
  */
 @Value
 public class GrantHolidayTbl {
-	/* 年休付与NO */
-	private int grantYearHolidayNo;
-	
 	/* 条件NO */
 	private int conditionNo;
 	
 	/* 年休付与テーブル設定コード */
 	private String yearHolidayCode;
 	
+	/* 付与回数 */
+	private int grantNum;
+
 	/* 年休付与日数 */
 	private BigDecimal grantDays;
-	
+
 	/* 時間年休上限日数 */
-	private Integer limitedTimeHdDays;
-	
+	private Integer limitTimeHd;
+
 	/* 半日年休上限回数 */
-	private Integer limitedHalfHdCnt;
-	
-	/* 勤続年数月数 */
-	private Integer lengthOfServiceMonths;
-	
-	/* 勤続年数年数 */
-	private Integer lengthOfServiceYears;
-	
-	/* 付与基準日 */
-	private int grantReferenceDate;
-	
-	/* 一斉付与する */
-	private boolean grantSimultaneity;
+	private Integer limitDayYear;
 	
 	/**
 	 * Convert to domain object
 	 * @return
 	 */
 	public GrantHdTbl toDomain(String companyId) {
-		return  GrantHdTbl.createFromJavaType(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode, grantDays,
-				limitedTimeHdDays, limitedHalfHdCnt, lengthOfServiceMonths, lengthOfServiceYears, grantReferenceDate, grantSimultaneity ? GrantSimultaneity.USE.value : GrantSimultaneity.NOT_USE.value);
+		return  GrantHdTbl.createFromJavaType(companyId, conditionNo, yearHolidayCode, grantNum, grantDays, limitTimeHd, limitDayYear);
 	}
 }

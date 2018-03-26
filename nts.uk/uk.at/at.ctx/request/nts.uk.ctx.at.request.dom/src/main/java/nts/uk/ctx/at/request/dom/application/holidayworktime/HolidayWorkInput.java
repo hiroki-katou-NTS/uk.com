@@ -53,8 +53,8 @@ public class HolidayWorkInput {
 				appID,
 				EnumAdaptor.valueOf(attendanceID, AttendanceType.class),
 				frameNo,
-				new HolidayAppPrimitiveTime(startTime),
-				new HolidayAppPrimitiveTime(endTime),
+				startTime == null ? null :new HolidayAppPrimitiveTime(startTime),
+				endTime == null ? null : new HolidayAppPrimitiveTime(endTime),
 				new OvertimeAppPrimitiveTime(applicationTime));
 	}
 
