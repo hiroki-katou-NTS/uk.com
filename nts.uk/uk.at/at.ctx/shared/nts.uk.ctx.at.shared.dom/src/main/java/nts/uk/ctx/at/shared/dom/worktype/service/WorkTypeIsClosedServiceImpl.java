@@ -56,7 +56,7 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 			return false;			
 		}
 		List<WorkTypeSet> lst1Day = lstAttendance.stream()
-				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode) && x.getWorkAtr() == WorkAtr.OneDay)
+				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode))
 				.collect(Collectors.toList());
 		if(lst1Day.isEmpty()) {
 			return false;
