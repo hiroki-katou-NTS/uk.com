@@ -6,17 +6,25 @@ module nts.uk.at.view.kmk011.i {
 
     export module viewmodel {
         export class ScreenModel {
+            
+            // Declare element for grid list div time
             columns: KnockoutObservable<any>;
             dataSource: KnockoutObservableArray<DivergenceTimeErrAlarmMsg>;
             currentCode: KnockoutObservable<number>;
+            itemDivergenceTime: KnockoutObservable<DivergenceTimeErrAlarmMsg>;
+            
             wkTypeCode: KnockoutObservable<string>;
             wkTypeName: KnockoutObservable<string>;
+            
+            // Declare text area
             multilineeditorErr: any;
             multilineeditorAlarm: any;
-            itemDivergenceTime: KnockoutObservable<DivergenceTimeErrAlarmMsg>;
+                       
             settingMode: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this;
+
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divergenceTimeNo', width: 60 },
                     { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divergenceTimeName', formatter: _.escape, width: 200 }
@@ -25,19 +33,19 @@ module nts.uk.at.view.kmk011.i {
                 self.currentCode = ko.observable(1);
                 self.wkTypeCode = ko.observable("");
                 self.wkTypeName = ko.observable("");
-                
+
                 let mode: number = nts.uk.ui.windows.getShared('settingMode');
-                
-                
-                if (mode == SettingMode.WORKTYPE){
-                    self.wkTypeCode =  ko.observable(nts.uk.ui.windows.getShared('wkTypeCode'));
-                    self.wkTypeName =  ko.observable(nts.uk.ui.windows.getShared('wkTypeName'));
+
+
+                if (mode == SettingMode.WORKTYPE) {
+                    self.wkTypeCode = ko.observable(nts.uk.ui.windows.getShared('wkTypeCode'));
+                    self.wkTypeName = ko.observable(nts.uk.ui.windows.getShared('wkTypeName'));
                     self.settingMode = ko.observable(true);
                 } else {
                     self.settingMode = ko.observable(false);
                 }
 
-                
+
                 self.multilineeditorErr = {
                     errorMessage: ko.observable(''),
                     option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
@@ -63,34 +71,36 @@ module nts.uk.at.view.kmk011.i {
 
                 //subscribe currentCode
                 self.currentCode.subscribe((codeChanged) => {
-                    if (nts.uk.text.isNullOrEmpty(codeChanged)){
-                        self.multilineeditorErr.errorMessage('');
-                        self.multilineeditorAlarm.alarmMessage('');
-                    } else {
-                        let mode: number = nts.uk.ui.windows.getShared('settingMode');
-                
-                        if (mode == SettingMode.COMPANY){
-                                self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                                if (nts.uk.text.isNullOrEmpty(itemDivTime)){ 
-                                        
-                                    } else {
-                                    self.itemDivergenceTime(itemDivTime);
-                                        self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                        self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
-                                }
-                                });
-                        } else {
-                                self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                                    if (!nts.uk.text.isNullOrEmpty(itemDivTime)){
-                                       
-                                    }  else {
-                                    self.itemDivergenceTime(itemDivTime);
-                                        self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                        self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
-                                }                          
-                                });
+                    self.multilineeditorErr.errorMessage("");
+                    self.multilineeditorAlarm.alarmMessage("");
+                    let mode: number = nts.uk.ui.windows.getShared('settingMode');
+
+                    if (mode == SettingMode.COMPANY) {
+                        self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
+                            if (itemDivTime == null) {
+                                self.multilineeditorErr.errorMessage("");
+                                self.multilineeditorAlarm.alarmMessage("");
+                            } else {
+                                self.itemDivergenceTime(itemDivTime);
+                                self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
                             }
-                        }                                                                                   
+
+                        });
+                    } else {
+                        self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
+                            if (itemDivTime == null) {
+                                self.multilineeditorErr.errorMessage("");
+                                self.multilineeditorAlarm.alarmMessage("");
+                            } else {
+                                self.itemDivergenceTime(itemDivTime);
+                                self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                            }
+
+                        });
+                    }
+
                 });
             }
 
@@ -98,37 +108,44 @@ module nts.uk.at.view.kmk011.i {
                 let self = this;
                 var dfd = $.Deferred<any>();
 
-
+                self.multilineeditorErr.errorMessage("");
+                self.multilineeditorAlarm.alarmMessage("");
+                
+                // Get list divergence time
                 service.getAllDivTime().done(function(listDivTime: Array<DivergenceTimeErrAlarmMsg>) {
                     blockUI.clear();
                     if (listDivTime === undefined || listDivTime.length == 0) {
                         self.dataSource();
                     } else {
-                        console.log(listDivTime);
                         self.dataSource(listDivTime);
                         let rdivTimeFirst = _.first(listDivTime);
                         self.currentCode(rdivTimeFirst.divergenceTimeNo);
                         let mode: number = nts.uk.ui.windows.getShared('settingMode');
-                
-                        if (mode == SettingMode.COMPANY){
+
+                        // Load error, alarm message
+                        if (mode == SettingMode.COMPANY) {
                             self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                            if (nts.uk.text.isNullOrEmpty(itemDivTime)){
-                                        
-                                    }  else {
+                                if (itemDivTime == null) {
+                                    self.multilineeditorErr.errorMessage("");
+                                    self.multilineeditorAlarm.alarmMessage("");
+                                } else {
                                     self.itemDivergenceTime(itemDivTime);
-                                        self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                        self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                                    self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                    self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
                                 }
+
                             });
                         } else {
                             self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                            if (nts.uk.text.isNullOrEmpty(itemDivTime)){
-                                        
-                                    }  else {
+                                if (itemDivTime == null) {
+                                    self.multilineeditorErr.errorMessage("");
+                                    self.multilineeditorAlarm.alarmMessage("");
+                                } else {
                                     self.itemDivergenceTime(itemDivTime);
-                                        self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                        self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                                    self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                    self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
                                 }
+
                             });
                         }
                     }
@@ -136,7 +153,8 @@ module nts.uk.at.view.kmk011.i {
                 })
                 return dfd.promise();
             }
-
+    
+            //Find divergence time by No
             private findByDivTimeNo(divergenceTimeNo: number): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred<any>();
@@ -146,7 +164,8 @@ module nts.uk.at.view.kmk011.i {
                 })
                 return dfd.promise();
             }
-            
+
+            //Find work type divergence time by No
             private findByWorkTypeDivTimeNo(divergenceTimeNo: number, workTypeCode: string): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred<any>();
@@ -157,10 +176,12 @@ module nts.uk.at.view.kmk011.i {
                 return dfd.promise();
             }
 
+            // Close button
             private closeDialog() {
                 nts.uk.ui.windows.close();
             }
 
+            //Save button
             private registrationErrMsg(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred<any>();
@@ -175,32 +196,32 @@ module nts.uk.at.view.kmk011.i {
                     });
                 } else {
                     let mode: number = nts.uk.ui.windows.getShared('settingMode');
-                
-                        if (mode == SettingMode.WORKTYPE){
-                            var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, self.wkTypeCode(), "", alarmMessage, errorMessage);
-                             service.saveWorkTypeDivTimeErrAlarmMsg(data).done(() => {
-                               nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                               dfd.resolve();
-                               nts.uk.ui.windows.close();
-                                  });
-                          
+
+                    if (mode == SettingMode.WORKTYPE) {
+                        var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, self.wkTypeCode(), "", alarmMessage, errorMessage);
+                        service.saveWorkTypeDivTimeErrAlarmMsg(data).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                dfd.resolve();
+                                nts.uk.ui.windows.close();
                             });
-                        } else {
-                            var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, "", "", alarmMessage, errorMessage);
-                             service.saveDivTimeErrAlarmMsg(data).done(() => {
-                               nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                               dfd.resolve();
-                               nts.uk.ui.windows.close();
-                                  });
-                             });
-                        }
-                    
+
+                        });
+                    } else {
+                        var data = new DivergenceTimeErrAlarmMsg(divergenceTimeNo, "", "", alarmMessage, errorMessage);
+                        service.saveDivTimeErrAlarmMsg(data).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                dfd.resolve();
+                                nts.uk.ui.windows.close();
+                            });
+                        });
+                    }
+
                 }
 
                 return dfd.promise();
             }
         }
-        
+
         export enum SettingMode {
             COMPANY = 0,
             WORKTYPE = 1

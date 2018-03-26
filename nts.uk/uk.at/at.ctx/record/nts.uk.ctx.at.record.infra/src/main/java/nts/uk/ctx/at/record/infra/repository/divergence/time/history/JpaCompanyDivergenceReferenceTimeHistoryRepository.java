@@ -60,8 +60,12 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		if (!StringUtils.isEmpty(histId)) {
 			predicates.add(criteriaBuilder.notEqual(root.get(KrcstComDrtHist_.histId), histId));
 		}
-		predicates.add(criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate));
-		predicates.add(criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate));
+
+		predicates.add(criteriaBuilder.or(
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.strD.getName()), startDate, endDate),
+				criteriaBuilder.between(root.get(KrcstComDrtHist_.endD.getName()), startDate, endDate),
+				criteriaBuilder.and(criteriaBuilder.lessThan(root.get(KrcstComDrtHist_.strD.getName()), startDate),
+						criteriaBuilder.greaterThan(root.get(KrcstComDrtHist_.endD.getName()), endDate))));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -232,6 +236,9 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// order by insert date
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcstComDrtHist_.insDate)));
 
 		// query data
 		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).getResultList();

@@ -68,3 +68,8 @@
 #inpDialog{
 	margin-left: 30px;
 }
+
+#itemname{
+	width: 180px !important;
+}
+

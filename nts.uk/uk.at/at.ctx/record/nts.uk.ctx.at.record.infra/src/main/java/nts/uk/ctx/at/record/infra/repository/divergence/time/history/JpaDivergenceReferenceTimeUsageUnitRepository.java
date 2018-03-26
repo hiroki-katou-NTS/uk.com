@@ -9,6 +9,10 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeU
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtUseUnit;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JpaDivergenceReferenceTimeUsageUnitRepository.
+ */
 @Stateless
 public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 		implements DivergenceReferenceTimeUsageUnitRepository {
@@ -35,7 +39,7 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 	public Optional<DivergenceReferenceTimeUsageUnit> findByCompanyId(String companyId) {
 		return this.queryProxy().find(companyId, KrcstDrtUseUnit.class).map(e -> this.toDomain(e));
 	}
-	
+
 	/**
 	 * To entity.
 	 *

@@ -10,6 +10,10 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeEr
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * The Class WorkTypeDivergenceTimeErrorAlarmMessageFinder.
+ */
 @Stateless
 public class WorkTypeDivergenceTimeErrorAlarmMessageFinder {
 

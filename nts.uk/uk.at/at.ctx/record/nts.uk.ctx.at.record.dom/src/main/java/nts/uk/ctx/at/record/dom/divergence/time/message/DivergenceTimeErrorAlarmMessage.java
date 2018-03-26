@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 @Getter
 @Setter
+// 乖離時間のエラーアラームメッセージ
 public class DivergenceTimeErrorAlarmMessage extends AggregateRoot {
 	/** The c id. */
 	// 会社ID
@@ -31,19 +32,19 @@ public class DivergenceTimeErrorAlarmMessage extends AggregateRoot {
 	/** The error message. */
 	// エラーメッセージ
 	private Optional<ErrorAlarmMessage> errorMessage;
-	
-	
+
 	/**
 	 * Instantiates a new divergence time error alarm message.
 	 */
-	public DivergenceTimeErrorAlarmMessage(){
+	public DivergenceTimeErrorAlarmMessage() {
 		super();
 	}
-	
+
 	/**
 	 * Instantiates a new divergence time error alarm message.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public DivergenceTimeErrorAlarmMessage(DivergenceTimeErrorAlarmMessageGetMemento memento) {
 		this.cId = memento.getCId();
@@ -51,11 +52,12 @@ public class DivergenceTimeErrorAlarmMessage extends AggregateRoot {
 		this.alarmMessage = memento.getAlarmMessage();
 		this.errorMessage = memento.getErrorMessage();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(DivergenceTimeErrorAlarmMessageSetMemento memento) {
 		memento.setCId(this.cId);
@@ -63,12 +65,14 @@ public class DivergenceTimeErrorAlarmMessage extends AggregateRoot {
 		memento.setAlarmMessage(this.alarmMessage);
 		memento.setErrorMessage(this.errorMessage);
 	}
-	
+
 	/**
 	 * Generate message.
 	 *
-	 * @param time the time
-	 * @param messageType the message type
+	 * @param time
+	 *            the time
+	 * @param messageType
+	 *            the message type
 	 */
 	public void generateMessage(Integer time, MessageType messageType) {
 		String message = messageType.isAlarm() ? this.alarmMessage.get().v() : this.errorMessage.get().v();

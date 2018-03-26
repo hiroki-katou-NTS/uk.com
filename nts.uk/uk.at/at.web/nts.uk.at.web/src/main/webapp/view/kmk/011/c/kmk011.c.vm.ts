@@ -17,10 +17,10 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         objectOld: any;
         enableDel: KnockoutObservable<boolean>;
         checkModel: KnockoutObservable<boolean>;
-        textNotice01 : KnockoutObservable<any>;
-        textNotice02 : KnockoutObservable<any>; 
+        textNotice01: KnockoutObservable<any>;
+        textNotice02: KnockoutObservable<any>;
         mode: boolean;
-                
+
         constructor() {
             var self = this;
             self.currentCode = ko.observable('');
@@ -62,19 +62,19 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                 $("#inpReason").focus();
                 // var t1 = performance.now();
             });
-            
+
             var notice = nts.uk.resource.getText("KMK011_78");
-            
+
             var index = notice.indexOf("め、");
-            
-            var text1 = notice.substr(0,index+2);
-            
-            var text2 = notice.substr(index+3);
-            
+
+            var text1 = notice.substr(0, index + 2);
+
+            var text2 = notice.substr(index + 3);
+
             self.textNotice01 = ko.observable(text1);
-            
+
             self.textNotice02 = ko.observable(text2);
-            
+
             // set C3_17
             self.mode = nts.uk.ui.windows.getShared('selectInput');
         }
@@ -109,7 +109,16 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                     self.checkModel(true);
                 }
                 dfd.resolve();
-            })            
+                if (id == null || lstDivReason === undefined || lstDivReason.length == 0) {
+
+                    $("#inpCode").focus();
+                }
+                else {
+
+                    $("#inpReason").focus();
+                }
+
+            })
             return dfd.promise();
         }
         /**
@@ -160,8 +169,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                     }
                 });
             }
-            else
-                {
+            else {
                 blockUI.clear();
             }
         }

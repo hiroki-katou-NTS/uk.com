@@ -9,6 +9,9 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
+/**
+ * The Class DivergenceTimeErrorAlarmMessageDto.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -33,27 +36,39 @@ public class DivergenceTimeErrorAlarmMessageDto implements DivergenceTimeErrorAl
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento#setCId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * DivergenceTimeErrorAlarmMessageSetMemento#setCId(nts.uk.ctx.at.shared.dom
+	 * .common.CompanyId)
 	 */
 	@Override
 	public void setCId(CompanyId cId) {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento#setAlarmMessage(java.util.Optional)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * DivergenceTimeErrorAlarmMessageSetMemento#setAlarmMessage(java.util.
+	 * Optional)
 	 */
 	@Override
 	public void setAlarmMessage(Optional<ErrorAlarmMessage> alarmMessage) {
 		this.alarmMessage = alarmMessage.get().v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento#setErrorMessage(java.util.Optional)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.message.
+	 * DivergenceTimeErrorAlarmMessageSetMemento#setErrorMessage(java.util.
+	 * Optional)
 	 */
 	@Override
-	public void setErrorMessage(Optional<ErrorAlarmMessage> errorMessage) {	
+	public void setErrorMessage(Optional<ErrorAlarmMessage> errorMessage) {
 		this.errorMessage = errorMessage.get().v();
 	}
 

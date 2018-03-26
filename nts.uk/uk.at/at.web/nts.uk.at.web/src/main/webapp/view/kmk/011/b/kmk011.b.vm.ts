@@ -161,6 +161,7 @@ module nts.uk.at.view.kmk011.b {
                             self.itemDivergenceTime(itemDivTime);
                             //get divergenceTypeName method this
                             self.setValueDivergenceTimeDisplay();
+                            $("#divergenceTypeName").focus();
                         });
                     }
                     dfd.resolve();
@@ -269,6 +270,8 @@ module nts.uk.at.view.kmk011.b {
                         var bool: boolean;
                         if (self.selectSelect() == 1) bool = true;
                         else bool = false;
+                        
+                        
                         var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divTimeName(),
                             self.divergenceTypeName(), self.checkErrorInput(), self.checkErrorSelect(),
                             self.selectInput(), bool, listIdSelect);

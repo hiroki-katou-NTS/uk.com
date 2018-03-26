@@ -16,30 +16,35 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class DivergenceReferenceTimeUsageUnitSaveCommandHandler.
  */
 @Stateless
-public class DivergenceReferenceTimeUsageUnitSaveCommandHandler extends CommandHandler<DivergenceReferenceTimeUsageUnitCommand>{
-	
+public class DivergenceReferenceTimeUsageUnitSaveCommandHandler
+		extends CommandHandler<DivergenceReferenceTimeUsageUnitCommand> {
+
 	/** The repository. */
 	@Inject
 	private DivergenceReferenceTimeUsageUnitRepository divergenceRepo;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<DivergenceReferenceTimeUsageUnitCommand> context) {
-		
-		/*Get company ID*/	
+
+		/* Get company ID */
 		String companyId = AppContexts.user().companyId();
-		
-		//get command
+
+		// get command
 		DivergenceReferenceTimeUsageUnitCommand command = context.getCommand();
-		
+
 		// find unit setting
 		Optional<DivergenceReferenceTimeUsageUnit> opt = this.divergenceRepo.findByCompanyId(companyId);
-		
-		//update 
-		if (opt.isPresent()){
+
+		// update
+		if (opt.isPresent()) {
 			DivergenceReferenceTimeUsageUnit domain = opt.get();
 			domain.setWorkTypeUseSet(command.getWorkTypeUseSet());
 			this.divergenceRepo.update(domain);

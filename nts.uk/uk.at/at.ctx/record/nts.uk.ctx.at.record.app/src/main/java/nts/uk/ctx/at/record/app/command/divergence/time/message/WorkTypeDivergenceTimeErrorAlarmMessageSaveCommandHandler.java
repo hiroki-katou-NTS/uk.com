@@ -19,34 +19,40 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WorkTypeDivergenceTimeErrorAlarmMessageSaveCommandHandler.
  */
 @Stateless
-public class WorkTypeDivergenceTimeErrorAlarmMessageSaveCommandHandler extends CommandHandler<WorkTypeDivergenceTimeErrorAlarmMessageCommand>{
+public class WorkTypeDivergenceTimeErrorAlarmMessageSaveCommandHandler
+		extends CommandHandler<WorkTypeDivergenceTimeErrorAlarmMessageCommand> {
 
 	/** The repository. */
 	@Inject
 	private WorkTypeDivergenceTimeErrorAlarmMessageRepository repository;
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<WorkTypeDivergenceTimeErrorAlarmMessageCommand> context) {
-	
+
 		/* Get company ID */
 		CompanyId companyId = new CompanyId(AppContexts.user().companyId());
-		
+
 		// Get command
 		WorkTypeDivergenceTimeErrorAlarmMessageCommand command = context.getCommand();
-		
+
 		// Get workTypeCode
 		BusinessTypeCode workTypeCode = new BusinessTypeCode(command.getWorkTypeCode());
-		
+
 		// Find WorkType divergence Time Error Alarm Message
-		Optional<WorkTypeDivergenceTimeErrorAlarmMessage> opt = this.repository.getByDivergenceTimeNo(command.getDivergenceTimeNo(), companyId, workTypeCode);
-		
+		Optional<WorkTypeDivergenceTimeErrorAlarmMessage> opt = this.repository
+				.getByDivergenceTimeNo(command.getDivergenceTimeNo(), companyId, workTypeCode);
+
 		// Update
-		if(opt.isPresent()){
-			WorkTypeDivergenceTimeErrorAlarmMessage domain = opt.get();		
+		if (opt.isPresent()) {
+			WorkTypeDivergenceTimeErrorAlarmMessage domain = opt.get();
 			domain.setAlarmMessage(Optional.of(new ErrorAlarmMessage(command.getAlarmMessage())));
 			domain.setErrorMessage(Optional.of(new ErrorAlarmMessage(command.getErrorMessage())));
 			this.repository.update(domain);

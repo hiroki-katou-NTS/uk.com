@@ -15,22 +15,25 @@ import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder
 import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeErrorAlarmMessageDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeErrorAlarmMessageFinder;
 
+/**
+ * The Class DivergenceTimeErrorAlarmMessageWs.
+ */
 @Path("at/record/divergence/time/message/divergenceTimeErrAlarmMsg")
 @Produces("application/json")
 public class DivergenceTimeErrorAlarmMessageWs {
 
 	/** The divergence time setting finder. */
-	@Inject 
+	@Inject
 	private DivergenceTimeSettingFinder divergenceTimeSettingFinder;
-	
+
 	/** The save command. */
 	@Inject
 	private DivergenceTimeErrorAlarmMessageSaveCommandHandler saveCommand;
-	
+
 	/** The finder. */
 	@Inject
 	private DivergenceTimeErrorAlarmMessageFinder finder;
-	
+
 	/**
 	 * Gets the all div time.
 	 *
@@ -39,29 +42,32 @@ public class DivergenceTimeErrorAlarmMessageWs {
 	@POST
 	@Path("getAllDivTime")
 	public List<DivergenceTimeDto> getAllDivTime() {
-	    return this.divergenceTimeSettingFinder.getAllDivTime();
+		return this.divergenceTimeSettingFinder.getAllDivTime();
 	}
-	
+
 	/**
 	 * Find by divergence time no.
 	 *
-	 * @param divergenceTimeNo the divergence time no
+	 * @param divergenceTimeNo
+	 *            the divergence time no
 	 * @return the divergence time error alarm message dto
 	 */
 	@POST
 	@Path("findByDivergenceTimeNo/{divergenceTimeNo}")
-	public DivergenceTimeErrorAlarmMessageDto findByDivergenceTimeNo(@PathParam("divergenceTimeNo") Integer divergenceTimeNo){
+	public DivergenceTimeErrorAlarmMessageDto findByDivergenceTimeNo(
+			@PathParam("divergenceTimeNo") Integer divergenceTimeNo) {
 		return this.finder.findByDivergenceTimeNo(divergenceTimeNo);
 	}
-	
+
 	/**
 	 * Save.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("save")
-	public void save(DivergenceTimeErrorAlarmMessageCommand command){
+	public void save(DivergenceTimeErrorAlarmMessageCommand command) {
 		this.saveCommand.handle(command);
 	}
 }
