@@ -233,6 +233,9 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
 
+		// order by insert date
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcstWorktypeDrtHist_.insDate)));
+
 		// query data
 		List<KrcstWorktypeDrtHist> worktypeDrtHists = em.createQuery(cq).getResultList();
 
