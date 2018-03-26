@@ -6,6 +6,7 @@ module nts.uk.at.view.ksu007.b {
             executionScheduleBatchCorrectSetting: "ctx/at/schedule/processbatch/execution",
             exportScheduleBatchErrorLog: "ctx/at/schedule/processbatch/error/export",
             exportFileError: "ctx/at/schedule/processbatch/log/export",
+            interrupt: "ctx/at/schedule/processbatch/interrupt"
         }
 
 
@@ -22,6 +23,10 @@ module nts.uk.at.view.ksu007.b {
         export function exportFileError(data : Model.ErrorContentDto[]): JQueryPromise<any> {
              return nts.uk.request.exportFile(paths.exportFileError, data);  
         }    
+        
+        export function interrupt(): any {
+            nts.uk.request.ajax('at', paths.interrupt);
+        }
         
         export module Model {
             export interface ErrorContentDto {
