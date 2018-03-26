@@ -28075,8 +28075,10 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var image = ko.unwrap(data.image);
+                        var textId = ko.unwrap(data.textId);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var position = ko.unwrap(data.position);
+                        var isImage = !uk.util.isNullOrUndefined(image);
                         //Position
                         var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
                         var atPositions = position.split(" ");
@@ -28118,11 +28120,18 @@ var nts;
                                 $caret.css(caretPosition, parseFloat($popup.css(caretPosition)) * -1);
                             }
                         }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
+                        var $content;
+                        if (isImage) {
+                            $content = $("<img src='" + uk.request.resolvePath(image) + "' />");
+                        }
+                        else {
+                            $content = $("<span>").text(uk.resource.getText(textId));
+                        }
                         var $container = $(element).closest(".ntsHelpButton");
                         var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
                         var $popup = $("<div class='nts-help-button-image'></div>")
                             .append($caret)
-                            .append($("<img src='" + uk.request.resolvePath(image) + "' />"))
+                            .append($content)
                             .appendTo($container).hide();
                         // Click outside event
                         $("html").on("click", function (event) {
