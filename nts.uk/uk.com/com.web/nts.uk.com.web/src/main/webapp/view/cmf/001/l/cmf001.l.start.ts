@@ -4,7 +4,7 @@ module nts.uk.com.view.cmf001.l {
         __viewContext.bind(screenModel);
         _.defer(() => {
             if (screenModel.inputMode) {
-                $("#combo-box").focus();
+                $("#combo-box").find("input").first().focus();
             } else {
                 $("#L3_2").focus();
             }
