@@ -1,122 +1,60 @@
 module nts.uk.at.view.kdl034.a {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
-    import dialog = nts.uk.ui.dialog;
-    import ApplicationDto = nts.uk.at.view.kaf000.b.viewmodel.model.ApplicationDto;
     export module viewmodel {
         export class ScreenModel {
             listApprover: KnockoutObservableArray<Approver> = ko.observableArray([]);
-            errorFlag: number = -1;
-            selectedApproverId: KnockoutObservable<string> = ko.observable(null);
+            currentApprover: KnockoutObservable<Approver> = ko.observable(new Approver("","",null));
             returnReason: KnockoutObservable<string> = ko.observable("");
             version: number = 0;
-            applicationContent: ApplicationDto;
-            appID: string = "03d4c33f-a20a-4002-8d0e-f5af490f4924";
+            appID: string = "";
             constructor() {
                 var self = this;
+                let kdl034_param = getShared("KDL034_PARAM");
             }
+            
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
-                service.getAppInfoByAppID(self.appID).done(function(result) {
-                    if (result) {
-                        let applicant = result.applicant;
-                        let approvalFrame = result.approvalFrameDtoForRemand;
-                        let listApprover: Array<Approver> = [];
-                        self.version = result.version;
-                        self.errorFlag = result.errorFlag;
-                        applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, "");
-                        listApprover.push(applicant);
-                        approvalFrame.forEach(function(approvalState) {
-                            approvalState.listApprover.forEach(function(approver) {
-                                listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
-                            });
-                        });
-                        self.listApprover(listApprover);
-                        self.selectedApproverId(applicant.pid);
-                    }
-                    dfd.resolve();
-                }).fail(function(res: any) {
-                    dfd.reject();
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("../test/index.xhtml");
-                    });
-                }).always(function(res: any){
-                    nts.uk.ui.block.clear();
-                });
-                nts.uk.ui.windows.close();
                 return dfd.promise();
             }
-
-            submitAndCloseDialog() {
+            
+            submitAndCloseDialog(){
                 var self = this;
-                dialog.confirm({ messageId: "Msg_384"}).ifYes(() => {
-                    if (self.errorFlag == 0){
-                        //nts.uk.ui.block.invisible();
-                        let currentApprover = _.find(self.listApprover(), x => { return x.id === self.selectedApproverId() });
-                        let command = {
-                            appID: self.appID,
-                            version: self.version,
-                            order: currentApprover.phaseOrder,
-                            returnReason: self.returnReason()
-                        }
-                        nts.uk.at.view.kdl034.a.service.remand(command)
-                            .done(function(result){
-                                dialog.info({ messageId: "Msg_392", messageParams: result });
-                                setShared("KDL034_PARAM", {"returnReason": self.returnReason});
-                            }).fail(function(res){
-                                dialog.alertError (res);
-                            }).always(function(){
-                                nts.uk.ui.block.clear();
-                                nts.uk.ui.windows.close();
-                            });
-                    }else{
-                        dialog.alertError({ messageId: "Msg_197"});
-                        nts.uk.ui.windows.close();
-                    }
-                }).ifNo(() => {
+                let command = {
+                    appID: self.appID,
+                    version: self.version,
+                    order: self.currentApprover().phaseOrder,
+                    returnReason: self.returnReason    
+                }
+                nts.uk.at.view.kdl034.a.service.remand(command)
+                .done(()=>{
+                    
+                }).fail(()=>{
                     
                 });
-                
+                nts.uk.ui.windows.close();     
             }
-            closeDialog() {
-                nts.uk.ui.windows.close();
-            }
-        }
-        export class Applicant {
-            id: string;
-            name: string;
-            constructor(id: string, name: string) {
-                this.id = id;
-                this.name = name;
+            
+            closeDialog(){
+                nts.uk.ui.windows.close();    
             }
         }
+        
         export class Approver {
             id: string;
             name: string;
             phaseOrder: number;
-            approvalReson: string;
-            jobTitle: string;
-            dispApprover: string;
-            constructor(id: string, name: string, phaseOrder: number, approvalReason: string, jobTitle: string, representerName: string) {
+            constructor(id: string, name: string, phaseOrder: number){
                 this.id = id;
                 this.name = name;
                 this.phaseOrder = phaseOrder;
-                this.approvalReson = approvalReason;
-                this.jobTitle = jobTitle;
-                if (_.isEmpty(phaseOrder)) {
-                    this.dispApprover = "申請者：　" + jobTitle + "　" + name;
-                } else if (phaseOrder == 2) {
-                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + name + "　" + representerName;
-                } else {
-                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + name;
-                }
             }
-
         }
+        
         interface KDL034_PARAM {
-            listApprover: KnockoutObservableArray<Approver>;
+            listApprover: KnockoutObservableArray<Approver>;   
         }
     }
 }

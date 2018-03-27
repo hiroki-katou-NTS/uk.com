@@ -16,13 +16,10 @@
 .column1 {
 	width: 135px;	
 }
-.column1 {
-	width: 500;	
-}
 #combo-box {
 	width: 240px;		
 }
 #appReasonArea {
-	width: 500px;
+	width: 520px;
     height: 140px;
 }
