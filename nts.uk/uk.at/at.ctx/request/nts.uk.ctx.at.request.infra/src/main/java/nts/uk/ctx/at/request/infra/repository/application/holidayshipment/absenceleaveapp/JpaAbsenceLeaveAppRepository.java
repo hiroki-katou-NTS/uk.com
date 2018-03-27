@@ -116,4 +116,10 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	}
 
+	@Override
+	public void remove(String appID) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

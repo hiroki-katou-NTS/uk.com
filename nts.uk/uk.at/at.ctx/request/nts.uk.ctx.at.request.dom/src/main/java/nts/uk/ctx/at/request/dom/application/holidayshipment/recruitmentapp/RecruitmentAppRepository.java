@@ -8,4 +8,6 @@ public interface RecruitmentAppRepository {
 	public Optional<RecruitmentApp> findByID(String applicationID);
 
 	public void update(RecruitmentApp recApp);
+
+	public void remove(String appID);
 }

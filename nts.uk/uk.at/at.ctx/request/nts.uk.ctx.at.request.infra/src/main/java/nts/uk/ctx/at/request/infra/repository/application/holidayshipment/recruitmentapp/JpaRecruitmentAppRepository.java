@@ -91,4 +91,10 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 	}
 
+	@Override
+	public void remove(String appID) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

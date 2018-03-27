@@ -6,6 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -23,36 +25,39 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 
 	@Inject
 	private ApplicationRepository_New applicationRepository;
-	
+
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	
+
 	@Inject
 	private AppStampRepository appStampRepository;
-	
+
 	@Inject
 	private OvertimeRepository overtimeRepository;
-	
+
 	@Inject
 	private GoBackDirectlyRepository goBackDirectlyRepository;
-	
+
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;
-	
+
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
+	
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
+	@Inject
+	private AbsenceLeaveAppRepository absRepo;
+	
+	@Inject
+	private RecruitmentAppRepository recRepo;
+
 	@Override
 	public void insert(Application_New application) {
 		applicationRepository.insert(application);
-		approvalRootStateAdapter.insertByAppType(
-				application.getCompanyID(), 
-				application.getEmployeeID(), 
-				application.getAppType().value, 
-				application.getAppDate(),
-				application.getAppID());
+		approvalRootStateAdapter.insertByAppType(application.getCompanyID(), application.getEmployeeID(),
+				application.getAppType().value, application.getAppDate(), application.getAppID());
 	}
 
 	@Override
@@ -70,19 +75,21 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 		case WORK_CHANGE_APPLICATION:
 			workChangeRepository.delete(companyID, appID);
 			break;
-		case EARLY_LEAVE_CANCEL_APPLICATION: 
+		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
 		case BREAK_TIME_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
+		case COMPLEMENT_LEAVE_APPLICATION:
+			absRepo.remove(appID);
+			recRepo.remove(appID);
 			break;
 		default:
 			break;
 		}
 		applicationRepository.delete(companyID, appID);
 		approvalRootStateAdapter.deleteApprovalRootState(appID);
-		
-		
+
 	}
 
 }

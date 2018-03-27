@@ -8,4 +8,6 @@ public interface AbsenceLeaveAppRepository {
 	public Optional<AbsenceLeaveApp> findByID(String applicationID);
 
 	public void update(AbsenceLeaveApp absApp);
+
+	public void remove(String appID);
 }
