@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_FORMAT_PERFORMANCE")
+@Table(name = "KRCMT_USE_FORMAT")
 public class KrcmtFormatPerformance extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -36,7 +36,7 @@ public class KrcmtFormatPerformance extends UkJpaEntity implements Serializable
     * フォーマット種類
     */
     @Basic(optional = false)
-    @Column(name = "SETTING_UNIT_TYPE")
+    @Column(name = "USE_FORMAT_TYPE")
     public int settingUnitType;
     
     @Override

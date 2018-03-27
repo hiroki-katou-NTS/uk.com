@@ -44,7 +44,7 @@ public class JpaMonPerformanceFunRepository extends JpaRepository implements Mon
             return;
         }
         updateMonPerformanceFun.comment = newMonPerformanceFun.comment;
-        updateMonPerformanceFun.isConfirmDaily = newMonPerformanceFun.isConfirmDaily;
+        updateMonPerformanceFun.dailySelfChkDispAtr = newMonPerformanceFun.dailySelfChkDispAtr;
         this.commandProxy().update(updateMonPerformanceFun);
     }
 

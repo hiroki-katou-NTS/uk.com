@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_PERFORM_ED_FUN")
+@Table(name = "KRCMT_DAI_CORRECTION_FUN")
 public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -42,85 +42,85 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
     * 1ヵ月の確認・承認が完了した場合、メッセージを表示する
     */
     @Basic(optional = false)
-    @Column(name = "IS_COMPLETE_CONFIRM_ONE_MONTH")
-    public int isCompleteConfirmOneMonth;
+    @Column(name = "MONTH_CHK_MSG_ATR")
+    public int monthChkMsgAtr;
     
     /**
     * 36協定情報を表示する
     */
     @Basic(optional = false)
-    @Column(name = "IS_DISPLAY_AGREEMENT_THIRTY_SIX")
-    public int isDisplayAgreementThirtySix;
+    @Column(name = "DISP_36_ATR")
+    public int disp36Atr;
     
     /**
     * クリアした内容は手修正にする
     */
     @Basic(optional = false)
-    @Column(name = "IS_FIX_CLEARED_CONTENT")
-    public int isFixClearedContent;
+    @Column(name = "CLEARED_MANUAL_ATR")
+    public int clearManuAtr;
     
     /**
     * フレックス勤務者のフレックス不足情報を表示する
     */
     @Basic(optional = false)
-    @Column(name = "IS_DISPLAY_FLEX_WORKER")
-    public int isDisplayFlexWorker;
+    @Column(name = "FLEX_DISP_ATR")
+    public int flexDispAtr;
     
     /**
     * 休出計算区分を変更する場合、休出深夜計算区分を変更する
     */
     @Basic(optional = false)
-    @Column(name = "IS_UPDATE_BREAK")
-    public int isUpdateBreak;
+    @Column(name = "BREAK_CALC_UPD_ATR")
+    public int breakCalcUpdAtr;
     
     /**
     * 休憩時刻を自動で設定する
     */
     @Basic(optional = false)
-    @Column(name = "IS_SETTING_TIME_BREAK")
-    public int isSettingTimeBreak;
+    @Column(name = "BREAK_TIME_AUTO_SET_ATR")
+    public int breakTimeAutoAtr;
     
     /**
     * 休日の場合、出勤/退勤時刻をクリアにする
     */
     @Basic(optional = false)
-    @Column(name = "IS_DAY_BREAK")
-    public int isDayBreak;
+    @Column(name = "BREAK_CLR_TIME_ATR")
+    public int breakClrTimeAtr;
     
     /**
     * 出勤/退勤時刻を自動で設定する
     */
     @Basic(optional = false)
-    @Column(name = "IS_SETTING_AUTO_TIME")
-    public int isSettingAutoTime;
+    @Column(name = "AUTO_SET_TIME_ATR")
+    public int autoSetTimeAtr;
     
     /**
     * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する
     */
     @Basic(optional = false)
-    @Column(name = "IS_UPDATE_EARLY")
-    public int isUpdateEarly;
+    @Column(name = "EARLY_CALC_UPD_ATR")
+    public int ealyCalcUpdAtr;
     
     /**
     * 残業計算区分を変更する場合、残業深夜区分を変更する
     */
     @Basic(optional = false)
-    @Column(name = "IS_UPDATE_OVERTIME")
-    public int isUpdateOvertime;
+    @Column(name = "OVERTIME_CALC_UPD_ATR")
+    public int overtimeCalcUpdAtr;
     
     /**
     * 法定内残業計算区分を変更する場合、法定内深夜残業計算区分を変更する
     */
     @Basic(optional = false)
-    @Column(name = "IS_UPDATE_OVERTIME_WITHIN_LEGAL")
-    public int isUpdateOvertimeWithinLegal;
+    @Column(name = "LAW_OVERTIME_CALC_UPD_ATR")
+    public int lawOverCalcUpdAtr;
     
     /**
     * 自動で設定した内容は手修正にする
     */
     @Basic(optional = false)
-    @Column(name = "IS_FIX_CONTENT_AUTO")
-    public int isFixContentAuto;
+    @Column(name = "MANUAL_FIX_AUTO_SET_ATR")
+    public int manualFixAutoSetAtr;
     
     @Override
     protected Object getKey()
@@ -129,10 +129,34 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
     }
 
     public DaiPerformanceFun toDomain() {
-        return new DaiPerformanceFun(this.daiPerformanceFunPk.cid, new Comment(this.comment), this.isCompleteConfirmOneMonth, this.isDisplayAgreementThirtySix, this.isFixClearedContent, this.isDisplayFlexWorker, this.isUpdateBreak, this.isSettingTimeBreak, this.isDayBreak, this.isSettingAutoTime, this.isUpdateEarly, this.isUpdateOvertime, this.isUpdateOvertimeWithinLegal, this.isFixContentAuto);
+        return new DaiPerformanceFun(this.daiPerformanceFunPk.cid, new Comment(this.comment), 
+							        		this.monthChkMsgAtr, 
+							        		this.disp36Atr, 
+							        		this.clearManuAtr, 
+							        		this.flexDispAtr, 
+							        		this.breakCalcUpdAtr, 
+							        		this.breakTimeAutoAtr, 
+							        		this.breakClrTimeAtr, 
+							        		this.autoSetTimeAtr, 
+							        		this.ealyCalcUpdAtr, 
+							        		this.overtimeCalcUpdAtr, 
+							        		this.lawOverCalcUpdAtr, 
+							        		this.manualFixAutoSetAtr);
     }
     public static KrcmtDaiPerformEdFun toEntity(DaiPerformanceFun domain) {
-        return new KrcmtDaiPerformEdFun(new KrcmtDaiPerformEdFunPk(domain.getCid()), domain.getComment().toString(), domain.getIsCompleteConfirmOneMonth(), domain.getIsDisplayAgreementThirtySix(), domain.getIsFixClearedContent(), domain.getIsDisplayFlexWorker(), domain.getIsUpdateBreak(), domain.getIsSettingTimeBreak(), domain.getIsDayBreak(), domain.getIsSettingAutoTime(), domain.getIsUpdateEarly(), domain.getIsUpdateOvertime(), domain.getIsUpdateOvertimeWithinLegal(), domain.getIsFixContentAuto());
+        return new KrcmtDaiPerformEdFun(new KrcmtDaiPerformEdFunPk(domain.getCid()), domain.getComment().toString(),
+						        		domain.getMonthChkMsgAtr(), 
+						        		domain.getDisp36Atr(), 
+						        		domain.getClearManuAtr(), 
+						        		domain.getFlexDispAtr(), 
+						        		domain.getBreakCalcUpdAtr(), 
+						        		domain.getBreakTimeAutoAtr(), 
+						        		domain.getBreakClrTimeAtr(), 
+						        		domain.getAutoSetTimeAtr(), 
+						        		domain.getEalyCalcUpdAtr(), 
+						        		domain.getOvertimeCalcUpdAtr(), 
+						        		domain.getLawOverCalcUpdAtr(), 
+						        		domain.getManualFixAutoSetAtr());
     }
 
 }

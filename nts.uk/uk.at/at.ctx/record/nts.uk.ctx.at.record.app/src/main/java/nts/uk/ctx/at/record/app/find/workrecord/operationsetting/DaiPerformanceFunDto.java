@@ -25,67 +25,79 @@ public class DaiPerformanceFunDto
     /**
     * 1ヵ月の確認・承認が完了した場合、メッセージを表示する
     */
-    private int isCompleteConfirmOneMonth;
+    private int monthChkMsgAtr;
     
     /**
     * 36協定情報を表示する
     */
-    private int isDisplayAgreementThirtySix;
+    private int disp36Atr;
     
     /**
     * クリアした内容は手修正にする
     */
-    private int isFixClearedContent;
+    private int clearManuAtr;
     
     /**
     * フレックス勤務者のフレックス不足情報を表示する
     */
-    private int isDisplayFlexWorker;
+    private int flexDispAtr;
     
     /**
-    * 
+    * 休出計算区分を変更する場合、休出深夜計算区分を変更する
     */
-    private int isUpdateBreak;
+    private int breakCalcUpdAtr;
     
     /**
-    * 
+    * 休憩時刻を自動で設定する
     */
-    private int isSettingTimeBreak;
+    private int breakTimeAutoAtr;
     
     /**
     * 休日の場合、出勤/退勤時刻をクリアにする
     */
-    private int isDayBreak;
+    private int breakClrTimeAtr;
     
     /**
     * 出勤/退勤時刻を自動で設定する
     */
-    private int isSettingAutoTime;
+    private int autoSetTimeAtr;
     
     /**
-    * 
+    * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する
     */
-    private int isUpdateEarly;
+    private int ealyCalcUpdAtr;
     
     /**
-    * 
+    * 残業計算区分を変更する場合、残業深夜区分を変更する
     */
-    private int isUpdateOvertime;
+    private int overtimeCalcUpdAtr;
     
     /**
-    * 
+    * 法定内残業計算区分を変更する場合、法定内深夜残業計算区分を変更する
     */
-    private int isUpdateOvertimeWithinLegal;
+    private int lawOverCalcUpdAtr;
     
     /**
     * 自動で設定した内容は手修正にする
     */
-    private int isFixContentAuto;
+    private int manualFixAutoSetAtr;
     
     
     public static DaiPerformanceFunDto fromDomain(DaiPerformanceFun domain)
     {
-        return new DaiPerformanceFunDto(domain.getCid(), domain.getComment().toString() ,domain.getIsCompleteConfirmOneMonth(), domain.getIsDisplayAgreementThirtySix(), domain.getIsFixClearedContent(), domain.getIsDisplayFlexWorker(), domain.getIsUpdateBreak(), domain.getIsSettingTimeBreak(), domain.getIsDayBreak(), domain.getIsSettingAutoTime(), domain.getIsUpdateEarly(), domain.getIsUpdateOvertime(), domain.getIsUpdateOvertimeWithinLegal(), domain.getIsFixContentAuto());
+        return new DaiPerformanceFunDto(domain.getCid(), domain.getComment().toString(), 
+						        		domain.getMonthChkMsgAtr(), 
+						        		domain.getDisp36Atr(), 
+						        		domain.getClearManuAtr(), 
+						        		domain.getFlexDispAtr(), 
+						        		domain.getBreakCalcUpdAtr(), 
+						        		domain.getBreakTimeAutoAtr(), 
+						        		domain.getBreakClrTimeAtr(), 
+						        		domain.getAutoSetTimeAtr(), 
+						        		domain.getEalyCalcUpdAtr(), 
+						        		domain.getOvertimeCalcUpdAtr(), 
+						        		domain.getLawOverCalcUpdAtr(), 
+						        		domain.getManualFixAutoSetAtr());
     }
     
 }

@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw006 {
+module nts.uk.at.view.kdw006.b {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
@@ -7,27 +7,30 @@ module nts.uk.at.view.kdw006 {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    let __viewContext: any = window["__viewContext"] || {};
+
     export module viewmodel {
         export class TabScreenModel {
             //Daily perform id from other screen
             settingUnit: KnockoutObservable<number>;
             commentDaily: KnockoutObservable<string>;
             commentMonthly: KnockoutObservable<string>;
-            roundingRules: KnockoutObservableArray<any>;
             formatPerformanceDto: KnockoutObservable<FormatPerformanceDto>;
             daiPerformanceFunDto: KnockoutObservable<DaiPerformanceFunDto>;
             monPerformanceFunDto: KnockoutObservable<MonPerformanceFunDto>;
-            
+            roundingRules: KnockoutObservableArray<ItemModel>;
+
             constructor() {
                 let self = this;
                 self.settingUnit = ko.observable(0);
                 self.commentDaily = ko.observable(null);
                 self.commentMonthly = ko.observable(null);
-                self.roundingRules = ko.observableArray([
-                    { code: 0, name: '権限' },
-                    { code: 1, name: '勤務種別' }
-                ]);
-                
+                self.roundingRules = ko.observableArray([]);
+                let listRest = __viewContext.enums.SettingUnitType;
+                _.forEach(listRest, (a) => {
+                    self.roundingRules.push(new ItemModel(a.value, a.name));
+                });
+
                 self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
                     cid: '',
                     comment: '',
@@ -44,22 +47,23 @@ module nts.uk.at.view.kdw006 {
                     isUpdateOvertimeWithinLegal: null,
                     isFixContentAuto: null,
                 }));
-                
+
                 self.monPerformanceFunDto = ko.observable(new MonPerformanceFunDto({
                     cid: '',
                     comment: '',
                     isConfirmDaily: null
                 }));
-                
+
                 self.formatPerformanceDto = ko.observable(new FormatPerformanceDto({
                     cid: '',
                     settingUnitType: 0
                 }));
-                
+
             }
-    
+
             start() {
                 let self = this;
+                nts.uk.ui.block.grayout();
                 let dfd = $.Deferred();
                 self.getFormatPerformanceById().done(function() {
                     dfd.resolve();
@@ -69,56 +73,63 @@ module nts.uk.at.view.kdw006 {
                 });
                 self.getMonPerformanceFunById().done(function() {
                     dfd.resolve();
-                });
+                }).always(()=>{
+                    nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.block.clear();
+                });;
                 return dfd.promise();
             }
-    
-            
+
+
             getFormatPerformanceById(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getFormatPerformanceById().done(function(data: IFormatPerformanceDto){
+                service.getFormatPerformanceById().done(function(data: IFormatPerformanceDto) {
                     self.settingUnit(data.settingUnitType);
                     self.formatPerformanceDto(new FormatPerformanceDto(data));
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-            
+
             getDaiPerformanceFunById(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getDaiPerformanceFunById().done(function(data: IDaiPerformanceFunDto){
-                    self.settingUnit(data.comment);
+                service.getDaiPerformanceFunById().done(function(data: IDaiPerformanceFunDto) {
+                    self.commentDaily(data.comment);
                     self.daiPerformanceFunDto(new DaiPerformanceFunDto(data));
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-            
+
             getMonPerformanceFunById(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getMonPerformanceFunById().done(function(data: IMonPerformanceFunDto){
-                    self.settingUnit(data.comment);
+                service.getMonPerformanceFunById().done(function(data: IMonPerformanceFunDto) {
+                    self.commentMonthly(data.comment);
                     self.monPerformanceFunDto(new MonPerformanceFunDto(data));
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-    
+
             saveData() {
                 let self = this;
-                service.updateFormatPerformanceById(ko.toJS(self.formatPerformanceDto)).done(function(data) {
-                    service.updatetDaiPerformanceFunById(ko.toJS(self.daiPerformanceFunDto)).done(function(data) {
-                        service.updateMonPerformanceFunById(ko.toJS(self.monPerformanceFunDto)).done(function(data) {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.formatPerformanceDto().settingUnitType(self.settingUnit());
+                self.daiPerformanceFunDto().comment(self.commentDaily());
+                self.monPerformanceFunDto().comment(self.commentMonthly());
+                    service.updateFormatPerformanceById(ko.toJS(self.formatPerformanceDto)).done(function() {
+                        service.updatetDaiPerformanceFunById(ko.toJS(self.daiPerformanceFunDto)).done(function() {
+                            service.updateMonPerformanceFunById(ko.toJS(self.monPerformanceFunDto)).done(function() {
+                                self.start();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            });
                         });
                     });
-                });
             }
         }
-        
+
         interface IDaiPerformanceFunDto {
             cid: string;
             comment: string;
@@ -135,7 +146,7 @@ module nts.uk.at.view.kdw006 {
             isUpdateOvertimeWithinLegal: number;
             isFixContentAuto: number;
         }
-        
+
         class DaiPerformanceFunDto {
             cid: KnockoutObservable<string>;
             comment: KnockoutObservable<string>;
@@ -151,8 +162,8 @@ module nts.uk.at.view.kdw006 {
             isUpdateOvertime: KnockoutObservable<number>;
             isUpdateOvertimeWithinLegal: KnockoutObservable<number>;
             isFixContentAuto: KnockoutObservable<number>;
-            
-            constructor (param: IDaiPerformanceFunDto) {
+
+            constructor(param: IDaiPerformanceFunDto) {
                 let self = this;
                 self.cid = ko.observable(param.cid);
                 self.comment = ko.observable(param.comment);
@@ -165,12 +176,12 @@ module nts.uk.at.view.kdw006 {
                 self.isDayBreak = ko.observable(param.isDayBreak);
                 self.isSettingAutoTime = ko.observable(param.isSettingAutoTime);
                 self.isUpdateEarly = ko.observable(param.isUpdateEarly);
-                self.isUpdateOvertime= ko.observable(param.isUpdateOvertime);
-                self.isUpdateOvertimeWithinLegal=ko.observable(param.isUpdateOvertimeWithinLegal);
-                self.isFixContentAuto= ko.observable(param.isFixContentAuto);
+                self.isUpdateOvertime = ko.observable(param.isUpdateOvertime);
+                self.isUpdateOvertimeWithinLegal = ko.observable(param.isUpdateOvertimeWithinLegal);
+                self.isFixContentAuto = ko.observable(param.isFixContentAuto);
             }
         }
-        
+
         interface IMonPerformanceFunDto {
             cid: string;
             comment: string;
@@ -199,6 +210,16 @@ module nts.uk.at.view.kdw006 {
                 let self = this;
                 self.cid = ko.observable(param.cid);
                 self.settingUnitType = ko.observable(param.settingUnitType);
+            }
+        }
+
+        class ItemModel {
+            code: number;
+            name: string;
+
+            constructor(code: number, name: string) {
+                this.code = code;
+                this.name = name;
             }
         }
     }

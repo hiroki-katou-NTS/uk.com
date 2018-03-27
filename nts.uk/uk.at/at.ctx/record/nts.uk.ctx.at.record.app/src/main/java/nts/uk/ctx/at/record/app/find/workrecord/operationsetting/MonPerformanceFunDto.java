@@ -25,12 +25,12 @@ public class MonPerformanceFunDto
     /**
     * 日別の本人確認を表示する
     */
-    private int isConfirmDaily;
+    private int dailySelfChkDispAtr;
     
     
     public static MonPerformanceFunDto fromDomain(MonPerformanceFun domain)
     {
-        return new MonPerformanceFunDto(domain.getCid(), domain.getComment().toString(), domain.getIsConfirmDaily());
+        return new MonPerformanceFunDto(domain.getCid(), domain.getComment().toString(), domain.getDailySelfChkDispAtr());
     }
     
 }

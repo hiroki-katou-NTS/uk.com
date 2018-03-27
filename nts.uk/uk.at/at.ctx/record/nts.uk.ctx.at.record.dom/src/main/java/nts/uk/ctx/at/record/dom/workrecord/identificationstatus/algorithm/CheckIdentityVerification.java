@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.ConfirmOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.FunctionalRestriction;
 
 @Stateless
 public class CheckIdentityVerification {

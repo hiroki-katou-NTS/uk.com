@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_MON_PERFORMANCE_FUN")
+@Table(name = "KRCMT_MON_CORRECTION_FUN")
 public class KrcmtMonPerformanceFun extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -42,8 +42,8 @@ public class KrcmtMonPerformanceFun extends UkJpaEntity implements Serializable
     * 日別の本人確認を表示する
     */
     @Basic(optional = false)
-    @Column(name = "IS_CONFIRM_DAILY")
-    public int isConfirmDaily;
+    @Column(name = "DAILY_SELF_CHK_DISP_ATR")
+    public int dailySelfChkDispAtr;
     
     @Override
     protected Object getKey()
@@ -52,10 +52,10 @@ public class KrcmtMonPerformanceFun extends UkJpaEntity implements Serializable
     }
 
     public MonPerformanceFun toDomain() {
-        return new MonPerformanceFun(this.monPerformanceFunPk.cid, new Comment(comment), this.isConfirmDaily);
+        return new MonPerformanceFun(this.monPerformanceFunPk.cid, new Comment(comment), this.dailySelfChkDispAtr);
     }
     public static KrcmtMonPerformanceFun toEntity(MonPerformanceFun domain) {
-        return new KrcmtMonPerformanceFun(new KrcmtMonPerformanceFunPk(domain.getCid()), domain.getComment().toString(), domain.getIsConfirmDaily());
+        return new KrcmtMonPerformanceFun(new KrcmtMonPerformanceFunPk(domain.getCid()), domain.getComment().toString(), domain.getDailySelfChkDispAtr());
     }
 
 }

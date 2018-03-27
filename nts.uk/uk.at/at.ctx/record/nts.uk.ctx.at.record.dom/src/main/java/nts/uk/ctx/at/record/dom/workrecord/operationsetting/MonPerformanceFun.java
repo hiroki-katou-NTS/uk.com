@@ -29,11 +29,11 @@ public class MonPerformanceFun extends AggregateRoot
     /**
     * 日別の本人確認を表示する
     */
-    private int isConfirmDaily;
+    private int dailySelfChkDispAtr;
     
-    public static MonPerformanceFun createFromJavaType(String cid, String comment, int isConfirmDaily)
+    public static MonPerformanceFun createFromJavaType(String cid, String comment, int dailySelfChkDispAtr)
     {
-        MonPerformanceFun  monPerformanceFun =  new MonPerformanceFun(cid, new Comment(comment),  isConfirmDaily);
+        MonPerformanceFun  monPerformanceFun =  new MonPerformanceFun(cid, new Comment(comment),  dailySelfChkDispAtr);
         return monPerformanceFun;
     }
     

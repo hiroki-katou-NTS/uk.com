@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 public class JpaDaiPerformanceFunRepository extends JpaRepository implements DaiPerformanceFunRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrcmtDaiPerformanceFun f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrcmtDaiPerformEdFun f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.daiPerformanceFunPk.cid =:cid ";
 
     @Override
@@ -44,18 +44,18 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
             return;
         }
         updateDaiPerformanceFun.comment = newDaiPerformanceFun.comment;
-        updateDaiPerformanceFun.isCompleteConfirmOneMonth = newDaiPerformanceFun.isCompleteConfirmOneMonth;
-        updateDaiPerformanceFun.isDisplayAgreementThirtySix = newDaiPerformanceFun.isDisplayAgreementThirtySix;
-        updateDaiPerformanceFun.isFixClearedContent = newDaiPerformanceFun.isFixClearedContent;
-        updateDaiPerformanceFun.isDisplayFlexWorker = newDaiPerformanceFun.isDisplayFlexWorker;
-        updateDaiPerformanceFun.isUpdateBreak = newDaiPerformanceFun.isUpdateBreak;
-        updateDaiPerformanceFun.isSettingTimeBreak = newDaiPerformanceFun.isSettingTimeBreak;
-        updateDaiPerformanceFun.isDayBreak = newDaiPerformanceFun.isDayBreak;
-        updateDaiPerformanceFun.isSettingAutoTime = newDaiPerformanceFun.isSettingAutoTime;
-        updateDaiPerformanceFun.isUpdateEarly = newDaiPerformanceFun.isUpdateEarly;
-        updateDaiPerformanceFun.isUpdateOvertime = newDaiPerformanceFun.isUpdateOvertime;
-        updateDaiPerformanceFun.isUpdateOvertimeWithinLegal = newDaiPerformanceFun.isUpdateOvertimeWithinLegal;
-        updateDaiPerformanceFun.isFixContentAuto = newDaiPerformanceFun.isFixContentAuto;
+        updateDaiPerformanceFun.monthChkMsgAtr = newDaiPerformanceFun.monthChkMsgAtr;
+        updateDaiPerformanceFun.disp36Atr = newDaiPerformanceFun.disp36Atr;
+        updateDaiPerformanceFun.clearManuAtr = newDaiPerformanceFun.clearManuAtr;
+        updateDaiPerformanceFun.flexDispAtr = newDaiPerformanceFun.flexDispAtr;
+        updateDaiPerformanceFun.breakCalcUpdAtr = newDaiPerformanceFun.breakCalcUpdAtr;
+        updateDaiPerformanceFun.breakTimeAutoAtr = newDaiPerformanceFun.breakTimeAutoAtr;
+        updateDaiPerformanceFun.breakClrTimeAtr = newDaiPerformanceFun.breakClrTimeAtr;
+        updateDaiPerformanceFun.autoSetTimeAtr = newDaiPerformanceFun.autoSetTimeAtr;
+        updateDaiPerformanceFun.ealyCalcUpdAtr = newDaiPerformanceFun.ealyCalcUpdAtr;
+        updateDaiPerformanceFun.overtimeCalcUpdAtr = newDaiPerformanceFun.overtimeCalcUpdAtr;
+        updateDaiPerformanceFun.lawOverCalcUpdAtr = newDaiPerformanceFun.lawOverCalcUpdAtr;
+        updateDaiPerformanceFun.manualFixAutoSetAtr = newDaiPerformanceFun.manualFixAutoSetAtr;
         this.commandProxy().update(updateDaiPerformanceFun);
     }
 
