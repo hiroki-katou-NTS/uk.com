@@ -215,7 +215,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		//休暇申請: get full info(1);
 		for (Application_New app : lstAbsence) {
-			AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID());
+			Integer day = 0;
+			if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
+				day = app.getEndDate().get().compareTo(app.getStartDate().get()) + 1;
+			}
+			AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 			lstAppAbsence.add(appAbsence);
 		}
 		List<Application_New> lstAppFilter = lstOverTime;
@@ -448,7 +452,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			//休暇申請: get full info(1);
 			for (Application_New app : lstAbsence) {
-				AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID());
+				Integer day = 0;
+				if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
+					day = app.getEndDate().get().compareTo(app.getStartDate().get()) + 1;
+				}
+				AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 				lstAppAbsence.add(appAbsence);
 			}
 			List<Application_New> lstAppFilter = lstOverTime;

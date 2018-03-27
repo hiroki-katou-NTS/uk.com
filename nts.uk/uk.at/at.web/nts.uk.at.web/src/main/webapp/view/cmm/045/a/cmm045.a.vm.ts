@@ -104,6 +104,7 @@ module cmm045.a.viewmodel {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
                     service.getApplicationList(param).done(function(data) {
+                        console.log(data);
                         self.selectedRuleCode.subscribe(function(codeChanged) {
                             self.filter();
                         });
@@ -684,46 +685,43 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == null){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
-                appContent006 = self.convertAbsenceAllDay(absence, reason);
+            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+                appContent006 = self.convertAbsenceAllDay(absence);
             }
-            if(absence.relationshipCode != null){//特別休暇申請.続柄コード　＝　入力ありの場合
-                appContent006 = self.convertAbsenceSpecial(absence, reason);
+            if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
+                appContent006 = self.convertAbsenceSpecial(absence);
             }
             if(absence.allDayHalfDayLeaveAtr == 0){//休暇申請.終日半日休暇区分　＝　半日休暇
-                appContent006 = self.convertAbsenceHalfDay(absence, reason);
+                appContent006 = self.convertAbsenceHalfDay(absence);
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent006, self.convertDateTime(app.inputDate),
+                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent006 + reason, self.convertDateTime(app.inputDate),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
         //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
-        convertAbsenceAllDay(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+        convertAbsenceAllDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
-            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]) + reason;
+            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]);
         }
         //※特別休暇申請.続柄コード　＝　入力ありの場合
-        convertAbsenceSpecial(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+        convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
             let result = getText('CMM045_279') + getText('CMM045_248') + self.hdAppSet().specialVaca
-            + absence.relationshipName + day + reason;
+            + absence.relationshipName + day;
             return result;
         }
         //※休暇申請.終日半日休暇区分　＝　半日休暇
-        convertAbsenceHalfDay(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+        convertAbsenceHalfDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
             let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
-            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2 + reason;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2;
             return result;
         }
         convertNameHoliday(holidayType: number): string{
@@ -762,7 +760,6 @@ module cmm045.a.viewmodel {
                 let data: vmbase.DataModeApp;
                 if (app.applicationType == 0) {//over time
                     let overtTime = self.findOverTimeById(app.applicationID, lstOverTime);
-
                     if (self.mode() == 1 && app.prePostAtr == 1) {
                         data = self.formatOverTimeAf(app, overtTime, masterInfo, lstAppGroup);
                     } else {
@@ -936,7 +933,7 @@ module cmm045.a.viewmodel {
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                 self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
             service.getApplicationList(param).done(function(data) {
-//                console.log(data);
+                console.log(data);
                 //reset data
                 self.lstAppCommon([]);
                 self.lstAppMaster([]);

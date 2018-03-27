@@ -34,7 +34,8 @@ public interface AppDetailInfoRepository {
 	 * get Application Absence Info
 	 * @param companyID
 	 * @param appId
+	 * @param day
 	 * @return
 	 */
-	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId);
+	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId, Integer day);
 }

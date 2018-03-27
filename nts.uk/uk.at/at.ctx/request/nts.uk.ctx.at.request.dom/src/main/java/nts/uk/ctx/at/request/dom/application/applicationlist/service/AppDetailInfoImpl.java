@@ -13,6 +13,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -67,6 +68,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private AppAbsenceRepository repoAbsence;
 	@Inject
 	private RelationshipRepository repoRelationship;
+	@Inject
+	private AppForSpecLeaveRepository repoAppLeaveSpec;
 	/**
 	 * get Application Over Time Info
 	 * appType = 0;
@@ -237,13 +240,21 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * get Application Absence Info
 	 * @param companyID
 	 * @param appId
+	 * @param day
 	 * @return
 	 */
 	@Override
-	public AppAbsenceFull getAppAbsenceInfo(String companyId, String appId) {
+	public AppAbsenceFull getAppAbsenceInfo(String companyId, String appId, Integer day) {
 		// TODO Auto-generated method stub
+		//get 休暇申請
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, appId);
 		AppAbsence appAbsence = absence.get();
+		//get 特別休暇申請
+		Optional<AppForSpecLeave> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appId);
+		if(appSpec.isPresent()){
+			appAbsence.setAppForSpecLeave(appSpec.get());
+		}
+		
 //		String workTypeName = appAbsence.getWorkTypeCode() == null ||  Strings.isBlank(appAbsence.getWorkTypeCode().v()) ? "" : 
 //			repoWorkType.findByPK(companyId, appAbsence.getWorkTypeCode().v()).get().getName().v();
 		String workTimeName = appAbsence.getWorkTimeCode().v().equals("000") ? "" :
@@ -257,11 +268,11 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		String endTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
 		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
-		String relaName = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : 
-			repoRelationship.findByCode(companyId, appForSpec.getRelationshipCD().v()).get().getRelationshipName().v();
-		return new AppAbsenceFull(appId, appAbsence.getHolidayAppType() == null ? null : appAbsence.getHolidayAppType().value, 0,
+		String relaCode = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
+		String relaName = relaCode.equals("") ? "" : repoRelationship.findByCode(companyId, relaCode).get().getRelationshipName().v();
+		return new AppAbsenceFull(appId, appAbsence.getHolidayAppType() == null ? null : appAbsence.getHolidayAppType().value, day,
 				workTimeName, appAbsence.getAllDayHalfDayLeaveAtr().value, startTime1, endTime1,startTime2, endTime2,
-				"", relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
+				relaCode, relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
 	}
 	/**
 	 * convert time from integer to Time_Short_HM
