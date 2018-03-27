@@ -836,7 +836,7 @@ public class AttendanceItemIdContainer {
 		if (values == null || values.isEmpty()) {
 			return getFullPair();
 		}
-		return values.stream().map(c -> ItemValue.build(ITEM_ID_CONTAINER.get(c), c)).filter(p -> p.path() != null);
+		return values.stream().filter(c -> ITEM_ID_CONTAINER.get(c) != null).map(c -> ItemValue.build(ITEM_ID_CONTAINER.get(c), c));
 	}
 
 	// public static Stream<Entry<String, Integer>> getIdMapStream(Set<Integer>

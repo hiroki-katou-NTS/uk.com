@@ -891,33 +891,35 @@ div.form-label.disabled {
 }
 /* line 106, ../sass/components/_commons.scss */
 div.form-label > label {
+  white-space: nowrap;
   max-height: 100%;
   font-size: 14px;
   line-height: 37px;
 }
-/* line 112, ../sass/components/_commons.scss */
+/* line 113, ../sass/components/_commons.scss */
 div.form-label > i {
+  white-space: nowrap;
   display: block;
   margin-top: 1px;
   font-size: 12px;
   font-weight: normal;
   color: #777777;
 }
-/* line 119, ../sass/components/_commons.scss */
+/* line 121, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 123, ../sass/components/_commons.scss */
+/* line 125, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 128, ../sass/components/_commons.scss */
+/* line 130, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
 
-/* line 134, ../sass/components/_commons.scss */
+/* line 136, ../sass/components/_commons.scss */
 .constraint-label {
   display: block;
   margin-top: 1px;
@@ -929,7 +931,7 @@ div.form-label.inline > i {
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 144, ../sass/components/_commons.scss */
+/* line 146, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -943,22 +945,22 @@ div.popup-panel {
 /*****************************
   NtsError
 *****************************/
-/* line 156, ../sass/components/_commons.scss */
+/* line 158, ../sass/components/_commons.scss */
 .ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ntsControl.error .sp-replacer {
   border-color: #ff6666;
 }
 
-/* line 161, ../sass/components/_commons.scss */
+/* line 163, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
 }
 
-/* line 164, ../sass/components/_commons.scss */
+/* line 166, ../sass/components/_commons.scss */
 .checkbox-wrapper.error {
   border: 1px solid #ff6666;
 }
 
-/* line 167, ../sass/components/_commons.scss */
+/* line 169, ../sass/components/_commons.scss */
 .multicheckbox-wrapper.error {
   border: 1px solid #ff6666;
 }
@@ -966,7 +968,7 @@ div.popup-panel {
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 173, ../sass/components/_commons.scss */
+/* line 175, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: none;
@@ -983,13 +985,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 187, ../sass/components/_commons.scss */
+/* line 189, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 193, ../sass/components/_commons.scss */
+/* line 195, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   display: inline-block;
 }
@@ -997,37 +999,37 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 202, ../sass/components/_commons.scss */
+/* line 204, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 206, ../sass/components/_commons.scss */
+/* line 208, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 213, ../sass/components/_commons.scss */
+/* line 215, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 219, ../sass/components/_commons.scss */
+/* line 221, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 225, ../sass/components/_commons.scss */
+/* line 227, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
 
-/* line 228, ../sass/components/_commons.scss */
+/* line 230, ../sass/components/_commons.scss */
 .pre {
   white-space: pre-wrap;
 }
@@ -4796,9 +4798,10 @@ div .ex-area-line.x-stay {
   border-bottom: solid 1px #B1B1B1;
   padding-top: 8px;
   padding-left: 5px;
+  white-space: nowrap;
 }
 
-/* line 8, ../sass/frame/_functions.scss */
+/* line 9, ../sass/frame/_functions.scss */
 #functions-area-bottom {
   position: absolute;
   bottom: 0px;
@@ -4807,6 +4810,7 @@ div .ex-area-line.x-stay {
   border-top: solid 1px #B1B1B1;
   text-align: center;
   padding-top: 8px;
+  white-space: nowrap;
 }
 
 /* line 1, ../sass/frame/_contents.scss */

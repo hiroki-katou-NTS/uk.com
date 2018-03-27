@@ -59,7 +59,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Override
 	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
-			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
+			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType) {
 				
 		// 正常終了 : 0
 		// 中断 : 1
@@ -112,11 +112,11 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 ////								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
 //							} else {
 //								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-//										empCalAndSumExecLogID, reCreateAttr);
+//										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
 //							}
 //						} else{
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr);
+									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
 //						}
 					} 
 					if (asyncContext.hasBeenRequestedToCancel()) {
