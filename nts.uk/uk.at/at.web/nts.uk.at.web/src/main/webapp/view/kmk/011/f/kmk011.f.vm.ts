@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk011.f {
                 
                 //radio group
                 _self.itemListRadio = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText("KMK011_73")),
+                    new BoxModel(0, nts.uk.resource.getText("KMK011_73", ["2017/04/01"])),
                     new BoxModel(1, nts.uk.resource.getText("KMK011_29"))
                 ]);
                 _self.selectedId = ko.observable(1);

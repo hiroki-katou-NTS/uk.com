@@ -8,12 +8,12 @@ public class SaveHolidayShipmentCommand {
 	/**
 	 * 振出
 	 */
-	private RecruitmentAppCommand recruitmentApp;
+	private RecruitmentAppCommand recCmd;
 
 	/**
 	 * 振休
 	 */
-	private AbsenceLeaveAppCommand absenceLeaveApp;
+	private AbsenceLeaveAppCommand absCmd;
 
 	/**
 	 * 申請組み合わせ
@@ -28,5 +28,5 @@ public class SaveHolidayShipmentCommand {
 	/**
 	 * 申請 ITEM
 	 */
-	private ApplicationCommand appCommand;
+	private ApplicationCommand appCmd;
 }

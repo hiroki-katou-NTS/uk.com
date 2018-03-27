@@ -6,7 +6,8 @@ module nts.uk.at.view.kmk011.f {
 
         
         mainTab.start_page().done(function(screenModel){
-            __viewContext.bind(mainTab); 
+            __viewContext.bind(mainTab);
+            $("#start_date").focus();
         });
     });
 }

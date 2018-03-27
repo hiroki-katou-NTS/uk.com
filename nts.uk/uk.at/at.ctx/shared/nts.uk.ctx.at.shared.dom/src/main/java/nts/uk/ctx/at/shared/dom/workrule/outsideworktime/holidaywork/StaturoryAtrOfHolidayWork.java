@@ -8,8 +8,11 @@ import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
  *
  */
 public enum StaturoryAtrOfHolidayWork {
+	/**法定内休出	 */
 	WithinPrescribedHolidayWork,
+	/**法定外休出	 */
 	ExcessOfStatutoryHolidayWork,
+	/**祝日休出	 */
 	PublicHolidayWork;
 	
 	public static StaturoryAtrOfHolidayWork deicisionAtrByHolidayAtr(HolidayAtr atr) {

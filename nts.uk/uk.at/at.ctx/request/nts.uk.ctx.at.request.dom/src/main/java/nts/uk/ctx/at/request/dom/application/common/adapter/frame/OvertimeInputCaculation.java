@@ -17,5 +17,5 @@ public class OvertimeInputCaculation {
 	 */
 	private int frameNo;
 	
-	private int resultCaculation;
+	private Integer resultCaculation;
 }

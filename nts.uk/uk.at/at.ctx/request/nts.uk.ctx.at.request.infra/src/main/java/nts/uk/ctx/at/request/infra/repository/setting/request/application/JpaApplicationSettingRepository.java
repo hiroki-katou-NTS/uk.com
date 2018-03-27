@@ -10,6 +10,8 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.AppReflectAfterConfirm;
+import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ReflectAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSettingPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaApplicationSettingRepository extends JpaRepository implements ApplicationSettingRepository {
@@ -51,13 +54,21 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.manualSendMailAtr,UseAtr.class),
 				/*承認*/
 				EnumAdaptor.valueOf(entity.baseDateFlg,BaseDateFlg.class),
+				// 事前申請の超過メッセージ
 				EnumAdaptor.valueOf(entity.advanceExcessMessDispAtr,AppDisplayAtr.class),
+				// 休出の事前申請
 				EnumAdaptor.valueOf(entity.hwAdvanceDispAtr,AppDisplayAtr.class),
+				// 休出の実績
 				EnumAdaptor.valueOf(entity.hwActualDispAtr,AppDisplayAtr.class),
+				// 実績超過メッセージ
 				EnumAdaptor.valueOf(entity.actualExcessMessDispAtr,AppDisplayAtr.class),
+				// 残業の事前申請
 				EnumAdaptor.valueOf(entity.otAdvanceDispAtr,AppDisplayAtr.class),
+				// 残業の実績
 				EnumAdaptor.valueOf(entity.otActualDispAtr,AppDisplayAtr.class),
+				// 申請対象日に対して警告表示
 				new NumDaysOfWeek(entity.warningDateDispAtr),
+				// 申請理由
 				EnumAdaptor.valueOf(entity.appReasonDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.appContentChangeFlg,AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.scheReflectFlg,ReflectionFlg.class),
@@ -65,6 +76,11 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.attendentTimeReflectFlg,ReflectionFlg.class));
 	}
 
+	private AppReflectAfterConfirm toDomainRef(KrqstApplicationSetting entity){
+		return new AppReflectAfterConfirm(EnumAdaptor.valueOf(entity.scheduleConfirmedAtr, ReflectAtr.class), 
+											EnumAdaptor.valueOf(entity.achievementConfirmedAtr, ReflectAtr.class));
+	}
+	
 	/**
 	 * @param domain
 	 * @return
@@ -99,6 +115,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.scheduleConfirmedAtr = 0;
 		return entity;
 	}
+	
 
 //	@Override
 //	public List<ApplicationSetting> getApplicationSettingByCompany(String companyID) {
@@ -111,7 +128,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 	public void updateSingle(ApplicationSetting applicationSetting) {
 		this.commandProxy().update(toEntity(applicationSetting));
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,4 +159,13 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		KrqstApplicationSetting appSet = toEntity(applicationSetting);
 		this.commandProxy().insert(appSet);
 	}
+
+	@Override
+	public Optional<AppReflectAfterConfirm> getAppRef() {
+		String companyId = AppContexts.user().companyId();
+		Optional<AppReflectAfterConfirm> ref = this.queryProxy().find(new KrqstApplicationSettingPK(companyId), KrqstApplicationSetting.class)
+																.map(x -> toDomainRef(x));
+		return ref;
+	}
+
 }

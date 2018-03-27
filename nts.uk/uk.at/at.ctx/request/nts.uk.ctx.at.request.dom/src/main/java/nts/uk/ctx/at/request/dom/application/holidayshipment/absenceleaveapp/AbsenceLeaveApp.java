@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,5 +49,12 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	 * 勤務時間2
 	 */
 	private AbsenceLeaveWorkingHour WorkTime2;
-
+	/**
+	 * 消化対象代休管理
+	 */
+	private List<SubTargetDigestion> subTargetDigestions;
+	/**
+	 * 消化対象振休管理
+	 */
+	private List<SubDigestion> subDigestions;
 }
