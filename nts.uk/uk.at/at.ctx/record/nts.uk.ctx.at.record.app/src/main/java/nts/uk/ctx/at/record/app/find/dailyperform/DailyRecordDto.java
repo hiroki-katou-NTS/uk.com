@@ -101,7 +101,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
 	
 	/** PCログオン情報: 日別実績のPCログオン情報 */
-	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績の臨時出退勤", isOptional = true)
+	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績のPCログオン情報", isOptional = true)
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
 
 	public static DailyRecordDto builder() {
