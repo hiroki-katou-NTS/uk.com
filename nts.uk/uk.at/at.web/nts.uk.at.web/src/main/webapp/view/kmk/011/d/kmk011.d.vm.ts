@@ -19,7 +19,6 @@ module nts.uk.at.view.kmk011.d {
 
             useUnitSetting: KnockoutObservable<boolean>;
             enableSaveDivergenceRefSetting: KnockoutObservable<boolean>;
-            isActiveTabTwo: KnockoutObservable<boolean>;
 
             //divergence time setting
             roundingRules: KnockoutObservableArray<any>;
@@ -32,7 +31,7 @@ module nts.uk.at.view.kmk011.d {
             enable_button_creat: KnockoutObservable<boolean>;
             enable_button_edit: KnockoutObservable<boolean>;
             enable_button_delete: KnockoutObservable<boolean>;
-            histList: KnockoutObservableArray<CompanyDivergenceReferenceTimeHistoryDto[]>;
+            histList: any;
             histName: KnockoutObservable<string>;
             selectedHist: KnockoutObservable<string>;
             isEnableListHist: KnockoutObservable<boolean>;
@@ -43,7 +42,6 @@ module nts.uk.at.view.kmk011.d {
 
                 _self.useUnitSetting = ko.observable(true);
                 _self.enableSaveDivergenceRefSetting = ko.observable(true);
-                _self.isActiveTabTwo = ko.observable(false);
 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
@@ -91,8 +89,13 @@ module nts.uk.at.view.kmk011.d {
                     blockUI.grayout();
                     $.when(_self.fillListHistory(), _self.findAllManageUseUnit(), _self.fillListDivergenceTime()).done(function() {
                         _self.screenE().mapObj2 = _self.mapObj2;
-                        blockUI.clear();
-                        dfd.resolve(_self);
+                        let histId: string = null;
+                        _self.histList().length > 0 ? histId = _self.histList()[0].historyId : histId = null;
+                        _self.fillListItemSetting(histId).done(() => {
+                            blockUI.clear();
+                            dfd.resolve(_self);
+                            $('#list-box-1').focus();  
+                        });    
                     });
                 } else {
                     // Process for screen E (Mother of all screen)
@@ -100,6 +103,11 @@ module nts.uk.at.view.kmk011.d {
                     blockUI.grayout();
                     _self.screenE().start_page().done(function() {
                         dfd.resolve(_self);
+                        if(_self.screenE().histList().length == 0){
+                            $('#save-hist-wkType').focus();
+                        } else {
+                            $('#list-box-2').focus();    
+                        }
                         blockUI.clear();
                     });
                 }
@@ -296,20 +304,19 @@ module nts.uk.at.view.kmk011.d {
                             textDisplay = item.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.endDate;
                             historyData.push(new HistModel(item.historyId, textDisplay));
                         });
-                        _self.selectedHist(historyData[0].historyId)
                         _self.isEnableListHist(true);
                         _self.enable_button_edit(true);
                         _self.enable_button_delete(true);
-                        _self.fillListItemSetting(historyData[0].historyId).done(() => {
-                            dfd.resolve();
-                        });
+                        dfd.resolve();
                     } else {
                         _self.enable_button_edit(false);
                         _self.enable_button_delete(false);
                         _self.isEnableListHist(false);
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.fillListItemSettingDefault();
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" }).then(() => {
+                            $('#save-hist-com').focus();    
+                        });
                         blockUI.clear();
                         dfd.resolve();
                     }
@@ -328,21 +335,36 @@ module nts.uk.at.view.kmk011.d {
                 let _self = this;
 
                 let objTemp1: ComDivergenceTimeSettingDto;
-
-                for (let i = 1; i <= 10; i++) {
-                    objTemp1 = new ComDivergenceTimeSettingDto();
-                    let item = {
-                        divergenceTimeNo: i,
-                        notUseAtr: 0,
-                        divergenceReferenceTimeValue: {
-                            errorTime: 0,
-                            alarmTime: 0
-                        }
-                    };
-                    objTemp1.updateData(item);
-                    _self.mapObj.set(i, objTemp1);
+      
+                if (_self.mapObj.size == 0) {
+                    for (let i = 1; i <= 10; i++) {
+                        let item = {
+                            divergenceTimeNo: i,
+                            notUseAtr: 0,
+                            divergenceReferenceTimeValue: {
+                                errorTime: 0,
+                                alarmTime: 0
+                            }
+                        };
+                        let itemDto = new ComDivergenceTimeSettingDto();
+                        itemDto.updateData(item);
+                        _self.mapObj.set(item.divergenceTimeNo, itemDto);
+                    }
+                } else {
+                    for (let i = 1; i <= 10; i++) {
+                        let item = {
+                            divergenceTimeNo: i,
+                            notUseAtr: 0,
+                            divergenceReferenceTimeValue: {
+                                errorTime: 0,
+                                alarmTime: 0
+                            }
+                        };
+                        _self.mapObj.get(i).notUseAtr(item.notUseAtr);
+                        _self.mapObj.get(i).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                        _self.mapObj.get(i).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                   }
                 }
-
             }
 
             private findAllManageUseUnit(): JQueryPromise<any> {
@@ -357,7 +379,7 @@ module nts.uk.at.view.kmk011.d {
                 return dfd.promise();
             }
 
-            private isDisableTab(): boolean {
+            private isVisableTab(): boolean {
                 let _self = this;
                 
                 if (_self.useUnitSetting() == false)
@@ -374,23 +396,20 @@ module nts.uk.at.view.kmk011.d {
                     active: SideBarTabIndex.FIRST,
                     activate: (event: any, info: any) => {
                         let _self = this;
-                        _self.isActiveTabTwo(false);
                         _self.start_page(SideBarTabIndex.FIRST);
                     }
                 });
             }
             public onSelectTabTwo(): void {
                 let _self = this;
-                _self.isActiveTabTwo(true);
-//                if (_self.isDisableTab() == false) {
+                if (_self.isVisableTab() == true) {
                     $("#sidebar").ntsSideBar("init", {
                         active: SideBarTabIndex.SECOND,
                         activate: (event: any, info: any) => {
-                            
                             _self.start_page(SideBarTabIndex.SECOND);
                         }
                     });
-//                }
+                }
             }
 
             // history mode
@@ -399,7 +418,10 @@ module nts.uk.at.view.kmk011.d {
                 nts.uk.ui.windows.setShared('listHist', _self.histList());
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
-                    _self.start_page(SideBarTabIndex.FIRST);
+                    _self.fillListHistory().done(() => {
+                        let histId: string = _self.histList()[_self.histList().length - 1].historyId
+                        _self.selectedHist(histId);
+                    })
                 });
             }
             public editMode(): void {
@@ -407,20 +429,40 @@ module nts.uk.at.view.kmk011.d {
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.setShared('history', _self.selectedHist());
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
-                    _self.start_page(SideBarTabIndex.FIRST);
+                    _self.fillListHistory().done(() => {
+                                
+                    })
                 });
             }
             public deleteMode(): void {
                 let _self = this;
                 var command: any = {};
-                command.historyId = _self.selectedHist()
+                command.historyId = _self.selectedHist();
+                
+                // define next history id
+                var nextHistId: string = _self.getNextHistoryAfterDelete();
+                
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.deleteHistory(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            _self.start_page(SideBarTabIndex.FIRST);
+                            _self.fillListHistory().done(() => {
+                                _self.selectedHist(nextHistId);
+                            });
                         });
                     });
                 });
+            }
+            private getNextHistoryAfterDelete(): string { 
+                let _self = this;
+                let nextHistId: string = null;
+                let indexOfCurrentHist: number = _self.histList().indexOf(_self.selectedHist());
+                if((indexOfCurrentHist + 1) == _self.histList().length){
+                      nextHistId =  _self.histList()[indexOfCurrentHist - 1].historyId;
+                } else {
+                      nextHistId =  _self.histList()[indexOfCurrentHist + 1].historyId;  
+                }
+                
+                return nextHistId;
             }
             
             public openRegisterErrMsgDialog(): void {
