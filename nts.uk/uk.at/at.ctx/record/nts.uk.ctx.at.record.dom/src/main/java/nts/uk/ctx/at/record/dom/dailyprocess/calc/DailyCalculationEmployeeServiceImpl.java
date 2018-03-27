@@ -38,7 +38,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 @Stateless
-@Transactional(value = TxType.REQUIRES_NEW)
 public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmployeeService {
 
 	/** ドメインサービス：日別実績計算処理　（勤務情報を取得して計算） */

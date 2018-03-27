@@ -19863,7 +19863,7 @@ var nts;
                                 }
                                 else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
                                     var maxDate = startDate.add(31, "days");
-                                    if (endDate.isAfter(maxDate)) {
+                                    if (endDate.isSameOrAfter(maxDate)) {
                                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]), "FND_E_SPAN_OVER_MONTH");
                                     }
                                 }
