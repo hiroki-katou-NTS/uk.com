@@ -286,12 +286,12 @@ public class ProgramsManager {
 	/**
 	 * KMK011H
 	 */
-	public static final Program KMK011H = new Program(WebAppId.AT, ProgramIdConsts.KMK011H, "KMK011_4",
+	public static final Program KMK011H = new Program(WebAppId.AT, ProgramIdConsts.KMK011H, "KMK011_44",
 			"/view/kmk/011/h/index.xhtml");
 	/**
 	 * KMK011I
 	 */
-	public static final Program KMK011I = new Program(WebAppId.AT, ProgramIdConsts.KMK011I, "KMK011_5",
+	public static final Program KMK011I = new Program(WebAppId.AT, ProgramIdConsts.KMK011I, "KMK011_75",
 			"/view/kmk/011/i/index.xhtml");
 	/**
 	 * KML001A

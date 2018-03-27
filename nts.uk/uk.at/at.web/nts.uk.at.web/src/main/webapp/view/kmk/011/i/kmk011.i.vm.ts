@@ -6,22 +6,22 @@ module nts.uk.at.view.kmk011.i {
 
     export module viewmodel {
         export class ScreenModel {
-            
+
             // Declare element for grid list div time
             columns: KnockoutObservable<any>;
             dataSource: KnockoutObservableArray<DivergenceTimeErrAlarmMsg>;
             currentCode: KnockoutObservable<number>;
             itemDivergenceTime: KnockoutObservable<DivergenceTimeErrAlarmMsg>;
-            
+
             wkTypeCode: KnockoutObservable<string>;
             wkTypeName: KnockoutObservable<string>;
-            
+
             // Declare text area
             multilineeditorErr: any;
             multilineeditorAlarm: any;
-                       
+
             settingMode: KnockoutObservable<boolean>;
-            
+
             constructor() {
                 let self = this;
 
@@ -110,7 +110,7 @@ module nts.uk.at.view.kmk011.i {
 
                 self.multilineeditorErr.errorMessage("");
                 self.multilineeditorAlarm.alarmMessage("");
-                
+
                 // Get list divergence time
                 service.getAllDivTime().done(function(listDivTime: Array<DivergenceTimeErrAlarmMsg>) {
                     blockUI.clear();
@@ -153,7 +153,7 @@ module nts.uk.at.view.kmk011.i {
                 })
                 return dfd.promise();
             }
-    
+
             //Find divergence time by No
             private findByDivTimeNo(divergenceTimeNo: number): JQueryPromise<any> {
                 let self = this;
@@ -202,7 +202,6 @@ module nts.uk.at.view.kmk011.i {
                         service.saveWorkTypeDivTimeErrAlarmMsg(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
-                                nts.uk.ui.windows.close();
                             });
 
                         });
@@ -211,7 +210,6 @@ module nts.uk.at.view.kmk011.i {
                         service.saveDivTimeErrAlarmMsg(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 dfd.resolve();
-                                nts.uk.ui.windows.close();
                             });
                         });
                     }
