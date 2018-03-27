@@ -1,7 +1,6 @@
 module nts.uk.at.view.kmk004.d {
     export module viewmodel {
-        
-        import Common = nts.uk.at.view.kmk004.shared.model.common;
+        import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
         import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;
         import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;
         import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;
@@ -24,6 +23,7 @@ module nts.uk.at.view.kmk004.d {
             isLoading: KnockoutObservable<boolean>;
             
             workplaceWTSetting: WorkPlaceWTSetting;
+            worktimeSetting: WorktimeSettingVM.ScreenModel;
             
             workplaceComponentOption: any;
             selectedWorkplaceId: KnockoutObservable<string>;
@@ -45,6 +45,7 @@ module nts.uk.at.view.kmk004.d {
                 ]);
                 self.baseDate = ko.observable(new Date());
                 
+                self.worktimeSetting = new WorktimeSettingVM.ScreenModel();
                 self.workplaceWTSetting = new WorkPlaceWTSetting();
                 self.alreadySettingWorkplaces = ko.observableArray([]);
                 self.selectedWorkplaceId = ko.observable('');
@@ -62,24 +63,14 @@ module nts.uk.at.view.kmk004.d {
                 
                 nts.uk.ui.block.invisible();
                 self.isLoading(true);
-                // TODO: self.workplaceWTSetting.year(self.companyWTSetting.year());
-                // Load component.
-                $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
-                    Common.getStartMonth().done((month) => {
+                self.workplaceWTSetting.year(self.worktimeSetting.companyWTSetting.year());
+                
+                self.worktimeSetting.initialize().done(() => {
+                    WorktimeSettingVM.getStartMonth().done((month) => {
                         self.startMonth = ko.observable(month);
-                        self.isLoading(false);
-    
-                        // Force to reload.
-                        if (self.workplaceWTSetting.workplaceId() === self.selectedWorkplaceId()) {
-                            self.loadWorkplaceSetting(self.selectedWorkplaceId());
-                        }
-                        $('#workplaceYearPicker').focus();
-                        // Set already setting list.
-                        self.setAlreadySettingWorkplaceList();
-                        self.workplaceWTSetting.selectedTab('tab-1');
                         
                         dfd.resolve();
-                    }).always(() => {
+                    }).fail(() => {
                         nts.uk.ui.block.clear();
                     });
                 }).fail(() => {
@@ -87,6 +78,24 @@ module nts.uk.at.view.kmk004.d {
                 });
                 
                 return dfd.promise();
+            }
+            
+            public postBindingProcess(): void {
+                let self = this;
+                // Load component.
+                $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
+                    self.isLoading(false);
+
+                    // Force to reload.
+                    if (self.workplaceWTSetting.workplaceId() === self.selectedWorkplaceId()) {
+                        self.loadWorkplaceSetting(self.selectedWorkplaceId());
+                    }
+                    
+                    $('#workplaceYearPicker').focus();
+                    // Set already setting list.
+                    self.setAlreadySettingWorkplaceList();
+                    self.workplaceWTSetting.selectedTab('tab-1');
+                })
             }
             
             /**
@@ -149,6 +158,50 @@ module nts.uk.at.view.kmk004.d {
                         // Sort month.
                         self.workplaceWTSetting.sortMonth(self.startMonth());
                     });
+            }
+            
+            /**
+             * Remove workplace setting.
+             */
+            public removeWorkplace(): void {
+                let self = this;
+                if ($('#workplaceYearPicker').ntsError('hasError')) {
+                    return;
+                }
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    let workplace = self.workplaceWTSetting;
+                    let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
+                    service.removeWorkplaceSetting(command).done(() => {
+                        self.isNewMode(true);
+                        self.removeAlreadySettingWorkplace(workplace.workplaceId());
+                        // Reserve current code + name + year + id.
+                        let newSetting = new WorkPlaceWTSetting();
+                        newSetting.year(workplace.year());
+                        newSetting.workplaceId(workplace.workplaceId());
+                        newSetting.workplaceCode(workplace.workplaceCode());
+                        newSetting.workplaceName(workplace.workplaceName());
+                        self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                        // Sort month.
+                        self.workplaceWTSetting.sortMonth(self.startMonth());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        self.clearError();
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
+            }
+            
+            /**
+             * Remove alreadySetting workplace.
+             */
+            private removeAlreadySettingWorkplace(id: string): void {
+                let self = this;
+                let asw = self.alreadySettingWorkplaces().filter(i => id == i.workplaceId)[0];
+                self.alreadySettingWorkplaces.remove(asw);
             }
             
             /**

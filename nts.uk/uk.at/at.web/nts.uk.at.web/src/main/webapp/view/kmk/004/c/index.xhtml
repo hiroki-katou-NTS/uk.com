@@ -24,7 +24,6 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="../e/kmk004.e.service.js" />
-			<com:scriptfile path="../shr/kmk004.shared.service.js" />
 			<com:scriptfile path="../shr/kmk004.shared.model.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.service.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.vm.js" />
@@ -36,7 +35,7 @@
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="visible: true" style="display: none">
 				<li><a tabindex="-1"  href="#tabpanel-0" data-bind="click: function() { location.href='../a/index.xhtml'; }" >#{i18n.getText('Com_Company')}</a></li>
-				<li><a tabindex="1" href="#tabpanel-0" data-bind="click: function() { location.href='../c/index.xhtml'; }" class="active" >#{i18n.getText('Com_Employment')}</a></li>
+				<li><a tabindex="1" href="#tabpanel-0" data-bind="click: function() { location.href='../c/index.xhtml'; }" >#{i18n.getText('Com_Employment')}</a></li>
 				<li><a tabindex="-1" href="#tabpanel-0" data-bind="click: function() { location.href='../d/index.xhtml'; }" >#{i18n.getText('Com_Workplace')}</a></li>
 				<li><a tabindex="-1" href="#tabpanel-0" data-bind="click: function() { location.href='../b/index.xhtml'; }" >#{i18n.getText('Com_Person')}</a></li>
 			</ul>
@@ -52,11 +51,11 @@
 			<div class="contents-area cf fixed-flex-layout">
 				<div id="list-employment" class="pull-left fixed-flex-layout-left" style="margin-top: 10px"></div>
 				<div class="right-content pull-left fixed-flex-layout-right" style="min-width: 600px" data-bind="ifnot: isLoading">
-				<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
-					<com:ko tag="with" bind="worktimeSetting">
-						<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
-					</com:ko>
-				</fieldset>
+					<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
+						<com:ko tag="with" bind="worktimeSetting">
+							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
+						</com:ko>
+					</fieldset>
 				</div>
 			</div>
 		</ui:define>

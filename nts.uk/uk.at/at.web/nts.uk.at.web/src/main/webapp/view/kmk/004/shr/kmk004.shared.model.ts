@@ -1,20 +1,5 @@
 module nts.uk.at.view.kmk004.shared.model {
-    
-    export module common {
-        export function getStartMonth(): JQueryPromise<number> {
-            let self = this;
-            let dfd = $.Deferred<number>();
-            service.getStartMonth().done(res => {
-                let month = 1;
-                if (res.startMonth) {
-                    month = res.startMonth;
-                }
-                dfd.resolve(month);
-            });
-            return dfd.promise();
-        }
-    }
-    
+
     export class CompanyWTSetting {
         deformationLaborSetting: DeformationLaborSetting;
         flexSetting: FlexSetting;

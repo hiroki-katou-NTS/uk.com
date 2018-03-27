@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             
             findBeginningMonth: 'basic/company/beginningmonth/find'
         }
+        
         export function getStartMonth(): JQueryPromise<any> {
             return nts.uk.request.ajax('com', servicePath.findBeginningMonth);
         }
@@ -21,7 +22,6 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
         export function removeCompanySetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.removeCompanySetting, command);
         }
-        
 
         export function findCompanySetting(year: number): JQueryPromise<WorktimeSettingDto> {
             return nts.uk.request.ajax(servicePath.findCompanySetting + '/' + year);

@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmk004.shr.worktime.setting {
     export module viewmodel {
         import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
-        import Common = nts.uk.at.view.kmk004.shared.model.common;
+        
         import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;
         import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;
         import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;
@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 let dfd = $.Deferred<void>();
                 
                 self.loadUsageUnitSetting().done(() => {
-                    Common.getStartMonth().done((month) => {
+                    viewmodel.getStartMonth().done((month) => {
                         self.startMonth = ko.observable(month);
                         
                         self.isLoading(true);
@@ -247,6 +247,19 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             
             
         } // --- end ScreenModel
+        
+        export function getStartMonth(): JQueryPromise<number> {
+            let self = this;
+            let dfd = $.Deferred<number>();
+            service.getStartMonth().done(res => {
+                let month = 1;
+                if (res.startMonth) {
+                    month = res.startMonth;
+                }
+                dfd.resolve(month);
+            });
+            return dfd.promise();
+        }
         
         export class UsageUnitSetting {
             employee: KnockoutObservable<boolean>;

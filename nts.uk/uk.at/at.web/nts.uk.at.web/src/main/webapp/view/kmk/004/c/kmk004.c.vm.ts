@@ -1,7 +1,6 @@
 module nts.uk.at.view.kmk004.c {
     export module viewmodel {
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
-        import Common = nts.uk.at.view.kmk004.shared.model.common;
         import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;
         import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;
         import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;
@@ -69,29 +68,14 @@ module nts.uk.at.view.kmk004.c {
                 let dfd = $.Deferred<void>();
                 
                 self.isLoading(true);
-                // TODO: self.employmentWTSetting.year(self.companyWTSetting.year());
+                self.employmentWTSetting.year(self.worktimeSetting.companyWTSetting.year());
 
                 // Load component.
                 self.worktimeSetting.initialize().done(() => {
-                    Common.getStartMonth().done((month) => {
+                    WorktimeSettingVM.getStartMonth().done((month) => {
                         self.startMonth = ko.observable(month);
-                        $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
                         
-                            self.isLoading(false);
-        
-                            // Force to reload.
-                            if (self.employmentWTSetting.employmentCode() === self.selectedEmploymentCode()) {
-                                self.loadEmploymentSetting(self.selectedEmploymentCode());
-                            }
-                            $('#employmentYearPicker').focus();
-                            // Set already setting list.
-                            self.setAlreadySettingEmploymentList();
-                            self.employmentWTSetting.selectedTab('tab-1');
-                            
-                            dfd.resolve();
-                        }).always(() => {
-                            nts.uk.ui.block.clear();
-                        });
+                        dfd.resolve();
                     }).fail(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -99,6 +83,27 @@ module nts.uk.at.view.kmk004.c {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
+            }
+            
+            public postBindingProcess(): void {
+                let self = this;
+                
+                $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
+                    self.isLoading(false);
+    
+                    // Force to reload.
+                    if (self.employmentWTSetting.employmentCode() === self.selectedEmploymentCode()) {
+                        self.loadEmploymentSetting(self.selectedEmploymentCode());
+                    }
+                    $('#employmentYearPicker').focus();
+                    // Set already setting list.
+                    self.setAlreadySettingEmploymentList();
+                    self.employmentWTSetting.selectedTab('tab-1');
+                    
+                    
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
             
             /**

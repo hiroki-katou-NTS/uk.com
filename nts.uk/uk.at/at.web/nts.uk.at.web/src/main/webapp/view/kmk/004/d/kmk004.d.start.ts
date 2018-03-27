@@ -3,6 +3,9 @@ module nts.uk.at.view.kmk004.d {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            screenModel.postBindingProcess();
+            
+            $("#sidebar").ntsSideBar("active", 2);
         });
     });
 }
