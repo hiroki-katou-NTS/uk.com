@@ -36,6 +36,7 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

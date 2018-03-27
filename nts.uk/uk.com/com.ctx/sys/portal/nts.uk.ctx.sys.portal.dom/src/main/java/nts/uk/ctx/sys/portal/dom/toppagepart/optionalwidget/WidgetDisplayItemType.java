@@ -77,7 +77,7 @@ public enum WidgetDisplayItemType {
 	
 	public final int value;
 	
-	public final String name;
+	public final String nameId;
 
 	/** The Constant values. */
 	private final static WidgetDisplayItemType[] values = WidgetDisplayItemType.values();

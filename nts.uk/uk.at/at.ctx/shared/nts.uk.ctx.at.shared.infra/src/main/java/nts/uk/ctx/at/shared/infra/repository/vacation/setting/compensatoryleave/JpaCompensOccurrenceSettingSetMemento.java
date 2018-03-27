@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSetPK;
 
@@ -56,7 +56,7 @@ public class JpaCompensOccurrenceSettingSetMemento implements CompensatoryOccurr
      * shared.dom.vacation.setting.compensatoryleave.TransferSetting)
      */
     @Override
-    public void setTransferSetting(TransferSetting transferSetting) {
+    public void setTransferSetting(SubHolTransferSet transferSetting) {
         JpaTransferSettingSetMemento memento = new JpaTransferSettingSetMemento(this.entity);
         transferSetting.saveToMemento(memento);
     }

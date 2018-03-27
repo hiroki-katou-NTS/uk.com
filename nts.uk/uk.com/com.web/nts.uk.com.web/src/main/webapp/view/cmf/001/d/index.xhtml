@@ -21,22 +21,24 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div class="container">
-					<button tabindex="1" class="proceed" data-bind="click: registerData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_130')}</button>
-					<button tabindex="2" data-bind="click: openCMF001f">#{i18n.getText('CMF001_131')}</button>
-					<button tabindex="3" data-bind="click: openCMF001b, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_132')}</button>
-				</div>
+				<button tabindex="1" class="proceed" data-bind="click: registerData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_130')}</button>
+				<button tabindex="2" data-bind="click: openCMF001f">#{i18n.getText('CMF001_131')}</button>
+				<button tabindex="3" data-bind="click: openCMF001b, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_132')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container">
 					<div style="padding-top: 10px; padding-left: 20px">
 						<div style="display: inline-block; width: 50%">
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
-								<span class="label" style="padding-right: 10px">#{i18n.getText('CMF001_134')}</span>
-								<span class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingCode"></span>
-								<span class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingName"></span>
-								<span class="label" style="padding: 0px 10px">#{i18n.getText('CMF001_135')}</span>
-								<span class="label" style="padding-right: 10px" data-bind="text: $parent.systemType.name"></span>
+								<div class="valign-center control-group" style="display: inline-block; margin-right: 10px">
+									<label class="label" style="padding-right: 10px">#{i18n.getText('CMF001_134')}</label>
+									<label class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingCode"></label>
+									<label class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingName"></label>
+								</div>
+								<div class="valign-center control-group" style="display: inline-block;">
+									<label class="label" style="padding-right: 10px">#{i18n.getText('CMF001_135')}</label>
+									<label class="label" style="padding-right: 10px" data-bind="text: $parent.systemType.name"></label>
+								</div>
 							</div>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
@@ -57,12 +59,12 @@
 						<div class="line-number" style="display: inline-block;">
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
-								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '70px'}}" />
+								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '80px'}}" />
 								<span class="label">#{i18n.getText('CMF001_141')}</span>
 							</div>
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
-								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '70px'}}" />
+								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '80px'}}" />
 								<span class="label">#{i18n.getText('CMF001_144')}</span>
 							</div>
 						</div>
@@ -85,7 +87,7 @@
 										editable: false,
 										enable: enableCategory,
 										columns: [
-											{ prop: 'categoryName', length: 8 }
+											{ prop: 'categoryName', length: 14 }
 										]}"></div>
 								</div>
 							</div>
@@ -110,7 +112,7 @@
 							</div>
 						</div>
 						<div class="pull-left" style="width: 70px; margin-right: 10px; text-align: center; padding-top: 240px;">
-							<button data-bind="click: btnRightClick"><i class="icon icon-button-arrow-right"></i></button>
+							<button style="margin-bottom: 10px" data-bind="click: btnRightClick"><i class="icon icon-button-arrow-right"></i></button>
 							<button data-bind="click: btnLeftClick"><i class="icon icon-button-arrow-left"></i></button>
 						</div>
 						<div class="fixed-flex-layout-right" style="padding-top: 20px;">
@@ -137,12 +139,14 @@
 									</tr>
 								</thead>
 								<tbody data-bind="foreach: listAcceptItem">
-									<tr data-bind="attr: { 'data-id': acceptItemNumber }">
+									<tr style="height: 36px" data-bind="attr: { 'data-id': acceptItemNumber }">
 										<td style ="text-align: right;background-color: #CFF1A5;"><span class="label" data-bind="text: acceptItemNumber"></span></td>
 										<td><span class="label" data-bind="text: acceptItemName"></span></td>
-										<td>
-											<span style="width: 142px; vertical-align: middle;" data-bind="text: csvItemName"></span>
-											<button style="float: right" tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
+										<td class="csvItemName">
+											<div>
+												<span data-bind="text: csvItemName"></span>
+											</div>
+											<button tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
 										</td>
 										<td><span class="label" data-bind="text: sampleData"></span></td>
 										<td>

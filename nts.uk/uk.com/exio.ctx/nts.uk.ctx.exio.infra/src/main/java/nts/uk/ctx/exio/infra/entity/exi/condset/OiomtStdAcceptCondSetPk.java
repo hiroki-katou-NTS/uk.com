@@ -33,7 +33,7 @@ public class OiomtStdAcceptCondSetPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "SYSTEM_TYPE")
 	public int systemType;
-	
+
 	/**
 	 * 外部受入条件コード
 	 */

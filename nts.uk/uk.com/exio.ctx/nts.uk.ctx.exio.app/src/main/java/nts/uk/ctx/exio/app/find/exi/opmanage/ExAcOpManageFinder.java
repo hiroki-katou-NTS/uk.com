@@ -9,17 +9,16 @@ import nts.uk.ctx.exio.dom.exi.opmanage.ExAcOpManageRepository;
 
 @Stateless
 /**
-* 外部受入動作管理
-*/
-public class ExAcOpManageFinder
-{
+ * 外部受入動作管理
+ */
+public class ExAcOpManageFinder {
 
-    @Inject
-    private ExAcOpManageRepository finder;
+	@Inject
+	private ExAcOpManageRepository finder;
 
-    public List<ExAcOpManageDto> getAllExAcOpManage(){
-        return finder.getAllExAcOpManage().stream().map(item -> ExAcOpManageDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
+	public List<ExAcOpManageDto> getAllExAcOpManage() {
+		return finder.getAllExAcOpManage().stream().map(item -> ExAcOpManageDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**
  * The Class CompensatoryOccurrenceSettingDto.
@@ -63,7 +63,7 @@ public class CompensatoryOccurrenceSettingDto {
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.CompensatoryOccurrenceSettingGetMemento#getTransferSetting()
 		 */
 		@Override
-		public TransferSetting getTransferSetting() {
+		public SubHolTransferSet getTransferSetting() {
 			return this.compensatoryOccurrenceSettingDto.transferSetting.toDomain();
 		}
 

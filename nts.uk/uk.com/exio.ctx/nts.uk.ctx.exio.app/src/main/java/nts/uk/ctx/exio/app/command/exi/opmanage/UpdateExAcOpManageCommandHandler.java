@@ -11,16 +11,18 @@ import nts.uk.ctx.exio.dom.exi.opmanage.ExAcOpManage;
 
 @Stateless
 @Transactional
-public class UpdateExAcOpManageCommandHandler extends CommandHandler<ExAcOpManageCommand>
-{
-    
-    @Inject
-    private ExAcOpManageRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<ExAcOpManageCommand> context) {
-        ExAcOpManageCommand updateCommand = context.getCommand();
-        repository.update(ExAcOpManage.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getProcessId(), updateCommand.getErrorCount(), updateCommand.getInterruption(), updateCommand.getProcessCount(), updateCommand.getProcessTotalCount(), updateCommand.getStateBehavior()));
-    
-    }
+public class UpdateExAcOpManageCommandHandler extends CommandHandler<ExAcOpManageCommand> {
+
+	@Inject
+	private ExAcOpManageRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<ExAcOpManageCommand> context) {
+		ExAcOpManageCommand updateCommand = context.getCommand();
+		repository.update(ExAcOpManage.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(),
+				updateCommand.getProcessId(), updateCommand.getErrorCount(), updateCommand.getInterruption(),
+				updateCommand.getProcessCount(), updateCommand.getProcessTotalCount(),
+				updateCommand.getStateBehavior()));
+
+	}
 }

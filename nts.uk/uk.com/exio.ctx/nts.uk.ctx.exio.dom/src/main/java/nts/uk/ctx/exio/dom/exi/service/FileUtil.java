@@ -39,7 +39,7 @@ public class FileUtil {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(dataLineNum - 1);
 			NtsCsvRecord record = csvParsedResult.getRecords().get(startLine - 1);
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < record.columnLength(); i++) {
 				List<String> data = new ArrayList<>();
 				data.add((String) colHeader.getColumn(i));
 				data.add((String) record.getColumn(i));

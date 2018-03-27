@@ -12,16 +12,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
-* 受入コード変換
-*/
-public class AcceptCdConvertFinder
-{
+ * 受入コード変換
+ */
+public class AcceptCdConvertFinder {
 
-    @Inject
-    private AcceptCdConvertRepository finder;
-    
+	@Inject
+	private AcceptCdConvertRepository finder;
+
 	/**
-	 * Get accept code by companyId 
+	 * Get accept code by companyId
+	 * 
 	 * @return
 	 */
 	public List<AcceptCdConvertDto> getAcceptCdConvertByCompanyId() {
@@ -32,6 +32,7 @@ public class AcceptCdConvertFinder
 
 	/**
 	 * Get Accept code convert information
+	 * 
 	 * @param convertCd
 	 * @return AcceptCdConvertDto
 	 */

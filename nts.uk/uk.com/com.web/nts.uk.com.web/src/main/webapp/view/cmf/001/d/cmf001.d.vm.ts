@@ -35,12 +35,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         fileDataTotalLine: KnockoutObservable<number> = ko.observable(null);
         onchange: (filename) => void;
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
-        
+
         constructor(data: any) {
             var self = this;
             let item = _.find(model.getSystemTypes(), x => { return x.code == data.systemType; });
             self.systemType = item;
-            
+
             self.stdCondSetCd(data.conditionCode);
 
             self.listCategory = ko.observableArray([]);
@@ -49,9 +49,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.listCategoryItem = ko.observableArray([]);
 
             self.selectedCategory.subscribe((data) => {
-                if (data && !self.startLoad()) {
+                if (data) {
                     self.loadCategoryItemData(data);
-                    self.listAcceptItem.removeAll();
+                    if (!self.startLoad()) {
+                        self.listAcceptItem.removeAll();
+                    }
                 }
             });
 
@@ -100,7 +102,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
-                    
                 } else {
                     return;
                 }
@@ -199,7 +200,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     switch (data.itemType()) {
                         case model.ITEM_TYPE.NUMERIC:
                             if (data.numberFormatSetting() == null) {
-                                data.numberFormatSetting(new model.NumericDataFormatSetting());
+                                data.numberFormatSetting(new model.NumericDataFormatSetting(null, null, null, null, null, null, null, null, null, null));
                             }
                             data.numberFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -222,7 +223,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.CHARACTER:
                             if (data.charFormatSetting() == null) {
-                                data.charFormatSetting(new model.CharacterDataFormatSetting());
+                                data.charFormatSetting(new model.CharacterDataFormatSetting(null, null, null, null, null, null, null, null, null));
                             }
                             data.charFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -243,7 +244,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.DATE:
                             if (data.dateFormatSetting() == null) {
-                                data.dateFormatSetting(new model.DateDataFormatSetting());
+                                data.dateFormatSetting(new model.DateDataFormatSetting(null, null, null));
                             }
                             data.dateFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -254,7 +255,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             break;
                         case model.ITEM_TYPE.INS_TIME:
                             if (data.instTimeFormatSetting() == null) {
-                                data.instTimeFormatSetting(new model.InstantTimeDataFormatSetting());
+                                data.instTimeFormatSetting(new model.InstantTimeDataFormatSetting(null, null, null, null, null, null, null, null, null, null));
                             }
                             data.instTimeFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -272,14 +273,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                         data.instTimeFormatSetting().roundProcCls(fs.roundProcCls);
                                     }
                                 } else {
-                                    data.instTimeFormatSetting().hourMinSelect(fs.effectiveDigitLength);
+                                    data.instTimeFormatSetting().hourMinSelect(fs.hourMinSelect);
                                 }
                                 data.instTimeFormatSetting().delimiterSet(fs.delimiterSet);
                             }
                             break;
                         case model.ITEM_TYPE.TIME:
                             if (data.timeFormatSetting() == null) {
-                                data.timeFormatSetting(new model.TimeDataFormatSetting());
+                                data.timeFormatSetting(new model.TimeDataFormatSetting(null, null, null, null, null, null, null, null, null, null));
                             }
                             data.timeFormatSetting().fixedValue(fs.fixedValue);
                             if (fs.fixedValue) {
@@ -401,9 +402,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
                             });
                             self.listCategory(_rsList);
+                            if (!nts.uk.text.isNullOrEmpty(cond.categoryId)) {
+                                self.enableCategory(false);
+                                self.selectedCategory(self.stdCondSet().categoryId());
+                            } else {
+                                self.selectedCategory(self.listCategory()[0].categoryId);
+                            }
                             service.getAllData(self.systemType.code, self.stdCondSet().conditionSettingCode()).done(function(data: Array<any>) {
                                 if (data && data.length) {//co du lieu dang ki
-                                    self.selectedCategory(self.stdCondSet().categoryId());
                                     self.loadCategoryItemData(self.stdCondSet().categoryId()).done(() => {
                                         let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {
                                         let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
@@ -466,12 +472,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                             self.listSelectedCategoryItem.push(item);
                                             self.listCategoryItem.remove(item);
                                         });
-                                        self.enableCategory(false);
                                     });
-                                    
                                 } else {//chua co du lieu, dang ki moi
                                     self.startLoad(false);
-                                    self.selectedCategory(self.listCategory()[0].categoryId);
                                 }
                                 dfd.resolve();
                             }).fail(function(error) {
@@ -488,15 +491,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
-                }                
+                }
             }).fail((error) => {
                 alertError(error);
             }).always(() => {
                 block.clear();
-            });         
+            });
             return dfd.promise();
         }
-        
+
         private loadCategoryItemData(categoryId: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -535,16 +538,20 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 });
             }
         }
-        
+
         private screenFileCheck(): boolean {
             let self = this;
             //check csvDataLineNumber Not input or exceeding the number of lines of CSV data => msg 900
-            if (self.stdCondSet().csvDataItemLineNumber() == null || self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
+            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataItemLineNumber(), false) ||
+                self.stdCondSet().csvDataItemLineNumber() == 0 ||
+                self.stdCondSet().csvDataItemLineNumber() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_900"});
                 return false;
             }
             //check csvDataStartLine Not input or exceeding the number of lines of CSV data => msg 901
-            if (self.stdCondSet().csvDataStartLine() == null || self.stdCondSet().csvDataStartLine() > self.fileDataTotalLine()) {
+            if (!nts.uk.ntsNumber.isNumber(self.stdCondSet().csvDataStartLine(), false) ||
+                self.stdCondSet().csvDataStartLine() == 0 ||
+                self.stdCondSet().csvDataStartLine() > self.fileDataTotalLine()) {
                 alertError({messageId: "Msg_901"});
                 return false;
             }

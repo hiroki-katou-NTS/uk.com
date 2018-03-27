@@ -41,8 +41,8 @@ module nts.uk.com.view.cmf001.j.viewmodel {
 
             //J2
             self.itemsEffectiveDigitLength([
-                new model.ItemModel(self.atrUse, getText('CMF001_322')),
-                new model.ItemModel(self.atrNotUse, getText('CMF001_323'))
+                new model.ItemModel(self.atrUse, getText('CMF001_333')),
+                new model.ItemModel(self.atrNotUse, getText('CMF001_334'))
             ]);
 
             //J3

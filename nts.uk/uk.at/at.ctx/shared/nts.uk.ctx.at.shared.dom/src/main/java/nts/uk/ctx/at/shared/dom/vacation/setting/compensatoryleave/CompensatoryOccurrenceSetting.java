@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**
  * Gets the transfer setting.
@@ -22,7 +23,7 @@ public class CompensatoryOccurrenceSetting extends DomainObject {
 	
 	// 振替設定
 	/** The transfer setting. */
-	private TransferSetting transferSetting;
+	private SubHolTransferSet transferSetting;
 
 	/**
 	 * Instantiates a new compensatory occurrence setting.
