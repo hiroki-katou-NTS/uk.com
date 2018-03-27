@@ -22,6 +22,7 @@ public class DPDataDto {
     private String error;
     private GeneralDate date;
     private boolean sign;
+    private boolean approval;
     private String employeeId;
     private String employeeCode;
     private String employeeName;
@@ -30,7 +31,7 @@ public class DPDataDto {
     private String typeGroup;
     private Set<DPCellDataDto> cellDatas;
     
-	public DPDataDto(String id, String state, String error, GeneralDate date, boolean sign, String employeeId,
+	public DPDataDto(String id, String state, String error, GeneralDate date, boolean sign, boolean approval, String employeeId,
 			String employeeCode, String employeeName, String workplaceId, String employmentCode, String typeGroup) {
 		this.id = id;
 		this.state = state;

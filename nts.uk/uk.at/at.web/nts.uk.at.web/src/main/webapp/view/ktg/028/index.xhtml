@@ -52,10 +52,11 @@
 				</div>
 				<div class="fixed-flex-layout-right">
 					<div class="control-group valign-center">
-						<div id="code"
+						<div 
 							data-bind="ntsFormLabel: { constraint: 'TopPagePartCode', required: true }">
 							#{i18n.getText('KTG028_8')}</div>
 						<span data-bind="with: texteditorA3_2"> <input
+							id="code"
 							data-bind="ntsTextEditor: {
 							name:'#{i18n.getText('KTG028_9')}',
 							value: value,
@@ -67,10 +68,11 @@
 						</span>
 					</div>
 					<div class="control-group valign-center">
-						<div id="name"
+						<div 
 							data-bind="ntsFormLabel: { constraint: 'TopPagePartName', required: true }">
 							#{i18n.getText('KTG028_10')}</div>
-						<span data-bind="with: texteditorA4_2"> <input id="a4_2"
+						<span data-bind="with: texteditorA4_2"> <input
+							id="name"
 							data-bind="ntsTextEditor: {
 							name:'#{i18n.getText('KTG028_11')}',
 							value: value,
@@ -96,6 +98,9 @@
 							enable: enable,
 							readonly: readonly}" />
 						</span> <span class="label">#{i18n.getText('KTG028_15')}</span>
+					</div>
+					<div>
+						<span class="label" id="a6">#{i18n.getText('KTG028_16')}</span>
 					</div>
 					<div>
 						<!-- height : 267 (10 thằng) -->

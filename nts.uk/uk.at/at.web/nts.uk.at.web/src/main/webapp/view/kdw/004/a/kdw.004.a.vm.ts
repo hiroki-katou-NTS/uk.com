@@ -144,7 +144,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
                 width: 1245,
-                height: 498,
+                height: 426,
                 autofitLastColumn: false,
                 autoGenerateColumns: false,
                 alternateRowStyles: false,
@@ -160,7 +160,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 15
+                        pageSize: 12
                     }
                 ]
             });

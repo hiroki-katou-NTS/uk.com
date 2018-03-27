@@ -7,16 +7,22 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingDomainEvent;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -51,7 +57,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 
         String companyId = AppContexts.user().companyId();
         AnnualPaidLeaveSetting domain = this.annualRepo.findByCompanyId(companyId);
-
+        
         // Check field enable/disable
         this.validateField(command, domain);
 
@@ -60,6 +66,64 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             this.annualRepo.update(setting);
         } else {
             this.annualRepo.add(setting);
+        }
+        
+        //get ManagementCategory from DB
+        int yearManageTypeDB = domain != null ? domain.getYearManageType().value : -1;
+       //check managementCategory change
+        boolean annualManage = command.getAnnualManage() != yearManageTypeDB;
+        boolean manage = command.getAnnualManage() == ManageDistinct.YES.value;
+        
+        if (annualManage) {
+            val annualPaidLeaveSettingEvent = new AnnualPaidLeaveSettingDomainEvent(manage);
+            annualPaidLeaveSettingEvent.toBePublished();
+            
+            if(manage){
+            	 boolean addAttendanceDay = command.getAddAttendanceDay() == ManageDistinct.YES.value;
+            	 val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(addAttendanceDay);
+                 retentionYearlySettingEvent.toBePublished();
+                 
+                 //get timeManageType from DB
+                 int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
+                 //check timeManageType change
+                 boolean flatTimeManageType = command.getTimeManageType() != timeManageTypeDB;
+                 if(flatTimeManageType){
+                	 boolean flatManage = command.getTimeManageType() == ManageDistinct.YES.value;
+                	 val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(flatManage);
+                     timeAnnualSettingEvent.toBePublished();
+                 }
+                 
+                 //get timeManageType from DB
+                 int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+                 //check timeManageType change
+                 boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
+                 if(maxManageSemiVacation){
+                	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
+                	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
+                     manageAnnualSettingEvent.toBePublished(); 
+                 }
+            }
+        }
+        if(manage){
+        	 //get timeManageType from DB
+            int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
+            //check timeManageType change
+            boolean flatTimeManageType = command.getTimeManageType() != timeManageTypeDB;
+            if(flatTimeManageType){
+           	 boolean flatManage = command.getTimeManageType() == ManageDistinct.YES.value;
+           	 val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(flatManage);
+                timeAnnualSettingEvent.toBePublished();
+            }
+            
+            //get timeManageType from DB
+            int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+            //check timeManageType change
+            boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
+            if(maxManageSemiVacation){
+           	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
+           	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
+                manageAnnualSettingEvent.toBePublished(); 
+            }
         }
     }
 
@@ -91,12 +155,13 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                     .remainingDayMaxNumber.v());
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
                     .retentionYear.v());
-            command.setPermitType(setttingDB.getAcquisitionSetting().permitType.value);
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
             command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
                     .remainingNumberDisplay.value);
             command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .nextGrantDayDisplay.value);
+                    .nextGrantDayDisplay.value);            
+            command.setYearlyOfDays(setttingDB.getManageAnnualSetting().getYearlyOfNumberDays().v());
+            command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
 
             // Time Leave Setting
             command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
@@ -104,7 +169,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setManageMaxDayVacation(setttingDB.getTimeSetting().getMaxYearDayLeave().manageType.value);
             command.setReference(setttingDB.getTimeSetting().getMaxYearDayLeave().reference.value);
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
+            command.setRoundProcessClassific(setttingDB.getTimeSetting().getRoundProcessClassific().value);
             
             return;
         }
@@ -119,12 +184,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         boolean isTimeManage = command.getTimeManageType() == ManageDistinct.YES.value;
         if (!isTimeManage) {
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
             return;
         }
         if (command.getReference() == MaxDayReference.ReferAnnualGrantTable.value) {
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
         }
     }
     
@@ -144,8 +207,9 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxGrantDay(null);
         command.setMaxRemainingDay(null);
         command.setNumberYearRetain(null);
+        command.setYearlyOfDays(null);
+        command.setRoundProcessCla(RoundProcessingClassification.TruncateOnDay0.value);
         // =======
-        command.setPermitType(ApplyPermission.ALLOW.value);
         command.setAnnualPriority(AnnualPriority.FIFO.value);
         command.setRemainingNumberDisplay(DisplayDivision.Indicate.value);
         command.setNextGrantDayDisplay(DisplayDivision.Indicate.value);
@@ -156,6 +220,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setManageMaxDayVacation(ManageDistinct.YES.value);
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
-        command.setIsEnoughTimeOneDay(false);
+        command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
     }
 }

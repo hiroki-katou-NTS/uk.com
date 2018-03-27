@@ -123,6 +123,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			data.calculationState = domain.getCalculationState().value;
 			data.backStraightAttribute = domain.getBackStraightAtr().value;
 			data.goStraightAttribute = domain.getGoStraightAtr().value;
+			data.dayOfWeek = domain.getDayOfWeek().value;
 			
 			List<ScheduleTimeSheet> scheduleTimeSheets = domain.getScheduleTimeSheets();
 			scheduleTimeSheets.stream().forEach(c -> {
@@ -151,6 +152,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@Override
 	public void insert(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 		this.commandProxy().insert(KrcdtDaiPerWorkInfo.toEntity(workInfoOfDailyPerformance));
+	}
+
+	@Override
+	public void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
+		this.updateByKey(workInfoOfDailyPerformance);
+		this.getEntityManager().flush();
+		
 	}
 
 }

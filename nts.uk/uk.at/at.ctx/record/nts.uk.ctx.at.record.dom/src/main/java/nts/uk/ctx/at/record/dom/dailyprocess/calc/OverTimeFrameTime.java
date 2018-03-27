@@ -40,13 +40,51 @@ public class OverTimeFrameTime {
 	}
 	
 	
-	public void addOverTime(AttendanceTime time,AttendanceTime calcTime) {
-		this.OverTimeWork = this.OverTimeWork.addMinutes(time, calcTime);
+	public OverTimeFrameTime addOverTime(AttendanceTime time,AttendanceTime calcTime) {
+		return new OverTimeFrameTime(this.OverWorkFrameNo,
+									 this.OverTimeWork.addMinutes(time, calcTime),
+									 this.TransferTime,
+									 this.BeforeApplicationTime,
+									 this.orderTime);
 	}
 
 
+	/**
+	 * 残業枠Noを入れ替えて作り直す
+	 * @return
+	 */
+	public OverTimeFrameTime changeFrameNo(Integer overTimeFrameNo) {
+		return new OverTimeFrameTime(new OverTimeFrameNo(overTimeFrameNo),
+									 this.OverTimeWork,
+									 this.TransferTime,
+									 this.BeforeApplicationTime,
+									 this.orderTime);
+	}
+	
+	/**
+	 * 残業時間を入れ替えて作り直す
+	 * @return
+	 */
+	public OverTimeFrameTime changeOverTime(TimeWithCalculation overTime) {
+		return new OverTimeFrameTime(this.OverWorkFrameNo,
+									 overTime,
+									 this.TransferTime,
+									 this.BeforeApplicationTime,
+									 this.orderTime);
+	}
 
-
+	/**
+	 * 振替時間を入れ替えて作り直す
+	 * @return
+	 */
+	public OverTimeFrameTime changeTransTime(TimeWithCalculation transTime) {
+		return new OverTimeFrameTime(this.OverWorkFrameNo,
+									 this.OverTimeWork,
+									 transTime,
+									 this.BeforeApplicationTime,
+									 this.orderTime);
+	}
+	
 	/**
 	 * 上限の時間から残業時間の差分をとる
 	 * @param limitTime　上限の時間

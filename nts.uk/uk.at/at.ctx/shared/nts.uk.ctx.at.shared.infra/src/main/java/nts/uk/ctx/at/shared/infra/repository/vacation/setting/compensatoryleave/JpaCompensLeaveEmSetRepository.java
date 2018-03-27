@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kclm
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp_;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 
 /**
  * The Class JpaCompensLeaveEmSetRepository.
@@ -58,6 +59,19 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
         this.commandProxy().update(this.toEntity(setting));
         this.getEntityManager().flush();
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+     * CompensLeaveEmSetRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+     * setting.compensatoryleave.CompensatoryLeaveEmSetting)
+     */
+    @Override
+	public void delete(String companyId, String employmentCode) {
+    	KclmtCompensLeaveEmpPK key = new KclmtCompensLeaveEmpPK(companyId, employmentCode);
+    	this.commandProxy().remove(KclmtCompensLeaveEmp.class, key);
+	}
 
     /*
      * (non-Javadoc)
@@ -89,8 +103,8 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
         KclmtCompensLeaveEmp entity = result.get(ELEMENT_FIRST);
         return new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity));
     }
-    
-    /*
+
+	/*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
