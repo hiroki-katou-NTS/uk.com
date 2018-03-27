@@ -462,6 +462,10 @@ module nts.uk.at.view.kmk011.d {
                  
                 let indexOfCurrentHist: number = _self.histList().findIndex(e => e.historyId == _self.selectedHist());
                 if (indexOfCurrentHist == 0){
+                    if(_self.histList().length > 0){
+                        nextHistId =  _self.histList()[indexOfCurrentHist + 1].historyId;
+                        return nextHistId
+                    }
                     return null;
                 }
                 

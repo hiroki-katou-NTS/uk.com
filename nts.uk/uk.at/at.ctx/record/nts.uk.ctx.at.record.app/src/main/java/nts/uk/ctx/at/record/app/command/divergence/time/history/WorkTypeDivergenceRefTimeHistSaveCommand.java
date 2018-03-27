@@ -35,7 +35,7 @@ public class WorkTypeDivergenceRefTimeHistSaveCommand implements WorkTypeDiverge
 	private String endDate;
 	
 	/** The is copy data. */
-	private boolean isCopyData;
+	private int isCopyData;
 	
 	public WorkTypeDivergenceRefTimeHistSaveCommand() {
 		super();

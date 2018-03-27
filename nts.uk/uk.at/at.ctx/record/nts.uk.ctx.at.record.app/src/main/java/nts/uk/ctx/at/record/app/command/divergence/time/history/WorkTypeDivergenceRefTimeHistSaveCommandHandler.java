@@ -22,6 +22,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class WorkTypeDivergenceRefTimeHistSaveCommandHandler
 		extends CommandHandler<WorkTypeDivergenceRefTimeHistSaveCommand> {
+	
+	private final static int NEW_MOE = 0;
 
 	/** The history repo. */
 	@Inject
@@ -71,16 +73,20 @@ public class WorkTypeDivergenceRefTimeHistSaveCommandHandler
 				exceptions.addMessage("Msg_106");
 				exceptions.throwExceptions();
 			}
-			// create history
-			this.historyRepo.add(domain);
-			if (!command.isCopyData()) {
+			
+			if (command.getIsCopyData() == NEW_MOE) {
+				// create history
+				this.historyRepo.add(domain);
+				
 				// make default data for Company DivergenceReference Time
 				this.itemRepo.addDefaultDataWhenCreateHistory(domain.getHistoryItems().get(0).identifier());
 			} else {
 				WorkTypeDivergenceReferenceTimeHistory latestHist = this.historyRepo.findLatestHist(companyId,
 						new BusinessTypeCode(command.getWorkTypeCodes()));
-				this.itemRepo.copyDataFromLatestHistory(domain.getHistoryItems().get(0).identifier(),
-						latestHist.getHistoryItems().get(0).identifier());
+				// create history
+				this.historyRepo.add(domain);
+				this.itemRepo.copyDataFromLatestHistory(latestHist.getHistoryItems().get(0).identifier(),
+						domain.getHistoryItems().get(0).identifier());
 			}
 		} else {
 			// validate start date , end date
