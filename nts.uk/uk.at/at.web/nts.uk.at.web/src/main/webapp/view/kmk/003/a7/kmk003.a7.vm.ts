@@ -180,9 +180,7 @@ module a7 {
 //            self.setDataFlexOrFlowToModel();
             isLoading.subscribe((isDone: boolean) => {
                 if (isDone) {
-                    setTimeout(() => {
-                        self.updateDataModel();    
-                    },2000);
+                    self.updateDataModel();
                     self.setDataFlexOrFlowToModel();
 //                    self.backUpOfFixedOrDiffTime = self.dataSourceForFixedOrDiffTime();
                     if (self.mainSettingModel.workTimeSetting.isFlex()) {
