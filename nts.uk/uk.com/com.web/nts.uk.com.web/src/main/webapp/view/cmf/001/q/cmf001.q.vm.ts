@@ -46,25 +46,25 @@ module nts.uk.com.view.cmf001.q {
             
             constructor() {
                 let self = this;
-                
                 self.timeStart = new Date();
+                let systemDate = Date.now();
+                let convertdLocalTime = new Date(systemDate);
+                let hourOffset = convertdLocalTime.getTimezoneOffset() / 60;
+                convertdLocalTime.setHours( convertdLocalTime.getHours() - hourOffset ); 
+        
                 self.exacExeResultLog = {
                     cid: '', /* 会社ID set at server*/
                     conditionSetCd: self.params.conditionCd,  /* 条件設定コード*/
-                    //conditionSetCd: '001',  /* 条件設定コード*/
                     externalProcessId: self.processId(), // 外部受入処理ID＝取得した新規採番のＩＤ set at server
                     executorId: '',  /* 実行者ID ＝ログイン者  set at server*/
                     userId: '',  /* ユーザID ＝ログイン者 set at server*/
-                    processStartDatetime: moment.utc(new Date().toLocaleString()).toISOString(),  /* 処理開始日時  = システム日付時刻 set at server*/
+                    processStartDatetime: moment.utc(convertdLocalTime).toISOString(),  /* 処理開始日時  = システム日付時刻 set at server*/
                     standardAtr: '0',  /* 定型区分*/
                     executeForm: 1, /* 実行形態  ＝手動 */
-                    //targetCount: self.params.totalRecord, /*対象件数  ＝受入ファイル件数*/
-                    targetCount: 100, /*対象件数  ＝受入ファイル件数*/
+                    targetCount: self.params.totalRecord, /*対象件数  ＝受入ファイル件数*/
                     errorCount: 0,  /* エラー件数 ＝0 */
                     fileName: self.params.fileName, /* ファイル名 ＝受入ファイル名 */
-                    //fileName: 'A社人事管理情報', /* ファイル名 ＝受入ファイル名 */
                     systemType: self.params.systemType, /* システム種類 */
-                    //systemType: 0, /* システム種類 */
                     resultStatus: null,/* 結果状態  ＝空白 */
                     processEndDatetime: null,/*処理終了日時＝空白 */
                     processAtr: 0, /* 処理区分 ＝受入チェック処理*/
