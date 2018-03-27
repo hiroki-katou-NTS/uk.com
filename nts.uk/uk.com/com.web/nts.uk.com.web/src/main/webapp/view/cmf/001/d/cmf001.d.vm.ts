@@ -313,6 +313,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             if (data.screenConditionSetting) condition = ko.toJS(data.screenConditionSetting);
             setShared('CMF001lParams', {
                 dataType: data.itemType(),
+                itemName: data.acceptItemName(),
                 condition: condition,
                 inputMode: true
             }, true);

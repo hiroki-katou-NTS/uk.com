@@ -37,6 +37,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
             let params = getShared("CMF001lParams");
             let inputMode = params.inputMode;
             self.selectedDataType = params.dataType;
+            self.receiptItemName = params.itemName;
             self.inputMode = inputMode;
             self.selectComparisonCondition.subscribe(function(selectedValue) {
                 if (selectedValue == 0) {
@@ -59,7 +60,6 @@ module nts.uk.com.view.cmf001.l.viewmodel {
             });
             if (params.condition) {
                 let condition = params.condition;
-                self.receiptItemName(condition.receiptItemName);
                 self.selectComparisonCondition(condition.selectComparisonCondition);
                 self.numberConditionValue1(condition.numberConditionValue1);
                 self.numberConditionValue2(condition.numberConditionValue2);
