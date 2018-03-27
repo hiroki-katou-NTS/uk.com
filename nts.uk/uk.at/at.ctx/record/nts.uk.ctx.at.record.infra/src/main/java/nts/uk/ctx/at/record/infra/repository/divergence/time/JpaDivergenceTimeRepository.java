@@ -31,16 +31,23 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getAllDivTime(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
+	 * getAllDivTime(java.lang.String)
 	 */
 	@Override
 	public List<DivergenceTime> getAllDivTime(String companyId) {
 		return this.findByCompanyId(companyId);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#update(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#update(
+	 * nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime)
 	 */
 	@Override
 	public void update(DivergenceTime divTimeDomain) {
@@ -80,17 +87,25 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getDivTimeInfo(java.lang.String, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
+	 * getDivTimeInfo(java.lang.String, int)
 	 */
 	@Override
-	public DivergenceTime getDivTimeInfo(String companyId, int divTimeNo) {
+	public Optional<DivergenceTime> getDivTimeInfo(String companyId, int divTimeNo) {
 
-		return this.findByCode(companyId, divTimeNo);
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(divTimeNo, companyId);
+
+		return this.queryProxy().find(PK, KrcstDvgcTime.class).map(e -> this.toDomain(e));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#findAttendanceId(java.lang.String, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
+	 * findAttendanceId(java.lang.String, int)
 	 */
 	@Override
 	public List<Integer> findAttendanceId(String companyId, int divTimeNo) {
@@ -130,7 +145,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 */
 	private DivergenceTime toDomain(KrcstDvgcTime entities) {
 
-		DivergenceTimeGetMemento memento = new JpaDivergenceTimeRepositoryGetMemento(entities);
+		DivergenceTimeGetMemento memento = new JpaDivergenceTimeGetMemento(entities);
 
 		return new DivergenceTime(memento);
 	}
@@ -220,41 +235,6 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				: KrcstDvgcTime.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
-	/**
-	 * Find by code.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param divTimeNo
-	 *            the div time no
-	 * @return the divergence time
-	 */
-	private DivergenceTime findByCode(String companyId, int divTimeNo) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcstDvgcTime> cq = criteriaBuilder.createQuery(KrcstDvgcTime.class);
-		Root<KrcstDvgcTime> root = cq.from(KrcstDvgcTime.class);
-
-		// Build query
-		cq.select(root);
-
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.no), divTimeNo));
-
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-
-		// query data
-		KrcstDvgcTime KrcstDvgcTime = em.createQuery(cq).getResultList().get(0);
-
-		// return
-		if (KrcstDvgcTime != null)
-			return this.toDomain(KrcstDvgcTime);
-		return new DivergenceTime(null);
-
-	}
 
 	/**
 	 * To entity.
@@ -268,7 +248,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getDivergenceTimeNo(), domain.getCompanyId());
 		KrcstDvgcTime entity = this.queryProxy().find(PK, KrcstDvgcTime.class).orElse(new KrcstDvgcTime());
 
-		domain.saveToMemento(new JpaDivergenceTimeRepositorySetMemento(entity));
+		domain.saveToMemento(new JpaDivergenceTimeSetMemento(entity));
 
 		return entity;
 

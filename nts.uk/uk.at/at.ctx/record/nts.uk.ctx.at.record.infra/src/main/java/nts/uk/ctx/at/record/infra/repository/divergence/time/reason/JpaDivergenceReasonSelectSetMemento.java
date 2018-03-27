@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 /**
  * The Class JpaDivergenceReasonSelectRepositorySetMemento.
  */
-public class JpaDivergenceReasonSelectRepositorySetMemento implements DivergenceReasonSelectSetMemento {
+public class JpaDivergenceReasonSelectSetMemento implements DivergenceReasonSelectSetMemento {
 
 	/** The entity. */
 	private KrcstDvgcReason entity;
@@ -23,7 +23,7 @@ public class JpaDivergenceReasonSelectRepositorySetMemento implements Divergence
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReasonSelectRepositorySetMemento(KrcstDvgcReason entity) {
+	public JpaDivergenceReasonSelectSetMemento(KrcstDvgcReason entity) {
 		if (entity.getId() == null) {
 			KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK();
 			entity.setId(PK);

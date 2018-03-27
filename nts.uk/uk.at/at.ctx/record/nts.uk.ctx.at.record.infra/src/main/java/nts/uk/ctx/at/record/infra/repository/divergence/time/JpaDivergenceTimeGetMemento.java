@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 /**
  * The Class JpaDivergenceTimeRepositoryGetMemento.
  */
-public class JpaDivergenceTimeRepositoryGetMemento implements DivergenceTimeGetMemento {
+public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 
 	/** The entities. */
 	private KrcstDvgcTime entities;
@@ -23,7 +23,7 @@ public class JpaDivergenceTimeRepositoryGetMemento implements DivergenceTimeGetM
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaDivergenceTimeRepositoryGetMemento(KrcstDvgcTime entities) {
+	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entities) {
 
 		this.entities = entities;
 	}

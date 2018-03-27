@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 /**
  * The Class JpaDivergenceReasonInputMethodRepositorySetMemento.
  */
-public class JpaDivergenceReasonInputMethodRepositorySetMemento implements DivergenceReasonInputMethodSetMemento {
+public class JpaDivergenceReasonInputMethodSetMemento implements DivergenceReasonInputMethodSetMemento {
 
 	/** The entities. */
 	private KrcstDvgcTime entity;
@@ -18,7 +18,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	/**
 	 * Instantiates a new jpa divergence time repository set memento.
 	 */
-	public JpaDivergenceReasonInputMethodRepositorySetMemento() {
+	public JpaDivergenceReasonInputMethodSetMemento() {
 
 	}
 
@@ -28,7 +28,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReasonInputMethodRepositorySetMemento(KrcstDvgcTime entity) {
+	public JpaDivergenceReasonInputMethodSetMemento(KrcstDvgcTime entity) {
 		this.entity = entity;
 	}
 
@@ -65,7 +65,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	@Override
 	public void setDivergenceReasonInputed(boolean divergenceReasonInputed) {
 
-		this.entity.setDvgcReasonInputed(divergenceReasonInputed ? new BigDecimal(1) : new BigDecimal(0));
+		this.entity.setDvgcReasonInputed(divergenceReasonInputed ? BigDecimal.ONE : BigDecimal.ZERO);
 
 	}
 
@@ -79,7 +79,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	@Override
 	public void setDivergenceReasonSelected(boolean divergenceReasonSelected) {
 
-		this.entity.setDvgcReasonSelected(divergenceReasonSelected ? new BigDecimal(1) : new BigDecimal(0));
+		this.entity.setDvgcReasonSelected(divergenceReasonSelected ? BigDecimal.ONE : BigDecimal.ZERO);
 
 	}
 

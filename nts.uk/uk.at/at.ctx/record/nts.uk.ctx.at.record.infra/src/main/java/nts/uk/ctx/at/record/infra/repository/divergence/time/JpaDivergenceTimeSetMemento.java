@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 /**
  * The Class JpaDivergenceTimeRepositorySetMemento.
  */
-public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetMemento {
+public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 
 	/** The entity. */
 	private KrcstDvgcTime entity;
@@ -21,7 +21,7 @@ public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetM
 	/**
 	 * Instantiates a new jpa divergence time repository set memento.
 	 */
-	public JpaDivergenceTimeRepositorySetMemento() {
+	public JpaDivergenceTimeSetMemento() {
 
 	}
 
@@ -31,7 +31,7 @@ public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceTimeRepositorySetMemento(KrcstDvgcTime entity) {
+	public JpaDivergenceTimeSetMemento(KrcstDvgcTime entity) {
 		this.entity = entity;
 	}
 
@@ -88,10 +88,10 @@ public class JpaDivergenceTimeRepositorySetMemento implements DivergenceTimeSetM
 	public void setErrorCancelMedthod(DivergenceTimeErrorCancelMethod errorCancelMedthod) {
 
 		this.entity
-				.setReasonInputCanceled(errorCancelMedthod.isReasonInputed() ? new BigDecimal(1) : new BigDecimal(0));
+				.setReasonInputCanceled(errorCancelMedthod.isReasonInputed() ? BigDecimal.ONE : BigDecimal.ZERO);
 
 		this.entity
-				.setReasonSelectCanceled(errorCancelMedthod.isReasonSelected() ? new BigDecimal(1) : new BigDecimal(0));
+				.setReasonSelectCanceled(errorCancelMedthod.isReasonSelected() ? BigDecimal.ONE : BigDecimal.ZERO);
 
 	}
 
