@@ -26,8 +26,8 @@
 				<div class="main-container">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
 					<hr/>
-					<div class="margin-first-child ntsControl">
-						<label id="initial-focus-h2" class="ntsRadioBox control-group" tabindex="1">
+					<div tabindex="1" id="initial-focus-h2" class="margin-first-child ntsControl">
+						<label class="ntsRadioBox control-group" tabindex="1">
 							<input type="radio" name="radio-calc-method" data-bind="checkedValue: 0, checked: calcMethodFluctuation, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_241')"></span>
 						</label>
@@ -48,7 +48,7 @@
 					<br/>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_256')}</div>
 					<hr class="control-group"/>
-					<div class="margin-first-child ntsControl">
+					<div tabindex="4" class="margin-first-child ntsControl">
 						<label class="ntsRadioBox control-group" tabindex="4">
 							<input type="radio" name="radio-use-stamp" data-bind="checkedValue: 0, checked: useStampCalcMethod, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_257')"></span>
@@ -63,7 +63,7 @@
 					<br/>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_259')}</div>
 					<hr class="control-group"/>
-					<div class="margin-first-child ntsControl">
+					<div tabindex="6" class="margin-first-child ntsControl">
 						<label class="ntsRadioBox control-group" tabindex="6">
 							<input type="radio" name="radio-time-atr" data-bind="checkedValue: 0, checked: timeManagerSetAtr, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_260')"></span>

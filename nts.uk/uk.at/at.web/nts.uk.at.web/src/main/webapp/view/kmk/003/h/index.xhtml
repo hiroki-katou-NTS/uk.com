@@ -26,8 +26,9 @@
 				<div class="main-container">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
 					<hr/>
+					<div tabindex="1" id="initial-focus-h">
 					<span class="margin-first-child ntsControl">
-						<label id="initial-focus-h" class="ntsRadioBox control-group" tabindex="1">
+						<label class="ntsRadioBox control-group" tabindex="1">
 							<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: calcMethodFixed, enable: true" />
 							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_241')"></span>
 						</label>
@@ -63,6 +64,7 @@
 							data-bind="ntsCheckBox: { checked: useAssoGoOutRest, enable: calcMethodFixed() == 2 }">
 							#{i18n.getText('KMK003_251')}
 						</div>
+					</div>
 					</div>
 				</div>
 			</div>
