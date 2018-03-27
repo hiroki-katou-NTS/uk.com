@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface DiffTimeDeductTimezoneDto extends DeductionTimeDto {
-                    isUpdateStartTime: boolean;
+                    updateStartTime: boolean;
                 }
 
                 export interface DiffTimeRestTimezoneDto {

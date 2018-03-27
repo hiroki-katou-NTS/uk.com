@@ -83,14 +83,14 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: DiffTimeDeductTimezoneDto) {
                     super.updateData(data);
-                    this.isUpdateStartTime(data.isUpdateStartTime);
+                    this.isUpdateStartTime(data.updateStartTime);
                 }
 
                 toDto(): DiffTimeDeductTimezoneDto {
                     var dataDTO: DiffTimeDeductTimezoneDto = {
                         start: this.start(),
                         end: this.end(),
-                        isUpdateStartTime: this.isUpdateStartTime()
+                        updateStartTime: this.isUpdateStartTime()
                     };
                     return dataDTO;
                 }
@@ -115,7 +115,7 @@ module nts.uk.at.view.kmk003.a {
                     return {
                         start: convertedItem.column1().startTime,
                         end: convertedItem.column1().endTime,
-                        isUpdateStartTime: convertedItem.isUpdateStartTime ? convertedItem.isUpdateStartTime() : false,
+                        updateStartTime: convertedItem.isUpdateStartTime ? convertedItem.isUpdateStartTime() : false,
                     };
                 }
 

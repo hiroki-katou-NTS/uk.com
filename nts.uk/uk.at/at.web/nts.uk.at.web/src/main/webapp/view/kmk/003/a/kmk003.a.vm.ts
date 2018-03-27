@@ -370,8 +370,9 @@ module nts.uk.at.view.kmk003.a {
                     .done(worktimeSettingInfo => {
 
                         // update mainSettingModel data
-                        self.mainSettingModel.updateData(worktimeSettingInfo);
-                        self.isLoading(true);
+                        self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
+                        self.isLoading(true);    
+                        });
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
             }
@@ -392,9 +393,9 @@ module nts.uk.at.view.kmk003.a {
                     service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
 
                         // update mainSettingModel data
-                        self.mainSettingModel.updateData(worktimeSettingInfo);
-
-                        self.isLoading(true);
+                        self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
+                        self.isLoading(true);    
+                        });
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                         
                         // enter update mode
@@ -856,8 +857,9 @@ module nts.uk.at.view.kmk003.a {
                 return command;
             }
 
-            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
+            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 self.isInterlockDialogJ(true);   
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);                              
@@ -891,6 +893,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.updateInterlockDialogJ();
                 self.updateStampValue();
+                return dfd.resolve();
             }
             
             resetData(isNewMode?: boolean) {
