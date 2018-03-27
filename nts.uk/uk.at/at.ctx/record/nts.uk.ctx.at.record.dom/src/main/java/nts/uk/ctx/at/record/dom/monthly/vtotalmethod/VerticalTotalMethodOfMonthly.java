@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.vtotalmethod;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +19,8 @@ public class VerticalTotalMethodOfMonthly extends AggregateRoot {
 	private String companyId;
 	/** 振出日数 */
 	private TADaysCountOfMonthlyAggr transferAttendanceDays;
-	/** 特定日 */
-	private SpecTotalCountMonthly specTotalCountMonthly;
+//	/** 特定日 */
+//	private SpecTotalCountMonthly specTotalCountMonthly;
 	
 	/**
 	 * コンストラクタ
@@ -49,8 +47,9 @@ public class VerticalTotalMethodOfMonthly extends AggregateRoot {
 		return domain;
 	}
 	
-	public static VerticalTotalMethodOfMonthly createFromJavaType(String companyId, int taAttendance, Map<Integer, Boolean> specDayOfTotalMonCon, int specCount) {
-		return new VerticalTotalMethodOfMonthly(companyId, TADaysCountOfMonthlyAggr.of(EnumAdaptor.valueOf(taAttendance, TADaysCountCondOfMonthlyAggr.class)),
-				SpecTotalCountMonthly.createFromJavaType(specDayOfTotalMonCon, specCount));
+	public static VerticalTotalMethodOfMonthly createFromJavaType(String companyId, int taAttendance) {
+//		return new VerticalTotalMethodOfMonthly(companyId, TADaysCountOfMonthlyAggr.of(EnumAdaptor.valueOf(taAttendance, TADaysCountCondOfMonthlyAggr.class)),
+//				SpecTotalCountMonthly.createFromJavaType(specDayOfTotalMonCon, specCount));
+		return new VerticalTotalMethodOfMonthly(companyId, TADaysCountOfMonthlyAggr.of(EnumAdaptor.valueOf(taAttendance, TADaysCountCondOfMonthlyAggr.class)));
 	}
 }

@@ -26,29 +26,30 @@
 					<TBODY>
 						<tr>
 							<td>
-								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_206')}</div>
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_309')}</div>
 							</td>
 						</tr>
 						<tr>
 							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_225')}</div>
+								<div class="child-lb">#{i18n.getText('KMK013_310')}</div>
 								<hr />
 							</td>
 						</tr>
 						<tr>
-							<td class="td-content">
-    								<div data-bind="ntsRadioButton: {
-    									checked: selectedItem,
-    									enable: true, 
-    									option: option, 
-    									optionValue: 'value',
-    									group: 'ntsControl'}"></div>
+							<td>
+    								<div tabindex="3" class="selection"
+									data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_311')}',
+										options: transAttendMethod,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value:selectedItem}"></div>
 							</td>
 						</tr>
 						
 						<tr>
 							<td>
-								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_335')}</div>
+								<div id="form-lb" class="workSelection" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_335')}</div>
 							</td>
 						</tr>
 						<tr>
@@ -59,13 +60,11 @@
 						</tr>
 						<tr>
 							<td class="td-content">
-								<button>#{i18n.getText('KMK013_337')}</button>
-							</td>
-							<td class="td-content">
+								<button class="child-lb" data-bind="click: openKDL002_givenDays">#{i18n.getText('KMK013_337')}</button>
 								<input tabindex="5"
 								class="nts-input" id="itemname"
 								data-bind="ntsTextEditor:{
-                                         value: givenDays,
+                                         value: workTypeNames,
                                          required: true,
                                          enable: true,
                                          readonly:true}" />
@@ -80,13 +79,11 @@
 						</tr>
 						<tr>
 							<td class="td-content">
-								<button>#{i18n.getText('KMK013_347')}</button>
-							</td>
-							<td class="td-content">
+								<button class="child-lb" data-bind="click: openKDL002_attendanceDays">#{i18n.getText('KMK013_337')}</button>
 								<input tabindex="5"
 								class="nts-input" id="itemname"
 								data-bind="ntsTextEditor:{
-                                         value: givenDays,
+                                         value: workTypeNamesAttendance,
                                          required: true,
                                          enable: true,
                                          readonly:true}" />

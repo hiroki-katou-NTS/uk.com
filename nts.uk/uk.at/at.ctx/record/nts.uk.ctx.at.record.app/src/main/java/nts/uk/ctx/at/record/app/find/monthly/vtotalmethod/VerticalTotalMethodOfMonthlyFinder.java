@@ -36,10 +36,6 @@ public class VerticalTotalMethodOfMonthlyFinder {
 			VerticalTotalMethodOfMonthly setting = optSetting.get();
 			VerticalTotalMethodOfMonthlyDto dto = new VerticalTotalMethodOfMonthlyDto();
 			dto.setAttendanceItemCountingMethod(setting.getTransferAttendanceDays().getTADaysCountCondition().value);
-			dto.setSpecCountNotCalcSubject(setting.getSpecTotalCountMonthly().getSpecCount().value);
-			for (SpecDayMonthCountCon specCon : setting.getSpecTotalCountMonthly().getSpecDayOfTotalMonCon()) {
-				dto.getWorkTypeSetting().put(specCon.getWorkType().value, specCon.isUseCountSpecDay());
-			}
 			return dto;
 		}
 		else {

@@ -64,13 +64,6 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 		VerticalTotalMethodOfMonthly setting = new VerticalTotalMethodOfMonthly(entity.getCid());
 		setting.setTransferAttendanceDays(TADaysCountOfMonthlyAggr.of(
 				EnumAdaptor.valueOf(entity.getTransAttendDay(), TADaysCountCondOfMonthlyAggr.class)));
-		SpecTotalCountMonthly specTotalCountMonthly = new SpecTotalCountMonthly();
-		specTotalCountMonthly.setSpecCount(EnumAdaptor.valueOf(entity.getSpecDayNotCal(), SpecCountNotCalcSubject.class));
-		for (val verticalSetting: lstVertical) {
-			SpecDayMonthCountCon condition = new SpecDayMonthCountCon(
-					EnumAdaptor.valueOf(verticalSetting.getDutyType(), WorkTypeClassification.class), verticalSetting.isUseCountSpec());
-			specTotalCountMonthly.getSpecDayOfTotalMonCon().add(condition);
-		}
 		return setting;
 	}
 	
@@ -80,19 +73,11 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 * @param setting the setting
 	 * @return the krcst vert mon method
 	 */
-	public List<KrcstVertMonMethod> toDbType(VerticalTotalMethodOfMonthly setting) {
-		List<KrcstVertMonMethod> lstEntity = new ArrayList<>();
-		List<SpecDayMonthCountCon> lstCondition = setting.getSpecTotalCountMonthly().getSpecDayOfTotalMonCon();
-		for (val condition: lstCondition) {
-			KrcstVertMonMethod entity = new KrcstVertMonMethod();
-			entity.setCid(setting.getCompanyId());
-			entity.setDutyType(condition.getWorkType().value);
-			entity.setSpecDayNotCal(setting.getSpecTotalCountMonthly().getSpecCount().value);
-			entity.setTransAttendDay(setting.getTransferAttendanceDays().getTADaysCountCondition().value);
-			entity.setUseCountSpec(condition.isUseCountSpecDay());
-			lstEntity.add(entity);
-		}
-		return lstEntity;
+	public KrcstVertMonMethod toDbType(VerticalTotalMethodOfMonthly setting) {
+		KrcstVertMonMethod entity = new KrcstVertMonMethod();
+		entity.setCid(setting.getCompanyId());
+		entity.setTransAttendDay(setting.getTransferAttendanceDays().getTADaysCountCondition().value);
+		return entity;
 	}
 
 	/* (non-Javadoc)
@@ -100,8 +85,8 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 */
 	@Override
 	public void insert(VerticalTotalMethodOfMonthly setting) {
-		List<KrcstVertMonMethod> lstEntity = toDbType(setting);
-		this.commandProxy().insertAll(lstEntity);
+		//List<KrcstVertMonMethod> lstEntity = toDbType(setting);
+		this.commandProxy().insert(toDbType(setting));
 	}
 
 	/* (non-Javadoc)

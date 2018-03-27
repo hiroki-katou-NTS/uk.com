@@ -33,17 +33,9 @@ public class KrcstVertMonMethod extends UkJpaEntity implements Serializable {
 	@Column(name="DUTY_TYPE")
 	private int dutyType;
 
-	// 計算対象外のカウント条件
-	@Column(name="SPEC_DAY_NOT_CAL")
-	private int specDayNotCal;
-
 	// 振出日数カウント条件
 	@Column(name="TRANS_ATTEND_DAY")
 	private int transAttendDay;
-
-	// 特定日としてカウントする
-	@Column(name="USE_COUNT_SPEC")
-	private boolean useCountSpec;
 
 	@Override
 	protected Object getKey() {

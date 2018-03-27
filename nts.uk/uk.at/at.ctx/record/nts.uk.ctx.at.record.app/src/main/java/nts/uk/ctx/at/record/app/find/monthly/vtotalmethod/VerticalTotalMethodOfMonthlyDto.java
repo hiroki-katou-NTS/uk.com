@@ -5,6 +5,11 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author HoangNDH
+ *
+ */
 @Getter
 @Setter
 public class VerticalTotalMethodOfMonthlyDto {
