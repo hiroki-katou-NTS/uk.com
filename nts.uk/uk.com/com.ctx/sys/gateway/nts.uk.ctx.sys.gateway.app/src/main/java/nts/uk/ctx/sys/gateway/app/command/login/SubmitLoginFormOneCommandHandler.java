@@ -36,7 +36,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		SubmitLoginFormOneCommand command = context.getCommand();
 		if (command.isSignOn()) {
 			//アルゴリズム「アカウント照合」を実行する
-			this.compareAccount();
+			this.compareAccount(context.getCommand().getRequest());
 		} else {
 			String loginId = command.getLoginId();
 			String password = command.getPassword();

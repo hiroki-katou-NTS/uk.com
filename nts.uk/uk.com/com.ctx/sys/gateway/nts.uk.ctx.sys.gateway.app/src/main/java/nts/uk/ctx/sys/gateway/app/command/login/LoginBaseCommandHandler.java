@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
@@ -424,7 +426,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * Compare account.
 	 */
 	// アルゴリズム「アカウント照合」を実行する
-	protected void compareAccount() {
+	protected void compareAccount(HttpServletRequest context) {
 		// Windowsログイン時のアカウントを取得する
 		// get UserName and HostName
 		String username = AppContexts.windowsAccount().getUserName();
@@ -443,7 +445,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			if (opWindowAccount.get().getUseAtr().equals(UseAtr.NotUse)) {
 				throw new BusinessException("Msg_876");
 			} else {
-				this.getUserAndCheckLimitTime(opWindowAccount.get());
+				this.getUserAndCheckLimitTime(context, opWindowAccount.get());
 			}
 		}
 	}
@@ -455,7 +457,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the window account
 	 * @return the user and check limit time
 	 */
-	private void getUserAndCheckLimitTime(WindowAccount windowAccount) {
+	private void getUserAndCheckLimitTime(HttpServletRequest request, WindowAccount windowAccount) {
 		// get user
 		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
 
@@ -465,6 +467,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				throw new BusinessException("Msg_316");
 			}
 			// set info to session
+			HttpSession session = request.getSession(false);
+			if (session != null) session.invalidate();
+			request.getSession(true);
 			this.initSession(optUserImport.get());
 		}
 	}

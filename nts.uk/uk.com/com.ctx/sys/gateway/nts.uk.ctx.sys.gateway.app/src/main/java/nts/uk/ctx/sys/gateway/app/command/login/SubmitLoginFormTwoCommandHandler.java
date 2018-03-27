@@ -51,7 +51,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		SubmitLoginFormTwoCommand command = context.getCommand();
 		if (command.isSignOn()) {
 			// アルゴリズム「アカウント照合」を実行する
-			this.compareAccount();
+			this.compareAccount(context.getCommand().getRequest());
 		} else {
 			String companyCode = command.getCompanyCode();
 			String employeeCode = command.getEmployeeCode();
