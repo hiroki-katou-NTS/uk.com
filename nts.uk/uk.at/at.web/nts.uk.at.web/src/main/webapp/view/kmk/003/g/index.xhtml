@@ -31,7 +31,7 @@
 						</div>
 					</div>
 					<div class="pad-left-20">
-						<div tabindex ="1" data-bind="ntsRadioBoxGroup: {
+						<div tabindex ="2" data-bind="ntsRadioBoxGroup: {
 										options: lstRest,
 										name: '#[KMK003_234]',
 										optionsValue: 'id',
@@ -51,7 +51,7 @@
 					<div class = "pad-top-10 pad-left-10">
 						<table>
 							<tr>
-								<td class="td-cell-set"><span tabindex="4" class="cf"
+								<td class="td-cell-set"><span tabindex="3" class="cf"
 									id = "switch-btn"
 									data-bind="ntsSwitchButton: {
 									name: '#[KMK003_230]',
@@ -61,7 +61,7 @@
 									value: switchValue,
 									enable: true }"></span>
 								</td>
-								<td class="td-cell-set"><span tabindex="5" style="width: 100px;"
+								<td class="td-cell-set"><span tabindex="4" style="width: 100px;"
 									data-bind="ntsComboBox: {
 									options: unitComboBoxOptions,
 									name: '#[KMK003_232]',
@@ -72,7 +72,7 @@
 									dropDownAttachedToBody: true,
 									editable: false,
 									enable: true }"></span></td>
-								<td class="td-cell-set"><span tabindex="6" style="width: 100px;"
+								<td class="td-cell-set"><span tabindex="5" style="width: 100px;"
 									data-bind="ntsComboBox: {
 									options: roundingComboBoxOptions,
 									name: '#[KMK003_233]',
@@ -91,8 +91,8 @@
 			</div>
 
 			<div id="functions-area-bottom">
-				<button tabindex="7" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="8" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
