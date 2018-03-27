@@ -66,7 +66,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setWorkClockTo2(command.getWorkClockTo2());
 		appOverTime.setWorkTypeCode(command.getWorkTypeCode() == null? null : new WorkTypeCode(command.getWorkTypeCode()));
 		appOverTime.getApplication().setAppReason(new AppReason(applicationReason));
-//		appOverTime.setVersion(appOverTime.getVersion());
+		appOverTime.setVersion(appOverTime.getVersion());
 		appOverTime.getApplication().setVersion(command.getVersion());
 		
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(

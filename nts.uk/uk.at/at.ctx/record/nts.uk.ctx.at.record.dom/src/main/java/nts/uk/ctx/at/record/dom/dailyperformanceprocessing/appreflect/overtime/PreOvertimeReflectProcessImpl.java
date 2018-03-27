@@ -163,7 +163,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return;
 		}
 		//所定外深夜時間の反映
-		workUpdate.updateBreakNight(employeeId, dateData);
+		workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight);
 	}
 
 	@Override
