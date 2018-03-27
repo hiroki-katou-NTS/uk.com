@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 @Setter
 @Builder
-public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento,
-		ComFlexMonthActCalSetSetMemento, ComDeforLaborMonthActCalSetSetMemento {
+public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento, ComFlexMonthActCalSetSetMemento,
+		ComDeforLaborMonthActCalSetSetMemento {
 
 	/** The flex aggr setting. */
 	private FlexMonthWorkTimeAggrSetDto flexAggrSetting;
@@ -57,6 +57,7 @@ public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento,
 	 */
 	@Override
 	public void setRegulaAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
+		regAggrSetting = RegularWorkTimeAggrSetDto.builder().build();
 		regAggrSetting.fromDomain(legalAggrSetOfRegNew);
 	}
 
@@ -69,6 +70,7 @@ public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento,
 	 */
 	@Override
 	public void setDeforAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
+		deforAggrSetting = DeforWorkTimeAggrSetDto.builder().build();
 		deforAggrSetting.fromDomain(legalAggrSetOfIrgNew);
 	}
 
@@ -81,6 +83,7 @@ public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento,
 	 */
 	@Override
 	public void setFlexAggrSetting(FlexMonthWorkTimeAggrSet aggrSetting) {
+		flexAggrSetting = FlexMonthWorkTimeAggrSetDto.builder().build();
 		flexAggrSetting.fromDomain(aggrSetting);
 	}
 
