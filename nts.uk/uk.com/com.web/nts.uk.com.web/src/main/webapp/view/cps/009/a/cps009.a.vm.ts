@@ -968,6 +968,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
+                if(self.ctgCode === "CS00020"){
+                    
+                
+                }
                 nts.uk.ui.errors.clearAll();
             });
 
@@ -979,10 +983,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             return width;
         }
         
-        openKDL003(){
-            
-        
-        }
         
         
     }

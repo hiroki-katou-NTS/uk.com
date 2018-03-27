@@ -35,18 +35,18 @@ public class PerInfoInitValueSetItemFinder {
 	private ComboBoxRetrieveFactory comboBoxFactory;
 	@Inject
 	private PerInfoCtgByCompanyRepositoty ctgRepo;
-	
-//	@Inject
-//	private WorkTimeSettingRepo workTimeSettingRepo;
-//
-//	@Inject
-//	private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
-	
+
+	// @Inject
+	// private WorkTimeSettingRepo workTimeSettingRepo;
+	//
+	// @Inject
+	// private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
+
 	@Inject
-	private PerInfoInitValSetCtgRepository  initCtgRepo;
-	
+	private PerInfoInitValSetCtgRepository initCtgRepo;
+
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
-		boolean isSetting = this.initCtgRepo.getDetailInitValSetCtg(settingId, perInfoCtgId).isPresent() ? true: false;
+		boolean isSetting = this.initCtgRepo.getDetailInitValSetCtg(settingId, perInfoCtgId).isPresent() ? true : false;
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null && !item.isEmpty()) {
 			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item, isSetting);
@@ -100,7 +100,8 @@ public class PerInfoInitValueSetItemFinder {
 		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> item, boolean isSetting) {
+	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> item,
+			boolean isSetting) {
 		String ctgCode = item.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
 		if (ctgCode.equals("CS00020")) {
@@ -123,12 +124,38 @@ public class PerInfoInitValueSetItemFinder {
 							AppContexts.user().employeeId(), GeneralDate.today(), true);
 
 					dto.setSelection(selectionDto);
-					
-					if(c.getDataType().intValue() == 5 && isSetting) {
-							dto.setDisableCombox(true);
-					}else {
-						   dto.setDisableCombox(false);
+
+					if (c.getDataType().intValue() == 5 && isSetting) {
+						dto.setDisableCombox(true);
+					} else {
+						dto.setDisableCombox(false);
 					}
+					return dto;
+				} else {
+					return PerInfoInitValueSettingItemDto.fromDomain(c);
+				}
+			}).collect(Collectors.toList());
+		} else if (ctgCode.equals("CS00001")) {
+			itemDto = item.stream().filter(c ->{ return !c.getItemCode().equals("IS00001");}).map(c -> {
+				 
+				if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
+					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+					SelectionItemDto selectionItemDto = null;
+					if (dto.getSelectionItemRefType() == 1) {
+						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
+					} else if (dto.getSelectionItemRefType() == 2) {
+						selectionItemDto = SelectionItemDto.createCodeNameRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
+					} else if (dto.getSelectionItemRefType() == 3) {
+						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
+					}
+
+					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
+							AppContexts.user().employeeId(), GeneralDate.today(), true);
+
+					dto.setSelection(selectionDto);
 					return dto;
 				} else {
 					return PerInfoInitValueSettingItemDto.fromDomain(c);
