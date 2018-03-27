@@ -5,10 +5,12 @@ module nts.uk.at.view.kmk004.d {
          *  Service paths
          */
         var servicePath: any = {
-            findWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/find',
+            // TODO: servicePath of find AlreadySetting for component KCP004 
             findAllWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/findall',
-            saveWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/save',
-            removeWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/remove'
+            
+            findWorkplaceSetting: 'screen/at/kmk004/workplace/getDetails',
+            saveWorkplaceSetting: 'screen/at/kmk004/workplace/save',
+            removeWorkplaceSetting: 'screen/at/kmk004/workplace/delete'
         }
         
         // WORKPLACE
@@ -20,8 +22,8 @@ module nts.uk.at.view.kmk004.d {
             return nts.uk.request.ajax(servicePath.findWorkplaceSetting, request);
         }
 
-        export function findAllWorkplaceSetting(year: number): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findAllWorkplaceSetting + '/' + year);
+        export function findAllWorkplaceSetting(year: number, wkpId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findAllWorkplaceSetting + '/' + year + '/' + wkpId);
         }
 
         export function removeWorkplaceSetting(command: any): JQueryPromise<any> {
