@@ -7,7 +7,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
@@ -68,7 +67,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
 		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
 	}
-
+	
 	/**
 	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
 	 * @return
