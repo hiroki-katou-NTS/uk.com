@@ -26,6 +26,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
@@ -87,6 +91,10 @@ public class AppAbsenceFinder {
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
 	private HolidayShipmentScreenAFinder holidayShipmentScreenAFinder;
+	@Inject 
+	private BeforePreBootMode beforePreBootMode;
+	@Inject 
+	private InitMode initMode;
 	
 	public AppAbsenceDto getAppForLeave(String appDate, String employeeID){
 		
@@ -150,11 +158,17 @@ public class AppAbsenceFinder {
 		AppAbsenceDto result = new AppAbsenceDto();
 		String companyID = AppContexts.user().companyId();
 		// 14-1.詳細画面起動前申請共通設定を取得する
+		
 		Optional<AppAbsence> opAppAbsence = this.appAbsenceRepository.getAbsenceByAppId(companyID, appID);
 		if(!opAppAbsence.isPresent()){
 			throw new BusinessException("Msg_198");
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
+		// アルゴリズム「14-2.詳細画面起動前申請共通設定を取得する」を実行する
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID, appAbsence.getApplication().getEmployeeID(), appID, appAbsence.getApplication().getAppDate());
+		DetailScreenInitModeOutput detail = initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value);
+		//init Mode
+		result.setInitMode(detail.getOutputMode().value);
 		 result = AppAbsenceDto.fromDomain(appAbsence);
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(

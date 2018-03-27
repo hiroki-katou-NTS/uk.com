@@ -7,16 +7,16 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectedStatesInfo;
+//import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectedStatesInfo;
 @Stateless
-public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectService {
-	private ApplicationReflectProcessSche appReflectProcess;
+public class WorkScheduleReflectServiceImpl {
+//	private ApplicationReflectProcessSche appReflectProcess;
 
-	@Override
-	public ReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 //	@Override
 //	public ScheReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto) {

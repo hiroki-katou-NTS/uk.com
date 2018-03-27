@@ -65,8 +65,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
-		if(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+		if(!dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			 return true;
 		}
 		
@@ -145,13 +145,13 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
-			if(entry.getValue() < 0) {
+			if(entry.getValue() <= 0) {
 				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
 			}			
 		}
 		
 		//残業時間の反映
-		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame());
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame(), true);
 	}
 
 	@Override
@@ -159,11 +159,11 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			Integer overShiftNight) {
 		// INPUT．残業時間反映フラグをチェックする
 		//INPUT．外深夜時間をチェックする
-		if(!timeReflectFlg || overShiftNight < 0) {
+		if(!timeReflectFlg || overShiftNight <= 0) {
 			return;
 		}
 		//所定外深夜時間の反映
-		workUpdate.updateBreakNight(employeeId, dateData);
+		workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight, true);
 	}
 
 	@Override
@@ -171,12 +171,12 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//INPUT．残業時間反映フラグをチェックする
 		//INPUT．フレックス時間をチェックする
 		if(!timeReflectFlg
-				|| flexExessTime < 0) {
+				|| flexExessTime <= 0) {
 			return;
 		}
 		//フレックス時間を反映する
 		//日別実績の残業時間
-		workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime);
+		workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime, true);
 	}
 
 }
