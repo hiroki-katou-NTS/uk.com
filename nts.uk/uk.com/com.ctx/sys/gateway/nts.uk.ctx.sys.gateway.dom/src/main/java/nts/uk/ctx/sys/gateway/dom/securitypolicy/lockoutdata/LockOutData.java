@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 
@@ -12,7 +13,8 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
  * The Class LogoutData.
  */
 @Getter
-public class LockOutData {
+//ロックアウトデータ
+public class LockOutData extends AggregateRoot{
 
 	/** The user id. */
 	private String userId;
@@ -54,5 +56,4 @@ public class LockOutData {
 		memento.setContractCode(this.contractCode);
 		memento.setLoginMethod(this.loginMethod);
 	}
-	
 }

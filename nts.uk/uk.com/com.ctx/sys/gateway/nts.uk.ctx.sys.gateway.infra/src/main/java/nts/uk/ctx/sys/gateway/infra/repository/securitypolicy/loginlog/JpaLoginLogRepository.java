@@ -46,18 +46,23 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 
 		List<Predicate> predicateList = new ArrayList<>();
 
+		//Add Condition UserId
 		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.sgwmtLoginLogPK).get(SgwmtLoginLogPK_.userId), userId));
 
+		//Add Condition successOrFailure
 		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.successOrFailure), SuccessFailureClassification.Failure.value));
 
+		//Add Condition operationSection
 		predicateList.add(builder.equal(root.get(SgwmtLoginLog_.operationSection), OperationSection.Login.value));
 
+		//Add Condition startTime
 		predicateList.add(builder.greaterThanOrEqualTo(root.get(SgwmtLoginLog_.sgwmtLoginLogPK).get(SgwmtLoginLogPK_.processDateTime), startTime));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtLoginLog> result = em.createQuery(query).getResultList();
 		
+		//return
 		return result.isEmpty() ? 0 : result.size();
 	}
 

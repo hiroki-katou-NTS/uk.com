@@ -7,40 +7,61 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
 
+/**
+ * The Class JpaLockOutDataGetMemento.
+ */
 public class JpaLockOutDataGetMemento implements LockOutDataGetMemento {
+	
+	/** The entity. */
+	private SgwmtLockoutData entity;
 
+	/**
+	 * Instantiates a new jpa lock out data get memento.
+	 *
+	 * @param sgwmtLogoutData the sgwmt logout data
+	 */
 	public JpaLockOutDataGetMemento(SgwmtLockoutData sgwmtLogoutData) {
-		// TODO Auto-generated constructor stub
+		this.entity = sgwmtLogoutData;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento#getUserId()
+	 */
 	@Override
 	public String getUserId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entity.getSgwmtLockoutDataPK().getUserId();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento#getLockOutDateTime()
+	 */
 	@Override
 	public GeneralDateTime getLockOutDateTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entity.getLockoutDateTime();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento#getLogType()
+	 */
 	@Override
 	public LockType getLogType() {
-		// TODO Auto-generated method stub
-		return null;
+		return LockType.valueOf(this.entity.getLockType());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento#getContractCode()
+	 */
 	@Override
 	public ContractCode getContractCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ContractCode(this.entity.getSgwmtLockoutDataPK().getContractCd());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataGetMemento#getLoginMethod()
+	 */
 	@Override
 	public LoginMethod getLoginMethod() {
-		// TODO Auto-generated method stub
-		return null;
+		return LoginMethod.valueOf(this.entity.getLoginMethod());
 	}
 
 }

@@ -76,7 +76,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 */
 	private void checkInput(SubmitLoginFormOneCommand command) {
 		//check input loginId
-		if (command.getLoginId().trim().isEmpty() || command.getLoginId() == null) {
+		if (command.getLoginId() == null || command.getLoginId().trim().isEmpty()) {
 			throw new BusinessException("Msg_309");
 		}
 		//check input password

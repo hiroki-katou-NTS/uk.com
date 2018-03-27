@@ -47,11 +47,13 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 
 		List<Predicate> predicateList = new ArrayList<>();
 
+		//Check UserId
 		predicateList.add(
 				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
+		//Get Result
 		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
