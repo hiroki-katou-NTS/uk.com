@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
@@ -52,6 +53,9 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	
 	@Inject
 	private RecruitmentAppRepository recRepo;
+	
+	@Inject
+	private AppAbsenceRepository appAbsenceRepository;
 
 	@Override
 	public void insert(Application_New application) {
@@ -83,6 +87,9 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 		case COMPLEMENT_LEAVE_APPLICATION:
 			absRepo.remove(appID);
 			recRepo.remove(appID);
+			break;
+		case ABSENCE_APPLICATION:
+			appAbsenceRepository.delete(companyID, appID);
 			break;
 		default:
 			break;

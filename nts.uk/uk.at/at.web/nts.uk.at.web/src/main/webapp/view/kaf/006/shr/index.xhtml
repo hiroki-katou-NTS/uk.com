@@ -5,7 +5,7 @@
 			<div class="lblTitle-kaf006 cm-column-kaf006"
 				data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div>
 			<!--A3_2 申請者表示氏名-->
-			<label class="lblEmployeeName-kaf006 fix-margin-left-kaf006"
+			<label class="lblEmployeeName-kaf006"
 				data-bind="text : employeeName"></label>
 		</div>
 		<div class="valign-center-kaf006 control-group-kaf006"
@@ -29,7 +29,7 @@
 				</div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
-				<span class="label fix-margin-left-kaf006"
+				<span class="label fix-margin-left-kaf006b"
 					data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF006_10')}' : '#{i18n.getText('KAF006_11')}'"></span>
 			</div>
 		</div>
@@ -63,8 +63,8 @@
 					</div>
 				</div>
 				<div data-bind="if: !screenModeNew()" style="display: inline-block;">
-					<span class="label fix-margin-left-kaf006"
-						data-bind="text: startAppDate"></span>
+					<span class="label fix-margin-left-appDate"
+						data-bind="text: appDate"></span>
 				</div>
 			</div>
 		</div>
