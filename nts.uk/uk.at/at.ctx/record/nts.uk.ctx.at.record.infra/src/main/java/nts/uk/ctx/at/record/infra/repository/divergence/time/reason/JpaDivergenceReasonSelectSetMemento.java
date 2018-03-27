@@ -42,7 +42,7 @@ public class JpaDivergenceReasonSelectSetMemento implements DivergenceReasonSele
 	 */
 	@Override
 	public void setDivergenceReasonCode(DivergenceReasonCode divergenceReasonCode) {
-		this.entity.getId().setReasonCode(divergenceReasonCode.toString());
+		this.entity.getId().setReasonCd(divergenceReasonCode.toString());
 
 	}
 

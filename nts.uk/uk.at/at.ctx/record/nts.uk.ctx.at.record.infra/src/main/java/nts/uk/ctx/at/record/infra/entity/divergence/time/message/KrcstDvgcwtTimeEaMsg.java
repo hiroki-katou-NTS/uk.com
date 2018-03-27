@@ -8,18 +8,20 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The persistent class for the KRCST_WTDVGC_TIME_EA_MSG database table.
+ * The persistent class for the KRCST_DVGCWT_TIME_EA_MSG database table.
  * 
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
-@Table(name="KRCST_WTDVGC_TIME_EA_MSG")
+@Table(name="KRCST_DVGCWT_TIME_EA_MSG")
 public class KrcstDvgcwtTimeEaMsg extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -44,4 +46,5 @@ public class KrcstDvgcwtTimeEaMsg extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.id;
 	}
+
 }

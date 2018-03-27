@@ -5,15 +5,19 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the KRCST_WTDVGC_TIME_EA_MSG database table.
+ * The primary key class for the KRCST_DVGCWT_TIME_EA_MSG database table.
  * 
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class KrcstDvgcwtTimeEaMsgPK implements Serializable {
 	
@@ -33,25 +37,6 @@ public class KrcstDvgcwtTimeEaMsgPK implements Serializable {
 	@Column(name="WORKTYPE_CD")
 	private String worktypeCd;
 
-	/**
-	 * Instantiates a new krcst wtdvgc time ea msg PK.
-	 */
-	public KrcstDvgcwtTimeEaMsgPK() {
-	}
-	
-	/**
-	 * Instantiates a new krcst wtdvgc time ea msg PK.
-	 *
-	 * @param cid the cid
-	 * @param dvgcTimeNo the dvgc time no
-	 * @param worktypeCd the worktype cd
-	 */
-	public KrcstDvgcwtTimeEaMsgPK(String cid, Integer dvgcTimeNo, String worktypeCd) {
-		this.cid = cid;
-		this.dvgcTimeNo = dvgcTimeNo;
-		this.worktypeCd = worktypeCd;
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

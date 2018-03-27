@@ -14,7 +14,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.*;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK_;
@@ -52,7 +54,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	@Override
 	public void update(DivergenceTime divTimeDomain) {
 
-		if (divTimeDomain.getDivTimeUseSet().value == 1) {
+		if (divTimeDomain.isDivergenceTimeUse()) {
 			// Update Divergence Time Information
 			this.commandProxy().update(this.toEntity(divTimeDomain));
 
@@ -69,8 +71,8 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 			this.addAttendance(attendanceList);
 		} else {
 			// get primaty Key
-			KrcstDvgcTimePK PK = new KrcstDvgcTimePK(divTimeDomain.getDivergenceTimeNo(),
-					AppContexts.user().companyId());
+			KrcstDvgcTimePK PK = new KrcstDvgcTimePK(
+					AppContexts.user().companyId(), divTimeDomain.getDivergenceTimeNo());
 
 			// get optional entity
 			Optional<KrcstDvgcTime> optionalEntity = this.queryProxy().find(PK, KrcstDvgcTime.class);
@@ -96,7 +98,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	@Override
 	public Optional<DivergenceTime> getDivTimeInfo(String companyId, int divTimeNo) {
 
-		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(divTimeNo, companyId);
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(companyId, divTimeNo);
 
 		return this.queryProxy().find(PK, KrcstDvgcTime.class).map(e -> this.toDomain(e));
 	}
@@ -235,7 +237,6 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				: KrcstDvgcTime.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
-
 	/**
 	 * To entity.
 	 *
@@ -245,7 +246,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 */
 	private KrcstDvgcTime toEntity(DivergenceTime domain) {
 
-		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getDivergenceTimeNo(), domain.getCompanyId());
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getCompanyId(), domain.getDivergenceTimeNo());
 		KrcstDvgcTime entity = this.queryProxy().find(PK, KrcstDvgcTime.class).orElse(new KrcstDvgcTime());
 
 		domain.saveToMemento(new JpaDivergenceTimeSetMemento(entity));

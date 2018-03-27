@@ -5,7 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,43 +16,24 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class KrcstDvgcTimeEaMsgPK implements Serializable {
-
+	
 	/** The Constant serialVersionUID. */
-	// default serial version id, required for serializable classes.
+	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-	@Column(name = "CID")
+	@Column(name="CID")
 	private String cid;
 
 	/** The dvgc time no. */
-	@Column(name = "DVGC_TIME_NO")
+	@Column(name="DVGC_TIME_NO")
 	private Integer dvgcTimeNo;
 
-	/**
-	 * Instantiates a new krcst dvgc time ea msg PK.
-	 */
-	public KrcstDvgcTimeEaMsgPK() {
-	}
-
-	/**
-	 * Instantiates a new krcst dvgc time ea msg PK.
-	 *
-	 * @param cid
-	 *            the cid
-	 * @param dvgcTimeNo
-	 *            the dvgc time no
-	 */
-	public KrcstDvgcTimeEaMsgPK(String cid, Integer dvgcTimeNo) {
-		this.cid = cid;
-		this.dvgcTimeNo = dvgcTimeNo;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object other) {
@@ -60,13 +43,13 @@ public class KrcstDvgcTimeEaMsgPK implements Serializable {
 		if (!(other instanceof KrcstDvgcTimeEaMsgPK)) {
 			return false;
 		}
-		KrcstDvgcTimeEaMsgPK castOther = (KrcstDvgcTimeEaMsgPK) other;
-		return this.cid.equals(castOther.cid) && (this.dvgcTimeNo == castOther.dvgcTimeNo);
+		KrcstDvgcTimeEaMsgPK castOther = (KrcstDvgcTimeEaMsgPK)other;
+		return 
+			this.cid.equals(castOther.cid)
+			&& (this.dvgcTimeNo == castOther.dvgcTimeNo);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
@@ -74,7 +57,7 @@ public class KrcstDvgcTimeEaMsgPK implements Serializable {
 		int hash = 17;
 		hash = hash * prime + this.cid.hashCode();
 		hash = hash * prime + ((int) (this.dvgcTimeNo ^ (this.dvgcTimeNo >>> 32)));
-
+		
 		return hash;
 	}
 }

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -19,6 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name="KRCST_DRT_USE_UNIT")
 public class KrcstDrtUseUnit extends UkJpaEntity implements Serializable {

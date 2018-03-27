@@ -1,16 +1,28 @@
 package nts.uk.ctx.at.record.infra.entity.divergence.time.history;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The primary key class for the KRCST_DRT database table.
  * 
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class KrcstDrtPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
+	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
 	/** The hist id. */
@@ -20,59 +32,6 @@ public class KrcstDrtPK implements Serializable {
 	/** The dvgc time no. */
 	@Column(name="DVGC_TIME_NO")
 	private Integer dvgcTimeNo;
-
-	/**
-	 * Instantiates a new krcst drt PK.
-	 */
-	public KrcstDrtPK() {
-	}
-	
-	/**
-	 * Instantiates a new krcst drt PK.
-	 *
-	 * @param histId the hist id
-	 * @param dvgcTimeNo the dvgc time no
-	 */
-	public KrcstDrtPK(String histId, Integer dvgcTimeNo) {
-		this.histId = histId;
-		this.dvgcTimeNo = dvgcTimeNo;
-	}
-	
-	/**
-	 * Gets the hist id.
-	 *
-	 * @return the hist id
-	 */
-	public String getHistId() {
-		return this.histId;
-	}
-	
-	/**
-	 * Sets the hist id.
-	 *
-	 * @param histId the new hist id
-	 */
-	public void setHistId(String histId) {
-		this.histId = histId;
-	}
-	
-	/**
-	 * Gets the dvgc time no.
-	 *
-	 * @return the dvgc time no
-	 */
-	public Integer getDvgcTimeNo() {
-		return this.dvgcTimeNo;
-	}
-	
-	/**
-	 * Sets the dvgc time no.
-	 *
-	 * @param dvgcTimeNo the new dvgc time no
-	 */
-	public void setDvgcTimeNo(Integer dvgcTimeNo) {
-		this.dvgcTimeNo = dvgcTimeNo;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

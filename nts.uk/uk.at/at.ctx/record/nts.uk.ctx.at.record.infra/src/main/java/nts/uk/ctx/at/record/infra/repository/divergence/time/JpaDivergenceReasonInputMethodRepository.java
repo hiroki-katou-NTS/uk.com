@@ -50,7 +50,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 	@Override
 	public Optional<DivergenceReasonInputMethod> getDivTimeInfo(String companyId, int divTimeNo) {
 
-		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(divTimeNo, companyId);
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(companyId, divTimeNo);
 		return this.queryProxy().find(PK, KrcstDvgcTime.class).map(e->this.toDomain(e));
 	}
 
@@ -119,7 +119,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 	 */
 	private KrcstDvgcTime toEntity(DivergenceReasonInputMethod domain) {
 
-		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getDivergenceTimeNo(), domain.getCompanyId());
+		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getCompanyId(), domain.getDivergenceTimeNo());
 		KrcstDvgcTime entity = this.queryProxy().find(PK, KrcstDvgcTime.class).orElse(new KrcstDvgcTime());
 
 		domain.saveToMemento(new JpaDivergenceReasonInputMethodSetMemento(entity));

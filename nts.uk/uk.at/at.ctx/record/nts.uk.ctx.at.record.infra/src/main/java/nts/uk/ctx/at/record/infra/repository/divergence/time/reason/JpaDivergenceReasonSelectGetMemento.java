@@ -39,7 +39,7 @@ public class JpaDivergenceReasonSelectGetMemento implements DivergenceReasonSele
 	 */
 	@Override
 	public DivergenceReasonCode getDivergenceReasonCode() {
-		return new DivergenceReasonCode(this.entity.getId().getReasonCode());
+		return new DivergenceReasonCode(this.entity.getId().getReasonCd());
 	}
 
 	/*

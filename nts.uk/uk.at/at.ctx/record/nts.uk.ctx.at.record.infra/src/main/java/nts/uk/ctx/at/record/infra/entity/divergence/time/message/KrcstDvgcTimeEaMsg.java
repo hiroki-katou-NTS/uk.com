@@ -1,6 +1,3 @@
-/*
- * 
- */
 package nts.uk.ctx.at.record.infra.entity.divergence.time.message;
 
 import java.io.Serializable;
@@ -11,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -21,6 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name="KRCST_DVGC_TIME_EA_MSG")
 public class KrcstDvgcTimeEaMsg extends UkJpaEntity implements Serializable {
@@ -47,4 +46,5 @@ public class KrcstDvgcTimeEaMsg extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.id;
 	}
+
 }
