@@ -65,8 +65,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
-		if(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+		if(!dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			 return true;
 		}
 		
