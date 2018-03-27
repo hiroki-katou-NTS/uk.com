@@ -19,7 +19,7 @@
 
 .row {
 	padding: 5px;
-	height: 50px;
+	height: 70px;
 }
 
 #inpReason {
@@ -36,4 +36,8 @@
 
 p span {
 	word-wrap: break-word;
+}
+
+button#btn_005{
+	    margin-right: 0px !important;
 }
