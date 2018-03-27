@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -47,6 +48,12 @@ public class KmfmtRetentionYearly extends UkJpaEntity  implements Serializable {
     @NotNull
     @Column(name="LEAVE_AS_WORK_DAYS")
     private short leaveAsWorkDays;
+    
+	/** The management ctr atr. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "MANAGEMENT_YEARLY_ATR")
+	private short managementYearlyAtr;
     
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()

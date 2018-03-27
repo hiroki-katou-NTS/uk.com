@@ -44,13 +44,13 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -135,8 +135,9 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		for(Map.Entry<Integer, TimeZone> key : timeSheets.entrySet()) {
 			WorkStamp attendance = new WorkStamp(key.getValue().getStart(),key.getValue().getStart(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 			WorkStamp leaving = new WorkStamp(key.getValue().getEnd(),key.getValue().getEnd(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-			TimeActualStamp stamp = new TimeActualStamp(attendance,leaving,key.getKey());
-			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(key.getKey()),Optional.of(stamp),Optional.of(stamp));
+			TimeActualStamp attendanceStamp = new TimeActualStamp(attendance,attendance,key.getKey());
+			TimeActualStamp leavingStamp = new TimeActualStamp(leaving,leaving,key.getKey());
+			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(key.getKey()),Optional.of(attendanceStamp),Optional.of(leavingStamp));
 			
 			timeLeavingWorks.add(timeLeavingWork);
 		}

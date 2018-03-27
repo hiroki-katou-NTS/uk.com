@@ -13,8 +13,12 @@ td div {
 	vertical-align: middle;
 }
 
-#a4_7, #a4_8, #a5_16, #a7_row1 {
+#a4_7, #a4_8, #a7_row1 {
 	width: 80px;
+}
+
+#a5_16{
+	width: 135px;
 }
 
 .a4_checkbox .ntsCheckBox span.box {

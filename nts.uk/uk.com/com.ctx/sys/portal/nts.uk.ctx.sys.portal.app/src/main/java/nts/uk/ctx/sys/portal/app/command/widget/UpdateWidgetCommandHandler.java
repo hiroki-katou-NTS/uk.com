@@ -16,7 +16,6 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.WidgetDisplayItem;
-import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.service.WidgetService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
 import nts.uk.shr.com.context.AppContexts;
 

@@ -30,4 +30,11 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId);
+	/**
+	 * get Application Absence Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
+	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId);
 }

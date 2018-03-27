@@ -782,6 +782,13 @@ public class AppOvertimeFinder {
 		
 		// xu li hien thi du lieu xin truoc
 		if(overtimeRestAppCommonSet.isPresent()){
+			if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+				//dung cho thay doi xin truoc xin sau
+				result.setPerformanceDisplayAtr(true);
+			}
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
+				result.setPreDisplayAtr(true);
+			}
 			// hien thi du lieu thuc te
 			if(result.getApplication().getPrePostAtr() == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 				result.setReferencePanelFlg(true);

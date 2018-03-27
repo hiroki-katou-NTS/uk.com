@@ -42,16 +42,16 @@
 				</div>
 				<div class="cell valign-center-kaf006"> 
 					<!--A3_8 複数日-->
-					<div class="row-cell-margin" data-bind="ntsCheckBox: { checked: valueChecked, enable: true, text: '#{i18n.getText('KAF006_12')}'}"></div>
+					<div class="row-cell-margin" data-bind="ntsCheckBox: { checked: displayEndDateFlg, enable: true,if: !screenModeNew(), text: '#{i18n.getText('KAF006_12')}'}"></div>
 				</div>
 				<div class="cell valign-center-kaf006">
 						<!--A3_9  期間入力-->
 						<div tabindex="6" id="inputdate" class="fix-margin-left-kaf006"
 							data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',required:true, value: startAppDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
 						<!--A3_10  開始日-->	
-						<label data-bind= "visible : valueChecked" class="valign-center-kaf006 link-label-kaf006">#{i18n.getText('KAF005_38')}</label>
+						<label data-bind= "visible : displayEndDateFlg" class="valign-center-kaf006 link-label-kaf006">#{i18n.getText('KAF005_38')}</label>
 				</div>
-				<div class="cell valign-center-kaf006" data-bind= "visible : valueChecked">
+				<div class="cell valign-center-kaf006" data-bind= "visible : displayEndDateFlg">
 					<div class="row-cell-margin">
 						<!--A3_11 終了日-->
 						<div tabindex="9" id="inpEndTime1"
@@ -99,7 +99,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: holidayTypeCode,
-								enable: true }"></div>
+								enable: screenModeNew }"></div>
 		</div>
 		<div data-bind = "visible : displayStartFlg">
 			<div class="valign-center-kaf006  control-group-kaf006"

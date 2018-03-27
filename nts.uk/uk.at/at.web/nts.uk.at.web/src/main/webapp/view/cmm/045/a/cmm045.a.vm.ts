@@ -179,11 +179,13 @@ module cmm045.a.viewmodel {
                                 data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
                                 data.appStatusCount.denialNumber));
                         }
+                        let colorBackGr = self.fillColorbackGr();
+                        let colorsText = self.fillColorText();
                         if (self.mode() == 1) {
                              let lstHidden: Array<any> = self.findRowHidden(self.items());
-                             self.reloadGridApproval(lstHidden);
+                             self.reloadGridApproval(lstHidden,colorBackGr,colorsText);
                         } else {
-                            self.reloadGridApplicaion()
+                            self.reloadGridApplicaion(colorBackGr, colorsText);
                         }
                         if(appCHeck != null){
                             self.selectedCode(appCHeck);
@@ -197,7 +199,7 @@ module cmm045.a.viewmodel {
             return dfd.promise();
         }
 
-        reloadGridApplicaion() {
+        reloadGridApplicaion(colorBackGr: any, colorsText: any) {
             var self = this;
             $("#grid2").ntsGrid({
                 width: '1120px',
@@ -206,6 +208,7 @@ module cmm045.a.viewmodel {
                 primaryKey: 'appId',
                 virtualization: true,
                 rows: 8,
+                hidePrimaryKey: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
@@ -218,13 +221,29 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px', ntsControl: 'Label'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px', ntsControl: 'Label' }
-//                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '10px', hidden: true }
                 ],
-                features: [{ name: 'Resizing' },
+                features: [
+                    { name: 'Resizing' },
                     {
                         name: 'Selection',
                         mode: 'row',
                         multipleSelection: true
+                    }
+                ],
+                ntsFeatures:[
+                    {
+                        name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: colorBackGr
+                    },
+                    {
+                        name: 'TextColor',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        color: 'color',
+                        colorsTable: colorsText
                     }
                 ],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
@@ -238,10 +257,67 @@ module cmm045.a.viewmodel {
                 nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
                 window.location.href = "../../../kaf/000/b/index.xhtml";
             });
-            self.fillColorInGridList();
         }
 
-        reloadGridApproval(lstHidden: Array<any>) {
+        fillColorbackGr(): Array<vmbase.CellState>{
+            let self = this;
+            let result = [];
+            _.each(self.items(), function(item) {
+                let rowId = item.appId;
+                //fill color in 承認状況
+                if (item.appStatus == '未') {
+                    result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
+                }
+                if (item.appStatus == '承認済み') {
+                    result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
+                }
+                if (item.appStatus == '反映済み') {
+                    result.push(new vmbase.CellState(rowId,'appStatus',['reflectCell']));
+                }
+                if (item.appStatus == '取消') {
+                    result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
+                }
+                if (item.appStatus == '差戻') {
+                    result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
+                }
+                if (item.appStatus == '否') {
+                    result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
+                }
+                //fill color in 申請内容
+                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
+                    result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
+                }
+                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
+                    result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
+                }
+            });
+            return result;
+        }
+        fillColorText(): Array<vmbase.TextColor>{
+            //fill color text
+            let self = this;
+            let result = [];
+            _.each(self.items(), function(item) { 
+                //color text appDate
+                let color = item.appDate.substring(11,12);
+                if (color == '土') {//土
+                    result.push(new vmbase.TextColor(item.appId,'appDate','saturdayCell'));
+                }
+                if (color == '日') {//日 
+                    result.push(new vmbase.TextColor(item.appId,'appDate','sundayCell'));
+                }
+                //fill color text input date
+                let colorIn = item.inputDate.substring(11,12);
+                if (colorIn == '土') {//土
+                    result.push(new vmbase.TextColor(item.appId,'inputDate','saturdayCell'));
+                }
+                if (colorIn == '日') {//日
+                    result.push(new vmbase.TextColor(item.appId,'inputDate','sundayCell'));
+                } 
+             });
+            return result;
+        }
+        reloadGridApproval(lstHidden: Array<any>, colorBackGr: any, colorsText: any) {
             var self = this;
             $("#grid1").ntsGrid({
                 width: '1320px',
@@ -250,6 +326,7 @@ module cmm045.a.viewmodel {
                 primaryKey: 'appId',
                 rowVirtualization: true,
                 virtualization: true,
+                hidePrimaryKey: true,
                 rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
@@ -273,6 +350,22 @@ module cmm045.a.viewmodel {
                         multipleSelection: true
                     }
                 ],
+                 ntsFeatures:[
+                    {
+                        name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: colorBackGr
+                    },
+                    {
+                        name: 'TextColor',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        color: 'color',
+                        colorsTable: colorsText
+                    }
+                 ],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox' },
                     { name: 'Button', text: getText('CMM045_50'), controlType: 'Button', enable: true }],
             });
@@ -286,61 +379,6 @@ module cmm045.a.viewmodel {
             });
 
             $("#grid1").setupSearchScroll("igGrid", true);
-
-            self.fillColorInGridList();
-        }
-        fillColorInGridList(){
-            let self = this;
-            _.each(self.items(), function(item) {
-                let id = ".nts-grid-control-appStatus-" + item.appId;
-                //display check box
-//                if (item.checkAtr == false) {
-//                    $(".nts-grid-control-check-" + item.appId).css("display", "none");
-//                }
-                //fill color in 承認状況
-                if (item.appStatus == '未') {
-                    $(id).parent().addClass('unapprovalCell');
-                }
-                if (item.appStatus == '承認済み') {
-                    $(id).parent().addClass('approvalCell');
-                }
-                if (item.appStatus == '反映済み') {
-                    $(id).parent().addClass('reflectCell');
-                }
-                if (item.appStatus == '取消') {
-                    $(id).parent().addClass('cancelCell');
-                }
-                if (item.appStatus == '差戻') {
-                   $(id).parent().addClass('remandCell');
-                }
-                if (item.appStatus == '否') {
-                    $(id).parent().addClass('denialCell');
-                }
-                //fill color in 申請内容
-                let idContent = ".appContent-" + item.appId;
-                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                    $(idContent).parent().addClass('preAppExcess');
-                }
-                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                    $(idContent).parent().addClass('workingResultExcess');
-                }
-                //fill color text
-                let color = item.appDate.substring(11,12);
-                if (color == '土') {//土
-                    $(".nts-grid-control-appDate-" + item.appId).addClass('saturdayCell');
-                }
-                if (color == '日') {//日 
-                    $(".nts-grid-control-appDate-" + item.appId).addClass('sundayCell');
-                }
-                //fill color text
-                let colorIn = item.inputDate.substring(11,12);
-                if (colorIn == '土') {//土
-                    $(".nts-grid-control-inputDate-" + item.appId).addClass('saturdayCell');
-                }
-                if (colorIn == '日') {//日
-                    $(".nts-grid-control-inputDate-" + item.appId).addClass('sundayCell');
-                }
-            });
         }
         /**
          * 休日出勤時間申請
@@ -530,13 +568,7 @@ module cmm045.a.viewmodel {
          */
         findContentPreOt(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
             let self = this;
-//            let overTime = self.findOverTimeById(appId, self.lstAppOt());
-//            let masterInfo = self.findMasterInfo(self.lstAppMaster(), appId);
-//            let app = self.findCommon(self.lstAppCommon(), appId);
             let appPre = '';
-//            if(app !== undefined && overTime !== undefined && masterInfo !== undefined){
-//                appPre = self.formatOverTimeBf(app, overTime, masterInfo);
-//            }
             if(appPreDB != null){
                 appPre = getText('CMM045_268') + ' ' + appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
             }
@@ -547,7 +579,7 @@ module cmm045.a.viewmodel {
 
 
             let appInfor = {
-                appPre: appPre == null ? '' : getText('CMM045_272') + appPre,
+                appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
                 appRes: lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
@@ -565,7 +597,6 @@ module cmm045.a.viewmodel {
                 let ca1 = appPreDB.startTime1 == '' ? '' : appPreDB.startTime1 + getText('CMM045_100') + appPreDB.endTime1;
                 let ca2 = appPreDB.startTime2 == '' ? '' : appPreDB.startTime2 + getText('CMM045_100') + appPreDB.endTime2;
                 appPre = getText('CMM045_275') + ' ' + appPreDB.workTypeName + appPreDB.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
-//                appPre = getText('CMM045_275') + ' ' + appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
             }
             let appResContent = '';
             //thuc te
@@ -591,7 +622,6 @@ module cmm045.a.viewmodel {
         formatGoBack(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-//            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let go1 = goBack.goWorkAtr1 == 0 ? '' : ' ' + getText('CMM045_259') + goBack.workTimeStart1;
             let back1 = goBack.backHomeAtr1 == 0 ? '' : ' ' + getText('CMM045_260') + goBack.workTimeEnd1;
@@ -956,13 +986,15 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
                             data.appStatusCount.denialNumber));
                     }
+                    let colorBackGr = self.fillColorbackGr();
+                    let colorsText = self.fillColorText();
                     if (self.mode() == 1) {
                         $("#grid1").ntsGrid("destroy");
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
-                        self.reloadGridApproval(lstHidden);
+                        self.reloadGridApproval(lstHidden,colorBackGr,colorsText);
                     } else {
                         $("#grid2").ntsGrid("destroy");
-                        self.reloadGridApplicaion();
+                        self.reloadGridApplicaion(colorBackGr,colorsText);
                     }
                 }
             }).always(() => {
@@ -1049,18 +1081,20 @@ module cmm045.a.viewmodel {
                 self.items([]);
                 self.items(vmbase.ProcessHandler.orderByList(lstAppFitler));
             }
+            let colorBackGr = self.fillColorbackGr();
+            let colorsText = self.fillColorText();
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
                 if($("#grid1").data("igGrid") !== undefined){
                     $("#grid1").ntsGrid("destroy");
                 }
                  let lstHidden: Array<any> = self.findRowHidden(self.items());
-                 self.reloadGridApproval(lstHidden);
+                 self.reloadGridApproval(lstHidden,colorBackGr,colorsText);
             } else {
                 if($("#grid2").data("igGrid") !== undefined){
                     $("#grid2").ntsGrid("destroy");
                 }
-                self.reloadGridApplicaion();
+                self.reloadGridApplicaion(colorBackGr,colorsText);
             }
         }
         /**
@@ -1083,7 +1117,6 @@ module cmm045.a.viewmodel {
                     }else{
                         approvalNumber += 1;
                     }
-                     approvalNumber += 1;
                 }
 //                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
                 if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3

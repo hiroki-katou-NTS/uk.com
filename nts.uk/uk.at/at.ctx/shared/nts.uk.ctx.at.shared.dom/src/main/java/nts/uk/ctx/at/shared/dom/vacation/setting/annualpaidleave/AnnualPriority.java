@@ -11,10 +11,10 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 public enum AnnualPriority {
 
 	/** The fifo. */
-	FIFO(0, "先入れ先出し", "先入れ先出し"),
+	FIFO(0, "当年付与分から消化する", "当年付与分から消化する"),
 
 	/** The lifo. */
-	LIFO(1, "後入れ先出し", "後入れ先出し");
+	LIFO(1, "繰越分から消化する", "繰越分から消化する");
 
 	/** The value. */
 	public int value;

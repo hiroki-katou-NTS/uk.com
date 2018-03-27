@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -58,6 +60,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private WorkTimeSettingRepository repoworkTime;
 	@Inject
 	private IAppWorkChangeRepository repoworkChange;
+	@Inject
+	private AppAbsenceRepository repoAbsence;
 	/**
 	 * get Application Over Time Info
 	 * appType = 0;
@@ -225,6 +229,20 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appWkChange.getBreakTimeEnd1()));
 	}
 	/**
+	 * get Application Absence Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
+	@Override
+	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId) {
+		// TODO Auto-generated method stub
+		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyID, appId);
+		AppAbsence appAbsence = absence.get();
+		return null;
+//		return new AppAbsence(appId, appAbsence.getHolidayAppType(), 0, appAbsence.getWorkTimeCode(),);
+	}
+	/**
 	 * convert time from integer to Time_Short_HM
 	 * @param time
 	 * @return
@@ -236,4 +254,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
 		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
 	}
+
+
 }
