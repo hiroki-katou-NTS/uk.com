@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): DesignatedTimeDto {
-                    var dataDTO: DesignatedTimeDto = {                       
+                    var dataDTO: DesignatedTimeDto = {
                         oneDayTime: nts.uk.util.isNullOrEmpty(this.oneDayTime()) ? 0 : this.oneDayTime(),
                         halfDayTime: nts.uk.util.isNullOrEmpty(this.halfDayTime()) ? 0 : this.halfDayTime()
                     };
@@ -137,7 +137,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.roundingTime(0);                                       
+                    this.roundingTime(0);
                     this.rounding(1);
                 }
             }
@@ -481,7 +481,7 @@ module nts.uk.at.view.kmk003.a {
                 calculateMethod: KnockoutObservable<number>;
                 calculateFromSchedule: ScheduleBreakCalculationModel;
                 calculateFromStamp: StampBreakCalculationModel;
-                
+
                 constructor() {
                     this.calculateMethod = ko.observable(0);
                     this.calculateFromSchedule = new ScheduleBreakCalculationModel();
@@ -509,11 +509,11 @@ module nts.uk.at.view.kmk003.a {
                     this.calculateFromStamp.resetData();
                 }
             }
-            
+
             export class ScheduleBreakCalculationModel {
                 isReferRestTime: KnockoutObservable<boolean>;
                 isCalcFromSchedule: KnockoutObservable<boolean>;
-                
+
                 constructor() {
                     this.isReferRestTime = ko.observable(false);
                     this.isCalcFromSchedule = ko.observable(false);
@@ -537,11 +537,11 @@ module nts.uk.at.view.kmk003.a {
                     this.isCalcFromSchedule(false);
                 }
             }
-            
+
             export class StampBreakCalculationModel {
                 usePrivateGoOutRest: KnockoutObservable<boolean>;
                 useAssoGoOutRest: KnockoutObservable<boolean>;
-                
+
                 constructor() {
                     this.usePrivateGoOutRest = ko.observable(false);
                     this.useAssoGoOutRest = ko.observable(false);
@@ -940,7 +940,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.start(0);
                     this.end(0);
@@ -977,7 +977,7 @@ module nts.uk.at.view.kmk003.a {
 
             export class FixRestTimezoneSetModel extends FixedTableDataConverter<TimeRangeModel, DeductionTimeModel> {
                 timezones: KnockoutObservableArray<DeductionTimeModel>;
-                
+
                 constructor() {
                     super();
                     this.timezones = this.originalList;
@@ -1003,19 +1003,19 @@ module nts.uk.at.view.kmk003.a {
                         let dataModel = new DeductionTimeModel();
                         dataModel.updateData(dataDTO);
                         return dataModel;
-                    });  
+                    });
                     this.timezones(_.sortBy(mapped, item => item.start()));
                 }
-                
+
                 toDto(): TimezoneOfFixedRestTimeSetDto {
                     let lstTimezone: DeductionTimeDto[] = _.map(this.timezones(), dataModel => dataModel.toDto());
                     return {
                         timezones: lstTimezone
                     };
                 }
-                
-                resetData(){
-                    this.timezones([]);    
+
+                resetData() {
+                    this.timezones([]);
                 }
             }
 
@@ -1350,7 +1350,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData(section: number) {
                     this.fontRearSection(section == 0 ? 1 : 0);
                     this.roundingTimeUnit(0);
@@ -1378,7 +1378,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.roundingSet.resetData(this.section());
                 }
@@ -1406,7 +1406,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.priorityAtr = ko.observable((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
                 }
@@ -1425,7 +1425,7 @@ module nts.uk.at.view.kmk003.a {
 
                 initPrioritySets() {
                     for (let item in StampPiorityAtr) {
-                        if (!isNaN(Number(item))) {    
+                        if (!isNaN(Number(item))) {
                             let dataPriorityModel: PrioritySettingModel = new PrioritySettingModel(Number(item));
                             this.prioritySets.push(dataPriorityModel);
                         }
@@ -1434,7 +1434,7 @@ module nts.uk.at.view.kmk003.a {
 
                 initRoundingSets() {
                     for (let item in Superiority) {
-                        if (!isNaN(Number(item))) {   
+                        if (!isNaN(Number(item))) {
                             let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
                             this.roundingSets.push(dataRoundingModel);
                         }
@@ -1443,12 +1443,18 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: WorkTimezoneStampSetDto) {
                     var self = this;
-                    data.roundingSets.forEach(function(dataRoundingDTO, index) {
-                        self.roundingSets[dataRoundingDTO.section].updateData(dataRoundingDTO);
+                    data.roundingSets.forEach((dataRoundingDTO, index) => {
+                        let currentItem: RoundingSetModel = _.find(self.roundingSets, p => p.section() == dataRoundingDTO.section);
+                        if (!nts.uk.util.isNullOrUndefined(currentItem)) {
+                            currentItem.updateData(dataRoundingDTO);
+                        }
                     });
 
                     data.prioritySets.forEach(function(dataPriorityDTO, index) {
-                        self.prioritySets[dataPriorityDTO.priorityAtr].updateData(dataPriorityDTO);
+                        let currentItem: PrioritySettingModel = _.find(self.prioritySets, p => p.stampAtr() == dataPriorityDTO.stampAtr);
+                        if (!nts.uk.util.isNullOrUndefined(currentItem)) {
+                            currentItem.updateData(dataPriorityDTO);
+                        }
                     });
                 }
 
@@ -1468,7 +1474,7 @@ module nts.uk.at.view.kmk003.a {
 
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.roundingSets.forEach(function(item, index) {
                         item.resetData();
@@ -1478,17 +1484,17 @@ module nts.uk.at.view.kmk003.a {
                         item.resetData();
                     });
                 }
-                
-                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.GOING_WORK) }                
-                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.LEAVE_WORK) }              
-                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.ENTERING) }              
-                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.EXIT) }             
-                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PCLOGIN) }           
+
+                getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.GOING_WORK) }
+                getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.LEAVE_WORK) }
+                getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.ENTERING) }
+                getPrioritySetsExit(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.EXIT) }
+                getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PCLOGIN) }
                 getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PC_LOGOUT) }
-                
-                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.ATTENDANCE) }               
-                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }               
-                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.GO_OUT) }             
+
+                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.ATTENDANCE) }
+                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }
+                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.GO_OUT) }
                 getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.TURN_BACK) }
             }
 
@@ -1509,9 +1515,9 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
-                    this.roundingSetting.resetData();    
+                    this.roundingSetting.resetData();
                 }
             }
 
@@ -1541,11 +1547,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.nursTimezoneWorkUse(false);
                     this.employmentTimeDeduct(false);
-                    this.childCareWorkUse(false);    
+                    this.childCareWorkUse(false);
                 }
             }
 
@@ -1575,7 +1581,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.inLegalBreakoutFrameNo(1);
                     this.outLegalBreakoutFrameNo(1);
@@ -1645,7 +1651,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.holidayFrameSet.resetData();
                     this.timeRoundingSet.resetData();
@@ -1909,7 +1915,7 @@ module nts.uk.at.view.kmk003.a {
                     }
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.endTime(0);
                     this.startTime(0);
@@ -2062,7 +2068,7 @@ module nts.uk.at.view.kmk003.a {
 
             export class HolidayCalculationModel {
                 isCalculate: KnockoutObservable<number>;
-                
+
                 constructor() {
                     this.isCalculate = ko.observable(0);
                 }
@@ -2082,24 +2088,24 @@ module nts.uk.at.view.kmk003.a {
                     this.isCalculate(0);
                 }
             }
-            
+
             export class OverTimeCalcNoBreakModel {
                 calcMethod: KnockoutObservable<number>;
                 inLawOT: KnockoutObservable<number>;
                 notInLawOT: KnockoutObservable<number>;
-                
+
                 constructor() {
                     this.calcMethod = ko.observable(0);
                     this.inLawOT = ko.observable(0);
                     this.notInLawOT = ko.observable(0);
                 }
-                
+
                 updateData(data: OverTimeCalcNoBreakDto) {
                     this.calcMethod(data.calcMethod);
                     this.inLawOT(data.inLawOT);
                     this.notInLawOT(data.notInLawOT);
                 }
-                
+
                 toDto(): OverTimeCalcNoBreakDto {
                     let dataDTO: OverTimeCalcNoBreakDto = {
                         calcMethod: this.calcMethod(),
@@ -2108,28 +2114,28 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.calcMethod(0);
                     this.inLawOT(0);
-                    this.notInLawOT(0);    
+                    this.notInLawOT(0);
                 }
             }
-            
+
             export class ExceededPredAddVacationCalcModel {
                 calcMethod: KnockoutObservable<number>;
                 otFrameNo: KnockoutObservable<number>;
-                
+
                 constructor() {
                     this.calcMethod = ko.observable(0);
                     this.otFrameNo = ko.observable(0);
                 }
-                
+
                 updateData(data: ExceededPredAddVacationCalcDto) {
                     this.calcMethod(data.calcMethod);
                     this.otFrameNo(data.otFrameNo);
                 }
-                
+
                 toDto(): ExceededPredAddVacationCalcDto {
                     let dataDTO: ExceededPredAddVacationCalcDto = {
                         calcMethod: this.calcMethod(),
@@ -2137,27 +2143,27 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.calcMethod(0);
                     this.otFrameNo(0);
                 }
             }
-            
+
             export class FixedWorkCalcSettingModel {
                 exceededPredAddVacationCalc: ExceededPredAddVacationCalcModel;
                 overTimeCalcNoBreak: OverTimeCalcNoBreakModel;
-                
+
                 constructor() {
                     this.exceededPredAddVacationCalc = new ExceededPredAddVacationCalcModel();
                     this.overTimeCalcNoBreak = new OverTimeCalcNoBreakModel();
                 }
-                
+
                 updateData(data: FixedWorkCalcSettingDto) {
                     this.exceededPredAddVacationCalc.updateData(data.exceededPredAddVacationCalc);
                     this.overTimeCalcNoBreak.updateData(data.overTimeCalcNoBreak);
                 }
-                
+
                 toDto(): FixedWorkCalcSettingDto {
                     let dataDTO: FixedWorkCalcSettingDto = {
                         exceededPredAddVacationCalc: this.exceededPredAddVacationCalc.toDto(),
@@ -2165,7 +2171,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.exceededPredAddVacationCalc.resetData();
                     this.overTimeCalcNoBreak.resetData();
