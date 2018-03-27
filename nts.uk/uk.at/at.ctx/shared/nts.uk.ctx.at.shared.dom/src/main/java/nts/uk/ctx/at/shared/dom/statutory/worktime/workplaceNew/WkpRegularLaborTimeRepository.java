@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,12 @@ public interface WkpRegularLaborTimeRepository {
 	 * @param wkpNormalSetting the wkp normal setting
 	 */
 	void remove(String cid, String wkpId);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param cid the cid
+	 * @return the list
+	 */
+	List<WkpRegularLaborTime> findAll(String cid);
 }

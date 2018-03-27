@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -87,5 +90,28 @@ public class ShainStatWorkTimeSetFinder {
 
 		return dtoBuilder.build();
 	}
+	
 
+	/**
+	 * Find all shain reg labor time.
+	 *
+	 * @return the list
+	 */
+	public List<ShainRegularWorkHourDto> findAllShainRegLaborTime(){
+		
+		// get company id
+		String companyId = AppContexts.user().companyId();		
+		List<ShainRegularWorkHourDto> listShainRegWorkHourDto = new ArrayList<>();
+		
+		// get list employee regular labor time
+		List<ShainRegularLaborTime> listShainRegLaborTime = this.regularWorkTimeRepository.findAll(companyId);
+		
+		// check list is not empty
+		if(!listShainRegLaborTime.isEmpty()){			
+			listShainRegWorkHourDto = listShainRegLaborTime.stream().map(domain -> ShainRegularWorkHourDto.fromDomain(domain)).collect(Collectors.toList());
+		}
+		
+		return listShainRegWorkHourDto;
+	}
+	
 }

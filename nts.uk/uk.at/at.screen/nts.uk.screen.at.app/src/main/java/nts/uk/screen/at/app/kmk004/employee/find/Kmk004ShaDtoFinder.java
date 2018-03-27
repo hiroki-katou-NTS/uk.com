@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.screen.at.app.kmk004.employee.find;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.employee.ShaMonthCalSetFinder;
+import nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew.ShainRegularWorkHourDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew.ShainStatWorkTimeSetFinder;
 
 /**
@@ -40,5 +43,15 @@ public class Kmk004ShaDtoFinder {
 		kmk004Dto.setMonthCalSetDto(shaMonthCalSetFinder.getDetails(sid));
 		
 		return kmk004Dto;
+	}
+	
+
+	/**
+	 * Find all shain reg labor time.
+	 *
+	 * @return the list
+	 */
+	public List<ShainRegularWorkHourDto> findAllShainRegLaborTime(){		
+		return this.shaStatWorkTimeSetFinder.findAllShainRegLaborTime();
 	}
 }

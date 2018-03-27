@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -42,7 +45,7 @@ public class WkpStatWorkTimeSetFinder {
 
 	/** The trans labor time repository. */
 	@Inject
-	private WkpTransLaborTimeRepository transWorkTimeRepository; 
+	private WkpTransLaborTimeRepository transWorkTimeRepository;
 
 	/** The regular labor time repository. */
 	@Inject
@@ -65,16 +68,17 @@ public class WkpStatWorkTimeSetFinder {
 			dtoBuilder.normalSetting(WkpNormalSettingDto.fromDomain(optWkpNormalSet.get()));
 		}
 
-		Optional<WkpFlexSetting> optWkpFlexSet = this.flexSettingRepository.find(companyId,wkpId, year);
+		Optional<WkpFlexSetting> optWkpFlexSet = this.flexSettingRepository.find(companyId, wkpId, year);
 		if (optWkpFlexSet.isPresent()) {
 			dtoBuilder.flexSetting(WkpFlexSettingDto.fromDomain(optWkpFlexSet.get()));
 		}
 
-		Optional<WkpDeforLaborSetting> optWkpDeforLaborSet = this.deforLaborSettingRepository.find(companyId,wkpId, year);
+		Optional<WkpDeforLaborSetting> optWkpDeforLaborSet = this.deforLaborSettingRepository.find(companyId, wkpId,
+				year);
 		if (optWkpDeforLaborSet.isPresent()) {
 			dtoBuilder.deforLaborSetting(WkpDeforLaborSettingDto.fromDomain(optWkpDeforLaborSet.get()));
 		}
-		
+
 		Optional<WkpTransLaborTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, wkpId);
 		if (optTransLaborTime.isPresent()) {
 			dtoBuilder.transLaborTime(WkpTransLaborHourDto.fromDomain(optTransLaborTime.get()));
@@ -86,6 +90,30 @@ public class WkpStatWorkTimeSetFinder {
 		}
 
 		return dtoBuilder.build();
+	}
+
+	/**
+	 * Find all wkp reg work hour dto.
+	 *
+	 * @return the list
+	 */
+	public List<WkpRegularWorkHourDto> findAllWkpRegWorkHourDto() {
+
+		// get company id
+		String companyId = AppContexts.user().companyId();
+		List<WkpRegularWorkHourDto> listWkpRegWorkHourDto = new ArrayList<>();
+
+		// get list wkp regular labor time
+		List<WkpRegularLaborTime> listWkpRegLaborTime = this.regularWorkTimeRepository.findAll(companyId);
+
+		// check list is not empty
+		if (!listWkpRegLaborTime.isEmpty()) {
+			listWkpRegWorkHourDto = listWkpRegLaborTime.stream()
+					.map(domain -> WkpRegularWorkHourDto.fromDomain(domain)).collect(Collectors.toList());
+		}
+		
+		return listWkpRegWorkHourDto;
+
 	}
 
 }

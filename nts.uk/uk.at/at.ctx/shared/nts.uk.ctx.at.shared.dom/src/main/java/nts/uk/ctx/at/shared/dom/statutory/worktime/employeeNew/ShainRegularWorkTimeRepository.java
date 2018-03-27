@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,4 +41,12 @@ public interface ShainRegularWorkTimeRepository {
     * @param EmpRegWorkHour the emp reg work hour
     */
    void delete(String cid, String empId);
+   
+   /**
+    * Find all.
+    *
+    * @param cid the cid
+    * @return the list
+    */
+   List<ShainRegularLaborTime> findAll(String cid);
 }

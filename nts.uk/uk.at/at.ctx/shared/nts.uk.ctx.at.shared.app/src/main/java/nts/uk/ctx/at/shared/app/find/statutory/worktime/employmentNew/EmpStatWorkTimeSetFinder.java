@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -42,7 +45,7 @@ public class EmpStatWorkTimeSetFinder {
 
 	/** The trans work time repository. */
 	@Inject
-	private EmpTransWorkTimeRepository transWorkTimeRepository; 
+	private EmpTransWorkTimeRepository transWorkTimeRepository;
 
 	/** The regular work time repository. */
 	@Inject
@@ -51,8 +54,10 @@ public class EmpStatWorkTimeSetFinder {
 	/**
 	 * Gets the details.
 	 *
-	 * @param year the year
-	 * @param emplCode the empl code
+	 * @param year
+	 *            the year
+	 * @param emplCode
+	 *            the empl code
 	 * @return the details
 	 */
 	public EmpStatWorkTimeSetDto getDetails(Integer year, String emplCode) {
@@ -65,16 +70,17 @@ public class EmpStatWorkTimeSetFinder {
 			dtoBuilder.normalSetting(EmpNormalSettingDto.fromDomain(optEmpNormalSet.get()));
 		}
 
-		Optional<EmpFlexSetting> optEmpFlexSet = this.flexSettingRepository.find(companyId,emplCode, year);
+		Optional<EmpFlexSetting> optEmpFlexSet = this.flexSettingRepository.find(companyId, emplCode, year);
 		if (optEmpFlexSet.isPresent()) {
 			dtoBuilder.flexSetting(EmpFlexSettingDto.fromDomain(optEmpFlexSet.get()));
 		}
 
-		Optional<EmpDeforLaborSetting> optEmpDeforLaborSet = this.deforLaborSettingRepository.find(companyId,emplCode, year);
+		Optional<EmpDeforLaborSetting> optEmpDeforLaborSet = this.deforLaborSettingRepository.find(companyId, emplCode,
+				year);
 		if (optEmpDeforLaborSet.isPresent()) {
 			dtoBuilder.deforLaborSetting(EmpDeforLaborSettingDto.fromDomain(optEmpDeforLaborSet.get()));
 		}
-		
+
 		Optional<EmpTransLaborTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, emplCode);
 		if (optTransLaborTime.isPresent()) {
 			dtoBuilder.transLaborTime(EmpTransLaborHourDto.fromDomain(optTransLaborTime.get()));
@@ -86,6 +92,29 @@ public class EmpStatWorkTimeSetFinder {
 		}
 
 		return dtoBuilder.build();
+	}
+
+	/**
+	 * Find all emp reg work hour.
+	 *
+	 * @return the list
+	 */
+	public List<EmpRegularWorkHourDto> findAllEmpRegWorkHour() {
+
+		// get company id
+		String companyId = AppContexts.user().companyId();
+		List<EmpRegularWorkHourDto> listEmpRegWorkHourDto = new ArrayList<>();
+
+		// get list employment regular labor time
+		List<EmpRegularLaborTime> listEmpRegLaborTime = this.regularWorkTimeRepository.findListByCid(companyId);
+
+		// check list is not empty
+		if (!listEmpRegLaborTime.isEmpty()) {
+			listEmpRegWorkHourDto = listEmpRegLaborTime.stream().map(domain -> EmpRegularWorkHourDto.fromDomain(domain))
+					.collect(Collectors.toList());
+		}
+
+		return listEmpRegWorkHourDto;
 	}
 
 }

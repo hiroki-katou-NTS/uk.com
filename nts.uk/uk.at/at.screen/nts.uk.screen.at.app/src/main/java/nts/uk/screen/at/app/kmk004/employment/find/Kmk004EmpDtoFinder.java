@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.screen.at.app.kmk004.employment.find;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.employment.EmpMonthCalSetFinder;
+import nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew.EmpRegularWorkHourDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew.EmpStatWorkTimeSetFinder;
 
 /**
@@ -42,5 +45,16 @@ public class Kmk004EmpDtoFinder {
 		kmk004Dto.setMonthCalSetDto(empMonthCalSetFinder.getDetails(empCode));
 
 		return kmk004Dto;
+	}
+	
+
+	/**
+	 * Find all emp regular work hour.
+	 *
+	 * @return the list
+	 */
+	public List<EmpRegularWorkHourDto> findAllEmpRegWorkHour(){
+		return this.empStatWorkTimeSetFinder.findAllEmpRegWorkHour();
+		
 	}
 }

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -29,32 +30,39 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
 @Stateless
 public class JpaShainRegularLaborTimeRepository extends JpaRepository implements ShainRegularWorkTimeRepository {
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime)
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
+	 * ShainRegularWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
 	public void add(ShainRegularLaborTime setting) {
 		commandProxy().insert(this.toEntity(setting));
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime)
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
+	 * ShainRegularWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
 	public void update(ShainRegularLaborTime setting) {
 		commandProxy().update(this.toEntity(setting));
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTime)
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
+	 * ShainRegularWorkTimeRepository#delete(nts.uk.ctx.at.shared.dom.statutory.
+	 * worktime.employeeNew.ShainRegularWorkTime)
 	 */
 	@Override
 	public void delete(String cid, String empId) {
 		commandProxy().remove(KshstShaRegLaborTime.class, new KshstShaRegLaborTimePK(cid, empId));
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#find(java.lang.String, java.lang.String)
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.
+	 * ShainRegularWorkTimeRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<ShainRegularLaborTime> find(String cid, String empId) {
@@ -76,7 +84,8 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	/**
 	 * To entity.
 	 *
-	 * @param emplRegWorkHour the empl reg work hour
+	 * @param emplRegWorkHour
+	 *            the empl reg work hour
 	 * @return the kshst sha reg labor time
 	 */
 	private KshstShaRegLaborTime toEntity(ShainRegularLaborTime emplRegWorkHour) {
@@ -88,7 +97,8 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the shain regular work time
 	 */
 	private ShainRegularLaborTime toDomain(KshstShaRegLaborTime entity) {
@@ -96,5 +106,28 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 			return null;
 		}
 		return new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#findAll(java.lang.String)
+	 */
+	@Override
+	public List<ShainRegularLaborTime> findAll(String cid) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<KshstShaRegLaborTime> cq = cb.createQuery(KshstShaRegLaborTime.class);
+		Root<KshstShaRegLaborTime> root = cq.from(KshstShaRegLaborTime.class);
+
+		// Constructing condition.
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		predicateList
+				.add(cb.equal(root.get(KshstShaRegLaborTime_.kshstShaRegLaborTimePK).get(KshstShaRegLaborTimePK_.cid), cid));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		List<KshstShaRegLaborTime> resultList = em.createQuery(cq).getResultList();
+
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 }

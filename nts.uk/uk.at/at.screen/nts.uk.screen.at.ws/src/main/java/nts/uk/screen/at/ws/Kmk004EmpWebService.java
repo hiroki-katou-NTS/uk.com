@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.screen.at.ws;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew.EmpRegularWorkHourDto;
 import nts.uk.screen.at.app.kmk004.employment.command.Kmk004EmpDeleteCommand;
 import nts.uk.screen.at.app.kmk004.employment.command.Kmk004EmpDeleteCommandHandler;
 import nts.uk.screen.at.app.kmk004.employment.command.Kmk004EmpSaveCommand;
@@ -71,6 +74,17 @@ public class Kmk004EmpWebService {
 	@Path("delete")
 	public void delete(Kmk004EmpDeleteCommand cm) {
 		this.delete.handle(cm);
+	}
+	
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll")
+	public List<EmpRegularWorkHourDto> findAll() {
+		return this.find.findAllEmpRegWorkHour();
 	}
 
 }
