@@ -116,7 +116,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
                 self.acceptScreenConditionSetting().timeMomentConditionValue1(self.timeMomentConditionValue1());
                 self.acceptScreenConditionSetting().timeMomentConditionValue2(self.timeMomentConditionValue2());
                 self.acceptScreenConditionSetting().selectComparisonCondition(self.selectComparisonCondition());
-                setShared('CMF001lOutput', ko.toJS(self.acceptScreenConditionSetting), true);
+                setShared('CMF001lOutput', ko.toJS(self.acceptScreenConditionSetting));
                 nts.uk.ui.windows.close();
             }
 
