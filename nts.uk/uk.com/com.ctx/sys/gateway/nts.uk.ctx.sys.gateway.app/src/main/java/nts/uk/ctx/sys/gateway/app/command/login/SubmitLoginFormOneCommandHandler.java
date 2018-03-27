@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -60,6 +61,9 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkLimitTime(user);
 			
 			//set info to session
+			HttpSession session = context.getCommand().getRequest().getSession(false);
+			if (session != null) session.invalidate();
+			context.getCommand().getRequest().getSession(true);
 			this.initSession(user.get());
 		}
 		return null;
