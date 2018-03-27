@@ -42,6 +42,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	
 	private static final String SELECT_BY_EMP_DATE;
 	
+	private static final String SELECT_BY_DATE_NO_ROOTYPE;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -68,6 +70,13 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.recordDate <= :endDate");
 		builderString.append(" AND e.rootType = :rootType");
 		SELECT_BY_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		SELECT_BY_DATE_NO_ROOTYPE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -186,6 +195,27 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.setParameter("employeeID", employeeID).getList(x -> x.toDomain());
 	}
 
-	
+	@Override
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateAndNoRootType(GeneralDate startDate,
+			GeneralDate endDate, String approverID) {
+		List<ApprovalRootState> result  = new ArrayList<>();
+		List<ApprovalRootState> approvalRootStates = this.queryProxy()
+				.query(SELECT_BY_DATE_NO_ROOTYPE, WwfdtApprovalRootState.class).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList(x -> x.toDomain());
+		if (!CollectionUtil.isEmpty(approvalRootStates)) {
+			for (ApprovalRootState approvalRootState : approvalRootStates) {
+				for (ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()) {
+					for (ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+						for (ApproverState approverState : approvalFrame.getListApproverState()) {
+							if (approverState.getApproverID().equals(approverID)) {
+								result.add(approvalRootState);
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 
 }
