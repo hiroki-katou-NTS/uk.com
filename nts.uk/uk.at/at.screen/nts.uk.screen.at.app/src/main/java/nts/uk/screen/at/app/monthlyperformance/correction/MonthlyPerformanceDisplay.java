@@ -22,6 +22,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyP
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.OperationOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.tmp.MonthlyItemControlAuthDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,12 +41,12 @@ public class MonthlyPerformanceDisplay {
 	 * @param formatCodes: 使用するフォーマットコード：月別実績フォーマットコード
 	 * 表示する項目一覧
 	 */
-	public void getDisplayFormat(List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, SettingUnitType unitType){
-		DisplayItem dispItem;
+	public DisplayItem getDisplayFormat(List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
 		//会社ID：ログイン会社に一致する
 		String cId = AppContexts.user().companyId();
 		//ロールID：ログイン社員の就業ロールに一致する
 		String employmentRoleID = AppContexts.user().roles().forAttendance();
+		DisplayItem dispItem;
 		//権限の場合 
 		if(unitType == SettingUnitType.AUTHORITY){
 			//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
@@ -76,6 +77,8 @@ public class MonthlyPerformanceDisplay {
 			
 		}
 		DisplayItem lockItem = new DisplayItem();
+		
+		return dispItem;
 	}
 
 	/**

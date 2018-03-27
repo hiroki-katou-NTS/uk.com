@@ -8,7 +8,7 @@
 }
 #multi-archieve-message{
 	width:250px;
-	margin-left: 213px;
+	margin-left: 195px;
 }
 #btnVacationRemaining {
 	margin-left: 50px;
@@ -32,18 +32,20 @@
 }
 
 #btn-signAll {
-	margin: 3px 0 0 200px;
+	margin: 3px 0 0 368px;
 }
-
+#btn-unSignAll {
+	margin: 3px 0 0 20px;
+}
 #btn-saveColumnWidth {
 	/* float: right; */
-	margin-top: 3px;
+	margin: 3px 0 0 30px;
 }
 
 #btn-legend {
 	/* float: left; */
 	margin-top: 3px;
-	margin-left: 200px;
+	margin-left: 80px;
 }
 
 .grid-container {
@@ -56,7 +58,7 @@
 	display: inline-block;
 	margin: 3px ;
 	/* position: relative; */
-	margin-left: 100px;
+	margin-left: 30px;
 }
 
 #setting-content {
@@ -67,8 +69,8 @@
 	position: absolute;
 	z-index: 2;
 	background-color: white;
-	margin-left: 566px;
-    margin-top: 142px;
+	margin-left: 712px;
+    margin-top: 124px;
 	padding: 15px;
 	visibility: hidden;
 	top: -9999px;

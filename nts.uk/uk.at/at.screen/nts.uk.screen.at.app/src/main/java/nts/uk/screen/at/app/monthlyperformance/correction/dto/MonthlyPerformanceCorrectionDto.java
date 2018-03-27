@@ -1,12 +1,16 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
-import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -15,18 +19,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @Setter
 public class MonthlyPerformanceCorrectionDto {
-	/**
-	 * 承認処理の利用設定
-	 */
-	private ApprovalProcessingUseSetting approvalProcessingUseSetting;
-	/**
-	 * 本人確認処理の利用設定
-	 */
-	private IdentityProcessUseSet identityProcessUseSet;
-	/**
-	 * 現在の締め期間
-	 */
-	private PresentClosingPeriodExport presentClosingPeriodExport;
+
+	private Set<ItemValue> itemValues;
+	private MPControlDisplayItem lstControlDisplayItem;
+	private String employmentCode;
+	private List<DailyPerformanceEmployeeDto> lstEmployee;
+	private List<MPDataDto> lstData;
+	private Map<String, String > data;
+	private List<MPCellStateDto> lstCellState;
 	/**
 	 * list fixed header
 	 */
@@ -57,4 +57,16 @@ public class MonthlyPerformanceCorrectionDto {
 	 * ※一致する期間がない場合は、先頭を選択状態にする
 	 */
 	private DatePeriod selectedActualTime;
+	
+	public MonthlyPerformanceCorrectionDto(){
+		super();
+		this.lstFixedHeader = MPHeaderDto.GenerateFixedHeader();
+		this.lstData = new ArrayList<>();
+		this.lstCellState = new ArrayList<>();
+		this.lstControlDisplayItem = new MPControlDisplayItem();
+		this.itemValues = new HashSet<>();
+		this.data = new HashMap<>();
+		//this.dPErrorDto = new ArrayList<>();
+		
+	}
 }

@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmw003.a.service {
     var paths: any = {
-        startScreen: "screen/at/correctionofdailyperformance/startScreen",
+        startScreen: "screen/at/monthlyperformance/startScreen",
         saveColumnWidth: "screen/at/correctionofdailyperformance/updatecolumnwidth",
         selectErrorCode: "screen/at/correctionofdailyperformance/errorCode",
         selectFormatCode: "screen/at/correctionofdailyperformance/selectCode",

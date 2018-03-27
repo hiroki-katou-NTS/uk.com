@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -36,6 +38,9 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPControlDisplayItem;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPHeaderDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.OperationOfMonthlyPerformanceDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -82,15 +87,16 @@ public class MonthlyPerformanceCorrectionProcessor {
 		AppContexts.user().roles();
 		MonthlyPerformanceCorrectionDto screenDto = new MonthlyPerformanceCorrectionDto();
 		// ドメインモデル「実績修正画面で利用するフォーマット」を取得する		
-		Optional<FormatPerformance> formatPerformance = formatPerformanceRepository.getFormatPerformanceById(companyId);
+		//Optional<FormatPerformance> formatPerformance = formatPerformanceRepository.getFormatPerformanceById(companyId);
 		// ドメインモデル「月別実績の修正の機能」を取得する
-		Optional<MonPerformanceFun> monPerformanceFun = monPerformanceFunRepository.getMonPerformanceFunById(companyId);
+		//Optional<MonPerformanceFun> monPerformanceFun = monPerformanceFunRepository.getMonPerformanceFunById(companyId);
 		// ドメインモデル「承認処理の利用設定」を取得する
-		Optional<ApprovalProcess> approvalProcess = approvalProcessRepository.getApprovalProcessById(companyId);
+		//Optional<ApprovalProcess> approvalProcess = approvalProcessRepository.getApprovalProcessById(companyId);
 		// ドメインモデル「本人確認処理の利用設定」を取得する
-		Optional<IdentityProcess> identityProcess = identityProcessRepository.getIdentityProcessById(companyId);
+		//Optional<IdentityProcess> identityProcess = identityProcessRepository.getIdentityProcessById(companyId);
 		
 		//ドメインモデル「勤務実績の権限」を取得する
+		//(Lấy quyền thực hiện monthly result của thằng login)
 		//TODO 勤務実績の権限 Authority of the work record
 		boolean isExistAuthorityWorkRecord = true;
 		//存在しない場合
@@ -106,12 +112,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 		//アルゴリズム「処理年月の取得」を実行する
 		//Láy ngày tháng năm xử lý
 		Optional<PresentClosingPeriodExport> presentClosingPeriodExport = this.shClosurePub.find(companyId, closureId);
-		screenDto.setPresentClosingPeriodExport(presentClosingPeriodExport.orElse(null));
 		
 		//アルゴリズム「締め情報の表示」を実行する
 		Integer yearMonth = 0;
-		if (screenDto.getPresentClosingPeriodExport() != null) {
-			yearMonth = screenDto.getPresentClosingPeriodExport().getProcessingYm().v();
+		if (presentClosingPeriodExport.isPresent()) {
+			yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
+			screenDto.setProcessDate(yearMonth);
 		}
 		this.displayClosure(screenDto, companyId, closureId, yearMonth);
 		
@@ -120,23 +126,32 @@ public class MonthlyPerformanceCorrectionProcessor {
 		//「月別実績の修正」からの場合
 		if (initMode == 0) {
 			//アルゴリズム「通常モードで起動する」を実行する
-			monthlyDisplay.getDisplayFormat(lstEmployees, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType());
+			//monthlyDisplay.getDisplayFormat(lstEmployees, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType());
+			DisplayItem dispItem = monthlyDisplay.getDisplayFormat(lstEmployees, formatCodes, correctionOfDaily, SettingUnitType.AUTHORITY, screenDto);
+			
+			//アルゴリズム「月別実績を表示する」を実行する
+			//Hiển thị monthly result
+			//TODO Dummy data
+			//screenDto.setLstControlDisplayItem(new MPControlDisplayItem());
+			//Add dummy header
+			screenDto.getLstControlDisplayItem().getLstHeader().addAll(MPHeaderDto.GenerateFixedHeader());
+			screenDto.getLstControlDisplayItem().getLstHeader().add(new MPHeaderDto("Inbound time", "time", "String", "140px", "", false, "Label", true, true));
+			screenDto.getLstControlDisplayItem().getLstHeader().add(new MPHeaderDto("Button", "alert", "String", "140px", "", false, "Button", true, true));
+			screenDto.setLstFixedHeader(MPHeaderDto.GenerateFixedHeader());
+			screenDto.setProcessDate(201803);
+			//
+			screenDto.setLstActualTimes(Arrays.asList(new ActualTime(GeneralDate.today(), GeneralDate.today())));
+			//comment
+			screenDto.setComment("生産性を上げて残業時間を減らしましょう！");
+			//A4_2：対象締め日
+			screenDto.setClosureName("末締め");
+			//End dummy data
 		}
 		//「月別実績の承認」からの場合
 		else{
 			//TODO 対象外
 		}
 		
-		/*// 承認処理の利用設定
-		Optional<ApprovalProcessingUseSetting> approvalProcessingUseSetting
-				= this.approvalProcessingUseSettingRepository.findByCompanyId(companyId);
-		// 本人確認処理の利用設定
-		Optional<IdentityProcessUseSet> identityProcessUseSet
-				= this.identityProcessUseSetRepository.findByKey(companyId);
-		
-
-		screenDto.setApprovalProcessingUseSetting(approvalProcessingUseSetting.orElse(null));
-		screenDto.setIdentityProcessUseSet(identityProcessUseSet.orElse(null));*/
 		
 		return screenDto;
 	}
@@ -191,5 +206,17 @@ public class MonthlyPerformanceCorrectionProcessor {
 			//画面項目「A4_4：実績期間選択」の選択状態を変更する
 			screenDto.setSelectedActualTime(datePeriod);
 		}		
+	}
+	/**
+	 * 月別実績を表示する
+	 */
+	private void displayMonthlyResult(MonthlyPerformanceCorrectionDto screenDto){
+		//社員ID（List）から社員コードと表示名を取得
+		//Lấy employee code và tên hiển thị từ list employeeID
+		//TODO Get data from 社員データ管理情報(Employee data management information) 
+		//SyEmployeePub 
+		
+		//対象年月に対応する月別実績を取得する
+		
 	}
 }

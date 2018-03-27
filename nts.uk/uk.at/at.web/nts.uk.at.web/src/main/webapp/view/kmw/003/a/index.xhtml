@@ -49,9 +49,9 @@
 					<!--A1_3 就業確定ボタン--> 
 					<button data-bind="{}">#{i18n.getText('KMW003_4')}</button>
 					<!--A1_4 抽出条件の設定ボタン--> 
-					<button data-bind="{}">#{i18n.getText('KMW003_5')}</button>
+					<button data-bind="{click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
 					<!--A1_5 表示項目の選択ボタン--> 
-					<button data-bind="{}">#{i18n.getText('KMW003_6')}</button>
+					<button data-bind="{click: displayItem}">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
 					<!--A1_6 修正履歴ボタン-->					
 					<!--A1_7 印刷ボタン--> 
@@ -107,7 +107,9 @@
 					</div>
 					<div id="content-grid-not">
 						<!--A5_1 一括承認ボタン--> 
-						<button id="btn-signAll" data-bind="{}" >#{i18n.getText('KMW003_14')}</button>
+						<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KMW003_14')}</button>
+						<!--A5_6 一括解除ボタン	--> 
+						<button id="btn-unSignAll" data-bind="click: releaseAll">#{i18n.getText('KMW003_88')}</button>
 						<!--A5_3 凡例ボタン--> 
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
 						<!--A5_4 列幅保存ボタン--> 							
@@ -148,7 +150,6 @@
 					</div>
 					<div class="compact-grid grid-container" id="gid">
 						<table id="dpGrid"></table>
-						<div id="sample-component"></div>
 					</div>
 					<!--A7_1 コメント--> 
 					<span style="margin: 10px 0 0 18px; display: inline-block;"

@@ -12,7 +12,7 @@ import nts.uk.screen.at.ws.monthlyperformance.MPParams;
 /**
  * TODO
  */
-@Path("screen/at/correctionofmonthlyperformance")
+@Path("screen/at/monthlyperformance")
 @Produces("application/json")
 public class MonthlyPerformanceCorrectionWebService {
 	@Inject
