@@ -72,10 +72,4 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 						c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes()))
 				.collect(Collectors.toList());
 	}
-
-	public BreakTimeOfDailyPerformance toDomain() {
-		BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = new BreakTimeOfDailyPerformance(
-				this.krcdtDaiBreakTimePK.employeeId, this.krcdtDaiBreakTimePK.breakType, breakTimeSheets,
-				this.krcdtDaiBreakTimePK.ymd);
-	}
 }

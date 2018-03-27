@@ -857,7 +857,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(employeeID, day, stampOutput,
 						affiliationInforOfDailyPerfor, workInfoOfDailyPerformanceUpdate, specificDateAttrOfDailyPerfor,
-						calAttrOfDailyPerformance, workTypeOfDailyPerformance);
+						calAttrOfDailyPerformance, workTypeOfDailyPerformance, breakTimeOfDailyPerformance.get());
 			}
 		}
 
