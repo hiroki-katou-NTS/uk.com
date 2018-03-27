@@ -245,9 +245,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																   :holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly();
 		if(jugmentDeductLateEarly(premiumAtr,deductLateLeaveEarly)) {
 			//遅刻控除時間を計算
-			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late, holidayCalcMethodSet).getTime().valueAsMinutes();
+			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late, holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
 			//早退控除時間を計算
-			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly, holidayCalcMethodSet).getTime().valueAsMinutes();
+			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
 			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
 			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
 		}

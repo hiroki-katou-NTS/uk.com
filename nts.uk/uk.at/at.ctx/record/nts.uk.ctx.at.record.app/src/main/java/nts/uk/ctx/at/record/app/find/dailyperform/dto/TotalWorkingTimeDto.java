@@ -17,14 +17,14 @@ import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+
 
 /** 日別実績の総労働時間 */
 @Data
@@ -159,7 +159,7 @@ public class TotalWorkingTimeDto {
 				raisingSalaryTime == null ? null : raisingSalaryTime.toDomain(),
 				workTimes == null ? null : new WorkTimes(workTimes),
 				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime,
-								(c) -> new TemporaryFrameTimeOfDaily(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(c.getWorkNo()),
+								(c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
 				shortWorkTime == null ? null : new ShortWorkTimeOfDaily(

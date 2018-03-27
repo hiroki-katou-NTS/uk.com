@@ -10,15 +10,15 @@ import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -98,8 +98,8 @@ public class LateTimeOfDaily {
 		
 		//遅刻計上時間の計算
 		TimeWithCalculation lateTime = lateTimeSheet.calcForRecordTime(late);
-		//遅刻控除時間の計算
-		TimeWithCalculation lateDeductionTime = lateTimeSheet.calcDedctionTime(late,holidayCalcMethodSet);
+		//遅刻控除時間の計算 
+		TimeWithCalculation lateDeductionTime = lateTimeSheet.calcDedctionTime(late,NotUseAtr.To);
 		
 		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily(lateTime,
 															  lateDeductionTime,

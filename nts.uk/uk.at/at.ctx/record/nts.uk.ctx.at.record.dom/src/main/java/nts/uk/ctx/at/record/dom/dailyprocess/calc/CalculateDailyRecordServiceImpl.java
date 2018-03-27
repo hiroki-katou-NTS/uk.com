@@ -358,7 +358,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().v());
-				//val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().v());
 				subHolTransferSetList = fixedWorkSetting.get().getCommonSetting().getSubHolTimeSet();
 				val regularWork = holidayAddtionRepository.findByCId(companyId).get().getRegularWork();
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
@@ -388,7 +387,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						breakTimeOfDailyList,
 						midNightTimeSheet,
 						personalInfo,
-						//Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
 						Optional.empty(),
 						new WorkTimeCalcMethodDetailOfHoliday(regularWork.getNotDeductLateleave2(),regularWork.getAdditionTime2()));
 				break;
@@ -439,7 +437,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		AutoCalSetting holidayAutoCalcSetting = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalHolidaySetting autoHolidaySet = new AutoCalHolidaySetting(aCalcSet, aCalcSet);
 		//遅刻早退の自動計算設定
-		AutoCalOfLeaveEarlySetting lateLeave = new AutoCalOfLeaveEarlySetting(LeaveAttr.NOT_USE, LeaveAttr.NOT_USE);
+		AutoCalOfLeaveEarlySetting lateLeave = new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE);
 		//加給の自動計算設定
 		RaisingSalaryCalcAtr raisingAutoCalcSet = new RaisingSalaryCalcAtr(true,true);
 		AutoCalRaisingSalarySetting autoRaisingSet = new  AutoCalRaisingSalarySetting(SalaryCalAttr.USE,SpecificSalaryCalAttr.USE);
@@ -474,42 +472,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//固定勤務の加算設定
 		AddSettingOfRegularWork regularAddSetting = new AddSettingOfRegularWork(new CompanyId(companyId),holidaycalcMethodSet);
 
-		
-//		//遅刻時間帯
-//		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.empty(),
-//														Optional.empty(),
-//														1,
-//														Optional.empty());
-//		
-//		//日別実績の遅刻時間帯
-//		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
-//															  TimeWithCalculation.sameTime(new AttendanceTime(0)), 
-//															  new nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo(1), 
-//															  new TimevacationUseTimeOfDaily(new AttendanceTime(0), 
-//																	  						 new AttendanceTime(0), 
-//																	  						 new AttendanceTime(0), 
-//																	  						 new AttendanceTime(0)), 
-//															  new IntervalExemptionTime(new AttendanceTime(0),
-//																	  					new AttendanceTime(0),
-//																	  					new AttendanceTime(0))
-//															  );
-//		//早退時間帯
-//		LeaveEarlyTimeSheet leaveEarlyTimeSheet= new LeaveEarlyTimeSheet(Optional.empty(),
-//																		 Optional.empty(),
-//																		 1,
-//																		 Optional.empty());
-//		//日別実績の早退時間帯
-//		LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily = new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
-//				  											                    TimeWithCalculation.sameTime(new AttendanceTime(0)), 
-//				  											                    new nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo(1), 
-//				  											                    new TimevacationUseTimeOfDaily(new AttendanceTime(0), 
-//				  											                    		new AttendanceTime(0), 
-//				  											                    		new AttendanceTime(0), 
-//				  											                    		new AttendanceTime(0)), 
-//				  											                    new IntervalExemptionTime(new AttendanceTime(0),
-//				  											                    		new AttendanceTime(0),
-//				  											                    		new AttendanceTime(0))
-//				  																);
 		//個人労働条件
 		PersonalLaborCondition personalLabor = new PersonalLaborCondition(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 
@@ -543,10 +505,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					Optional.empty(),//Optional.of(personalLabor),
 				    vacation,
 				    workType.get(),
-//				    lateTimeSheet,
-//				    leaveEarlyTimeSheet,
-//				    lateTimeOfDaily,
-//				    leaveEarlyTimeOfDaily,
 				    lateLeave.getLeaveLate().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    lateLeave.getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    manageReGetClass.getPersonalInfo().getWorkingSystem(),

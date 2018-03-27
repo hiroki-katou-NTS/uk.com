@@ -170,10 +170,6 @@ public class TotalWorkingTime {
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType workType,
-//			   LateTimeSheet lateTimeSheet,
-//			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-//			   LateTimeOfDaily lateTimeOfDaily,
-//			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
@@ -198,10 +194,6 @@ public class TotalWorkingTime {
 				   																      personalCondition,
 				   																      vacationClass,
 				   																      workType,
-//				   																      lateTimeSheet,
-//				   																      leaveEarlyTimeSheet,
-//				   																      lateTimeOfDaily,
-//				   																      leaveEarlyTimeOfDaily,
 				   																      late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   																      leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   																      workingSystem,
@@ -228,8 +220,6 @@ public class TotalWorkingTime {
 																									StatutoryDivision.Nomal,
 																									workTimeCode,
 																									personalCondition,
-//																									lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-//																									leaveEarlyTimeOfDaily,
 																									late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																									leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																									workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
@@ -250,37 +240,6 @@ public class TotalWorkingTime {
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTime = new ArrayList<>();
 		for(TimeLeavingWork work : oneDay.getAttendanceLeavingWork().getTimeLeavingWorks())
 			leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(oneDay, work.getWorkNo(),leaveEarly,holidayCalcMethodSet));
-		
-//		//2018.02.14　一時的対応 byホシナ ↓				
-//		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//										 new WorkNo(1),
-//										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-//										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-//										 ));
-//		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//										TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//										new WorkNo(2),
-//										new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-//										new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-//				 						));
-//			 		
-//		//日別実績の早退時間
-//		List<LeaveEarlyTimeOfDaily> earlyTime = new ArrayList<>();
-//		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//									    TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//									    new WorkNo(1),
-//									    new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-//									    new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-//										));
-//		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//										  TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//										  new WorkNo(2),
-//										  new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-//										  new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
-//					));
-//		//2018.02.14　一時的対応 byホシナ ↑
-
 		
 		//日別実績の休憩時間
 		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(oneDay);
@@ -325,8 +284,8 @@ public class TotalWorkingTime {
 									actualTime,
 									withinStatutoryTimeOfDaily,
 									excesstime,
-									Collections.emptyList(),
-									Collections.emptyList(),
+									lateTime,
+									leaveEarlyTime,
 									breakTime,
 									outingList,
 									raiseTime,

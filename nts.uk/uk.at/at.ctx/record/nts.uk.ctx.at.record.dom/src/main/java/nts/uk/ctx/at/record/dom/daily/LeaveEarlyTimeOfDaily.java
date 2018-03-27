@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
 
 /**
  * 日別実績の早退時間
@@ -103,7 +104,7 @@ public class LeaveEarlyTimeOfDaily {
 		//早退計上時間の計算
 		TimeWithCalculation leaveEarlyTime = leaveEarlyTimeSheet.calcForRecordTime(leaveEarly);
 		//早退控除時間の計算
-		TimeWithCalculation leaveEarlyDeductionTime = leaveEarlyTimeSheet.calcDedctionTime(leaveEarly,holidayCalcMethodSet);
+		TimeWithCalculation leaveEarlyDeductionTime = leaveEarlyTimeSheet.calcDedctionTime(leaveEarly,NotUseAtr.To);
 		
 		LeaveEarlyTimeOfDaily LeaveEarlyTimeOfDaily = new LeaveEarlyTimeOfDaily(leaveEarlyTime,
 															  					leaveEarlyDeductionTime,
