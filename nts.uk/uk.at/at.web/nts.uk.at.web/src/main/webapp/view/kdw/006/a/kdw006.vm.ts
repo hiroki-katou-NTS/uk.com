@@ -30,6 +30,9 @@ module nts.uk.at.view.kdw006 {
             opendOperationSetting() {
                 nts.uk.request.jump("/view/kdw/006/b/index.xhtml");
             }
+            openKDW002(){
+                nts.uk.request.jump("/view/kdw/002/c/index.xhtml");
+            }
         }
     }
 }

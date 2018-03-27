@@ -6,8 +6,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemA
 
 public interface DailyAttdItemAuthRepository {
 	
-	List<DailyAttendanceItemAuthority> getListDailyAttendanceItemAuthority(String authorityId, String companyId);
+	List<DailyAttendanceItemAuthority> getListDailyAttendanceItemAuthority(String companyId);
 	
-	void updateListDailyAttendanceItemAuthority (List<DailyAttendanceItemAuthority> lstDailyAttendanceItemAuthority);
 	
 }
