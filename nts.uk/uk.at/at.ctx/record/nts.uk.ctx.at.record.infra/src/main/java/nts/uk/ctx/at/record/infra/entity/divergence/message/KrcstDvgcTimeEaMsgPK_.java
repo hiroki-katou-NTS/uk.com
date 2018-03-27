@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.divergence.time;
+package nts.uk.ctx.at.record.infra.entity.divergence.message;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;

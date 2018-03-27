@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.divergence.time;
+package nts.uk.ctx.at.record.infra.entity.divergence.message;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KrcstWtdvgcTimeEaMsgPK implements Serializable {
+public class KrcstDvgcwtTimeEaMsgPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
@@ -36,7 +36,7 @@ public class KrcstWtdvgcTimeEaMsgPK implements Serializable {
 	/**
 	 * Instantiates a new krcst wtdvgc time ea msg PK.
 	 */
-	public KrcstWtdvgcTimeEaMsgPK() {
+	public KrcstDvgcwtTimeEaMsgPK() {
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class KrcstWtdvgcTimeEaMsgPK implements Serializable {
 	 * @param dvgcTimeNo the dvgc time no
 	 * @param worktypeCd the worktype cd
 	 */
-	public KrcstWtdvgcTimeEaMsgPK(String cid, Integer dvgcTimeNo, String worktypeCd) {
+	public KrcstDvgcwtTimeEaMsgPK(String cid, Integer dvgcTimeNo, String worktypeCd) {
 		this.cid = cid;
 		this.dvgcTimeNo = dvgcTimeNo;
 		this.worktypeCd = worktypeCd;
@@ -59,10 +59,10 @@ public class KrcstWtdvgcTimeEaMsgPK implements Serializable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof KrcstWtdvgcTimeEaMsgPK)) {
+		if (!(other instanceof KrcstDvgcwtTimeEaMsgPK)) {
 			return false;
 		}
-		KrcstWtdvgcTimeEaMsgPK castOther = (KrcstWtdvgcTimeEaMsgPK)other;
+		KrcstDvgcwtTimeEaMsgPK castOther = (KrcstDvgcwtTimeEaMsgPK)other;
 		return 
 			this.cid.equals(castOther.cid)
 			&& (this.dvgcTimeNo == castOther.dvgcTimeNo)

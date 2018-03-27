@@ -1,9 +1,7 @@
-/*
- * 
- */
-package nts.uk.ctx.at.record.infra.entity.divergence.time;
+package nts.uk.ctx.at.record.infra.entity.divergence.time.history;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -16,29 +14,33 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The persistent class for the KRCST_DVGC_TIME_EA_MSG database table.
+ * The persistent class for the KRCST_DRT database table.
  * 
  */
 @Getter
 @Setter
 @Entity
-@Table(name="KRCST_DVGC_TIME_EA_MSG")
-public class KrcstDvgcTimeEaMsg extends UkJpaEntity implements Serializable {
+@Table(name="KRCST_DRT")
+public class KrcstDrt extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The id. */
 	@EmbeddedId
-	private KrcstDvgcTimeEaMsgPK id;
+	private KrcstDrtPK id;
 
-	/** The alarm message. */
-	@Column(name="ALARM_MESSAGE")
-	private String alarmMessage;
+	/** The alarm time. */
+	@Column(name="ALARM_TIME")
+	private BigDecimal alarmTime;
 
-	/** The error message. */
-	@Column(name="ERROR_MESSAGE")
-	private String errorMessage;
+	/** The dvgc time use set. */
+	@Column(name="DVGC_TIME_USE_SET")
+	private BigDecimal dvgcTimeUseSet;
+
+	/** The error time. */
+	@Column(name="ERROR_TIME")
+	private BigDecimal errorTime;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

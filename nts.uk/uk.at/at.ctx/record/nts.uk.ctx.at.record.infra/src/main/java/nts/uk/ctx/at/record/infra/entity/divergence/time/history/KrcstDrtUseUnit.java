@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.divergence.time;
+package nts.uk.ctx.at.record.infra.entity.divergence.time.history;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -10,8 +10,8 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeEr
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsg;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsgPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.message.KrcstDvgcwtTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.message.KrcstDvgcwtTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -31,9 +31,9 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository extends JpaRep
 	@Override
 	public Optional<WorkTypeDivergenceTimeErrorAlarmMessage> getByDivergenceTimeNo(Integer divergenceTimeNo,
 			CompanyId cId, BusinessTypeCode workTypeCode) {
-		KrcstWtdvgcTimeEaMsgPK pk = new KrcstWtdvgcTimeEaMsgPK(cId.v(), divergenceTimeNo, workTypeCode.v());
+		KrcstDvgcwtTimeEaMsgPK pk = new KrcstDvgcwtTimeEaMsgPK(cId.v(), divergenceTimeNo, workTypeCode.v());
 
-		return this.queryProxy().find(pk, KrcstWtdvgcTimeEaMsg.class).map(item -> this.toDomain(item));
+		return this.queryProxy().find(pk, KrcstDvgcwtTimeEaMsg.class).map(item -> this.toDomain(item));
 	}
 
 	/*
@@ -67,7 +67,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository extends JpaRep
 	 *            the entity
 	 * @return the divergence time error alarm message
 	 */
-	private WorkTypeDivergenceTimeErrorAlarmMessage toDomain(KrcstWtdvgcTimeEaMsg entity) {
+	private WorkTypeDivergenceTimeErrorAlarmMessage toDomain(KrcstDvgcwtTimeEaMsg entity) {
 		WorkTypeDivergenceTimeErrorAlarmMessageGetMemento memento = new JpaWorkTypeDivergenceTimeErrorAlarmMessageGetMemento(
 				entity);
 		return new WorkTypeDivergenceTimeErrorAlarmMessage(memento);
@@ -80,12 +80,12 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository extends JpaRep
 	 *            the domain
 	 * @return the krcst dvgc time ea msg
 	 */
-	private KrcstWtdvgcTimeEaMsg toEntity(WorkTypeDivergenceTimeErrorAlarmMessage domain) {
-		KrcstWtdvgcTimeEaMsgPK pk = new KrcstWtdvgcTimeEaMsgPK(domain.getCId().v(), domain.getDivergenceTimeNo(),
+	private KrcstDvgcwtTimeEaMsg toEntity(WorkTypeDivergenceTimeErrorAlarmMessage domain) {
+		KrcstDvgcwtTimeEaMsgPK pk = new KrcstDvgcwtTimeEaMsgPK(domain.getCId().v(), domain.getDivergenceTimeNo(),
 				domain.getWorkTypeCode().v());
 
-		KrcstWtdvgcTimeEaMsg entity = this.queryProxy().find(pk, KrcstWtdvgcTimeEaMsg.class)
-				.orElse(new KrcstWtdvgcTimeEaMsg());
+		KrcstDvgcwtTimeEaMsg entity = this.queryProxy().find(pk, KrcstDvgcwtTimeEaMsg.class)
+				.orElse(new KrcstDvgcwtTimeEaMsg());
 
 		WorkTypeDivergenceTimeErrorAlarmMessageSetMemento memento = new JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento(
 				entity);

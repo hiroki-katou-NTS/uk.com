@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.message.KrcstDvgcwtTimeEaMsg;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -16,7 +16,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageGetMemento
 		implements WorkTypeDivergenceTimeErrorAlarmMessageGetMemento {
 
 	/** The entity. */
-	private KrcstWtdvgcTimeEaMsg entity;
+	private KrcstDvgcwtTimeEaMsg entity;
 
 	/**
 	 * Instantiates a new jpa work type divergence time error alarm message get
@@ -32,7 +32,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTypeDivergenceTimeErrorAlarmMessageGetMemento(KrcstWtdvgcTimeEaMsg entity) {
+	public JpaWorkTypeDivergenceTimeErrorAlarmMessageGetMemento(KrcstDvgcwtTimeEaMsg entity) {
 		this.entity = entity;
 	}
 

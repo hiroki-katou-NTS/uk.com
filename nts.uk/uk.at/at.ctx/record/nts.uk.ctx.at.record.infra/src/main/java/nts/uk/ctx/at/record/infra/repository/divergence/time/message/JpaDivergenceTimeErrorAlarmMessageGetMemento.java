@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.message.KrcstDvgcTimeEaMsg;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
