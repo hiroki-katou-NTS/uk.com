@@ -10,8 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 
 /**
- * @author sonnlb
- * 振休申請Dto
+ * @author sonnlb 振休申請Dto
  */
 @Data
 @AllArgsConstructor
@@ -30,10 +29,6 @@ public class AbsenceLeaveAppDto {
 	 * 就業時間帯変更
 	 */
 	private int changeWorkHoursType;
-	/**
-	 * 勤務場所コード
-	 */
-	private String workLocationCD;
 	/**
 	 * 就業時間帯
 	 */
@@ -67,8 +62,8 @@ public class AbsenceLeaveAppDto {
 				domain.getWorkTime2().getEndTime().v());
 		List<SubTargetDigestionDto> subTargetDigestions = new ArrayList<SubTargetDigestionDto>();
 		domain.getSubTargetDigestions().forEach(x -> {
-			subTargetDigestions.add(new SubTargetDigestionDto(x.getRecAppID(), x.getAbsenceLeaveAppID(),
-					x.getHoursUsed(), x.getLeaveMngDataID(), x.getBreakOutDate(), x.getRestState().value));
+			subTargetDigestions.add(new SubTargetDigestionDto(x.getAppID(), x.getHoursUsed(), x.getLeaveMngDataID(),
+					x.getBreakOutDate(), x.getRestState().value));
 		});
 
 		List<SubDigestionDto> subDigestions = new ArrayList<SubDigestionDto>();
@@ -77,8 +72,8 @@ public class AbsenceLeaveAppDto {
 					x.getPayoutMngDataID(), x.getPickUpState().value, x.getOccurrenceDate()));
 		});
 		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD(),
-				domain.getChangeWorkHoursType().value, domain.getWorkLocationCD().v(), domain.getWorkTimeCD().v(),
-				WorkTime1, WorkTime2, subTargetDigestions, subDigestions, appDate);
+				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD().v(), WorkTime1, WorkTime2,
+				subTargetDigestions, subDigestions, appDate);
 
 		return result;
 	}

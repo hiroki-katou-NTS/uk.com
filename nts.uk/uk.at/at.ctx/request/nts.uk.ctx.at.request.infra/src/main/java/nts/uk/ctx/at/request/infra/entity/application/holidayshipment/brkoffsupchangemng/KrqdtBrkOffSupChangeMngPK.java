@@ -27,17 +27,19 @@ public class KrqdtBrkOffSupChangeMngPK implements Serializable {
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 振出申請ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "REC_APP_ID")
-	private String recAppID;
-
+	
 	/**
 	 * 振休申請ID
 	 */
 	@Basic(optional = false)
 	@Column(name = "ABSENCE_LEAVE_APP_ID")
 	private String absenceLeaveAppID;
+	
+	/**
+	 * 休出申請ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "LEAVE_APP_ID")
+	private String leaveAppID;
+
 }

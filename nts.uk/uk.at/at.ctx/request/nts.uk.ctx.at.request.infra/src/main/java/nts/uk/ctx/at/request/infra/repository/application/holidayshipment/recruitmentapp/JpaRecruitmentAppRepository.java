@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.ManagementDataAtr;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
@@ -51,22 +50,20 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 				.query(FIND_SUB_TAG_DIG_BY_REC_ID, KrqdtSubTargetDigestion.class)
 				.setParameter("recAppID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
 
-		return new RecruitmentApp(entity.getAppID(), entity.getWorkTypeCD(),
-				new WorkLocationCD(entity.getWorkLocationCD()), new WorkTimeCode(entity.getWorkTimeCD()), workTime1,
-				workTime2, subTargetDigestions);
+		return new RecruitmentApp(entity.getAppID(), entity.getWorkTypeCD(), new WorkTimeCode(entity.getWorkTimeCD()),
+				workTime1, workTime2, subTargetDigestions);
 	}
 
 	private SubTargetDigestion toSubTagDigestion(KrqdtSubTargetDigestion entity) {
-		return new SubTargetDigestion(entity.getPk().getRecAppID(), entity.getPk().getAbsenceLeaveAppID(),
-				entity.getHoursUsed(), entity.getLeaveMngDataID(), entity.getBreakOutDate(),
-				EnumAdaptor.valueOf(entity.getRestState(), ManagementDataAtr.class));
+		return new SubTargetDigestion(entity.getAppID(), entity.getHoursUsed(), entity.getLeaveMngDataID(),
+				entity.getBreakOutDate(), EnumAdaptor.valueOf(entity.getRestState(), ManagementDataAtr.class),
+				entity.getUnknownDate());
 	}
 
 	private KrqdtRecruitmentApp toEntity(RecruitmentApp recApp) {
 		KrqdtRecruitmentApp entity = new KrqdtRecruitmentApp();
 		entity.setAppID(recApp.getAppID());
 		entity.setWorkTypeCD(recApp.getWorkTypeCD());
-		entity.setWorkLocationCD(recApp.getWorkLocationCD().v());
 		entity.setWorkTimeCD(recApp.getWorkTimeCD().v());
 
 		RecruitmentWorkingHour wkTime1 = recApp.getWorkTime1();
@@ -85,6 +82,12 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 		}
 
 		return entity;
+
+	}
+
+	@Override
+	public void update(RecruitmentApp recApp) {
+		this.commandProxy().update(toEntity(recApp));
 
 	}
 

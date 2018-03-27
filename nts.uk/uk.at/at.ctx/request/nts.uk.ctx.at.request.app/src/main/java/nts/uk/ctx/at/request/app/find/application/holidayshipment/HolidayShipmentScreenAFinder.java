@@ -187,10 +187,10 @@ public class HolidayShipmentScreenAFinder {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.fromString(
-				comType == ApplicationCombination.Holiday.value ? holidayDateImput : takingOutDateInput, DATE_FORMAT);
-		GeneralDate takingOutDate = comType == ApplicationCombination.TakingOut.value
+				comType == ApplicationCombination.Rec.value ? holidayDateImput : takingOutDateInput, DATE_FORMAT);
+		GeneralDate takingOutDate = comType == ApplicationCombination.Abs.value
 				? GeneralDate.fromString(takingOutDateInput, DATE_FORMAT) : null;
-		GeneralDate holidayDate = comType == ApplicationCombination.Holiday.value
+		GeneralDate holidayDate = comType == ApplicationCombination.Rec.value
 				? GeneralDate.fromString(holidayDateImput, DATE_FORMAT) : null;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
