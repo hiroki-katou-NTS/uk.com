@@ -155,13 +155,14 @@ public class PerInfoCategoryFinder {
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
 		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
-				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
-		
-		List<PerInfoCtgShowDto> x =	categoryList.stream().map(p -> {
-					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
-							p.getInitValMasterCls()== null? 1: p.getInitValMasterCls().value , p.getAddItemCls()== null? 1: p.getAddItemCls().value);
-				}).collect(Collectors.toList());
+				.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
+
+		List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
+			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+					p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+					p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
+					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
+		}).collect(Collectors.toList());
 
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 		return new PerInfoCtgDataEnumDto(historyTypes, x);
