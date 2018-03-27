@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSetGetMem
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegularWorkTimeAggrSetDto {
 
 	/** The aggregate time set. */

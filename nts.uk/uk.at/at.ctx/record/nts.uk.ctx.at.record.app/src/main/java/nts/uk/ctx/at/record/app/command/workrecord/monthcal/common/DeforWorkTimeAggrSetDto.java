@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.DeforLaborCalSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforLaborSettlementPeriod;
@@ -20,6 +22,8 @@ import nts.uk.ctx.at.shared.dom.common.Month;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DeforWorkTimeAggrSetDto {
 
 	/** The aggregate time set. */

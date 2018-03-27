@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmk004.c {
     export module viewmodel {
-        
+        import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
         import Common = nts.uk.at.view.kmk004.shared.model.common;
         import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;
         import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;
@@ -20,6 +20,7 @@ module nts.uk.at.view.kmk004.c {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             
             employmentWTSetting: EmploymentWTSetting;
+            worktimeSetting: WorktimeSettingVM.ScreenModel;
             
             // Employment list component.
             employmentComponentOption: any;
@@ -46,6 +47,7 @@ module nts.uk.at.view.kmk004.c {
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK004_5"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 
+                self.worktimeSetting = new WorktimeSettingVM.ScreenModel();
                 self.employmentWTSetting = new EmploymentWTSetting();
                 // Employment list component.
                 self.alreadySettingEmployments = ko.observableArray([]);
@@ -70,23 +72,27 @@ module nts.uk.at.view.kmk004.c {
                 // TODO: self.employmentWTSetting.year(self.companyWTSetting.year());
 
                 // Load component.
-                Common.getStartMonth().done((month) => {
-                    self.startMonth = ko.observable(month);
-                    $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
-                    
-                        self.isLoading(false);
-    
-                        // Force to reload.
-                        if (self.employmentWTSetting.employmentCode() === self.selectedEmploymentCode()) {
-                            self.loadEmploymentSetting(self.selectedEmploymentCode());
-                        }
-                        $('#employmentYearPicker').focus();
-                        // Set already setting list.
-                        self.setAlreadySettingEmploymentList();
-                        self.employmentWTSetting.selectedTab('tab-1');
+                self.worktimeSetting.initialize().done(() => {
+                    Common.getStartMonth().done((month) => {
+                        self.startMonth = ko.observable(month);
+                        $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
                         
-                        dfd.resolve();
-                    }).always(() => {
+                            self.isLoading(false);
+        
+                            // Force to reload.
+                            if (self.employmentWTSetting.employmentCode() === self.selectedEmploymentCode()) {
+                                self.loadEmploymentSetting(self.selectedEmploymentCode());
+                            }
+                            $('#employmentYearPicker').focus();
+                            // Set already setting list.
+                            self.setAlreadySettingEmploymentList();
+                            self.employmentWTSetting.selectedTab('tab-1');
+                            
+                            dfd.resolve();
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }).fail(() => {
                         nts.uk.ui.block.clear();
                     });
                 }).fail(() => {

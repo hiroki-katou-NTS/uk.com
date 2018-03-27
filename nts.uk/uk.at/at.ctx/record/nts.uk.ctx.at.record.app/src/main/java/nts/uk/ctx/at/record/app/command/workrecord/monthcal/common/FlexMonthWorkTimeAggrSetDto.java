@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.monthcal.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
@@ -23,6 +25,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlexMonthWorkTimeAggrSetDto {
 
 	/** The aggr method. */
