@@ -18,6 +18,12 @@ public interface AppAbsenceRepository {
 	public void insertAbsence(AppAbsence appAbsence);
 	
 	/**
+	 * insertAbsence
+	 * @param appAbsence
+	 */
+	public void updateAbsence(AppAbsence appAbsence);
+	
+	/**
 	 * get Application and AppAbsence
 	 * @param companyID
 	 * @param appId

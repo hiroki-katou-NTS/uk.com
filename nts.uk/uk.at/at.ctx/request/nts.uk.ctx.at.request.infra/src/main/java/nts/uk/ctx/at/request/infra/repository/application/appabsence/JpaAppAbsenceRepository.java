@@ -61,4 +61,10 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 		return Optional.of(appAbsence);
 	}
 
+	@Override
+	public void updateAbsence(AppAbsence appAbsence) {
+		this.commandProxy().update(toEntity(appAbsence));
+		
+	}
+
 }
