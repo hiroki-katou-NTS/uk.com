@@ -373,6 +373,56 @@ public class AppAbsenceFinder {
 		return result;
 	}
 	/**
+	 * 終日休暇半日休暇を切替する（詳細）
+	 * @param startAppDate
+	 * @param displayHalfDayValue
+	 * @param employeeID
+	 * @param workTypeCode
+	 * @param holidayType
+	 * @param alldayHalfDay
+	 * @param prePostAtr
+	 * @return
+	 */
+	public AppAbsenceDto getChangeByAllDayOrHalfDayForUIDetail(String startAppDate,boolean displayHalfDayValue,String employeeID,Integer holidayType,int alldayHalfDay){
+		AppAbsenceDto result = new AppAbsenceDto();
+		if(employeeID == null){
+			employeeID = AppContexts.user().employeeId();
+		}
+		String companyID = AppContexts.user().companyId();
+		if(holidayType == null){
+			return result;
+		}
+		// 1-1.新規画面起動前申請共通設定を取得する
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
+				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
+				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
+		// 2.勤務種類を取得する（詳細）
+		List<WorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeDetails(appCommonSettingOutput.appEmploymentWorkType, 
+				companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
+		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
+		for(WorkType workType : workTypes){
+			AbsenceWorkType absenceWorkType = new AbsenceWorkType(workType.getWorkTypeCode().toString(), workType.getWorkTypeCode().toString() +"　　" + workType.getName().toString());
+			absenceWorkTypes.add(absenceWorkType);
+		}
+		result.setWorkTypes(absenceWorkTypes);
+		// 1.就業時間帯の表示制御(xu li hien thị A6_1)
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+		if (CollectionUtil.isEmpty(workTypes)) {
+			result.setChangeWorkHourFlg(false);
+		} else {
+			result.setChangeWorkHourFlg(this.appAbsenceFourProcess
+					.getDisplayControlWorkingHours(absenceWorkTypes.get(0).getWorkTypeCode(), hdAppSet, companyID));
+		}
+		if(result.isChangeWorkHourFlg()){
+			// 2.就業時間帯を取得する
+			// 1.職場別就業時間帯を取得
+			List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,appCommonSettingOutput.generalDate);
+			result.setWorkTimeCodes(listWorkTimeCodes);
+		}
+		return result;
+	}
+	/**
 	 * 勤務種類組み合わせ全表示を切替する
 	 * @param startAppDate
 	 * @param displayHalfDayValue
