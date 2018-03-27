@@ -19,6 +19,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItem
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -51,14 +52,17 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 			}
 		}
 
-		// ログインしているユーザーの権限をチェックする
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
 		DatePeriod period = new DatePeriod(startDate, endDateLast);
 
-		boolean userLogin = false;
-		if (userLogin == true) {
-			String cid = PersonInfoCategory.ROOT_COMPANY_ID;
+		//個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+		//Thực thi thuật toán chung thông tin cá nhân 「ログイン者がグループ会社管理者かどうか判定する」(Phán định xem người login có thuộc group người quản lý công ty hay không)
+		LoginUserContext loginUserContext = AppContexts.user();
+		String userLogin = loginUserContext.roles().forGroupCompaniesAdmin();
+		if (userLogin.isEmpty()) {
+			//共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行するThực thi thuật toán chung 「契約内ゼロ会社の会社IDを取得する」(Lấy CompanyID của công ty Zero trong hợp đồng)
+			String cid = AppContexts.user().zeroCompanyIdInContract();
 
 			// ドメインモデル「選択肢履歴」を登録する
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, selectItemID,
