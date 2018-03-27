@@ -3346,8 +3346,12 @@ var nts;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
                 var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
-                function keepUsedLoginPage() {
-                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+                function keepUsedLoginPage(url) {
+                    if (url === undefined) {
+                        keepUsedLoginPage(location.current.serialize());
+                        return;
+                    }
+                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, url);
                 }
                 login.keepUsedLoginPage = keepUsedLoginPage;
                 function jumpToUsedLoginPage() {
