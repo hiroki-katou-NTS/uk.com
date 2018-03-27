@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf006.b{
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
         displayEndDateFlg : KnockoutObservable<boolean> = ko.observable(false);
+        enableDisplayEndDate: KnockoutObservable<boolean> = ko.observable(false);
         //current Data
 //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
@@ -21,7 +22,7 @@ module nts.uk.at.view.kaf006.b{
         workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        startAppDate: KnockoutObservable<string> = ko.observable('');
+        startAppDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
          // 申請日付
         endAppDate: KnockoutObservable<string> = ko.observable('');
         selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
@@ -68,7 +69,15 @@ module nts.uk.at.view.kaf006.b{
         
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(true);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(true);
-        
+        // enable
+        enbAllDayHalfDayFlg: KnockoutObservable<boolean> = ko.observable(true);
+        enbWorkType: KnockoutObservable<boolean> = ko.observable(true);
+        enbHalfDayFlg: KnockoutObservable<boolean> = ko.observable(true);
+        enbChangeWorkHourFlg: KnockoutObservable<boolean> = ko.observable(true);
+        enbbtnWorkTime: KnockoutObservable<boolean> = ko.observable(true);
+        enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
+        enbContentReason:  KnockoutObservable<boolean> = ko.observable(true);
+                
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -255,7 +264,36 @@ module nts.uk.at.view.kaf006.b{
             self.changeWorkHourValue(data.changeWorkHourFlg);
             self.selectedAllDayHalfDayValue(data.allDayHalfDayLeaveAtr);
             self.displayHalfDayValue(data.halfDayFlg);
-            self.startAppDate(data.application.applicationDate)
+            self.startAppDate( moment(data.application.applicationDate).format(self.DATE_FORMAT))
+            
+            if(data.initMode == 0){
+                // display Mode
+                self.enbAllDayHalfDayFlg(false);
+                self.enbWorkType(false);
+                self.enbHalfDayFlg(false);
+                self.enbChangeWorkHourFlg(false);
+                self.enbbtnWorkTime(false);
+                self.eblTimeStart1(false);
+                self.eblTimeEnd1(false);
+                self.enbReasonCombo(false);
+                self.enbContentReason(false);
+            }else if(data.initMode == 1){
+                // edit Mode
+                self.enbAllDayHalfDayFlg(true);
+                self.enbWorkType(true);
+                self.enbHalfDayFlg(true);
+                self.enbChangeWorkHourFlg(true);
+                self.enbbtnWorkTime(true);
+                if(data.changeWorkHourFlg && !nts.uk.util.isNullOrEmpty(data.workTimeCode)){
+                     self.eblTimeStart1(true);
+                     self.eblTimeEnd1(true);
+                }else{
+                    self.eblTimeStart1(false);
+                     self.eblTimeEnd1(false);
+                }
+                self.enbReasonCombo(true);
+                self.enbContentReason(true);
+            }
         }
          update(): JQueryPromise<any> {
              let self = this;
