@@ -59,7 +59,7 @@ public class RecruitmentAppDto {
 		List<SubTargetDigestionDto> subTargetDigestions = new ArrayList<SubTargetDigestionDto>();
 		domain.getSubTargetDigestions().forEach(x -> {
 			subTargetDigestions.add(new SubTargetDigestionDto(x.getAppID(), x.getHoursUsed(), x.getLeaveMngDataID(),
-					x.getBreakOutDate(), x.getRestState().value));
+					x.getBreakOutDate(), x.getRestState().value, x.getUnknownDate()));
 		});
 		return new RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD(), domain.getWorkTimeCD().v(), workTime1,
 				workTime2, subTargetDigestions, appDate);

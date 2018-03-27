@@ -63,13 +63,13 @@ public class AbsenceLeaveAppDto {
 		List<SubTargetDigestionDto> subTargetDigestions = new ArrayList<SubTargetDigestionDto>();
 		domain.getSubTargetDigestions().forEach(x -> {
 			subTargetDigestions.add(new SubTargetDigestionDto(x.getAppID(), x.getHoursUsed(), x.getLeaveMngDataID(),
-					x.getBreakOutDate(), x.getRestState().value));
+					x.getBreakOutDate(), x.getRestState().value, x.getUnknownDate()));
 		});
 
 		List<SubDigestionDto> subDigestions = new ArrayList<SubDigestionDto>();
 		domain.getSubDigestions().forEach(x -> {
 			subDigestions.add(new SubDigestionDto(x.getAbsenceLeaveAppID(), x.getDaysUsedNo().value,
-					x.getPayoutMngDataID(), x.getPickUpState().value, x.getOccurrenceDate()));
+					x.getPayoutMngDataID(), x.getPickUpState().value, x.getOccurrenceDate(), x.getUnknownDate()));
 		});
 		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD(),
 				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD().v(), WorkTime1, WorkTime2,
