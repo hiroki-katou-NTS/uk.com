@@ -123,7 +123,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             if (!_.isEmpty(convertCodeSelected)) {
                 service.getAcceptCodeConvert(convertCodeSelected).done(function(codeConvert) {
                     if (codeConvert) {
-                        self.characterDataFormatSetting().codeConvertCode(codeConvert.convertCode);
+                        self.characterDataFormatSetting().codeConvertCode(codeConvert.convertCd);
                         self.codeConvertCode(new model.AcceptanceCodeConvert(codeConvert.convertCd, codeConvert.convertName, codeConvert.acceptWithoutSetting));
                     }
                     block.clear();
