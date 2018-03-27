@@ -104,7 +104,7 @@ public class ApplicationListFinder {
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo());
-		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,
+		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
 				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto);
 	}
@@ -177,5 +177,16 @@ public class ApplicationListFinder {
 			}
 		}
 		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());
+	}
+	private List<ApplicationDto_New> sortById(List<ApplicationDto_New> lstApp){
+		return lstApp.stream().sorted((a,b) ->{
+			Integer rs = a.getApplicationDate().compareTo(b.getApplicationDate());
+			if (rs == 0) {
+			 return  a.getApplicationType().compareTo(b.getApplicationType());
+			} else {
+			 return rs;
+			}
+		}).collect(Collectors.toList());
+		
 	}
 }

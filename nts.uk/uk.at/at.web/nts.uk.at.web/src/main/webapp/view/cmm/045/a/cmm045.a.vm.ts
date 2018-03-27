@@ -190,7 +190,7 @@ module cmm045.a.viewmodel {
                             lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange(), self.lstAppAbsence());
 //                        let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                         self.lstApp(lstData);
-                        self.items(vmbase.ProcessHandler.orderByList(lstData));
+                        self.items(lstData);
                         //mode approval - count
                         if (data.appStatusCount != null) {
                             self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -337,7 +337,7 @@ module cmm045.a.viewmodel {
             var self = this;
             $("#grid1").ntsGrid({
                 width: '1320px',
-                height: '700px',
+                height: '530px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 rowVirtualization: true,
@@ -1007,7 +1007,7 @@ module cmm045.a.viewmodel {
                 if (self.selectedCode() != -1) {
                     self.filterByAppType(self.selectedCode());
                 } else {
-                    self.items(vmbase.ProcessHandler.orderByList(lstData));
+                    self.items(lstData);
                     //mode approval - count
                     if (data.appStatusCount != null) {
                         self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -1101,13 +1101,13 @@ module cmm045.a.viewmodel {
             //luu
                 character.save('AppListExtractCondition', paramNew);
             if (appType == -1) {//全件表示
-                self.items(vmbase.ProcessHandler.orderByList(self.lstApp()));
+                self.items(self.lstApp());
             } else {
                 let lstAppFitler: Array<vmbase.DataModeApp> = _.filter(self.lstApp(), function(item) {
                     return item.appType == appType;
                 });
                 self.items([]);
-                self.items(vmbase.ProcessHandler.orderByList(lstAppFitler));
+                self.items(lstAppFitler);
             }
             let colorBackGr = self.fillColorbackGr();
             let colorsText = self.fillColorText();
