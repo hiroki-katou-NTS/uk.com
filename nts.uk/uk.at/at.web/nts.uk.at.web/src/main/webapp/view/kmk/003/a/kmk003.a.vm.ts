@@ -371,7 +371,8 @@ module nts.uk.at.view.kmk003.a {
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
-                        self.isLoading(true);    
+                            self.isLoading(false);
+                            self.isLoading(true);    
                         });
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -394,7 +395,8 @@ module nts.uk.at.view.kmk003.a {
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
-                        self.isLoading(true);    
+                            self.isLoading(false);
+                            self.isLoading(true);
                         });
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                         
