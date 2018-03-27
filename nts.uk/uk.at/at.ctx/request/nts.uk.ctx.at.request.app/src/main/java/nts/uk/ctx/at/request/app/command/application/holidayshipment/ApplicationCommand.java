@@ -13,4 +13,6 @@ public class ApplicationCommand {
 
 	private String enteredPersonSID;
 
+	private Long appVersion;
+
 }

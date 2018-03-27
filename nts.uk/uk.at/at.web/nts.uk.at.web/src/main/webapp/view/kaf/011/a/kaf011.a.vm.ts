@@ -24,9 +24,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
 
-        recWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
-        absWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        absWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
         appReasons = ko.observableArray([]);
 
@@ -125,6 +125,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
+                        version:0
+                        ,
                     }
                 };
 

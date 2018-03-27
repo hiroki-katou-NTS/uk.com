@@ -9,15 +9,15 @@ public enum ApplicationCombination {
 	/**
 	 * 振出＋振休
 	 */
-	TakingOutAndHoliday(0),
+	RecAndAbs(0),
 	/**
 	 * 振出
 	 */
-	TakingOut(1),
+	Abs(1),
 	/**
 	 * 振休
 	 */
-	Holiday(2);
+	Rec(2);
 
 	public final int value;
 
