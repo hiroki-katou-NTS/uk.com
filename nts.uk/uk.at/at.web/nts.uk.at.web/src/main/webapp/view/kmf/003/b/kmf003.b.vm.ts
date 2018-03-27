@@ -211,7 +211,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     };
                     self.items.push(new Item(item));    
                 }
-            }
+            });
         }
         
         /**
