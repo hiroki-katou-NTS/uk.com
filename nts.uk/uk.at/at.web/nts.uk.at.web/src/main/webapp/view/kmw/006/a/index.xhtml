@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmw006.a.style.css" />
+			<com:scriptfile path="kmw006.a.service.js" />
+			<com:scriptfile path="kmw006.a.vm.js" />
+			<com:scriptfile path="kal003.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<h1>KMW006A</h1>
+			<button tabindex="2" data-bind="click: openKMW006fDialog" class="proceed">#{i18n.getText('KMW006_1')}</button>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
