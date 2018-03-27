@@ -507,7 +507,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			return integrationOfDaily;
 		
 		val workType = this.workTypeRepository.findByPK(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
-		if(!workType.isPresent()) return integrationOfDaily;
+		if(!workType.isPresent() || !workTime.isPresent()) return integrationOfDaily;
 		//休暇加算時間設定
 		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
 																							oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getMorning(),
