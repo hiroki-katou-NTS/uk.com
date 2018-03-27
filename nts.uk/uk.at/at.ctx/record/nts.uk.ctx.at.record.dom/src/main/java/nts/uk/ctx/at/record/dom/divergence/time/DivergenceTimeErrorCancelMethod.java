@@ -26,9 +26,9 @@ public class DivergenceTimeErrorCancelMethod {
 	 */
 	public DivergenceTimeErrorCancelMethod(int reasonInputed, int reasonSelected) {
 
-		this.reasonInputed = reasonInputed == 0;
+		this.reasonInputed = reasonInputed == 1;
 
-		this.reasonSelected = reasonSelected == 0;
+		this.reasonSelected = reasonSelected == 1;
 
 	}
 

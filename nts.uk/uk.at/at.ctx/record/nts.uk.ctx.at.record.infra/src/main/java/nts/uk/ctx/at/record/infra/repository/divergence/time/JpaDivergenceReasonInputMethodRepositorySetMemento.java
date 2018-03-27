@@ -65,7 +65,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	@Override
 	public void setDivergenceReasonInputed(boolean divergenceReasonInputed) {
 
-		this.entity.setReasonInputCanceled(divergenceReasonInputed ? new BigDecimal(1) : new BigDecimal(0));
+		this.entity.setDvgcReasonInputed(divergenceReasonInputed ? new BigDecimal(1) : new BigDecimal(0));
 
 	}
 
@@ -79,7 +79,7 @@ public class JpaDivergenceReasonInputMethodRepositorySetMemento implements Diver
 	@Override
 	public void setDivergenceReasonSelected(boolean divergenceReasonSelected) {
 
-		this.entity.setReasonSelectCanceled(divergenceReasonSelected ? new BigDecimal(1) : new BigDecimal(0));
+		this.entity.setDvgcReasonSelected(divergenceReasonSelected ? new BigDecimal(1) : new BigDecimal(0));
 
 	}
 

@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk011.b {
             currentCode: KnockoutObservable<number>;
 
             useSet: KnockoutObservableArray<any>;//list value swith button
+            useSetBool:KnockoutObservableArray<any>;//list bool value swith button
 
             //B3_2
             selectUse: KnockoutObservable<any>;//value of B3_2
@@ -60,11 +61,16 @@ module nts.uk.at.view.kmk011.b {
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divergenceTimeNo', width: 100 },
                     { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divergenceTimeName', formatter: _.escape, width: 200 }
-                ]);
+                ]);                
                 self.dataSource = ko.observableArray([]);
                 self.useSet = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use") },
                     { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
+                ]);
+
+                self.useSetBool = ko.observableArray([
+                    { isUse: true, name: nts.uk.resource.getText("Enum_UseAtr_Use") },
+                    { isUse: false, name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
                 ]);
 
                 self.selectUse = ko.observable(0);
@@ -106,12 +112,12 @@ module nts.uk.at.view.kmk011.b {
                 self.selectUse.subscribe(function(codeChanged) {
                     if (codeChanged == 1) {
                         self.enableUse(true);
-                        if (self.selectSelect() == 1) {
+                        if (self.selectSelect()) {
                             self.enableSelect(true);
                         } else {
                             self.enableSelect(false);
                         }
-                        if (self.selectInput() == 1) {
+                        if (self.selectInput()) {
                             self.enableInput(true);
                         } else {
                             self.enableInput(false);
@@ -124,7 +130,7 @@ module nts.uk.at.view.kmk011.b {
                 });
                 //subscribe selectSel
                 self.selectSelect.subscribe(function(codeChanged) {
-                    if (codeChanged == 1 && self.selectUse() == 1) {
+                    if (codeChanged  && self.selectUse() == 1) {
                         self.enableSelect(true);
                     } else {
                         self.enableSelect(false);
@@ -135,7 +141,7 @@ module nts.uk.at.view.kmk011.b {
                 });
                 //subscribe selectInp
                 self.selectInput.subscribe(function(codeChanged) {
-                    if (codeChanged == 1 && self.selectUse() == 1) {
+                    if (codeChanged && self.selectUse() == 1) {
                         self.enableInput(true);
                     } else {
                         self.enableInput(false);
@@ -161,7 +167,7 @@ module nts.uk.at.view.kmk011.b {
                             self.itemDivergenceTime(itemDivTime);
                             //get divergenceTypeName method this
                             self.setValueDivergenceTimeDisplay();
-                            $("#divergenceTypeName").focus();
+                            $("#itemname").focus();
                         });
                     }
                     dfd.resolve();
@@ -177,6 +183,7 @@ module nts.uk.at.view.kmk011.b {
                 service.findDivergenceTime(divergenceTimeNo).done(function(itemDivergenceTime: model.DivergenceTime) {
                     dfd.resolve(itemDivergenceTime);
                 });
+                $("#itemname").focus();
                 return dfd.promise();
             }
             /**
@@ -194,12 +201,12 @@ module nts.uk.at.view.kmk011.b {
                 self.timeItemName('');
 
                 //B3_13:swith button, B3_15
-                self.selectSelect(0);
+                self.selectSelect(false);
                 self.enableSelect(false);
                 self.checkErrorSelect(false);
 
                 //B3_17:siwth button, B3_18
-                self.selectInput(0);
+                self.selectInput(false);
                 self.enableInput(false);
                 self.checkErrorInput(false);
 
@@ -263,18 +270,15 @@ module nts.uk.at.view.kmk011.b {
                         if (self.divergenceTimeId() == null) {
                             return;
                         }
-                        var listIdSelect = [];
+                        var listIdSelect : number[] = [];
                         for (let i = 0; i < self.listItemSelected().length; i++) {
                             listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
-                        }
-                        var bool: boolean;
-                        if (self.selectSelect() == 1) bool = true;
-                        else bool = false;
+                        }                        
                         
                         
                         var divergenceTime = new model.DivergenceTime(self.divergenceTimeId(), self.selectUse(), self.divTimeName(),
                             self.divergenceTypeName(), self.checkErrorInput(), self.checkErrorSelect(),
-                            self.selectInput(), bool, listIdSelect);
+                            self.selectInput(),self.selectSelect(), listIdSelect);
 
 
                         var listAdd = new Array<model.TimeItemSet>();
@@ -301,7 +305,7 @@ module nts.uk.at.view.kmk011.b {
                         return dfd.promise();
                     }
                 })
-                if (self.listItemSelected().length == 0) {
+                if (self.listItemSelected().length == 0 && self.selectUse()==1) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_1008" });
                 }
                 nts.uk.ui.block.clear();
@@ -353,11 +357,11 @@ module nts.uk.at.view.kmk011.b {
                 var self = this;
                 nts.uk.ui.block.grayout();
                 service.getAllAttendanceItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
-                    var listAllId = [];
+                    var listAllId : number[]= [];
                     for (let j = 0; j < lstAllItem.length; j++) {
                         listAllId[j] = lstAllItem[j].attendanceItemId;
                     }
-                    var listIdSelect = [];
+                    var listIdSelect : number[] = [];
                     for (let i = 0; i < self.listItemSelected().length; i++) {
                         listIdSelect[i] = self.listItemSelected()[i].attendanceItemId;
                     }
@@ -394,7 +398,7 @@ module nts.uk.at.view.kmk011.b {
                 blockUI.grayout();
                 setShared('KMK011_divTimeId', self.divergenceTimeId(), true);
                 var test :boolean;
-                if (self.selectInput()==1) {
+                if (self.selectInput()) {
                     test =true;    
                 }
                 else test =false

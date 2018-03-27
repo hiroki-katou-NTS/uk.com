@@ -126,7 +126,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         */
         findItemDivTime(value: string): any {
             let self = this;
-            var itemModel = null;
+            var itemModel :any = null;
             return _.find(self.dataSource(), function(obj: model.DivergenceReason) {
                 return obj.divergenceReasonCode == value;
             })
@@ -168,10 +168,13 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                             }
                     }
                 });
+
             }
             else {
                 blockUI.clear();
             }
+            
+             blockUI.clear();
         }
 
         addDivReason() {
