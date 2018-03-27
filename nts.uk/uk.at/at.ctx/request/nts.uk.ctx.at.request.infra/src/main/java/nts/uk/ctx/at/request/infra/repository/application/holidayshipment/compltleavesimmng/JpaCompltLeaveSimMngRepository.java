@@ -56,4 +56,15 @@ public class JpaCompltLeaveSimMngRepository extends JpaRepository implements Com
 				.setParameter("absenceLeaveAppID", absAppID).getSingle().map(x -> toDomain(x));
 	}
 
+	@Override
+	public void remove(String absAppID, String recAppID) {
+		this.commandProxy().remove(KrqdtCompltLeaveSimMana.class, new KrqdtCompltLeaveSimManaPK(recAppID, absAppID));
+	}
+
+	@Override
+	public void update(CompltLeaveSimMng compltLeaveSimMng) {
+		this.commandProxy().update(toEntity(compltLeaveSimMng));
+
+	}
+
 }

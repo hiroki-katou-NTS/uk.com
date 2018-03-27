@@ -169,7 +169,7 @@ module nts.uk.at.view.kaf010.b {
             
             initData(data: any) {
                 var self = this;
-                self.version = data.version;
+                self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);

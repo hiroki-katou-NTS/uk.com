@@ -9,6 +9,7 @@ import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
@@ -23,7 +24,9 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private HolidayShipmentScreenBFinder bFinder;
 	@Inject
-	private SaveHolidayShipmentCommandHandler handler;
+	private SaveHolidayShipmentCommandHandler saveHandler;
+	@Inject
+	private UpdateHolidayShipmentCommandHandler updateHandler;
 
 	@POST
 	@Path("start")
@@ -40,7 +43,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("update")
 	public void update(SaveHolidayShipmentCommand command) {
-		handler.handle(command);
+		updateHandler.handle(command);
 	}
 
 	@POST
@@ -53,7 +56,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("save")
 	public void save(SaveHolidayShipmentCommand command) {
-		handler.handle(command);
+		saveHandler.handle(command);
 	}
 
 	@POST
@@ -61,7 +64,6 @@ public class HolidayShipmentWebService extends WebService {
 	public HolidayShipmentDto findByID(StartBParam param) {
 		return this.bFinder.findByID(param.getAppID());
 	}
-
 }
 
 @Value

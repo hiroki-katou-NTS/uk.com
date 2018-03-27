@@ -6,4 +6,6 @@ public interface AbsenceLeaveAppRepository {
 	public void insert(AbsenceLeaveApp domain);
 
 	public Optional<AbsenceLeaveApp> findByID(String applicationID);
+
+	public void update(AbsenceLeaveApp absApp);
 }

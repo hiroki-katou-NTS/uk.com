@@ -6,4 +6,6 @@ public interface RecruitmentAppRepository {
 	public void insert(RecruitmentApp recApp);
 
 	public Optional<RecruitmentApp> findByID(String applicationID);
+
+	public void update(RecruitmentApp recApp);
 }

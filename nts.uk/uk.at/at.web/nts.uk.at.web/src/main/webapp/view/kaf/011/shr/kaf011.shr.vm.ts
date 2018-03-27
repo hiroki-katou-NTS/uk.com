@@ -91,7 +91,8 @@ module nts.uk.at.view.kaf011.shr {
                 }
             }
         }
-        export class WorkItems {
+        export class AppItems {
+            appID: KnockoutObservable<string> = ko.observable('');
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
             wkTypeCD: KnockoutObservable<string> = ko.observable('');
             wkTimeCD: KnockoutObservable<string> = ko.observable('');
@@ -99,7 +100,6 @@ module nts.uk.at.view.kaf011.shr {
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
             appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
-            workLocationCD: KnockoutObservable<string> = ko.observable('');
             changeWorkHoursType: KnockoutObservable<number> = ko.observable(1);
 
             constructor() {
@@ -216,6 +216,7 @@ module nts.uk.at.view.kaf011.shr {
             applicationReason: string;
             prePostAtr: number;
             enteredPersonSID: string;
+            version: number;
         }
         export interface IChangeWorkType {
             timezoneUseDtos: Array<ITimezoneUse>;
