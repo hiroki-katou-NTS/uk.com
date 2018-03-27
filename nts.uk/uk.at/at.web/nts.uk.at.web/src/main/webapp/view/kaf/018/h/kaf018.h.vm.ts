@@ -8,23 +8,30 @@ module nts.uk.at.view.kaf018.h.viewmodel {
     export class ScreenModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        appApprovalUnapproved: model.MailTemp;
-        dailyUnconfirmByPrincipal: model.MailTemp;
-        dailyUnconfirmByConfirmer: model.MailTemp;
-        monthlyUnconfirmByConfirmer: model.MailTemp;
+        checkH3: KnockoutObservable<boolean> = ko.observable(false);
+        checkH2: KnockoutObservable<boolean> = ko.observable(false);
+        checkH1: KnockoutObservable<boolean> = ko.observable(false);
 
-        identityProcessUseSet: model.IdentityProcessUseSet = new model.IdentityProcessUseSet(0);
-        approvalProcessingUseSet: model.ApprovalProcessingUseSetting = new model.ApprovalProcessingUseSetting(0, 0);
+        appApprovalUnapproved: model.MailTemp = null;
+        dailyUnconfirmByPrincipal: model.MailTemp = null;
+        dailyUnconfirmByConfirmer: model.MailTemp = null;
+        monthlyUnconfirmByConfirmer: model.MailTemp = null;
+        workConfirmation: model.MailTemp = null;
 
-        screenEditMode: KnockoutObservable<boolean> = ko.observable(true);
+        identityProcessUseSet: model.IdentityProcessUseSet = new model.IdentityProcessUseSet(false);
+        approvalProcessingUseSet: model.ApprovalProcessingUseSetting = new model.ApprovalProcessingUseSetting(false, false);
+
+        screenEditMode: KnockoutObservable<boolean> = ko.observable(false);
+        listMailType: [];
 
         constructor() {
             var self = this;
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: text("KAF018_77"), content: '.tab-content-1', enable: true, visible: true },
-                { id: 'tab-2', title: text("KAF018_78"), content: '.tab-content-2', enable: self.identityProcessUseSet.useIdentityOfMonth, visible: ko.observable(true) },
-                { id: 'tab-3', title: text("KAF018_79"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-4', title: text("KAF018_80"), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-1', title: text("KAF018_77"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: text("KAF018_78"), content: '.tab-content-2', enable: self.checkH3, visible: ko.observable(true) },
+                { id: 'tab-3', title: text("KAF018_79"), content: '.tab-content-3', enable: self.checkH2, visible: ko.observable(true) },
+                { id: 'tab-4', title: text("KAF018_80"), content: '.tab-content-4', enable: self.checkH1, visible: ko.observable(true) },
+                { id: 'tab-5', title: text("KAF018_81"), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -32,16 +39,19 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 let mailType = 0;
                 switch (newValue) {
                     case 'tab-1':
-                        self.screenEditMode(self.appApprovalUnapproved.screenEditMode());
+                        self.screenEditMode(self.appApprovalUnapproved.editMode());
                         break;
                     case 'tab-2':
-                        self.screenEditMode(self.dailyUnconfirmByPrincipal.screenEditMode());
+                        self.screenEditMode(self.dailyUnconfirmByPrincipal.editMode());
                         break;
                     case 'tab-3':
-                        self.screenEditMode(self.dailyUnconfirmByConfirmer.screenEditMode());
+                        self.screenEditMode(self.dailyUnconfirmByConfirmer.editMode());
                         break;
                     case 'tab-4':
-                        self.screenEditMode(self.monthlyUnconfirmByConfirmer.screenEditMode());
+                        self.screenEditMode(self.monthlyUnconfirmByConfirmer.editMode());
+                        break;
+                    case 'tab-5':
+                        self.screenEditMode(self.workConfirmation.editMode());
                         break;
                 }
             });
@@ -54,27 +64,69 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             var self = this;
             let dfd = $.Deferred();
             block.invisible();
-            let sv0 = self.getApprovalStatusMail(0);
-            let sv1 = self.getApprovalStatusMail(1);
-            let sv2 = self.getApprovalStatusMail(2);
-            let sv3 = self.getApprovalStatusMail(3);
 
-            let cond1 = service.getIdentityProcessUseSet();
-            let cond2 = service.getApprovalProcessingUseSetting();
-
-            $.when(sv0, sv1, sv2, sv3, cond1, cond2).done(function(data0, data1, data2, data3, dataCond1, dataCond2) {
-                self.appApprovalUnapproved = data0;
-                self.dailyUnconfirmByPrincipal = data1;
-                self.dailyUnconfirmByConfirmer = data2;
-                self.monthlyUnconfirmByConfirmer = data3;
-
-                self.identityProcessUseSet = dataCond1;
-                self.approvalProcessingUseSet = dataCond2;
+            service.getMailBySetting().done(function(data: any) {
+                _.each(data, function(mail) {
+                    let temp = new model.MailTemp(
+                        mail.mailType,
+                        mail.mailSubject,
+                        mail.mailContent,
+                        mail.urlApprovalEmbed,
+                        mail.urlDayEmbed,
+                        mail.urlMonthEmbed,
+                        mail.editMode);
+                    switch (mail.mailType) {
+                        case 0:
+                            self.appApprovalUnapproved = temp;
+                            break
+                        case 1:
+                            self.dailyUnconfirmByPrincipal = temp;
+                            break
+                        case 2:
+                            self.dailyUnconfirmByConfirmer = temp;
+                            break
+                        case 3:
+                            self.monthlyUnconfirmByConfirmer = temp;
+                            break
+                        case 4:
+                            self.workConfirmation = temp;
+                            break;
+                    }
+                });
+                self.checkH3(self.dailyUnconfirmByPrincipal == null ? false : true);
+                self.checkH2(self.dailyUnconfirmByConfirmer == null ? false : true);
+                self.checkH1(self.monthlyUnconfirmByConfirmer == null ? false : true);
 
                 block.clear();
                 dfd.resolve();
-            })
+            });
             return dfd.promise();
+            /*let cond1 = service.getIdentityProcessUseSet();
+            let cond2 = service.getApprovalProcessingUseSetting();
+            
+            $.when(cond1, cond2).done(function(dataCond1, dataCond2) {
+                self.identityProcessUseSet.useIdentityOfMonth(dataCond1.useIdentityOfMonth == 0 ? false : true);
+                self.approvalProcessingUseSet.useDayApproverConfirm(dataCond2.useDayApproverConfirm == 0 ? false : true);
+                self.approvalProcessingUseSet.useMonthApproverComfirm(dataCond2.useMonthApproverComfirm == 0 ? false : true);
+
+                let sv0 = self.getApprovalStatusMail(0);
+                let sv1 = self.getApprovalStatusMail(1);
+                let sv2 = self.getApprovalStatusMail(2);
+                let sv3 = self.getApprovalStatusMail(3);
+                let sv4 = self.getApprovalStatusMail(4);
+                $.when(sv0, sv1, sv2, sv3, sv4).done(function(data0, data1, data2, data3, data4) {
+                    self.appApprovalUnapproved = data0;
+                    self.dailyUnconfirmByPrincipal = data1;
+                    self.dailyUnconfirmByConfirmer = data2;
+                    self.monthlyUnconfirmByConfirmer = data3;
+                    self.workConfirmation = data4;
+                    self.screenEditMode(data0.editMode());
+
+                    block.clear();
+                    dfd.resolve();
+                })
+            })
+            return dfd.promise();*/
         }
 
         /**
@@ -85,14 +137,20 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             let dfd = $.Deferred();
             service.getApprovalStatusMail(mailType).done(function(data: any) {
                 //ドメインが取得できた場合(lấy được)
-                if (data && data.length) {
-                    dfd.resolve(new model.MailTemp(data[0].mailType, data[0].mailSubject, data[0].mailContent, data[0].urlApprovalEmbed, data[0].urlDayEmbed, data[0].urlMonthEmbed, true));
+                if (data) {
+                    dfd.resolve(new model.MailTemp(
+                        data.mailType,
+                        data.mailSubject,
+                        data.mailContent,
+                        data.urlApprovalEmbed,
+                        data.urlDayEmbed,
+                        data.urlMonthEmbed,
+                        1));
                 }
-                //ドメインが取得できなかった場合
                 else {
-                    dfd.resolve(new model.MailTemp(mailType, "", "", 1, 1, 1, false));
+                    //ドメインが取得できなかった場合
+                    dfd.resolve(new model.MailTemp(mailType, "", "", 1, 1, 1, 0));
                 }
-
             })
             return dfd.promise();
         }
@@ -103,24 +161,39 @@ module nts.uk.at.view.kaf018.h.viewmodel {
         private registerApprovalStatusMail(): void {
             var self = this;
             block.invisible();
-            let obj = [
-                self.appApprovalUnapproved,
-                self.dailyUnconfirmByPrincipal,
-                self.dailyUnconfirmByConfirmer,
-                self.monthlyUnconfirmByConfirmer
+            let listMail = [
+                self.getMailTempJS(self.appApprovalUnapproved),
+                self.getMailTempJS(self.workConfirmation)
             ];
-            service.registerApprovalStatusMail(obj).done(function() {
+            if (self.checkH3()) {
+                listMail.push(self.getMailTempJS(self.dailyUnconfirmByPrincipal));
+            }
+            if (self.checkH2()) {
+                listMail.push(self.getMailTempJS(self.dailyUnconfirmByConfirmer));
+            }
+            if (self.checkH1()) {
+                listMail.push(self.getMailTempJS(self.monthlyUnconfirmByConfirmer));
+            }
+
+            //アルゴリズム「承認状況メール本文登録」を実行する
+            service.registerApprovalStatusMail(listMail).done(function() {
                 //画面モード　＝　更新
                 self.screenEditMode(true);
-                self.appApprovalUnapproved.screenEditMode(true);
-                self.dailyUnconfirmByPrincipal.screenEditMode(true);
-                self.dailyUnconfirmByConfirmer.screenEditMode(true);
-                self.monthlyUnconfirmByConfirmer.screenEditMode(true);
-            }).fail(function() {
-
-            }).always(function() {
+                self.appApprovalUnapproved.editMode(true);
+                self.dailyUnconfirmByPrincipal.editMode(true);
+                self.dailyUnconfirmByConfirmer.editMode(true);
+                self.monthlyUnconfirmByConfirmer.editMode(true);
                 block.clear();
             });
+        }
+
+        private getMailTempJS(mail: model.MailTemp) {
+            let obj = ko.toJS(mail)
+            obj.urlApprovalEmbed = obj.urlApprovalEmbed ? 1 : 0;
+            obj.urlDayEmbed = obj.urlDayEmbed ? 1 : 0;
+            obj.urlMonthEmbed = obj.urlMonthEmbed ? 1 : 0;
+            obj.editMode = obj.editMode ? 1 : 0;
+            return obj;
         }
 
         /**
@@ -161,7 +234,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 
         /**
          * 終了する
-         */
+        */
         close() {
             //画面を閉じる
             nts.uk.ui.windows.close()

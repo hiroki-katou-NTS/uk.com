@@ -3,36 +3,36 @@ module nts.uk.at.view.kaf018.share.model {
     export class MailTemp {
         mailSubject: KnockoutObservable<string>;
         mailContent: KnockoutObservable<string>;
-        urlApprovalEmbed: KnockoutObservable<number>;
-        urlDayEmbed: KnockoutObservable<number>;
-        urlMonthEmbed: KnockoutObservable<number>;
+        urlApprovalEmbed: KnockoutObservable<boolean>;
+        urlDayEmbed: KnockoutObservable<boolean>;
+        urlMonthEmbed: KnockoutObservable<boolean>;
         mailType: number;
-        screenEditMode: KnockoutObservable<boolean>;
+        editMode: KnockoutObservable<boolean>;
 
-        constructor(mailType: number, mailSubject: string, mailContent: string, urlApprovalEmbed: number, urlDayEmbed: number, urlMonthEmbed: number, screenEditMode: boolean) {
+        constructor(mailType: number, mailSubject: string, mailContent: string, urlApprovalEmbed: number, urlDayEmbed: number, urlMonthEmbed: number, editMode: number) {
             this.mailType = mailType;
             this.mailSubject = ko.observable(mailSubject);
             this.mailContent = ko.observable(mailContent);
-            this.urlApprovalEmbed = ko.observable(urlApprovalEmbed);
-            this.urlDayEmbed = ko.observable(urlDayEmbed);
-            this.urlMonthEmbed = ko.observable(urlMonthEmbed);
-            this.screenEditMode = ko.observable(screenEditMode);
+            this.urlApprovalEmbed = ko.observable(urlApprovalEmbed == 0 ? false : true);
+            this.urlDayEmbed = ko.observable(urlDayEmbed == 0 ? false : true);
+            this.urlMonthEmbed = ko.observable(urlMonthEmbed == 0 ? false : true);
+            this.editMode = ko.observable(editMode == 0 ? false : true);
         }
     }
 
     export class IdentityProcessUseSet {
-        useIdentityOfMonth: KnockoutObservable<number>;
+        useIdentityOfMonth: KnockoutObservable<boolean>;
 
-        constructor(useIdentityOfMonth: number) {
+        constructor(useIdentityOfMonth: boolean) {
             this.useIdentityOfMonth = ko.observable(useIdentityOfMonth);
         }
     }
 
     export class ApprovalProcessingUseSetting {
-        useMonthApproverComfirm: KnockoutObservable<number>;
-        useDayApproverConfirm: KnockoutObservable<number>;
+        useMonthApproverComfirm: KnockoutObservable<boolean>;
+        useDayApproverConfirm: KnockoutObservable<boolean>;
 
-        constructor(useDayApproverConfirm: number, useMonthApproverComfirm: number) {
+        constructor(useDayApproverConfirm: boolean, useMonthApproverComfirm: boolean) {
             this.useMonthApproverComfirm = ko.observable(useMonthApproverComfirm);
             this.useDayApproverConfirm = ko.observable(useDayApproverConfirm);
         }
