@@ -570,8 +570,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     self.listMappingData(_rsList);
                     refreshListAcceptItem();
                 }).fail(function(err) {
+                    //Clear "CSV data item name" and "sample data" on the screen
+                    for (var i = 0; i < self.listAcceptItem().length; i++) {
+                        self.listAcceptItem()[i].csvItemNumber(null);
+                        self.listAcceptItem()[i].csvItemName(null);
+                        self.listAcceptItem()[i].sampleData(null);
+                    }
                     $('#file-upload').find('.filenamelabel').text('');
                     $('#file-upload').find("input").val('');
+                    $('#file-upload').find("input").change();
                     self.listMappingData([]);
                     self.fileId(null);
                     alertError(err);
