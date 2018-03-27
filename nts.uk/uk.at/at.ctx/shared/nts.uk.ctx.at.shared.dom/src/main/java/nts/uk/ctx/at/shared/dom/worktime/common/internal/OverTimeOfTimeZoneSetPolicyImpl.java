@@ -143,7 +143,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)
 				&& useHalfDayShift && !presTz.isUseShiftTwo()) {
 			if (isOverlap(otTimezone, shift1Timezone.getStart(), presTz.getMorningEndTime())) {
-				be.addMessage("Msg_1035");
+				be.addMessage("Msg_1035", "KMK003_89");
 			}
 		}
 
@@ -157,7 +157,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			if (startTime1.lessThanOrEqualTo(presTz.getMorningEndTime())
 					&& endTime1.greaterThanOrEqualTo(presTz.getMorningEndTime())) {
 				if (isOverlap(otTimezone, startTime1, presTz.getMorningEndTime())) {
-					be.addMessage("Msg_1035");
+					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
 
@@ -165,7 +165,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 					&& endTime2.greaterThanOrEqualTo(presTz.getMorningEndTime())) {
 				if (isOverlap(otTimezone, startTime1, endTime1)
 						|| isOverlap(otTimezone, startTime2, presTz.getMorningEndTime())) {
-					be.addMessage("Msg_1035");
+					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
 		}
@@ -174,7 +174,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)
 				&& useHalfDayShift && !presTz.isUseShiftTwo()) {
 			if (isOverlap(otTimezone, presTz.getAfternoonStartTime(), shift1Timezone.getEnd())) {
-				be.addMessage("Msg_1036");
+				be.addMessage("Msg_1036", "KMK003_89");
 			}
 		}
 
@@ -189,14 +189,14 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 					&& endTime1.greaterThanOrEqualTo(presTz.getMorningEndTime())) {
 				if (isOverlap(otTimezone, presTz.getAfternoonStartTime(), endTime1)
 						|| isOverlap(otTimezone, startTime2, endTime2)) {
-					be.addMessage("Msg_1036");
+					be.addMessage("Msg_1036", "KMK003_89");
 				}
 			}
 
 			if (startTime2.lessThanOrEqualTo(presTz.getMorningEndTime())
 					&& endTime2.greaterThanOrEqualTo(presTz.getMorningEndTime())) {
 				if (isOverlap(otTimezone, presTz.getAfternoonStartTime(), endTime2)) {
-					be.addMessage("Msg_1036");
+					be.addMessage("Msg_1036", "KMK003_89");
 				}
 			}
 		}

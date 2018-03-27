@@ -61,23 +61,23 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 				}
 			} else if (AmPmAtr.AM.equals(dayAtr)) {
 				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
-					be.addMessage("Msg_774", "KMK003_86");
+					be.addMessage("Msg_774", "KMK003_295");
 				}
 			} else if (AmPmAtr.PM.equals(dayAtr)) {
 				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
-					be.addMessage("Msg_774", "KMK003_86");
+					be.addMessage("Msg_774", "KMK003_296");
 				}
 			}
 		} else {
 			if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
 				// Msg_1054
 				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
-					be.addMessage("Msg_1054");
+					be.addMessage("Msg_1054", "KMK003_295");
 				}
 			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
 				// Msg_1055
 				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
-					be.addMessage("Msg_1055");
+					be.addMessage("Msg_1055", "KMK003_296");
 				}
 			}
 		}
