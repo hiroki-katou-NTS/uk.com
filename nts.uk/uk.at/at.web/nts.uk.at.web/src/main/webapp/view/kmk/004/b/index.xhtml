@@ -24,6 +24,9 @@
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="../e/kmk004.e.service.js" />
 			<com:scriptfile path="../shr/kmk004.shared.model.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.service.js" />
@@ -45,7 +48,15 @@
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('Com_Person')}</span>
 			</div>
-			<div class="contents-area"></div>
+			<div class="contents-area cf fixed-flex-layout">
+				<div id="ccgcomponent"></div>
+				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 10px"></div>
+				<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
+				<fieldset data-bind="allowEdit: (selectedWorkplaceId())">
+					<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
+				</fieldset>
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

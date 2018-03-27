@@ -60,6 +60,12 @@ module nts.uk.at.view.kmk004.c {
                 
                 self.employmentCode = ko.observable('');
                 self.employmentName = ko.observable('');
+                self.employmentWTSetting.employmentCode.subscribe(function(v) {
+                    self.employmentCode(v);
+                });
+                self.employmentWTSetting.employmentName.subscribe(function(v) {
+                    self.employmentName(v);
+                });
             }
                 
             public startPage(): JQueryPromise<void> {

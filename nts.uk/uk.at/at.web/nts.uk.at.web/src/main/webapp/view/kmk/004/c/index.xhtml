@@ -53,10 +53,17 @@
 				<div class="right-content pull-left fixed-flex-layout-right" style="min-width: 600px" data-bind="ifnot: isLoading">
 					<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
 						<com:ko tag="with" bind="worktimeSetting">
-							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
+							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />
 						</com:ko>
 					</fieldset>
 				</div>
+			</div>
+		</ui:define>
+		<ui:define name="worktime-setting-extra-info">
+			<div class="control-group" style="white-space: nowrap">
+				<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
+				<span id="lblEmploymentCode" data-bind="text: $root.employmentCode"></span>
+				<span id="lblEmploymentName" data-bind="text: $root.employmentName"></span>
 			</div>
 		</ui:define>
 	</ui:composition>

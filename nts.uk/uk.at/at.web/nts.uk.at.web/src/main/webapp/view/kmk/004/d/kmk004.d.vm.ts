@@ -25,6 +25,9 @@ module nts.uk.at.view.kmk004.d {
             workplaceWTSetting: WorkPlaceWTSetting;
             worktimeSetting: WorktimeSettingVM.ScreenModel;
             
+            workplaceCode: KnockoutObservable<string>;
+            workplaceName: KnockoutObservable<string>;
+            
             workplaceComponentOption: any;
             selectedWorkplaceId: KnockoutObservable<string>;
             alreadySettingWorkplaces: KnockoutObservableArray<any>;
@@ -54,6 +57,13 @@ module nts.uk.at.view.kmk004.d {
                     if (code) {
                         self.loadWorkplaceSetting(code);
                     }
+                });
+                
+                self.workplaceWTSetting.workplaceCode.subscribe(function(v) {
+                    self.workplaceCode(v);
+                });
+                self.workplaceWTSetting.workplaceName.subscribe(function(v) {
+                    self.workplaceName(v);
                 });
             }
             
