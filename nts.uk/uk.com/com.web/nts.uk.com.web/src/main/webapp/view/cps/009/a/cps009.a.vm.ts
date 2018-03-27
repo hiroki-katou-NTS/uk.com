@@ -30,6 +30,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
         currentItemId: KnockoutObservable<string> = ko.observable('');
         errorList: KnockoutObservableArray<any> = ko.observableArray([]);
+
         constructor() {
 
             let self = this;
@@ -99,7 +100,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // get item list
         getItemList(settingId: string, ctgId: string) {
             let self = this,
-            i: number = 0;
+                i: number = 0;
             currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
@@ -109,7 +110,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         i = i + 1;
                         return new PerInfoInitValueSettingItemDto({
                             categoryType: currentCtg.categoryType,
-                            indexItem : i ,    
+                            indexItem: i,
                             fixedItem: obj.fixedItem,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             settingId: obj.settingId,
@@ -141,9 +142,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             numericItemMax: obj.numericItemMax,
                             stringItemType: obj.stringItemType,
                             stringItemLength: obj.stringItemLength,
-                            stringItemDataType: obj.stringItemDataType
+                            stringItemDataType: obj.stringItemDataType,
+                            disableCombox : obj.disableCombox
                         });
-                        
+
                     });
 
                     self.currentCategory().itemList.removeAll();
@@ -498,7 +500,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             //「固定値」になっているかつ、項目のデータ型＝選択項目かつ、参照区分！＝Enum参照条件の項目があるかチェックする(Kiểm tra những Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件)
             //Type là Selection
             if (objItem.dataType() != 6) {
-                return false
+                return false;
             }
             //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
             if (objItem.selectionItemRefType != 1) {
@@ -703,8 +705,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // dung de phan biet category thuoc dang lich su lien tuc thi cot 2
         // cua itemList se ko hoat dong
         categoryType: number;
+
+        // index dùng để phân biệt endate
+        indexItem: number;
+
+        // radioId của kiểu item radio
+        radioId?: string;
+        radioLst?: Array<any>;
         
-        indexItem : number;
+        // disable combox
+        disableCombox: boolean;
+
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -720,9 +731,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
         listComboItem: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<number>;
 
-
         dataType: KnockoutObservable<number>;
 
+        //lưu giá trị của item trong bảng init item
         saveDataType: KnockoutObservable<number>;
         stringValue: KnockoutObservable<string>;
         intValue: KnockoutObservable<number>;
@@ -747,35 +758,43 @@ module nts.uk.com.view.cps009.a.viewmodel {
         numbericItem: NumbericItem;
         numbereditor: any;
 
-        // timepoint
+        // time
         timeItemMin: number;
-
         timeItemMax: number;
 
         //selectionItemId? : string;
         selectionItemId: string;
         selectionItemRefType: number;
 
+        //timepoint
         timepointItemMin: number;
-
         timepointItemMax: number;
 
+        //number
         numericItemMin: number;
-
         numericItemMax: number;
 
+        //string
         stringItemType: number;
-
         stringItemLength: number;
-
         stringItemDataType: number;
+
+        //dùng để xử lý chữ quá dài thì hover vào text sẽ hiển thị full chữ
         getTitle: KnockoutObservable<string> = ko.observable("");
-        
+
+        // phân biệt endate của category lịch sử liên tục để disable
         categoryType: number;
         indexItem: number = 0;
+
+        radioId: string;
+        radioCode: string;
+        radioLst: Array<any> = [];
+        disableCombox: KnockoutObservable<boolean> =  ko.observable(true);
+        
+
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
-            
+
             self.categoryType = params.categoryType;
             self.indexItem = params.indexItem;
             self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
@@ -800,15 +819,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.timeItemMax = params.timeItemMax || undefined;
 
             self.timepointItemMin = params.timepointItemMin || undefined;
-
             self.timepointItemMax = params.timepointItemMax || undefined;
 
             self.numericItemMin = params.numericItemMin || undefined;
-
             self.numericItemMax = params.numericItemMax || undefined;
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
+            self.disableCombox(params.disableCombox == true ? false: true);          
 
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
@@ -847,7 +865,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-            if (params.dataType === 6 || params.dataType === 7 || params.dataType === 8) {
+            if (params.dataType === 6) {
                 self.selectionItemId = params.selectionItemId || undefined;
 
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
@@ -855,6 +873,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selection = ko.observableArray(params.selection || []);
                 self.selectedCode = ko.observable(params.stringValue || undefined);
             }
+
 
             self.dateType = params.dateType || undefined;
 
@@ -870,6 +889,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     { code: 1, name: ReferenceMethodType.NOSETTING },
                     { code: 2, name: ReferenceMethodType.FIXEDVALUE },
                     { code: 3, name: ReferenceMethodType.SAMEASLOGIN }]);
+            }
+
+            if (params.dataType === 7) {
+                self.radioId = params.selectionItemId || undefined;
+                self.selectionItemRefType = params.selectionItemRefType || undefined;
+
+                self.selection = ko.observableArray(params.selection || []);
+                self.selectedCode = ko.observable(params.stringValue || undefined);
             }
 
 
@@ -951,6 +978,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
             return width;
         }
+        
+        openKDL003(){
+            
+        
+        }
+        
+        
     }
 
     export interface IPerInfoInitValueSettingDto {
@@ -980,7 +1014,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
     }
-
 
     function makeIcon(value, row) {
         if (value == "false")
