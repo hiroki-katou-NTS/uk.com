@@ -31,7 +31,7 @@
 			<ul tabindex="1" class="navigator">
 				<li data-bind="click: onSelectTabOne"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectTabTwo, visible: isDisableTab()"><a tabindex="-1"
+				<li data-bind="click: onSelectTabTwo, visible: isVisableTab()"><a tabindex="-1"
 					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KMK011_72')}</a></li>
 			</ul>
 		</ui:define>
@@ -39,7 +39,7 @@
 			<div id="tabpanel-1" role="tabpanel" data-bind="">
 				<ui:include src="d_index.xhtml" />
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE(), visible: isDisableTab()">			
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE(), visible: isVisableTab()">			
 				<ui:include src="../e/index.xhtml" />
 			</div>
 		</ui:define>

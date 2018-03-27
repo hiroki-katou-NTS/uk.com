@@ -33,6 +33,22 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	public GeneralDate workingDate() {
 		return this.ymd;
 	}
+	
+	public static PCLogOnInforOfDailyPerformDto from(PCLogOnInfoOfDaily domain){
+		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
+		if (domain != null) {
+			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
+					(c) -> new LogonInfoDto(
+								c.getWorkNo() == null ? null : c.getWorkNo().v(),
+								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
+								c.getLogOff().isPresent() ? c.getLogOff().get().valueAsMinutes() : null
+					)));
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setYmd(domain.getYmd());
+			dto.exsistData();
+		}
+		return dto;
+	}
 
 	@Override
 	public PCLogOnInfoOfDaily toDomain(String employeeId, GeneralDate date) {

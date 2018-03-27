@@ -2,10 +2,12 @@ package nts.uk.ctx.at.shared.dom.worktype.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -49,19 +51,25 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 			return false;
 		}
 		WorkType workTypeData = optWorkTypeData.get();
+		List<WorkTypeSet> lstAttendance = workTypeData.getWorkTypeSetList();
+		if(lstAttendance.isEmpty()) {
+			return false;			
+		}
+		List<WorkTypeSet> lst1Day = lstAttendance.stream()
+				.filter(x -> x.getWorkTypeCd().v().contains(workTypeCode) && x.getWorkAtr() == WorkAtr.OneDay)
+				.collect(Collectors.toList());
+		if(lst1Day.isEmpty()) {
+			return false;
+		}
+		WorkTypeSet data1day = lst1Day.get(0);
 		//INPUT．出勤退勤区分をチェックする
+		//自動打刻セット区分=「所定勤務の設定」．出勤時刻を直行とする
 		if(workTypeAtr == AttendanceOfficeAtr.ATTENDANCE) {
-			//自動打刻セット区分=「所定勤務の設定」．出勤時刻を直行とする
-			List<WorkTypeSet> lstAttendance = workTypeData.getWorkTypeSetList();
-			if(lstAttendance.isEmpty()) {
-				//TODO : lam tiep khi xac nhan lai voi ben vn
-			}
-					
-			//return 
+			return data1day.getAttendanceTime().value == 0 ? false : true; 
 		} else {
 			//自動打刻セット区分=「所定勤務の設定」．退勤時刻を直帰とする
+			return data1day.getTimeLeaveWork().value == 0 ? false : true;
 		}
-		return false;
 	}
 
 }

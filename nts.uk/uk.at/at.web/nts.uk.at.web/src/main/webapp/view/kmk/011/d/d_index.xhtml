@@ -24,7 +24,7 @@
 			<div class="fixed-flex-layout-left">
 				<div class="history_setting">
 					<div class="functions">
-						<button tabindex="-1"
+						<button id="save-hist-com" tabindex="-1"
 							data-bind="click: createMode, enable: enable_button_creat">#{i18n.getText('KMK011_50')}</button>
 						<button tabindex="-1"
 							data-bind="click: editMode, enable: enable_button_edit">#{i18n.getText('KMK011_51')}</button>
@@ -32,7 +32,7 @@
 							data-bind="click: deleteMode, enable: enable_button_delete">#{i18n.getText('KMK011_74')}</button>
 					</div>
 					<div class="list_hist">
-						<div id="list-box"
+						<div id="list-box-1"
 							data-bind="ntsListBox: {
 									options: histList,
 									optionsValue: 'historyId',
