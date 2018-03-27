@@ -99,7 +99,7 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	@POST
 	@Path("findAll/{hasCompanyId}")
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("hasCompanyId") boolean hasCompanyId) {
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("hasCompanyId") String hasCompanyId) {
 		return this.finder.getAllPerInfoSelectionItem(hasCompanyId);
 	}
 
