@@ -5,6 +5,10 @@ module nts.uk.at.view.kdw002.c {
         import getText = nts.uk.resource.getText;
         import infor = nts.uk.ui.dialog.info;
         export class ScreenModel {
+            listAttdItem: Array<any>;
+            listDailyServiceTypeControl : KnockoutObservableArray<any>; 
+            
+            
             bussinessCodeItems: KnockoutObservableArray<BusinessType>;
             bussinessColumn: KnockoutObservableArray<any>;
             currentRoleId: KnockoutObservable<any>;
@@ -12,6 +16,8 @@ module nts.uk.at.view.kdw002.c {
             constructor() {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
+                self.listAttdItem = [];
+                self.listDailyServiceTypeControl= ko.observableArray([]);
 
                 this.bussinessColumn = ko.observableArray([
                     { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
@@ -23,42 +29,46 @@ module nts.uk.at.view.kdw002.c {
                 self.currentRoleId.subscribe(roleId => {
                     self.currentRoleId(roleId);
                     _.defer(() => nts.uk.ui.block.invisible());
-                    $.when(service.getListDailyServiceTypeControl(roleId), service.getAttendanceItems()).done(
+                    
+                    let dfdGetAttendanceItems = self.getAttendanceItems();
+                    let dfdGetDailyServiceTypeControl = self.getDailyAttdItemByRoleID(roleId);
+                    
+                    $.when(dfdGetAttendanceItems,dfdGetDailyServiceTypeControl).done(
                         (DailyServiceTypeControls, attendanceItems) => {
                             $('#useCheckAll').prop('checked', false);
                             $('#youCanCheckAll').prop('checked', false);
                             $('#otherCheckAll').prop('checked', false);
-                            if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
-                                var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
-                                var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
-                                $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
-                                var dataSource = $('#grid').data('igGrid').dataSource;
-                                var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                                var i;
-                                var l = filteredData.length;
-                                for (i = 0; i < l; i++) {
-                                    if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                        if (!filteredData[i].userCanSet) {
-                                            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
-                                        }
-                                        var rowId = filteredData[i].attendanceItemId;
-                                        var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
-                                        var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
-                                        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
-                                        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
-                                        cellYouCanChangeIt.children().prop("disabled", true);
-                                        cellCanBeChangedByOthers.children().prop("disabled", true);
-
-
-                                    }
-                                }
-                            }
+//                            if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
+//                                var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
+//                                var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
+//                                $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
+//                                var dataSource = $('#grid').data('igGrid').dataSource;
+//                                var filteredData = dataSource.transformedData('afterfilteringandpaging');
+//                                var i;
+//                                var l = filteredData.length;
+//                                for (i = 0; i < l; i++) {
+//                                    if (!filteredData[i].userCanSet || !filteredData[i].use) {
+//                                        if (!filteredData[i].userCanSet) {
+//                                            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+//                                        }
+//                                        var rowId = filteredData[i].attendanceItemId;
+//                                        var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+//                                        var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
+//                                        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
+//                                        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
+//                                        cellYouCanChangeIt.children().prop("disabled", true);
+//                                        cellCanBeChangedByOthers.children().prop("disabled", true);
+//
+//
+//                                    }
+//                                }
+//                            }
                             nts.uk.ui.block.clear();
                         }
                     );
                 });
 
-                loadIgrid();
+                //loadIgrid();
 
                 service.getEmpRole().done(empRoles => {
                     if (!nts.uk.util.isNullOrUndefined(empRoles) && empRoles.length > 0) {
@@ -93,8 +103,29 @@ module nts.uk.at.view.kdw002.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                self.getAttendanceItems();
                 dfd.resolve();
                 return dfd.promise();
+            }
+            
+            getAttendanceItems(){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getAttendanceItems().done(function(data){
+                    self.listAttdItem = data;
+                    dfd.resolve();        
+                });
+                return dfd.promise();
+            }
+            
+            getDailyAttdItemByRoleID(roleID:string){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getDailyAttdItemByRoleID(roleID).done(function(data){
+                    self.listDailyServiceTypeControl(data);
+                    dfd.resolve();        
+                });
+                return dfd.promise();    
             }
 
             submitData(): void {

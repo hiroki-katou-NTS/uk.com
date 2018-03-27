@@ -5,16 +5,15 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class InputControlOfAttendanceItem extends DomainObject {
 
-	/**本人が変更できる*/
-	private boolean youCanChangeIt;
 	/**他人が変更できる*/
 	private boolean canBeChangedByOthers;
 	
-	public InputControlOfAttendanceItem(boolean youCanChangeIt, boolean canBeChangedByOthers) {
+	/**本人が変更できる*/
+	private boolean youCanChangeIt;
+
+	public InputControlOfAttendanceItem(boolean canBeChangedByOthers, boolean youCanChangeIt) {
 		super();
-		this.youCanChangeIt = youCanChangeIt;
 		this.canBeChangedByOthers = canBeChangedByOthers;
+		this.youCanChangeIt = youCanChangeIt;
 	}
-	
-	
 }

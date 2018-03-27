@@ -15,5 +15,7 @@ public class AttdItemDto {
 	
 	private int dailyAttendanceAtr;
 	
+	private int displayNumber;
+	
 
 }
