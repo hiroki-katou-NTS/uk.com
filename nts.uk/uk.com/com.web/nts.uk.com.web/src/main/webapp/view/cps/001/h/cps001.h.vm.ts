@@ -74,7 +74,7 @@ module cps001.h.vm {
         
         create(){
             let self = this;
-            self.currentItem("");
+            self.currentItem("-1");
             self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
         }
 
