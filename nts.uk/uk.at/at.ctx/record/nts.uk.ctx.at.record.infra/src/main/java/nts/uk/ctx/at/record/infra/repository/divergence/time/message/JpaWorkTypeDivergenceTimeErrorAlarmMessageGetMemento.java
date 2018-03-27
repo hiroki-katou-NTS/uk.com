@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.message.KrcstDvgcwtTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsg;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
