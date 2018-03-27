@@ -82,6 +82,14 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
 				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
 				.collect(Collectors.toList());
+		if (!predetemineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo()) {
+			listGoWork = listGoWork.stream()
+				.filter(domain -> domain.getWorkNo().v() == 1)
+				.collect(Collectors.toList());
+			listLeaveWork = listLeaveWork.stream()
+					.filter(domain -> domain.getWorkNo().v() == 1)
+					.collect(Collectors.toList());
+		}
 		if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
 			be.addMessage("Msg_520");
 		}
