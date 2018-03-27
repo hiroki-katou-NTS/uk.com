@@ -151,10 +151,11 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemName);
 	}
 
-	public static PersonInfoItemDefinition createFromEntityWithCodeAndName(String itemCode, String itemName) {
+	public static PersonInfoItemDefinition createFromEntityWithCodeAndName(String itemCode, String itemName, int abolitionAtr) {
 		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
 		item.setItemCode(new ItemCode(itemCode));
 		item.setItemName(itemName);
+		item.setIsAbolition(EnumAdaptor.valueOf(abolitionAtr, IsAbolition.class));;
 		return item;
 	}
 

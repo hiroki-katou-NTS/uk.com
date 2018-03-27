@@ -574,11 +574,16 @@ public class PerInfoItemDefFinder {
 	}
 	// lanlt end
 
+	/**
+	 * 
+	 * @param ctgCd
+	 * @return
+	 */
 	public List<SimpleItemDef> getSingpleItemDef(String ctgCd) {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getPerInfoItemByCtgCd(ctgCd,
 				AppContexts.user().companyId());
 
-		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), true))
+		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), x.getIsAbolition() == IsAbolition.NOT_ABOLITION))
 				.collect(Collectors.toList());
 	}
 }

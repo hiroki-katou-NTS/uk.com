@@ -28,32 +28,40 @@
 		<ui:define name="content">
 
 			<div id="functions-area" class="fixed-flex-layout">
-				<button tabindex="1"  class="btnStyle">#{i18n.getText('CPS001_108')}</button>
+				<button tabindex="1" class="btnStyle">#{i18n.getText('CPS001_108')}</button>
 				<button tabindex="2" class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
-				<button tabindex="3"  class="btnStyle">#{i18n.getText('CPS001_110')}</button>
-				<button tabindex="4"  class="danger btnStyle">#{i18n.getText('CPS001_111')}</button>
+				<button tabindex="3" class="btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="4" class="danger btnStyle">#{i18n.getText('CPS001_111')}</button>
 			</div>
 
 			<div id="contents-area">
 				<div class="grid-container">
 					<div data-bind="ntsCheckBox: { checked: checked, enable: true}">#{i18n.getText('CPS001_125')}</div>
 					<div id="tbl"></div>
-					
+
 				</div>
 				<div class='detailContent'>
-					<table>
+					<table id="tblDetail">
+						<!-- Line 1 -->
 						<tr>
-							<td><div data-itemCode="IS00409 IS00424"><div data-bind="ntsFormLabel: {required: true}">1</div></div></td>
-							<td><div data-bind="ntsDatePicker: {value: dateGrantInp, dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td data-itemCode="IS00409 IS00424"><div
+									data-bind="ntsFormLabel: {required: true}">1</div></td>
+							<td><div
+									data-bind="ntsDatePicker: {value: dateGrantInp, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
+						<!-- Line 2 -->
 						<tr>
-							<td><div data-itemCode="IS00410"><div data-bind="ntsFormLabel: {required: true}">1</div></div></td>
-							<td><div data-bind="ntsDatePicker: {value: deadlineDateInp, dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td data-itemCode="IS00410"><div
+									data-bind="ntsFormLabel: {required: true}">1</div></td>
+							<td><div
+									data-bind="ntsDatePicker: {value: deadlineDateInp, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
+						<!-- Line 3 -->
 						<tr>
-							<td><div data-itemCode="IS00411"><div data-bind="ntsFormLabel: {required: true}">1</div></div></td>
+							<td data-itemCode="IS00411"><div
+									data-bind="ntsFormLabel: {required: true}">1</div></td>
 							<td><div tabindex="9" class="cf"
-							data-bind="ntsSwitchButton: {
+									data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
 								options: roundingRules,
 								optionsValue: 'code',
@@ -61,35 +69,38 @@
 								value: selectedRuleCode,
 								required: true,
 								enable: true }"></div></td>
-										
+
 						</tr>
+						<!-- Line 4 -->
 						<tr>
-							<td style="vertical-align: top !important;"><div data-itemCode="IS00412"><div data-bind="ntsFormLabel: {required: true}">1</div></div></td>
+							<td style="vertical-align: top !important;" data-itemCode="IS00412">
+									<div data-bind="ntsFormLabel: {required: true}">1</div>
+								</td>
 							<td>
-								<table>
+								<table id="subContent">
 									<tr>
-										<td colspan='3' style='font-weight: bold;padding-top: 10px;'>#{i18n.getText('CPS001_114')}</td>
+										<td colspan='3' class="formularStyle">#{i18n.getText('CPS001_114')}</td>
 									</tr>
 									<tr>
+										<!-- Line 5-->
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
+										<td data-itemCode="IS00414" class="tdTxt">
+											<div></div> </td>
+										<td><input
+										data-bind="ntsNumberEditor: {
+													value: dayNumberOfGrants,
+													constraint: '',
+													required: true,
+													option: {decimallength: 0},
+													enable: true,
+													readonly: false}" /></td>
+										
 										<td>
-											<div data-itemCode="IS00414">
-												<div></div>
-												<input
-												data-bind="ntsNumberEditor: {
-														value: dayNumberOfGrants,
-														constraint: '',
-														required: true,
-														option: {decimallength: 0},
-														enable: true,
-														readonly: false}" />
-											</div>
-										</td>
-										<td>
-											<div data-itemCode="IS00415">
-												<div class="inline" ></div>
-												<input
-													data-bind="ntsTimeEditor: {
+											<table>
+												<tr>
+													<td data-itemCode="IS00415 grantTime" class="tdTxt"><div></div> </td>
+													<td><input
+														data-bind="ntsTimeEditor: {
 														value: grantTime,
 														constraint: '',
 														inputFormat: 'time',
@@ -97,30 +108,34 @@
 														required: true,
 														enable: true,
 														readonly: false,
-														immediate: false}" />
-											</div>
+														immediate: false}" /></td>
+												</tr>
+											</table>
 										</td>
 									</tr>
+									<!-- Line 6-->
 									<tr>
+										
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
-										<td>
-											<div class="form-group" data-itemCode="IS00417">							
-												<div class="inline" data-bind="text: dayNumberOfUseTitle"></div>
-												<input
-													data-bind="ntsNumberEditor: {
-													value: dayNumberOfUse,
-													constraint: '',
-													required: true,
-													option: {decimallength: 0},
-													enable: true,
-													readonly: false}" />
-											</div>
+										<td data-itemCode="IS00417" class="tdTxt">
+											<div></div> 
 										</td>
+										<td><input
+											data-bind="ntsNumberEditor: {
+												value: dayNumberOfUse,
+												constraint: '',
+												required: true,
+												option: {decimallength: 0},
+												enable: true,
+												readonly: false}" /></td>
 										<td>
-										<div data-bind="visible: visibleUse" class="inline" data-itemCode="IS00418 useTime">
-											<div class="inline" data-bind="text: useTimeTitle"></div>
-											<input
-												data-bind="ntsTimeEditor: {
+											<table>
+												<tr>
+													<td data-itemCode="IS00418 useTime" class="tdTxt">
+														<div></div> 
+													</td>
+													<td><input
+														data-bind="ntsTimeEditor: {
 													value: useTime,
 													constraint: '',
 													inputFormat: 'time',
@@ -128,30 +143,33 @@
 													required: true,
 													enable: true,
 													readonly: false,
-													immediate: false}" />
-			
-										</div>
+													immediate: false}" /></td>
+												</tr>
+											</table>
 										</td>
 									</tr>
+									<!-- Line 7-->
 									<tr>
-										<td></td>
-										<td>
-											<div data-itemCode="IS00419">
-							<div class="inline" data-bind="text: dayNumberOverTitle"></div>
-							<input
-								data-bind="ntsNumberEditor: {
-										value: dayNumberOver,
-										constraint: '',
+									<td></td>
+										<td data-itemCode="IS00419" class="tdTxt">
+											<div></div> 
+										</td>
+										<td><input
+											data-bind="ntsNumberEditor: {
+													value: dayNumberOver,
+													constraint: '',
 										required: true,
 										option: {decimallength: 0},
 										enable: true,
-										readonly: false}" /></div>
-										</td>
+										readonly: false}" /></td>
 										<td>
-										<div data-itemCode="IS00420">
-								<div class="inline" data-bind="text: timeOverTitle"></div>
-								<input
-									data-bind="ntsTimeEditor: {
+											<table>
+												<tr>
+													<td data-itemCode="IS00420 timeOver" class="tdTxt">
+														<div></div> 
+													</td>
+													<td><input
+														data-bind="ntsTimeEditor: {
 										value: timeOver,
 										constraint: '',
 										inputFormat: 'time',
@@ -159,28 +177,35 @@
 										required: true,
 										enable: true,
 										readonly: false,
-										immediate: false}" />
-							</div>
+										immediate: false}" /></td>
+												</tr>
+											</table>
+
 										</td>
 									</tr>
+									<!-- Line 8-->
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
-										<td><div class="form-group" data-itemCode="IS00422">
-							
-							<div></div>
-							<input
-								data-bind="ntsNumberEditor: {
+										<td data-itemCode="IS00422" class="tdTxt">
+
+											<div></div> 
+										</td>
+										<td><input
+											data-bind="ntsNumberEditor: {
 										value: dayNumberOfReam,
 										constraint: '',
 										required: true,
 										option: {decimallength: 0},
 										enable: true,
-										readonly: false}" /></div></td>
-										<td><div data-itemCode="IS00423">
-								<div class="inline"></div>
-								
-								<input
-									data-bind="ntsTimeEditor: {
+										readonly: false}" /></td>
+										<td>
+											<table>
+												<tr>
+													<td data-itemCode="IS00423 timeReam" class="tdTxt">
+														<div></div> 
+													</td>
+													<td><input
+														data-bind="ntsTimeEditor: {
 										value: timeReam,
 										constraint: '',
 										inputFormat: 'time',
@@ -188,13 +213,15 @@
 										required: true,
 										enable: true,
 										readonly: false,
-										immediate: false}" />
-							</div></td>
+										immediate: false}" /></td>
+												</tr>
+											</table>
+										</td>
 									</tr>
 								</table>
 							</td>
 						</tr>
-					</table> 
+					</table>
 				</div>
 			</div>
 		</ui:define>

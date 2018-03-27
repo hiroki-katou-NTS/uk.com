@@ -32,7 +32,7 @@ module nts.uk.com.view.cps001.i.service {
         return ajax(format(paths.delete, id));
     }
      export function getItemDef(){
-        let ctgId: string = "a";
+        let ctgId: string = "CS00039";
         return ajax('com',format("ctx/pereg/person/info/ctgItem/findby/ctg-cd/{0}", ctgId));
     }
 }

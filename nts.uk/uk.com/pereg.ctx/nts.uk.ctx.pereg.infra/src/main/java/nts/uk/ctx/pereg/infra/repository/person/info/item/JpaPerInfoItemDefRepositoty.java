@@ -244,7 +244,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"AND i.perInfoCtgId =:perInfoCtgId");
 
 	// lanlt end
-
 	private final static String SELECT_SIMPLE_ITEM_DEF = String.join(" ",
 			"SELECT i.itemCd, i.itemName FROM PpemtPerInfoItem i",
 			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -593,7 +592,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	private PersonInfoItemDefinition toDomainWithCodeAndName(Object[] i) {
-		return PersonInfoItemDefinition.createFromEntityWithCodeAndName(String.valueOf(i[1]), String.valueOf(i[0]));
+		return PersonInfoItemDefinition.createFromEntityWithCodeAndName(String.valueOf(i[0]), String.valueOf(i[1]), Integer.parseInt(i[2].toString()));
 	}
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomain(PersonInfoItemDefinition perInfoItemDef) {

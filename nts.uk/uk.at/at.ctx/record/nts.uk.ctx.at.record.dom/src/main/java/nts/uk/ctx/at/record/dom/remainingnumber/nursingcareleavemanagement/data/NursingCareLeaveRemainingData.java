@@ -18,7 +18,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.basic
 @AllArgsConstructor
 @NoArgsConstructor
 public class NursingCareLeaveRemainingData extends AggregateRoot{
+
+	//社員ID
 	private String sId;
+	
 	private LeaveType leaveType;
+	
+	//使用日数
 	private int numOfUsedDay;
 }
