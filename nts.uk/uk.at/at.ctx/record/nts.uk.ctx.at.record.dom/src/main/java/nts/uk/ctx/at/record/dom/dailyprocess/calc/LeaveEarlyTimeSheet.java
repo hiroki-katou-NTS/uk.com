@@ -186,7 +186,7 @@ public class LeaveEarlyTimeSheet {
 			) {
 		TimeWithCalculation leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		if(holidayCalcMethodSet.isUse()) {//控除する場合
-			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.get().calcTotalTime();
+			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime():new AttendanceTime(0);
 			leaveEarlyDeductionTime =  leaveEarly?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}
 		return leaveEarlyDeductionTime;
