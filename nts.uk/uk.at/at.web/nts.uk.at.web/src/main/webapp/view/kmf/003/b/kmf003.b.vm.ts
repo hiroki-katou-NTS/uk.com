@@ -211,7 +211,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     };
                     self.items.push(new Item(item));    
                 }
-            }
+            });
         }
         
         /**
@@ -326,9 +326,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             }
 
             var grantHolidayTblList = [];
-            _.forEach(self.items(), function(item) {
+            _.forEach(self.items(), function(item, index) {
                 grantHolidayTblList.push({
-                    grantNum: item.grantYearHolidayNo(),
+                    grantNum: index + 1,
                     conditionNo: item.conditionNo(),
                     yearHolidayCode: item.yearHolidayCode(),
                     year: item.lengthOfServiceYears(),
@@ -427,11 +427,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     self.flag(false);
                     self.items()[index].grantSimultaneity(false);   
                     nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
-                        for (let i = 0; i < self.items().length; i++) {
-                            self.items()[i].grantReferenceDate(self.lengthOfServiceData[i] != null ? self.lengthOfServiceData[i].standGrantDay : 0);
-                            self.items()[i].grantSimultaneity(false);
-                        }
-                        
+                        self.items()[index].grantSimultaneity(false);
                         $('.year-input' + index).focus();
                         self.flag(true);
                     });
