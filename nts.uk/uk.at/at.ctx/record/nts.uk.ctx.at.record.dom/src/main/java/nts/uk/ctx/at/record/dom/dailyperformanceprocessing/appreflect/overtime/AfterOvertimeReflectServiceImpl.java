@@ -22,6 +22,8 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	private PreOvertimeReflectProcess preAfterOvertimeReflectProcess;
 	@Inject
 	private WorkInformationRepository workRepository;
+	@Inject
+	private ScheWorkUpdateService scheWorkUpdate;
 	@Override
 	public ApplicationReflectOutput reflectAfterOvertime(OvertimeParameter overtimePara) {
 		ApplicationReflectOutput output = new ApplicationReflectOutput(overtimePara.getOvertimePara().getReflectedState(), 
@@ -43,8 +45,16 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 		afterOverTimeReflect.checkScheWorkStarEndReflect(overtimePara, isWorkReflect, workTimeTypeScheData);
 		//開始終了時刻の反映
 		WorkTimeTypeOutput workTimeTypeRecordData = new WorkTimeTypeOutput(dailyData.getRecordWorkInformation().getWorkTimeCode().v(), dailyData.getRecordWorkInformation().getWorkTypeCode().v());
-		
-		
+		afterOverTimeReflect.recordStartEndReflect(overtimePara, workTimeTypeRecordData);
+		//残業時間の反映
+		afterOverTimeReflect.reflectOvertimeFrame(overtimePara);
+		//所定外深夜時間の反映
+		afterOverTimeReflect.reflectTimeShiftNight(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), overtimePara.getOvertimePara().getOverTimeShiftNight());
+		//フレックス時間の反映
+		//INPUT．フレックス時間をチェックする
+		if(overtimePara.getOvertimePara().getFlexExessTime() > 0) {
+			scheWorkUpdate.updateFlexTime(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), overtimePara.getOvertimePara().getFlexExessTime(), false);
+		}
 		return null;
 	}
 }

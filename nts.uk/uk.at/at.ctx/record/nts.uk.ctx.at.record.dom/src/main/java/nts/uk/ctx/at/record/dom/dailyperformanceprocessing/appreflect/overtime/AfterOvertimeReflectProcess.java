@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
 
 public interface AfterOvertimeReflectProcess {
 	/**
@@ -32,5 +34,24 @@ public interface AfterOvertimeReflectProcess {
 	 * @param workTimeType
 	 */
 	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType);
+	/**
+	 * 開始終了時刻の反映(事後)
+	 * @param para
+	 * @param timeTypeData
+	 * @return
+	 */
+	public void reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData);
+	/**
+	 * 残業時間の反映
+	 * @param para
+	 */
+	public void reflectOvertimeFrame(OvertimeParameter para);
+	/**
+	 * 所定外深夜時間の反映
+	 * @param employeeId
+	 * @param baseDate
+	 * @param timeNight
+	 */
+	public void reflectTimeShiftNight(String employeeId, GeneralDate baseDate, Integer timeNight);
 
 }
