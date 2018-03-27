@@ -30,7 +30,6 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 	@Override
 	public void insert(RecruitmentApp recApp) {
 		this.commandProxy().insert(toEntity(recApp));
-
 	}
 
 	@Override
@@ -93,8 +92,11 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 	@Override
 	public void remove(String appID) {
-		// TODO Auto-generated method stub
-		
+		Optional<KrqdtRecruitmentApp> entityOpt = this.queryProxy().find(appID, KrqdtRecruitmentApp.class);
+		if (entityOpt.isPresent()) {
+			this.commandProxy().remove(KrqdtRecruitmentApp.class, appID);
+		}
+
 	}
 
 }

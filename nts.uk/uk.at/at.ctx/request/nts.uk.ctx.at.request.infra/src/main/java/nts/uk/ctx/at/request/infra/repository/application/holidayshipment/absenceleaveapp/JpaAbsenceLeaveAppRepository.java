@@ -118,8 +118,11 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	@Override
 	public void remove(String appID) {
-		// TODO Auto-generated method stub
-		
+		Optional<KrqdtAbsenceLeaveApp> entityOpt = this.queryProxy().find(appID, KrqdtAbsenceLeaveApp.class);
+		if (entityOpt.isPresent()) {
+			this.commandProxy().remove(KrqdtAbsenceLeaveApp.class, appID);
+		}
+
 	}
 
 }
