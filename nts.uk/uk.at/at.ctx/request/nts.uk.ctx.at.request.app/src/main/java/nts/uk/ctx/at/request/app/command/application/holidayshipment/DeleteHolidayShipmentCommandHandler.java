@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -12,8 +13,9 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class DeleteHolidayShipmentCommandHandler extends CommandHandler<DeleteHolidayShipmentCommand> {
-	
+
 	@Inject
 	private AfterProcessDelete afterDelete;
 	@Inject
