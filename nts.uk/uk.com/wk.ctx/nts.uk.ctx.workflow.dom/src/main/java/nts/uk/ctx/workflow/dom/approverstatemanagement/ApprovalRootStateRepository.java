@@ -43,4 +43,6 @@ public interface ApprovalRootStateRepository {
 	
 	public void delete(String rootStateID);
 	
+	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType);
+	
 }

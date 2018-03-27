@@ -120,4 +120,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId,GeneralDate endDate);
+	
+	List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
 }
