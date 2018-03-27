@@ -139,14 +139,15 @@ public class LoginWs extends WebService {
 	 *
 	 * @param command the command
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@POST
 	@Path("submit/form2")
-	public void submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
+	public JavaTypeResult<String> submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		this.submitForm2.handle(command);
+		return new JavaTypeResult(this.submitForm2.handle(command));
 	}
 
 	/**
@@ -165,13 +166,14 @@ public class LoginWs extends WebService {
 	 *
 	 * @param command the command
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@POST
 	@Path("submit/form3")
-	public void submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
+	public JavaTypeResult<String> submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
 		if (request.getParameter("signon") != null){
 			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
 		}
 		command.setRequest(request);
-		this.submitForm3.handle(command);
+		return new JavaTypeResult(this.submitForm3.handle(command));
 	}
 }

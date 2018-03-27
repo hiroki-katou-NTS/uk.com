@@ -26,7 +26,7 @@ module nts.uk.pr.view.ccg007.c {
         /**
           * Function is used to submit login.
           */
-        export function submitLogin(data: any): JQueryPromise<any> {
+        export function submitLogin(data: any): JQueryPromise<string> {
             return nts.uk.request.ajax(servicePath.submitLogin+location.search, data);
         }
 
