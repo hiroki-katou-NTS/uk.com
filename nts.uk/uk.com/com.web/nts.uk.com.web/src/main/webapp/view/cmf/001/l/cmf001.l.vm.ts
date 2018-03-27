@@ -105,7 +105,6 @@ module nts.uk.com.view.cmf001.l.viewmodel {
                     break;
             }
             if (!nts.uk.ui.errors.hasError()) {
-                self.acceptScreenConditionSetting().receiptItemName(self.receiptItemName());
                 self.acceptScreenConditionSetting().numberConditionValue1(self.numberConditionValue1());
                 self.acceptScreenConditionSetting().numberConditionValue2(self.numberConditionValue2());
                 self.acceptScreenConditionSetting().characterConditionValue1(self.characterConditionValue1());
