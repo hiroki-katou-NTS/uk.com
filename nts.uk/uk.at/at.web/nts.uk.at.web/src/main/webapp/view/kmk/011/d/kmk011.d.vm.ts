@@ -24,8 +24,8 @@ module nts.uk.at.view.kmk011.d {
             roundingRules: KnockoutObservableArray<any>;
             required: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
-            mapObj: Map<number, ComDivergenceTimeSettingDto>;
-            mapObj2: Map<number, DivergenceTimeDto>;
+            mapObj: any;
+            mapObj2: any;
 
             //history screen
             enable_button_creat: KnockoutObservable<boolean>;
@@ -102,6 +102,9 @@ module nts.uk.at.view.kmk011.d {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
                     _self.screenE().start_page().done(function() {
+                        let histId: string = null;
+                        _self.screenE().histList().length > 0 ? histId = _self.screenE().histList()[0].historyId : histId = null;
+                        _self.screenE().selectedHist(histId);
                         dfd.resolve(_self);
                         if(_self.screenE().histList().length == 0){
                             $('#save-hist-wkType').focus();
@@ -307,6 +310,7 @@ module nts.uk.at.view.kmk011.d {
                         _self.isEnableListHist(true);
                         _self.enable_button_edit(true);
                         _self.enable_button_delete(true);
+                        _self.histList(historyData);
                         dfd.resolve();
                     } else {
                         _self.enable_button_edit(false);
@@ -314,15 +318,13 @@ module nts.uk.at.view.kmk011.d {
                         _self.isEnableListHist(false);
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.fillListItemSettingDefault();
+                        _self.histList([]);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" }).then(() => {
                             $('#save-hist-com').focus();    
                         });
                         blockUI.clear();
                         dfd.resolve();
                     }
-
-                    _self.histList(historyData);
-
                 });
 
                 return dfd.promise();
@@ -421,6 +423,7 @@ module nts.uk.at.view.kmk011.d {
                     _self.fillListHistory().done(() => {
                         let histId: string = _self.histList()[_self.histList().length - 1].historyId
                         _self.selectedHist(histId);
+                        $('#list-box-1').focus();
                     })
                 });
             }
@@ -430,7 +433,7 @@ module nts.uk.at.view.kmk011.d {
                 nts.uk.ui.windows.setShared('history', _self.selectedHist());
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
                     _self.fillListHistory().done(() => {
-                                
+                        $('#list-box-1').focus();
                     })
                 });
             }
@@ -447,6 +450,7 @@ module nts.uk.at.view.kmk011.d {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                             _self.fillListHistory().done(() => {
                                 _self.selectedHist(nextHistId);
+                                $('#list-box-1').focus();
                             });
                         });
                     });
@@ -455,7 +459,12 @@ module nts.uk.at.view.kmk011.d {
             private getNextHistoryAfterDelete(): string { 
                 let _self = this;
                 let nextHistId: string = null;
-                let indexOfCurrentHist: number = _self.histList().indexOf(_self.selectedHist());
+                 
+                let indexOfCurrentHist: number = _self.histList().findIndex(e => e.historyId == _self.selectedHist());
+                if (indexOfCurrentHist == 0){
+                    return null;
+                }
+                
                 if((indexOfCurrentHist + 1) == _self.histList().length){
                       nextHistId =  _self.histList()[indexOfCurrentHist - 1].historyId;
                 } else {
