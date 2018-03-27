@@ -207,15 +207,12 @@ module a2 {
          */
         public bindDataToScreen() {
             let self = this;
-            
-            // Flow mode
-            if (self.isFlowMode()) {
+            _.defer(() => {
                 self.bindDataFlowMode();
-            }
-            // Other mode
-            else {
-                self.bindDataOtherMode();
-            }
+                if (!self.isFlowMode()) {
+                    self.bindDataOtherMode();
+                }
+            });
         }
         
         /**
