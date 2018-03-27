@@ -39,7 +39,7 @@ public class FlexMonthWorkTimeAggrSetDto {
 	private Integer legalAggrSet;
 
 	/** The include over time. */
-	private Integer includeOverTime;
+	private Boolean includeOverTime;
 
 	/**
 	 * To domain.
@@ -112,7 +112,7 @@ public class FlexMonthWorkTimeAggrSetDto {
 		 */
 		@Override
 		public NotUseAtr getIncludeOverTime() {
-			return EnumAdaptor.valueOf(this.dto.getIncludeOverTime(), NotUseAtr.class);
+			return EnumAdaptor.valueOf((this.dto.getIncludeOverTime().booleanValue()) ? 1 : 0, NotUseAtr.class);
 		}
 
 	}
