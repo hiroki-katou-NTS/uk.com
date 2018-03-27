@@ -9,12 +9,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -75,6 +77,15 @@ public class Com60HourVacationSaveCommandHandler
 			this.repository.insert(com60HourVacation);
 		}
 
+		//get isManageByTime from DB
+		int isManageDB = optCom60HourVacation.isPresent() ? optCom60HourVacation.get().getSetting().getIsManage().value : -1;
+		//check managementCategory change
+		boolean isManage = command.getIsManage() != isManageDB;
+		if (isManage) {
+			boolean manage = command.getIsManage() == ManageDistinct.YES.value;
+			val com60HourVacationEvent = new Com60HourVacationDomainEvent(manage);
+			com60HourVacationEvent.toBePublished();
+		}
 	}
 
 }

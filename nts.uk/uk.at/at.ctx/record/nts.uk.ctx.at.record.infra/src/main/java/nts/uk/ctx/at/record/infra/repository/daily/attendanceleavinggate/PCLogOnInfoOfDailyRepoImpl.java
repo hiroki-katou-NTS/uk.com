@@ -47,7 +47,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 			return Collections.emptyList();
 		}
 		return this.queryProxy()
-				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd <= :end AND al.id.ymd >= :start",
+				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start",
 						KrcdtDayPcLogonInfo.class)
 				.setParameter("end", baseDate.end()).setParameter("start", baseDate.start())
 				.setParameter("sid", employeeId).getList(c -> c.toDomain());
