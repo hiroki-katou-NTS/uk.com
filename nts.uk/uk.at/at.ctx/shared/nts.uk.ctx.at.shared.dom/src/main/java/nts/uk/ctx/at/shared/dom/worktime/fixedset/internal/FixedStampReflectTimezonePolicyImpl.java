@@ -128,7 +128,7 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 			//	所定時間帯設定.所定時間帯.時間帯.勤務No＝2 && 所定時間帯設定.所定時間帯.時間帯.使用区分 ＝ するの場合
 			//	開始時刻 ＞ 勤務NO=2の場合の所定時間帯設定.時間帯.開始
 			//	#Msg_1031
-			if (timezone.isUseShiftTwo() && (opGoWork2Stamp.get().getStartTime().greaterThan(timezone.getTimezoneShiftTwo().getStart()))) {
+			if (timezone.isUseShiftTwo() && (opGoWork2Stamp.get().getStartTime().lessThanOrEqualTo(timezone.getTimezoneShiftTwo().getStart()))) {
 				be.addMessage("Msg_1031");
 			}
 		}
