@@ -27,15 +27,19 @@
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
 					<hr/>
 					<div tabindex="1" id="initial-focus-h2" class="margin-first-child ntsControl">
-						<label class="ntsRadioBox control-group" tabindex="1">
-							<input type="radio" name="radio-calc-method" data-bind="checkedValue: 0, checked: calcMethodFluctuation, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_241')"></span>
-						</label>
+						<div class="control-group margin-first-child" tabindex="1" data-bind="ntsRadioButton: {
+							checked: calcMethodFluctuation,
+							option: {value: 0, text: nts.uk.resource.getText('KMK003_241')},
+							optionValue: 'value',
+							optionText: 'text',
+							group: 'calc-method-group'}"></div>
 						<br/>
-						<label class="ntsRadioBox control-group" tabindex="2">
-							<input type="radio" name="radio-calc-method" data-bind="checkedValue: 1, checked: calcMethodFluctuation, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_252')"></span>
-						</label>
+						<div class="control-group margin-first-child" tabindex="2" data-bind="ntsRadioButton: {
+							checked: calcMethodFluctuation,
+							option: {value: 1, text: nts.uk.resource.getText('KMK003_252')},
+							optionValue: 'value',
+							optionText: 'text',
+							group: 'calc-method-group'}"></div>
 					</div>
 					<br/>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_253')}</div>
@@ -47,29 +51,37 @@
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_256')}</div>
 					<hr class="control-group"/>
 					<div tabindex="4" class="margin-first-child ntsControl">
-						<label class="ntsRadioBox control-group" tabindex="4">
-							<input type="radio" name="radio-use-stamp" data-bind="checkedValue: 0, checked: useStampCalcMethod, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_257')"></span>
-						</label>
+						<div class="control-group margin-first-child" tabindex="4" data-bind="ntsRadioButton: {
+							checked: useStampCalcMethod,
+							option: {value: 0, text: nts.uk.resource.getText('KMK003_257')},
+							optionValue: 'value',
+							optionText: 'text',
+							group: 'use-stamp-group'}"></div>
 						<br/>
-						<label class="ntsRadioBox control-group" tabindex="5">
-							<input type="radio" name="radio-use-stamp" data-bind="checkedValue: 1, checked: useStampCalcMethod, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_258')"></span>
-						</label>
+						<div class="control-group margin-first-child" tabindex="5" data-bind="ntsRadioButton: {
+							checked: useStampCalcMethod,
+							option: {value: 1, text: nts.uk.resource.getText('KMK003_258')},
+							optionValue: 'value',
+							optionText: 'text',
+							group: 'use-stamp-group'}"></div>
 					</div>
 					<br/>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_259')}</div>
 					<hr class="control-group"/>
 					<div tabindex="6" class="margin-first-child ntsControl">
-						<label class="ntsRadioBox control-group" tabindex="6">
-							<input type="radio" name="radio-time-atr" data-bind="checkedValue: 0, checked: timeManagerSetAtr, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_260')"></span>
-						</label>
+						<div class="control-group margin-first-child" tabindex="6" data-bind="ntsRadioButton: {
+							checked: timeManagerSetAtr,
+							option: {value: 0, text: nts.uk.resource.getText('KMK003_260')},
+							optionValue: 'value',
+							optionText: 'text',
+							group: 'time-manager-group'}"></div>
 						<br/>
-						<label class="ntsRadioBox control-group" tabindex="7">
-							<input type="radio" name="radio-time-atr" data-bind="checkedValue: 1, checked: timeManagerSetAtr, enable: true" />
-							<span class="box"></span><span class="label" data-bind="text: nts.uk.resource.getText('KMK003_261')"></span>
-						</label>
+						<div class="control-group margin-first-child" tabindex="7" data-bind="ntsRadioButton: {
+							checked: timeManagerSetAtr,
+							option: {value: 1, text: nts.uk.resource.getText('KMK003_261')},
+							optionValue: 'value',
+							optionText: 'text',
+							group: 'time-manager-group'}"></div>
 					</div>
 				</div>
 			</div>
