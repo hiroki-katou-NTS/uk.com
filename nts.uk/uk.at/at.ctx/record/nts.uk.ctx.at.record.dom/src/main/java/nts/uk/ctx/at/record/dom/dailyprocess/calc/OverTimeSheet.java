@@ -12,9 +12,10 @@ import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
@@ -27,8 +28,8 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
@@ -105,16 +106,16 @@ public class OverTimeSheet {
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(1), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(2), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(3), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(4), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(5), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(6), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(7), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(8), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(9), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(10), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(1), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(2), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(3), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(4), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(5), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(6), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(7), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(8), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(9), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(10), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
 		
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		
@@ -166,7 +167,7 @@ public class OverTimeSheet {
 			}
 			//上限制御
 			if(upperTime.lessThanOrEqualTo(loopOverTimeFrame.getOverTimeWork().getCalcTime())) 
-				loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeWithCalculation.sameTime(upperTime));
+				loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.sameTime(upperTime));
 			
 			returnList.add(loopOverTimeFrame);
 		}
@@ -200,7 +201,7 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間帯に入っている加給時間の計算
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
 		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {
@@ -219,7 +220,7 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間帯に入っている特定加給時間の計算
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
 		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {
@@ -511,12 +512,12 @@ public class OverTimeSheet {
 	 */
 	private OverTimeFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, OverTimeFrameTime overTimeFrameTime,AttendanceTime overTime, AttendanceTime transAbleTime){
 		if(useTimeAtr.isTime()) {
-			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getTime()));
-			return changeOverTimeFrame.changeTransTime(TimeWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getTime(), transAbleTime));
+			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getTime()));
+			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getTime(), transAbleTime));
 		}
 		else {
-			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getCalcTime()));
-			return changeOverTimeFrame.changeTransTime(TimeWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getCalcTime(), transAbleTime));
+			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getCalcTime()));
+			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getCalcTime(), transAbleTime));
 		}
 	}
 	

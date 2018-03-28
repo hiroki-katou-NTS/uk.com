@@ -77,18 +77,18 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	@Override
 	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getRecordWorkInformation().getWorkTypeCode().equals(workInfo.getScheduleWorkInformation().getWorkTypeCode())){
+			if(workInfo.getRecordInfo().getWorkTypeCode().equals(workInfo.getScheduleInfo().getWorkTypeCode())){
 				return false;
 			}
 		}
 		
 		boolean planCheck = true;
 		if (this.workTypePlan != null) {
-			planCheck = this.workTypePlan.contains(workInfo.getScheduleWorkInformation().getWorkTypeCode());
+			planCheck = this.workTypePlan.contains(workInfo.getScheduleInfo().getWorkTypeCode());
 		}
 		boolean actualCheck = true;
 		if (this.workTypeActual != null) {
-			actualCheck = this.workTypeActual.contains(workInfo.getRecordWorkInformation().getWorkTypeCode());
+			actualCheck = this.workTypeActual.contains(workInfo.getRecordInfo().getWorkTypeCode());
 		}
 		
 		switch (this.operatorBetweenPlanActual) {

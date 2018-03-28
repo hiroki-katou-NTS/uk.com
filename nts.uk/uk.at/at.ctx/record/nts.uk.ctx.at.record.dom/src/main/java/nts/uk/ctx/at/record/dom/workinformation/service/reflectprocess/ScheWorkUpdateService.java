@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  */
 public interface ScheWorkUpdateService {
 	/**
-	 * 予定勤種・就時の反映
+	 * 勤種・就時の反映
 	 * @param para
 	 * scheUpdate: true: 予定勤種就時を反映, false: 勤種就時を反映
 	 */
@@ -31,15 +31,17 @@ public interface ScheWorkUpdateService {
 	 * @param employeeId
 	 * @param dateData
 	 * @param mapOvertime
+	 * @param isPre: true 事前申請、false 事後申請
 	 */
-	public void reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime);
+	public void reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime, boolean isPre);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
 	 * @param dateData
 	 * @param timeNight
+	 * @param isPre : true 事前申請、false 事後申請
 	 */
-	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight);
+	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre);
 	/**
 	 * 休出時間(深夜)の反映
 	 * @param employeeId
@@ -52,6 +54,14 @@ public interface ScheWorkUpdateService {
 	 * @param dateData
 	 * @param flexTime
 	 */
-	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime);
+	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre);
+	/**
+	 * 勤務種類
+	 * @param employeeId
+	 * @param dateData
+	 * @param workTypeCode
+	 * @param scheUpdate true: 予定勤務種類, false: 勤務種類
+	 */
+	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate);
 
 }

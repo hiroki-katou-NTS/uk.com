@@ -18,10 +18,23 @@ public interface AppAbsenceRepository {
 	public void insertAbsence(AppAbsence appAbsence);
 	
 	/**
+	 * insertAbsence
+	 * @param appAbsence
+	 */
+	public void updateAbsence(AppAbsence appAbsence);
+	
+	/**
 	 * get Application and AppAbsence
 	 * @param companyID
 	 * @param appId
 	 * @return
 	 */
 	public Optional<AppAbsence> getAbsenceByAppId(String companyID, String appId);
+	
+	/**
+	 * delete
+	 * @param companyID
+	 * @param appID
+	 */
+	public void delete(String companyID, String appID);
 }

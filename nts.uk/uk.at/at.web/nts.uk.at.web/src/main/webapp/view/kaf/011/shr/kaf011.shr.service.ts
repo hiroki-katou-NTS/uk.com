@@ -7,6 +7,8 @@ module nts.uk.at.view.kaf011.shr.service {
         changeDay: "at/request/application/holidayshipment/change_day",
         save: "at/request/application/holidayshipment/save",
         findById: "at/request/application/holidayshipment/find_by_id",
+        update: "at/request/application/holidayshipment/update",
+
 
     }
 
@@ -28,6 +30,9 @@ module nts.uk.at.view.kaf011.shr.service {
     }
     export function findById(appParam) {
         return ajax(paths.findById, appParam);
+    }
+    export function update(updateCmd: common.ISaveHolidayShipmentCommand) {
+        return ajax(paths.update, updateCmd);
     }
 
 

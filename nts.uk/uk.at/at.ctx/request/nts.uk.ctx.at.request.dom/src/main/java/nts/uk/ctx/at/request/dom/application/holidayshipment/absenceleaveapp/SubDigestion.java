@@ -41,4 +41,9 @@ public class SubDigestion {
 	 * 振休発生日
 	 */
 	private GeneralDate occurrenceDate;
+
+	/**
+	 * 日付不明
+	 */
+	private int unknownDate;
 }

@@ -43,8 +43,6 @@ public class AggregateTotalWorkingTime {
 	//temporaryTime
 	/** 休暇使用時間 */
 	private VacationUseTimeOfMonthly vacationUseTime;
-	/** 総労働時間 */
-	private AttendanceTimeMonth totalWorkingTime;
 	/** 所定労働時間 */
 	private PrescribedWorkingTimeOfMonthly prescribedWorkingTime;
 	
@@ -57,7 +55,6 @@ public class AggregateTotalWorkingTime {
 		this.overTime = new OverTimeOfMonthly();
 		this.holidayWorkTime = new HolidayWorkTimeOfMonthly();
 		this.vacationUseTime = new VacationUseTimeOfMonthly();
-		this.totalWorkingTime = new AttendanceTimeMonth(0);
 		this.prescribedWorkingTime = new PrescribedWorkingTimeOfMonthly();
 	}
 
@@ -67,7 +64,6 @@ public class AggregateTotalWorkingTime {
 	 * @param overTime 残業時間
 	 * @param holidayWorkTime 休出時間
 	 * @param vacationUseTime 休暇使用時間
-	 * @param totalWorkingTime 総労働時間
 	 * @param prescribedWorkingTime 所定労働時間
 	 * @return 集計総労働時間
 	 */
@@ -76,7 +72,6 @@ public class AggregateTotalWorkingTime {
 			OverTimeOfMonthly overTime,
 			HolidayWorkTimeOfMonthly holidayWorkTime,
 			VacationUseTimeOfMonthly vacationUseTime,
-			AttendanceTimeMonth totalWorkingTime,
 			PrescribedWorkingTimeOfMonthly prescribedWorkingTime){
 		
 		val domain = new AggregateTotalWorkingTime();
@@ -84,7 +79,6 @@ public class AggregateTotalWorkingTime {
 		domain.overTime = overTime;
 		domain.holidayWorkTime = holidayWorkTime;
 		domain.vacationUseTime = vacationUseTime;
-		domain.totalWorkingTime = totalWorkingTime;
 		domain.prescribedWorkingTime = prescribedWorkingTime;
 		return domain;
 	}
@@ -105,26 +99,17 @@ public class AggregateTotalWorkingTime {
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
-		
-		// 総労働時間を集計する
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
-			val ymd = attendanceTimeOfDaily.getYmd();
-			if (!datePeriod.contains(ymd)) continue;
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			this.totalWorkingTime = this.totalWorkingTime.addMinutes(totalWorkingTime.getTotalTime().v());
-		}
 	}
 	
 	/**
 	 * 共有項目をコピーする
-	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param aggregateTime 集計時間
 	 */
-	public void copySharedItem(AggregateTotalWorkingTime aggregateTotalWorkingTime){
+	public void copySharedItem(AggregateTotalWorkingTime aggregateTime){
 		
-		this.workTime = aggregateTotalWorkingTime.getWorkTime();
-		this.vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
-		this.prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
+		this.workTime = aggregateTime.getWorkTime();
+		this.vacationUseTime = aggregateTime.getVacationUseTime();
+		this.prescribedWorkingTime = aggregateTime.getPrescribedWorkingTime();
 	}
 	
 	/**
@@ -247,5 +232,16 @@ public class AggregateTotalWorkingTime {
 		// 就業時間を集計する
 		this.workTime.aggregate(datePeriod, workingSystem, actualWorkingTime, flexTime,
 				this.overTime, this.holidayWorkTime);
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.workTime.getTotalWorkingTargetTime().v() +
+				this.overTime.getTotalWorkingTargetTime().v() +
+				this.holidayWorkTime.getTotalWorkingTargetTime().v());
 	}
 }

@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.pub.role.OperableSystemExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
@@ -157,6 +158,44 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		if(rolePersonalInfor.isPresent()) {
 			if(rolePersonalInfor.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setPersonalInformation(true);
+			}
+		}
+		
+		return outputRole;
+	}
+
+	@Override
+	public OperableSystemExport getOperableSystem() {
+		String attendanceRoleID = AppContexts.user().roles().forAttendance(); 
+		String salaryRoleID = AppContexts.user().roles().forPayroll();
+		String humanResourceRoleID = AppContexts.user().roles().forPersonnel(); 
+		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper(); 
+		
+		OperableSystemExport outputRole = new OperableSystemExport(false, false, false, false);
+		Optional<Role> roleAttendance = roleRepo.findByRoleId(attendanceRoleID);
+		if (roleAttendance.isPresent()) {
+			if (roleAttendance.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+				outputRole.setAttendance(true);
+			}
+		} 
+		Optional<Role> roleSalaryRole =  roleRepo.findByRoleId(salaryRoleID);
+		if (roleSalaryRole.isPresent()) {
+			if (roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+				outputRole.setSalary(true);
+			}
+		} 
+		
+		Optional<Role> roleHumanResource =  roleRepo.findByRoleId(humanResourceRoleID);
+		if (roleHumanResource.isPresent()) {
+			if (roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+				outputRole.setHumanResource(true);;
+			}
+		} 
+		
+		Optional<Role> roleOfficeHelper =  roleRepo.findByRoleId(officeHelperRoleID);
+		if (roleOfficeHelper.isPresent()) {
+			if (roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+				outputRole.setOfficeHelper(true);
 			}
 		}
 		

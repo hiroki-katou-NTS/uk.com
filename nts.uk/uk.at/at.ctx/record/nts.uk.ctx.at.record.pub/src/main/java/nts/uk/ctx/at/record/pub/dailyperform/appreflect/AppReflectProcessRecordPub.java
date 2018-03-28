@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -39,4 +40,12 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public AppReflectPubOutput afterOvertimeReflect(PreOvertimePubParameter param);
+	/**
+	 * (休暇申請)
+	 * @param param
+	 * @param isPre : true: 事前申請処理, false: 事後申請処理
+	 * @return
+	 */
+	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre);
+	
 }
