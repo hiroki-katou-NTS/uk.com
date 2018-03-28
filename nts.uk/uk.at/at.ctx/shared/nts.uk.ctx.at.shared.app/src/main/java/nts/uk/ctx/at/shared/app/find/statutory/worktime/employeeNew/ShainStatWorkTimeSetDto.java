@@ -16,6 +16,12 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 @Setter
 @Builder
 public class ShainStatWorkTimeSetDto {
+	
+	/** The year. */
+	private int year;
+	
+	/** The employee id. */
+	private String employeeId;
 
 	/** The defor labor setting. */
 	private ShainDeforLaborSettingDto deforLaborSetting;

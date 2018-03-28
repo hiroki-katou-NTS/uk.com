@@ -16,6 +16,12 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 @Setter
 @Builder
 public class WkpStatWorkTimeSetDto {
+	
+	/** The year. */
+	private int year;
+	
+	/** The employee id. */
+	private String wkpId;
 
 	/** The defor labor setting. */
 	private WkpDeforLaborSettingDto deforLaborSetting;

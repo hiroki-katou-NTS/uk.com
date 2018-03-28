@@ -63,6 +63,9 @@ public class ShainStatWorkTimeSetFinder {
 
 		String companyId = AppContexts.user().companyId();
 		ShainStatWorkTimeSetDtoBuilder dtoBuilder = ShainStatWorkTimeSetDto.builder();
+		
+		dtoBuilder.year(year);
+		dtoBuilder.employeeId(empId);
 
 		Optional<ShainNormalSetting> optComNormalSet = this.normalSettingRepository.find(companyId, empId, year);
 		if (optComNormalSet.isPresent()) {
