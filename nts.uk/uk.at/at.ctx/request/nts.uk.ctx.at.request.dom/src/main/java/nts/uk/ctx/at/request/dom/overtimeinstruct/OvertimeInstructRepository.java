@@ -10,7 +10,6 @@ public interface OvertimeInstructRepository {
 	/**
 	 * For request list 230
 	 * @param sId
-	 * @param instructDate
 	 * @return
 	 */
 	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId);

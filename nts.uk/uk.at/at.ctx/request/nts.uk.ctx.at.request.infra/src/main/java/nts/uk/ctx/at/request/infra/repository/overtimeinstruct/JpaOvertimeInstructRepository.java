@@ -30,6 +30,7 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 		query = new StringBuilder();
 		query.append(FIND_ALL);
 		query.append(" AND o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
+		query.append(" ORDER BY o.krqdtOvertimeInstructPK.instructDate ASC");
 		FIND_ALL_BY_TARGET_PERSON = query.toString();
 		
 	}
