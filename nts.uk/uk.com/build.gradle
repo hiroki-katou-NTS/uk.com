@@ -979,6 +979,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':query:nts.uk.query.infra')
 		runtime project (':query:nts.uk.query.pub')
 		runtime project (':query:nts.uk.query.pubimp')
+		
+		runtime project (':pub:nts.uk.pub.spr')
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
