@@ -88,7 +88,7 @@ public class DeforWorkTimeAggrSetDto {
 		 */
 		@Override
 		public void setExcessOutsideTimeSet(ExcessOutsideTimeSetReg excessOutsideTimeSet) {
-			this.dto.setAggregateTimeSet(ExcessOutsideTimeSetRegDto.builder()
+			this.dto.setExcessOutsideTimeSet(ExcessOutsideTimeSetRegDto.builder()
 					.legalOverTimeWork(excessOutsideTimeSet.getLegalOverTimeWork())
 					.legalHoliday(excessOutsideTimeSet.getLegalHoliday())
 					.surchargeWeekMonth(excessOutsideTimeSet.getSurchargeWeekMonth()).build());
