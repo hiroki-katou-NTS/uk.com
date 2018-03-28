@@ -93,8 +93,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
 				closureId, closureDate, datePeriod);
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-		val totalWorkingTime = monthlyCalculation.getTotalWorkingTime();
-		totalWorkingTime.getWorkTime().setWorkTime(new AttendanceTimeMonth(450 + randomVal));
+		val aggregateTime = monthlyCalculation.getAggregateTime();
+		aggregateTime.getWorkTime().setWorkTime(new AttendanceTimeMonth(450 + randomVal));
 		val aggrOvertime1 =	AggregateOverTime.of(
 				new OverTimeFrameNo(1),
 				new TimeMonthWithCalculation(
@@ -113,13 +113,13 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
-		totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
+		aggregateTime.getOverTime().getAggregateOverTimeMap().put(
 				aggrOvertime1.getOverTimeFrameNo(), aggrOvertime1);
 		if (randomVal >= 5){
-			totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
+			aggregateTime.getOverTime().getAggregateOverTimeMap().put(
 					aggrOvertime2.getOverTimeFrameNo(), aggrOvertime2);
 		}
-		totalWorkingTime.getOverTime().setTotalOverTime(new TimeMonthWithCalculation(
+		aggregateTime.getOverTime().setTotalOverTime(new TimeMonthWithCalculation(
 				new AttendanceTimeMonth(440 + randomVal), new AttendanceTimeMonth(0)));
 		val aggrHdwktime1 = AggregateHolidayWorkTime.of(
 				new HolidayWorkFrameNo(1),
@@ -139,10 +139,10 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
-		totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
+		aggregateTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
 				aggrHdwktime1.getHolidayWorkFrameNo(), aggrHdwktime1);
 		if (randomVal >= 6){
-			totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
+			aggregateTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
 					aggrHdwktime2.getHolidayWorkFrameNo(), aggrHdwktime2);
 		}
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
