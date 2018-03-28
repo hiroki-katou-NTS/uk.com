@@ -12,17 +12,17 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * The Class WorkTypeDivergenceReferenceTimeDto.
  */
 @Data
-public class WorkTypeDivergenceReferenceTimeDto implements WorkTypeDivergenceReferenceTimeSetMemento{
-	
+public class WorkTypeDivergenceReferenceTimeDto implements WorkTypeDivergenceReferenceTimeSetMemento {
+
 	/** The divergence time no. */
 	private int divergenceTimeNo;
-	
+
 	/** The not use atr. */
 	private int notUseAtr;
-	
+
 	/** The divergence reference time value. */
 	private DivergenceReferenceTimeValueDto divergenceReferenceTimeValue;
-	
+
 	/**
 	 * Instantiates a new work type divergence reference time dto.
 	 */
@@ -30,54 +30,83 @@ public class WorkTypeDivergenceReferenceTimeDto implements WorkTypeDivergenceRef
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceTimeNo(java.lang.Integer)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceTimeNo(java.lang.
+	 * Integer)
 	 */
 	@Override
 	public void setDivergenceTimeNo(Integer divergenceTimeNo) {
 		this.divergenceTimeNo = divergenceTimeNo.intValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setCompanyId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		//no coding
+		// no coding
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setNotUseAtr(nts.uk.shr.com.enumcommon.NotUseAtr)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setNotUseAtr(nts.uk.shr.com.
+	 * enumcommon.NotUseAtr)
 	 */
 	@Override
 	public void setNotUseAtr(NotUseAtr notUseAtr) {
 		this.notUseAtr = notUseAtr.value;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setWorkTypeCode(nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setWorkTypeCode(nts.uk.ctx.at.
+	 * shared.dom.worktype.WorkTypeCode)
 	 */
 	@Override
 	public void setWorkTypeCode(BusinessTypeCode workTypeCode) {
-		//no coding
+		// no coding
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setHistoryId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setHistoryId(java.lang.String)
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		//no coding
+		// no coding
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceReferenceTimeValue(java.util.Optional)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeSetMemento#setDivergenceReferenceTimeValue(
+	 * java.util.Optional)
 	 */
 	@Override
 	public void setDivergenceReferenceTimeValue(Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue) {
-		if (divergenceReferenceTimeValue.isPresent()){
-			this.divergenceReferenceTimeValue = new DivergenceReferenceTimeValueDto(divergenceReferenceTimeValue.get().getAlarmTime().get().valueAsMinutes(),
-														divergenceReferenceTimeValue.get().getErrorTime().get().valueAsMinutes());
+		if (divergenceReferenceTimeValue.isPresent()) {
+
+			Integer alarmTime = divergenceReferenceTimeValue.get().getAlarmTime().isPresent()
+					? divergenceReferenceTimeValue.get().getAlarmTime().get().valueAsMinutes()
+					: null;
+			Integer errorTime = divergenceReferenceTimeValue.get().getErrorTime().isPresent()
+					? divergenceReferenceTimeValue.get().getErrorTime().get().valueAsMinutes()
+					: null;
+
+			this.divergenceReferenceTimeValue = new DivergenceReferenceTimeValueDto(alarmTime, errorTime);
 		}
 	}
 
