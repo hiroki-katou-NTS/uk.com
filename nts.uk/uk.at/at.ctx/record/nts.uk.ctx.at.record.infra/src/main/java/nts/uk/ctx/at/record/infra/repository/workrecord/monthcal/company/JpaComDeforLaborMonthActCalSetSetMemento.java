@@ -57,7 +57,7 @@ public class JpaComDeforLaborMonthActCalSetSetMemento implements ComDeforLaborMo
 		this.typeValue.setIncludeExtraAggr(
 				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getSurchargeWeekMonth()));
 		
-		this.typeValue.setIncludeExtraOt(
+		this.typeValue.setIncludeLegalOt(
 				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getExcessOutsideTimeSet().getLegalOverTimeWork()));
 		this.typeValue.setIncludeHolidayOt(
 				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getExcessOutsideTimeSet().getLegalHoliday()));
