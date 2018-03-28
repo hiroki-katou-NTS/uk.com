@@ -28,7 +28,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
 	 private final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
-			   + " AND c.endDate = :endDate"
+			   + " AND c.endDate = :endDate" 
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType = :applicationType";
 	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 

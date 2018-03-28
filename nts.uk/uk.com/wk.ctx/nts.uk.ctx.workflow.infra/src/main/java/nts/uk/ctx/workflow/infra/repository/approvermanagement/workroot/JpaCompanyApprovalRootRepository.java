@@ -33,7 +33,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private final String FIND_BY_DATE_CFR = FIND_BY_CID 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
-			   + " AND c.employmentRootAtr = :employmentRootAtr";
+			   + " AND c.employmentRootAtr = :employmentRootAtr"; 
 	private final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
 				   + " AND c.endDate = :endDate"
 				   + " AND c.employmentRootAtr = :employmentRootAtr"

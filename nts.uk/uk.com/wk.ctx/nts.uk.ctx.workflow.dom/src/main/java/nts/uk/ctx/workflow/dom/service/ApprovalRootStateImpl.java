@@ -30,7 +30,7 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, date);
 		ApprovalRootState approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
-				appID, 
+				appID,  
 				RootType.EMPLOYMENT_APPLICATION, 
 				approvalRootState.getHistoryID(), 
 				date, 

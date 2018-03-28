@@ -25,7 +25,7 @@ public interface CompanyApprovalRootRepository {
 	 */
 	Optional<CompanyApprovalRoot> getComApprovalRoot(String companyId, String approvalId, String historyId);
 
-	/**
+	/** 
 	 * get Company Approval Root By End date
 	 * 
 	 * @param companyId

@@ -42,7 +42,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	
 	private static final String SELECT_BY_EMP_DATE;
 	
-	private static final String SELECT_BY_DATE_NO_ROOTYPE;
+	private static final String SELECT_BY_DATE_NO_ROOTYPE;  
 	
 	static {
 		StringBuilder builderString = new StringBuilder();

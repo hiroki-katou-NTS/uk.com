@@ -25,8 +25,8 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
 		query.append(" WHERE e.krqdtAppOvertimePK.cid = :companyID");
-		query.append(" AND e.krqdtAppOvertimePK.appId = :appID");
-		FIND_BY_APPID = query.toString();
+		query.append(" AND e.krqdtAppOvertimePK.appId = :appID"); 
+		FIND_BY_APPID = query.toString(); 
 	}
 
 	@Override

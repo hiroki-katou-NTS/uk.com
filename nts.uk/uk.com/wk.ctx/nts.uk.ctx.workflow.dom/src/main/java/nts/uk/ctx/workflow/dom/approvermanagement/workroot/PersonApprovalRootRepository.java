@@ -26,7 +26,7 @@ public interface PersonApprovalRootRepository {
 	 * 
 	 * @param companyId
 	 * @param employeeId
-	 * @param historyId
+	 * @param  historyId
 	 */
 	void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId);
 
