@@ -209,10 +209,10 @@ public class TotalWorkingTime {
 				   																      holidayCalcMethodSet);
 		Optional<WorkTimeCode> workTimeCode = Optional.empty();
 		//日別実績の所定外時間
-		if(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode() != null) {
-			workTimeCode = oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode().v() == null
+		if(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
+			workTimeCode = oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
 																		?Optional.empty()
-																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode().v().toString()));
+																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
 		}
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,

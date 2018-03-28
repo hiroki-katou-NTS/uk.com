@@ -227,14 +227,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*勤務種類の取得*/
 		val workInfo = integrationOfDaily.getWorkInformation();
 		//val workType = this.workTypeRepository.findByPK(companyId, "001").get();
-		val workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordWorkInformation().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		val workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 		if(!workType.isPresent()) return oneRange;
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		if(workInfo == null || workInfo.getRecordWorkInformation() == null || workInfo.getRecordWorkInformation().getWorkTimeCode() == null)
+		if(workInfo == null || workInfo.getRecordInfo() == null || workInfo.getRecordInfo().getWorkTimeCode() == null)
 			return oneRange;
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().toString());
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,workInfo.getRecordInfo().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return oneRange;
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily);
@@ -308,11 +308,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 			/*前日の勤務情報取得  */
 		WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInfo);
-		val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
+		val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordInfo().getWorkTypeCode().v()).orElse(workType.get());
 		//val yesterDay = this.workTypeRepository.findByPK(companyId, "001");//yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		/*翌日の勤務情報取得 */
 		WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInfo);
-		val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v()).orElse(workType.get());
+		val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordInfo().getWorkTypeCode().v()).orElse(workType.get());
 		//val tomorrow = this.workTypeRepository.findByPK(companyId, "001");//tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
@@ -320,7 +320,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
-			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().v());
+			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
 			val flexWork = holidayAddtionRepository.findByCId(employeeId).get().getFlexWork();
 				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
 												BonusPaySetting.createFromJavaType(companyId,
@@ -342,7 +342,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
-				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().v());
+				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
 				val regularWork = holidayAddtionRepository.findByCId(companyId).get().getRegularWork();
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
 						RestClockManageAtr.IS_CLOCK_MANAGE, goOutTimeSheetList,
@@ -376,11 +376,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
-				val flowWorkSetOpt = flowWorkSettingRepository.find(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().v());
+				val flowWorkSetOpt = flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
 				break;
 			case DIFFTIME_WORK:
 				/* 時差勤務 */
-				val diffWorkSetOpt = diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().v());
+				val diffWorkSetOpt = diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
 //			case Enum_Overtime_Work:
 				break;
 			default:
@@ -450,15 +450,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		Optional<WorkTimeDailyAtr> workTime = Optional.empty();
-		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
-			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {
+			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().toString());
 			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
 		}
 		
-		if(integrationOfDaily.getWorkInformation() == null || integrationOfDaily.getWorkInformation().getRecordWorkInformation() == null || integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTypeCode() == null)
+		if(integrationOfDaily.getWorkInformation() == null || integrationOfDaily.getWorkInformation().getRecordInfo() == null || integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() == null)
 			return integrationOfDaily;
 		
-		val workType = this.workTypeRepository.findByPK(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		val workType = this.workTypeRepository.findByPK(companyId,integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 		if(!workType.isPresent() || !workTime.isPresent()) return integrationOfDaily;
 		//休暇加算時間設定
 		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
@@ -536,9 +536,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		Optional<PredetemineTimeSetting> predetermineTimeSet = Optional.empty();
 		String workTimeCode = null;
-		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
-			predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
-			workTimeCode = integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString();
+		if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {
+			predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().toString());
+			workTimeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().toString();
 		}
 		
 		if(!predetermineTimeSet.isPresent()) {

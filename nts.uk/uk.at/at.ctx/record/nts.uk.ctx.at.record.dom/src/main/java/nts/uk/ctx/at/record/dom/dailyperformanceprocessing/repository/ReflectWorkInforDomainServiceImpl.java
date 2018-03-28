@@ -553,16 +553,16 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 				// 存在する - has data
 				else {
-					workInfoOfDailyPerformanceUpdate.setScheduleWorkInformation(
+					workInfoOfDailyPerformanceUpdate.setScheduleInfo(
 							new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
 									basicScheduleHasData.get().getWorkTypeCode()));
 					workInfoOfDailyPerformanceUpdate
-							.setRecordWorkInformation(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
+							.setRecordInfo(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
 									basicScheduleHasData.get().getWorkTypeCode()));
 
 					// 1日半日出勤・1日休日系の判定
 					WorkStyle workStyle = basicScheduleService.checkWorkDay(
-							workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
+							workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 
 					if (workStyle != WorkStyle.ONE_DAY_REST) {
 
@@ -844,7 +844,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// end -----
 				// 1日半日出勤・1日休日系の判定
 				WorkStyle workStyle = basicScheduleService.checkWorkDay(
-						workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
+						workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 				if (workStyle != WorkStyle.ONE_DAY_REST) {
 					createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingOptional,
 							employeeID, day);
@@ -945,12 +945,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// temp class
 			List<TimeLeavingWorkOutput> timeLeavingWorkTemps = new ArrayList<>();
 			List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
-			if (workInfoOfDailyPerformanceUpdate.getRecordWorkInformation() != null) {
+			if (workInfoOfDailyPerformanceUpdate.getRecordInfo() != null) {
 
-				if (workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTimeCode()
-						.equals(workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTimeCode())
-						&& workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().equals(
-								workInfoOfDailyPerformanceUpdate.getScheduleWorkInformation().getWorkTypeCode())) {
+				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode()
+						.equals(workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode())
+						&& workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().equals(
+								workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTypeCode())) {
 
 					// 自動打刻セット詳細．出退勤 ← 勤務予定時間帯
 					workInfoOfDailyPerformanceUpdate.getScheduleTimeSheets().forEach(sheet -> {
@@ -1006,7 +1006,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				} else {
 					// 出勤休日区分を確認する (Xác nhận 出勤休日区分)
 					Optional<WorkType> workTypeOptional = this.workTypeRepository.findByPK(companyId,
-							workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
+							workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 					WorkStyle workStyle = this.basicScheduleService
 							.checkWorkDay(workTypeOptional.get().getWorkTypeCode().v());
 					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
@@ -1014,7 +1014,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						// 所定時間帯を取得する
 						Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
 								.findByWorkTimeCode(companyId, workInfoOfDailyPerformanceUpdate
-										.getRecordWorkInformation().getWorkTypeCode().v());
+										.getRecordInfo().getWorkTypeCode().v());
 
 						if (predetemineTimeSetting.isPresent()) {
 							List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting()

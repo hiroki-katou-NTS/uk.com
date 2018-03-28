@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 import lombok.Getter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
