@@ -3,17 +3,54 @@ module cps001.h.service {
     import format = nts.uk.text.format;
     let parentPath = "record/remainnumber/resv-lea/";
     let paths: any = {
-            getAll: "get-resv-lea/{0}",
-            getByGrantDate: "get-resv-lea-by-id/{0}"
+            getAll: "get-resv-lea/{0}/{1}",
+            getById: "get-resv-lea-by-id/{0}",
+            add: "add",
+            update: "update",
+            remove: "remove"
     };
     
-    export function getAll(){
+    export function getAll(isAll: boolean){
         let employeeId: string = "a";
-        return ajax('at',format(parentPath + paths.getAll, employeeId));
+        return ajax('at',format(parentPath + paths.getAll, employeeId, isAll));
     }
     
     export function getByGrantDate(id: string){
-        return ajax('at',parentPath + paths.getByGrantDate, {'id': id});
+        return ajax('at',format(parentPath + paths.getById, id));
+    }
+    
+    export function remove(id: string){
+        let command = {"rvsLeaId": id};
+        return ajax("at", parentPath + paths.remove, command);
+    }
+    
+    export function update(id: string, grantDate: Date, deadline: Date, expirationStatus: number,
+        grantDays: string, useDays: string, overLimitDays: string, remainingDays: string){
+        let command = {
+            "rvsLeaId": id,
+            "grantDate": grantDate,
+            "deadline": deadline,
+            "expirationStatus": expirationStatus,
+            "grantDays": grantDays,
+            "useDays": useDays,
+            "overLimitDays": overLimitDays,
+            "remainingDays": remainingDays
+        };
+        return ajax("at", parentPath + paths.update, command);
+    }
+    
+    export function create(grantDate: string, deadline: string, expirationStatus: number,
+        grantDays: string, useDays: string, overLimitDays: string, remainingDays: string){
+        let command = {
+            "grantDate": grantDate,
+            "deadline": deadline,
+            "expirationStatus": expirationStatus,
+            "grantDays": grantDays,
+            "useDays": useDays,
+            "overLimitDays": overLimitDays,
+            "remainingDays": remainingDays
+        };
+        return ajax("at", parentPath + paths.add, command);
     }
     
     export function getItemDef(){

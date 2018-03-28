@@ -1,6 +1,7 @@
 module cps001.h.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import error = nts.uk.ui.dialog.alertError;
     import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
@@ -18,12 +19,29 @@ module cps001.h.vm {
         currentItem: KnockoutObservable<string> = ko.observable("");
         leaveExpirationStatus:  KnockoutObservableArray<any>;
         resvLeaGrantRemNum: KnockoutObservable<ResvLeaGrantRemNum> = ko.observable(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
+        enableRemoveBtn: KnockoutObservable<boolean> = ko.observable(true);
+        isCreate: KnockoutObservable<boolean> = ko.observable(false);
+        ckbAll: KnockoutObservable<boolean> = ko.observable(true);
         
         constructor() {
             let self = this;
+            self.ckbAll.subscribe((data) => {
+                service.getAll(data).done((data) => {
+                 if(data && data.length > 0){
+                    self.items(data);   
+                   self.currentItem(self.items()[0].id);
+                 }else{
+                     self.create();
+                 }
+            });  
+            });
             self.currentItem.subscribe((id: string)=>{                 
                     service.getByGrantDate(id).done((curItem) => {
                         self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
+                        if(curItem){
+                            self.enableRemoveBtn(true);
+                            self.isCreate(false);
+                            }
                     });                 
                 });
             self.columns = ko.observableArray([
@@ -37,12 +55,26 @@ module cps001.h.vm {
                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70}
            ]); 
         }
+        load() :JQueryPromise<any>{
+            let self = this, dfd = $.Deferred();
+             service.getAll(self.ckbAll()).done((data) => {
+                 if(data && data.length > 0){
+                    self.items(data);       
+                 }else{
+                     self.create();
+                 }
+                 dfd.resolve();
+            });  
+            return dfd.promise();
+        }
         start() {
            let self  = this;
-             self.setDef();
-           service.getAll().done((data) => {
-                self.items(data);
-            });    
+           self.setDef();
+           self.load().done(()=>{
+               if(self.items().length > 0){
+                   self.currentItem(self.items()[0].id);
+               }
+           });
         }
         setDef(){
             let self = this;
@@ -72,9 +104,83 @@ module cps001.h.vm {
             close();
         }
         
+        remove(){
+            let self = this;
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
+                let delItemIndex = _.findIndex(self.items(), (item)=>{
+                    return item.id == self.resvLeaGrantRemNum().id();
+                });
+                let selectedId;
+                if(delItemIndex == self.items().length-1){
+                    if(self.items().length > 1){
+                        selectedId = self.items()[delItemIndex-1].id;
+                    }
+                }else{
+                    selectedId = self.items()[delItemIndex+1].id;
+                }
+                service.remove(self.resvLeaGrantRemNum().id()).done(() => {
+                    self.load().done(()=>{
+                        if(self.items().length == 0){
+                             self.create();
+                        }else{
+                                self.currentItem(selectedId);
+                        }
+                    });
+                    alert({ messageId: "Msg_16" });
+                    unblock();
+                }).fail((mes) => {
+                    unblock();
+                });
+            });
+        }
+        
+        register(){
+            let self = this;
+            
+            $("#grantDate").trigger("validate");
+            $("#deadline").trigger("validate");
+            $("#grantDays").trigger("validate");
+            $("#useDays").trigger("validate");
+            $("#overLimitDays").trigger("validate");
+            $("#remainingDays").trigger("validate");
+            
+            if (!$(".nts-input").ntsError("hasError")) {
+                let item = self.resvLeaGrantRemNum(), 
+                grantDate = moment.utc(item.grantDate(),"YYYY/MM/DD"),
+                deadline = moment.utc(item.deadline(),"YYYY/MM/DD");
+                if(grantDate > deadline){
+                    error({ messageId: "Msg_1023", messageParams: [] });
+                    return;
+                }
+                if(self.isCreate()){
+                    service.create(grantDate, deadline, item.expirationStatus(),
+                    item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
+                        self.load();
+                        alert({ messageId: "Msg_15" });
+                        unblock();
+                    }).fail((mes) => {
+                        unblock();
+                    });
+                }else{
+                   service.update(item.id(), grantDate, deadline, item.expirationStatus(),
+                    item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
+                        self.load();
+                        alert({ messageId: "Msg_15" });
+                        unblock();
+                    }).fail((mes) => {
+                        unblock();
+                    }); 
+                }
+            }
+           
+        }
+        
         create(){
             let self = this;
             self.currentItem("-1");
+            self.enableRemoveBtn(false);
+            self.isCreate(true);
             self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
         }
 

@@ -22,17 +22,17 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="" data-bind="click: create" tabindex="1">#{i18n.getText('CPS001_108')}</button>
-				<button type="button" class="proceed" tabindex="2">#{i18n.getText('CPS001_109')}</button>
-				<button type="button" class="danger" tabindex="3">#{i18n.getText('CPS001_110')}</button>
+				<button type="button" class="" data-bind="click: create, enable: enableRemoveBtn" tabindex="1">#{i18n.getText('CPS001_108')}</button>
+				<button type="button" class="proceed" tabindex="2" data-bind="click: register">#{i18n.getText('CPS001_109')}</button>
+				<button type="button" class="danger" tabindex="3" data-bind="enable: enableRemoveBtn, click: remove">#{i18n.getText('CPS001_110')}</button>
 				<button type="button" class="" data-bind="click: close" tabindex="4">#{i18n.getText('CPS001_111')}</button>
 			</div>
 			<div id="contents-area">
 				
-				<div class='ckb' data-bind="ntsCheckBox: { checked: true }" tabindex="5">#{i18n.getText('CPS001_125')}</div>
+				<div class='ckb' data-bind="ntsCheckBox: { checked: ckbAll }" tabindex="5">#{i18n.getText('CPS001_125')}</div>
 				
 				<div id="tbl">
-			 		<table id="single-list" data-bind="ntsGridList: {								
+			 		<table id="single-list" tabindex="6" data-bind="ntsGridList: {								
 						height: 350,
 						dataSource: items,
 						primaryKey: 'id',
@@ -47,11 +47,11 @@
 					<table>
 						<tr>
 							<td data-itemCode="IS00398" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
-							<td><div tabindex='7' data-bind="ntsDatePicker: {value: resvLeaGrantRemNum().grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td><div id="grantDate" tabindex='7' data-bind="ntsDatePicker: {value: resvLeaGrantRemNum().grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
 							<td data-itemCode="IS00399"><div data-bind="ntsFormLabel: {required: true }">2</div></td>
-							<td><div tabindex='8' data-bind="ntsDatePicker: {value: resvLeaGrantRemNum().deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td><div id="deadline" tabindex='8' data-bind="ntsDatePicker: {value: resvLeaGrantRemNum().deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
 							<td data-itemCode="IS00400"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
@@ -76,7 +76,7 @@
 									</tr>
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
-										<td class='paddingTd'><input class="realTxt" tabindex='10' data-bind="ntsNumberEditor: {
+										<td class='paddingTd'><input class="realTxt" id="grantDays" tabindex='10' data-bind="ntsNumberEditor: {
 											name: '',
 		                                    value: resvLeaGrantRemNum().grantDays,
 		                                    option: {
@@ -88,7 +88,7 @@
 									</tr>
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_116')}</div></td>
-										<td class='paddingTd'><input class="realTxt" tabindex='11' data-bind="ntsNumberEditor: {
+										<td class='paddingTd'><input class="realTxt" id="useDays" tabindex='11' data-bind="ntsNumberEditor: {
 											name: '',
 		                                    value: resvLeaGrantRemNum().useDays,
 		                                    option: {
@@ -98,7 +98,7 @@
 		                                    required: true,
 		                                    }"/></td>
 										<td class='paddingTd' data-itemCode="IS00406">
-										<span>5</span><span><input class="realTxt" tabindex='12' data-bind="ntsNumberEditor: {
+										<span>5</span><span><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
 											name: '',
 		                                    value: resvLeaGrantRemNum().overLimitDays,
 		                                    option: {
@@ -110,7 +110,7 @@
 									</tr>
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_117')}</div></td>
-										<td class='paddingTd'><input class="realTxt" tabindex='13' data-bind="ntsNumberEditor: {
+										<td class='paddingTd'><input class="realTxt" id="remainingDays" tabindex='13' data-bind="ntsNumberEditor: {
 											name: '',
 		                                    value: resvLeaGrantRemNum().remainingDays,
 		                                    option: {
