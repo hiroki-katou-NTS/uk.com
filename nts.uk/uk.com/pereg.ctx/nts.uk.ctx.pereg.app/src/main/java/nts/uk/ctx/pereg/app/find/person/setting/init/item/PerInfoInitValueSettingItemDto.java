@@ -95,6 +95,8 @@ public class PerInfoInitValueSettingItemDto {
 	private boolean isFixedItem;
 	
 	private boolean disableCombox;
+	
+	private boolean enableControl;
 
 	public static PerInfoInitValueSettingItemDto fromDomain(PerInfoInitValueSetItem domain) {
 		
@@ -120,7 +122,7 @@ public class PerInfoInitValueSettingItemDto {
 				domain.getNumericItemMin(), domain.getNumericItemMax(),
 				domain.getStringItemType(), domain.getStringItemLength(),
 				domain.getStringItemDataType(), domain.isFixedItem(),
-				false);
+				false, true);
 
 	}
 

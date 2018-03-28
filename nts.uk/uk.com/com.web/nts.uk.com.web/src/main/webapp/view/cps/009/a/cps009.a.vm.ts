@@ -103,10 +103,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 i: number = 0;
             currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             self.currentCategory().itemList.removeAll();
-            service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
+            service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
+                debugger;
                 if (item.length > 0) {
-                    let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
+                    let itemConvert = _.map(item, function(obj: any) {
                         primitiveConst(obj);
+                        
                         i = i + 1;
                         return new PerInfoInitValueSettingItemDto({
                             categoryType: currentCtg.categoryType,
@@ -143,7 +145,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             stringItemType: obj.stringItemType,
                             stringItemLength: obj.stringItemLength,
                             stringItemDataType: obj.stringItemDataType,
-                            disableCombox : obj.disableCombox
+                            disableCombox: obj.disableCombox,
+                            enableControl: obj.enableControl
                         });
 
                     });
@@ -712,9 +715,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // radioId của kiểu item radio
         radioId?: string;
         radioLst?: Array<any>;
-        
+
         // disable combox
         disableCombox: boolean;
+        
+        // enable A23 xu li cho ctg CS00020
+        enableControl: boolean;
+        
 
     }
 
@@ -789,8 +796,29 @@ module nts.uk.com.view.cps009.a.viewmodel {
         radioId: string;
         radioCode: string;
         radioLst: Array<any> = [];
-        disableCombox: KnockoutObservable<boolean> =  ko.observable(true);
         
+        // xử lý disable or enable cho A22 && A23
+        disableCombox: KnockoutObservable<boolean> = ko.observable(true);
+        enableControl: KnockoutObservable<boolean> = ko.observable(true);
+
+        itemLstTimePoint =
+        [
+            new ItemCode("IS00131", "IS00133", "IS00134", "IS00136", "IS00137"),
+            new ItemCode("IS00140", "IS00142", "IS00143", "IS00145", "IS00146"),
+            new ItemCode("IS00158", "IS00160", "IS00161", "IS00163", "IS00164"),
+            new ItemCode("IS00167", "IS00169", "IS00170", "IS00172", "IS00173"),
+            new ItemCode("IS00176", "IS00178", "IS00179", "IS00181", "IS00182"),
+            new ItemCode("IS00149", "IS00151", "IS00152", "IS00154", "IS00155"),
+            new ItemCode("IS00194", "IS00196", "IS00197", "IS00199", "IS00200"),
+            new ItemCode("IS00203", "IS00205", "IS00206", "IS00208", "IS00209"),
+            new ItemCode("IS00212", "IS00214", "IS00215", "IS00217", "IS00218"),
+            new ItemCode("IS00221", "IS00223", "IS00224", "IS00226", "IS00227"),
+            new ItemCode("IS00230", "IS00232", "IS00233", "IS00235", "IS00236"),
+            new ItemCode("IS00212", "IS00214", "IS00215", "IS00217", "IS00218"),
+            new ItemCode("IS00239", "IS00241", "IS00242", "IS00244", "IS00245"),
+            new ItemCode("IS00185", "IS00187", "IS00188", "IS00190", "IS00191"),
+        ];
+
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
@@ -826,7 +854,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
-            self.disableCombox(params.disableCombox == true ? false: true);          
+            self.disableCombox(params.disableCombox == true ? false : true);
+            self.enableControl(params.enableControl);
+            
 
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
@@ -968,9 +998,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
-                if(self.ctgCode === "CS00020"){
-                    
-                
+                if (self.ctgCode() === "CS00020") {
+                    self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
                 nts.uk.ui.errors.clearAll();
             });
@@ -982,9 +1011,25 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
             return width;
         }
-        
-        
-        
+
+
+        createItemTimePointOfCS00020(value: any, itemCode: string) {
+            let self = this,
+                itemSelected: any;
+
+            itemSelected = _.filter(self.itemLstTimePoint, { itemCodeParent: itemCode });
+            if (itemSelected.length > 0) {
+                itemLst = _.filter(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(i) {
+                    if ((i.itemCode == itemSelected[0].itemCode1) || (i.itemCode == itemSelected[0].itemCode2) || (i.itemCode == itemSelected[0].itemCode3) || (i.itemCode == itemSelected[0].itemCode4)) { return i; }
+                })
+                _.each(itemLst, function(x) {
+                    __viewContext["viewModel"].currentCategory().itemList()[ x.indexItem > 0 ? (x.indexItem  - 1) : 0 ].selectedRuleCode(value);
+                });
+            }
+        }
+
+
+
     }
 
     export interface IPerInfoInitValueSettingDto {
@@ -1011,6 +1056,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 this.numberIntegerPart = params2.numberIntegerPart;
                 this.numberDecimalPart = params2.numberDecimalPart;
             }
+        }
+
+    }
+
+
+    export class ItemCode {
+        itemCodeParent: string;
+        itemCode1: string;
+        itemCode2: string;
+        itemCode3: string;
+        itemCode4: string;
+        constructor(itemCodeParent: string, itemCode1: string, itemCode2: string, itemCode3: string, itemCode4: string) {
+            let self = this;
+            self.itemCodeParent = itemCodeParent;
+            self.itemCode1 = itemCode1;
+            self.itemCode2 = itemCode2;
+            self.itemCode3 = itemCode3;
+            self.itemCode4 = itemCode4;
         }
 
     }
