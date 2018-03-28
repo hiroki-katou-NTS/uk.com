@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.calculationsetting.repository;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.calculationsetting.EntryAndExitManage;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 
 public interface StampReflectionManagementRepository {
@@ -13,4 +14,5 @@ public interface StampReflectionManagementRepository {
 
 	void add(StampReflectionManagement reflectionManagement);
 
+	Optional<EntryAndExitManage> getEntryExitManageDomain(String companyId);
 }

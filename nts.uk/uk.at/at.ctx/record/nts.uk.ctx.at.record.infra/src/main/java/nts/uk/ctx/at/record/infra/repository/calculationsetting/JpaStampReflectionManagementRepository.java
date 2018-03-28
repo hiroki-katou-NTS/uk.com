@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.calculationsetting.EntryAndExitManage;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprint;
@@ -47,6 +48,12 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 				krcdtStampReflect.outingAtr,
 				krcdtStampReflect.maxUseCount);
 		return stampReflectionManagement;
+	}
+	
+	private static EntryAndExitManage toEntryAndExitManageDto(KrcmtStampImprint krcdtStampReflect) {
+		return EntryAndExitManage.builder().CID(krcdtStampReflect.krcdtStampReflectPK.companyId)
+									.notUseAtr(krcdtStampReflect.managementOfEntrance == 1 ? true : false)
+									.build();
 	}
 
 	@Override
@@ -91,6 +98,13 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 		}
 		return  newEntity;
 	}
-	
-	
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository#getEntryExitManageDomain(java.lang.String)
+		 */
+		@Override
+		public Optional<EntryAndExitManage> getEntryExitManageDomain(String companyId) {
+			return this.queryProxy().query(FIND, KrcmtStampImprint.class).setParameter("companyId", companyId)
+					.getSingle(f -> toEntryAndExitManageDto(f));
+		}
 }
