@@ -101,8 +101,7 @@ module nts.uk.pr.view.ccg007.b {
                     if (!nts.uk.util.isNullOrEmpty(isError)) {
                         nts.uk.ui.dialog.alertError({ messageId: isError });
                     } else {
-                        isSignOn ? nts.uk.request.login.keepUsedLoginPage("/view/ccg/007/b/index.xhtml") : 
-                            nts.uk.request.login.keepUsedLoginPage(nts.uk.request.location.current.rawUrl);
+                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
                         //Remove LoginInfo
                         nts.uk.characteristics.remove("form1LoginInfo").done(function() {
                             //check SaveLoginInfo

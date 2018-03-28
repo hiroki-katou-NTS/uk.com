@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -87,9 +86,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkLimitTime(user);
 	
 			//set info to session
-			HttpSession session = context.getCommand().getRequest().getSession(false);
-			if (session != null) session.invalidate();
-			context.getCommand().getRequest().getSession(true);
+//			HttpSession session = context.getCommand().getRequest().getSession(false);
+//			if (session != null) session.invalidate();
+//			context.getCommand().getRequest().getSession(true);
 			this.setLoggedInfo(user,em,companyCode);
 			
 			//set role Id for LoginUserContextManager
