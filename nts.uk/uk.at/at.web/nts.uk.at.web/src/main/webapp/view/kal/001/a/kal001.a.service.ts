@@ -38,8 +38,8 @@ module nts.uk.at.view.kal001.a.service {
                 endDate : string; 
                 constructor(p: model.PeriodByCategory){
                     if(p.category==2|| p.category==5){
-                        this.startDate = p.startDate();
-                        this.endDate = p.endDate();
+                        this.startDate = p.dateValue().startDate;
+                        this.endDate = p.dateValue().endDate;
                     }else if(p.category ==7){
                         this.startDate = null ;
                         this.endDate = null;
