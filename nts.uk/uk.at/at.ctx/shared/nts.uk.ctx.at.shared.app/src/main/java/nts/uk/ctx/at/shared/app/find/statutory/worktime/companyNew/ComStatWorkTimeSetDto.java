@@ -16,6 +16,9 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
 @Setter
 @Builder
 public class ComStatWorkTimeSetDto {
+	
+	/** The year. */
+	private int year;
 
 	/** The defor labor setting. */
 	private ComDeforLaborSettingDto deforLaborSetting;

@@ -60,6 +60,8 @@ public class ComStatWorkTimeSetFinder {
 
 		String companyId = AppContexts.user().companyId();
 		ComStatWorkTimeSetDtoBuilder dtoBuilder = ComStatWorkTimeSetDto.builder();
+		
+		dtoBuilder.year(year);
 
 		Optional<ComTransLaborTime> optTransLaborTime = this.transLaborTimeRepository.find(companyId);
 		if (optTransLaborTime.isPresent()) {
