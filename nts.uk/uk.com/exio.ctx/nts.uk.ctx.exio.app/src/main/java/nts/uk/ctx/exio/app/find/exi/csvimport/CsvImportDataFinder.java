@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.text.StringUtil;
@@ -40,11 +41,17 @@ public class CsvImportDataFinder {
 
 			List<List<String>> data = FileUtil.getRecordByIndex(inputStream, dataLineNum, startLine);
 			inputStream.close();
+			List<BusinessException> exceptions = new ArrayList<>();
 			for (int i = 0; i < data.size(); i++) {
 				if (!StringUtil.isNullOrEmpty(data.get(i).get(0), true) && data.get(i).get(0).length() > 40) {
-					throw new BusinessException("Msg_1153", String.valueOf(i + 1));
+					exceptions.add(new BusinessException("Msg_1153", String.valueOf(i + 1)));
 				}
 				result.add(new CsvMappingDataDto(i + 1, data.get(i).get(0), data.get(i).get(1)));
+			}
+			if (!exceptions.isEmpty()) {
+				BundledBusinessException exception = BundledBusinessException.newInstance();
+				exception.addMessage(exceptions);
+				exception.throwExceptions();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);

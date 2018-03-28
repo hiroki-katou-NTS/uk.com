@@ -578,16 +578,27 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                     $('#file-upload').find('.filenamelabel').text('');
                     $('#file-upload').find("input").val('');
-                    $('#file-upload').find("input").change();
+                    if (self.isIE()) { //Internet Explorer 6-11 not fire event change
+                        $('#file-upload').find("input").change();
+                    }
                     self.listMappingData([]);
                     self.fileId(null);
-                    alertError(err);
+                    nts.uk.ui.dialog.bundledErrors(err); 
                 }).always(() => {
                     block.clear();
                 });
             } else {
                 return;
             }
+        }
+
+        /**
+         * is Internet Explorer 6-11
+         */
+        private isIE(): boolean {
+            // Internet Explorer 6-11
+            let _document: any = document;
+            return /*@cc_on!@*/false || !!_document.documentMode;
         }
     }
 }
