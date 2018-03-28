@@ -80,7 +80,7 @@ public class FlexMonthWorkTimeAggrSetDto {
 
 		@Override
 		public void setIncludeOverTime(NotUseAtr includeOverTime) {
-			this.dto.setAggrMethod(includeOverTime.value);
+			this.dto.setIncludeOverTime(includeOverTime.value);
 		}
 
 	}
