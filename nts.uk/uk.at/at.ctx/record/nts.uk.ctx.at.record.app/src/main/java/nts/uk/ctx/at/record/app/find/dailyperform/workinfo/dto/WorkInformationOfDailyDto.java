@@ -50,11 +50,11 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (workInfo != null) {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
-			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordWorkInformation()));
+			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
 			result.setBackStraightAtr(workInfo.getBackStraightAtr() == null ? 0 : workInfo.getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getCalculationState() == null ? 0 : workInfo.getCalculationState().value);
 			result.setGoStraightAtr(workInfo.getGoStraightAtr() == null ? 0 : workInfo.getGoStraightAtr().value);
-			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleWorkInformation()));
+			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.exsistData();
 		}

@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
@@ -249,7 +250,7 @@ public class OverTimeOfMonthly {
 					new AttendanceTime(0),
 					new AttendanceTime(0),
 					new AttendanceTime(0),
-					new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+					new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 					new AttendanceTime(0));
 		}
 		
@@ -316,8 +317,8 @@ public class OverTimeOfMonthly {
 						legalOverTimeWork = new AttendanceTime(canLegalOverTime.v());
 						returnTime = new AttendanceTime(0);
 					}
-					timeSeriesWork.addOverTimeInLegalOverTime(TimeWithCalculation.sameTime(legalOverTimeWork));
-					timeSeriesWork.addOverTimeInOverTime(TimeWithCalculation.sameTime(overTimeWork));
+					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.sameTime(legalOverTimeWork));
+					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.sameTime(overTimeWork));
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
@@ -335,8 +336,8 @@ public class OverTimeOfMonthly {
 						legalTransferTimeWork = new AttendanceTime(canLegalOverTime.v());
 						returnTime = new AttendanceTime(0);
 					}
-					timeSeriesWork.addTransferTimeInLegalOverTime(TimeWithCalculation.sameTime(legalTransferTimeWork));
-					timeSeriesWork.addTransferTimeInOverTime(TimeWithCalculation.sameTime(transferTimeWork));
+					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.sameTime(legalTransferTimeWork));
+					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.sameTime(transferTimeWork));
 					break;
 				}
 			}

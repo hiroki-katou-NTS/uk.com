@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
@@ -103,16 +105,16 @@ public class OverTimeWorkDailyPerformDto {
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 
-	private TimeWithCalculationMinusExist createTimeWithCalcMinus() {
+	private TimeDivergenceWithCalculationMinusExist createTimeWithCalcMinus() {
 		return flexTime == null || flexTime.getFlexTime() == null ? null
-				: TimeWithCalculationMinusExist.sameTime(toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()));
+				: TimeDivergenceWithCalculationMinusExist.sameTime(toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()));
 	}
 
 	private TimeSpanForCalc createTimeSheet(TimeSpanForCalcDto c) {
 		return c == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getStart()), toTimeWithDayAttr(c.getEnd()));
 	}
 
-	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
+	private TimeDivergenceWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
 		return c == null ? null : c.createTimeWithCalc();
 	}
 

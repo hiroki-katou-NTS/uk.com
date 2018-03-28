@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
@@ -86,7 +87,7 @@ public class WorkTimeOfMonthly {
 						new AttendanceTime(0),
 						new AttendanceTime(0),
 						new AttendanceTime(0),
-						new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 						new AttendanceTime(0));
 			}
 	

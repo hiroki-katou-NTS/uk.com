@@ -57,12 +57,12 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		if(scheUpdate) {
 			lstItem.add(1);
 			lstItem.add(2);
-			dailyPerfor.setScheduleWorkInformation(workInfor);
+			dailyPerfor.setScheduleInfo(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
 			lstItem.add(29);
-			dailyPerfor.setRecordWorkInformation(workInfor);
+			dailyPerfor.setRecordInfo(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		

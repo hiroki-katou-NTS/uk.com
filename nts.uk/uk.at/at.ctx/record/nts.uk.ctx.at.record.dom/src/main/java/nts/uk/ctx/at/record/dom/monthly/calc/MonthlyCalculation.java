@@ -275,7 +275,7 @@ public class MonthlyCalculation {
 		val workInformationOfDailys =
 				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
 		for (val workInformationOfDaily : workInformationOfDailys){
-			val workInfo = workInformationOfDaily.getRecordWorkInformation();
+			val workInfo = workInformationOfDaily.getRecordInfo();
 			this.workInformationOfDailyMap.putIfAbsent(workInformationOfDaily.getYmd(), workInfo);
 		}
 

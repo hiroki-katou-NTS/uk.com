@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneSettingOutPut;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -30,14 +29,10 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
@@ -46,18 +41,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -198,7 +189,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		boolean checkReflect = false;
 		//1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService
-				.checkWorkDay(WorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+				.checkWorkDay(WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		// 1日休日系
 		if (checkWorkDay.value == 0) {
 			return false;
@@ -220,7 +211,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				weekdayHolidayClassification = "休日";
 			}
 			Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
-					WorkInfo.getRecordWorkInformation().getWorkTimeCode().v());
+					WorkInfo.getRecordInfo().getWorkTimeCode().v());
 			WorkTimeSetting workTimeSetting = WorkTimeSettingOptional.get();
 			// WorkTimeDailyAtr = 通常勤務・変形労働用
 			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().value == 0) {
@@ -228,12 +219,12 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value) {
 				case 0:// 固定勤務
 					checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
+							WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
 							checkWorkDay);
 					break;
 				case 2:// 流動勤務
 					checkReflect = this.confirmIntermissionTimeZone(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
+							WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
 
 					break;
 				case 1:// 時差勤務
@@ -243,14 +234,14 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 				default:
 					checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
+							WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
 							checkWorkDay);
 					break;
 				}
 
 			} else {
 				checkReflect = this.confirmInterFlexWorkSetting(companyId, weekdayHolidayClassification,
-						WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
+						WorkInfo.getRecordInfo().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
 						checkWorkDay);
 			}
 
@@ -365,7 +356,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					return false;
 				} else {
 					DiffTimeWorkSetting diffTimeWorkSetting = this.diffTimeWorkSettingRepo
-							.find(companyId, WorkInfo.getRecordWorkInformation().getWorkTimeCode().v()).get();
+							.find(companyId, WorkInfo.getRecordInfo().getWorkTimeCode().v()).get();
 					List<DiffTimeHalfDayWorkTimezone> lstHalfDayWorkTimezones = diffTimeWorkSetting
 							.getHalfDayWorkTimezones();
 					List<DeductionTime> timezones = null;

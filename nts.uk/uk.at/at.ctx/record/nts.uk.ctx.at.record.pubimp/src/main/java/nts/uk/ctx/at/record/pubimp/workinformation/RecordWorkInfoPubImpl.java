@@ -43,9 +43,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		if(!workInfo.isPresent()) {
 			return new RecordWorkInfoPubExport("", "");
 		}
-		String workTimeCode = workInfo.get().getRecordWorkInformation().getWorkTimeCode() == null 
-				? null : workInfo.get().getRecordWorkInformation().getWorkTimeCode().v();
-		String workTypeCode = workInfo.get().getRecordWorkInformation().getWorkTypeCode().v();
+		String workTimeCode = workInfo.get().getRecordInfo().getWorkTimeCode() == null 
+				? null : workInfo.get().getRecordInfo().getWorkTimeCode().v();
+		String workTypeCode = workInfo.get().getRecordInfo().getWorkTypeCode().v();
 		RecordWorkInfoPubExport record = new RecordWorkInfoPubExport(
 				workTypeCode,
 				workTimeCode);
@@ -153,8 +153,8 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordWorkInformation().getWorkTimeCode()==null?"":domain.getRecordWorkInformation().getWorkTimeCode().v(),
-				domain.getRecordWorkInformation().getWorkTypeCode().v()
+				domain.getRecordInfo().getWorkTimeCode()==null?"":domain.getRecordInfo().getWorkTimeCode().v(),
+				domain.getRecordInfo().getWorkTypeCode().v()
 				);
 	}
 	
