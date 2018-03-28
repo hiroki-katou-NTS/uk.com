@@ -43,6 +43,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         employeeID: KnockoutObservable<string> = ko.observable('');
 
+        version: KnockoutObservable<number> = ko.observable(0);
+
         update() {
             block.invisible();
             let self = this,
@@ -56,7 +58,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
-                        version: 0
+                        version: self.version()
                         ,
                     }
                 };
@@ -110,6 +112,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.comment(data.drawalReqSet || null);
                 self.employeeName(data.employeeName || null);
                 self.employeeID(data.employeeID || null);
+                self.version(data.application.version || 0);
                 if (data.application) {
                     self.setDataCommon(data);
                 }

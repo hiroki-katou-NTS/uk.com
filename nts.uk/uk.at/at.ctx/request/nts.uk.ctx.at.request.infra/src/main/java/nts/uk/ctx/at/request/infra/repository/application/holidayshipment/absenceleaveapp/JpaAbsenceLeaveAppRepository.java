@@ -29,7 +29,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaAbsenceLeaveAppRepository extends JpaRepository implements AbsenceLeaveAppRepository {
 
 	String FIND_SUB_DIG = "SELECT d FROM KrqdtSubDigestion d WHERE d.absenceLeaveAppID=:absenceLeaveAppID";
-	String FIND_SUB_TAG_DIG_BY_ABS_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.pk.absenceLeaveAppID=:absenceLeaveAppID";
+	String FIND_SUB_TAG_DIG_BY_ABS_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
 
 	@Override
 	public void insert(AbsenceLeaveApp absApp) {
@@ -63,7 +63,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 				.setParameter("absenceLeaveAppID", entity.getAppID()).getList(x -> toSubDigestion(x));
 		List<SubTargetDigestion> subTargetDigestions = this.queryProxy()
 				.query(FIND_SUB_TAG_DIG_BY_ABS_ID, KrqdtSubTargetDigestion.class)
-				.setParameter("absenceLeaveAppID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
+				.setParameter("appID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
 		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTimeCD(),
 				EnumAdaptor.valueOf(entity.getChangeWorkHoursAtr(), NotUseAtr.class),
 				new WorkTimeCode(entity.getWorkTimeCD()), WorkTime1, WorkTime2, subTargetDigestions, subDigestions);
