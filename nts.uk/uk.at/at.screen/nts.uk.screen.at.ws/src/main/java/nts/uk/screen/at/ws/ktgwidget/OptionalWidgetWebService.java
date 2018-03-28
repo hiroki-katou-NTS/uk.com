@@ -7,14 +7,14 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.screen.at.app.ktgwidget.find.OptionalWidgetFinderKtg;
+import nts.uk.screen.at.app.ktgwidget.find.OptionalWidgetKtgFinder;
 
 @Path("screen/at/OptionalWidget")
 @Produces("application/json")
 public class OptionalWidgetWebService extends WebService {
 
 	@Inject
-	private OptionalWidgetFinderKtg OptionalWidgetFinder; 
+	private OptionalWidgetKtgFinder OptionalWidgetFinder; 
 	
 	@POST
 	@Path("getEmploymentCode")
