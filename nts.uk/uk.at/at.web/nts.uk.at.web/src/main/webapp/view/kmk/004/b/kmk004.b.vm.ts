@@ -1,21 +1,6 @@
 module nts.uk.at.view.kmk004.b {
     export module viewmodel {
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
-        import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;
-        import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;
-        import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;
-        import FlexMonth = nts.uk.at.view.kmk004.shared.model.FlexMonth;
-        import NormalSetting = nts.uk.at.view.kmk004.shared.model.NormalSetting;
-        import WorkingTimeSetting = nts.uk.at.view.kmk004.shared.model.WorkingTimeSetting;
-        import Monthly = nts.uk.at.view.kmk004.shared.model.Monthly;
-        import WorktimeSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDto;
-        import WorktimeNormalDeformSetting = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSetting;
-        import WorktimeFlexSetting1 = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1;
-        import NormalWorktime = nts.uk.at.view.kmk004.shared.model.NormalWorktime;
-        import FlexWorktimeAggrSetting = nts.uk.at.view.kmk004.shared.model.FlexWorktimeAggrSetting;
-        import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
-        import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
-        import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
         
         export class ScreenModel {
             
@@ -36,7 +21,7 @@ module nts.uk.at.view.kmk004.b {
             selectedEmployeeCode: KnockoutObservableArray<string>;
             employeeName: KnockoutObservable<string>;
             employeeList: KnockoutObservableArray<UnitModel>;
-            alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
+            alreadySettingPersonal: KnockoutObservableArray<any>;
             ccgcomponentPerson: GroupOption;
             
             ccgcomponent: GroupOption;
@@ -95,18 +80,19 @@ module nts.uk.at.view.kmk004.b {
                 // Init component.
                 self.reloadCcg001();
                 
-                self.selectedEmployeeCode.subscribe(function(v){
-                    if (v.length > 0) {
-                        let code = v[0];
+                self.selectedEmployeeCode.subscribe(function(code){
+                    if (code != null && code.length > 0) {
                         let empt = _.find(self.selectedEmployee(), item => item.employeeCode == code);
                         if (empt) {
                             self.displayEmployeeCode(code);
                             self.displayEmployeeName(empt.employeeName);
+                            self.isNewMode( !(_.find(self.alreadySettingPersonal(), item => item.code == code ) != null) );
                             return;
                         }
                     }
                     self.displayEmployeeCode('');
                     self.displayEmployeeName('');
+                    self.isNewMode(true);
                 });
             }
                 
@@ -241,7 +227,22 @@ module nts.uk.at.view.kmk004.b {
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
+                        
+                        service.findAlreadySetting().done((settingData) => {
+                            let listCode = _.map(self.selectedEmployee(), item => {
+                                if ( _.find(settingData, it => { return it.employeeId == item.employeeId; } )) return item.employeeCode;
+                                return null; 
+                            });
+                            listCode = _.filter(listCode, item => { return item != null });
+                            let listSelected = [];
+                            
+                            _.each(listCode, item => {
+                                listSelected.push( { code: item, isAlreadySetting: true } );
+                            });
+                            
+                            self.alreadySettingPersonal(listSelected);
+                            self.applyKCP005ContentSearch(self.selectedEmployee());
+                        });
                     }
                 }
             }
@@ -263,8 +264,8 @@ module nts.uk.at.view.kmk004.b {
                 }
                 self.employeeList(employeeSearchs);
                 self.lstPersonComponentOption = {
-                    isShowAlreadySet: false,
-                    isMultiSelect: true,
+                    isShowAlreadySet: true,
+                    isMultiSelect: false,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -277,6 +278,14 @@ module nts.uk.at.view.kmk004.b {
                     maxWidth: 550,
                     maxRows: 15
                 };
+            }
+            
+            public saveEmployeeSetting(): void {
+                
+            }
+            
+            public removeEmployeeSetting(): void {
+                
             }
         } // --- end ScreenModel
         
