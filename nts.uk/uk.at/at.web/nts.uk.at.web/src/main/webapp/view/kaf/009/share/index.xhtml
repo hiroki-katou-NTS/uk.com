@@ -2,14 +2,14 @@
 	<!--LEFT CONTENTS -->
 	<div class="left-contents-009">
 		<div class="valign-center control-group">
-			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {enable: isNewScreen}">#{i18n.getText('KAF009_7')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
 		</div>
 		<!--事前事後区分-->
 		<div class="valign-center control-group "
 			data-bind="visible: prePostDisp()">
 			<div class="lblTitleKAF009"
-				data-bind="ntsFormLabel:{required : true, enable: isNewScreen}">#{i18n.getText('KAF009_8')}</div>
+				data-bind="ntsFormLabel:{required : true}">#{i18n.getText('KAF009_8')}</div>
 			<div data-bind="visible: screenModeNew" class="mode-style">
 				<div class="cf"
 					data-bind="ntsSwitchButton: {
@@ -34,7 +34,7 @@
 		</div>
 		<div class="valign-center control-group">
 			<!--申請日付 -->
-			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true, enable: isNewScreen}">#{i18n.getText('KAF009_11')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div data-bind="if: screenModeNew()" class="mode-style">
 				<div id="inputdate"
 					data-bind="ntsDatePicker: {
@@ -53,7 +53,7 @@
 			<div class="table">
 				<div class="cell valign-top">
 					<div class="lblTitleKAF009"
-						data-bind="ntsFormLabel: {required:true, enable: isNewScreen}">#{i18n.getText('KAF009_13')}</div>
+						data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
@@ -75,7 +75,7 @@
 															readonly: false}" />
 					</div>
 					<div class="cell valign-center row-cell-margin"
-						style="display: inline-block">
+						style="display: none">
 						<!--選択場所　Button-->
 						<button id="btnLocation1" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(1)}, enable: isNewScreen">#{i18n.getText('KAF009_15')}</button>
@@ -137,11 +137,11 @@
 		</div>
 
 		<!--勤務時間 2-->
-		<div class="valign-center control-group" data-bind="if: useMulti()">
+		<div class="valign-center control-group" data-bind="if: useMulti()" style="display: none">
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitleKAF009"
-						data-bind="ntsFormLabel: {required:false, enable: isNewScreen}">#{i18n.getText('KAF009_20')}</div>
+						data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
@@ -231,10 +231,10 @@
 			<div class="table clsWorkType" data-bind="if: workChangeBtnDisplay">
 				<div class="cell valign-center ">
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{enable: isNewScreen}">#{i18n.getText('KAF009_22')}</div>
+						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_22')}</div>
 					<BR />
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{enable: isNewScreen}">#{i18n.getText('KAF009_23')}</div>
+						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
 					<button id="workSelect"
@@ -281,7 +281,7 @@
 	</div>
 	<!--RIGHT CONTENT -->
 	<div class="right-contents">
-		<div class="panel panel-gray-bg panel-frame">
+		<div class="panel panel-gray-bg panel-frame kaf009-panel">
 			<label>#{i18n.getText('KAF009_30')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_31')}
 				:</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_32')} :</label> <BR />
 			<label>#{i18n.getText('KAF009_33')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_34')}

@@ -167,6 +167,8 @@ public class OverTimeDto {
 	 */
 	private int appOvertimeNightFlg;
 	
+	
+	
 	/**
 	 * 参照ラベル
 	 */
@@ -198,6 +200,19 @@ public class OverTimeDto {
 	 * appOvertimeReference
 	 */
 	private AppOvertimeReference appOvertimeReference;
+	
+	private boolean performanceDisplayAtr;
+	
+	private boolean preDisplayAtr;
+	/**
+	 * flexFLag
+	 */
+	private boolean flexFLag;
+	
+	/**
+	 * prePostCanChangeFlg
+	 */
+	private boolean prePostCanChangeFlg;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
@@ -243,7 +258,10 @@ public class OverTimeDto {
 				false,
 				false, 
 				null,
-				null);
+				null,
+				false,
+				false,
+				false,false);
 	}
 	
 }

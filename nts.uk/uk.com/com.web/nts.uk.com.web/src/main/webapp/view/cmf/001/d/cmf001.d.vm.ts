@@ -80,31 +80,17 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             block.invisible();
             service.getNumberOfLine(self.fileId()).done(function(totalLine: any) {
                 self.fileDataTotalLine(totalLine);
-                if (self.screenFileCheck()) {
-                    //write data mapping
-                    block.invisible();
-                    service.getRecord(self.fileId(), self.stdCondSet().csvDataItemLineNumber(), self.stdCondSet().csvDataStartLine()).done((rs: Array<any>) => {
-                        let _rsList: Array<model.MappingListData> = _.map(rs, x => {
-                            return new model.MappingListData(x.colNum, x.colName, x.sampleData);
-                        });
-                        self.listMappingData(_rsList);
-                        if (self.listAcceptItem().length > 0) {
-                            //Clear "CSV data item name" and "sample data" on the screen, msg985
-                            for (var i = 0; i < self.listAcceptItem().length; i++) {
-                                self.listAcceptItem()[i].csvItemNumber(null);
-                                self.listAcceptItem()[i].csvItemName(null);
-                                self.listAcceptItem()[i].sampleData(null);
-                            } 
-                            info({messageId: "Msg_985"});
-                        }
-                    }).fail(function(err) {
-                        alertError(err);
-                    }).always(() => {
-                        block.clear();
-                    });
-                } else {
-                    return;
-                }
+                self.setListMappingData(() => {
+                    if (self.listAcceptItem().length > 0) {
+                        //Clear "CSV data item name" and "sample data" on the screen, msg985
+                        for (var i = 0; i < self.listAcceptItem().length; i++) {
+                            self.listAcceptItem()[i].csvItemNumber(null);
+                            self.listAcceptItem()[i].csvItemName(null);
+                            self.listAcceptItem()[i].sampleData(null);
+                        } 
+                        info({messageId: "Msg_985"});
+                    }
+                });
             }).fail(function(err) {
                 alertError(err);
             }).always(() => {
@@ -313,9 +299,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             if (data.screenConditionSetting) condition = ko.toJS(data.screenConditionSetting);
             setShared('CMF001lParams', {
                 dataType: data.itemType(),
+                itemName: data.acceptItemName(),
                 condition: condition,
                 inputMode: true
-            }, true);
+            });
 
             modal("/view/cmf/001/l/index.xhtml").onClosed(function() {
                 var output = getShared('CMF001lOutput');
@@ -560,23 +547,40 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         
         refreshCsvData() {
             let self = this;
+            self.setListMappingData(() => {
+                _.each(self.listAcceptItem(), rs => {
+                    let data = _.find(self.listMappingData(), x => { return x.csvItemNumber == rs.csvItemNumber(); });
+                    if (data) {
+                        rs.csvItemName(data.csvItemName);
+                        rs.sampleData(data.sampleData);
+                    }
+                });
+            });
+        }
+
+        private setListMappingData(refreshListAcceptItem: () => void) {
+            let self = this;
             if (self.screenFileCheck()) {
                 //write data mapping
-                //rewrite csv item name and sample data
                 block.invisible();
                 service.getRecord(self.fileId(), self.stdCondSet().csvDataItemLineNumber(), self.stdCondSet().csvDataStartLine()).done((rs: Array<any>) => {
                     let _rsList: Array<model.MappingListData> = _.map(rs, x => {
                         return new model.MappingListData(x.colNum, x.colName, x.sampleData);
                     });
                     self.listMappingData(_rsList);
-                    _.each(self.listAcceptItem(), rs => {
-                        let data = _.find(self.listMappingData(), x => { return x.csvItemNumber == rs.csvItemNumber(); });
-                        if (data) {
-                            rs.csvItemName(data.csvItemName);
-                            rs.sampleData(data.sampleData);
-                        }
-                    });
+                    refreshListAcceptItem();
                 }).fail(function(err) {
+                    //Clear "CSV data item name" and "sample data" on the screen
+                    for (var i = 0; i < self.listAcceptItem().length; i++) {
+                        self.listAcceptItem()[i].csvItemNumber(null);
+                        self.listAcceptItem()[i].csvItemName(null);
+                        self.listAcceptItem()[i].sampleData(null);
+                    }
+                    $('#file-upload').find('.filenamelabel').text('');
+                    $('#file-upload').find("input").val('');
+                    $('#file-upload').find("input").change();
+                    self.listMappingData([]);
+                    self.fileId(null);
                     alertError(err);
                 }).always(() => {
                     block.clear();
