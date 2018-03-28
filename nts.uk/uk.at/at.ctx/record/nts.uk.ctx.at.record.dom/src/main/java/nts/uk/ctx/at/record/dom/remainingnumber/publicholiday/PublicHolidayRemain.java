@@ -17,13 +17,15 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class PublicHolidayRemain extends AggregateRoot{
 	
+	private String cID;
 	// 社員ID
 	private String sID;
 	
 	// 残数
 	private RemainNumber remainNumber;
 	
-	public PublicHolidayRemain(String sid, BigDecimal numberDaysRemain){
+	public PublicHolidayRemain(String cid, String sid, BigDecimal numberDaysRemain){
+		this.cID = cid;
 		this.sID = sid;
 		this.remainNumber = new RemainNumber(numberDaysRemain);
 	}

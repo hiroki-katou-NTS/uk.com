@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 @AllArgsConstructor
 public class ExcessLeaveInfo extends AggregateRoot{
 	
+	private String cid;
 	// 社員ID
 	private String sID;
 	
@@ -30,7 +31,8 @@ public class ExcessLeaveInfo extends AggregateRoot{
 	// 精算方法
 	private PaymentMethod paymentMethod;
 	
-	public ExcessLeaveInfo(String sid, int useCls, int occ, int paymentMethod){
+	public ExcessLeaveInfo(String cid, String sid, int useCls, int occ, int paymentMethod){
+		this.cid = cid;
 		this.sID = sid;
 		this.useAtr = EnumAdaptor.valueOf(useCls, UseAtr.class);
 		this.occurrenceUnit = new OccurrenceUnit(occ);

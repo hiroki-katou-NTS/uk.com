@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 @AllArgsConstructor
 public class SpecialLeaveBasicInfo extends AggregateRoot{
 	
+	private String cID;
 	// 社員ID
 	private String sID;
 	
@@ -34,8 +35,9 @@ public class SpecialLeaveBasicInfo extends AggregateRoot{
 	// 付与設定
 	private SpecialLeaveGrantSetting grantSetting;
 	
-	public SpecialLeaveBasicInfo(String sid, int spLeaCD, int used, int appSet, GeneralDate grantDate,
+	public SpecialLeaveBasicInfo(String cid, String sid, int spLeaCD, int used, int appSet, GeneralDate grantDate,
 			Integer grantDay, String grantTbl) {
+		this.cID = cid;
 		this.sID = sid;
 		this.specialLeaveCode = new SpecialVacationCD(spLeaCD);
 		this.used = EnumAdaptor.valueOf(used, UseAtr.class);

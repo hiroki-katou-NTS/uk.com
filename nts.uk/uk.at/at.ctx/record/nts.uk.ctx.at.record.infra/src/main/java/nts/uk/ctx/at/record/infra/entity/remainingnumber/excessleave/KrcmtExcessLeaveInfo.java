@@ -11,6 +11,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCMT_EXCESS_LEAVE_INFO")
 public class KrcmtExcessLeaveInfo extends UkJpaEntity{
 
+    @Column(name = "CID")
+    public String cID;
+	
 	@Id
     @Column(name = "SID")
     public String employeeId;

@@ -15,6 +15,9 @@ public class KrcmtSpecialLeaveInfo extends UkJpaEntity {
 	@EmbeddedId
 	public KrcmtSpecialLeaveInfoPK key;
     
+	@Column(name = "CID")
+    public String cID;
+	
     @Column(name = "USE_ATR")
     public int useCls;
     

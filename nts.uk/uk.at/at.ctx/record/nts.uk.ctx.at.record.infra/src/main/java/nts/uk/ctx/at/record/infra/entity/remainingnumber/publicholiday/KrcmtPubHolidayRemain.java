@@ -13,6 +13,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name ="KRCMT_PUB_HOLIDAY_REMAIN")
 public class KrcmtPubHolidayRemain extends UkJpaEntity {
 	
+	@Column(name = "CID")
+    public String cid;
+	
 	@Id
     @Column(name = "SID")
     public String employeeId;
