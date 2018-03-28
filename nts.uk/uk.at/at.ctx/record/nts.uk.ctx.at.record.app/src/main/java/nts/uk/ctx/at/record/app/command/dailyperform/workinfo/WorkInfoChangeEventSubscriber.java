@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import nts.arc.layer.dom.event.DomainEventSubscriber;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoChangeEvent;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
