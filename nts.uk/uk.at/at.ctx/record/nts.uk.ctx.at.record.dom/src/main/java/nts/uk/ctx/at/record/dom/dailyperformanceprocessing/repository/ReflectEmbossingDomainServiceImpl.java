@@ -2434,7 +2434,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// 1*
 			if (checkReflectNormal) {
 				// 2* check tay ngày nghỉ) worktype thay đổi
-				boolean checkHolidayChange = checkHolidayChange(WorkInfo);
+				boolean checkHolidayChange = checkHolidayChange(WorkInfo, companyId);
 				// 2*
 				if (checkHolidayChange) {
 					// Phản ánh 時刻
@@ -2831,7 +2831,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	// 2* check tay ngày nghỉ) worktype thay đổi (true reflect and false no
 	// reflect)
 	// 休日打刻時に勤務種類を変更する
-	private boolean checkHolidayChange(WorkInfoOfDailyPerformance WorkInfo) {
+	private boolean checkHolidayChange(WorkInfoOfDailyPerformance WorkInfo,String companyId) {
 		if (WorkInfo != null) {
 			WorkInformation recordWorkInformation = WorkInfo.getRecordInfo();
 			// Xác định phân loại 1日半日出勤・1日休日
@@ -2841,7 +2841,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// 休日系
 			if (checkWorkDay.value == 0) {
 				// 勤務情報を変更する
-				if (!this.reflectWorkInformationDomainService.changeWorkInformation(WorkInfo)) {
+				if (!this.reflectWorkInformationDomainService.changeWorkInformation(WorkInfo, companyId)) {
 					return false;
 				}
 			}
