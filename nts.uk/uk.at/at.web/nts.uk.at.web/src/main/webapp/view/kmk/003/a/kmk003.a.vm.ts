@@ -650,7 +650,7 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode(ScreenMode.UPDATE);
 
                 // set detail mode
-                self.enterDetailMode();
+                //self.enterDetailMode();
             }
 
              /**
@@ -865,7 +865,7 @@ module nts.uk.at.view.kmk003.a {
                 self.isInterlockDialogJ(true);   
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);                              
-                
+                self.tabMode(worktimeSettingInfo.displayMode.displayMode);
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
