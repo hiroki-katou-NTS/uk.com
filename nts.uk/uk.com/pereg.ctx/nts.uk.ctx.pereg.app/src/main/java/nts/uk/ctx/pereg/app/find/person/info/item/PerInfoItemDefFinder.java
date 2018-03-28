@@ -1,35 +1,58 @@
 package nts.uk.ctx.pereg.app.find.person.info.item;
 
-import java.math.*;
-import java.util.*;
-import java.util.stream.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.*;
-import nts.arc.time.*;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
-import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.*;
-import nts.uk.ctx.pereg.dom.person.additemdata.item.*;
-import nts.uk.ctx.pereg.dom.person.info.category.*;
-import nts.uk.ctx.pereg.dom.person.info.dateitem.*;
-import nts.uk.ctx.pereg.dom.person.info.item.*;
-import nts.uk.ctx.pereg.dom.person.info.numericitem.*;
-import nts.uk.ctx.pereg.dom.person.info.order.*;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.*;
-import nts.uk.ctx.pereg.dom.person.info.setitem.*;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.*;
-import nts.uk.ctx.pereg.dom.person.info.stringitem.*;
-import nts.uk.ctx.pereg.dom.person.info.timeitem.*;
-import nts.uk.ctx.pereg.dom.person.info.timepointitem.*;
-import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.*;
-import nts.uk.ctx.pereg.dom.person.setting.init.item.*;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.*;
-import nts.uk.ctx.pereg.dom.roles.auth.item.*;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
+import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
+import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
+import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemDataType;
+import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemType;
+import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
+import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -286,7 +309,7 @@ public class PerInfoItemDefFinder {
 								this.pernfoItemDefRep.getAllItemIdsByCtgCode(companyId, relateDto.getRelatedCtgCode()));
 
 						// change code to id
-						relateDto.setRelatedCtgCode(perInfoCtgRep.getCatId(companyId,  relateDto.getRelatedCtgCode()));
+						relateDto.setRelatedCtgCode(perInfoCtgRep.getCatId(companyId, relateDto.getRelatedCtgCode()));
 					}
 				} else if (itemType == 3 && typeState instanceof SetTableItemDto) {
 					SetTableItemDto _typeState = (SetTableItemDto) typeState;
@@ -332,7 +355,11 @@ public class PerInfoItemDefFinder {
 			result.addAll(listItemDefDtoChildInChild);
 		}
 
-		return result;
+		return result.stream().collect(Collectors.groupingBy(PerInfoItemDefDto::getId)).values().stream().map(m -> {
+			return m.stream().filter(f -> m.indexOf(f) == 0).collect(Collectors.toList());
+		}).flatMap(f -> f.stream())
+				.sorted(Comparator.comparing(PerInfoItemDefDto::getDispOrder, Comparator.nullsLast(Integer::compareTo)))
+				.collect(Collectors.toList());
 	}
 
 	// return list id of item definition if it's require;
