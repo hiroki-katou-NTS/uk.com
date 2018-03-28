@@ -55,12 +55,14 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
 		DatePeriod period = new DatePeriod(startDate, endDateLast);
-
-		//個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
-		//Thực thi thuật toán chung thông tin cá nhân 「ログイン者がグループ会社管理者かどうか判定する」(Phán định xem người login có thuộc group người quản lý công ty hay không)
+		
+		//get GroupCompaniesAdmin
 		LoginUserContext loginUserContext = AppContexts.user();
-		String userLogin = loginUserContext.roles().forGroupCompaniesAdmin();
-		if (userLogin.isEmpty()) {
+		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
+		
+		//個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+		boolean result = roleID.isEmpty() ? false : true;
+		if (result) {
 			//共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行するThực thi thuật toán chung 「契約内ゼロ会社の会社IDを取得する」(Lấy CompanyID của công ty Zero trong hợp đồng)
 			String cid = AppContexts.user().zeroCompanyIdInContract();
 

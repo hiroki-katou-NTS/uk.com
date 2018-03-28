@@ -19,14 +19,15 @@ public class PerInfoSelectionItemFinder {
 	@Inject
 	private IPerInfoSelectionItemRepository perInfoSelectionItemRepo;
 
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(String hasCompanyId) {
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(boolean hasCompanyId) {
 		String contractCode = AppContexts.user().contractCode();
-
-		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+		
 		LoginUserContext loginUserContext = AppContexts.user();
-		hasCompanyId = loginUserContext.roles().forGroupCompaniesAdmin();
-
-		if (!hasCompanyId.isEmpty()) {
+		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
+		
+		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+		hasCompanyId = roleID.isEmpty() ? false : true;
+		if (!hasCompanyId) {
 			// グループ会社管理者でない場合トップページへ戻す処理を追加
 			// エラーメッセージ（#Msg_1103）を表示するHiển thị error message （#Msg_1103）
 			throw new BusinessException("Msg_1103");
