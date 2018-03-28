@@ -13,12 +13,13 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.publicholiday.KrcmtPubH
 public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicHolidayRemainRepository{
 
 	private PublicHolidayRemain toDomain(KrcmtPubHolidayRemain entity){
-		return new PublicHolidayRemain(entity.employeeId, entity.remainNumber);
+		return new PublicHolidayRemain(entity.cid, entity.employeeId, entity.remainNumber);
 	}
 	
 	private KrcmtPubHolidayRemain toEntity(PublicHolidayRemain domain){
 		KrcmtPubHolidayRemain entity = new KrcmtPubHolidayRemain();
 		entity.employeeId = domain.getSID();
+		entity.cid = domain.getCID();
 		entity.remainNumber = domain.getRemainNumber().v();
 		return entity;
 	}
