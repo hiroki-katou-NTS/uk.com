@@ -344,8 +344,8 @@ module nts.uk.at.view.kmk011.d {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         let itemDto = new ComDivergenceTimeSettingDto();
@@ -358,8 +358,8 @@ module nts.uk.at.view.kmk011.d {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         _self.mapObj.get(i).notUseAtr(item.notUseAtr);

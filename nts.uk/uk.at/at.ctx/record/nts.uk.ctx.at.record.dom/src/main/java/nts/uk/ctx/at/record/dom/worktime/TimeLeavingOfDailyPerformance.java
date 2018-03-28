@@ -70,15 +70,6 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	}
 	
 	/**
-	 * 指定した勤怠Noのデータを取得する
-	 * @param workNo 勤怠No
-	 * @return　出退勤クラス
-	 */
-	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
-		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
-	}
-	
-	/**
 	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
 	 * @return
 	 */
