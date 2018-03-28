@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.ac.record.dailyperform.appreflect;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ExecutionPubType;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordSameChangePubFlg;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ChangeAppGobackPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
@@ -20,6 +23,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubP
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AbsenceReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectInfor;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
@@ -104,6 +108,21 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 		WorkReflectedStatesInfo overtimeReflect = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(appReflect.getReflectedState().value, ReflectedState_New.class), 
 				EnumAdaptor.valueOf(appReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
 		return overtimeReflect;
+	}
+
+	@Override
+	public WorkReflectedStatesInfo absenceReflectRecor(AbsenceReflectPara para, boolean isPre) {
+		AbsenceReflectPubParameter absenceReflect = new AbsenceReflectPubParameter(para.getEmployeeId(),
+				para.getBaseDate(), 
+				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class),
+				para.isScheTimeReflectAtr(),
+				para.getWorkTypeCode(), 
+				EnumAdaptor.valueOf(para.getReflectState().value, ReflectedStatePubRecord.class), 
+				EnumAdaptor.valueOf(para.getReasoNotReflect().value, ReasonNotReflectPubRecord.class));
+		AppReflectPubOutput dataReflect = recordPub.absenceReflect(absenceReflect, isPre);
+		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
+				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
+		return dataOutput;
 	}
 	
 	

@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
@@ -439,6 +438,23 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 		
+	}
+	@Override
+	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate) {
+		//日別実績の勤務情報
+		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(employeeId, dateData).get();
+		List<Integer> lstItem = new ArrayList<>();
+		if(scheUpdate) {
+			lstItem.add(1);
+			dailyPerfor.setScheduleWorkInformation(new WorkInformation(dailyPerfor.getScheduleWorkInformation().getWorkTimeCode().v(), workTypeCode));
+			workRepository.updateByKeyFlush(dailyPerfor);
+		} else {
+			lstItem.add(28);
+			dailyPerfor.setRecordWorkInformation(new WorkInformation(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v(), workTypeCode));
+			workRepository.updateByKeyFlush(dailyPerfor);
+		}
+		//日別実績の編集状態
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 	}
 
 
