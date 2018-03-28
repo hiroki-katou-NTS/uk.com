@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.workplaceNew.WkpStatWorkTimeSetDto.WkpStatWorkTimeSetDtoBuilder;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
@@ -81,12 +82,12 @@ public class WkpStatWorkTimeSetFinder {
 
 		Optional<WkpTransLaborTime> optTransLaborTime = this.transWorkTimeRepository.find(companyId, wkpId);
 		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.transLaborTime(WkpTransLaborHourDto.fromDomain(optTransLaborTime.get()));
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
 		}
 
 		Optional<WkpRegularLaborTime> optWkpRegular = this.regularWorkTimeRepository.find(companyId, wkpId);
 		if (optWkpRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(WkpRegularWorkHourDto.fromDomain(optWkpRegular.get()));
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optWkpRegular.get().getWorkingTimeSet()));
 		}
 
 		return dtoBuilder.build();

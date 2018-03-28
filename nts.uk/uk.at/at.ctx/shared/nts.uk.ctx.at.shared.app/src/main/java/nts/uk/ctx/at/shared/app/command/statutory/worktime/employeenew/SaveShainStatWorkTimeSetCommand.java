@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.employeenew;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.DeforLaborSettingDto;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.FlexSettingDto;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSet
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class SaveShainStatWorkTimeSetCommand{
 
 	/** The year. */

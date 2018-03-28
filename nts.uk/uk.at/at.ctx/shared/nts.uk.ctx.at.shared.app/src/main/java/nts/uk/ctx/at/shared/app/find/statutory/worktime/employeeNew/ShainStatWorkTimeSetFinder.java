@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew.ShainStatWorkTimeSetDto.ShainStatWorkTimeSetDtoBuilder;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
@@ -80,12 +81,12 @@ public class ShainStatWorkTimeSetFinder {
 		
 		Optional<ShainTransLaborTime> optTransLaborTime = this.speDeforLaborTimeRepository.find(companyId, empId);
 		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.speDeforLaborSetting(ShainSpeDeforLaborHourDto.fromDomain(optTransLaborTime.get()));
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
 		}
 
 		Optional<ShainRegularLaborTime> optComRegular = this.regularWorkTimeRepository.find(companyId, empId);
 		if (optComRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(ShainRegularWorkHourDto.fromDomain(optComRegular.get()));
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get().getWorkingTimeSet()));
 		}
 
 		return dtoBuilder.build();

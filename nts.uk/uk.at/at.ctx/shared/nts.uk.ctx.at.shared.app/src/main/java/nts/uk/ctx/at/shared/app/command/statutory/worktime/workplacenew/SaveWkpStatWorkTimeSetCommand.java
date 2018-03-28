@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.workplacenew;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WkpDeforLaborSettingDto;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WkpFlexSettingDto;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WkpWorkingTime
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class SaveWkpStatWorkTimeSetCommand{
 
 	/** The year. */
