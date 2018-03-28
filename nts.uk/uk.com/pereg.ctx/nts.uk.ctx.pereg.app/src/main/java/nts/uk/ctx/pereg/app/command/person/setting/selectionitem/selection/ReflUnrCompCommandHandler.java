@@ -43,8 +43,11 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		ReflUnrCompCommand command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
 		String selectionItemId = command.getSelectionItemId();
+		
+		//共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する:Thực thi thuật toán 「契約内ゼロ会社の会社IDを取得する」
+		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+		
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
-
 		// Delete data:
 		for (String cid : companyIdList) {
 			// History:
@@ -71,8 +74,7 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		}
 
 		// copy
-		String rootCompanyId = PersonInfoCategory.ROOT_COMPANY_ID;
-		List<PerInfoHistorySelection> histList = this.historyRepo.getAllHistoryByCompanyID(rootCompanyId);
+		List<PerInfoHistorySelection> histList = this.historyRepo.getAllHistoryByCompanyID(zeroCompanyId);
 
 		companyIdList.forEach(x -> {
 			createHistoryList(histList, x);
