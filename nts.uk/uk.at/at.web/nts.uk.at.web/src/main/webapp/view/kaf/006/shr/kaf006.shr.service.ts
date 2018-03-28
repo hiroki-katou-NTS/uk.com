@@ -11,10 +11,11 @@ module nts.uk.at.view.kaf006.shr.service {
         getWorkingHours: "at/request/application/appforleave/getWorkingHours",
         createAbsence: "at/request/application/appforleave/insert",
         deleteOvertime: "at/request/application/overtime/delete",
-        updateOvertime: "at/request/application/overtime/update",
+        updateAbsence: "at/request/application/appforleave/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
         findByAppID: "at/request/application/appforleave/getByAppID",
+        getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
         getRecordWork: "at/request/application/overtime/getRecordWork"
     }
     /** Get TitleMenu */
@@ -35,7 +36,10 @@ module nts.uk.at.view.kaf006.shr.service {
     
     export function findChangeAllDayHalfDay(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findChangeAllDayHalfDay, param);
-     }   
+     }
+     export function getChangeAllDayHalfDayForDetail(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getChangeAllDayHalfDayForDetail, param);
+     }    
     export function getChangeDisplayHalfDay(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getChangeDisplayHalfDay, param);
     }
@@ -56,8 +60,8 @@ module nts.uk.at.view.kaf006.shr.service {
         return nts.uk.request.ajax("at", paths.deleteOvertime,appID);
     }
     
-     export function updateOvertime(overtime:any): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.updateOvertime ,overtime);
+     export function updateAbsence(overtime:any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.updateAbsence ,overtime);
     }
     
     export function checkBeforeRegister(overtime:any): JQueryPromise<any> {

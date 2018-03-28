@@ -10,8 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 
 /**
- * @author sonnlb
- * 振休申請Dto
+ * @author sonnlb 振休申請Dto
  */
 @Data
 @AllArgsConstructor
@@ -31,21 +30,17 @@ public class AbsenceLeaveAppDto {
 	 */
 	private int changeWorkHoursType;
 	/**
-	 * 勤務場所コード
-	 */
-	private String workLocationCD;
-	/**
 	 * 就業時間帯
 	 */
 	private String workTimeCD;
 	/**
 	 * 勤務時間1
 	 */
-	private AbsenceLeaveWorkingHourDto WorkTime1;
+	private AbsenceLeaveWorkingHourDto wkTime1;
 	/**
 	 * 勤務時間2
 	 */
-	private AbsenceLeaveWorkingHourDto WorkTime2;
+	private AbsenceLeaveWorkingHourDto wkTime2;
 	/**
 	 * 消化対象代休管理
 	 */
@@ -67,18 +62,18 @@ public class AbsenceLeaveAppDto {
 				domain.getWorkTime2().getEndTime().v());
 		List<SubTargetDigestionDto> subTargetDigestions = new ArrayList<SubTargetDigestionDto>();
 		domain.getSubTargetDigestions().forEach(x -> {
-			subTargetDigestions.add(new SubTargetDigestionDto(x.getRecAppID(), x.getAbsenceLeaveAppID(),
-					x.getHoursUsed(), x.getLeaveMngDataID(), x.getBreakOutDate(), x.getRestState().value));
+			subTargetDigestions.add(new SubTargetDigestionDto(x.getAppID(), x.getHoursUsed(), x.getLeaveMngDataID(),
+					x.getBreakOutDate(), x.getRestState().value, x.getUnknownDate()));
 		});
 
 		List<SubDigestionDto> subDigestions = new ArrayList<SubDigestionDto>();
 		domain.getSubDigestions().forEach(x -> {
 			subDigestions.add(new SubDigestionDto(x.getAbsenceLeaveAppID(), x.getDaysUsedNo().value,
-					x.getPayoutMngDataID(), x.getPickUpState().value, x.getOccurrenceDate()));
+					x.getPayoutMngDataID(), x.getPickUpState().value, x.getOccurrenceDate(), x.getUnknownDate()));
 		});
 		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD(),
-				domain.getChangeWorkHoursType().value, domain.getWorkLocationCD().v(), domain.getWorkTimeCD().v(),
-				WorkTime1, WorkTime2, subTargetDigestions, subDigestions, appDate);
+				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD().v(), WorkTime1, WorkTime2,
+				subTargetDigestions, subDigestions, appDate);
 
 		return result;
 	}

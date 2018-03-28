@@ -978,6 +978,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':query:nts.uk.query.infra')
 		runtime project (':query:nts.uk.query.pub')
 		runtime project (':query:nts.uk.query.pubimp')
+		
+		runtime project (':pub:nts.uk.pub.spr')
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
@@ -1279,5 +1281,19 @@ project (':query:nts.uk.query.pubimp') {
 		compile project(':query:nts.uk.query.model')
 		compile project(':query:nts.uk.query.app')
 		compile project(':query:nts.uk.query.infra')
+	}
+}
+
+
+//========== published for internal system ==========================
+
+// SPR
+project (':pub:nts.uk.pub.spr') {
+	dependencies {
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')
+		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }

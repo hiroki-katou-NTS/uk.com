@@ -22,4 +22,9 @@ public interface ApproverRepository {
 	 * @param approvalPhaseId
 	 */
 	void deleteAllApproverByAppPhId(String companyId, String approvalPhaseId);
+	/**
+	 * updateEmployeeIdApprover
+	 * @param updateApprover
+	 */
+	void updateEmployeeIdApprover(Approver updateApprover);
 }
