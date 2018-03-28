@@ -209,6 +209,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {
 		val record = createRecord(integrationOfDaily);
+		if(!record.calculatable) return integrationOfDaily;
 		return calcRecord(record);
 	}
 	
