@@ -149,12 +149,7 @@ module a1 {
             
             //send data sang dialog
             nts.uk.ui.windows.setShared('KMK003_DIALOG_F_INPUT_DATA', dialogDataObject);
-            nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml", {
-                height: 350,
-                width: 300,
-                title: nts.uk.resource.getText("KMK003_287"),
-                dialogClass: 'no-close'
-            }).onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml").onClosed(() => {
                 let returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_F_OUTPUT_DATA');
                 self.linkedWithDialogF(self.checkLinked(returnObject));
                 if (self.linkedWithDialogF()) {
