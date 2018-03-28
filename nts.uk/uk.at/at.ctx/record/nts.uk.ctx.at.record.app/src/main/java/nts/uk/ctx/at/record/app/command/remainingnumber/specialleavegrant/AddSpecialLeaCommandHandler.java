@@ -12,15 +12,15 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 
 @Stateless
-public class AddSpecialLeaCommandHandler extends AsyncCommandHandler<AddSpecialLeaCommand> {
+public class AddSpecialLeaCommandHandler extends AsyncCommandHandler<SpecialLeaveRemainCommand> {
 
 	@Inject
 	private SpecialLeaveGrantRepository repo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddSpecialLeaCommand> context) {
+	protected void handle(CommandHandlerContext<SpecialLeaveRemainCommand> context) {
 		
-		AddSpecialLeaCommand command = context.getCommand();
+		SpecialLeaveRemainCommand command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0){
