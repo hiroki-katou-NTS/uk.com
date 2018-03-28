@@ -428,8 +428,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 	}
 
-	public static WithinWorkTimeFrame createWithinWorkTimeFrame(EmTimeZoneSet duplicateTimeSheet,DeductionTimeSheet deductionTimeSheet,
-																BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
 	/**
 	 * 就内時間枠を作る
 	 * @param duplicateTimeSheet
@@ -438,8 +436,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @param midNightTimeSheet
 	 * @return
 	 */
-	public static WithinWorkTimeFrame createWithinWorkTimeFrame(EmTimeZoneSet duplicateTimeSheet,DeductionTimeSheet deductionTimeSheet,
-																BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
 	public static WithinWorkTimeFrame createWithinWorkTimeFrame(EmTimeZoneSet duplicateTimeSheet,
 																DeductionTimeSheet deductionTimeSheet,
 																BonusPaySetting bonusPaySetting,
