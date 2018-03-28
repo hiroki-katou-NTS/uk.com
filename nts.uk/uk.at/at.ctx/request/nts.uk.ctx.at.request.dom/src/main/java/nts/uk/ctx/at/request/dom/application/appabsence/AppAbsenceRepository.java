@@ -30,4 +30,11 @@ public interface AppAbsenceRepository {
 	 * @return
 	 */
 	public Optional<AppAbsence> getAbsenceByAppId(String companyID, String appId);
+	
+	/**
+	 * delete
+	 * @param companyID
+	 * @param appID
+	 */
+	public void delete(String companyID, String appID);
 }

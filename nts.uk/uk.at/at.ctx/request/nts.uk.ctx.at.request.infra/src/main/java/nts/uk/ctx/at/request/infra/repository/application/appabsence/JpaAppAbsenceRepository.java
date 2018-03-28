@@ -11,6 +11,8 @@ import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeav
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeavePK;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
 @Stateless
 public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsenceRepository{
 
@@ -64,6 +66,16 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 	@Override
 	public void updateAbsence(AppAbsence appAbsence) {
 		this.commandProxy().update(toEntity(appAbsence));
+	}
+
+	@Override
+	public void delete(String companyID, String appID) {
+		Optional<KrqdtAppForLeave> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appID), KrqdtAppForLeave.class);
+		if(!opKrqdtAppForLeave.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de xoa");
+		}
+		//Delete application over time
+		this.commandProxy().remove(KrqdtAppForLeave.class, new KrqdtAppForLeavePK(companyID, appID));
 		
 	}
 

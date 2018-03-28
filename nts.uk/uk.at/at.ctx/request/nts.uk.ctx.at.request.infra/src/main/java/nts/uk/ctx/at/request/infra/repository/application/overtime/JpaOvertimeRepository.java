@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,7 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
@@ -21,12 +27,19 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 	private static final String FIND_ALL = "SELECT e FROM KrqdtAppOvertime e";
 
 	private static final String FIND_BY_APPID;
+	
+	private static final String FIND_BY_ATR;
 	static {
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
 		query.append(" WHERE e.krqdtAppOvertimePK.cid = :companyID");
-		query.append(" AND e.krqdtAppOvertimePK.appId = :appID"); 
-		FIND_BY_APPID = query.toString(); 
+		query.append(" AND e.krqdtAppOvertimePK.appId = :appID");
+		FIND_BY_APPID = query.toString();
+		
+		query = new StringBuilder();
+		query.append(FIND_ALL);
+		query.append(" WHERE e.overtimeAtr = :overtimeAtr");
+		FIND_BY_ATR = query.toString();
 	}
 
 	@Override
@@ -83,14 +96,14 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				.map(item -> {
 					KrqdtOvertimeInputPK pk =  new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo(),item.getTimeItemTypeAtr().value);
-					return new KrqdtOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() == null ? null : item.getEndTime().v(),
+					return new KrqdtOvertimeInput(pk, item.getStartTime().v(), item.getEndTime().v(),
 							item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
 
 		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(),
-				domain.getOverTimeAtr().value, domain.getWorkTypeCode() == null? null :  domain.getWorkTypeCode().v(), domain.getSiftCode() == null ? null : domain.getSiftCode().v(),
+				domain.getOverTimeAtr().value, domain.getWorkTypeCode().v(), domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
 				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
 				domain.getOverTimeShiftNight(), overtimeInputs);
@@ -104,9 +117,27 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				entity.getOvertimeShiftNight());
 	}
 
+	@Override
+	public Optional<AppOverTime> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr) {
+		List<AppOverTime> appOverTimeList = this.queryProxy().query(FIND_BY_ATR, KrqdtAppOvertime.class)
+				.setParameter("overTimeAtr", overTimeAtr)
+				.getList(e -> convertToDomain(e));
+		List<AppOverTime> resultList = appOverTimeList.stream()
+			.filter(x -> {
+				Application_New app = x.getApplication();
+				return app.getAppDate().equals(appDate)&&
+						app.getEmployeeID().equals(employeeID)&&
+						app.getPrePostAtr().equals(PrePostAtr.PREDICT);
+			}).collect(Collectors.toList());
+		if(CollectionUtil.isEmpty(resultList)){
+			return Optional.empty();
+		}
+		resultList.sort(Comparator.comparing((AppOverTime x) -> {return x.getApplication().getInputDate();}).reversed());
+		return Optional.of(resultList.get(0));
+	}
 	/**
 	 * get Application Over Time and Frame
-	 * @author hoatt
+	 * @author hoatt-new
 	 * @param companyID
 	 * @param appID
 	 * @return

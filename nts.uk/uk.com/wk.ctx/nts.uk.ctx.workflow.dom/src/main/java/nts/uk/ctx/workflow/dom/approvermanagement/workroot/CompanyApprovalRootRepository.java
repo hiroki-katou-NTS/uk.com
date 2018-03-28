@@ -114,4 +114,7 @@ public interface CompanyApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate);
+	
+	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
 }

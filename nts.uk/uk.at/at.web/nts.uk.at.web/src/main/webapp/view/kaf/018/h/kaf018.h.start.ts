@@ -3,7 +3,8 @@ module nts.uk.at.view.kaf018.h.start {
     __viewContext.ready(() => {
         let screenModel = new kaf018.h.viewmodel.ScreenModel();        
         screenModel.startPage().done(function(){
-            __viewContext.bind(screenModel);           
+            __viewContext.bind(screenModel);          
+             $("#H3_1_1").focus(); 
         })
     });
 }

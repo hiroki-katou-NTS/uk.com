@@ -152,7 +152,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     self.settingManager().departmentName(result.departmentName);
                     self.settingManager().dailyApprovalName(result.dailyApprovalName);
                     self.settingManager().closingStartDate(result.closingStartDate);
-                    self.settingManager().hasAuthority(false);
+                    self.settingManager().hasAuthority(result.hasAuthority);
                     self.settingManager().hasHistory(!result.newMode);
                     if (result.newMode) {
                         self.settingNewMode();
