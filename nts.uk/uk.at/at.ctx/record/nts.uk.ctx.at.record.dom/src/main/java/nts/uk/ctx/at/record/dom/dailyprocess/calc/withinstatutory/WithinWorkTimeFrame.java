@@ -465,6 +465,14 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 	}
 
+	/**
+	 * 就内時間枠を作る
+	 * @param duplicateTimeSheet
+	 * @param deductionTimeSheet
+	 * @param bonusPaySetting
+	 * @param midNightTimeSheet
+	 * @return
+	 */
 	public static WithinWorkTimeFrame createWithinWorkTimeFrame(EmTimeZoneSet duplicateTimeSheet,DeductionTimeSheet deductionTimeSheet,
 																BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
 		//控除時間帯
@@ -472,16 +480,21 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(duplicateTimeSheet.getTimezone().timeSpan(), DeductionAtr.Appropriate);
 		
 		/*加給*/
-		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getDuplicatedBonusPay(bonusPaySetting.getLstBonusPayTimesheet().stream().map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList()),
-																				 new TimeSpanForCalc(duplicateTimeSheet.getTimezone().getStart(),duplicateTimeSheet.getTimezone().getEnd()));
+		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, duplicateTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		/*特定日*/
-		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getDuplicatedSpecBonusPay(bonusPaySetting.getLstSpecBonusPayTimesheet().stream().map(tc -> SpecBonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList()),
-																				 new TimeSpanForCalc(duplicateTimeSheet.getTimezone().getStart(),duplicateTimeSheet.getTimezone().getEnd()));
+		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, duplicateTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 
 		/*深夜*/
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getDuplicateMidNight(midNightTimeSheet,
-																							new TimeSpanForCalc(duplicateTimeSheet.getTimezone().getStart(),duplicateTimeSheet.getTimezone().getEnd()));
+		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, duplicateTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		return new WithinWorkTimeFrame(duplicateTimeSheet.getEmploymentTimeFrameNo(),duplicateTimeSheet.getTimezone(),duplicateTimeSheet.getTimezone().timeSpan(),recordTimeSheet,dedTimeSheet,bonusPayTimeSheet,duplicatemidNightTimeSheet,specifiedBonusPayTimeSheet);
 	}
-	
+
 }
+
+
+
+
+
+
+
+

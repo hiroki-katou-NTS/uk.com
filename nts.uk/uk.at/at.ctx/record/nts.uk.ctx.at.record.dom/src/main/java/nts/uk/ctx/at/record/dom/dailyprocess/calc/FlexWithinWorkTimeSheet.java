@@ -9,6 +9,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
@@ -86,7 +87,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			   										WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
 			   										VacationAddTimeSet vacationAddTimeSet,TimeLimitUpperLimitSetting flexLimitSetting) {
 		
-		FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
+		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		
 		//1日休日 or 1日休出
 		if(workType.getDailyWork().getAttendanceHolidayAttr().isHoliday() || workType.getDailyWork().isHolidayWork())
@@ -105,7 +106,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		/*事前申請を上限とする制御*/
 		AttendanceTimeOfExistMinus afterLimitFlexTime = decisionLimit(flexLimitSetting,calcflexTime);
 		
-		return new FlexTime(TimeWithCalculationMinusExist.sameTime(afterLimitFlexTime),new AttendanceTime(0));
+		return new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(afterLimitFlexTime),new AttendanceTime(0));
 	}
 	
 	/**

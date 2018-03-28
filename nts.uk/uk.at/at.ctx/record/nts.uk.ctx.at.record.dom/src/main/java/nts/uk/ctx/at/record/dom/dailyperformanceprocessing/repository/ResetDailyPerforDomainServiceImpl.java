@@ -6,12 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
@@ -23,7 +19,12 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 
 @Stateless
@@ -62,41 +63,41 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService
 									.getAutoCalculationSetting(companyID, employeeID, processingDate);
 
-							AutoCalculationSetting flexExcessTime = new AutoCalculationSetting(
+							AutoCalFlexOvertimeSetting flexExcessTime = new AutoCalFlexOvertimeSetting(
 									baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getCalAtr(),
 									baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getUpLimitORtSet());
 							
 							AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(SalaryCalAttr.NOT_USE, SpecificSalaryCalAttr.NOT_USE);
 
 							// number 3
-							AutoCalHolidaySetting holidayTimeSetting = new AutoCalHolidaySetting(
-									new AutoCalculationSetting(
+							AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getRestTime().getRestTime().getCalAtr(),
 											baseAutoCalSetting.getRestTime().getRestTime().getUpLimitORtSet()),
-									new AutoCalculationSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getRestTime().getLateNightTime().getCalAtr(),
 											baseAutoCalSetting.getRestTime().getLateNightTime().getUpLimitORtSet()));
 
 							// number 4
-							AutoCalOfOverTime overtimeSetting = new AutoCalOfOverTime(
-									new AutoCalculationSetting(
+							AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getNormalOTTime().getEarlyOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getEarlyOtTime().getUpLimitORtSet()),
-									new AutoCalculationSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getNormalOTTime().getEarlyMidOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getEarlyMidOtTime()
 													.getUpLimitORtSet()),
-									new AutoCalculationSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getNormalOTTime().getNormalOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getNormalOtTime().getUpLimitORtSet()),
-									new AutoCalculationSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getNormalOTTime().getNormalMidOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getNormalMidOtTime()
 													.getUpLimitORtSet()),
-									new AutoCalculationSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getNormalOTTime().getLegalOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getLegalOtTime().getUpLimitORtSet()),
-									new AutoCalculationSetting(
+									new AutoCalSetting(
 											baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr(),
 											baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime()
 													.getUpLimitORtSet()));

@@ -8,10 +8,11 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
@@ -35,6 +37,8 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -48,7 +52,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -183,7 +187,7 @@ public class TotalWorkingTime {
 			   WorkTimeDailyAtr workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   RaisingSalaryCalcAtr raisingAutoCalcSet,
+			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -319,7 +323,56 @@ public class TotalWorkingTime {
 									shotrTime);
 	}
 
+	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode,
+														   CheckExcessAtr checkAtr) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		switch(checkAtr) {
+			//残業超過
+			case OVER_TIME_EXCESS:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
+					this.getExcessOfStatutoryTimeOfDaily().checkOverTimeExcess(employeeId, targetDate, errorCode);
+				break;
+			//休出超過
+			case REST_TIME_EXCESS:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null)
+					this.getExcessOfStatutoryTimeOfDaily().checkHolidayWorkTimeExcess(employeeId, targetDate, errorCode);
+			//フレ超過
+			case FLEX_OVER_TIME:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
+					this.getExcessOfStatutoryTimeOfDaily().checkFlexTimeExcess(employeeId, targetDate, errorCode);
+				break;
+			//深夜超過
+			case MIDNIGHT_EXCESS:
+				if(this.getWithinStatutoryTimeOfDaily() != null)
+					this.getWithinStatutoryTimeOfDaily().checkWithinMidNightExcess(employeeId, targetDate, errorCode);
+				if(this.getExcessOfStatutoryTimeOfDaily() != null)
+					this.getExcessOfStatutoryTimeOfDaily().checkMidNightExcess(employeeId, targetDate, errorCode);
+			//事前残業申請超過
+			case PRE_OVERTIME_APP_EXCESS:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
+					this.getExcessOfStatutoryTimeOfDaily().checkPreOverTimeExcess(employeeId, targetDate, errorCode);
+				break;
+			//事前休出申請超過
+			case PRE_HOLIDAYWORK_APP_EXCESS:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null)
+					this.getExcessOfStatutoryTimeOfDaily().checkHolidayWorkTimeExcess(employeeId, targetDate, errorCode);
+			//事前フレ申請超過
+			case PRE_FLEX_APP_EXCESS:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
+					this.getExcessOfStatutoryTimeOfDaily().checkPreFlexTimeExcess(employeeId, targetDate, errorCode);
+				break;
+			case PRE_MIDNIGHT_EXCESS:
+				if(this.getExcessOfStatutoryTimeOfDaily() != null) 
+					this.getExcessOfStatutoryTimeOfDaily().checkPreMidNightExcess(employeeId, targetDate, errorCode);
+				break;
+			default :
+				throw new RuntimeException("unknown error item Atr in DailyCalc:"+checkAtr);
+		}
 
+		return returnErrorItem;
+	}
 
 
 

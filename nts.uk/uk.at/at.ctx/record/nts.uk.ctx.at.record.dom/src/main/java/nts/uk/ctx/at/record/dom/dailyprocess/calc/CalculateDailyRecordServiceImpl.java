@@ -17,7 +17,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -26,13 +25,13 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.HolidayTimesheetCalculationSetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.OvertimeTimesheetCalculationSetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
@@ -65,9 +64,6 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.HolidayTimesheetCalculationSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.OvertimeTimesheetCalculationSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -76,7 +72,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -101,6 +99,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.AddVacationSet;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndAggregateFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
@@ -108,7 +107,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExce
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExcessSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfStatutoryHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfWeekDay;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
@@ -312,6 +310,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new OverDayEndCalcSetOfExcessSpecialHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
 		//残業時間の自動計算設定
+		CalAttrOfDailyPerformance overCalcSetinIntegre = integrationOfDaily.getCalAttr();
+		
 		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
 		
@@ -417,37 +417,24 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter.setData(manageReGetClass.integrationOfDaily).toDomain();
 		
+		//日別実績の自動計算設定
+		CalAttrOfDailyPerformance calcAtrOfDaily = manageReGetClass.getIntegrationOfDaily().getCalAttr();
+		
 		//残業の自動計算設定
-
-		AutoCalculationSetting aCalcSet = new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS, TimeLimitUpperLimitSetting.NOUPPERLIMIT);
-		AutoCalOfOverTime oTimeSet = new AutoCalOfOverTime(aCalcSet,aCalcSet,aCalcSet,aCalcSet,aCalcSet,aCalcSet);
-		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
-		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
+		AutoCalOvertimeSetting sharedOtSet = calcAtrOfDaily.getOvertimeSetting();
 		
 		//休出の自動計算設定
-		AutoCalSetting holidayAutoCalcSetting = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
-		AutoCalHolidaySetting autoHolidaySet = new AutoCalHolidaySetting(aCalcSet, aCalcSet);
+		AutoCalRestTimeSetting holidayAutoCalcSetting = calcAtrOfDaily.getHolidayTimeSetting();
 		//遅刻早退の自動計算設定
 		AutoCalOfLeaveEarlySetting lateLeave = new AutoCalOfLeaveEarlySetting(LeaveAttr.NOT_USE, LeaveAttr.NOT_USE);
 		//加給の自動計算設定
-		RaisingSalaryCalcAtr raisingAutoCalcSet = new RaisingSalaryCalcAtr(true,true);
-		AutoCalRaisingSalarySetting autoRaisingSet = new  AutoCalRaisingSalarySetting(SalaryCalAttr.USE,SpecificSalaryCalAttr.USE);
+		AutoCalRaisingSalarySetting autoRaisingSet = calcAtrOfDaily.getRasingSalarySetting();
 		//加給時間計算設定
 		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId),
 																		   1,
 																		   WorkingTimesheetCalculationSetting.CalculateAutomatic,
 																		   OvertimeTimesheetCalculationSetting.CalculateAutomatic,
 																		   HolidayTimesheetCalculationSetting.CalculateAutomatical);
-		
-		CalAttrOfDailyPerformance calcAtrOfDaily = new CalAttrOfDailyPerformance(employeeId, 
-																				 targetDate,
-																				 new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,
-																						 					TimeLimitUpperLimitSetting.NOUPPERLIMIT), 
-																				 autoRaisingSet, 
-																				 autoHolidaySet, 
-																				 oTimeSet, 
-																				 lateLeave, 
-																				 new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 		
 		//変形労働勤務の加算設定
 		WorkTimeCalcMethodDetailOfHoliday workDetailSet = new WorkTimeCalcMethodDetailOfHoliday(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
@@ -523,9 +510,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		
 		/*時間の計算*/
-		val integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(manageReGetClass.getCalculationRangeOfOneDay(),
+		manageReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(manageReGetClass.getCalculationRangeOfOneDay(),
 																				 manageReGetClass.getIntegrationOfDaily(),
-																				 sharedOtSet,holidayAutoCalcSetting,
+																				 sharedOtSet,
+																				 holidayAutoCalcSetting.getRestTime(),
 					Optional.empty(),//Optional.of(personalLabor),
 				    vacation,
 				    workType.get(),
@@ -544,11 +532,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    workTime,
 				    flexCalcMethod,
 				    holidaycalcMethodSet,
-					raisingAutoCalcSet,
+				    autoRaisingSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					manageReGetClass.getSubHolTransferSetList(),
-					eachCompanyTimeSet);
+					eachCompanyTimeSet));
 	
 		
 

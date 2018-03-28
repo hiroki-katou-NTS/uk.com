@@ -8,7 +8,7 @@ import lombok.Value;
  *
  */
 @Value
-public class RaisingSalaryCalcAtr {
+public class AutoCalRaisingSalarySetting {
 	private boolean specificRaisingSalaryCalcAtr;
 	private boolean raisingSalaryCalcAtr;
 }

@@ -1,9 +1,16 @@
 package nts.uk.ctx.at.record.dom.daily.midnight;
 
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Value;
 import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 
@@ -14,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
  */
 @Value
 public class WithinStatutoryMidNightTime {
-	private TimeWithCalculation time; 
+	private TimeDivergenceWithCalculation time; 
 	
 	 /**
 	  * 所定内深夜時間の計算指示を出す
@@ -23,10 +30,27 @@ public class WithinStatutoryMidNightTime {
 	 public static WithinStatutoryMidNightTime calcPredetermineMidNightTime(CalculationRangeOfOneDay oneDay,AutoCalAtrOvertime autoCalcSet) {
 		 if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			val calcTime = oneDay.getWithinWorkingTimeSheet().get().calcMidNightTime(autoCalcSet);
-			return new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(calcTime));
+			return new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 		 }
 		 else {
-			 return new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			 return new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
 		 }
 	 }
+	 
+		/**
+		 * 実績超過乖離時間の計算
+		 * @return
+		 */
+		public int calcOverLimitDivergenceTime() {
+			return this.getTime().getDivergenceTime().valueAsMinutes() 
+					 + this.getTime().getDivergenceTime().valueAsMinutes();
+		}
+
+		/**
+		 * 実績超過乖離時間が発生しているか判定する
+		 * @return 乖離時間が発生している
+		 */
+		public boolean isOverLimitDivergenceTime() {
+			return this.calcOverLimitDivergenceTime() > 0 ? true:false;
+		}
 }

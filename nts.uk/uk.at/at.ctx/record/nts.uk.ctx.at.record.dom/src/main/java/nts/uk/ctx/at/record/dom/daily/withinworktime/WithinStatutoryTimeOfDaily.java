@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.dom.daily.withinworktime;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
@@ -18,6 +22,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PremiumAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
@@ -45,7 +51,7 @@ public class WithinStatutoryTimeOfDaily {
 	//所定内割増時間
 	private AttendanceTime withinPrescribedPremiumTime = new AttendanceTime(0);
 	//所定内深夜時間
-	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)));
+	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
 	//休暇加算時間
 	private AttendanceTime vacationAddTime = new AttendanceTime(0);  
 	
@@ -153,5 +159,18 @@ public class WithinStatutoryTimeOfDaily {
 		withinStatutoryTimeOfDaily.withinStatutoryMidNightTime = withinStatutoryMidNightTime;
 		withinStatutoryTimeOfDaily.vacationAddTime = vacationAddTime;
 		return withinStatutoryTimeOfDaily;
+	}
+	
+	public List<EmployeeDailyPerError> checkWithinMidNightExcess(String employeeId,
+			                                               		 GeneralDate targetDate,
+			                                               		 ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getWithinStatutoryMidNightTime().isOverLimitDivergenceTime()) {
+			//社員の日別実績エラー一覧取得↓へ入れる			
+		}
+
+			
+			
+		return returnErrorItem;
 	}
 }

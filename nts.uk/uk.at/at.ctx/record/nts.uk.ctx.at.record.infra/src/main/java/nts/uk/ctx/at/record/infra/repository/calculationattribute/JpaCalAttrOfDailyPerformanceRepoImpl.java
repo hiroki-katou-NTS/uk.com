@@ -68,8 +68,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			KrcstOtAutoCalSet overtimeCalc = this.queryProxy()
 					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class).orElse(null);
 			if (domain.getRasingSalarySetting() != null) {
-				calc.bonusPayNormalCalSet = domain.getRasingSalarySetting().getSalaryCalSetting().value;
-				calc.bonusPaySpeCalSet = domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value;
+				calc.bonusPayNormalCalSet = domain.getRasingSalarySetting().isRaisingSalaryCalcAtr();
+				calc.bonusPaySpeCalSet = domain.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr();
 			}
 			if (domain.getDivergenceTime() != null) {
 				calc.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;

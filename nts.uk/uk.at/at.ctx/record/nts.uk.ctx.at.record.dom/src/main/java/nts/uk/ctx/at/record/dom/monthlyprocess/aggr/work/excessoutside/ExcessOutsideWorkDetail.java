@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
@@ -182,7 +183,7 @@ public class ExcessOutsideWorkDetail {
 				new AttendanceTime(diffWorkMinutes),
 				new AttendanceTime(0),
 				new AttendanceTime(diffWithinPrescribedMinutes),
-				new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 				new AttendanceTime(0)));
 		
 		// 残業時間
@@ -212,10 +213,10 @@ public class ExcessOutsideWorkDetail {
 			
 			targetWork.addOverTime(new OverTimeFrameTime(
 					overTimeFrameNo,
-					TimeWithCalculation.createTimeWithCalculation(
+					TimeDivergenceWithCalculation.createTimeWithCalculation(
 							new AttendanceTime(diffOverMinutes),
 							new AttendanceTime(diffCalcOverMinutes)),
-					TimeWithCalculation.createTimeWithCalculation(
+					TimeDivergenceWithCalculation.createTimeWithCalculation(
 							new AttendanceTime(diffTransOverMinutes),
 							new AttendanceTime(diffCalcTransOverMinutes)),
 					new AttendanceTime(0),
@@ -249,10 +250,10 @@ public class ExcessOutsideWorkDetail {
 			
 			targetWork.addHolidayWorkTime(new HolidayWorkFrameTime(
 					holidayWorkTimeFrameNo,
-					Finally.of(TimeWithCalculation.createTimeWithCalculation(
+					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							new AttendanceTime(diffHolidayWorkMinutes),
 							new AttendanceTime(diffCalcHolidayWorkMinutes))),
-					Finally.of(TimeWithCalculation.createTimeWithCalculation(
+					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							new AttendanceTime(diffTransMinutes),
 							new AttendanceTime(diffCalcTransMinutes))),
 					Finally.of(new AttendanceTime(0))));
