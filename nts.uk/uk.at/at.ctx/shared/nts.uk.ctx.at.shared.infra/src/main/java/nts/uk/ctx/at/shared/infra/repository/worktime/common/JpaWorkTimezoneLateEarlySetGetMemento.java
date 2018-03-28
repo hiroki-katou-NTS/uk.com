@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 /**
  * The Class JpaWorkTimezoneLateEarlySetGetMemento.
  */
-@Stateless
 public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEarlySetGetMemento {
 
 	/** The entity. */
