@@ -74,7 +74,7 @@ public interface AppListInitialRepository {
 	 * @param application
 	 * @return
 	 */
-	public List<Application_New> getListAppComplementLeave(Application_New application);
+	public List<Application_New> getListAppComplementLeave(Application_New application, String companyId);
 	/**
 	 * 7 - 申請一覧リスト取得打刻取消
 	 * @param application
