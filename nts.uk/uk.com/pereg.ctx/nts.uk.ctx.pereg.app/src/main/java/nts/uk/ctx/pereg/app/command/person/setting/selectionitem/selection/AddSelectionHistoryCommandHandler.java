@@ -40,14 +40,15 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String newHistId = IdentifierUtil.randomUniqueId();
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
-		GeneralDate getStartDate = command.getStartDate();//startDateNew
+		GeneralDate getStartDate = command.getStartDate();// startDateNew
 		String companyId = command.getCompanyId();
-		//check: 最新の履歴の開始日　＞　直前の履歴の開始日
+		// check: 最新の履歴の開始日 ＞ 直前の履歴の開始日
 		GeneralDate endDateLast = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
-		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), companyId, endDateLast);
-		if(!lstHist.isEmpty()){
+		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository
+				.getHistSelByEndDate(command.getSelectionItemId(), companyId, endDateLast);
+		if (!lstHist.isEmpty()) {
 			PerInfoHistorySelection histLast = lstHist.get(0);
-			if(getStartDate.beforeOrEquals(histLast.getPeriod().start())){
+			if (getStartDate.beforeOrEquals(histLast.getPeriod().start())) {
 				throw new BusinessException("Msg_102");
 			}
 		}
@@ -55,15 +56,15 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
 		DatePeriod period = new DatePeriod(startDate, endDateLast);
-		
-		//get GroupCompaniesAdmin
+
+		// get GroupCompaniesAdmin
 		LoginUserContext loginUserContext = AppContexts.user();
 		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
-		
-		//個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+
+		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
 		boolean result = roleID.isEmpty() ? false : true;
 		if (result) {
-			//共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行するThực thi thuật toán chung 「契約内ゼロ会社の会社IDを取得する」(Lấy CompanyID của công ty Zero trong hợp đồng)
+			// 共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する
 			String cid = AppContexts.user().zeroCompanyIdInContract();
 
 			// ドメインモデル「選択肢履歴」を登録する
@@ -81,9 +82,9 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		// if last hist isPresent (not first time create)
 		if (!lstHist.isEmpty()) {
 			PerInfoHistorySelection lastHist = lstHist.get(0);
-			//set end date lastHist = startDate of newHist -1
+			// set end date lastHist = startDate of newHist -1
 			DatePeriod lastHistPeriod = new DatePeriod(lastHist.getPeriod().start(), startDate.addDays(-1));
-			
+
 			lastHist.setPeriod(lastHistPeriod);
 
 			this.historySelectionRepository.update(lastHist);
