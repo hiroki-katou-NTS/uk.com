@@ -21,7 +21,7 @@ public class MonPerformanceFunCommand
     /**
     * 日別の本人確認を表示する
     */
-    private int isConfirmDaily;
+    private int dailySelfChkDispAtr;
     
     private Long version;
 

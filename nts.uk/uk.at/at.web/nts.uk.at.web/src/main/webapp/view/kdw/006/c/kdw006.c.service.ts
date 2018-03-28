@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdw006.c.service {
     let servicePath = {
-        getFuncRestric: 'at/record/workrecord/operationsetting/func-rest',
+        getFuncRestric: 'at/record/workrecord/operationsetting/getIdentity',
         update: 'at/record/workrecord/operationsetting/register-func-rest'
     };
 

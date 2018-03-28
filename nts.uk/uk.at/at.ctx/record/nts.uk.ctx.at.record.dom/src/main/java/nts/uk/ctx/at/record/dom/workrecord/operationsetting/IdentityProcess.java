@@ -22,14 +22,14 @@ public class IdentityProcess extends AggregateRoot
     private String cid;
     
     /**
-    * 本人確認を利用する
+    * 日の本人確認を利用する
     */
-    private int useConfirmByYourself;
+    private int useDailySelfCk;
     
     /**
     * 月の本人確認を利用する
     */
-    private int useIdentityOfMonth;
+    private int useMonthSelfCK;
     
     /**
     * エラーがある場合の本人確認

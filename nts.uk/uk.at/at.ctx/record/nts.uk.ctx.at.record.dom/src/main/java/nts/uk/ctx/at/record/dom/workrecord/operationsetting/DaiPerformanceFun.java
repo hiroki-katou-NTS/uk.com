@@ -88,7 +88,12 @@ public class DaiPerformanceFun extends AggregateRoot
     
     public static DaiPerformanceFun createFromJavaType(String cid, String comment, int isCompleteConfirmOneMonth, int isDisplayAgreementThirtySix, int isFixClearedContent, int isDisplayFlexWorker, int isUpdateBreak, int isSettingTimeBreak, int isDayBreak, int isSettingAutoTime, int isUpdateEarly, int isUpdateOvertime, int isUpdateOvertimeWithinLegal, int isFixContentAuto)
     {
-        DaiPerformanceFun  daiPerformanceFun =  new DaiPerformanceFun(cid, new Comment(comment) , isCompleteConfirmOneMonth, isDisplayAgreementThirtySix, isFixClearedContent, isDisplayFlexWorker, isUpdateBreak, isSettingTimeBreak, isDayBreak, isSettingAutoTime, isUpdateEarly, isUpdateOvertime, isUpdateOvertimeWithinLegal,  isFixContentAuto);
+        DaiPerformanceFun  daiPerformanceFun =  new DaiPerformanceFun(cid, new Comment(comment) , 
+														        		isCompleteConfirmOneMonth, isDisplayAgreementThirtySix, 
+														        		isFixClearedContent, isDisplayFlexWorker, isUpdateBreak, 
+														        		isSettingTimeBreak, isDayBreak, isSettingAutoTime, 
+														        		isUpdateEarly, isUpdateOvertime, isUpdateOvertimeWithinLegal,  
+														        		isFixContentAuto);
         return daiPerformanceFun;
     }
     

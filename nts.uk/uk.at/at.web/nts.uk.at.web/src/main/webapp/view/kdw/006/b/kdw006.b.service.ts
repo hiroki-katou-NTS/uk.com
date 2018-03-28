@@ -7,8 +7,8 @@ module nts.uk.at.view.kdw006.b {
             getDaiPerformanceFunById: 'at/record/workrecord/operationsetting/getdaily',
             getMonPerformanceFunById: 'at/record/workrecord/operationsetting/getMonthy',
             updateFormatPerformanceById: 'at/record/workrecord/operationsetting/updateFormat',
-            updatetDaiPerformanceFunById: 'at/record/workrecord/operationsetting/updateMonthly',
-            updateMonPerformanceFunById: 'at/record/workrecord/operationsetting/updateDaily'
+            updatetDaiPerformanceFunById: 'at/record/workrecord/operationsetting/updateDaily',
+            updateMonPerformanceFunById: 'at/record/workrecord/operationsetting/updateMonthly'
         };
 
         export function getFormatPerformanceById(): JQueryPromise<any> {
@@ -34,6 +34,7 @@ module nts.uk.at.view.kdw006.b {
         export function updateMonPerformanceFunById(data): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.updateMonPerformanceFunById, data);
         }
+        }
     }
 }
-}
+

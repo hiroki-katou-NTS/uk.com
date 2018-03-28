@@ -644,14 +644,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType,
 			List<Integer> lstAttendanceItem) {
-		return this.queryProxy().query(SEL_DP_TYPE_CONTROL, KshstDailyServiceTypeControl.class)
-				.setParameter("lstBusinessType", lstBusinessType).setParameter("lstItem", lstAttendanceItem).getList()
-				.stream().map(c -> {
-					return new DPBusinessTypeControl(c.kshstDailyServiceTypeControlPK.businessTypeCode,
-							c.kshstDailyServiceTypeControlPK.attendanceItemId.intValue(),
-							c.use.intValue() == 1 ? true : false, c.canBeChangedByOthers.intValue() == 1 ? true : false,
-							c.youCanChangeIt.intValue() == 1 ? true : false);
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_DP_TYPE_CONTROL, KshstDailyServiceTypeControl.class)
+//				.setParameter("lstBusinessType", lstBusinessType).setParameter("lstItem", lstAttendanceItem).getList()
+//				.stream().map(c -> {
+//					return new DPBusinessTypeControl(c.kshstDailyServiceTypeControlPK.businessTypeCode,
+//							c.kshstDailyServiceTypeControlPK.attendanceItemId.intValue(),
+//							c.use.intValue() == 1 ? true : false, c.canBeChangedByOthers.intValue() == 1 ? true : false,
+//							c.youCanChangeIt.intValue() == 1 ? true : false);
+//				}).collect(Collectors.toList());
+		 return null;
 	}
 
 	@Override
@@ -668,14 +669,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem) {
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
-				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
-					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.attandanceTimeId.intValue(),
-							c.inputUnitOfTimeItem != null ? c.inputUnitOfTimeItem.intValue() : null,
-							c.headerBackgroundColorOfDailyPerformance != null
-									? c.headerBackgroundColorOfDailyPerformance : "",
-							c.nameLineFeedPosition.intValue());
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
+//				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
+//					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.attandanceTimeId.intValue(),
+//							c.inputUnitOfTimeItem != null ? c.inputUnitOfTimeItem.intValue() : null,
+//							c.headerBackgroundColorOfDailyPerformance != null
+//									? c.headerBackgroundColorOfDailyPerformance : "",
+//							c.nameLineFeedPosition.intValue());
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override

@@ -1,35 +1,45 @@
 module nts.uk.at.view.kdw006.c.viewmodel {
+    let __viewContext: any = window["__viewContext"] || {};
+    
     export class ScreenModelC {
         daiPerformanceFunDto: KnockoutObservable<DaiPerformanceFunDto>;
         approvalProcessDto: KnockoutObservable<ApprovalProcessDto>;
         identityProcessDto: KnockoutObservable<IdentityProcessDto>
         monPerformanceFunDto: KnockoutObservable<MonPerformanceFunDto>;
         itemList: KnockoutObservableArray<any>;
+        // C2_2
+        useConfirmByYourself: KnockoutObservable<boolean>;
+        // C2_4
+        useSupervisorConfirm: KnockoutObservable<boolean>;
         constructor() {
             let self = this;
+            self.useConfirmByYourself = ko.observable(true);
+            self.useSupervisorConfirm = ko.observable(true);
 
-            self.itemList = ko.observableArray([
-                new BoxModel(0, 'エラーがあっても確認できる'),
-                new BoxModel(1, 'エラーを訂正するまでチェックできない'),
-                new BoxModel(2, 'エラーを訂正するまで登録できない')
-            ]);
-            
+            self.itemList = ko.observableArray([]);
+            let yourSelf = __viewContext.enums.YourselfConfirmError;
+            _.forEach(yourSelf, (a) => {
+                self.itemList.push(new ItemModel(a.value, a.name));
+            });
+
+
+
             self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
-                    cid: '',
-                    comment: '',
-                    isCompleteConfirmOneMonth: 0,
-                    isDisplayAgreementThirtySix: 0,
-                    isFixClearedContent: 0,
-                    isDisplayFlexWorker: 0,
-                    isUpdateBreak: 0,
-                    isSettingTimeBreak: 0,
-                    isDayBreak: 0,
-                    isSettingAutoTime: 0,
-                    isUpdateEarly: 0,
-                    isUpdateOvertime: 0,
-                    isUpdateOvertimeWithinLegal: 0,
-                    isFixContentAuto: 0,
-                }));
+                cid: '',
+                comment: '',
+                isCompleteConfirmOneMonth: 0,
+                isDisplayAgreementThirtySix: 0,
+                isFixClearedContent: 0,
+                isDisplayFlexWorker: 0,
+                isUpdateBreak: 0,
+                isSettingTimeBreak: 0,
+                isDayBreak: 0,
+                isSettingAutoTime: 0,
+                isUpdateEarly: 0,
+                isUpdateOvertime: 0,
+                isUpdateOvertimeWithinLegal: 0,
+                isFixContentAuto: 0,
+            }));
             self.approvalProcessDto = ko.observable(new ApprovalProcessDto({
                 cid: '',
                 jobTitleId: '',
@@ -74,7 +84,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
         }
-   }
+    }
     class BoxModel {
         id: number;
         name: string;
@@ -100,7 +110,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         isUpdateOvertimeWithinLegal: number;
         isFixContentAuto: number;
     }
-        
+
     class DaiPerformanceFunDto {
         cid: KnockoutObservable<string>;
         comment: KnockoutObservable<string>;
@@ -116,23 +126,23 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         isUpdateOvertime: KnockoutObservable<boolean>;
         isUpdateOvertimeWithinLegal: KnockoutObservable<boolean>;
         isFixContentAuto: KnockoutObservable<boolean>;
-        
-        constructor (param: IDaiPerformanceFunDto) {
+
+        constructor(param: IDaiPerformanceFunDto) {
             let self = this;
             self.cid = ko.observable(param.cid);
             self.comment = ko.observable(param.comment);
-            self.isCompleteConfirmOneMonth = ko.observable(param.isCompleteConfirmOneMonth == 1 ? true: false);
-            self.isDisplayAgreementThirtySix = ko.observable(param.isDisplayAgreementThirtySix == 1 ? true: false);
-            self.isFixClearedContent = ko.observable(param.isFixClearedContent == 1 ? true: false);
-            self.isDisplayFlexWorker = ko.observable(param.isDisplayFlexWorker == 1 ? true: false);
-            self.isUpdateBreak = ko.observable(param.isUpdateBreak == 1 ? true: false);
-            self.isSettingTimeBreak = ko.observable(param.isSettingTimeBreak == 1 ? true: false);
-            self.isDayBreak = ko.observable(param.isDayBreak == 1 ? true: false);
-            self.isSettingAutoTime = ko.observable(param.isSettingAutoTime == 1 ? true: false);
-            self.isUpdateEarly = ko.observable(param.isUpdateEarly == 1 ? true: false);
-            self.isUpdateOvertime = ko.observable(param.isUpdateOvertime == 1 ? true: false);
-            self.isUpdateOvertimeWithinLegal = ko.observable(param.isUpdateOvertimeWithinLegal == 1 ? true: false);
-            self.isFixContentAuto = ko.observable(param.isFixContentAuto == 1 ? true: false);
+            self.isCompleteConfirmOneMonth = ko.observable(param.isCompleteConfirmOneMonth == 1 ? true : false);
+            self.isDisplayAgreementThirtySix = ko.observable(param.isDisplayAgreementThirtySix == 1 ? true : false);
+            self.isFixClearedContent = ko.observable(param.isFixClearedContent == 1 ? true : false);
+            self.isDisplayFlexWorker = ko.observable(param.isDisplayFlexWorker == 1 ? true : false);
+            self.isUpdateBreak = ko.observable(param.isUpdateBreak == 1 ? true : false);
+            self.isSettingTimeBreak = ko.observable(param.isSettingTimeBreak == 1 ? true : false);
+            self.isDayBreak = ko.observable(param.isDayBreak == 1 ? true : false);
+            self.isSettingAutoTime = ko.observable(param.isSettingAutoTime == 1 ? true : false);
+            self.isUpdateEarly = ko.observable(param.isUpdateEarly == 1 ? true : false);
+            self.isUpdateOvertime = ko.observable(param.isUpdateOvertime == 1 ? true : false);
+            self.isUpdateOvertimeWithinLegal = ko.observable(param.isUpdateOvertimeWithinLegal == 1 ? true : false);
+            self.isFixContentAuto = ko.observable(param.isFixContentAuto == 1 ? true : false);
         }
     }
 
@@ -149,17 +159,17 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         useDayApproverConfirm: KnockoutObservable<boolean>;
         useMonthApproverComfirm: KnockoutObservable<boolean>;
         supervisorConfirmError: KnockoutObservable<number>;
-        
-        constructor (param: IApprovalProcessDto) {
+
+        constructor(param: IApprovalProcessDto) {
             let self = this;
             self.cid = ko.observable(param.cid);
             self.jobTitleId = ko.observable(param.jobTitleId);
-            self.useDayApproverConfirm = ko.observable(param.useDayApproverConfirm == 1 ? true: false );
+            self.useDayApproverConfirm = ko.observable(param.useDayApproverConfirm == 1 ? true : false);
             self.useMonthApproverComfirm = ko.observable(param.useMonthApproverComfirm == 1 ? true : false);
             self.supervisorConfirmError = ko.observable(param.supervisorConfirmError);
         }
     }
-    
+
     interface IIdentityProcessDto {
         cid: string;
         useConfirmByYourself: number;
@@ -171,29 +181,39 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         useConfirmByYourself: KnockoutObservable<boolean>;
         useIdentityOfMonth: KnockoutObservable<boolean>;
         yourselfConfirmError: KnockoutObservable<number>;
-        
-        constructor (param: IIdentityProcessDto) {
+
+        constructor(param: IIdentityProcessDto) {
             let self = this;
-            self.cid(param.cid);
-            self.useConfirmByYourself = ko.observable(param.useConfirmByYourself == 1 ? true: false);
-            self.useIdentityOfMonth = ko.observable(param.useIdentityOfMonth == 1 ? true: false);
+            self.cid = ko.observable(param.cid);
+            self.useConfirmByYourself = ko.observable(param.useConfirmByYourself == 1 ? true : false);
+            self.useIdentityOfMonth = ko.observable(param.useIdentityOfMonth == 1 ? true : false);
             self.yourselfConfirmError = ko.observable(param.yourselfConfirmError);
         }
     }
     interface IMonPerformanceFunDto {
         cid: string;
         comment: string;
-        isConfirmDaily: number;    
+        isConfirmDaily: number;
     }
     class MonPerformanceFunDto {
         cid: KnockoutObservable<string>;
         comment: KnockoutObservable<string>;
-        isConfirmDaily: KnockoutObservable<boolean>;     
-        constructor (param: IMonPerformanceFunDto ) {
+        isConfirmDaily: KnockoutObservable<boolean>;
+        constructor(param: IMonPerformanceFunDto) {
             let self = this;
             self.cid = ko.observable(param.cid);
             self.comment = ko.observable(param.comment);
-            self.isConfirmDaily = ko.observable(param.isConfirmDaily == 1 ? true: false);
+            self.isConfirmDaily = ko.observable(param.isConfirmDaily == 1 ? true : false);
+        }
+    }
+
+    class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
 }

@@ -20,7 +20,10 @@ public class UpdateIdentityProcessCommandHandler extends CommandHandler<Identity
     @Override
     protected void handle(CommandHandlerContext<IdentityProcessCommand> context) {
         IdentityProcessCommand updateCommand = context.getCommand();
-        repository.update(IdentityProcess.createFromJavaType(updateCommand.getCid(), updateCommand.getUseConfirmByYourself(), updateCommand.getUseIdentityOfMonth(), updateCommand.getYourselfConfirmError()));
+        repository.update(IdentityProcess.createFromJavaType(updateCommand.getCid(), 
+												        		updateCommand.getUseDailySelfCk(), 
+												        		updateCommand.getUseMonthSelfCK(), 
+												        		updateCommand.getYourselfConfirmError()));
     
     }
 }

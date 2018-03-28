@@ -18,14 +18,14 @@ public class IdentityProcessDto
     private String cid;
     
     /**
-    * 本人確認を利用する
+    * 日の本人確認を利用する
     */
-    private int useConfirmByYourself;
+    private int useDailySelfCk;
     
     /**
     * 月の本人確認を利用する
     */
-    private int useIdentityOfMonth;
+    private int useMonthSelfCK;
     
     /**
     * エラーがある場合の本人確認
@@ -35,7 +35,9 @@ public class IdentityProcessDto
     
     public static IdentityProcessDto fromDomain(IdentityProcess domain)
     {
-        return new IdentityProcessDto(domain.getCid(), domain.getUseConfirmByYourself(), domain.getUseIdentityOfMonth(), domain.getYourselfConfirmError().value);
+        return new IdentityProcessDto(domain.getCid(), domain.getUseDailySelfCk(), 
+						        		domain.getUseMonthSelfCK(), 
+						        		domain.getYourselfConfirmError().value);
     }
     
 }

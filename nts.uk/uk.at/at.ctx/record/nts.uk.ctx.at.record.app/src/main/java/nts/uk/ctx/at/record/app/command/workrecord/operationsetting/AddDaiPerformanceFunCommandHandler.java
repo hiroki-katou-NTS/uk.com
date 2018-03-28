@@ -20,7 +20,19 @@ public class AddDaiPerformanceFunCommandHandler extends CommandHandler<DaiPerfor
     @Override
     protected void handle(CommandHandlerContext<DaiPerformanceFunCommand> context) {
         DaiPerformanceFunCommand addCommand = context.getCommand();
-        repository.add(DaiPerformanceFun.createFromJavaType(addCommand.getCid(), addCommand.getComment(), addCommand.getIsCompleteConfirmOneMonth(), addCommand.getIsDisplayAgreementThirtySix(), addCommand.getIsFixClearedContent(), addCommand.getIsDisplayFlexWorker(), addCommand.getIsUpdateBreak(), addCommand.getIsSettingTimeBreak(), addCommand.getIsDayBreak(), addCommand.getIsSettingAutoTime(), addCommand.getIsUpdateEarly(), addCommand.getIsUpdateOvertime(), addCommand.getIsUpdateOvertimeWithinLegal(), addCommand.getIsFixContentAuto()));
+        repository.add(DaiPerformanceFun.createFromJavaType(addCommand.getCid(), addCommand.getComment(), 
+											        		addCommand.getMonthChkMsgAtr(), 
+											        		addCommand.getDisp36Atr(), 
+											        		addCommand.getClearManuAtr(), 
+											        		addCommand.getFlexDispAtr(), 
+											        		addCommand.getBreakCalcUpdAtr(), 
+											        		addCommand.getBreakTimeAutoAtr(), 
+											        		addCommand.getBreakClrTimeAtr(), 
+											        		addCommand.getAutoSetTimeAtr(), 
+											        		addCommand.getEalyCalcUpdAtr(), 
+											        		addCommand.getOvertimeCalcUpdAtr(), 
+											        		addCommand.getLawOverCalcUpdAtr(), 
+											        		addCommand.getManualFixAutoSetAtr()));
     
     }
 }

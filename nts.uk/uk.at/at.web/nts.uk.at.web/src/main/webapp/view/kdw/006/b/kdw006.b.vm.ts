@@ -34,24 +34,26 @@ module nts.uk.at.view.kdw006.b {
                 self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
                     cid: '',
                     comment: '',
-                    isCompleteConfirmOneMonth: null,
-                    isDisplayAgreementThirtySix: null,
-                    isFixClearedContent: null,
-                    isDisplayFlexWorker: null,
-                    isUpdateBreak: null,
-                    isSettingTimeBreak: null,
-                    isDayBreak: null,
-                    isSettingAutoTime: null,
-                    isUpdateEarly: null,
-                    isUpdateOvertime: null,
-                    isUpdateOvertimeWithinLegal: null,
-                    isFixContentAuto: null,
+                    monthChkMsgAtr: null,
+                    disp36Atr: null,
+                    clearManuAtr: null,
+                    flexDispAtr: null,
+                    breakCalcUpdAtr: null,
+                    
+                    breakTimeAutoAtr: null,
+                    breakClrTimeAtr: null,
+                    autoSetTimeAtr: null,
+                    
+                    ealyCalcUpdAtr: null,
+                    overtimeCalcUpdAtr: null,
+                    lawOverCalcUpdAtr: null,
+                    manualFixAutoSetAtr: null,
                 }));
 
                 self.monPerformanceFunDto = ko.observable(new MonPerformanceFunDto({
                     cid: '',
                     comment: '',
-                    isConfirmDaily: null
+                    dailySelfChkDispAtr: null
                 }));
 
                 self.formatPerformanceDto = ko.observable(new FormatPerformanceDto({
@@ -73,10 +75,10 @@ module nts.uk.at.view.kdw006.b {
                 });
                 self.getMonPerformanceFunById().done(function() {
                     dfd.resolve();
-                }).always(()=>{
+                }).always(() => {
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
-                });;
+                });
                 return dfd.promise();
             }
 
@@ -85,9 +87,14 @@ module nts.uk.at.view.kdw006.b {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getFormatPerformanceById().done(function(data: IFormatPerformanceDto) {
-                    self.settingUnit(data.settingUnitType);
-                    self.formatPerformanceDto(new FormatPerformanceDto(data));
-                    dfd.resolve();
+                    if (data) {
+                        self.settingUnit(data.settingUnitType);
+                        self.formatPerformanceDto(new FormatPerformanceDto(data));
+                        dfd.resolve();
+                    } else {
+                        self.settingUnit(0);
+                        dfd.resolve();
+                    }
                 });
                 return dfd.promise();
             }
@@ -96,9 +103,14 @@ module nts.uk.at.view.kdw006.b {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getDaiPerformanceFunById().done(function(data: IDaiPerformanceFunDto) {
-                    self.commentDaily(data.comment);
-                    self.daiPerformanceFunDto(new DaiPerformanceFunDto(data));
-                    dfd.resolve();
+                    if (data) {
+                        self.commentDaily(data.comment);
+                        self.daiPerformanceFunDto(new DaiPerformanceFunDto(data));
+                        dfd.resolve();
+                    } else {
+                        self.commentDaily(null);
+                        dfd.resolve();
+                    }
                 });
                 return dfd.promise();
             }
@@ -107,18 +119,25 @@ module nts.uk.at.view.kdw006.b {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getMonPerformanceFunById().done(function(data: IMonPerformanceFunDto) {
-                    self.commentMonthly(data.comment);
-                    self.monPerformanceFunDto(new MonPerformanceFunDto(data));
-                    dfd.resolve();
+                    if (data) {
+                        self.commentMonthly(data.comment);
+                        self.monPerformanceFunDto(new MonPerformanceFunDto(data));
+                        dfd.resolve();
+                    } else {
+                        self.commentMonthly(null);
+                        dfd.resolve();
+                    }
                 });
                 return dfd.promise();
             }
 
             saveData() {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 self.formatPerformanceDto().settingUnitType(self.settingUnit());
                 self.daiPerformanceFunDto().comment(self.commentDaily());
                 self.monPerformanceFunDto().comment(self.commentMonthly());
+                if (nts.uk.ui.errors.hasError() === false) {
                     service.updateFormatPerformanceById(ko.toJS(self.formatPerformanceDto)).done(function() {
                         service.updatetDaiPerformanceFunById(ko.toJS(self.daiPerformanceFunDto)).done(function() {
                             service.updateMonPerformanceFunById(ko.toJS(self.monPerformanceFunDto)).done(function() {
@@ -127,75 +146,84 @@ module nts.uk.at.view.kdw006.b {
                             });
                         });
                     });
+                }
+                nts.uk.ui.block.clear();
             }
+
         }
 
         interface IDaiPerformanceFunDto {
             cid: string;
             comment: string;
-            isCompleteConfirmOneMonth: number;
-            isDisplayAgreementThirtySix: number;
-            isFixClearedContent: number;
-            isDisplayFlexWorker: number;
-            isUpdateBreak: number;
-            isSettingTimeBreak: number;
-            isDayBreak: number;
-            isSettingAutoTime: number;
-            isUpdateEarly: number;
-            isUpdateOvertime: number;
-            isUpdateOvertimeWithinLegal: number;
-            isFixContentAuto: number;
+            monthChkMsgAtr: number;
+            disp36Atr: number;
+            clearManuAtr: number;
+            flexDispAtr: number;
+            breakCalcUpdAtr: number;
+            breakTimeAutoAtr: number;
+            breakClrTimeAtr: number;
+            autoSetTimeAtr: number;
+            ealyCalcUpdAtr: number;
+            overtimeCalcUpdAtr: number;
+            lawOverCalcUpdAtr: number;
+            manualFixAutoSetAtr: number;
         }
 
         class DaiPerformanceFunDto {
             cid: KnockoutObservable<string>;
             comment: KnockoutObservable<string>;
-            isCompleteConfirmOneMonth: KnockoutObservable<number>;
-            isDisplayAgreementThirtySix: KnockoutObservable<number>;
-            isFixClearedContent: KnockoutObservable<number>;
-            isDisplayFlexWorker: KnockoutObservable<number>;
-            isUpdateBreak: KnockoutObservable<number>;
-            isSettingTimeBreak: KnockoutObservable<number>;
-            isDayBreak: KnockoutObservable<number>;
-            isSettingAutoTime: KnockoutObservable<number>;
-            isUpdateEarly: KnockoutObservable<number>;
-            isUpdateOvertime: KnockoutObservable<number>;
-            isUpdateOvertimeWithinLegal: KnockoutObservable<number>;
-            isFixContentAuto: KnockoutObservable<number>;
+            monthChkMsgAtr: KnockoutObservable<number>;
+            disp36Atr: KnockoutObservable<number>;
+            clearManuAtr: KnockoutObservable<number>;
+            flexDispAtr: KnockoutObservable<number>;
+            breakCalcUpdAtr: KnockoutObservable<number>;
+            breakTimeAutoAtr: KnockoutObservable<number>;
+
+            breakClrTimeAtr: KnockoutObservable<number>;
+
+            autoSetTimeAtr: KnockoutObservable<number>;
+
+            ealyCalcUpdAtr: KnockoutObservable<number>;
+
+            overtimeCalcUpdAtr: KnockoutObservable<number>;
+
+            lawOverCalcUpdAtr: KnockoutObservable<number>;
+
+            manualFixAutoSetAtr: KnockoutObservable<number>;
 
             constructor(param: IDaiPerformanceFunDto) {
                 let self = this;
                 self.cid = ko.observable(param.cid);
                 self.comment = ko.observable(param.comment);
-                self.isCompleteConfirmOneMonth = ko.observable(param.isCompleteConfirmOneMonth);
-                self.isDisplayAgreementThirtySix = ko.observable(param.isDisplayAgreementThirtySix);
-                self.isFixClearedContent = ko.observable(param.isFixClearedContent);
-                self.isDisplayFlexWorker = ko.observable(param.isDisplayFlexWorker);
-                self.isUpdateBreak = ko.observable(param.isUpdateBreak);
-                self.isSettingTimeBreak = ko.observable(param.isSettingTimeBreak);
-                self.isDayBreak = ko.observable(param.isDayBreak);
-                self.isSettingAutoTime = ko.observable(param.isSettingAutoTime);
-                self.isUpdateEarly = ko.observable(param.isUpdateEarly);
-                self.isUpdateOvertime = ko.observable(param.isUpdateOvertime);
-                self.isUpdateOvertimeWithinLegal = ko.observable(param.isUpdateOvertimeWithinLegal);
-                self.isFixContentAuto = ko.observable(param.isFixContentAuto);
+                self.monthChkMsgAtr = ko.observable(param.monthChkMsgAtr);
+                self.disp36Atr = ko.observable(param.disp36Atr);
+                self.clearManuAtr = ko.observable(param.clearManuAtr);
+                self.flexDispAtr = ko.observable(param.flexDispAtr);
+                self.breakCalcUpdAtr = ko.observable(param.breakCalcUpdAtr);
+                self.breakTimeAutoAtr = ko.observable(param.breakTimeAutoAtr);
+                self.breakClrTimeAtr = ko.observable(param.breakClrTimeAtr);
+                self.autoSetTimeAtr = ko.observable(param.autoSetTimeAtr);
+                self.ealyCalcUpdAtr = ko.observable(param.ealyCalcUpdAtr);
+                self.overtimeCalcUpdAtr = ko.observable(param.overtimeCalcUpdAtr);
+                self.lawOverCalcUpdAtr = ko.observable(param.lawOverCalcUpdAtr);
+                self.manualFixAutoSetAtr = ko.observable(param.manualFixAutoSetAtr);
             }
         }
 
         interface IMonPerformanceFunDto {
             cid: string;
             comment: string;
-            isConfirmDaily: number;
+            dailySelfChkDispAtr: number;
         }
         class MonPerformanceFunDto {
             cid: KnockoutObservable<string>;
             comment: KnockoutObservable<string>;
-            isConfirmDaily: KnockoutObservable<number>;
+            dailySelfChkDispAtr: KnockoutObservable<number>;
             constructor(param: IMonPerformanceFunDto) {
                 let self = this;
                 self.cid = ko.observable(param.cid);
                 self.comment = ko.observable(param.comment);
-                self.isConfirmDaily = ko.observable(param.isConfirmDaily);
+                self.dailySelfChkDispAtr = ko.observable(param.dailySelfChkDispAtr);
             }
         }
         interface IFormatPerformanceDto {

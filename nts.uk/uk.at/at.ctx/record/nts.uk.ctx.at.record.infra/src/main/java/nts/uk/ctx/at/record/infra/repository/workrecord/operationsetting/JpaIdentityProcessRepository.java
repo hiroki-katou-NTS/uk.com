@@ -43,8 +43,8 @@ public class JpaIdentityProcessRepository extends JpaRepository implements Ident
         if (null == updateIdentityProcess) {
             return;
         }
-        updateIdentityProcess.useConfirmByYourself = newIdentityProcess.useConfirmByYourself;
-        updateIdentityProcess.useIdentityOfMonth = newIdentityProcess.useIdentityOfMonth;
+        updateIdentityProcess.useDailySelfCk = newIdentityProcess.useDailySelfCk;
+        updateIdentityProcess.useMonthSelfCK = newIdentityProcess.useMonthSelfCK;
         updateIdentityProcess.yourselfConfirmError = newIdentityProcess.yourselfConfirmError;
         this.commandProxy().update(updateIdentityProcess);
     }

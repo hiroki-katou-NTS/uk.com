@@ -14,6 +14,10 @@
 			<com:scriptfile path="kdw006.b.vm.js" />
 			<com:scriptfile path="kdw006.b.service.js" />
 			
+			  <com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.operationsetting.Comment
+			</com:ValidatorScript>
+			
 			<com:EnumScript>
 				nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType
 			</com:EnumScript>
@@ -47,7 +51,7 @@
 						<div class="item-name">#{i18n.getText('KDW006_62')}</div>
 						<!-- B4_3 -->
 						<textarea id="comment-text" tabindex="4"
-							data-bind="ntsMultilineEditor: { name: '#[KDW006_28]',constraint: 'RegisterTotaltimeCheer',value: commentDaily }" />
+							data-bind="ntsMultilineEditor: { name: '#[KDW006_28]',constraint: 'Comment',value: commentDaily }" />
 					</div>
 					
 					<div id="comment">
@@ -55,7 +59,7 @@
                         <div class="item-name">#{i18n.getText('KDW006_63')}</div>
                         <!-- B4_5 -->
                         <textarea id="comment-text" tabindex="5"
-                            data-bind="ntsMultilineEditor: { name: '#[KDW006_28]',constraint: 'RegisterTotaltimeCheer',value: commentMonthly }" />
+                            data-bind="ntsMultilineEditor: { name: '#[KDW006_28]',constraint: 'Comment',value: commentMonthly }" />
                     </div>
 				</div>
 			</div>

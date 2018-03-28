@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_IDENTITY_PROCESS")
+@Table(name = "KRCMT_SELF_CHECK_SET")
 public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -33,18 +33,18 @@ public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
     public KrcmtIdentityProcessPk identityProcessPk;
     
     /**
-    * 本人確認を利用する
+    * 日の本人確認を利用する
     */
     @Basic(optional = false)
-    @Column(name = "USE_CONFIRM_BY_YOURSELF")
-    public int useConfirmByYourself;
+    @Column(name = "USE_DAILY_SELF_CHECK")
+    public int useDailySelfCk;
     
     /**
     * 月の本人確認を利用する
     */
     @Basic(optional = false)
-    @Column(name = "USE_IDENTITY_OF_MONTH")
-    public int useIdentityOfMonth;
+    @Column(name = "USE_MONTHLY_SELF_CHECK")
+    public int useMonthSelfCK;
     
     /**
     * エラーがある場合の本人確認
@@ -60,10 +60,15 @@ public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
     }
 
     public IdentityProcess toDomain() {
-        return new IdentityProcess(this.identityProcessPk.cid, this.useConfirmByYourself, this.useIdentityOfMonth, EnumAdaptor.valueOf(this.yourselfConfirmError, YourselfConfirmError.class));
+        return new IdentityProcess(this.identityProcessPk.cid, this.useDailySelfCk, 
+					        		this.useMonthSelfCK, 
+					        		EnumAdaptor.valueOf(this.yourselfConfirmError, YourselfConfirmError.class));
     }
     public static KrcmtIdentityProcess toEntity(IdentityProcess domain) {
-        return new KrcmtIdentityProcess(new KrcmtIdentityProcessPk(domain.getCid()), domain.getUseConfirmByYourself(), domain.getUseIdentityOfMonth(), domain.getYourselfConfirmError().value);
+        return new KrcmtIdentityProcess(new KrcmtIdentityProcessPk(domain.getCid()), 
+						        		domain.getUseDailySelfCk(),
+						        		domain.getUseMonthSelfCK(), 
+						        		domain.getYourselfConfirmError().value);
     }
 
 }
