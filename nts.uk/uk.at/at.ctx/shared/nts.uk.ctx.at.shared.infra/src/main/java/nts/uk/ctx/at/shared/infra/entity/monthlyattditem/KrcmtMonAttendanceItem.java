@@ -3,7 +3,7 @@
  * All right reserved.                                            *
  *****************************************************************/
 
-package nts.uk.ctx.at.record.infra.entity.monthlyattditem;
+package nts.uk.ctx.at.shared.infra.entity.monthlyattditem;
 
 import java.io.Serializable;
 

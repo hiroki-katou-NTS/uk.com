@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.infra.repository.monthlyattditem;
+package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemGetMemento;
-import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 
 /**
  * The Class JpaMonthlyAttendanceItemGetMemento.

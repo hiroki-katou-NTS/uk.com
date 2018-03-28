@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.infra.repository.monthlyattditem;
+package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
-import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK_;
-import nts.uk.ctx.at.record.infra.entity.monthlyattditem.KrcmtMonAttendanceItem_;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK_;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem_;
 
 /**
  * The Class JpaMonthlyAttendanceItemRepository.
