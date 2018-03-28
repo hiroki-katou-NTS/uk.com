@@ -38,7 +38,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
 	private final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
-			   + " AND c.endDate = :endDate"
+			   + " AND c.endDate = :endDate" 
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	private final String FIND_BY_BASEDATE = FIND_BY_WKPID

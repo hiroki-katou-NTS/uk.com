@@ -25,4 +25,12 @@ public interface OvertimeRepository {
 	public void delete(String companyID, String appID);
 	
 	public Optional<AppOverTime> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr);
+	/**
+	 * get Application Over Time and Frame
+	 * @author hoatt 
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public Optional<AppOverTime> getAppOvertimeFrame(String companyID, String appID);
 }

@@ -15,7 +15,7 @@ public interface ApprovalRootStateService {
 	
 	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String appID);
 	
-	public void delete(String rootStateID);
+	public void delete(String rootStateID); 
 	
 	/**
 	 * 対象者と期間から承認ルートインスタンスを取得する

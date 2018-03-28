@@ -135,4 +135,21 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 		resultList.sort(Comparator.comparing((AppOverTime x) -> {return x.getApplication().getInputDate();}).reversed());
 		return Optional.of(resultList.get(0));
 	}
+	/**
+	 * get Application Over Time and Frame
+	 * @author hoatt-new
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public Optional<AppOverTime> getAppOvertimeFrame(String companyID, String appID) {
+		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID), KrqdtAppOvertime.class);
+		if(!opKrqdtAppOvertime.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
+		return Optional.of(appOverTime);
+	}
 }
