@@ -5,8 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,8 +13,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -76,23 +72,23 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 
 		// Check domain StampReflectTimezone
 		// #Msg_520
-		List<StampReflectTimezone> listGoWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
-				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK)
-				.collect(Collectors.toList());
-		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
-				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
-				.collect(Collectors.toList());
-		if (!predetemineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo()) {
-			listGoWork = listGoWork.stream()
-				.filter(domain -> domain.getWorkNo().v() == 1)
-				.collect(Collectors.toList());
-			listLeaveWork = listLeaveWork.stream()
-					.filter(domain -> domain.getWorkNo().v() == 1)
-					.collect(Collectors.toList());
-		}
-		if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
-			be.addMessage("Msg_520");
-		}
+//		List<StampReflectTimezone> listGoWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
+//				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK)
+//				.collect(Collectors.toList());
+//		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
+//				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
+//				.collect(Collectors.toList());
+//		if (!predetemineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo()) {
+//			listGoWork = listGoWork.stream()
+//				.filter(domain -> domain.getWorkNo().v() == 1)
+//				.collect(Collectors.toList());
+//			listLeaveWork = listLeaveWork.stream()
+//					.filter(domain -> domain.getWorkNo().v() == 1)
+//					.collect(Collectors.toList());
+//		}
+//		if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
+//			be.addMessage("Msg_520");
+//		}
 		
 		// validate list stamp timezone
 		this.fixedStampReflectTimezonePolicy.validate(be, predetemineTimeSet, fixedWorkSetting);
@@ -130,22 +126,22 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	 *            the list timezone
 	 * @return true, if is overlap
 	 */
-	private boolean isOverlap(List<StampReflectTimezone> listTimezone) {
-		Collections.sort(listTimezone, Comparator.comparing(StampReflectTimezone::getStartTime));
-
-		for (int i = 0; i < listTimezone.size(); i++) {
-			StampReflectTimezone tz1 = listTimezone.get(i);
-			for (int j = i + 1; j < listTimezone.size(); j++) {
-				StampReflectTimezone tz2 = listTimezone.get(j);
-				// check overlap
-				if (!(tz1.getEndTime().lessThanOrEqualTo(tz2.getStartTime())
-						|| tz1.getStartTime().greaterThanOrEqualTo(tz2.getEndTime()))) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	private boolean isOverlap(List<StampReflectTimezone> listTimezone) {
+//		Collections.sort(listTimezone, Comparator.comparing(StampReflectTimezone::getStartTime));
+//
+//		for (int i = 0; i < listTimezone.size(); i++) {
+//			StampReflectTimezone tz1 = listTimezone.get(i);
+//			for (int j = i + 1; j < listTimezone.size(); j++) {
+//				StampReflectTimezone tz2 = listTimezone.get(j);
+//				// check overlap
+//				if (!(tz1.getEndTime().lessThanOrEqualTo(tz2.getStartTime())
+//						|| tz1.getStartTime().greaterThanOrEqualTo(tz2.getEndTime()))) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Validate half day work.
