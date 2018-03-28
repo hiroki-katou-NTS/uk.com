@@ -256,11 +256,9 @@ public class OverTimeOfMonthly {
 		
 		// 法定内残業にできる時間を計算する
 		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalOverTime = new AttendanceTime(0);
+		AttendanceTime canLegalOverTime = new AttendanceTime(8 * 60);
 		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
-		if (legalTimeOfDaily != null){
-			canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
-		}
+		canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
 		return canLegalOverTime;
 	}
 	
@@ -444,5 +442,15 @@ public class OverTimeOfMonthly {
 					aggregateOverTime.getTransferOverTime().getTime().v(),
 					aggregateOverTime.getTransferOverTime().getCalcTime().v());
 		}
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.totalOverTime.getTime().v() +
+				this.totalTransferOverTime.getTime().v());
 	}
 }

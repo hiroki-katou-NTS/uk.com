@@ -3,13 +3,16 @@ package nts.uk.ctx.at.record.dom.divergence.time.reason;
 /**
  * The Enum DivergenceInputRequired.
  */
+//乖離理由の入力必須区分
 public enum DivergenceInputRequired {
 
 	/** The Require. */
-	REQUIRE(0, "Enum_UseClassificationAtr_REQUIRE"),
+	//必須とする
+	REQUIRE(0, "必須とする"),
 
 	/** The Not require. */
-	NOT_REQUIRE(1, "Enum_UseClassificationAtr_NOT_REQUIRE");
+	//必須としない
+	NOT_REQUIRE(1, "必須としない");
 
 	/** The value. */
 	public final int value;
