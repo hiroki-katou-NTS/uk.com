@@ -65,15 +65,15 @@ module nts.uk.at.view.kmk013.h {
                 
                 
                 self.itemListH7_2 = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText('KMK013_297')),
-                    new BoxModel(1, nts.uk.resource.getText('KMK013_296'))
+                    new BoxModel(1, nts.uk.resource.getText('KMK013_296')),
+                    new BoxModel(0, nts.uk.resource.getText('KMK013_297'))
                 ]);
                 self.selectedIdH7_2 = ko.observable(0);
                 self.enableH7_2 = ko.observable(true);
                 
                 self.itemListH5_2 = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText('KMK013_288')),
-                    new BoxModel(1, nts.uk.resource.getText('KMK013_287'))
+                    new BoxModel(1, nts.uk.resource.getText('KMK013_287')),
+                    new BoxModel(0, nts.uk.resource.getText('KMK013_288'))
                 ]);
                 self.selectedIdH5_2 = ko.observable(0);
                 self.enableH5_2 = ko.observable(true);
