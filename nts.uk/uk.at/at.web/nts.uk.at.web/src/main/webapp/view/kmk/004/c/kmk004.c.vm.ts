@@ -106,7 +106,8 @@ module nts.uk.at.view.kmk004.c {
                     self.setAlreadySettingEmploymentList();
                     self.employmentWTSetting.selectedTab('tab-1');
                     
-                    
+                    ko.applyBindingsToNode($('#lblEmploymentCode')[0], { text: self.employmentCode });
+                    ko.applyBindingsToNode($('#lblEmploymentName')[0], { text: self.employmentName });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });

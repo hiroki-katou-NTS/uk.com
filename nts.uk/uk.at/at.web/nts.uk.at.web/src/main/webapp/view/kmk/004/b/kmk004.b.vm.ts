@@ -28,6 +28,9 @@ module nts.uk.at.view.kmk004.b {
             
             startMonth: KnockoutObservable<number>;
             
+            displayEmployeeCode: KnockoutObservable<string>;
+            displayEmployeeName: KnockoutObservable<string>;
+            
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -80,12 +83,31 @@ module nts.uk.at.view.kmk004.b {
                 
                 self.worktimeSetting = new WorktimeSettingVM.ScreenModel();
                 self.selectedEmployee = ko.observableArray([]);
+                self.selectedEmployeeCode = ko.observableArray([]);
+                self.alreadySettingPersonal = ko.observableArray([]);
+                
+                self.displayEmployeeCode = ko.observable('');
+                self.displayEmployeeName = ko.observable('');
                 
                 // initial ccg options
                 self.setDefaultCcg001Option();
                 
                 // Init component.
                 self.reloadCcg001();
+                
+                self.selectedEmployeeCode.subscribe(function(v){
+                    if (v.length > 0) {
+                        let code = v[0];
+                        let empt = _.find(self.selectedEmployee(), item => item.employeeCode == code);
+                        if (empt) {
+                            self.displayEmployeeCode(code);
+                            self.displayEmployeeName(empt.employeeName);
+                            return;
+                        }
+                    }
+                    self.displayEmployeeCode('');
+                    self.displayEmployeeName('');
+                });
             }
                 
             public startPage(): JQueryPromise<void> {
@@ -108,6 +130,26 @@ module nts.uk.at.view.kmk004.b {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
+            }
+            
+            public postBindingProcess(): void {
+                let self = this;
+                
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
+                    self.employeeList = ko.observableArray<UnitModel>([]);
+                    self.applyKCP005ContentSearch([]);
+                    // Load employee list component
+                    $('#list-employee').ntsListComponent(self.lstPersonComponentOption).done(function() {
+                        if(self.employeeList().length <= 0){
+                            $('#ccg001-btn-search-drawer').trigger('click');  
+                        }
+                        
+                        self.isLoading(false);
+                        
+                        ko.applyBindingsToNode($('#lblEmployeeCode')[0], { text: self.displayEmployeeCode });
+                        ko.applyBindingsToNode($('#lblEmployeeName')[0], { text: self.displayEmployeeName });
+                    });
+                });
             }
             
             /**
@@ -235,7 +277,6 @@ module nts.uk.at.view.kmk004.b {
                     maxWidth: 550,
                     maxRows: 15
                 };
-
             }
         } // --- end ScreenModel
         

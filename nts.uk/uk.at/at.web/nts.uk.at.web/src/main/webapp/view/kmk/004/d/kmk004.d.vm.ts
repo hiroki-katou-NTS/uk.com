@@ -105,6 +105,10 @@ module nts.uk.at.view.kmk004.d {
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                     self.workplaceWTSetting.selectedTab('tab-1');
+                    
+                    
+                    ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
+                    ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
                 })
             }
             
