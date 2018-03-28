@@ -11,7 +11,6 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
 
@@ -65,7 +64,7 @@ public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<
 				return new WorkTypeDivergenceReferenceTime(e);
 			} else {
 				Optional<WorkTypeDivergenceReferenceTime> oldDomain = this.itemRepo.findByKey(e.getHistoryId(),
-						new BusinessTypeCode(e.getWorkTypeCodes()), DivergenceType.valueOf(e.getDivergenceTimeNo()));
+						new BusinessTypeCode(e.getWorkTypeCodes()), e.getDivergenceTimeNo());
 				return oldDomain.get();
 			}
 		}).collect(Collectors.toList());

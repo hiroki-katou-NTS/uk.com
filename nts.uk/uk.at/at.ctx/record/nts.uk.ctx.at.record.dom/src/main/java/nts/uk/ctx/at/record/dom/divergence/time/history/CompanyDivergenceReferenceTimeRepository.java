@@ -4,8 +4,6 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
-
 /**
  * The Interface CompanyDivergenceReferenceTimeRepository.
  */
@@ -18,7 +16,7 @@ public interface CompanyDivergenceReferenceTimeRepository {
 	 * @param divergenceTimeNo the divergence time no
 	 * @return the optional of company divergence reference time
 	 */
-	Optional<CompanyDivergenceReferenceTime> findByKey(String histId, DivergenceType divergenceTimeNo);
+	Optional<CompanyDivergenceReferenceTime> findByKey(String histId, Integer divergenceTimeNo);
 	
 	/**
 	 * Find all.
