@@ -30,10 +30,10 @@
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
-					<div data-bind="ntsPanel:{width: '440px', height: '430px', showIcon: true, visible: true, direction: 'none'}">
+					<div data-bind="ntsPanel:{width: '340px', height: '430px', showIcon: true, visible: true, direction: 'none'}">
 						<div class="valign-center control-group cf">
 							<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_38')}</div>
-							<div class="pull-left" tabindex="8" style="width: 340px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
+							<div class="pull-left" tabindex="8" style="width: 240px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
 								items: listStandardImportSetting, selected: selectedStandardImportSettingCode, selectedKey: 'dispConditionSettingCode', fields: ['dispConditionSettingCode', 'dispConditionSettingName'], mode: 'igGrid'}" />		
 						</div>
 						<table id="B3_4" data-bind="ntsGridList: {
@@ -43,7 +43,7 @@
 								primaryKey: 'dispConditionSettingCode', 
 								columns: [
 					                { headerText: '#{i18n.getText('CMF001_41')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF001_42')}', key: 'dispConditionSettingName', width: 360, formatter: _.escape }
+					                { headerText: '#{i18n.getText('CMF001_42')}', key: 'dispConditionSettingName', width: 260, formatter: _.escape }
 					            ], 
 								multiple: false,
 								value: selectedStandardImportSettingCode
