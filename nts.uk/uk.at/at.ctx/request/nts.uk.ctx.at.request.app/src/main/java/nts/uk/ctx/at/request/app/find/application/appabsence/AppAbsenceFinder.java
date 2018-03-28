@@ -54,6 +54,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author loivt
+ *
+ */
 @Stateless
 public class AppAbsenceFinder {
 	
