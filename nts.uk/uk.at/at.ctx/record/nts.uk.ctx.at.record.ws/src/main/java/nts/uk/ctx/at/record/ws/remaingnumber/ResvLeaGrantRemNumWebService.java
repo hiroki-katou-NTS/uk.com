@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.ws.remaingnumber;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -14,6 +15,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
@@ -32,10 +35,19 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	@Inject
 	private UpdateResvLeaCommandHandler updateHandler;
 	
+	@Inject
+	private RemoveResvLeaCommandHandler removeHandler;
+	
 	@POST
-	@Path("get-resv-lea/{empId}")
-	public List<ResvLeaGrantRemNumDto> getAll(@PathParam("empId") String empId){
-		return getData();
+	@Path("get-resv-lea/{empId}/{isall}")
+	public List<ResvLeaGrantRemNumDto> getAll(@PathParam("empId") String empId, @PathParam("isall") boolean isAll){
+		if(!isAll){
+			return getData().stream().filter(x -> {
+				return x.getExpirationStatus() == 1;
+			}).collect(Collectors.toList());
+		}else{
+			return getData();
+		}
 	}
 	/*public List<AnnLeaGrantRemnNumDto> getAll() {
 		List<AnnLeaGrantRemnNumDto> datatest = new ArrayList<>();
@@ -60,23 +72,32 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 		return datatest;
 	}*/
 	@POST
-	@Path("get-resv-lea-by-id")
-	public ResvLeaGrantRemNumDto getById(String id){
+	@Path("get-resv-lea-by-id/{itemId}")
+	public ResvLeaGrantRemNumDto getById(@PathParam("itemId")String itemId){
 		Optional<ResvLeaGrantRemNumDto> value =  getData().stream().filter(x -> {
-			return x.getId().equals(id);
+			return x.getId().equals(itemId);
 		}).findFirst();
 		return value.isPresent() ? value.get() : null;
 	}
 	@POST
 	@Path("add")
 	public void add(AddResvLeaRemainCommand command) {
-		addHandler.handle(command);
+		System.out.println(command);
+		//addHandler.handle(command);
 	}
 	
 	@POST
 	@Path("update")
 	public void update(UpdateResvLeaRemainCommand command) {
-		updateHandler.handle(command);
+		System.out.println(command);
+		//updateHandler.handle(command);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(RemoveResvLeaRemainCommand command) {
+		System.out.println(command);
+		//removeHandler.handle(command);
 	}
 	
 	private List<ResvLeaGrantRemNumDto> getData(){

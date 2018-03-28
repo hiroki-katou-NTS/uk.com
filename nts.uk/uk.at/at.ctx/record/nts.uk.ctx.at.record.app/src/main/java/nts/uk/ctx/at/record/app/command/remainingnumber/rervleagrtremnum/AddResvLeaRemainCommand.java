@@ -1,13 +1,14 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.shr.pereg.app.PeregItem;
 
 @Getter
 public class AddResvLeaRemainCommand {
 	
+	@Setter
 	protected String employeeId;
 	
 	/**
@@ -26,7 +27,7 @@ public class AddResvLeaRemainCommand {
 	 * 積立年休期限切れ状態
 	 */
 	@PeregItem("IS00400")
-	protected LeaveExpirationStatus expirationStatus;
+	protected int expirationStatus;
 
 	/**
 	 * 付与数
