@@ -11,7 +11,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -158,11 +158,11 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				);
 	}
 	
-	private Integer getCalcTime(TimeWithCalculation calc){
+	private Integer getCalcTime(TimeDivergenceWithCalculation calc){
 		return calc == null || calc.getCalcTime() == null ? null : calc.getCalcTime().valueAsMinutes();
 	}
 
-	private Integer getCalcTime(Finally<TimeWithCalculation> calc){
+	private Integer getCalcTime(Finally<TimeDivergenceWithCalculation> calc){
 		return !calc.isPresent() || calc == null || calc.get().getCalcTime() == null ? null : calc.get().getCalcTime().valueAsMinutes();
 	}
 }
