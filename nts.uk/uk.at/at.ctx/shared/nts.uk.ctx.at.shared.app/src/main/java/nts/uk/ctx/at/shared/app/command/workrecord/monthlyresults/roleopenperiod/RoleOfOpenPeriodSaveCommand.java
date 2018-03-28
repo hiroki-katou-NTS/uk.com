@@ -5,7 +5,6 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.Breakou
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodGetMemento;
 
-// TODO: Auto-generated Javadoc
 /**
  * Instantiates a new role of open period save command.
  */
