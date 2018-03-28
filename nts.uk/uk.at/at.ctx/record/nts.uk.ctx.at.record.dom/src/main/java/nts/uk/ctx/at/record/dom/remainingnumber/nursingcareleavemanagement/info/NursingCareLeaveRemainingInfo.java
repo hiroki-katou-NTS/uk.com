@@ -20,10 +20,21 @@ import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.basic
 @AllArgsConstructor
 @NoArgsConstructor
 public class NursingCareLeaveRemainingInfo extends AggregateRoot{
+	
+	//社員ID
 	private String sId;
+	
 	private LeaveType leaveType;
-	private UpperLimitSetting upperlimitSetting;
+	
+	//使用区分
 	private boolean useClassification;
+	
+	//上限設定
+	private UpperLimitSetting upperlimitSetting;	
+	
+	//本年度上限日数
 	private Optional<Integer> maxDayForThisFiscalYear;
+	
+	//次年度上限日数
 	private Optional<Integer> maxDayForNextFiscalYear;
 }

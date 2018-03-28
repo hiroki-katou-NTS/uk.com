@@ -13,18 +13,65 @@ import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 @Getter
 @Setter
 public class PersonInfoItemDefinition extends AggregateRoot {
+	
+	/**
+	 * 個人情報項目定義ID
+	 */
 	private String perInfoItemDefId;
+	
+	/**
+	 * 個人情報カテゴリID
+	 */
 	private String perInfoCategoryId;
-	private ItemCode itemCode;
-
+	
+	/**
+	 * ???
+	 */
 	private ItemCode itemParentCode;
+	
+	/**
+	 * 項目コード
+	 */
+	private ItemCode itemCode;
+	
+	/**
+	 * 項目名
+	 */
 	private ItemName itemName;
+
+	/**
+	 * 廃止区分
+	 */
 	private IsAbolition isAbolition;
+	
+	/**
+	 * 既定区分
+	 */
 	private IsFixed isFixed;
+	
+	/**
+	 * 必須区分
+	 */
 	private IsRequired isRequired;
+	
+	/**
+	 * システム必須
+	 */
 	private SystemRequired systemRequired;
+	
+	/**
+	 * 必須切替可能
+	 */
 	private RequireChangable requireChangable;
+	
+	/**
+	 * 種類
+	 */
 	private ItemTypeState itemTypeState;
+	
+	/**
+	 * ???
+	 */
 	private BigDecimal selectionItemRefType;
 
 	public static String ROOT_CONTRACT_CODE = "000000000000";
@@ -151,10 +198,11 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemName);
 	}
 
-	public static PersonInfoItemDefinition createFromEntityWithCodeAndName(String itemCode, String itemName) {
+	public static PersonInfoItemDefinition createFromEntityWithCodeAndName(String itemCode, String itemName, int abolitionAtr) {
 		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
 		item.setItemCode(new ItemCode(itemCode));
 		item.setItemName(itemName);
+		item.setIsAbolition(EnumAdaptor.valueOf(abolitionAtr, IsAbolition.class));;
 		return item;
 	}
 

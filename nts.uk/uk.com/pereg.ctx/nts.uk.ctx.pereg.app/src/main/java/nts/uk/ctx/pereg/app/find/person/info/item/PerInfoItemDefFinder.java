@@ -1,56 +1,35 @@
 package nts.uk.ctx.pereg.app.find.person.info.item;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.math.*;
+import java.util.*;
+import java.util.stream.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
-import nts.arc.time.GeneralDate;
+import nts.arc.enums.*;
+import nts.arc.time.*;
 import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
-import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
-import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
-import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
-import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
-import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
-import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
-import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
-import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
-import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
-import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemDataType;
-import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemType;
-import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
-import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
-import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
-import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.*;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.*;
+import nts.uk.ctx.pereg.dom.person.info.category.*;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.*;
+import nts.uk.ctx.pereg.dom.person.info.item.*;
+import nts.uk.ctx.pereg.dom.person.info.numericitem.*;
+import nts.uk.ctx.pereg.dom.person.info.order.*;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.*;
+import nts.uk.ctx.pereg.dom.person.info.setitem.*;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.*;
+import nts.uk.ctx.pereg.dom.person.info.stringitem.*;
+import nts.uk.ctx.pereg.dom.person.info.timeitem.*;
+import nts.uk.ctx.pereg.dom.person.info.timepointitem.*;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.*;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.*;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.*;
+import nts.uk.ctx.pereg.dom.roles.auth.item.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -89,7 +68,7 @@ public class PerInfoItemDefFinder {
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId, int personEmployeeType) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
-				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
 				.map(item -> {
 					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
@@ -278,6 +257,7 @@ public class PerInfoItemDefFinder {
 	// test bug hieu nang.
 	public List<PerInfoItemDefDto> getPerInfoItemDefByIds(List<String> lstItemDefId) {
 		String ccd = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
 		List<String> idsChild = new ArrayList<>();
 		List<String> idsChildInChild = new ArrayList<>();
 		List<PersonInfoItemDefinition> itemDfChild = new ArrayList<>();
@@ -290,18 +270,32 @@ public class PerInfoItemDefFinder {
 			PerInfoItemDefDto perItemDefdto = mappingFromDomaintoDto(i, dispOrder);
 
 			ItemTypeStateDto typeState = perItemDefdto.getItemTypeState();
-			int itemType = typeState.getItemType();
+			if (typeState != null) {
+				int itemType = typeState.getItemType();
 
-			if (itemType == 1 && ((SetItemDto) typeState).getItems() != null) {
-				idsChild.addAll(((SetItemDto) perItemDefdto.getItemTypeState()).getItems());
-			} else if (itemType == 3 && ((SetTableItemDto) typeState).getItems() != null) {
-				idsChild.addAll(((SetTableItemDto) perItemDefdto.getItemTypeState()).getItems());
+				if (itemType == 1 && typeState instanceof SetItemDto) {
+					SetItemDto _typeState = (SetItemDto) typeState;
+
+					idsChild.addAll(_typeState.getItems());
+				} else if (itemType == 2 && typeState instanceof SingleItemDto) {
+					SingleItemDto _typeState = (SingleItemDto) typeState;
+					if (_typeState.getDataTypeState() instanceof RelatedCategoryDto) {
+						RelatedCategoryDto relateDto = (RelatedCategoryDto) _typeState.getDataTypeState();
+
+						idsChild.addAll(this.pernfoItemDefRep.getAllItemIdsByCtgCode(companyId, relateDto.getRelatedCtgCode()));
+					}
+				} else if (itemType == 3 && typeState instanceof SetTableItemDto) {
+					SetTableItemDto _typeState = (SetTableItemDto) typeState;
+
+					idsChild.addAll(_typeState.getItems());
+				}
 			}
 
 			return perItemDefdto;
 		}).collect(Collectors.toList());
 
-		if (!idsChild.isEmpty()) {
+		if (!idsChild.isEmpty())
+		{
 			itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild,
 					AppContexts.user().contractCode());
 
@@ -580,11 +574,16 @@ public class PerInfoItemDefFinder {
 	}
 	// lanlt end
 
+	/**
+	 * 
+	 * @param ctgCd
+	 * @return
+	 */
 	public List<SimpleItemDef> getSingpleItemDef(String ctgCd) {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getPerInfoItemByCtgCd(ctgCd,
 				AppContexts.user().companyId());
 
-		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), true))
+		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), x.getIsAbolition() == IsAbolition.NOT_ABOLITION))
 				.collect(Collectors.toList());
 	}
 }
