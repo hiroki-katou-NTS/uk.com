@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
+package nts.uk.ctx.at.record.dom.workinformation;
 
 import lombok.Builder;
 import lombok.Getter;
