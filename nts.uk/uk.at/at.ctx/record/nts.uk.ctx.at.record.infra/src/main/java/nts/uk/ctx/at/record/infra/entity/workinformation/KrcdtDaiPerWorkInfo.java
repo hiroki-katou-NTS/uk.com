@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -86,6 +87,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 				EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
 				EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class), this.krcdtDaiPerWorkInfoPK.ymd,
+				EnumAdaptor.valueOf(this.dayOfWeek, DayOfWeek.class),
 				KrcdtWorkScheduleTime.toDomain(scheduleTimes));
 		return domain;
 	}
