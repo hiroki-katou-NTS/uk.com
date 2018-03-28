@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 
 /**
  * The Class ComStatWorkTimeSetDto.
@@ -26,9 +27,9 @@ public class ComStatWorkTimeSetDto {
 	private ComNormalSettingDto normalSetting;
 
 	/** The regular labor time. */
-	private ComRegularLaborTimeDto regularLaborTime;
+	private WorkingTimeSettingDto regularLaborTime;
 
 	/** The trans labor time. */
-	private ComTransLaborTimeDto transLaborTime;
+	private WorkingTimeSettingDto transLaborTime;
 
 }
