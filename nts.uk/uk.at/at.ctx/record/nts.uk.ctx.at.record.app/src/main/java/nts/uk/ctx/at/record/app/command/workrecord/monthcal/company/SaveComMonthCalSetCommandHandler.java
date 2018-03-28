@@ -48,31 +48,25 @@ public class SaveComMonthCalSetCommandHandler extends CommandHandler<SaveComMont
 	protected void handle(CommandHandlerContext<SaveComMonthCalSetCommand> context) {
 		String cid = AppContexts.user().companyId();
 
-		ComDeforLaborMonthActCalSet comDeforLaborMonthActCalSet = new ComDeforLaborMonthActCalSet(
-				context.getCommand());
-		ComFlexMonthActCalSet comFlexMonthActCalSet = new ComFlexMonthActCalSet(
-				context.getCommand());
-		ComRegulaMonthActCalSet comRegulaMonthActCalSet = new ComRegulaMonthActCalSet(
-				context.getCommand());
+		ComDeforLaborMonthActCalSet comDeforLaborMonthActCalSet = new ComDeforLaborMonthActCalSet(context.getCommand());
+		ComFlexMonthActCalSet comFlexMonthActCalSet = new ComFlexMonthActCalSet(context.getCommand());
+		ComRegulaMonthActCalSet comRegulaMonthActCalSet = new ComRegulaMonthActCalSet(context.getCommand());
 
-		Optional<ComDeforLaborMonthActCalSet> optComDeforLaborMonthActCalSet = comDeforLaborMonthActCalSetRepo
-				.find(cid);
+		Optional<ComDeforLaborMonthActCalSet> optComDeforLaborMonthActCalSet = comDeforLaborMonthActCalSetRepo.find(cid);
 		if (optComDeforLaborMonthActCalSet.isPresent()) {
 			comDeforLaborMonthActCalSetRepo.update(comDeforLaborMonthActCalSet);
 		} else {
 			comDeforLaborMonthActCalSetRepo.add(comDeforLaborMonthActCalSet);
 		}
 
-		Optional<ComFlexMonthActCalSet> optComFlexMonthActCalSet = comFlexMonthActCalSetRepo
-				.find(cid);
+		Optional<ComFlexMonthActCalSet> optComFlexMonthActCalSet = comFlexMonthActCalSetRepo.find(cid);
 		if (optComFlexMonthActCalSet.isPresent()) {
 			comFlexMonthActCalSetRepo.update(comFlexMonthActCalSet);
 		} else {
 			comFlexMonthActCalSetRepo.add(comFlexMonthActCalSet);
 		}
 
-		Optional<ComRegulaMonthActCalSet> optComRegulaMonthActCalSet = comRegulaMonthActCalSetRepo
-				.find(cid);
+		Optional<ComRegulaMonthActCalSet> optComRegulaMonthActCalSet = comRegulaMonthActCalSetRepo.find(cid);
 		if (optComRegulaMonthActCalSet.isPresent()) {
 			comRegulaMonthActCalSetRepo.update(comRegulaMonthActCalSet);
 		} else {
