@@ -4,7 +4,8 @@ module nts.uk.at.view.kmk004.b {
          *  Service paths
          */
     var servicePath: any = {
-        // TODO: path of Employee AlreadySetting (get all Domain "社員別通常勤務労働時間")
+        //Employee AlreadySetting (get all Domain "社員別通常勤務労働時間")
+        findAlreadySetting: 'screen/at/kmk004/employee/findAll',
 
         findEmployeeSetting: 'screen/at/kmk004/employee/getDetails',
         saveEmployeeSetting: 'screen/at/kmk004/employee/save',
@@ -22,5 +23,10 @@ module nts.uk.at.view.kmk004.b {
         
         export function saveCompanySetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveEmployeeSetting, command);
+        }
+    
+    // Find AlreadySetting for component
+        export function findAlreadySetting(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findAlreadySetting);
         }
 }
