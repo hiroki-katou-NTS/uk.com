@@ -7,9 +7,9 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemain;
-import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
@@ -18,10 +18,7 @@ public class AddOtherHolidayInfoCommandHandler extends CommandHandlerWithResult<
 implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 
 	@Inject
-	private PublicHolidayRemainRepository publicHolidayRemainRepository;
-	
-	@Inject 
-	private ExcessLeaveInfoRepository excessLeaveInfoRepository;
+	private OtherHolidayInfoService otherHolidayInfoService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -36,13 +33,12 @@ implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
+		String cid = AppContexts.user().companyId();
 		
-		PublicHolidayRemain pubHD = new PublicHolidayRemain(command.getEmployeeId(), command.getPubHdremainNumber());
-		publicHolidayRemainRepository.add(pubHD);
-		
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
-		excessLeaveInfoRepository.add(exLeav);
-		
+		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
+		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
+		otherHolidayInfoService.addOtherHolidayInfo(cid, pubHD, exLeav,command.getRemainNumber(),command.getRemainsLeft());
+
 		return new PeregAddCommandResult(command.getEmployeeId());
 	}
 

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemain;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
@@ -35,10 +36,11 @@ implements PeregUpdateCommandHandler<AddOtherHolidayInfoCommand> {
 	@Override
 	protected void handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
-		PublicHolidayRemain pubHD = new PublicHolidayRemain(command.getEmployeeId(), command.getPubHdremainNumber());
+		String cid = AppContexts.user().companyId();
+		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
 		publicHolidayRemainRepository.update(pubHD);
 		
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
+		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
 		excessLeaveInfoRepository.update(exLeav);
 	}
 
