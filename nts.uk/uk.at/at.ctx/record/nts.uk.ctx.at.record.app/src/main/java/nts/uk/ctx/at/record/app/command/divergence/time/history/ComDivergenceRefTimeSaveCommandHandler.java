@@ -44,7 +44,7 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 					// show error list
 					exceptions.throwExceptions();
 				} else if(item.getAlarmTime() != null && item.getErrorTime() != null) {
-					if(item.getAlarmTime() > item.getErrorTime()){
+					if(item.getAlarmTime() >= item.getErrorTime()){
 						exceptions.addMessage("Msg_82");
 						// show error list
 						exceptions.throwExceptions();
