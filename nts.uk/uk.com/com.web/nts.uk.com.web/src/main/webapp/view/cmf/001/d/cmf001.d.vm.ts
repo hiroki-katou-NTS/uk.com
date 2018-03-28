@@ -569,7 +569,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     });
                     self.listMappingData(_rsList);
                     refreshListAcceptItem();
-                }).fail(function(err) {
+                }).fail(function(error) {
                     //Clear "CSV data item name" and "sample data" on the screen
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
                         self.listAcceptItem()[i].csvItemNumber(null);
@@ -583,7 +583,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                     self.listMappingData([]);
                     self.fileId(null);
-                    nts.uk.ui.dialog.bundledErrors(err); 
+                    alertError(error);
                 }).always(() => {
                     block.clear();
                 });
