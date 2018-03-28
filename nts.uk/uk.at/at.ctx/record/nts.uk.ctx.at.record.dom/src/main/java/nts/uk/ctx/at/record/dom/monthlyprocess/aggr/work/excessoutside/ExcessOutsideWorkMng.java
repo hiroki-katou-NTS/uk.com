@@ -239,7 +239,7 @@ public class ExcessOutsideWorkMng {
 		val regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
 		val flexTime = new FlexTimeOfMonthly();
 		val aggregateTotalWorkingTime = new AggregateTotalWorkingTime();
-		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getTotalWorkingTime());
+		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getAggregateTime());
 		AggregateMonthlyValue aggrValue = null;
 		
 		// 労働制を確認する
@@ -311,7 +311,7 @@ public class ExcessOutsideWorkMng {
 		val regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
 		val flexTime = new FlexTimeOfMonthly();
 		val aggregateTotalWorkingTime = new AggregateTotalWorkingTime();
-		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getTotalWorkingTime());
+		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getAggregateTime());
 		AggregateMonthlyValue aggrValue = null;
 		
 		// 労働制を確認する
@@ -740,7 +740,7 @@ public class ExcessOutsideWorkMng {
 					// 就業時間＋変形期間繰越時間を実績累計に加算する
 					for (val attendanceTime : attendanceTimes){
 						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-						val workTime = monthlyCalculation.getTotalWorkingTime().getWorkTime();
+						val workTime = monthlyCalculation.getAggregateTime().getWorkTime();
 						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
 						val irgPeriodCryfwdMinutes = irregTime.getIrregularPeriodCarryforwardTime().v();
 						totalRecordMinutes += workTime.getWorkTime().v();
