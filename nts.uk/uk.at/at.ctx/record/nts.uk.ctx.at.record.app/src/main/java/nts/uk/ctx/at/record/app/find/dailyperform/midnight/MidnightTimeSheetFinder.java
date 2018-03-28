@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.midnight;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,8 +24,24 @@ public class MidnightTimeSheetFinder {
 	 * 
 	 * @return
 	 */
-	public List<MidNightTimeSheet> findAllMidnightTimeSheet() {
+	public List<MidnightTimeSheetDto> findAllMidnightTimeSheet() {
 		String companyId = AppContexts.user().companyId();
-		return repo.findByCompanyId(companyId);
+		return repo.findByCompanyId(companyId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
+	}
+	
+	private MidnightTimeSheetDto convertToDbType(MidNightTimeSheet midNightTimeSheet) {
+
+		MidnightTimeSheetDto midnightTimeSheetDto = new MidnightTimeSheetDto();
+		midnightTimeSheetDto.setEndTime(midNightTimeSheet.getEnd().v());
+		midnightTimeSheetDto.setStartTime(midNightTimeSheet.getStart().v());
+
+		return midnightTimeSheetDto;
+	}
+	
+	public MidnightTimeSheetDto findByCid(){
+		String companyId = AppContexts.user().companyId();
+		return convertToDbType(repo.findByCId(companyId).get());
 	}
 }

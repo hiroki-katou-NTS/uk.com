@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.midnight.MidnightTimeSheetCommand;
 import nts.uk.ctx.at.record.app.command.midnight.MidnightTimeSheetCommandHandler;
+import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetFinder;
-import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 
 /**
  * @author yennh
@@ -27,7 +27,7 @@ public class MidNightTimeSheetWebService extends WebService {
 	
 	@Path("find")
 	@POST
-	public List<MidNightTimeSheet> findByCid() {
+	public List<MidnightTimeSheetDto> findByCid() {
 		return finder.findAllMidnightTimeSheet();
 	}
 	
@@ -42,4 +42,4 @@ public class MidNightTimeSheetWebService extends WebService {
 	public void update(MidnightTimeSheetCommand command) {
 		this.handler.handle(command);
 	}
-}
+} 
