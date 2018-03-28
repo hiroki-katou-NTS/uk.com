@@ -56,6 +56,13 @@ public class JpaComRegulaMonthActCalSetSetMemento implements ComRegulaMonthActCa
 				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getLegalHoliday()));
 		this.typeValue.setIncludeExtraAggr(
 				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getAggregateTimeSet().getSurchargeWeekMonth()));
+		
+		this.typeValue.setIncludeLegalOt(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getExcessOutsideTimeSet().getLegalOverTimeWork()));
+		this.typeValue.setIncludeHolidayOt(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getExcessOutsideTimeSet().getLegalHoliday()));
+		this.typeValue.setIncludeExtraOt(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfRegNew.getExcessOutsideTimeSet().getSurchargeWeekMonth()));
 
 	}
 
