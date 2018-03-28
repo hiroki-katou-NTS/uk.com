@@ -10,4 +10,11 @@ public interface RecruitmentAppRepository {
 	public void update(RecruitmentApp recApp);
 
 	public void remove(String appID);
+	/**
+	 * find RecruitmentApp By AppId
+	 * @author hoatt
+	 * @param appId
+	 * @return
+	 */
+	public Optional<RecruitmentApp> findByAppId(String appId);
 }

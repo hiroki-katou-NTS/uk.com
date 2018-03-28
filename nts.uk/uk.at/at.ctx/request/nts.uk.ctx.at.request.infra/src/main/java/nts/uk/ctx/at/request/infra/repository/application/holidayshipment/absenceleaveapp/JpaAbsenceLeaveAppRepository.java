@@ -125,4 +125,29 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	}
 
+	/**
+	 * find AbsenceLeaveApp By AppId
+	 * @author hoatt
+	 * @param applicationID
+	 * @return
+	 */
+	@Override
+	public Optional<AbsenceLeaveApp> findByAppId(String applicationID) {
+		return this.queryProxy().find(applicationID, KrqdtAbsenceLeaveApp.class).map(x -> toDomainMain(x));
+	}
+	/**
+	 * convert entity to domain
+	 * @author hoatt
+	 * @param entity
+	 * @return
+	 */
+	private AbsenceLeaveApp toDomainMain(KrqdtAbsenceLeaveApp entity) {
+		AbsenceLeaveWorkingHour WorkTime1 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime1()),
+				new WorkTime(entity.getEndWorkTime1()));
+		AbsenceLeaveWorkingHour WorkTime2 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime2()),
+				new WorkTime(entity.getEndWorkTime2()));
+		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTimeCD(),
+				EnumAdaptor.valueOf(entity.getChangeWorkHoursAtr(), NotUseAtr.class),
+				new WorkTimeCode(entity.getWorkTimeCD()), WorkTime1, WorkTime2, null, null);
+	}
 }

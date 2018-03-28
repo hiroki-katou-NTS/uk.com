@@ -12,4 +12,11 @@ public interface CompltLeaveSimMngRepository {
 	public void remove(String absAppID, String recAppID);
 
 	public void update(CompltLeaveSimMng compltLeaveSimMng);
+	/**
+	 * find CompltLeaveSimMng By AppId
+	 * @author hoatt
+	 * @param appId
+	 * @return
+	 */
+	public Optional<CompltLeaveSimMng> findByAppId(String appId);
 }

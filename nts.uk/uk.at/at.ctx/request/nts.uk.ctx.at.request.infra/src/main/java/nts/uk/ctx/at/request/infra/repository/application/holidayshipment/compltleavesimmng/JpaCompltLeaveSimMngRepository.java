@@ -22,6 +22,9 @@ public class JpaCompltLeaveSimMngRepository extends JpaRepository implements Com
 	private static final String FIND_ALL = "SELECT m FROM KrqdtCompltLeaveSimMana m";
 	private static final String FIND_BY_REC_APP_ID = FIND_ALL + " WHERE m.pk.recAppID=:recAppID ";
 	private static final String FIND_BY_ABS_APP_ID = FIND_ALL + " WHERE m.pk.absenceLeaveAppID=:absenceLeaveAppID ";
+	private static final String FIND_BY_APPID = FIND_ALL 
+			+ " WHERE (m.pk.recAppID = :appId or m.pk.absenceLeaveAppID = :appId)"
+			+ " AND m.syncing = 1";
 
 	@Override
 	public void insert(CompltLeaveSimMng domain) {
@@ -65,6 +68,18 @@ public class JpaCompltLeaveSimMngRepository extends JpaRepository implements Com
 	public void update(CompltLeaveSimMng compltLeaveSimMng) {
 		this.commandProxy().update(toEntity(compltLeaveSimMng));
 
+	}
+
+	/**
+	 * find CompltLeaveSimMng By AppId
+	 * @author hoatt
+	 * @param appId
+	 * @return
+	 */
+	@Override
+	public Optional<CompltLeaveSimMng> findByAppId(String appId) {
+		return this.queryProxy().query(FIND_BY_APPID, KrqdtCompltLeaveSimMana.class)
+				.setParameter("appId", appId).getSingle().map(x -> toDomain(x));
 	}
 
 }
