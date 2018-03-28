@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityDto;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityFinder;
 
-@Path("at/shared/scherec/dailyattditem")
+@Path("at/shared/scherec/dailyattditem/auth")
 @Produces("application/json")
 public class DailyAttendanceItemAuthorityWS {
 

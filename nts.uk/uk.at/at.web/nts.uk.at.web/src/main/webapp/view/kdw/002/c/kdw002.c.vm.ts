@@ -30,10 +30,11 @@ module nts.uk.at.view.kdw002.c {
                     self.currentRoleId(roleId);
                     _.defer(() => nts.uk.ui.block.invisible());
                     
-                    let dfdGetAttendanceItems = self.getAttendanceItems();
+                    //let dfdGetAttendanceItems = self.getAttendanceItems();
                     let dfdGetDailyServiceTypeControl = self.getDailyAttdItemByRoleID(roleId);
+                    let dfdGetListDailyAttdItem = self.getListDailyAttdItem();
                     
-                    $.when(dfdGetAttendanceItems,dfdGetDailyServiceTypeControl).done(
+                    $.when(dfdGetListDailyAttdItem,dfdGetDailyServiceTypeControl).done(
                         (DailyServiceTypeControls, attendanceItems) => {
                             $('#useCheckAll').prop('checked', false);
                             $('#youCanCheckAll').prop('checked', false);
@@ -103,20 +104,20 @@ module nts.uk.at.view.kdw002.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.getAttendanceItems();
+                //self.getAttendanceItems();
                 dfd.resolve();
                 return dfd.promise();
             }
             
-            getAttendanceItems(){
-                let self = this;
-                let dfd = $.Deferred();
-                service.getAttendanceItems().done(function(data){
-                    self.listAttdItem = data;
-                    dfd.resolve();        
-                });
-                return dfd.promise();
-            }
+//            getAttendanceItems(){
+//                let self = this;
+//                let dfd = $.Deferred();
+//                service.getAttendanceItems().done(function(data){
+//                    self.listAttdItem = data;
+//                    dfd.resolve();        
+//                });
+//                return dfd.promise();
+//            }
             
             getDailyAttdItemByRoleID(roleID:string){
                 let self = this;
@@ -126,6 +127,14 @@ module nts.uk.at.view.kdw002.c {
                     dfd.resolve();        
                 });
                 return dfd.promise();    
+            }
+            getListDailyAttdItem(){
+            let self = this;
+                let dfd = $.Deferred();
+                service.getListDailyAttdItem().done(function(data){
+                    dfd.resolve();    
+                });    
+                return dfd.promise();
             }
 
             submitData(): void {
