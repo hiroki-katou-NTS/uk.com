@@ -61,34 +61,34 @@ public class DivergenceAttendanceItemFinder {
 		//cases for screenUseAtr
 		switch (divType) {
 		case 0:
-			screenUseAtr = ScreenUseAtr.ARBITRARYDIVERGENCETIME.value;
+			screenUseAtr = ScreenUseAtr.ARBITRARY_DIVERGENCE_TIME.value;
 			break;
 		case 1:
-			screenUseAtr = ScreenUseAtr.HOLIDAYSDEPARTURETIME.value;
+			screenUseAtr = ScreenUseAtr.HOLIDAYS_DEPARTURE_TIME.value;
 			break;
 		case 2:
-			screenUseAtr = ScreenUseAtr.ENTRYDIVERGENCETIME.value;
+			screenUseAtr = ScreenUseAtr.ENTRY_DIVERGENCE_TIME.value;
 			break;
 		case 3:
-			screenUseAtr = ScreenUseAtr.EVACUATIONDEPARTURETIMR.value;
+			screenUseAtr = ScreenUseAtr.EVACUATION_DEPARTURE_TIMR.value;
 			break;
 		case 4:
-			screenUseAtr = ScreenUseAtr.PCLOGONDIVERGENCETIME.value;
+			screenUseAtr = ScreenUseAtr.PCLOGON_DIVERGENCE_TIME.value;
 			break;
 		case 5:
-			screenUseAtr = ScreenUseAtr.PCLOGOFFDIVERGENCETIME.value;
+			screenUseAtr = ScreenUseAtr.PCLOGOFF_DIVERGENCE_TIME.value;
 			break;
 		case 6:
-			screenUseAtr = ScreenUseAtr.PREDETERMINEDBREAKTIMEDIVERGENCE.value;
+			screenUseAtr = ScreenUseAtr.PREDETERMINED_BREAK_TIME_DIVERGENCE.value;
 			break;
 		case 7:
-			screenUseAtr = ScreenUseAtr.NONSCHEDULEDDIVERGENCETIME.value;
+			screenUseAtr = ScreenUseAtr.NON_SCHEDULED_DIVERGENCE_TIME.value;
 			break;
 		case 8:
-			screenUseAtr = ScreenUseAtr.PREMATUREOVERTIMEDEPARTURETIME.value;
+			screenUseAtr = ScreenUseAtr.PREMATURE_OVERTIME_DEPARTURE_TIME.value;
 			break;
 		case 9:
-			screenUseAtr = ScreenUseAtr.NORMALOVERTIMEDEVIATIONTIME.value;
+			screenUseAtr = ScreenUseAtr.NORMAL_OVERTIME_DEVIATION_TIME.value;
 			break;
 		default:
 			break;
