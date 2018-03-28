@@ -282,7 +282,11 @@ public class PerInfoItemDefFinder {
 					if (_typeState.getDataTypeState() instanceof RelatedCategoryDto) {
 						RelatedCategoryDto relateDto = (RelatedCategoryDto) _typeState.getDataTypeState();
 
-						idsChild.addAll(this.pernfoItemDefRep.getAllItemIdsByCtgCode(companyId, relateDto.getRelatedCtgCode()));
+						idsChild.addAll(
+								this.pernfoItemDefRep.getAllItemIdsByCtgCode(companyId, relateDto.getRelatedCtgCode()));
+
+						// change code to id
+						relateDto.setRelatedCtgCode(perInfoCtgRep.getCatId(companyId,  relateDto.getRelatedCtgCode()));
 					}
 				} else if (itemType == 3 && typeState instanceof SetTableItemDto) {
 					SetTableItemDto _typeState = (SetTableItemDto) typeState;
@@ -294,8 +298,7 @@ public class PerInfoItemDefFinder {
 			return perItemDefdto;
 		}).collect(Collectors.toList());
 
-		if (!idsChild.isEmpty())
-		{
+		if (!idsChild.isEmpty()) {
 			itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild,
 					AppContexts.user().contractCode());
 
@@ -583,7 +586,7 @@ public class PerInfoItemDefFinder {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getPerInfoItemByCtgCd(ctgCd,
 				AppContexts.user().companyId());
 
-		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(), x.getIsAbolition() == IsAbolition.NOT_ABOLITION))
-				.collect(Collectors.toList());
+		return itemDefs.stream().map(x -> new SimpleItemDef(x.getItemCode().v(), x.getItemName().v(),
+				x.getIsAbolition() == IsAbolition.NOT_ABOLITION)).collect(Collectors.toList());
 	}
 }

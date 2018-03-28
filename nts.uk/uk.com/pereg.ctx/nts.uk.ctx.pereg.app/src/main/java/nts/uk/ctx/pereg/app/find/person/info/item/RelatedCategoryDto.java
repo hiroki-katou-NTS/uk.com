@@ -1,9 +1,11 @@
 package nts.uk.ctx.pereg.app.find.person.info.item;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 
 @Getter
+@Setter
 public class RelatedCategoryDto extends DataTypeStateDto {
 	private String relatedCtgCode;
 
