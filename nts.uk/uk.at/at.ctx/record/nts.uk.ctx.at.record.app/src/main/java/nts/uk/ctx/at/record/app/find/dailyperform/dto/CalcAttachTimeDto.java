@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -26,7 +27,7 @@ public class CalcAttachTimeDto {
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer time;
 	
-	public static CalcAttachTimeDto toTimeWithCal(TimeWithCalculation time){
+	public static CalcAttachTimeDto toTimeWithCal(TimeDivergenceWithCalculation time){
 		return time == null ? null : new CalcAttachTimeDto(
 											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
 											time.getTime() == null ? null : time.getTime().valueAsMinutes());
@@ -38,8 +39,8 @@ public class CalcAttachTimeDto {
 											time.getTime() == null ? null : time.getTime().valueAsMinutes());
 	}
 	
-	public TimeWithCalculation createTimeWithCalc() {
-		return TimeWithCalculation.createTimeWithCalculation(
+	public TimeDivergenceWithCalculation createTimeWithCalc() {
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(
 										time == null ? null : new AttendanceTime(time), 
 										calcTime == null ? null : new AttendanceTime(calcTime));
 	}

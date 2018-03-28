@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
@@ -29,6 +30,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -89,8 +92,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 																	 Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 			   														 VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   														 StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-			   														 Optional<PersonalLaborCondition> personalCondition, LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
-			   														 LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+			   														 Optional<PersonalLaborCondition> personalCondition, 
+			   														 boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   														 boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   														 WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
 			   														 VacationAddTimeSet vacationAddTimeSet,
@@ -101,8 +104,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
 				   						   statutoryDivision,siftCode,
-				   						   personalCondition, lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-				   						   leaveEarlyTimeOfDaily,late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+				   						   personalCondition,
+				   						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   						   workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
 				   						   vacationAddTimeSet,workTimeDailyAtr,
@@ -129,8 +132,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 													   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 													   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-													   Optional<PersonalLaborCondition> personalCondition, LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
-													   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+													   Optional<PersonalLaborCondition> personalCondition,
+													   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 													   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 													   WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
 													   VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr,
@@ -142,8 +145,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   oneDay.getWithinWorkingTimeSheet().get(),calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,predetermineTimeSet,
 													   oneDay.getTemporaryDeductionTimeSheet(),vacationClass,timevacationUseTimeOfDaily,
 													   statutoryDivision,siftCode,
-													   personalCondition, lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-													   leaveEarlyTimeOfDaily,late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+													   personalCondition,
+													   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 													   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 													   workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
 													   vacationAddTimeSet,workTimeDailyAtr,
@@ -152,21 +155,21 @@ public class ExcessOfStatutoryTimeOfDaily {
 			}
 		}
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(1), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(2), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(3), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(4), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(5), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(6), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(7), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(8), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(9), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
-		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(10), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(1), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(2), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(3), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(4), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(5), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(6), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(7), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(8), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(9), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(10), TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
 		return new OverTimeOfDaily(Collections.emptyList(),
 								   calcOverTimeWorkTimeList,
-								   Finally.of(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)))),
+								   Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))),
 								   new AttendanceTime(0),
-								   new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)), new AttendanceTime(0)),
+								   new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)), new AttendanceTime(0)),
 								   new AttendanceTime(0));
 	}
 	
@@ -188,24 +191,127 @@ public class ExcessOfStatutoryTimeOfDaily {
 			}
 		}
 		List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList = new ArrayList<>();
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(2),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(3),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(4),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(5),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(6),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(7),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(8),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(9),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
-		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(2),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(3),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(4),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(5),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(6),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(7),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(8),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(9),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
+		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
 		
 		List<HolidayWorkMidNightTime> addList = new ArrayList<>(); 
-		addList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
-		addList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.PublicHolidayWork));
-		addList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		addList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
 		return new HolidayWorkTimeOfDaily(Collections.emptyList(),
 										  calcHolidayTimeWorkTimeList,
 				   						  Finally.of(new HolidayMidnightWork(addList)),
 				   						  new AttendanceTime(0));
+	}
+	
+	/**
+	 * 残業時間超過 
+	 */
+	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getOverTimeWork().isPresent())
+			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,errorCode);
+		return returnErrorItem;
+	}
+	
+	/**
+	 * 事前残業申請超過 
+	 */
+	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getOverTimeWork().isPresent())
+			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,errorCode);
+		return returnErrorItem;
+	}
+	/**
+	 * フレ時間超過 
+	 */
+	public List<EmployeeDailyPerError> checkFlexTimeExcess(String employeeId,
+			   											   GeneralDate targetDate,
+			   											   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getOverTimeWork().isPresent())
+			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,errorCode);
+		return returnErrorItem;
+	}
+	
+	/**
+	 * フレ時間超過 
+	 */
+	public List<EmployeeDailyPerError> checkPreFlexTimeExcess(String employeeId,
+			   											   GeneralDate targetDate,
+			   											   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getOverTimeWork().isPresent())
+			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,errorCode);
+		return returnErrorItem;
+	}
+	
+	/**
+	 * 休出時間超過 
+	 */
+	public List<EmployeeDailyPerError> checkHolidayWorkTimeExcess(String employeeId,
+														   		  GeneralDate targetDate,
+														   		  ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getWorkHolidayTime().isPresent())
+			returnErrorItem = this.getWorkHolidayTime().get().checkHolidayWorkExcess(employeeId,targetDate,errorCode);
+		return returnErrorItem;
+	}
+	
+	/**
+	 * 事前休出申請超過 
+	 */
+	public List<EmployeeDailyPerError> checkPreHolidayWorkTimeExcess(String employeeId,
+														   		  GeneralDate targetDate,
+														   		  ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getWorkHolidayTime().isPresent())
+			returnErrorItem = this.getWorkHolidayTime().get().checkPreHolidayWorkExcess(employeeId,targetDate,errorCode);
+		return returnErrorItem;
+	}
+	
+	/**
+	 * 所定外深夜時間超過 
+	 */
+	public List<EmployeeDailyPerError> checkMidNightExcess(String employeeId,
+			   											   GeneralDate targetDate,
+			   											   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getExcessOfStatutoryMidNightTime().isOverLimitDivergenceTime()) {
+			
+		}
+			//社員の日別実績エラー一覧処理  returnErrorItem = this.getExcessOfStatutoryMidNightTime();
+		//残業深夜
+		//checkOverTimeExcess(employeeId,targetDate, errorCode);
+		//休出深夜
+		//checkHolidayWorkTimeExcess(employeeId,targetDate, errorCode);
+		
+		return returnErrorItem;
+	}
+	
+	/**
+	 * 事前所定外深夜申請時間超過 
+	 */
+	public List<EmployeeDailyPerError> checkPreMidNightExcess(String employeeId,
+			   											   GeneralDate targetDate,
+			   											   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getExcessOfStatutoryMidNightTime().isPreOverLimitDivergenceTime()) {
+			//社員の日別実績エラー一覧
+		}
+		return returnErrorItem;
 	}
 }

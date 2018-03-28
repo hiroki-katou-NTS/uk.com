@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -149,7 +149,6 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,afterVariableWork,autoCalculationSet,breakdownTimeDay,overTimeHourSetList);
 		
 		/*return*/
-		//return afterCalcStatutoryOverTimeWork;
 		return afterCalcStatutoryOverTimeWork;
 	}
 
@@ -170,15 +169,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 //		deductionTimeSheet.getForRecordTimeZoneList();/*法定内区分の置き換え*/
 //		deductionTimeSheet.getForDeductionTimeZoneList();/*法定内区分の置き換え*/
 		/*加給*/
-		val duplibonusPayTimeSheet = getDuplicatedBonusPay(bonusPaySetting.getLstBonusPayTimesheet().stream().map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList()),
-													  	   timeSpan);
+		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, overTimeHourSet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 											 
 		/*特定日*/
-		val duplispecifiedBonusPayTimeSheet = getDuplicatedSpecBonusPay(bonusPaySetting.getLstSpecBonusPayTimesheet().stream().map(tc -> SpecBonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList()),
-																   		timeSpan);
+		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, overTimeHourSet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		/*深夜*/
-		val duplicatemidNightTimeSheet = getDuplicateMidNight(midNightTimeSheet,
-														 	  timeSpan);
+		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, overTimeHourSet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		
 		return new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),overTimeHourSet.getTimezone().getRounding()),
 											  	timeSpan,
@@ -188,8 +184,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 											  	duplispecifiedBonusPayTimeSheet,
 											  	duplicatemidNightTimeSheet,
 											  	new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getOtFrameNo().v()),
-													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
-													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
+											  						    TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+											  						    TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
 													  					new AttendanceTime(0),
 													  					new AttendanceTime(0)),
 											  	StatutoryAtr.Statutory,

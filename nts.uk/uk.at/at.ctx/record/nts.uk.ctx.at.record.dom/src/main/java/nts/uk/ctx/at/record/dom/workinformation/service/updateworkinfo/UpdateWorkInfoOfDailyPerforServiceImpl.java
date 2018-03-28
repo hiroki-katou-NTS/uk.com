@@ -25,7 +25,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 
 		// 就業時間帯を補正する
 		// 実績の勤務種類を取得
-		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
+		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
 
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId, workTypeCode.v());
 
@@ -35,8 +35,8 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 					|| oneDay == WorkTypeClassification.ContinuousWork
 					|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
 				WorkInformation recordWorkInformation = new WorkInformation(null,
-						workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
-				workInfoOfDailyPerformance.setRecordWorkInformation(recordWorkInformation);
+						workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 			}
 		}
 	}
