@@ -74,8 +74,8 @@ public class ComDivergenceRefTimeSaveDto implements CompanyDivergenceReferenceTi
 	 */
 	@Override
 	public Optional<DivergenceReferenceTimeValue> getDivergenceReferenceTimeValue() {
-		DivergenceReferenceTimeValue settingValue = new DivergenceReferenceTimeValue(new DivergenceReferenceTime(this.alarmTime),
-				new DivergenceReferenceTime(this.errorTime));
+		DivergenceReferenceTimeValue settingValue = new DivergenceReferenceTimeValue(this.alarmTime == null ? null : new DivergenceReferenceTime(this.alarmTime),
+				this.errorTime == null ? null : new DivergenceReferenceTime(this.errorTime));
 		return Optional.of(settingValue);
 	}
 	
