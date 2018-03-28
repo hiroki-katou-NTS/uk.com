@@ -127,10 +127,12 @@ module a4 {
             let isLinked: boolean = false;
             
             let isFlow: boolean = _self.mainSettingModel.workTimeSetting.isFlow(); 
+            let isUseTime2: boolean = _self.mainSettingModel.workTimeSetting.isFlow() && _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr(); 
             let isFixedAndUseTime2: boolean = _self.mainSettingModel.workTimeSetting.isFixed() && _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr();          
             // Add common param
             let dataObject: any = {
                 isFlow: isFlow,
+                isUseTime2: isUseTime2,
                 isFixedAndUseTime2: isFixedAndUseTime2,
                 listRoundingTimeUnit: _self.enumSetting.roundingTimeUnit,
                 

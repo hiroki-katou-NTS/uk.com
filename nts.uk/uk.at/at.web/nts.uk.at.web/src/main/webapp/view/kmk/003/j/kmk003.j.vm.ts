@@ -13,6 +13,7 @@ module nts.uk.at.view.kmk003.j {
             
             // Is flow mode
             isFlow: KnockoutObservable<boolean>;
+            isUseTime2: KnockoutObservable<boolean>;
             isFixedAndUseTime2: KnockoutObservable<boolean>;
             
             // Data            
@@ -53,6 +54,7 @@ module nts.uk.at.view.kmk003.j {
                 
                 _self.dataObject = null;
                 _self.isFlow = ko.observable(null);
+                _self.isUseTime2 = ko.observable(null);
                 _self.isFixedAndUseTime2 = ko.observable(null);
                 
                 _self.listPriorityClassification = ko.observableArray([
@@ -115,6 +117,7 @@ module nts.uk.at.view.kmk003.j {
                 }
                 _self.dataObject = dataObject;
                 _self.isFlow(dataObject.isFlow);
+                _self.isUseTime2(dataObject.isUseTime2);
                 _self.isFixedAndUseTime2(dataObject.isFixedAndUseTime2);
                 
                 _self.listRoundingTimeUnit(dataObject.listRoundingTimeUnit);
