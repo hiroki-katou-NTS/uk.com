@@ -1,4 +1,6 @@
 module nts.uk.at.view.kmf003.b.viewmodel {
+    import blockUI = nts.uk.ui.block;
+    
     export class ScreenModel {
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
@@ -221,7 +223,10 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             var checkErr = true;
             
+            blockUI.invisible();
+            
             if (nts.uk.ui.errors.hasError()) {
+                blockUI.clear();
                 return;    
             }
             
@@ -249,6 +254,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 
                 // if no data then return
                 if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
+                    blockUI.clear();
                     return;
                 }
                 
@@ -258,6 +264,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
                             $('#b2_1').focus();
                         });
+                        blockUI.clear();
                         return;
                     }
                 });
@@ -303,11 +310,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                                 $('#b2_1').focus();
                             }
                         }); 
+                    }).always(function() {
+                        blockUI.clear();
                     });
                 }
             } else {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_272" }).then(() => {
                     $('#reference-date').focus();
+                    blockUI.clear();
                 });
             }
         }
@@ -319,9 +329,12 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             var checkErr = true;
             
+            blockUI.invisible();
+            
             $('#reference-date').ntsError('clear');
             
             if (nts.uk.ui.errors.hasError()) {
+                blockUI.clear();
                 return;    
             }
 
@@ -344,6 +357,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             // if no data then return
             if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", false);
+                blockUI.clear();
                 return;
             }
             
@@ -355,12 +369,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                             nts.uk.ui.dialog.alert({ messageId: "Msg_268" }).then(() => {
                                 $('#b2_1').focus();
                             });
+                            blockUI.clear();
                             return;
                         } else {
                             checkErr = false;
                             nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
                                 $('#b2_1').focus();
                             });
+                            blockUI.clear();
                             return;
                         }                        
                     } else if((item.year == null || item.month == null) && item.grantDays != null) {
@@ -369,6 +385,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                             nts.uk.ui.dialog.alert({ messageId: "Msg_268" }).then(() => {
                                 $('#b2_1').focus();
                             });
+                            blockUI.clear();
                             return;
                         }                       
                     }
@@ -392,6 +409,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                             $('#b2_1').focus();
                         }
                     }); 
+                }).always(function() {
+                    blockUI.clear();
                 });
             }
         }
