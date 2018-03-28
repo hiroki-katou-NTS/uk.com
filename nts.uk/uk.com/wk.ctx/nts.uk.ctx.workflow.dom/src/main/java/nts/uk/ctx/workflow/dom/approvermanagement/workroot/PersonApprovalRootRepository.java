@@ -126,4 +126,37 @@ public interface PersonApprovalRootRepository {
 	
 	List<PersonApprovalRoot> getPsAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
+
+	/**
+	 * getNewestCommonPsAppRoot
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<PersonApprovalRoot> getNewestCommonPsAppRoot(String companyId, String employeeId);
+
+	/**
+	 * getNewestMonthlyPsAppRoot
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<PersonApprovalRoot> getNewestMonthlyPsAppRoot(String companyId, String employeeId);
+
+	/**
+	 * getPastHistory
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+	List<PersonApprovalRoot> getPastHistory(String companyId, String employeeId);
+
+	/**
+	 * getPsApprovalRootBySdate
+	 * @param companyId
+	 * @param employeeId
+	 * @param startDate
+	 * @return
+	 */
+	List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate);
 }
