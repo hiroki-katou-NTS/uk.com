@@ -25,10 +25,10 @@ public class ComDivergenceRefTimeSaveDto implements CompanyDivergenceReferenceTi
 	private String historyId;
 	
 	/** The alarm time. */
-	private int alarmTime;
+	private Integer alarmTime;
 	
 	/** The error time. */
-	private int errorTime;
+	private Integer errorTime;
 	
 	/**
 	 * Instantiates a new com divergence ref time save dto.

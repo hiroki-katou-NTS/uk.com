@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 
@@ -40,7 +39,7 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 		//validate
 		command.getListDataSetting().stream().forEach(item -> {
 			if(item.getNotUseAtr().value == USE){
-				if(item.getAlarmTime() == 0 && item.getErrorTime() == 0){
+				if(item.getAlarmTime() == null && item.getErrorTime() == null){
 					exceptions.addMessage("Msg_913");
 					// show error list
 					exceptions.throwExceptions();
@@ -59,7 +58,7 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 			if(e.getNotUseAtr().value == USE){
 				return new CompanyDivergenceReferenceTime(e);
 			}else {
-				Optional<CompanyDivergenceReferenceTime> oldDomain = this.repository.findByKey(e.getHistoryId(), DivergenceType.valueOf(e.getDivergenceTimeNo()));
+				Optional<CompanyDivergenceReferenceTime> oldDomain = this.repository.findByKey(e.getHistoryId(), e.getDivergenceTimeNo());
 				return oldDomain.get();
 			}
 		}).collect(Collectors.toList());

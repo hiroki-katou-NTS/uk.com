@@ -45,8 +45,8 @@ module nts.uk.at.view.kmk011.d {
 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') },
-                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') }
+                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') },
+                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }                    
                 ]);
                 _self.enable = ko.observable(true);
                 _self.required = ko.observable(true);
@@ -417,11 +417,12 @@ module nts.uk.at.view.kmk011.d {
             // history mode
             public createMode(): void {
                 let _self = this;
+                
                 nts.uk.ui.windows.setShared('listHist', _self.histList());
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
                     _self.fillListHistory().done(() => {
-                        let histId: string = _self.histList()[_self.histList().length - 1].historyId
+                        let histId: string = _self.histList()[_self.histList().length - 1].historyId;
                         _self.selectedHist(histId);
                         $('#list-box-1').focus();
                     })

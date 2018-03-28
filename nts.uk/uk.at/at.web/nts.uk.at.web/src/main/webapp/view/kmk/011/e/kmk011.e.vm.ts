@@ -57,8 +57,8 @@ module nts.uk.at.view.kmk011.e {
 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') },
-                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') }
+                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') },
+                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }   
                 ]);
                 _self.enable = ko.observable(true);
                 _self.required = ko.observable(true);
