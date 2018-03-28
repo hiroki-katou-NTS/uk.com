@@ -9,9 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 
 /**
  * The persistent class for the KRCST_DVGC_REASON database table.
@@ -20,7 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name="KRCST_DVGC_REASON")
+@NoArgsConstructor
+@Table(name = "KRCST_DVGC_REASON")
 public class KrcstDvgcReason extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -31,13 +32,12 @@ public class KrcstDvgcReason extends UkJpaEntity implements Serializable {
 	private KrcstDvgcReasonPK id;
 
 	/** The reason. */
-	@Column(name="REASON")
+	@Column(name = "REASON")
 	private String reason;
 
 	/** The reason required. */
-	@Column(name="REASON_REQUIRED")
+	@Column(name = "REASON_REQUIRED")
 	private BigDecimal reasonRequired;
-
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
@@ -45,5 +45,4 @@ public class KrcstDvgcReason extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.id;
 	}
-
 }

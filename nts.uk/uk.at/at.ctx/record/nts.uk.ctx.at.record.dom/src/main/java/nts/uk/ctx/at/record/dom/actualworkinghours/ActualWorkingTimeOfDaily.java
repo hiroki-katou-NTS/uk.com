@@ -90,6 +90,20 @@ public class ActualWorkingTimeOfDaily {
 				new PremiumTimeOfDailyPerformance());
 	}
 
+    public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
+            int diffTimeWork, DivergenceTimeOfDaily divTime) {
+        return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
+                new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
+                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, new PremiumTimeOfDailyPerformance());
+    }
+
+    public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
+            int diffTimeWork, DivergenceTimeOfDaily divTime, PremiumTimeOfDailyPerformance premiumTime) {
+        return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
+                new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
+                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, premiumTime);
+    }
+    
 	/**
 	 * 日別実績の実働時間の計算
 	 */

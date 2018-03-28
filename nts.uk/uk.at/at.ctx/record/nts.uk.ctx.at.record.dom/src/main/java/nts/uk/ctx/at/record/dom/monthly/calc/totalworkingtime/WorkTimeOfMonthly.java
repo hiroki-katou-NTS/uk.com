@@ -33,6 +33,7 @@ public class WorkTimeOfMonthly {
 	@Setter
 	private AttendanceTimeMonth workTime;
 	/** 所定内割増時間 */
+	@Setter
 	private AttendanceTimeMonth withinPrescribedPremiumTime;
 	
 	/** 時系列ワーク */
@@ -175,5 +176,14 @@ public class WorkTimeOfMonthly {
 		// 就業時間から週割増合計時間・月割増合計時間を引く
 		this.workTime = this.workTime.minusMinutes(actualWorkingTime.getWeeklyTotalPremiumTime().v());
 		this.workTime = this.workTime.minusMinutes(actualWorkingTime.getMonthlyTotalPremiumTime().v());
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.workTime.v() + this.withinPrescribedPremiumTime.v());
 	}
 }

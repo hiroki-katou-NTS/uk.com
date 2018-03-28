@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnit;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtUseUnit;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtUseUnit;
 
 // TODO: Auto-generated Javadoc
 /**

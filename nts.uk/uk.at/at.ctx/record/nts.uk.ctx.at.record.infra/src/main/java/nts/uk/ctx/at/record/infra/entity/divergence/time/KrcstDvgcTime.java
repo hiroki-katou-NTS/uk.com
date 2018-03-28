@@ -9,9 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 
 /**
  * The persistent class for the KRCST_DVGC_TIME database table.
@@ -19,10 +19,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
-@Table(name="KRCST_DVGC_TIME")
+@Table(name = "KRCST_DVGC_TIME")
 public class KrcstDvgcTime extends UkJpaEntity implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -31,31 +32,31 @@ public class KrcstDvgcTime extends UkJpaEntity implements Serializable {
 	private KrcstDvgcTimePK id;
 
 	/** The dvgc reason inputed. */
-	@Column(name="DVGC_REASON_INPUTED")
+	@Column(name = "DVGC_REASON_INPUTED")
 	private BigDecimal dvgcReasonInputed;
 
 	/** The dvgc reason selected. */
-	@Column(name="DVGC_REASON_SELECTED")
+	@Column(name = "DVGC_REASON_SELECTED")
 	private BigDecimal dvgcReasonSelected;
 
 	/** The dvgc time name. */
-	@Column(name="DVGC_TIME_NAME")
+	@Column(name = "DVGC_TIME_NAME")
 	private String dvgcTimeName;
 
 	/** The dvgc time use set. */
-	@Column(name="DVGC_TIME_USE_SET")
+	@Column(name = "DVGC_TIME_USE_SET")
 	private BigDecimal dvgcTimeUseSet;
 
 	/** The dvgc type. */
-	@Column(name="DVGC_TYPE")
+	@Column(name = "DVGC_TYPE")
 	private BigDecimal dvgcType;
 
 	/** The reason input canceled. */
-	@Column(name="REASON_INPUT_CANCELED")
+	@Column(name = "REASON_INPUT_CANCELED")
 	private BigDecimal reasonInputCanceled;
 
 	/** The reason select canceled. */
-	@Column(name="REASON_SELECT_CANCELED")
+	@Column(name = "REASON_SELECT_CANCELED")
 	private BigDecimal reasonSelectCanceled;
 
 	/* (non-Javadoc)
@@ -65,5 +66,4 @@ public class KrcstDvgcTime extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.id;
 	}
-
 }

@@ -8,6 +8,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 /**
  * The Class DivergenceReasonCode.
  */
+//乖離理由コード
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(2)
 public class DivergenceReasonCode extends CodePrimitiveValue<DivergenceReasonCode> {

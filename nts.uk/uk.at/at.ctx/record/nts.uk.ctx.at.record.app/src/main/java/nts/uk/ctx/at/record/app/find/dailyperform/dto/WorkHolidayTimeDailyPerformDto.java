@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
@@ -83,7 +81,7 @@ public class WorkHolidayTimeDailyPerformDto {
 	}
 
 	private Finally<TimeDivergenceWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? Finally.empty() : Finally.of(c.createTimeWithCalc());
+		return c == null ? Finally.empty() : Finally.of(c.createTimeDivWithCalc());
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
