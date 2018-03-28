@@ -7,6 +7,8 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommand;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
@@ -27,6 +29,8 @@ public class HolidayShipmentWebService extends WebService {
 	private SaveHolidayShipmentCommandHandler saveHandler;
 	@Inject
 	private UpdateHolidayShipmentCommandHandler updateHandler;
+	@Inject
+	private DeleteHolidayShipmentCommandHandler deleteHanler;
 
 	@POST
 	@Path("start")
@@ -64,6 +68,13 @@ public class HolidayShipmentWebService extends WebService {
 	public HolidayShipmentDto findByID(StartBParam param) {
 		return this.bFinder.findByID(param.getAppID());
 	}
+
+	@POST
+	@Path("remove")
+	public void remove(DeleteHolidayShipmentCommand command) {
+		this.deleteHanler.handle(command);
+	}
+
 }
 
 @Value

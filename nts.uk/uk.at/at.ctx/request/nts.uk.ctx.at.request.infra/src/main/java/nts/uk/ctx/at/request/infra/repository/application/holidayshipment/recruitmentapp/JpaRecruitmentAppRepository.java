@@ -25,7 +25,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaRecruitmentAppRepository extends JpaRepository implements RecruitmentAppRepository {
 
-	String FIND_SUB_TAG_DIG_BY_REC_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.pk.recAppID=:recAppID";
+	String FIND_SUB_TAG_DIG_BY_REC_ID = "SELECT d FROM KrqdtSubTargetDigestion d WHERE d.appID=:appID";
 
 	@Override
 	public void insert(RecruitmentApp recApp) {
@@ -47,7 +47,7 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 		List<SubTargetDigestion> subTargetDigestions = this.queryProxy()
 				.query(FIND_SUB_TAG_DIG_BY_REC_ID, KrqdtSubTargetDigestion.class)
-				.setParameter("recAppID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
+				.setParameter("appID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
 
 		return new RecruitmentApp(entity.getAppID(), entity.getWorkTypeCD(), new WorkTimeCode(entity.getWorkTimeCD()),
 				workTime1, workTime2, subTargetDigestions);

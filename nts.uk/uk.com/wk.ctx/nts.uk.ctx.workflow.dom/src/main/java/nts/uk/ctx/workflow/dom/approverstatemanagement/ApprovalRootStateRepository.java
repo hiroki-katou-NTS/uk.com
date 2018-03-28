@@ -23,7 +23,7 @@ public interface ApprovalRootStateRepository {
 	 */
 	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateAndNoRootType(GeneralDate startDate, GeneralDate endDate,String approverID);
 	
-	/**
+	/** 
 	 * 対象者と期間から承認ルートインスタンスを取得する
 	 * @param startDate
 	 * @param endDate
@@ -42,5 +42,7 @@ public interface ApprovalRootStateRepository {
 	public void update(ApprovalRootState approvalRootState);
 	
 	public void delete(String rootStateID);
+	
+	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType);
 	
 }

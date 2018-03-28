@@ -26,7 +26,7 @@ public interface PersonApprovalRootRepository {
 	 * 
 	 * @param companyId
 	 * @param employeeId
-	 * @param historyId
+	 * @param  historyId
 	 */
 	void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId);
 
@@ -123,6 +123,9 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId,GeneralDate endDate);
+	
+	List<PersonApprovalRoot> getPsAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
 
 	/**
 	 * getNewestCommonPsAppRoot
