@@ -19,6 +19,7 @@ import nts.uk.ctx.pereg.dom.common.PredetemineTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValSetCtg;
 import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
@@ -48,6 +49,9 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 		boolean isSetting = this.initCtgRepo.getDetailInitValSetCtg(settingId, perInfoCtgId).isPresent() ? true : false;
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+		List<PerInfoInitValueSetItem> x = item.stream().filter(c -> {
+			return c.getDataType().intValue() == 5;
+		}).collect(Collectors.toList());
 		if (item != null && !item.isEmpty()) {
 			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item, isSetting);
 			return itemDto;
@@ -106,8 +110,15 @@ public class PerInfoInitValueSetItemFinder {
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
 		if (ctgCode.equals("CS00020")) {
 			itemDto = item.stream().map(c -> {
-				if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
-					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+				if (c.getDataType().intValue() == DataTypeValue.TIMEPOINT.value && (isSetting == true)) {
+					dto.setDisableCombox(true);
+				} else {
+					dto.setDisableCombox(false);
+				}
+				if (c.getDataType().intValue() == 6 || c.getDataType().intValue() == 7
+						|| c.getDataType().intValue() == 8) {
+
 					SelectionItemDto selectionItemDto = null;
 					if (dto.getSelectionItemRefType() == 1) {
 						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
@@ -125,21 +136,16 @@ public class PerInfoInitValueSetItemFinder {
 
 					dto.setSelection(selectionDto);
 
-					if (c.getDataType().intValue() == 5 && isSetting) {
-						dto.setDisableCombox(true);
-					} else {
-						dto.setDisableCombox(false);
-					}
-					return dto;
-				} else {
-					return PerInfoInitValueSettingItemDto.fromDomain(c);
 				}
+				return dto;
 			}).collect(Collectors.toList());
 		} else if (ctgCode.equals("CS00001")) {
-			itemDto = item.stream().filter(c ->{ return !c.getItemCode().equals("IS00001");}).map(c -> {
-				 
+			itemDto = item.stream().filter(c -> {
+				return !c.getItemCode().equals("IS00001");
+			}).map(c -> {
+				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
 				if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
-					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+
 					SelectionItemDto selectionItemDto = null;
 					if (dto.getSelectionItemRefType() == 1) {
 						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
@@ -156,15 +162,15 @@ public class PerInfoInitValueSetItemFinder {
 							AppContexts.user().employeeId(), GeneralDate.today(), true);
 
 					dto.setSelection(selectionDto);
-					return dto;
-				} else {
-					return PerInfoInitValueSettingItemDto.fromDomain(c);
+
 				}
+				return dto;
 			}).collect(Collectors.toList());
 		} else {
 			itemDto = item.stream().map(c -> {
+				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
 				if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
-					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+
 					SelectionItemDto selectionItemDto = null;
 					if (dto.getSelectionItemRefType() == 1) {
 						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
@@ -181,10 +187,8 @@ public class PerInfoInitValueSetItemFinder {
 							AppContexts.user().employeeId(), GeneralDate.today(), true);
 
 					dto.setSelection(selectionDto);
-					return dto;
-				} else {
-					return PerInfoInitValueSettingItemDto.fromDomain(c);
 				}
+				return dto;
 			}).collect(Collectors.toList());
 		}
 		return itemDto;

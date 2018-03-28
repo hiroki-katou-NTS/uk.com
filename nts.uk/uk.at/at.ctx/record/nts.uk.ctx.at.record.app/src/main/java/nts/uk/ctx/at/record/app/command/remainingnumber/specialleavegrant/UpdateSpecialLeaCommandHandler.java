@@ -11,21 +11,21 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 
 @Stateless
-public class UpdateSpecialLeaCommandHandler extends AsyncCommandHandler<UpdateSpecialLeaCommand> {
+public class UpdateSpecialLeaCommandHandler extends AsyncCommandHandler<SpecialLeaveRemainCommand> {
 
 	@Inject
 	private SpecialLeaveGrantRepository repo;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateSpecialLeaCommand> context) {
-		UpdateSpecialLeaCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<SpecialLeaveRemainCommand> context) {
+		SpecialLeaveRemainCommand command = context.getCommand();
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
 			throw new BusinessException("Msg_1023");
 		}
 
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
-				command.getSpecialId(),command.getSid(), command.getSpecialLeaCode(),
+				command.getSpecialid(),command.getSid(), command.getSpecialLeaCode(),
 				command.getGrantDate(), command.getDeadlineDate(),
 				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(),command.getTimeGrant(), 
