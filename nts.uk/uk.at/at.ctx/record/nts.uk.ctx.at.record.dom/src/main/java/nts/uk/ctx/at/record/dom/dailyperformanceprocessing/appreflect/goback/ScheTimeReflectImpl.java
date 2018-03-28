@@ -45,8 +45,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private WorkTimeIsFluidWork workTimeisFluidWork;
-	@Inject
-	private WorkTimezoneLateEarlySetGetMemento workMemento;
+	/*@Inject
+	private WorkTimezoneLateEarlySetGetMemento workMemento;*/
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
 		//予定時刻反映できるかチェックする
