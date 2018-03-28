@@ -484,12 +484,7 @@ module a5 {
                     }
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFlexFlow);
-                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml", {
-                    height: 400,
-                    width: 400,
-                    title: nts.uk.resource.getText("KMK003_287"),
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml").onClosed(() => {
                     var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
                     //if case flex
                     if (self.isFlex()) {
@@ -529,12 +524,7 @@ module a5 {
                     }
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);
-                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml", {
-                    height: 400,
-                    width: 400,
-                    title: nts.uk.resource.getText("KMK003_287"),
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml").onClosed(() => {
                     var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
                     if (self.isDiffTime()) {
                         self.mainSettingModel.diffWorkSetting.restSet.fixedRestCalculateMethod(returnObject.actualRest);

@@ -6,14 +6,18 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
+	
 		<ui:define name="htmlHead">
+		
 			<script>
 				var dialogSize = {
 					width : 500,
-					height : 1000
+					height : 500
 				};
 			</script>
+			
 			<com:scriptfile set="IGNITE" />
+			
 			<com:scriptfile path="../a5/kmk003.a5.vm.js" />
 			<com:stylefile path="kmk003.g.style.css" />
 			<com:scriptfile path="kmk003.g.vm.js" />
@@ -24,69 +28,78 @@
 
 			<div id="contents-area">
 				<div class="main-container">
-					<div>
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_234')}</div>
-						<div>
-							<hr />
-						</div>
-					</div>
-					<div class="pad-left-20">
-						<div tabindex ="2" data-bind="ntsRadioBoxGroup: {
+				
+					<!-- START form label -  -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label -  -->
+					
+					<!-- START setting items -  -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<div tabindex ="2" data-bind="ntsRadioBoxGroup: {
 										options: lstRest,
 										name: '#[KMK003_234]',
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedRest,
-										enable: true}"></div>
-					</div>
-					<div class ="pad-top-10">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_230')}</div>
-						<div>
-							<hr />
-						</div>
-					</div>
-					<div class = "pad-left-10">
-						<label>#{i18n.getText('KMK003_231')}</label>
-					</div>
-					<div class = "pad-top-10 pad-left-10">
-						<table>
-							<tr>
-								<td class="td-cell-set"><span tabindex="3" class="cf"
-									id = "switch-btn"
-									data-bind="ntsSwitchButton: {
+										enable: true}"></div>		
+						</div>	
+					</div>				
+					<!-- END setting items -  -->
+					
+					<!-- ====================================================================================== -->
+					
+					<!-- START form label -  -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_230')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label -  -->
+					
+					<!-- START setting items -  -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<label>#{i18n.getText('KMK003_231')}</label>
+						</div>	
+						<div class="dialog-rows">
+							<div tabindex="3" class="cf control-warp" id= "switch-btn" data-bind="ntsSwitchButton: {
 									name: '#[KMK003_230]',
 									options: switchOptions,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: switchValue,
-									enable: true }"></span>
-								</td>
-								<td class="td-cell-set"><span tabindex="4" style="width: 100px;"
-									data-bind="ntsComboBox: {
-									options: unitComboBoxOptions,
-									name: '#[KMK003_232]',
-									optionsValue: 'code',
-									visibleItemsCount: 8,
-									value: unitValue,
-									optionsText: 'name',
-									dropDownAttachedToBody: true,
-									editable: false,
-									enable: true }"></span></td>
-								<td class="td-cell-set"><span tabindex="5" style="width: 100px;"
-									data-bind="ntsComboBox: {
-									options: roundingComboBoxOptions,
-									name: '#[KMK003_233]',
-									optionsValue: 'code',
-									visibleItemsCount: 3,
-									value: roundingValue,
-									optionsText: 'name',
-									dropDownAttachedToBody: true,
-									editable: false,
-									enable: true }"></span>
-								</td>
-							</tr>
-						</table>
-					</div>
+									enable: true }"></div>
+							<div class="control-warp" style="width: 100px;">
+								<div tabindex="4" style="width: 100px;" data-bind="ntsComboBox: {
+										options: unitComboBoxOptions,
+										name: '#[KMK003_232]',
+										optionsValue: 'code',
+										visibleItemsCount: 8,
+										value: unitValue,
+										optionsText: 'name',
+										dropDownAttachedToBody: true,
+										editable: false,
+										enable: true }"></div>
+							</div>
+							<div class="control-warp" style="width: 100px;">
+								<div tabindex="5" style="width: 100px;" data-bind="ntsComboBox: {
+										options: roundingComboBoxOptions,
+										name: '#[KMK003_233]',
+										optionsValue: 'code',
+										visibleItemsCount: 3,
+										value: roundingValue,
+										optionsText: 'name',
+										dropDownAttachedToBody: true,
+										editable: false,
+										enable: true }"></div>
+							</div>
+						</div>
+					</div>				
+					<!-- END setting items -  -->
+			
 				</div>
 			</div>
 
