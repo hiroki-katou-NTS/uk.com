@@ -126,7 +126,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         */
         findItemDivTime(value: string): any {
             let self = this;
-            var itemModel :any = null;
+            var itemModel: any = null;
             return _.find(self.dataSource(), function(obj: model.DivergenceReason) {
                 return obj.divergenceReasonCode == value;
             })
@@ -155,10 +155,11 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             var self = this;
             var text1 = nts.uk.text.isNullOrEmpty(self.divReasonCode());
             var text2 = nts.uk.text.isNullOrEmpty(self.divReasonContent());
-            if (!nts.uk.text.isNullOrEmpty(self.divReasonCode()) && !nts.uk.text.isNullOrEmpty(self.divReasonContent())) {
-                $('.nts-input').trigger("validate");
-                _.defer(() => {
-                    if (!$('.nts-editor').ntsError("hasError")) {
+
+            $('.nts-input').trigger("validate");
+            _.defer(() => {
+                if (!$('.nts-editor').ntsError("hasError")) {
+                    if (!nts.uk.text.isNullOrEmpty(self.divReasonCode()) && !nts.uk.text.isNullOrEmpty(self.divReasonContent())) {
                         if (self.enableCode() == false) {
                             self.convertCode(self.divReasonCode());
                             self.updateDivReason();
@@ -167,14 +168,16 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                                 self.addDivReason();
                             }
                     }
-                });
+                    else {
+                        blockUI.clear();
+                    }
 
-            }
-            else {
-                blockUI.clear();
-            }
-            
-             blockUI.clear();
+                }
+            });
+
+
+
+            blockUI.clear();
         }
 
         addDivReason() {

@@ -1099,7 +1099,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			ProcessTimeOutput processTimeOutput, TimeLeavingWork timeLeavingWork) {
 		// 臨時時刻を丸める
 		
-		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
+		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
 		InstantRounding instantRounding =null;
 		if(roudingTime==null){
 			 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -1179,7 +1179,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (leaveStamp == null) {
 			// 臨時時刻を丸める
 			
-			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
+			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
 			InstantRounding instantRounding =null;
 			if(roudingTime==null){
 				 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -1416,7 +1416,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// 臨時時刻を丸める
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
+		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
 		InstantRounding instantRounding =null;
 		if(roudingTime==null){
 			 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -1496,7 +1496,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (actualStamp == null) {
 			// 臨時時刻を丸める
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
+			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
 			InstantRounding instantRounding =null;
 			if(roudingTime==null){
 				 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -1989,7 +1989,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				&& o.getGoOut().get().getActualStamp().isPresent()) ? o.getGoOut().get().getActualStamp().get() : null;
 		if (actualStamp == null) {
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
+			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
 			InstantRounding instantRounding =null;
 			if(roudingTime==null){
 				 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -2077,7 +2077,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (actualStamp == null) {
 			// 外出・休憩時刻を丸める
 			TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
+			RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
 		InstantRounding instantRounding =null;
 		if(roudingTime==null){
 			 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -2184,7 +2184,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// lý)
 
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
+		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
 		InstantRounding instantRounding =null;
 		if(roudingTime==null){
 			 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -2257,7 +2257,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 外出・休憩時刻を丸める
 		// 7.2.1* Làm tròn 打刻時刻 đang xử ly
 		TimeWithDayAttr timeOfDay = processTimeOutput.getTimeOfDay();
-		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
+		RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "外出".equals(attendanceClass)?Superiority.GO_OUT:Superiority.TURN_BACK);
 		InstantRounding instantRounding =null;
 		if(roudingTime==null){
 			 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -2487,7 +2487,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 打刻を反映する
 					// timePrintDestinationCopy
 					if ("打刻".equals(actualStampClass)) {
-						RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleWorkInformation().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
+						RoundingSet roudingTime = this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(), "退勤".equals(attendanceClass)?Superiority.OFFICE_WORK:Superiority.ATTENDANCE);
 						InstantRounding instantRounding =null;
 						if(roudingTime==null){
 							 instantRounding = new InstantRounding(FontRearSection.AFTER,
@@ -2795,7 +2795,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			GeneralDate date, String employeeId) {
 		Optional<WorkInfoOfDailyPerformance> WorkInfoOptional = this.workInforRepo.find(employeeId, date);
 		if (WorkInfoOptional.isPresent()) {
-			WorkInformation recordWorkInformation = WorkInfoOptional.get().getRecordWorkInformation();
+			WorkInformation recordWorkInformation = WorkInfoOptional.get().getRecordInfo();
 			WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
 
 			PrioritySetting prioritySetting = this.getPrioritySetting(companyId, workTimeCode.v(),"退勤".equals(attendanceClass)? StampPiorityAtr.LEAVE_WORK:StampPiorityAtr.GOING_WORK);
@@ -2833,7 +2833,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	// 休日打刻時に勤務種類を変更する
 	private boolean checkHolidayChange(WorkInfoOfDailyPerformance WorkInfo) {
 		if (WorkInfo != null) {
-			WorkInformation recordWorkInformation = WorkInfo.getRecordWorkInformation();
+			WorkInformation recordWorkInformation = WorkInfo.getRecordInfo();
 			// Xác định phân loại 1日半日出勤・1日休日
 			// 1日半日出勤・1日休日系の判定
 			WorkStyle checkWorkDay = this.basicScheduleService
@@ -2942,7 +2942,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			GeneralDate date, String employeeId) {
 		Optional<WorkInfoOfDailyPerformance> WorkInfoOptional = this.workInforRepo.find(employeeId, date);
 		if (WorkInfoOptional.isPresent()) {
-			WorkInformation recordWorkInformation = WorkInfoOptional.get().getRecordWorkInformation();
+			WorkInformation recordWorkInformation = WorkInfoOptional.get().getRecordInfo();
 			WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
 
 			PrioritySetting prioritySetting = this.getPrioritySetting(companyId, workTimeCode.v(),"入門".equals(attendanceClass)? StampPiorityAtr.ENTERING:StampPiorityAtr.EXIT);

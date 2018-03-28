@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.w4d4alarm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -25,6 +28,9 @@ public class W4D4AlarmService {
 	
 	@Inject
 	private W4D4CheckAdapter w4D4CheckAdapter;
+	
+	@Inject
+	private ErAlWorkRecordCheckAdapter erAlWorkRecordCheckAdapter;
 		
 	public List<ValueExtractAlarm> calculateTotal4W4D(EmployeeSearchDto employee, DatePeriod period, String checkConditionCode) {
 		String companyID = AppContexts.user().companyId();
@@ -35,18 +41,25 @@ public class W4D4AlarmService {
 			throw new RuntimeException("Can't find AlarmCheckConditionByCategory with category: 4W4D and code: " + checkConditionCode);
 		
 		// TODO: Narrow down the target audience
-
-		
-		AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
-		AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
-		
-		if (fourW4DCheckCond.isForActualResultsOnly()) {
-			Optional<ValueExtractAlarm> optAlarm = this.checkWithActualResults(employee, period);
-			if (optAlarm.isPresent())
-				result.add(optAlarm.get());
+		List<RegulationInfoEmployeeResult> listTarget = erAlWorkRecordCheckAdapter.filterEmployees(period.end(), Arrays.asList(employee.getId()), optAlarmCheckConditionByCategory.get().getExtractTargetCondition());
+		if(!listTarget.isEmpty()) {
+			for(RegulationInfoEmployeeResult target : listTarget) {
+				if(target.getEmployeeId().equals(employee.getId())) {
+					AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
+					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
+					
+					if (fourW4DCheckCond.isForActualResultsOnly()) {
+						Optional<ValueExtractAlarm> optAlarm = this.checkWithActualResults(employee, period);
+						if (optAlarm.isPresent())
+							result.add(optAlarm.get());
+					}
+					break;
+				}
+			}
 		}
-		
+	
 		return result;
+
 	}
 	
 	public Optional<ValueExtractAlarm> checkWithActualResults(EmployeeSearchDto employee, DatePeriod period) {

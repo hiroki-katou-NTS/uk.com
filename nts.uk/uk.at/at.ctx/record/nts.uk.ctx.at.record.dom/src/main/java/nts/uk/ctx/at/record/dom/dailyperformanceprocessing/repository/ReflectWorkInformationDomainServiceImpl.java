@@ -36,7 +36,7 @@ public class ReflectWorkInformationDomainServiceImpl implements ReflectWorkInfor
 	// true (reflect) and false (no reflect)
 	@Override
 	public boolean changeWorkInformation(WorkInfoOfDailyPerformance workInfo) {
-		WorkInformation recordWorkInformation = workInfo.getRecordWorkInformation();
+		WorkInformation recordWorkInformation = workInfo.getRecordInfo();
 		// 1* Lấy 休日出勤時の勤務情報  trả về 勤務情報なし  , 公休出勤時 ....
 				//(fixed)
 				String result = "勤務情報なし";
