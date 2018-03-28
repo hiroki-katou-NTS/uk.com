@@ -41,8 +41,8 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 
                 // Update
                 self.aggrSelectionItemList = ko.observableArray([
-                    { id: 1, name: nts.uk.resource.getText("KMK004_51")},
-                    { id: 2, name: nts.uk.resource.getText("KMK004_52")}
+                    { id: 0, name: nts.uk.resource.getText("KMK004_51")},
+                    { id: 1, name: nts.uk.resource.getText("KMK004_52")}
                 ]);
                 self.selectedAggrSelection = ko.observable(1);
                 
@@ -775,7 +775,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 let self = this;
                 self.regAggrSetting.updateData(model.normalAggrSetting());
                 self.flexAggrSetting.updateData(model.flexAggrSetting());
-                self.flexAggrSetting.updateData(model.flexAggrSetting());
+                self.deforAggrSetting.updateData(model.deformAggrSetting());
             }
         }
     
@@ -1091,37 +1091,37 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
          */
         export class AggrregateSetting {
             static MANAGED_AS_FLEX_TIME = 1;
-            static MANAGE_BREAKDOWN = 2;
+            static MANAGE_BREAKDOWN = 0;
         }
     
         /**
          * フレックス不足時の繰越設定
          */
         export class ShortageSetting {
-            static CURRENT_MONTH_INTEGRATION = 1;
-            static NEXT_MONTH_CARRY_FORWARD = 2;
+            static CURRENT_MONTH_INTEGRATION = 0;
+            static NEXT_MONTH_CARRY_FORWARD = 1;
         }
     
         /**
          * フレックス集計方法
          */
         export class FlexAggregateMethod {
-            static PRINCIPLE = 1;
-            static FOR_CONVINENCE = 2;
+            static PRINCIPLE = 0;
+            static FOR_CONVINENCE = 1;
         }
     
         /**
          * 週開始
          */
         export class StartWeek {
-            static MONDAY = 2;
-            static TUESDAY = 3;
-            static WEDNESDAY = 4;
-            static THURSDAY = 5;
-            static FRIDAY = 6;
-            static SATURDAY = 7;
-            static SUNDAY = 0;
-            static CLOSURE_STR_DATE = 1;
+            static MONDAY = 0;
+            static TUESDAY = 1;
+            static WEDNESDAY = 2;
+            static THURSDAY = 3;
+            static FRIDAY = 4;
+            static SATURDAY = 5;
+            static SUNDAY = 6;
+            static CLOSURE_STR_DATE = 7;
         }
     
         /**

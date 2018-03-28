@@ -856,14 +856,14 @@ module nts.uk.at.view.kmk004.shared.model {
      * 週開始
      */
     export class StartWeek {
-        static MONDAY = 2;
-        static TUESDAY = 3;
-        static WEDNESDAY = 4;
-        static THURSDAY = 5;
-        static FRIDAY = 6;
-        static SATURDAY = 7;
-        static SUNDAY = 0;
-        static CLOSURE_STR_DATE = 1;
+        static MONDAY = 0;
+        static TUESDAY = 1;
+        static WEDNESDAY = 2;
+        static THURSDAY = 3;
+        static FRIDAY = 4;
+        static SATURDAY = 5;
+        static SUNDAY = 6;
+        static CLOSURE_STR_DATE = 7;
     }
 
     /**
