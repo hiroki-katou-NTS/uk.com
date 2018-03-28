@@ -36,7 +36,7 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	public void create(ComRegularLaborTime setting) {
 		KshstComRegLaborTime entity = new KshstComRegLaborTime();
 		setting.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
-		commandProxy().insert(this.toEntity(setting));
+		commandProxy().insert(entity);
 	}
 
 	/* 
