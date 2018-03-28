@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
@@ -26,12 +27,13 @@ public class SpecialleaveInformationFinder {
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
 	
 	public PeregDomainDto getSingleData(PeregQuery query, int specialLeaveCD) {
-		// 社員ID　＝　社員ID　 and 特別休暇コード＝9
 		Optional<SpecialLeaveBasicInfo> spLeaBasicInfo = specialLeaveBasicInfoRepository.getBySidLeaveCd(query.getEmployeeId(), specialLeaveCD);
 		if (spLeaBasicInfo.isPresent()){
 			SpecialleaveInformationDto dto = SpecialleaveInformationDto.createFromDomain(spLeaBasicInfo.get());
 			List<SpecialLeaveGrantRemainingData> grantRemain = specialLeaveGrantRepo.getAllByExpStatus(query.getEmployeeId(), specialLeaveCD, true);
 			dto.setSpHDRemain(specialLeaveGrantRemainService.calDayTime(grantRemain));
+			// TODO Item IS00300 QA 111
+			dto.setNextGrantDate(GeneralDate.max());
 			return dto;
 		}
 		

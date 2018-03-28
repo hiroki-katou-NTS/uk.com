@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SpLeaInfoCommandHandler {
@@ -19,7 +20,8 @@ public class SpLeaInfoCommandHandler {
 	 * @return
 	 */
 	public String addHandler(SpecialleaveinformationCommand command, int spLeaveCD){
-		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(command.getSID(), spLeaveCD, command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
+		String cid = AppContexts.user().companyId();
+		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), spLeaveCD, command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
 				command.getGrantDays(), command.getGrantTable());
 		specialLeaveBasicInfoRepository.add(domain);
 		return command.getSID();
@@ -31,7 +33,8 @@ public class SpLeaInfoCommandHandler {
 	 * @param spLeaveCD
 	 */
 	public void updateHandler(SpecialleaveinformationCommand command, int spLeaveCD){
-		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(command.getSID(), spLeaveCD, command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
+		String cid = AppContexts.user().companyId();
+		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), spLeaveCD, command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
 				command.getGrantDays(), command.getGrantTable());
 		specialLeaveBasicInfoRepository.update(domain);
 	}
