@@ -9,8 +9,8 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimeEaMsg;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTimeEaMsgPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

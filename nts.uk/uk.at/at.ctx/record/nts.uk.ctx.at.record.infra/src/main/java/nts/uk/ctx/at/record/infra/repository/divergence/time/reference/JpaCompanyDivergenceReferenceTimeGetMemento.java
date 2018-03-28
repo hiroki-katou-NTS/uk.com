@@ -7,7 +7,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

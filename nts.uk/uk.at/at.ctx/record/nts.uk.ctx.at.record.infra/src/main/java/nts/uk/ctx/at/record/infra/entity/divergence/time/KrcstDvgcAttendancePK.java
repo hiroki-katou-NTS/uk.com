@@ -5,7 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,9 +16,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class KrcstDvgcAttendancePK implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
@@ -33,26 +37,9 @@ public class KrcstDvgcAttendancePK implements Serializable {
 	@Column(name = "ATTENDANCE_ID")
 	private Integer attendanceId;
 
-	/**
-	 * Instantiates a new krcst dvgc attendance PK.
-	 */
-	public KrcstDvgcAttendancePK() {
-	}
-
-	/**
-	 * Instantiates a new krcst dvgc attendance PK.
-	 *
-	 * @param no the no
-	 * @param cid the cid
-	 * @param attendanceId the attendance id
-	 */
-	public KrcstDvgcAttendancePK(Integer no, String cid, Integer attendanceId) {
-		this.no = no;
-		this.cid = cid;
-		this.attendanceId = attendanceId;
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object other) {
@@ -67,7 +54,9 @@ public class KrcstDvgcAttendancePK implements Serializable {
 				&& (this.attendanceId == castOther.attendanceId);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
