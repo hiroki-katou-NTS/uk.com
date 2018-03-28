@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAtte
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DailyAttendanceItemFinder {
+public class DailyAttendanceItemSharedFinder {
 	
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItem;

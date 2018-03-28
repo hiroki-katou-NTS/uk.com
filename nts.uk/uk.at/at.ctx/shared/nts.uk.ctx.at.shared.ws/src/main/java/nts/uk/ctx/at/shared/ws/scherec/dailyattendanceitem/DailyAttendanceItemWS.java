@@ -8,14 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemDto;
-import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemFinder;
+import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemSharedFinder;
 
 @Path("at/shared/scherec/dailyattditem")
 @Produces("application/json")
 public class DailyAttendanceItemWS {
 	
 	@Inject
-	private DailyAttendanceItemFinder finder;
+	private DailyAttendanceItemSharedFinder finder;
 	
 	@POST
 	@Path("getalldailyattd")
