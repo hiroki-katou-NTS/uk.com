@@ -1,17 +1,12 @@
 module nts.uk.at.view.kmk013.n {
     export module viewmodel {
         export class ScreenModel {
-            enable: KnockoutObservable<boolean>;
-            readonly: KnockoutObservable<boolean>;
-            timeOfDay: KnockoutObservable<number>;
             start: KnockoutObservable<number>;
             end: KnockoutObservable<number>;
             isCreated: KnockoutObservable<boolean>;
             data = {};
             constructor() {
-                var self = this;
-                self.enable = ko.observable(true);
-                self.readonly = ko.observable(false);
+                let self = this;
                 
                 self.start = ko.observable(0);
                 self.end = ko.observable(60);
@@ -19,8 +14,8 @@ module nts.uk.at.view.kmk013.n {
                 self.isCreated = ko.observable(false);
             }
             startPage() {
-                var self = this;
-                var dfd = $.Deferred();
+                let self = this;
+                let dfd = $.Deferred();
                 self.initData().done(() => {
                     dfd.resolve();
                 });
@@ -30,11 +25,13 @@ module nts.uk.at.view.kmk013.n {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findByCompanyId().done(arr => {
-                    let data = arr[0];
-                    if(data != null) {
-                        self.start(data.start);
-                        self.end(data.end);
+                    let dt = arr[0];
+                    if(dt != null) {
+                        self.start(dt.startTime);
+                        self.end(dt.endTime);
                         self.isCreated(true);
+                        console.log("start: " + self.start());
+                        console.log("data: " + dt.startTime);
                     }
                     dfd.resolve();
                 });

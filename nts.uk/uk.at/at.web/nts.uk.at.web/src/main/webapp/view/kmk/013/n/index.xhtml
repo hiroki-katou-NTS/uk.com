@@ -24,20 +24,20 @@
 				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_363')}</div>
 				<div class="row-1">
 					<div class="time-name">#{i18n.getText('KMK013_364')}</div>
-					<input class="input-time" data-bind="ntsTimeWithDayEditor: { 
+					<input tabindex="3" class="input-time" data-bind="ntsTimeWithDayEditor: { 
 						name: '#{i18n.getText('KMK013_365')}',
 						constraint:'TimeWithDayAttr', 
 						value: start,
-						enable: enable, 
+						enable: true, 
 						required: true }" />
 				</div>
 				<div class="row-1">
 					<div class="time-name">#{i18n.getText('KMK013_366')}</div>
-					<input class="input-time" data-bind="ntsTimeWithDayEditor: { 
+					<input class="input-time" tabindex="4" data-bind="ntsTimeWithDayEditor: { 
 						name: '#{i18n.getText('KMK013_367')}', 
 						constraint:'TimeWithDayAttr', 
 						value: end, 
-						enable: enable, 
+						enable: true, 
 						required: true }" />
 				</div>
 			</div>
