@@ -35,8 +35,10 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -86,6 +88,8 @@ public class MonthlyCalculation {
 	private String employmentCd;
 	/** 退職月度がどうか */
 	private boolean isRetireMonth;
+	/** 締め */
+	private Optional<Closure> closureOpt;
 	/** 月別実績集計設定 */
 	private AggrSettingMonthly aggrSettingMonthly;
 	/** 月次集計の法定内振替順設定 */
@@ -136,6 +140,7 @@ public class MonthlyCalculation {
 		this.workplaceId = "empty";
 		this.employmentCd = "empty";
 		this.isRetireMonth = false;
+		this.closureOpt = Optional.empty();
 		this.aggrSettingMonthly = AggrSettingMonthly.of(
 				new LegalAggrSetOfReg(), new LegalAggrSetOfIrg(), new AggrSettingMonthlyOfFlx());
 		this.legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly("empty");
@@ -235,6 +240,13 @@ public class MonthlyCalculation {
 			this.employmentCd = syEmploymentOpt.get().getEmploymentCode();
 		}
 		
+		// 「締め」　取得
+		this.closureOpt = repositories.getClosure().findById(companyId, closureId.value);
+		if (closureOpt.isPresent()){
+			val closure = closureOpt.get();
+			if (closure.getUseClassification() != UseClassification.UseClass_Use) this.closureOpt = Optional.empty();
+		}
+		
 		// 月別実績集計設定　取得　（基準：期間終了日）　（設定確認不可時は、空設定を適用）
 		val aggrSettingMonthlyOpt = repositories.getAggrSettingMonthly().get(
 				companyId, this.workplaceId, this.employmentCd, employeeId);
@@ -287,10 +299,10 @@ public class MonthlyCalculation {
 		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
 				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
 		*/
-		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
-		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
-		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(0);
-		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
+		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
+		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
+		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
 		
 		// 月別実績の勤怠時間　既存データ　取得
 		this.originalData = repositories.getAttendanceTimeOfMonthly().find(
@@ -327,7 +339,7 @@ public class MonthlyCalculation {
 		if (this.workingConditionItem == null) return;
 		
 		// 共有項目を集計する
-		this.aggregateSharedItem(aggrPeriod);
+		this.aggregateTime.aggregateSharedItem(aggrPeriod, this.attendanceTimeOfDailyMap);
 		
 		// 通常勤務　or　変形労働　の時
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK ||
@@ -335,7 +347,7 @@ public class MonthlyCalculation {
 			
 			// 通常・変形労働勤務の月別実績を集計する
 			val aggrValue = this.actualWorkingTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, this.workingSystem, aggrAtr,
+					this.yearMonth, aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
 					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap,
 					this.statutoryWorkingTimeWeek, this.aggregateTime, null, repositories);
@@ -374,6 +386,9 @@ public class MonthlyCalculation {
 		this.aggregateTime.aggregateActualWorkingTime(aggrPeriod, this.workingSystem,
 				this.actualWorkingTime, this.flexTime);
 		
+		// 総労働時間を計算
+		this.calcTotalWorkingTime();
+		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, aggrPeriod.end(),
@@ -410,23 +425,14 @@ public class MonthlyCalculation {
 	}
 	
 	/**
-	 * 共有項目を集計する
+	 * 総労働時間の計算
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
-	public void aggregateSharedItem(DatePeriod datePeriod){
+	private void calcTotalWorkingTime(){
 
-		// 共有項目を集計する
-		this.aggregateTime.aggregateSharedItem(datePeriod, this.attendanceTimeOfDailyMap);
-		
-		// 総労働時間を集計する
-		for (val attendanceTimeOfDaily : this.attendanceTimeOfDailyMap.values()) {
-			val ymd = attendanceTimeOfDaily.getYmd();
-			if (!datePeriod.contains(ymd)) continue;
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			this.totalWorkingTime = this.totalWorkingTime.addMinutes(totalWorkingTime.getTotalTime().v());
-		}
+		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v() +
+				this.actualWorkingTime.getTotalWorkingTargetTime().v() +
+				this.flexTime.getTotalWorkingTargetTime().v());
 	}
 	
 	/**
