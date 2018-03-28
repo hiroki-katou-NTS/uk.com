@@ -302,7 +302,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 itemName: data.acceptItemName(),
                 condition: condition,
                 inputMode: true
-            }, true);
+            });
 
             modal("/view/cmf/001/l/index.xhtml").onClosed(function() {
                 var output = getShared('CMF001lOutput');
