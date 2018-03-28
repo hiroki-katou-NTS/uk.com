@@ -14,11 +14,13 @@ module nts.uk.at.view.kmk003.g {
             roundingValue: KnockoutObservable<number>;
 
             lstRest: KnockoutObservableArray<any>;
+            specialLstRest: KnockoutObservableArray<any>;
             actualList: KnockoutObservableArray<any>;
 
             selectedRest: KnockoutObservable<number>;
             selectedActual: KnockoutObservable<number>;
             dataObject: KnockoutObservable<any>;
+            updateRounding : KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
 
@@ -39,6 +41,10 @@ module nts.uk.at.view.kmk003.g {
                     new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236')),
                     new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
                 ]);
+                self.specialLstRest = ko.observableArray([
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236'))
+                ]);
                 self.actualList = ko.observableArray([
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_239')),
                     new RadioBoxModel(1, nts.uk.resource.getText('KMK003_240'))
@@ -47,6 +53,19 @@ module nts.uk.at.view.kmk003.g {
                 self.selectedRest = ko.observable(0);
                 self.selectedActual = ko.observable(0);
                 self.dataObject = ko.observable(null);
+                
+                self.updateRounding = ko.observable(true);
+                //change rounding type when change unit
+                self.unitValue.subscribe((v) => {
+                    if (v == 4 || v == 6)//case 15 or 30 minute
+                    {
+                        self.roundingComboBoxOptions(self.getRounding(self.dataObject()));
+                    }
+                    else {
+                        self.roundingComboBoxOptions(self.getSpecialRounding(self.dataObject()));
+                    }
+                    self.updateRounding.notifySubscribers(self.updateRounding());
+                });
             }
 
             /**
@@ -83,11 +102,7 @@ module nts.uk.at.view.kmk003.g {
                         arrayUnit.push(new Item(index, item.localizedName));
                     });
                     _self.unitComboBoxOptions(arrayUnit);
-                    let arrayRounding: any = [];
-                    dataObject.lstEnum.rounding.forEach(function(item: any, index: number) {
-                        arrayRounding.push(new Item(index, item.localizedName));
-                    });
-                    _self.roundingComboBoxOptions(arrayRounding);
+                    _self.roundingComboBoxOptions(_self.getSpecialRounding(_self.dataObject()));
 
                     _self.switchValue(dataObject.useRest);
                     _self.unitValue(dataObject.roundUnit);
@@ -98,6 +113,27 @@ module nts.uk.at.view.kmk003.g {
                     _self.selectedActual(dataObject.actualRest);
                     _self.selectedRest(dataObject.restTimeCalcMethod);
                 }
+            }
+            
+            private getRounding(dataObject:any):any
+            {
+                let arrayRounding: any = [];
+                dataObject.lstEnum.rounding.forEach(function(item: any, index: number) {
+                        arrayRounding.push(new Item(index, item.localizedName));
+                });
+                return arrayRounding;
+            }
+
+            
+            private getSpecialRounding(dataObject:any):any
+            {
+                let arrayRounding: any = [];
+                dataObject.lstEnum.rounding.forEach(function(item: any, index: number) {
+                    if (index != 2) {
+                        arrayRounding.push(new Item(index, item.localizedName));
+                    }
+                });
+                return arrayRounding;
             }
 
             /**

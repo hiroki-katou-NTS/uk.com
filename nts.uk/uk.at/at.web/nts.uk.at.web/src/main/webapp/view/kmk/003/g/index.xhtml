@@ -65,7 +65,7 @@
 							<label>#{i18n.getText('KMK003_231')}</label>
 						</div>	
 						<div class="dialog-rows">
-							<div tabindex="3" class="cf control-warp" id= "switch-btn" data-bind="ntsSwitchButton: {
+							<div tabindex="3" class="cf control-warp pad-bottom" id= "switch-btn" data-bind="ntsSwitchButton: {
 									name: '#[KMK003_230]',
 									options: switchOptions,
 									optionsValue: 'code',
@@ -84,8 +84,10 @@
 										editable: false,
 										enable: true }"></div>
 							</div>
-							<div class="control-warp" style="width: 100px;">
-								<div tabindex="5" style="width: 100px;" data-bind="ntsComboBox: {
+							<com:ko tag="if" bind="updateRounding">
+								<div class="control-warp" style="width: 100px;">
+									<div tabindex="5" style="width: 100px;"
+										data-bind="ntsComboBox: {
 										options: roundingComboBoxOptions,
 										name: '#[KMK003_233]',
 										optionsValue: 'code',
@@ -95,7 +97,8 @@
 										dropDownAttachedToBody: true,
 										editable: false,
 										enable: true }"></div>
-							</div>
+								</div>
+							</com:ko>
 						</div>
 					</div>				
 					<!-- END setting items -  -->
