@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew.ComStatWorkTimeSetDto.ComStatWorkTimeSetDtoBuilder;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
@@ -62,12 +63,12 @@ public class ComStatWorkTimeSetFinder {
 
 		Optional<ComTransLaborTime> optTransLaborTime = this.transLaborTimeRepository.find(companyId);
 		if (optTransLaborTime.isPresent()) {
-			dtoBuilder.transLaborTime(ComTransLaborTimeDto.fromDomain(optTransLaborTime.get()));
+			dtoBuilder.transLaborTime(WorkingTimeSettingDto.fromDomain(optTransLaborTime.get().getWorkingTimeSet()));
 		}
 
 		Optional<ComRegularLaborTime> optComRegular = this.regularLaborTimeRepository.find(companyId);
 		if (optComRegular.isPresent()) {
-			dtoBuilder.regularLaborTime(ComRegularLaborTimeDto.fromDomain(optComRegular.get()));
+			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get().getWorkingTimeSet()));
 		}
 
 		Optional<ComNormalSetting> optComNormalSet = this.normalSettingRepository.find(companyId, year);
