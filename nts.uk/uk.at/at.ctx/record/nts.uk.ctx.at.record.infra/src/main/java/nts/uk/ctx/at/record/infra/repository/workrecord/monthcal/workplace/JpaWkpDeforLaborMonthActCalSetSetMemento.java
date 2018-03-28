@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSet;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSetPK;
+import nts.uk.ctx.at.record.infra.repository.workrecord.monthcal.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
@@ -54,6 +55,26 @@ public class JpaWkpDeforLaborMonthActCalSetSetMemento implements WkpDeforLaborMo
 	 */
 	@Override
 	public void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
+		
+		this.typeValue.setIncludeLegalAggr(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getLegalOverTimeWork()));
+		this.typeValue.setIncludeHolidayAggr(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getLegalHoliday()));
+		this.typeValue.setIncludeExtraAggr(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getAggregateTimeSet().getSurchargeWeekMonth()));
+		
+		this.typeValue.setIncludeLegalOt(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getExcessOutsideTimeSet().getLegalOverTimeWork()));
+		this.typeValue.setIncludeHolidayOt(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getExcessOutsideTimeSet().getLegalHoliday()));
+		this.typeValue.setIncludeExtraOt(
+				BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getExcessOutsideTimeSet().getSurchargeWeekMonth()));
+		
+		this.typeValue.setIsOtIrg(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getDeforLaborCalSetting().isOtTransCriteria()));
+		
+		this.typeValue.setPeriod(legalAggrSetOfIrgNew.getSettlementPeriod().getPeriod().v());
+		this.typeValue.setStrMonth(legalAggrSetOfIrgNew.getSettlementPeriod().getStartMonth().v());
+		this.typeValue.setRepeatAtr(BooleanGetAtr.getAtrByBoolean(legalAggrSetOfIrgNew.getSettlementPeriod().getRepeatAtr()));	
 
 	}
 
