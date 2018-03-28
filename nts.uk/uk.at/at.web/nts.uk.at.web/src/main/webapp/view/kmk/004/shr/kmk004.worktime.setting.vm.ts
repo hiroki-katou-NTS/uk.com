@@ -129,6 +129,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                             self.isNewMode(false);
                             // Update Full Data
                             self.worktimeSetting.updateFullData(data);
+                            self.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
                         }
                         else {
                             // new mode.

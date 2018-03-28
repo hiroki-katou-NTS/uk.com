@@ -516,7 +516,7 @@ module nts.uk.at.view.kmk004.shared.model {
         public updateData(model: WorktimeSetting): void {
             let self = this;
             self.regAggrSetting.updateData(model.normalAggrSetting());
-            self.flexAggrSetting.updateData(model.flexAggrSetting());
+            self.deforAggrSetting.updateData(model.deformAggrSetting());
             self.flexAggrSetting.updateData(model.flexAggrSetting());
         }
     }
@@ -832,24 +832,24 @@ module nts.uk.at.view.kmk004.shared.model {
      * 集計設定
      */
     export class AggrregateSetting {
+        static MANAGE_BREAKDOWN = 0;
         static MANAGED_AS_FLEX_TIME = 1;
-        static MANAGE_BREAKDOWN = 2;
     }
 
     /**
      * フレックス不足時の繰越設定
      */
     export class ShortageSetting {
-        static CURRENT_MONTH_INTEGRATION = 1;
-        static NEXT_MONTH_CARRY_FORWARD = 2;
+        static CURRENT_MONTH_INTEGRATION = 0;
+        static NEXT_MONTH_CARRY_FORWARD = 1;
     }
 
     /**
      * フレックス集計方法
      */
     export class FlexAggregateMethod {
-        static PRINCIPLE = 1;
-        static FOR_CONVINENCE = 2;
+        static PRINCIPLE = 0;
+        static FOR_CONVINENCE = 1;
     }
 
     /**
