@@ -12,8 +12,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Builder
 public class EntryAndExitManage {
+	// /*会社ID*/
 	private String CID;
 	
 	// 使用区分
