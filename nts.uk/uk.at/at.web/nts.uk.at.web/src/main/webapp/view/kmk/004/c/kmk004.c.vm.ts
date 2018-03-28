@@ -1,18 +1,6 @@
 module nts.uk.at.view.kmk004.c {
     export module viewmodel {
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
-        import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;
-        import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;
-        import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;
-        import FlexMonth = nts.uk.at.view.kmk004.shared.model.FlexMonth;
-        import NormalSetting = nts.uk.at.view.kmk004.shared.model.NormalSetting;
-        import WorkingTimeSetting = nts.uk.at.view.kmk004.shared.model.WorkingTimeSetting;
-        import Monthly = nts.uk.at.view.kmk004.shared.model.Monthly;
-        import WorktimeSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDto;
-        import WorktimeNormalDeformSetting = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSetting;
-        import WorktimeFlexSetting1 = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1;
-        import NormalWorktime = nts.uk.at.view.kmk004.shared.model.NormalWorktime;
-        import FlexWorktimeAggrSetting = nts.uk.at.view.kmk004.shared.model.FlexWorktimeAggrSetting;
         
         export class ScreenModel {
             
@@ -183,7 +171,8 @@ module nts.uk.at.view.kmk004.c {
              */
             private setAlreadySettingEmploymentList(): void {
                 let self = this;
-                service.findAllEmploymentSetting(self.employmentWTSetting.year()).done(listCode => {
+                // TODO: service.findAllEmploymentSetting(self.employmentWTSetting.year()).done(listCode => {
+                service.findAllEmploymentSetting().done(listCode => {
                     self.alreadySettingEmployments(_.map(listCode, function(code) {
                         return { code: code, isAlreadySetting: true };
                     }));

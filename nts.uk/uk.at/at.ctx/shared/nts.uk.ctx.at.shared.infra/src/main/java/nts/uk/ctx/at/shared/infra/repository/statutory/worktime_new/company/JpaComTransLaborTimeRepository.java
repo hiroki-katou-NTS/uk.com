@@ -41,7 +41,7 @@ public class JpaComTransLaborTimeRepository extends JpaRepository
 	public void update(ComTransLaborTime setting) {
 		KshstComTransLabTime entity = this.queryProxy().find(setting.getCompanyId().v(), KshstComTransLabTime.class).get();
 		setting.saveToMemento(new JpaComTransLaborTimeSetMemento(entity));
-		this.commandProxy().update(this.toEntity(setting));
+		this.commandProxy().update(entity);
 	}
 
 	/*

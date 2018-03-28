@@ -34,6 +34,8 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void create(ComRegularLaborTime setting) {
+		KshstComRegLaborTime entity = new KshstComRegLaborTime();
+		setting.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
 		commandProxy().insert(this.toEntity(setting));
 	}
 
@@ -42,7 +44,9 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void update(ComRegularLaborTime setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstComRegLaborTime entity = this.queryProxy().find(setting.getCompanyId().v(), KshstComRegLaborTime.class).get();
+		setting.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
