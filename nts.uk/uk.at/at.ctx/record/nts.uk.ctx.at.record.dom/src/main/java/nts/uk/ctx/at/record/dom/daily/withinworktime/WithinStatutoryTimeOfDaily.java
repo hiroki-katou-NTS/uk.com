@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
@@ -72,10 +73,10 @@ public class WithinStatutoryTimeOfDaily {
 															   Optional<PersonalLaborCondition> personalCondition,
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
-			   												   LateTimeSheet lateTimeSheet,
-			   												   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-			   												   LateTimeOfDaily lateTimeOfDaily,
-			   												   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+//			   												   LateTimeSheet lateTimeSheet,
+//			   												   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+//			   												   LateTimeOfDaily lateTimeOfDaily,
+//			   												   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   												   WorkingSystem workingSystem,
@@ -83,11 +84,14 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AddSettingOfFlexWork addSettingOfFlexWork,
 			   												   AddSettingOfRegularWork addSettingOfRegularWork,
 			   												   VacationAddTimeSet vacationAddTimeSet,
-			   												   AutoCalAtrOvertime autoCalcSet) {
+			   												   AutoCalAtrOvertime autoCalcSet,
+			   												   HolidayCalcMethodSet holidayCalcMethodSet) {
 		//法定内時間の計算
-		AttendanceTime workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,lateTimeSheet,leaveEarlyTimeSheet,
-														  lateTimeOfDaily,leaveEarlyTimeOfDaily,late,leaveEarly,workingSystem,addSettingOfIrregularWork,
-														  addSettingOfFlexWork,addSettingOfRegularWork,vacationAddTimeSet);
+		AttendanceTime workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
+//														　　lateTimeSheet,leaveEarlyTimeSheet,
+//														  lateTimeOfDaily,leaveEarlyTimeOfDaily,
+														  late,leaveEarly,workingSystem,addSettingOfIrregularWork,
+														  addSettingOfFlexWork,addSettingOfRegularWork,vacationAddTimeSet,holidayCalcMethodSet);
 		//所定内深夜時間の計算
 		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay,autoCalcSet);
 
@@ -102,17 +106,18 @@ public class WithinStatutoryTimeOfDaily {
 	public static AttendanceTime calcWithinStatutoryTime(CalculationRangeOfOneDay oneDay,	Optional<PersonalLaborCondition> personalCondition,
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
-			   												   LateTimeSheet lateTimeSheet,
-			   												   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-			   												   LateTimeOfDaily lateTimeOfDaily,
-			   												   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+//			   												   LateTimeSheet lateTimeSheet,
+//			   												   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
+//			   												   LateTimeOfDaily lateTimeOfDaily,
+//			   												   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   												   WorkingSystem workingSystem,
 			   												   AddSettingOfIrregularWork addSettingOfIrregularWork,
 			   												   AddSettingOfFlexWork addSettingOfFlexWork,
 			   												   AddSettingOfRegularWork addSettingOfRegularWork,
-			   												   VacationAddTimeSet vacationAddTimeSet) {
+			   												   VacationAddTimeSet vacationAddTimeSet,
+			   												   HolidayCalcMethodSet holidayCalcMethodSet) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		Optional<DeductionTimeSheet> dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
 												?oneDay.getTemporaryDeductionTimeSheet()
@@ -123,17 +128,18 @@ public class WithinStatutoryTimeOfDaily {
 																						  vacationClass,StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
 																						   Optional.empty(),//Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode().toString())),
 																						   personalCondition,
-																						   lateTimeSheet,
-																						   leaveEarlyTimeSheet,
-																						   lateTimeOfDaily,
-																						   leaveEarlyTimeOfDaily,
+//																						   lateTimeSheet,
+//																						   leaveEarlyTimeSheet,
+//																						   lateTimeOfDaily,
+//																						   leaveEarlyTimeOfDaily,
 																						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																						   workingSystem,
 																						   addSettingOfIrregularWork,
 																						   addSettingOfFlexWork,
 																						   addSettingOfRegularWork,
-																						   vacationAddTimeSet);
+																						   vacationAddTimeSet,
+																						   holidayCalcMethodSet);
 		}
 		return workTime;
 	}

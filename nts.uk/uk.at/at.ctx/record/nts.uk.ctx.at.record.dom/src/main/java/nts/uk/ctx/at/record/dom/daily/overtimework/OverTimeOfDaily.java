@@ -283,8 +283,10 @@ public class OverTimeOfDaily {
 												  Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 												  Optional<DeductionTimeSheet> tempDedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 												  StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-												  Optional<PersonalLaborCondition> personalCondition, LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
-												  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+												  Optional<PersonalLaborCondition> personalCondition,
+//												  LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
+//												  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+												  boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 												  boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 												  WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
 												  VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr,
@@ -310,8 +312,10 @@ public class OverTimeOfDaily {
 					predetermineTimeSet,
 					tempDedTimeSheet,vacationClass,timevacationUseTimeOfDaily,
 					statutoryDivision,siftCode,
-					personalCondition,lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-					leaveEarlyTimeOfDaily,late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+					personalCondition,
+//					lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
+//					leaveEarlyTimeOfDaily,
+					late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 					workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
 					vacationAddTimeSet,TimeLimitUpperLimitSetting.NOUPPERLIMIT);
