@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfM
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyFinder;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.WorkTypeDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class VerticalTotalMethodMonthlyService.
  *
