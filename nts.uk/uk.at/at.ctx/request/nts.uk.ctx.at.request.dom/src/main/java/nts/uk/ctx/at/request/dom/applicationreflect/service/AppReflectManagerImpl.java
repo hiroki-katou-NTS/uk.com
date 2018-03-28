@@ -87,12 +87,12 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			return absenceInfor;
 		}
 		AppAbsence absenceAppData = optAbsence.get();
-		absenceInfor = new AbsenceReflectPara(appInfor.getEmployeeID(), 
+		absenceInfor = new AbsenceReflectPara(appInfor.getEmployeeID(),
 				appInfor.getAppDate(), 
 				ScheAndRecordSameChangeFlg.ALWAY, 
 				true, 
-				absenceAppData.getWorkTypeCode().v(),
-				appInfor.getReflectionInformation().getStateReflectionReal(),
+				absenceAppData.getWorkTypeCode().v(), 
+				appInfor.getReflectionInformation().getStateReflectionReal(), 
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
 		return absenceInfor;
 	}
@@ -105,7 +105,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			return appGobackTmp;
 		}
 		GoBackDirectly gobackInfo = optGobackInfo.get();
-		GobackAppRequestPara gobackApp = new GobackAppRequestPara(gobackInfo.getWorkChangeAtr(), 
+		GobackAppRequestPara gobackReques = new GobackAppRequestPara(gobackInfo.getWorkChangeAtr(), 
 				gobackInfo.getSiftCD().v(), 
 				gobackInfo.getWorkTypeCD().v(), 
 				gobackInfo.getWorkTimeStart1().v(), 
@@ -118,7 +118,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				ScheAndRecordSameChangeFlg.ALWAY,
 				ScheTimeReflectRequesAtr.APPTIME,
 				true,
-				gobackApp);
+				gobackReques);
 		
 		return appGobackTmp;
 	}

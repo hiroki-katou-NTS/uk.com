@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 @AllArgsConstructor
 @Getter
@@ -37,5 +37,5 @@ public class AbsenceReflectPara {
 	/**
 	 * 予定反映不可理由
 	 */
-	private ReasonNotReflect_New reasoNotReflect;
+	private ReasonNotReflectDaily_New reasoNotReflect;
 }

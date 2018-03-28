@@ -270,7 +270,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		
 		//時間丁度の打刻は遅刻・早退とするをチェックする
 		WorkTimeSetting workTimeData = findByCode.get();
-		//TODO can xem lai
+		/*//TODO can xem lai
 		List<OtherEmTimezoneLateEarlySet> lstEmTimezon = workMemento.getOtherClassSet();
 		OtherEmTimezoneLateEarlySet emTimezon;
 		if(isPre) {
@@ -289,7 +289,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return timeData + 1;
 			}
 
-		}
+		}*/
 		return timeData;
 	}
 	@Override
