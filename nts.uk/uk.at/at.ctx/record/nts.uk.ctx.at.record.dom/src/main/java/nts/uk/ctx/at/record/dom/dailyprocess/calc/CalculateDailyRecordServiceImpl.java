@@ -300,8 +300,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new OverDayEndCalcSetOfExcessHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfExcessSpecialHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
-		//残業時間の自動計算設定
-		CalAttrOfDailyPerformance overCalcSetinIntegre = integrationOfDaily.getCalAttr();
+		//自動計算設定
+		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();
 		
 		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
@@ -333,7 +333,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
 											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
-												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
+												personalInfo.getStatutoryWorkTime(),calcSetinIntegre.getOvertimeSetting(),LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
 												new WorkTimeCalcMethodDetailOfHoliday(flexWork.getNotDeductLateleave2(),flexWork.getAdditionTime2()),
@@ -364,7 +364,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						tomorrow, 
 						new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 						personalInfo.getStatutoryWorkTime(), 
-						autoCalcOverTimeWork, 
+						calcSetinIntegre.getOvertimeSetting(), 
 						fixedWorkSetting.get().getLegalOTSetting(), 
 						StatutoryPrioritySet.priorityNormalOverTimeWork, 
 						workTime.get(),
