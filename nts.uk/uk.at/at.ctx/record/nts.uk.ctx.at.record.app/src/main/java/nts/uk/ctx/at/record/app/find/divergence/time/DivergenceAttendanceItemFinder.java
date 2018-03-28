@@ -1,14 +1,17 @@
 package nts.uk.ctx.at.record.app.find.divergence.time;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceNameAdapter;
-import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceNameDto;
-import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceTypeAdapter;
-import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceTypeDto;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -19,33 +22,91 @@ public class DivergenceAttendanceItemFinder {
 
 	/** The at type. */
 	@Inject
-	private DivergenceAttendanceTypeAdapter atType;
-	
+	private AttendanceTypeDivergenceAdapter atType;
+
 	/** The at name. */
-	// user contexts
 	@Inject
-	private DivergenceAttendanceNameAdapter atName;
+	private AttendanceNameDivergenceAdapter atName;
+
+	/** The div time repo. */
+	@Inject
+	DivergenceTimeRepository divTimeRepo;
 
 	/**
 	 * Gets the all at type.
 	 *
-	 * @param screenUseAtr the screen use atr
+	 * @param screenUseAtr
+	 *            the screen use atr
 	 * @return the all at type
 	 */
-	public List<DivergenceAttendanceTypeDto> getAllAtType(int screenUseAtr) {
+	public List<AttendanceTypeDivergenceAdapterDto> getAllAtType(int divTimeNo) {
+		//get companyId
 		String companyId = AppContexts.user().companyId();
-		List<DivergenceAttendanceTypeDto> data = atType.getItemByScreenUseAtr(companyId, screenUseAtr);
+		
+		//define screenUseAtr
+		Integer screenUseAtr = 1;
+		
+		//define divType
+		Integer divType = 0;
+		
+		//get option<domain>
+		Optional<DivergenceTime> optionalDivTime = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
+
+		//if present
+		if (optionalDivTime.isPresent()) {
+			//get divergence type
+			divType = optionalDivTime.get().getDivType().value;
+		}
+
+		//cases for screenUseAtr
+		switch (divType) {
+		case 0:
+			screenUseAtr = ScreenUseAtr.ARBITRARYDIVERGENCETIME.value;
+			break;
+		case 1:
+			screenUseAtr = ScreenUseAtr.HOLIDAYSDEPARTURETIME.value;
+			break;
+		case 2:
+			screenUseAtr = ScreenUseAtr.ENTRYDIVERGENCETIME.value;
+			break;
+		case 3:
+			screenUseAtr = ScreenUseAtr.EVACUATIONDEPARTURETIMR.value;
+			break;
+		case 4:
+			screenUseAtr = ScreenUseAtr.PCLOGONDIVERGENCETIME.value;
+			break;
+		case 5:
+			screenUseAtr = ScreenUseAtr.PCLOGOFFDIVERGENCETIME.value;
+			break;
+		case 6:
+			screenUseAtr = ScreenUseAtr.PREDETERMINEDBREAKTIMEDIVERGENCE.value;
+			break;
+		case 7:
+			screenUseAtr = ScreenUseAtr.NONSCHEDULEDDIVERGENCETIME.value;
+			break;
+		case 8:
+			screenUseAtr = ScreenUseAtr.PREMATUREOVERTIMEDEPARTURETIME.value;
+			break;
+		case 9:
+			screenUseAtr = ScreenUseAtr.NORMALOVERTIMEDEVIATIONTIME.value;
+			break;
+		default:
+			break;
+
+		}
+		List<AttendanceTypeDivergenceAdapterDto> data = atType.getItemByScreenUseAtr(companyId, screenUseAtr);
 		return data;
 	}
 
 	/**
 	 * Gets the at name.
 	 *
-	 * @param dailyAttendanceItemIds the daily attendance item ids
+	 * @param dailyAttendanceItemIds
+	 *            the daily attendance item ids
 	 * @return the at name
 	 */
-	public List<DivergenceAttendanceNameDto> getAtName(List<Integer> dailyAttendanceItemIds) {
-		List<DivergenceAttendanceNameDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
+	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
+		List<AttendanceNameDivergenceDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
 		return data;
 	}
 }
