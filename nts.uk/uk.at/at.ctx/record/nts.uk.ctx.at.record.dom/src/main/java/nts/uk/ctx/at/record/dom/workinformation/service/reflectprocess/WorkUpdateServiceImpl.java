@@ -103,7 +103,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Override
 	public void updateStartTimeOfReflect(TimeReflectParameter para) {
 		
-		//日別実績の勤務情報		
+		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
 		if(!optDailyPerfor.isPresent()) {
 			return;
@@ -130,7 +130,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 					para.getTime());
 		}
 		
-		lstTimeSheetFrameNo.add(para.getFrameNo(), timeSheet); //can xac nhan lai
+		lstTimeSheetFrameNo.add(para.getFrameNo(), timeSheet);
 		dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
 		workRepository.updateByKeyFlush(dailyPerfor);
 		
@@ -139,11 +139,17 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		//予定開始時刻の項目ID
 		List<Integer> lstItem = new ArrayList<Integer>();
 		if(para.isPreCheck()) {
-			lstItem.add(3);
-			lstItem.add(5);	
+			if(para.getFrameNo() == 1) {
+				lstItem.add(3);	
+			} else {
+				lstItem.add(5);	
+			}	
 		} else {
-			lstItem.add(4);
-			lstItem.add(6);
+			if(para.getFrameNo() == 1) {
+				lstItem.add(4);	
+			} else {
+				lstItem.add(6);	
+			}
 		}
 		
 		//TODO add lstItem
@@ -205,11 +211,17 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		//予定項目ID=出勤の項目ID	
 		List<Integer> lstItem = new ArrayList<Integer>();
 		if(para.isPreCheck()) {
-			lstItem.add(31);
-			//lstItem.add(34);	
+			if(para.getFrameNo() == 1) {
+				lstItem.add(31);	
+			} else {
+				lstItem.add(41);
+			}
 		} else {
-			lstItem.add(34);
-			//lstItem.add(44);
+			if(para.getFrameNo() == 1) {
+				lstItem.add(34);	
+			} else {
+				lstItem.add(44);
+			}
 		}
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
