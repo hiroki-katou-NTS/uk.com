@@ -457,15 +457,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		Optional<WorkTimeDailyAtr> workTime = Optional.empty();
-		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
-			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {
+			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().toString());
 			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
 		}
 		
-		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation() == null || manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordWorkInformation() == null || manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordWorkInformation().getWorkTypeCode() == null)
+		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation() == null || manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo() == null || manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTypeCode() == null)
 			return manageReGetClass.getIntegrationOfDaily();
 		
-		val workType = this.workTypeRepository.findByPK(companyId,manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordWorkInformation().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		val workType = this.workTypeRepository.findByPK(companyId,manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 		if(!workType.isPresent() || !workTime.isPresent()) return manageReGetClass.getIntegrationOfDaily();
 		//休暇加算時間設定
 		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
