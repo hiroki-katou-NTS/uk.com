@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -49,19 +49,22 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 	
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
+	
+	@Inject
+	private ICompanyRepo companyRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<UpdateItemCommand> context) {
-		
+
 		UpdateItemCommand itemCommand = context.getCommand();
 		String itemName = itemCommand.getItemName();
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+
 		// String mess = "Msg_233";
 		String contractCd = AppContexts.user().contractCode();
-		
+
 		// validate input
 		validateCommand(itemCommand);
-		
+
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep
 				.getPerInfoItemDefById(itemCommand.getPerInfoItemDefId(), contractCd).orElse(null);
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(oldItem.getPerInfoCategoryId(), contractCd)
@@ -69,18 +72,20 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		if (category == null) {
 			return null;
 		}
-		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
+
+		List<String> companyIdList = companyRepo.acquireAllCompany();
+		List<String> categoryIdList = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
 				category.getCategoryCode().v());
 		if (oldItem == null || oldItem.getIsFixed() == IsFixed.FIXED) {
 			return null;
 		}
-		
-		if(this.isCheckData(oldItem.getItemCode().toString(), perInfoCtgIds)) {
+
+		if (this.isCheckData(oldItem.getItemCode().toString(), categoryIdList)) {
 			throw new BusinessException("Msg_233");
 		}
 		oldItem.setItemName(itemName);
 		PersonInfoItemDefinition newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
-		
+
 		this.pernfoItemDefRep.updatePerInfoItemDefRoot(newItem, contractCd);
 		return null;
 	}

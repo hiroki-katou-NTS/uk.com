@@ -14,12 +14,12 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -91,6 +91,8 @@ public class PerInfoItemDefFinder {
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
+	
+	@Inject ICompanyRepo companyRepo;
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId, int personEmployeeType) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
@@ -187,7 +189,7 @@ public class PerInfoItemDefFinder {
 	}
 
 	public PerInfoItemChangeDefDto getPerInfoItemDefById(String perInfoItemDefId, int personEmployeeType) {
-		String companyId = AppContexts.user().companyId();
+		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
 
 		Optional<PersonInfoItemDefinition> itemDefinitionOpt = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode());
@@ -210,10 +212,10 @@ public class PerInfoItemDefFinder {
 							GeneralDate today = GeneralDate.today();
 							List<Selection> selectionList = new ArrayList<>();
 							if (personEmployeeType == PersonEmployeeType.PERSON.value) {
-								selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, typeCode,
+								selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
 										today, 0);
 							} else {
-								selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, typeCode,
+								selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
 										today, 1);
 							}
 							selectionDtoList = selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection1(c))
@@ -238,7 +240,7 @@ public class PerInfoItemDefFinder {
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
 		return this.pernfoItemDefRep
-				.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
+				.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode()).stream()
 				.map(item -> {
 					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(item.getPerInfoCategoryId(),
 							item.getPerInfoItemDefId());
@@ -580,7 +582,7 @@ public class PerInfoItemDefFinder {
 	public boolean isCheckData(String itemId) {
 		String contractCd = AppContexts.user().contractCode();
 
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+		List<String> companyIdList = companyRepo.acquireAllCompany();
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep.getPerInfoItemDefById(itemId, contractCd).orElse(null);
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(oldItem.getPerInfoCategoryId(), contractCd)
 				.orElse(null);
@@ -591,13 +593,21 @@ public class PerInfoItemDefFinder {
 
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
 				category.getCategoryCode().v());
-
-		boolean itemAuth = this.itemAuthRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
-				itemInit = this.itemInitRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
-				isEmpData = this.empInfoRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
-				isPerData = this.perItemRepo.hasItemData(perInfoCtgIds, oldItem.getItemCode().v());
-
-		if (itemAuth || itemInit || isEmpData || isPerData) {
+		
+		String itemCode = oldItem.getItemCode().v();
+		
+		if ( itemAuthRepo.hasItemData(itemCode, perInfoCtgIds)) {
+			return true;
+		}
+		if ( itemInitRepo.hasItemData(itemCode, perInfoCtgIds)) {
+			return true;
+		}
+		
+		if ( empInfoRepo.hasItemData(itemCode, perInfoCtgIds)) {
+			return true;
+		}
+		
+		if ( perItemRepo.hasItemData(perInfoCtgIds, itemCode)) {
 			return true;
 		}
 
