@@ -52,8 +52,8 @@ public class OvertimeInputCommand {
 	private Integer applicationTime;
 	
 	public OverTimeInput convertToDomain(){
-		int startTime = this.startTime == null? -1: this.startTime.intValue();
-		int endTime = this.endTime == null? -1: this.endTime.intValue();
+		int startTime = this.startTime == null? null: this.startTime.intValue();
+		int endTime = this.endTime == null? null: this.endTime.intValue();
 		int appTime = this.applicationTime == null? -1: this.applicationTime.intValue();
 		return OverTimeInput.createSimpleFromJavaType(
 				this.companyID, 
