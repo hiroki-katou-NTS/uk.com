@@ -138,16 +138,6 @@ module a9 {
                 nts.uk.ui.block.clear();
             });
         }
-
-        /**
-         * Handle when using tab button
-         */
-        public changeTab(data: any, e: any) {
-            let _self = this;
-            if (e.which == 9) {
-                _self.selectedTab('tab-10');
-            }
-        }
     } 
 
     /**
