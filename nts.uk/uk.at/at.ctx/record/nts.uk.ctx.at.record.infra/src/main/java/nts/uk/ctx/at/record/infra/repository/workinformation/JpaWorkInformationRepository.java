@@ -130,6 +130,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			data.dayOfWeek = domain.getDayOfWeek().value;
 			if(data.scheduleTimes != null && !data.scheduleTimes.isEmpty()){
 				this.commandProxy().removeAll(data.scheduleTimes);
+				this.getEntityManager().flush();
 			}
 			data.scheduleTimes = domain.getScheduleTimeSheets().stream().map(c -> 
 								new KrcdtWorkScheduleTime(
