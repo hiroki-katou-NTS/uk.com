@@ -75,9 +75,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             }).always(() => {
                 block.clear();
             });
-
-
-
         }
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
