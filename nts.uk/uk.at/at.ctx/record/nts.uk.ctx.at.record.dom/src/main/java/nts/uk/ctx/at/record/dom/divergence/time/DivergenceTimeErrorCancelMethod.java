@@ -6,14 +6,18 @@ import lombok.Setter;
 /**
  * The Class DivergenceTimeErrorCancelMethod.
  */
+//乖離時間のエラーの解除方法
 @Getter
 @Setter
 public class DivergenceTimeErrorCancelMethod {
 
 	/** The reason inputed. */
+	//乖離理由が入力された場合、エラーを解除する
 	private boolean reasonInputed;
+	
 
 	/** The reason selected. */
+	//乖離理由が選択された場合、エラーを解除する
 	private boolean reasonSelected;
 
 	/**

@@ -5,15 +5,20 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * The primary key class for the KRCST_DVGC_REASON database table.
  * 
  */
+
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class KrcstDvgcReasonPK implements Serializable {
 	
@@ -29,29 +34,10 @@ public class KrcstDvgcReasonPK implements Serializable {
 	@Column(name="CID")
 	private String cid;
 
-	/** The reason code. */
+	/** The reason cd. */
 	@Column(name="REASON_CD")
-	private String reasonCode;
+	private String reasonCd;
 
-	/**
-	 * Instantiates a new krcst dvgc reason PK.
-	 */
-	public KrcstDvgcReasonPK() {
-	}
-	
-	/**
-	 * Instantiates a new krcst dvgc reason PK.
-	 *
-	 * @param no the no
-	 * @param cid the cid
-	 * @param reasonCode the reason code
-	 */
-	public KrcstDvgcReasonPK(Integer no, String cid, String reasonCode) {
-		this.no = no;
-		this.cid = cid;
-		this.reasonCode = reasonCode;
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -66,7 +52,7 @@ public class KrcstDvgcReasonPK implements Serializable {
 		return 
 			(this.no == castOther.no)
 			&& this.cid.equals(castOther.cid)
-			&& this.reasonCode.equals(castOther.reasonCode);
+			&& this.reasonCd.equals(castOther.reasonCd);
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +63,7 @@ public class KrcstDvgcReasonPK implements Serializable {
 		int hash = 17;
 		hash = hash * prime + ((int) (this.no ^ (this.no >>> 32)));
 		hash = hash * prime + this.cid.hashCode();
-		hash = hash * prime + this.reasonCode.hashCode();
+		hash = hash * prime + this.reasonCd.hashCode();
 		
 		return hash;
 	}
