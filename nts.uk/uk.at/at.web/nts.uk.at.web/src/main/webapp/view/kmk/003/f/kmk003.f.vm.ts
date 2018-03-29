@@ -56,7 +56,11 @@ module nts.uk.at.view.kmk003.f {
              * Save
              */
             public save(): void {
-                let _self = this;
+                let _self = this;               
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
+                
                 let outputObject = {
                     oneDayDialog: _self.oneDay(),
                     morningDialog: _self.morning(),

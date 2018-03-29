@@ -92,7 +92,8 @@
 									value: lateGraceTime,
 									inputFormat: 'time',
 									mode: 'time',
-									constraint:'LateEarlyGraceTime' }" />	
+									constraint:'LateEarlyGraceTime',
+									required: true }" />	
 							<div tabindex="5" data-bind="ntsCheckBox: { 
 									name: '#[KMK003_267]',
 									checked: lateIncludeWorkingHour }">#{i18n.getText('KMK003_267')}</div>	
@@ -104,7 +105,8 @@
 									value: leaveEarlyGraceTime,
 									inputFormat: 'time',
 									mode: 'time',
-									constraint:'LateEarlyGraceTime' }" />	
+									constraint:'LateEarlyGraceTime',
+									required: true }" />	
 							<div tabindex="7" data-bind="ntsCheckBox: { 
 									name: '#[KMK003_269]',
 									checked: leaveEarlyIncludeWorkingHour }">#{i18n.getText('KMK003_269')}</div>	

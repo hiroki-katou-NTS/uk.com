@@ -81,14 +81,17 @@ module nts.uk.at.view.kmk003.i {
              */
             public save(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
                 
                 let dataObject: any = {
                     delFromEmTime: _self.delFromEmTime(),       
                     lateStampExactlyTimeIsLateEarly: _self.lateStampExactlyTimeIsLateEarly(),
-                    lateGraceTime: _self.lateGraceTime(),
+                    lateGraceTime: nts.uk.util.isNullOrUndefined(_self.lateGraceTime()) ? 0 : _self.lateGraceTime(),
                     lateIncludeWorkingHour: _self.lateIncludeWorkingHour(),
                     leaveEarlyStampExactlyTimeIsLateEarly: _self.leaveEarlyStampExactlyTimeIsLateEarly(),
-                    leaveEarlyGraceTime: _self.leaveEarlyGraceTime(),
+                    leaveEarlyGraceTime: nts.uk.util.isNullOrUndefined(_self.leaveEarlyGraceTime()) ? 0 : _self.leaveEarlyGraceTime(),
                     leaveEarlyIncludeWorkingHour: _self.leaveEarlyIncludeWorkingHour()
                 };
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_I_OUTPUT_DATA", dataObject);
