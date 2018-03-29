@@ -345,9 +345,9 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.normalWorktime().updateData(dto.regularLaborTime);
                 self.deformLaborWorktime().updateData(dto.transLaborTime);
     
-                self.normalSetting().updateData(dto);
+                self.normalSetting().updateData(dto, 1);
                 self.flexSetting().updateData(dto);
-                self.deformLaborSetting().updateData(dto);
+                self.deformLaborSetting().updateData(dto, 2);
             }
     
             public updateDetailData(dto: MonthlyCalSettingDto): void {
@@ -1223,13 +1223,21 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 }
             }
     
-            public updateData(dto: StatutoryWorktimeSettingDto): void {
+            public updateData(dto: StatutoryWorktimeSettingDto, key: number): void {
                 let self = this;
                 self.year(dto.year);
-                self.statutorySetting().forEach(i => {
-                    let updatedData: MonthlyUnitDto = dto.normalSetting.statutorySetting.filter(j => i.month() == j.month)[0];
-                    i.updateData(updatedData);
-                });
+                if (key == 1) {
+                    self.statutorySetting().forEach(i => {
+                        let updatedData: MonthlyUnitDto = dto.normalSetting.statutorySetting.filter(j => i.month() == j.month)[0];
+                        i.updateData(updatedData);
+                    });
+                } else {
+                    self.statutorySetting().forEach(i => {
+                        let updatedData: MonthlyUnitDto = dto.deforLaborSetting.statutorySetting.filter(j => i.month() == j.month)[0];
+                        i.updateData(updatedData);
+                    });
+                }
+                
             }
     
             public sortMonth(startMonth: number): void {
