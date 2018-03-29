@@ -17,8 +17,8 @@ module nts.uk.at.view.kmk004.g {
                     new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_73"))]);
                 
                 self.shortageSettingOpt = ko.observableArray([
-                    new ItemModel(CarryForwardSet.CURRENT_MONTH_INTEGRATION, "当月精算"),
-                    new ItemModel(CarryForwardSet.NEXT_MONTH_CARRY_FORWARD, "翌月繰越")]);
+                    new ItemModel(CarryForwardSet.CURRENT_MONTH_INTEGRATION, nts.uk.resource.getText("KMK004_76")),//"当月精算"
+                    new ItemModel(CarryForwardSet.NEXT_MONTH_CARRY_FORWARD, nts.uk.resource.getText("KMK004_77"))]);//"翌月繰越"
                 
                 self.isIncludeOverTime = ko.observable(params && !nts.uk.util.isNullOrEmpty(params.isIncludeOverTime) ? params.isIncludeOverTime : false);
                 self.shortageSetting = ko.observable((params && !nts.uk.util.isNullOrEmpty(params.shortageSetting)) ? params.shortageSetting : 0);
