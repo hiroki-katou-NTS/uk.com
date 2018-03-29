@@ -16,7 +16,7 @@ public class PCLogInfoOfDailyCommandAddHandler extends CommandFacade<PCLogInfoOf
 	@Override
 	protected void handle(CommandHandlerContext<PCLogInfoOfDailyCommand> context) {
 		if(context.getCommand().getData().isPresent()){
-			repo.add(context.getCommand().getData().get());
+			repo.add(context.getCommand().toDomain().get());
 		}
 	}
 

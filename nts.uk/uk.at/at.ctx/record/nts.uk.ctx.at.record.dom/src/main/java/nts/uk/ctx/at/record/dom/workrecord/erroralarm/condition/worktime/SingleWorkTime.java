@@ -27,7 +27,7 @@ public class SingleWorkTime extends WorkTimeCondition {
 	 * @param useAtr
 	 * @param comparePlanAndActual
 	 */
-	private SingleWorkTime(Boolean useAtr, FilterByCompare comparePlanAndActual) {
+	private SingleWorkTime(boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
 	}
 

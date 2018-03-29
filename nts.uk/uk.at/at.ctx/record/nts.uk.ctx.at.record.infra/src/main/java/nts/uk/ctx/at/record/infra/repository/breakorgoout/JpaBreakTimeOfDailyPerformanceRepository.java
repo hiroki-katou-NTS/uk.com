@@ -124,7 +124,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		List<KrcdtDaiBreakTime> all = KrcdtDaiBreakTime.toEntity(breakTimes);
 		List<KrcdtDaiBreakTime> toRemove = all.stream().filter(c -> c.endStampTime == null && c.startStampTime == null).collect(Collectors.toList());
 		List<KrcdtDaiBreakTime> toUpdate = all.stream().filter(c -> c.endStampTime != null && c.startStampTime != null).collect(Collectors.toList());
-		toRemove.stream().forEach(c -> commandProxy().remove(KrcdtDaiBreakTime.class, c.krcdtDaiBreakTimePK));
+		toRemove.stream().forEach(c -> {
+			queryProxy().find(c.krcdtDaiBreakTimePK, KrcdtDaiBreakTime.class).ifPresent(entity -> {
+				commandProxy().remove(entity);
+			});
+		});
 		commandProxy().updateAll(toUpdate);
 	}
 
@@ -134,7 +138,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				.collect(Collectors.toList());
 		List<KrcdtDaiBreakTime> toRemove = all.stream().filter(c -> c.endStampTime == null && c.startStampTime == null).collect(Collectors.toList());
 		List<KrcdtDaiBreakTime> toUpdate = all.stream().filter(c -> c.endStampTime != null && c.startStampTime != null).collect(Collectors.toList());
-		toRemove.stream().forEach(c -> commandProxy().remove(KrcdtDaiBreakTime.class, c.krcdtDaiBreakTimePK));
+		toRemove.stream().forEach(c -> {
+			queryProxy().find(c.krcdtDaiBreakTimePK, KrcdtDaiBreakTime.class).ifPresent(entity -> {
+				commandProxy().remove(entity);
+			});
+		});
 //		commandProxy().removeAll(toRemove);
 		commandProxy().updateAll(toUpdate);
 //		commandProxy().updateAll(breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)

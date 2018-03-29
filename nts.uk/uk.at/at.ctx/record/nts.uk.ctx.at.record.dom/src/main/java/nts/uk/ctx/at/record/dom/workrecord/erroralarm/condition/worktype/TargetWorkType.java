@@ -15,16 +15,16 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 //対象の勤務種類
-@Getter
 public class TargetWorkType extends DomainObject {
 
 	//しぼり込む
-	private Boolean filterAtr;
+	private boolean filterAtr;
 
 	//対象の勤務種類一覧
+	@Getter
 	private List<WorkTypeCode> lstWorkType;
 
-	private TargetWorkType(Boolean filterAtr, List<WorkTypeCode> lstWorkType) {
+	private TargetWorkType(boolean filterAtr, List<WorkTypeCode> lstWorkType) {
 		super();
 		this.filterAtr = filterAtr;
 		this.lstWorkType = lstWorkType;
@@ -44,6 +44,6 @@ public class TargetWorkType extends DomainObject {
 	}
 	
 	public boolean isUse() {
-		return this.filterAtr != null && this.filterAtr;
+		return this.filterAtr;
 	}
 }

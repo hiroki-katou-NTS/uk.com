@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,18 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPubExport;
 import nts.uk.shr.com.i18n.TextResource;
@@ -64,7 +56,7 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 				domain.getMessage().getBoldAtr()?1:0,
 				domain.getMessage().getMessageColor().v(),
 				domain.getCancelableAtr()?1:0,
-				domain.getErrorDisplayItem()==null ? 0 : Integer.valueOf(domain.getErrorDisplayItem().intValueExact()),
+				domain.getErrorDisplayItem()==null ? 0 : domain.getErrorDisplayItem(),
 				domain.getCancelRoleId(),
 				domain.getErrorAlarmCheckID(),
 				null

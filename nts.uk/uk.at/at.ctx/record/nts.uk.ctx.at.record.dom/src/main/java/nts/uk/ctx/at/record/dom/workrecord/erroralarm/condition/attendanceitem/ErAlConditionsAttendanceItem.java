@@ -89,7 +89,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	}
 
 	private Stream<Boolean> checkStream(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
-		return lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).map(aic -> {
+		return lstErAlAtdItemCon.stream().filter(aic -> aic.isUse()).map(aic -> {
 			return aic.checkTarget(getValueFromItemIds);
 		});
 	}

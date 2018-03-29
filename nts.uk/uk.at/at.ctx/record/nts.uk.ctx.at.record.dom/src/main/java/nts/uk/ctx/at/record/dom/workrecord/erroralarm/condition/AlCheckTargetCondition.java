@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
@@ -17,20 +16,19 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  *
  */
 // アラームチェック対象者の条件
-@Getter
 public class AlCheckTargetCondition extends DomainObject {
 
 	// 勤務種別でしぼり込む
-	private Boolean filterByBusinessType;
+	private boolean filterByBusinessType;
 
 	// 職位でしぼり込む
-	private Boolean filterByJobTitle;
+	private boolean filterByJobTitle;
 
 	// 雇用でしぼり込む
-	private Boolean filterByEmployment;
+	private boolean filterByEmployment;
 
 	// 分類でしぼり込む
-	private Boolean filterByClassification;
+	private boolean filterByClassification;
 
 	// 対象勤務種別
 	private List<BusinessTypeCode> lstBusinessTypeCode;
@@ -44,8 +42,8 @@ public class AlCheckTargetCondition extends DomainObject {
 	// 対象分類
 	private List<ClassificationCode> lstClassificationCode;
 
-	public AlCheckTargetCondition(Boolean filterByBusinessType, Boolean filterByJobTitle, Boolean filterByEmployment,
-			Boolean filterByClassification, List<String> lstBusinessTypeCode, List<String> lstJobTitleId,
+	public AlCheckTargetCondition(boolean filterByBusinessType, boolean filterByJobTitle, boolean filterByEmployment,
+			boolean filterByClassification, List<String> lstBusinessTypeCode, List<String> lstJobTitleId,
 			List<String> lstEmploymentCode, List<String> lstClassificationCode) {
 		super();
 		this.filterByBusinessType = filterByBusinessType;
@@ -64,4 +62,36 @@ public class AlCheckTargetCondition extends DomainObject {
 		}).collect(Collectors.toList());
 	}
 
+	public boolean getFilterByBusinessType() {
+		return filterByBusinessType;
+	}
+
+	public boolean getFilterByJobTitle() {
+		return filterByJobTitle;
+	}
+
+	public boolean getFilterByEmployment() {
+		return filterByEmployment;
+	}
+
+	public boolean getFilterByClassification() {
+		return filterByClassification;
+	}
+
+	public List<BusinessTypeCode> getLstBusinessTypeCode() {
+		return lstBusinessTypeCode;
+	}
+
+	public List<String> getLstJobTitleId() {
+		return lstJobTitleId;
+	}
+	public List<EmploymentCode> getLstEmploymentCode() {
+		return lstEmploymentCode;
+	}
+
+	public List<ClassificationCode> getLstClassificationCode() {
+		return lstClassificationCode;
+	}
+
+	
 }

@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -19,7 +18,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -40,7 +38,7 @@ public class KrcstErAlAtdTarget extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
     @NotNull
     @Column(name = "TARGET_ATR")
-    public BigDecimal targetAtr;
+    public int targetAtr;
 
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
@@ -52,7 +50,7 @@ public class KrcstErAlAtdTarget extends UkJpaEntity implements Serializable {
 		return this.krcstErAlAtdTargetPK;
 	}
 
-	public KrcstErAlAtdTarget(KrcstErAlAtdTargetPK krcstErAlAtdTargetPK, BigDecimal targetAtr) {
+	public KrcstErAlAtdTarget(KrcstErAlAtdTargetPK krcstErAlAtdTargetPK, int targetAtr) {
 		super();
 		this.krcstErAlAtdTargetPK = krcstErAlAtdTargetPK;
 		this.targetAtr = targetAtr;

@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.at.record.app.command.workrecord.erroralarm;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -166,7 +165,7 @@ public class UpdateErrorAlarmWrCommand {
 	public ErrorAlarmWorkRecord toDomain() {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.init(companyId, code, name, fixedAtr == 1, useAtr == 1,
 				typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
-				errorDisplayItem != null ? new BigDecimal(errorDisplayItem) : null, lstApplicationTypeCode);
+				errorDisplayItem, lstApplicationTypeCode);
 		return domain;
 	}
 

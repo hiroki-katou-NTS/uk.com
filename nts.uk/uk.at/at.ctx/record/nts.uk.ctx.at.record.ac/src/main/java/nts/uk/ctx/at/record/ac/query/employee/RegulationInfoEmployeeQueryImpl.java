@@ -25,7 +25,12 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 				.map(r -> RegulationInfoEmployeeQueryR.builder().employeeCode(r.getEmployeeCode())
 						.employeeId(r.getEmployeeId()).employeeName(r.getEmployeeName())
 						.workplaceCode(r.getWorkplaceCode()).workplaceId(r.getWorkplaceId())
-						.workplaceName(r.getWorkplaceName()).build())
+						.workplaceName(r.getWorkplaceName())
+						.bussinessTypeCode(r.getBussinessTypeCode())
+						.classificationCode(r.getClassificationCode())
+						.jobTitle(r.getJobTitle())
+						.employmentCode(r.getEmploymentCode())
+						.build())
 				.collect(Collectors.toList());
 	}
 

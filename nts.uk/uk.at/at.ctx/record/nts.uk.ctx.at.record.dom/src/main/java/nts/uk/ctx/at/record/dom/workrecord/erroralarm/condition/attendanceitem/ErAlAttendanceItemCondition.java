@@ -44,8 +44,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	private ConditionAtr conditionAtr;
 
 	// 使用する
-	@Getter
-	private Boolean useAtr;
+	private boolean useAtr;
 
 	// チェック対象（可算）
 	@Getter
@@ -64,7 +63,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	private CompareRange<V> compareRange;
 
 	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, int conditionAtr,
-			Boolean useAtr) {
+			boolean useAtr) {
 		super();
 		this.companyId = companyId;
 		this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
@@ -74,7 +73,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	}
 
 	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, ConditionAtr conditionAtr,
-			Boolean useAtr) {
+			boolean useAtr) {
 		super();
 		this.companyId = companyId;
 		this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
@@ -135,7 +134,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	}
 
 	public boolean checkTarget(Function<List<Integer>, List<Integer>> getItemValue) {
-		if (this.useAtr == null || !this.useAtr) {
+		if (!this.useAtr) {
 			return false;
 		}
 		Integer targetValue = calculateTargetValue(getItemValue);
@@ -145,6 +144,10 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		} else {
 			return this.compareSingleValue.check(targetValue, getItemValue, c -> getVValue(c));
 		}
+	}
+
+	public boolean isUse() {
+		return this.useAtr;
 	}
 
 	private Integer calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {

@@ -16,7 +16,7 @@ public class AttendanceLeavingGateOfDailyCommandAddHandler extends CommandFacade
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceLeavingGateOfDailyCommand> context) {
 		if(context.getCommand().getData().isPresent()){
-			repo.add(context.getCommand().getData().get());
+			repo.add(context.getCommand().toDomain().get());
 		}
 	}
 

@@ -15,7 +15,8 @@ public class EmployeeDailyPerErrorCommandUpdateHandler extends CommandFacade<Emp
 
 	@Override
 	protected void handle(CommandHandlerContext<EmployeeDailyPerErrorCommand> context) {
-		repo.update(context.getCommand().getData());
+		if(context.getCommand().getData() == null) { return; }
+		repo.update(context.getCommand().toDomain());
 	}
 
 }

@@ -32,4 +32,13 @@ public class CreateEmployeeDailyPerError {
 			this.employeeDailyPerErrorRepository.insert(employeeDailyPerformanceError);
 		}
 	}
+	
+	public void checkAndInsert(EmployeeDailyPerError error) {
+		// ドメインモデル「社員の日別実績エラー一覧」の事前条件をチェックする
+		Boolean existErrorCode = this.employeeDailyPerErrorRepository.checkExistErrorCode(error.getEmployeeID(), error.getDate(),
+				error.getErrorAlarmWorkRecordCode().v());
+		if (existErrorCode == false) {
+			this.employeeDailyPerErrorRepository.insert(error);
+		}
+	}
 }

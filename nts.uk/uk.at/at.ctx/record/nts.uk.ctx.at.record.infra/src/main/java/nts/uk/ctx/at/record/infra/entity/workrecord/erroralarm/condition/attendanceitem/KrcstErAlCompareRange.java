@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -37,15 +36,15 @@ public class KrcstErAlCompareRange extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "COMPARE_ATR")
-	public BigDecimal compareAtr;
+	public int compareAtr;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "START_VALUE")
-	public BigDecimal startValue;
+	public int startValue;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "END_VALUE")
-	public BigDecimal endValue;
+	public int endValue;
 	
 	@OneToOne
 	@JoinColumns({
@@ -58,8 +57,8 @@ public class KrcstErAlCompareRange extends UkJpaEntity implements Serializable {
 		return this.krcstEralCompareRangePK;
 	}
 
-	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcstEralCompareRangePK, BigDecimal compareAtr,
-			BigDecimal startValue, BigDecimal endValue) {
+	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcstEralCompareRangePK, int compareAtr,
+			int startValue, int endValue) {
 		super();
 		this.krcstEralCompareRangePK = krcstEralCompareRangePK;
 		this.compareAtr = compareAtr;

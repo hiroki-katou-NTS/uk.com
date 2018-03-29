@@ -39,10 +39,10 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErrorAlarmAppService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -157,10 +157,10 @@ public class DailyRecordWorkCommandHandler {
 
 	/** 編集状態: 日別実績の編集状態 */
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	// @AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandAddHandler editStateAddHandler;
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
+	// @AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandUpdateHandler editStateUpdateHandler;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
@@ -170,82 +170,61 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
-	
+
 	@Inject
 	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
 	private PCLogInfoOfDailyCommandAddHandler pcLogInfoAddHandler;
 	@Inject
 	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
 	private PCLogInfoOfDailyCommandUpdateHandler pcLogInfoUpdateHandler;
-	
-	
+
 	@Inject
 	private CalculateDailyRecordService calcService;
-	
-	@Inject 
-	private ErAlCheckService determineErrorAlarmWorkRecordService;
-	
+
+	@Inject
+	private ErrorAlarmAppService erAlService;
+
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 
 	public void handleAdd(DailyRecordWorkCommand command) {
 		handler(command, false);
 	}
-	
+
 	public void handleUpdate(DailyRecordWorkCommand command) {
 		handler(command, true);
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
-		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
-				.distinct().collect(Collectors.toSet());
+		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c)).distinct().collect(Collectors.toSet());
 		calcIfNeed(mapped, command);
 		mapped.stream().forEach(c -> {
 			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
-			if(handler != null){
+			if (handler != null) {
 				handler.handle((T) command.getCommand(c));
 			}
 		});
-		//remove data error
+		// remove data error
 		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
-		//check and insert error;
-		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
+		// check and insert error;
+		erAlService.checkAndInsert(command.getEmployeeId(), command.getWorkDate(), command.toDto());
 	}
-	
-	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
-//		if(group.contains("I") || group.contains("G") 
-//				|| group.contains("E") || group.contains("F") || group.contains("H") || 
-//				group.contains("J") || group.contains("K") || group.contains("L") || 
-//				group.contains("M") || group.contains("O")
-//				){
-			IntegrationOfDaily calced = calcService.calculate(
-					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
-							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
-							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
-							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
-//			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
-			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			calced.getBreakTime().stream().forEach(c -> {
-//				command.getBreakTime().updateData(c);
-//			});
-//			command.getAttendanceTimeByWork().updateData(calced.getAttendancetimeByWork().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getOutingTime().updateData(calced.getOutingTime().orElse(null));
-//			command.getLogOnInfo
-//			group.add("I");
-			group.add("G");
-//		}
+
+	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command) {
+		IntegrationOfDaily calced = calcService
+				.calculate(new IntegrationOfDaily(command.getWorkInfo().toDomain(), command.getCalcAttr().toDomain(),
+						command.getAffiliationInfo().toDomain(), command.getPcLogInfo().toDomain(),
+						Arrays.asList(command.getErrors().toDomain()), command.getOutingTime().toDomain(),
+						command.getBreakTime().toDomain(), command.getAttendanceTime().toDomain(),
+						command.getAttendanceTimeByWork().toDomain(), command.getTimeLeaving().toDomain(),
+						command.getShortWorkTime().toDomain(), command.getSpecificDateAttr().toDomain(),
+						command.getAttendanceLeavingGate().toDomain(), command.getOptionalItem().toDomain(),
+						command.getEditState().toDomain(), command.getTemporaryTime().toDomain()));
+		command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
+		group.add("G");
 	}
-	
+
 	private CommandFacade<?> getHandler(String group, boolean isUpdate) {
 		CommandFacade<?> handler = null;
 		switch (group) {

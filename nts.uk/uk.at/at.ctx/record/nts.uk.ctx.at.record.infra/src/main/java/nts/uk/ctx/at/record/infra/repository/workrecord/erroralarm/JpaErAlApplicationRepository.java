@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ public class JpaErAlApplicationRepository extends JpaRepository implements ErAlA
 		if(listKrcstErAlApplication.isEmpty()) {
 			return null;
 		}
-		List<Integer> listAppType = listKrcstErAlApplication.stream().map(c->c.krcstErAlApplicationPK.appTypeCd.intValueExact()).collect(Collectors.toList());
+		List<Integer> listAppType = listKrcstErAlApplication.stream().map(c->c.krcstErAlApplicationPK.appTypeCd).collect(Collectors.toList());
 		
 		return Optional.of( new ErAlApplication(companyID,errorAlarmCode,listAppType));
 	}

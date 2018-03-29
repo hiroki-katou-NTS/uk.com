@@ -27,5 +27,13 @@ public class RegulationInfoEmployeeQueryR {
 
 	/** The workplace name. */
 	private String workplaceName; // 職場の階層コード
+	
+	private String employmentCode;
+	
+	private String bussinessTypeCode;
+	
+	private String classificationCode;
+	
+	private String jobTitle;
 
 }

@@ -51,5 +51,7 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 
 	/** The workplacename. */
 	private Optional<String> workplaceName;
+	
+	private Optional<String> workTypeCode;
 
 }

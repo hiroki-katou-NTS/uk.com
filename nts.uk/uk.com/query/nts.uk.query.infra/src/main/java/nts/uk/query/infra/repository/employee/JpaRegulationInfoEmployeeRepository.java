@@ -215,6 +215,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.workplaceId(Optional.ofNullable(entity.getWorkplaceId()))
 				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.workplaceName(Optional.ofNullable(entity.getWplName()))
+				.workTypeCode(Optional.ofNullable(entity.getWorkTypeCd()))
 				.build()).collect(Collectors.toList());
 	}
 

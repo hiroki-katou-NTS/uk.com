@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
@@ -51,4 +52,6 @@ public interface ErrorAlarmWorkRecordRepository {
 
 	// get all errors and alarms's settings of login company and  Category = Error
     List<ErrorAlarmWorkRecord> getListErAlByListCodeError(String companyId,List<String> listCode);
+    
+    List<Map<String, Object>> getErAlByComID(String companyId);
 }

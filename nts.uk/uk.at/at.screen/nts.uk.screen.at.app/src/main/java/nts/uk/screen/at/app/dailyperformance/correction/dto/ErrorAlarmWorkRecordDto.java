@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 
 @Value
@@ -38,5 +36,5 @@ public class ErrorAlarmWorkRecordDto {
 	private int cancelableAtr;
 
 	/* エラー表示項目 */
-	private BigDecimal errorDisplayItem;
+	private Integer errorDisplayItem;
 }

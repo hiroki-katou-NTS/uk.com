@@ -43,6 +43,10 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 						.workplaceId(model.getWorkplaceId().orElse(""))
 						.workplaceCode(model.getWorkplaceCode().orElse(""))
 						.workplaceName(model.getWorkplaceName().orElse(""))
+						.employmentCode(model.getEmploymentCode().orElse(""))
+						.jobTitle(model.getJobTitleCode().orElse(""))
+						.bussinessTypeCode(model.getWorkTypeCode().orElse(""))
+						.classificationCode(model.getClassificationCode().orElse(""))
 						.build())
 				.collect(Collectors.toList());
 	}

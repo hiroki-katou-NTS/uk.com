@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,4 +26,7 @@ public class ConditionAlarmError {
 		return errorAlarmWorkRecords;
 	}
 
+	public List<Map<String, Object>> getErAlConditonByComID(String companyId){
+		return errorAlarmWorkRecordRepository.getErAlByComID(companyId);
+	}
 }

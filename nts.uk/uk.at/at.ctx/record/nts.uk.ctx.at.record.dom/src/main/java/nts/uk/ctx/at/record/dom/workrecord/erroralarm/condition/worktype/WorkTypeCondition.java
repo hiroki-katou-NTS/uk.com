@@ -13,17 +13,17 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
  *
  */
 // 勤務種類の条件
-@Getter
 public class WorkTypeCondition extends DomainObject {
 
 	// 勤務種類の条件を使用する
-	private Boolean useAtr;
+	private boolean useAtr;
 
 	// 予実比較による絞り込み方法
+	@Getter
 	private FilterByCompare comparePlanAndActual;
 
 	/* Constructor */
-	protected WorkTypeCondition(Boolean useAtr, FilterByCompare comparePlanAndActual) {
+	protected WorkTypeCondition(boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super();
 		this.useAtr = useAtr;
 		this.comparePlanAndActual = comparePlanAndActual;
@@ -35,6 +35,6 @@ public class WorkTypeCondition extends DomainObject {
 	}
 	
 	public boolean isUse() {
-		return this.getUseAtr() != null && this.getUseAtr();
+		return this.useAtr;
 	}
 }
