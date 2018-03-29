@@ -18,10 +18,6 @@ public class AnnLeaEmpBasicInfoDomService{
 	@Inject
 	private AnnualPaidLeaveSettingRepository annPaidLeaSettingRepo;
 	
-	private static final int MinutesInADay = 480;
-
-	private static final int MinutesInAHalfDay = 240;
-	
 	private static final String granted = "付与日";
 	
 	private static final String not_grant = "未付与";
@@ -45,18 +41,9 @@ public class AnnLeaEmpBasicInfoDomService{
 			}
 		}
 
-		Double days = (double) (remainingMinutes / MinutesInADay);
-		remainingMinutes -= days * MinutesInADay;
-
-		if (remainingMinutes >= MinutesInAHalfDay) {
-			days += 0.5d;
-			remainingMinutes -= MinutesInAHalfDay;
-		}
-
 		int remainingHours = remainingMinutes / 60;
 		remainingMinutes -= remainingHours * 60;
-		remainingDays += days;
-
+		
 		return remainingDays + "日と　" + remainingHours + " : " + remainingMinutes;
 	}
 	

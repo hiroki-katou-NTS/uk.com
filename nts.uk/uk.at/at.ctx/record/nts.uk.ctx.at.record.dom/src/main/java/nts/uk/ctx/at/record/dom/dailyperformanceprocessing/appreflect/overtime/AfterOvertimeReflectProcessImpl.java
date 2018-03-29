@@ -96,7 +96,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Override
 	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
 		//自動打刻をクリアする
-		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(), overtimePara.isAutoClearStampFlg(), null);
+		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(), overtimePara.isAutoClearStampFlg(), 0);
 		//出退勤時刻反映できるかチェックする
 		if(!overtimePara.isActualReflectFlg()
 				&& !overtimePara.isScheTimeOutFlg()) {

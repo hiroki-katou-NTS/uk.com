@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplicationReflectParam;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.EndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartTimeReflectScheService;
@@ -25,7 +24,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 	@Inject
 	private EndTimeReflectScheService endTimeService;
 	@Override
-	public boolean stampReflectGobackSche(ApplicationReflectParam reflectPara) {
+	public void stampReflectGobackSche(GobackReflectParam reflectPara) {
 		//(開始時刻)反映する時刻を求める
 		reflectPara.setApplyTimeAtr(ApplyTimeAtr.START);
 		TimeOfDayReflectFindDto startTimeReflectFind = this.timeReflectFind(reflectPara);
@@ -44,12 +43,10 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 			endTimeService.updateEndTimeRflect(timeData);
 		}
 		//TODO (開始時刻2, 終了時刻2)反映する時刻を求める
-		//phai xac nhan lai
-		return endTimeReflectFind.isReflectFlg();
 	}
 
 	@Override
-	public TimeOfDayReflectFindDto timeReflectFind(ApplicationReflectParam reflectPara) {
+	public TimeOfDayReflectFindDto timeReflectFind(GobackReflectParam reflectPara) {
 		String companyId = AppContexts.user().companyId();
 		TimeOfDayReflectFindDto timeFind = new TimeOfDayReflectFindDto(false, 0);
 		//INPUT．申請する時刻をチェックする

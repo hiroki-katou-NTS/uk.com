@@ -326,7 +326,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				//「部下の申請」の場合
 				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){
-					if(lstEmployeeIdSub.equals(app.getApplication().getEmployeeID())){
+					if(lstEmployeeIdSub.contains(app.getApplication().getEmployeeID())){
 						lstAppFilter2.add(app);
 					}
 				}
