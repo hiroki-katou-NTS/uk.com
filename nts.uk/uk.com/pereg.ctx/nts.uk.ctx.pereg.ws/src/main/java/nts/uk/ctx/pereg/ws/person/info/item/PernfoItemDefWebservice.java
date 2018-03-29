@@ -181,7 +181,7 @@ public class PernfoItemDefWebservice extends WebService {
 	@POST
 	@Path("findby/ctg-cd/{ctgcd}")
 	public List<SimpleItemDef> getSimpleItemDefsByCtgCd(@PathParam("ctgcd") String ctgCd) {
-		List<SimpleItemDef> lstRe = new ArrayList<>();
+		/*List<SimpleItemDef> lstRe = new ArrayList<>();
 		switch(ctgCd){
 			case "CS00037":
 				lstRe = getItemsCS00037();
@@ -193,11 +193,11 @@ public class PernfoItemDefWebservice extends WebService {
 				lstRe = getItemsCS00039();
 			break;
 		}
-		return lstRe;
-		//return itemDefFinder.getSingpleItemDef(ctgCd);
+		return lstRe;*/
+		return itemDefFinder.getSingpleItemDef(ctgCd);
 	}
 	
-	private List<SimpleItemDef> getItemsCS00038(){
+/*	private List<SimpleItemDef> getItemsCS00038(){
 		List<SimpleItemDef> lst = new ArrayList<>();
 		lst.add(new SimpleItemDef("IS00398", "積立年休付与日", true));
 		lst.add(new SimpleItemDef("IS00399", "積立年休期限日",  true));
@@ -245,5 +245,5 @@ public class PernfoItemDefWebservice extends WebService {
 		lst.add(new SimpleItemDef("IS00396", "残日数", true));
 		lst.add(new SimpleItemDef("IS00397", "残時間", false));
 		return lst;
-	}
+	}*/
 }
