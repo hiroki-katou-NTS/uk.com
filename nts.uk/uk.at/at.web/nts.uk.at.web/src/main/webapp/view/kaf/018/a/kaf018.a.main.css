@@ -19,10 +19,16 @@
 	float: left;
 }
 
+.fix-combobox {
+	margin-left: 10px;
+}
+
+
 .format-selected {
 	float: left;
-	padding: 20px;
-		
+	padding: 11px;
+	width: 120px;	
+	font-size: 12px;
 }
 
 .format-checkbox {
