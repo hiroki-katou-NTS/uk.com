@@ -18,7 +18,7 @@ public class OverTimeInstructPubImpl implements OverTimeInstructPub {
 	private OvertimeInstructRepository repo;
 
 	/**
-	 * For request list 230
+	 * For RequestList230
 	 */
 	@Override
 	public List<GeneralDate> acquireOverTimeWorkInstruction(String sId, GeneralDate startDate, GeneralDate endDate) {

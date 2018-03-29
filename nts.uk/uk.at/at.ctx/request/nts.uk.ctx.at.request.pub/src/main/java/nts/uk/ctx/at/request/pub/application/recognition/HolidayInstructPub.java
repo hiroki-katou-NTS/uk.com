@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 public interface HolidayInstructPub {
 	/**
-	 * For request list No.231
+	 * For RequestList231
 	 * @param sId
 	 * @param startDate
 	 * @param endDate

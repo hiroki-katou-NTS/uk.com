@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 public interface AppNotReflectedPub {
 	/**
 	 * 社員、期間から未反映の申請就業時間外深夜時間を集計する
-	 * Request list No.300
+	 * RequestList300
 	 * @param sId
 	 * @param startDate
 	 * @param endDate

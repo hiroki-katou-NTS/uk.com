@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 public interface OverTimeInstructPub {
 	/**
-	 * For request list 230
+	 * For RequestList230
 	 * 
 	 * @param sId
 	 * @param instructDate
