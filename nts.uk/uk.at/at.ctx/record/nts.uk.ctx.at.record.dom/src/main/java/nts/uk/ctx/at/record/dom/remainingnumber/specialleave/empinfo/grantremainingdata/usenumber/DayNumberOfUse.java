@@ -13,7 +13,6 @@ public class DayNumberOfUse extends HalfIntegerPrimitiveValue<DayNumberOfUse> {
 
 	public DayNumberOfUse(Double rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

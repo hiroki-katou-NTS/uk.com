@@ -17,5 +17,14 @@ public class SpecialLeaveRemainingNumber {
 	public DayNumberOfRemain dayNumberOfRemain;
 	// 時間
 	public Optional<TimeOfRemain> timeOfRemain;
+	
+	private SpecialLeaveRemainingNumber(Double days, Integer minutes) {
+		this.dayNumberOfRemain = new DayNumberOfRemain(days);
+		this.timeOfRemain = minutes != null ? Optional.of(new TimeOfRemain(minutes)) : Optional.empty();
+	}
+
+	public static SpecialLeaveRemainingNumber createFromJavaType(Double days, Integer minutes) {
+		return new SpecialLeaveRemainingNumber(days, minutes);
+	}
 
 }

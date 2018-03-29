@@ -138,7 +138,9 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	}
 	
 	public static AnnualLeaveDto createFromDomains(AnnualLeaveEmpBasicInfo basicInfo, AnnualLeaveMaxData maxData) {
-		AnnualLeaveDto dto = new AnnualLeaveDto();
+		
+		AnnualLeaveDto dto = new AnnualLeaveDto(basicInfo.getEmployeeId());
+		
 		dto.standardDate = basicInfo.getGrantRule().getGrantStandardDate();
 		dto.grantTable = basicInfo.getGrantRule().getGrantTableCode().v();
 		dto.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
