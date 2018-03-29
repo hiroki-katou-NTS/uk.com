@@ -121,7 +121,7 @@ public class KrqstHdAppSet extends UkJpaEntity implements Serializable{
 	public int hdType;
 	
 	/** 未選択を表示する  */
-	@Column(name = "PRIORITY_DIGESTION_ATR")
+	@Column(name = "DISPLAY_UNSELECT")
 	public int displayUnselect;
 	
 	@Override

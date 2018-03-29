@@ -15,7 +15,7 @@ public interface ApprovalStatusMailTempRepository {
 	 *            会社ID
 	 * @param type
 	 *            メール種類
-	 * @return
+	 * @return ドメイン：承認状況メールテンプレート
 	 */
 	Optional<ApprovalStatusMailTemp> getApprovalStatusMailTempById(String cid, int type);
 
