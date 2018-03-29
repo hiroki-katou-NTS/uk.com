@@ -23,7 +23,8 @@ public class SprWebService {
 			@FormParam("endtime") String endTime,
 			@FormParam("date") String targetDate,
 			@FormParam("selecttype") String selectType,
-			@FormParam("applicationID") String applicationID) {
+			@FormParam("applicationID") String applicationID,
+			@FormParam("reason") String reason) {
 		
 		val paramsMap = new LinkedHashMap<String, String>();
 		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
@@ -33,7 +34,7 @@ public class SprWebService {
 		paramsMap.put("endtime", SprStubHelper.formatParamTime(endTime));
 		paramsMap.put("date", SprStubHelper.formatParam(targetDate));
 		paramsMap.put("selecttype", SprStubHelper.formatParam(selectType));
-		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationID));
+		paramsMap.put("reason", SprStubHelper.formatParam(reason));
 		
 		val html = new StringBuilder()
 				.append("<!DOCTYPE html>")
