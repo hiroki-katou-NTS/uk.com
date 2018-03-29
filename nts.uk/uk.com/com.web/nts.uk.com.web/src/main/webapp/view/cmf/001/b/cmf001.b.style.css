@@ -1,0 +1,9 @@
+.selected-model{
+	width: 680px
+}
+.selected-model .valign-center.control-group{
+	padding-top: 20px
+}
+.selected-model .valign-center.control-group .form-label{
+	width: 200px
+}

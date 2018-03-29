@@ -2,18 +2,21 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModel {
-        tempData: Array<model.ConfirmationStatus>;
-
-        constructor() {
-            var self = this;
-            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
-            self.tempData = [
+        tempData: Array<model.ConfirmationStatus> = [
                 new model.ConfirmationStatus("01", 1,12, true, null, 8, 3),
                 new model.ConfirmationStatus("01", 2, 23, false, 4, 5, 6),
                 new model.ConfirmationStatus("01", 3, 23, true, 5, 6, 8),
-                new model.ConfirmationStatus("01", 4, 23, true, 1,null, 4),
+                new model.ConfirmationStatus("01", 4, 23, true, null,null, 4),
                 new model.ConfirmationStatus("01", 4, 23, true, 1, null, 3),
             ];
+        confirmStatus: KnockoutObservable<model.ConfirmationStatus> = ko.observable(new model.ConfirmationStatus(null, null,null, null,null, null,null));
+        enable: KnockoutObservable<boolean> = ko.observable(false);
+        constructor() {
+            var self = this;
+            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
+            if(self.confirmStatus().unapproved != null){
+                self.enable(true);    
+            }
         }
 
         sendMails() {

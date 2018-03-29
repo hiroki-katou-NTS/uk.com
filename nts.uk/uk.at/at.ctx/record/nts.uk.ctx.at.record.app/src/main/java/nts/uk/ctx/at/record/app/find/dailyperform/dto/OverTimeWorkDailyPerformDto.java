@@ -1,14 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
@@ -103,17 +102,19 @@ public class OverTimeWorkDailyPerformDto {
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 
-	private TimeWithCalculationMinusExist createTimeWithCalcMinus() {
+	private TimeDivergenceWithCalculationMinusExist createTimeWithCalcMinus() {
 		return flexTime == null || flexTime.getFlexTime() == null ? null
-				: TimeWithCalculationMinusExist.sameTime(toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()));
+												: TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
+														toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()), 
+														toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getCalcTime()));
 	}
 
 	private TimeSpanForCalc createTimeSheet(TimeSpanForCalcDto c) {
 		return c == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getStart()), toTimeWithDayAttr(c.getEnd()));
 	}
 
-	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : c.createTimeWithCalc();
+	private TimeDivergenceWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
+		return c == null ? null : c.createTimeDivWithCalc();
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {

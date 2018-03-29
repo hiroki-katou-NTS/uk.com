@@ -5,9 +5,17 @@
 	margin-top:50px;
 }
 
+#wkp-list {
+	display: inline-block;
+}
+
+.content-top {
+	margin-left: 20px;
+}
+
 .content-area-left {
 	margin-left: 20px;
-	margin-top:30px;
+	margin-top: 10px;
 	float: left;
 }
 

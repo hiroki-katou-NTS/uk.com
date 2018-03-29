@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.pubimp.dailyperform;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
@@ -11,20 +13,24 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionT
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ChangeAppGobackAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.GobackAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.GobackReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PreGoBackReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectPubOutput;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -36,6 +42,10 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private PreGoBackReflectService preGobackReflect;
 	@Inject
 	private PreOvertimeReflectService preOvertimeReflect;
+	@Inject
+	private AfterOvertimeReflectService afterOvertimeReflect;
+	@Inject
+	private AbsenceReflectService absenceReflect;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
 		CommonCheckParameter paraTemp = new CommonCheckParameter(EnumAdaptor.valueOf(para.getDegressAtr().value, DegreeReflectionAtr.class),
@@ -47,31 +57,20 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput preGobackReflect(GobackReflectPubParameter para) {
-		GobackAppParameter appPara = new GobackAppParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value, ChangeAppGobackAtr.class),
-				para.getGobackData().getWorkTimeCode(),
-				para.getGobackData().getWorkTypeCode(),
-				para.getGobackData().getStartTime1(),
-				para.getGobackData().getEndTime1(),
-				para.getGobackData().getStartTime2(),
-				para.getGobackData().getEndTime2(),
-				EnumAdaptor.valueOf(para.getGobackData().getReflectState().value, ReflectedStateRecord.class),
-				EnumAdaptor.valueOf(para.getGobackData().getReasoNotReflect().value, ReasonNotReflectRecord.class));
-		GobackReflectParameter gobackPara = new GobackReflectParameter(para.getEmployeeId(),
-				para.getDateData(),
-				para.isOutResReflectAtr(),
-				EnumAdaptor.valueOf(para.getPriorStampAtr().value, PriorStampAtr.class),
-				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
-				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectAtr.class),
-				para.isScheReflectAtr(),
-				appPara);
-		ApplicationReflectOutput reflectInfor = preGobackReflect.gobackReflect(gobackPara);
+		ApplicationReflectOutput reflectInfor = preGobackReflect.gobackReflect(this.toDomainGobackReflect(para));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
 				EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 
 	@Override
-	public AppReflectPubOutput afterGobackReflect(GobackReflectPubParameter para) {
+	public AppReflectPubOutput afterGobackReflect(GobackReflectPubParameter para) {		
+		ApplicationReflectOutput reflectInfor = preGobackReflect.afterGobackReflect(this.toDomainGobackReflect(para));
+		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
+				EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return reflectOutput;
+	}
+	private GobackReflectParameter toDomainGobackReflect(GobackReflectPubParameter para) {
 		GobackAppParameter appPara = new GobackAppParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value, ChangeAppGobackAtr.class),
 				para.getGobackData().getWorkTimeCode(),
 				para.getGobackData().getWorkTypeCode(),
@@ -89,14 +88,27 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectAtr.class),
 				para.isScheReflectAtr(),
 				appPara);
-		ApplicationReflectOutput reflectInfor = preGobackReflect.afterGobackReflect(gobackPara);
-		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		return reflectOutput;
+		return gobackPara;
+		
 	}
 
 	@Override
 	public AppReflectPubOutput preOvertimeReflect(PreOvertimePubParameter param) {
+		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));
+		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
+				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return reflectOutput;
+	}
+
+	@Override
+	public AppReflectPubOutput afterOvertimeReflect(PreOvertimePubParameter param) {
+		ApplicationReflectOutput reflect = afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));
+		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
+				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return reflectOutput;
+	}
+
+	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
 		OvertimeAppParameter appOver = new OvertimeAppParameter(EnumAdaptor.valueOf(param.getOvertimePara().getReflectedState().value, ReflectedStateRecord.class),
 				EnumAdaptor.valueOf(param.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectRecord.class),
 				param.getOvertimePara().getWorkTypeCode(), 
@@ -108,7 +120,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.getOvertimePara().getMapOvertimeFrame(),
 				param.getOvertimePara().getOverTimeShiftNight(),
 				param.getOvertimePara().getFlexExessTime());
-		PreOvertimeParameter overtimePara = new PreOvertimeParameter(param.getEmployeeId(), 
+		OvertimeParameter overtimePara = new OvertimeParameter(param.getEmployeeId(), 
 				param.getDateInfo(), 
 				param.isActualReflectFlg(), 
 				param.isScheReflectFlg(), 
@@ -117,11 +129,22 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheTimeOutFlg(),
 				appOver);
-		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(overtimePara);
-		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		return reflectOutput;
+		return overtimePara;
 	}
 
+	@Override
+	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre) {
+		AbsenceReflectParameter absencePara = new AbsenceReflectParameter(param.getEmployeeId(), 
+				param.getBaseDate(), 
+				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class), 
+				param.isScheTimeReflectAtr(), 
+				param.getWorkTypeCode(), 
+				EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class), 
+				EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class)); 
+		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(absencePara, isPre);
+		AppReflectPubOutput dataOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedStatePubRecord.class), 
+				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return dataOutput;
+	}
 
 }

@@ -27,10 +27,8 @@ public class PerInfoInitValueSetItemFinder {
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFactory;
-
 	@Inject
 	private WorkTimeSettingRepo workTimeSettingRepo;
-
 	@Inject
 	private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
 

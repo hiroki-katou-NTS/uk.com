@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 

@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -83,6 +84,8 @@ public class ExcessOutsideWorkMng {
 	private String employmentCd;
 	/** 退職月度がどうか */
 	private boolean isRetireMonth;
+	/** 締め */
+	private Optional<Closure> closureOpt;
 	/** 月別実績集計設定 */
 	private AggrSettingMonthly aggrSettingMonthly;
 	/** 月次集計の法定内振替順設定 */
@@ -141,6 +144,7 @@ public class ExcessOutsideWorkMng {
 		this.workplaceId = monthlyCalculation.getWorkplaceId();
 		this.employmentCd = monthlyCalculation.getEmploymentCd();
 		this.isRetireMonth = monthlyCalculation.isRetireMonth();
+		this.closureOpt = monthlyCalculation.getClosureOpt();
 		this.aggrSettingMonthly = monthlyCalculation.getAggrSettingMonthly();
 		this.legalTransferOrderSet = monthlyCalculation.getLegalTransferOrderSet();
 		this.holidayAdditionOpt = monthlyCalculation.getHolidayAdditionOpt();
@@ -239,7 +243,7 @@ public class ExcessOutsideWorkMng {
 		val regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
 		val flexTime = new FlexTimeOfMonthly();
 		val aggregateTotalWorkingTime = new AggregateTotalWorkingTime();
-		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getTotalWorkingTime());
+		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getAggregateTime());
 		AggregateMonthlyValue aggrValue = null;
 		
 		// 労働制を確認する
@@ -247,7 +251,8 @@ public class ExcessOutsideWorkMng {
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
 			aggrValue = regAndIrgTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.yearMonth, this.procPeriod, this.workingSystem, this.closureOpt,
+					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap, this.statutoryWorkingTimeWeek,
 					aggregateTotalWorkingTime, this, repositories);
@@ -311,7 +316,7 @@ public class ExcessOutsideWorkMng {
 		val regAndIrgTime = new RegularAndIrregularTimeOfMonthly();
 		val flexTime = new FlexTimeOfMonthly();
 		val aggregateTotalWorkingTime = new AggregateTotalWorkingTime();
-		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getTotalWorkingTime());
+		aggregateTotalWorkingTime.copySharedItem(this.monthlyCalculation.getAggregateTime());
 		AggregateMonthlyValue aggrValue = null;
 		
 		// 労働制を確認する
@@ -320,7 +325,8 @@ public class ExcessOutsideWorkMng {
 			
 			// 通常・変形労働時間勤務の月別実績を集計する
 			aggrValue = regAndIrgTime.aggregateMonthly(this.companyId, this.employeeId,
-					this.yearMonth, this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+					this.yearMonth, this.procPeriod, this.workingSystem, this.closureOpt,
+					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
 					this.attendanceTimeOfDailyMap, this.workInformationOfDailyMap, this.statutoryWorkingTimeWeek,
 					aggregateTotalWorkingTime, this, repositories);
@@ -740,7 +746,7 @@ public class ExcessOutsideWorkMng {
 					// 就業時間＋変形期間繰越時間を実績累計に加算する
 					for (val attendanceTime : attendanceTimes){
 						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-						val workTime = monthlyCalculation.getTotalWorkingTime().getWorkTime();
+						val workTime = monthlyCalculation.getAggregateTime().getWorkTime();
 						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
 						val irgPeriodCryfwdMinutes = irregTime.getIrregularPeriodCarryforwardTime().v();
 						totalRecordMinutes += workTime.getWorkTime().v();

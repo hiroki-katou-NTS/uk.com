@@ -84,16 +84,8 @@
 														<td  class ="check_column"  data-bind="click: setClick"><div data-bind="ntsCheckBox: {checked: checkBox}"></div></td>
 														<td data-bind ="text: categoryName "></td>
 														<td class ='periodTime'>
-															<div data-bind="visible: category==2 || category==5">
-																<div data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div> 
-																<span>　～　 </span>
-																<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div>
-															</div>
-															<div data-bind="visible: category==7">
-																<div data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yearmonth'}"></div>
-																<span>　～　 </span>
-																<div data-bind="ntsDatePicker: {value: endMonth, dateFormat: 'yearmonth'}"></div>
-															</div>
+															<div data-bind="ntsDateRangePicker:
+															 { required: true, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}"/>															
 														</td>
 													</tr>
 												</com:ko-foreach>
