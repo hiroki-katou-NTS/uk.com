@@ -13,11 +13,11 @@ public enum ApplicationCombination {
 	/**
 	 * 振出
 	 */
-	Abs(1),
+	Rec(1),
 	/**
 	 * 振休
 	 */
-	Rec(2);
+	Abs(2);
 
 	public final int value;
 
