@@ -46,6 +46,16 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 ]);
                 self.selectedAggrSelection = ko.observable(1);
                 
+                self.worktimeSetting.normalSetting().year.subscribe(val => {
+                    // Validate
+                    if ($('#companyYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.worktimeSetting.updateYear(val);
+                        self.loadCompanySettingNewest();
+                    }
+                });
+                
                 //==================UPDATE==================
                 
             }
