@@ -280,11 +280,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                 //画面の項目を、ドメインモデル「受入コード変換」に登録/更新する
                 if (model.SCREEN_MODE.NEW == self.screenMode()) {
                     service.addAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
-                        //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
-                        self.initialScreen(self.codeConvertData().convertCd());
 
                         //情報メッセージ　Msg_15 登録しました。を表示する。
-                        dialog.info({ messageId: "Msg_15" });
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
+                            self.initialScreen(self.codeConvertData().convertCd());
+                        });
                     }).fail(function(error) {
                         dialog.alertError(error);
                     }).always(function() {
@@ -292,11 +293,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     });
                 } else {
                     service.updateAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
-                        //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
-                        self.initialScreen(self.selectedConvertCode());
-
                         //情報メッセージ　Msg_15 登録しました。を表示する。
-                        dialog.info({ messageId: "Msg_15" });
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
+                            self.initialScreen(self.selectedConvertCode());
+                        });
                     }).fail(function(error) {
                         dialog.alertError(error);
                     }).always(function() {
@@ -319,23 +320,23 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     //select next code convert
                     let index: number = _.findIndex(listAcceptCodeConvert(), function(x)
                     { return x.convertCd() == currentCodeConvert().convertCd() });
-                    
+
                     if (index > -1) {
                         self.codeConvertList.splice(index, 1);
-
                         if (index >= listAcceptCodeConvert().length) {
                             index = listAcceptCodeConvert().length - 1;
                         }
+                    }
+
+                    //情報メッセージ　Msg-16を表示する
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
                         if (listAcceptCodeConvert().length > 0) {
                             self.initialScreen(listAcceptCodeConvert()[index].convertCd());
                             self.screenMode(model.SCREEN_MODE.UPDATE);
                         } else {
                             self.settingCreateMode();
                         }
-                    }
-                    
-                    //情報メッセージ　Msg-16を表示する
-                    dialog.info({ messageId: "Msg_16" });
+                    });
                 }).fail(function(error) {
                     dialog.alertError(error);
                 }).always(function() {
