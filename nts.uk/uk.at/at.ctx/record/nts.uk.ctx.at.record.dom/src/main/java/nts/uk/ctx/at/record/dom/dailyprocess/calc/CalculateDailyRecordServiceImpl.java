@@ -206,7 +206,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		val copyIntegrationOfDaily = integrationOfDaily;
 		if (integrationOfDaily.getAffiliationInfor() == null) return integrationOfDaily;
 		// 実績データの計算
-		return this.calcDailyAttendancePerformance(integrationOfDaily);
+		return this.calculateRecord(integrationOfDaily);		
 	}
 
 	
@@ -235,6 +235,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
+		/*日別実績(Work)の退避*/
+		val copyIntegrationOfDaily = integrationOfDaily;
 			
 		/*1日の計算範囲クラスを作成*/
 		val oneRange = createOneDayRange(integrationOfDaily);
@@ -556,6 +558,18 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					pCLogOnInfoOfDaily,
 					attendanceLeave));
 	
+		//手修正された項目の値を計算前に戻す 
+		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+		List<Integer> attendanceItemIdList = copyIntegrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
+																								   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
+																			               .map(editState -> editState.getAttendanceItemId())
+																			               .collect(Collectors.toList());
+		//
+		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
+		//
+		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
+		//
+		DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		
 
 //		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
@@ -564,19 +578,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
         .map(editState -> editState.getAttendanceItemId())
         .distinct()
         .collect(Collectors.toList());
-
-		IntegrationOfDaily calcResultIntegrationOfDaily = manageReGetClass.getIntegrationOfDaily();		
-		if(!attendanceItemIdList.isEmpty()) {
-			DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
-			List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		
-			DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(manageReGetClass.getIntegrationOfDaily());	
-			afterDailyRecordDto.merge(itemValueList);
-			//手修正された項目の値を計算前に戻す 		
-			calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
-		}
+		
+		afterDailyRecordDto.merge(itemValueList);
+				
+		IntegrationOfDaily calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 			
 		/*日別実績への項目移送*/
-		//eturn integrationOfDaily;
+		//return integrationOfDaily;
 		return calcResultIntegrationOfDaily;
 	}
 	

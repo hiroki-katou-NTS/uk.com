@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 @Data
 /** 日別実績（WORK） */
 @AttendanceItemRoot(isContainer = true)
-public class DailyRecordDto extends AttendanceItemCommon {
+public class DailyRecordDto implements ConvertibleAttendanceItem {
 
 	private String employeeId;
 
@@ -99,7 +99,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "日別実績の臨時出退勤", isOptional = true)
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
-	
 	/** PCログオン情報: 日別実績のPCログオン情報 */
 	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績のPCログオン情報", isOptional = true)
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
@@ -195,7 +194,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	}
 
 	public DailyRecordDto addEditStates(List<EditStateOfDailyPerformanceDto> editStates) {
-		if (editStates == null || editStates.isEmpty()) {
+		if (editStates == null) {
 			return this;
 		}
 		List<Integer> current = this.editStates.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
@@ -212,7 +211,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.temporaryTime = Optional.ofNullable(temporaryTime);
 		return this;
 	}
-	
 	public DailyRecordDto pcLogInfo(PCLogOnInforOfDailyPerformDto pcLogInfo) {
 		this.pcLogInfo = Optional.ofNullable(pcLogInfo);
 		return this;
@@ -248,7 +246,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
 				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
-				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
+				Optional.empty(),
 				this.errors == null ? null : Arrays.asList(this.errors.toDomain(employeeId, date)),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
@@ -260,7 +258,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
 				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)));
+				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date))
+				);
 	}
 }
 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.attendanceleavinggate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class PCLogOnInfoOfDaily {
 	
 	//出勤ログイン乖離時間の計算
 	public AttendanceTime calcPCLogOnCalc(TimeLeavingOfDailyPerformance attendanceLeave) {
-		AttendanceTime result = new AttendanceTime(0);
+		List<AttendanceTime> resultList = new ArrayList<>();
 		for(LogOnInfo logOn : this.logOnInfo) {
 			//PCログオン
 			int pcLogOn = logOn.getLogOn().isPresent()?logOn.getLogOn().get().valueAsMinutes():0;
@@ -41,13 +42,13 @@ public class PCLogOnInfoOfDaily {
 				if(attendanceStamp.isPresent()) {
 					Optional<WorkStamp> stamp = attendanceStamp.get().getStamp();
 					if(stamp.isPresent()) {
-						attendance = stamp.get().getTimeWithDay().valueAsMinutes();
+						attendance = stamp.get().getTimeWithDay()!=null?stamp.get().getTimeWithDay().valueAsMinutes():0;
 					}
 				}
 			}
-			result.addMinutes(pcLogOn-attendance);
+			resultList.add(new AttendanceTime(pcLogOn-attendance));
 		}
-		return result.greaterThan(0)?result:new AttendanceTime(0);	
+		return resultList.stream().map(t -> t.valueAsMinutes()).;;	
 	}
 	
 }
