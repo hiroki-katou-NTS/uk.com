@@ -11,13 +11,27 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             ];
         confirmStatus: KnockoutObservable<model.ConfirmationStatus> = ko.observable(new model.ConfirmationStatus(null, null,null, null,null, null,null));
         enable: KnockoutObservable<boolean> = ko.observable(false);
+        closureId:  KnockoutObservable<number> =  ko.observable(null);
+        workplaceId: KnockoutObservableArray<string> =  ko.observableArray([]);
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
             if(self.confirmStatus().unapproved != null){
                 self.enable(true);    
             }
+            
         }
+        
+        startPage(): JQueryPromise<any> {
+            var self = this;
+
+            var dfd = $.Deferred();
+            let params: model.IParam = nts.uk.ui.windows.getShared('KAF018BInput');
+            self.workplaceId = params.workplaceId;
+            dfd.resolve();
+            return dfd.promise();
+        }
+
 
         sendMails() {
         }
@@ -32,6 +46,24 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     }
 
     export module model {
+        
+        export class IParam {
+           workplaceId: Array<string>;
+           closureId: number;
+            
+            /** The start date. */
+           startDate: string;
+            
+            /** The end date. */
+            endDate: string;
+            
+            /** The closure name. */
+            closureName: string;
+                
+            /** The closure date. */
+            //処理年月
+            closureDate: number;      
+        }
         export class ConfirmationStatus {
             workSpaceName: string;
             totalNotReflected: number;

@@ -11,13 +11,18 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -25,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -48,7 +54,52 @@ public class ClosureFinder {
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
 	
+	@Inject
+	private ClosureService closureService;
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public ApprovalComfirmDto findAllClosure() {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		List<ClosureEmployment> employeeCode = new ArrayList<>();
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		int selectedClosureId = 0;
+		List<ClosuresDto> closureDto = closureList.stream().map(x -> {
+			int closureId = x.getClosureId().value;
+			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
+				return new ClosureHistoryForComDto( x1.getClosureName().v(), x1.getClosureId().value, x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(), x1.getStartYearMonth().v().intValue());
+			}).collect(Collectors.toList());
+			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
+					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
+			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
+		}).collect(Collectors.toList());
+		
+		//TODO neeed to get closureId init
+		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
+		if (closure.isPresent()) {
+			val closureId = closure.get().getClosureId();
+			selectedClosureId = closureId;
+			val closureOpt = this.repository.findById(companyId, closureId);
+			if (closureOpt.isPresent()) {
+				val closureItem = closureOpt.get();
+				// 当月の期間を算出する
+				val processingYm = closureItem.getClosureMonth().getProcessingYm();
+				val closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
+				startDate = closurePeriod.start();
+				endDate = closurePeriod.end();
+				
+				employeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
+			}
+		}
+		
+		
+		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, employeeCode);
+	}
 	/**
 	 * Gets the closure id name.
 	 *
