@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
@@ -93,6 +94,10 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 所定時間設定の取得 */
 	@Inject
 	public PredetemineTimeSettingRepository predetermineTimeSet;
+	
+	/** 締めの取得 */
+	@Inject
+	private ClosureRepository closure;
 	
 	/** 社員の日別積実績エラー一覧 */
 	@Inject

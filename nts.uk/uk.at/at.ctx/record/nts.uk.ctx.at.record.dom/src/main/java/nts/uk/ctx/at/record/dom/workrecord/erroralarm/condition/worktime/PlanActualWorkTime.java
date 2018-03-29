@@ -82,19 +82,19 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	@Override
 	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getRecordWorkInformation().getWorkTimeCode().equals(workInfo.getScheduleWorkInformation().getWorkTimeCode())){
+			if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode())){
 				return false;
 			}
 		}
 
 		boolean planCheck = true;
 		if (this.workTimePlan != null) {
-			planCheck = this.workTimePlan.contains(workInfo.getScheduleWorkInformation().getWorkTimeCode());
+			planCheck = this.workTimePlan.contains(workInfo.getScheduleInfo().getWorkTimeCode());
 		}
 
 		boolean actualCheck = true;
 		if (this.workTimeActual != null) {
-			actualCheck = this.workTimeActual.contains(workInfo.getRecordWorkInformation().getWorkTimeCode());
+			actualCheck = this.workTimeActual.contains(workInfo.getRecordInfo().getWorkTimeCode());
 		}
 
 		switch (this.operatorBetweenPlanActual) {

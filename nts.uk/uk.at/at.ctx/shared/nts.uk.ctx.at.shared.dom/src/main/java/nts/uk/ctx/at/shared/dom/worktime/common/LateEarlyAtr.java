@@ -65,4 +65,23 @@ public enum LateEarlyAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 遅刻か判定する
+	 * @return 通常
+	 */
+	public boolean isLATE() {
+		return LATE.equals(this);
+	}
+	
+	/**
+	 * 早退か判定する
+	 * @return 割増
+	 */
+	public boolean isEARLY() {
+		return EARLY.equals(this);
+	}	
+	
+	
+	
 }

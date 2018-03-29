@@ -9,11 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 
 /**
  * The persistent class for the KRCST_WORKTYPE_DRT_HIST database table.
@@ -21,34 +21,35 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
-@Table(name="KRCST_WORKTYPE_DRT_HIST")
+@Table(name = "KRCST_WORKTYPE_DRT_HIST")
 public class KrcstWorktypeDrtHist extends UkJpaEntity implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The hist id. */
 	@Id
-	@Column(name="HIST_ID")
+	@Column(name = "HIST_ID")
 	private String histId;
 
 	/** The cid. */
-	@Column(name="CID")
+	@Column(name = "CID")
 	private String cid;
 
 	/** The end D. */
-	@Column(name="END_D")
+	@Column(name = "END_D")
 	@Convert(converter= GeneralDateToDBConverter.class)
 	private GeneralDate endD;
 
 	/** The str D. */
-	@Column(name="STR_D")
+	@Column(name = "STR_D")
 	@Convert(converter= GeneralDateToDBConverter.class)
 	private GeneralDate strD;
 
 	/** The worktype cd. */
-	@Column(name="WORKTYPE_CD")
+	@Column(name = "WORKTYPE_CD")
 	private String worktypeCd;
 
 	/* (non-Javadoc)
@@ -58,6 +59,5 @@ public class KrcstWorktypeDrtHist extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.histId;
 	}
-
 
 }

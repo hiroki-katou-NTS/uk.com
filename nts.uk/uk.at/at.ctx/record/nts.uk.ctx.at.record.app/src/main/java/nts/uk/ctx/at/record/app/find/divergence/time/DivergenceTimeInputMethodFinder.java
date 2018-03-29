@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.divergence.time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -109,10 +110,11 @@ public class DivergenceTimeInputMethodFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// Get divergence time
-		DivergenceTime divTimeInfo = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
+		Optional<DivergenceTime> optionalDivTimeInfo = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
 
 		// Convert to Dto and return
-		if (divTimeInfo != null) {
+		if (optionalDivTimeInfo != null) {
+			DivergenceTime divTimeInfo = optionalDivTimeInfo.get();
 			DivergenceTimeDto divTimeDto = new DivergenceTimeDto();
 			divTimeInfo.saveToMemento(divTimeDto);
 			return divTimeDto;
@@ -134,10 +136,11 @@ public class DivergenceTimeInputMethodFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// get divergence time
-		DivergenceReasonInputMethod divReasonInfo = divReasonRepo.getDivTimeInfo(companyId, divTimeNo);
+		Optional<DivergenceReasonInputMethod> optionalDivReasonInfo = divReasonRepo.getDivTimeInfo(companyId, divTimeNo);
 
 		// Convert to Dto and return
-		if (divReasonInfo != null) {
+		if (optionalDivReasonInfo.isPresent()) {
+			DivergenceReasonInputMethod divReasonInfo = optionalDivReasonInfo.get();
 			DivergenceReasonInputMethodDto divReasonDto = new DivergenceReasonInputMethodDto();
 			divReasonInfo.saveToMemento(divReasonDto);
 			return divReasonDto;

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
@@ -271,7 +272,7 @@ public class HolidayWorkTimeOfMonthly {
 		
 		// 法定内休出にできる時間
 		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalHolidayWork = new AttendanceTime(0);
+		AttendanceTime canLegalHolidayWork = new AttendanceTime(8 * 60);
 		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
 		return canLegalHolidayWork;
 	}
@@ -329,8 +330,8 @@ public class HolidayWorkTimeOfMonthly {
 						legalHolidayWorkTime = new AttendanceTime(canLegalHolidayWork.v());
 						returnTime = new AttendanceTime(0);
 					}
-					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(TimeWithCalculation.sameTime(legalHolidayWorkTime));
-					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(TimeWithCalculation.sameTime(holidayWorkTime));
+					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.sameTime(legalHolidayWorkTime));
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(TimeDivergenceWithCalculation.sameTime(holidayWorkTime));
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
@@ -348,8 +349,8 @@ public class HolidayWorkTimeOfMonthly {
 						legalTransferTimeWork = new AttendanceTime(canLegalHolidayWork.v());
 						returnTime = new AttendanceTime(0);
 					}
-					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(TimeWithCalculation.sameTime(legalTransferTimeWork));
-					timeSeriesWork.addTransferTimeInHolidayWorkTime(TimeWithCalculation.sameTime(transferTimeWork));
+					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.sameTime(legalTransferTimeWork));
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(TimeDivergenceWithCalculation.sameTime(transferTimeWork));
 					break;
 				}
 			}
@@ -442,5 +443,15 @@ public class HolidayWorkTimeOfMonthly {
 					aggregateHolidayWorkTime.getTransferTime().getTime().v(),
 					aggregateHolidayWorkTime.getTransferTime().getCalcTime().v());
 		}
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.totalHolidayWorkTime.getTime().v() +
+				this.totalTransferTime.getTime().v());
 	}
 }
