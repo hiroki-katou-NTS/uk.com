@@ -267,7 +267,7 @@ public class AppHolidayWorkFinder {
 				appDate,
 				ApplicationType.BREAK_TIME_APPLICATION.value,
 				result,
-				dailyAttendanceTimeCaculationImport.getHolidayWorkTime());
+				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),prePostAtr);
 		return result;
 	}
 	
