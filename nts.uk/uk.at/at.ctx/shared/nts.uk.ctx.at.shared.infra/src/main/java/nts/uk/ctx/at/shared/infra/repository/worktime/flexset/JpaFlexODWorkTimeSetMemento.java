@@ -37,6 +37,9 @@ public class JpaFlexODWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento
 	public JpaFlexODWorkTimeSetMemento(KshmtFlexOdRtSet entity) {
 		super();
 		this.entity = entity;
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHolSets())) {
+			this.entity.setKshmtFlexHolSets(new ArrayList<>());
+		}
 	}
 
 	/* (non-Javadoc)
