@@ -20,6 +20,8 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 
 	// 特別休暇ID
 	private String specialId;
+	
+	private String cId;
 	// 社員ID
 	private String employeeId;
 	// 特別休暇コード
@@ -35,13 +37,14 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 	// 明細
 	private SpecialLeaveNumberInfo details;
 
-	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId,String employeeId, int specialLeaveCode,
+	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId,String cid,String employeeId, int specialLeaveCode,
 			GeneralDate grantDate, GeneralDate deadlineDate, int expirationStatus, int registerType,
 			int dayNumberOfGrant, Integer timeOfGrant, Double dayNumberOfUse, Integer timeOfUse,
 			Double useSavingDays, int numberOverdays, Integer timeOver, Double dayNumberOfRemain,
 			Integer timeOfRemain) {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 		domain.specialId = specialId;
+		domain.specialId = cid;
 		domain.employeeId = employeeId;
 		domain.specialLeaveCode = new SpecialVacationCD(specialLeaveCode);
 		domain.grantDate = grantDate;

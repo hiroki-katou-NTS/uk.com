@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,15 @@ public class SpecialLeaveGrantFinder {
 		List<SpecialLeaveGrantRemainingData> datalist = repo.getAll(employeeId, specialCode);
 		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(domain))
 				.collect(Collectors.toList());
+	}
+	
+	public Optional<SpecialLeaveGrantRemainingData> getDetail(String specialid){
+		
+		Optional<SpecialLeaveGrantRemainingData> data = repo.getBySpecialId(specialid);
+		if (!data.isPresent()) {
+			return Optional.empty();
+		}
+		return data;
 	}
 
 	public List<SpecialLeaveGrantDto> getListDataByCheckState(String employeeId, int specialCode, Boolean checkState) {

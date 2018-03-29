@@ -12,6 +12,7 @@ public class UpdateSpecialLeaCommand {
 
 	private String sid;
 	private String specialId;
+	private String cId;
 	private int specialLeaCode;
 	private GeneralDate grantDate;
 	private GeneralDate deadlineDate;
