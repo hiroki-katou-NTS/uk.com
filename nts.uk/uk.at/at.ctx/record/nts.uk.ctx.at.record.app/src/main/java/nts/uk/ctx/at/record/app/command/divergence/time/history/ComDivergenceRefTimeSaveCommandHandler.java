@@ -44,7 +44,7 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 					// show error list
 					exceptions.throwExceptions();
 				} else if(item.getAlarmTime() != null && item.getErrorTime() != null) {
-					if(item.getAlarmTime() > item.getErrorTime()){
+					if(item.getAlarmTime() >= item.getErrorTime()){
 						exceptions.addMessage("Msg_82");
 						// show error list
 						exceptions.throwExceptions();
@@ -59,7 +59,9 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 				return new CompanyDivergenceReferenceTime(e);
 			}else {
 				Optional<CompanyDivergenceReferenceTime> oldDomain = this.repository.findByKey(e.getHistoryId(), e.getDivergenceTimeNo());
-				return oldDomain.get();
+				CompanyDivergenceReferenceTime domainToSave = oldDomain.get();
+				domainToSave.setNotUseAtr(e.getNotUseAtr());
+				return domainToSave;
 			}
 		}).collect(Collectors.toList());
 		

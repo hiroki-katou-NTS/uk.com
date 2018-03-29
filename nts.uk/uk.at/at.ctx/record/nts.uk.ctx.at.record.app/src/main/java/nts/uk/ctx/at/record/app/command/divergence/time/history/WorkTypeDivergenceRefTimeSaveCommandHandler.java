@@ -44,12 +44,12 @@ public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<
 		// validate
 		command.getListDataSetting().stream().forEach(item -> {
 			if (item.getNotUseAtr().value == USE) {
-				if (item.getAlarmTime() == 0 && item.getErrorTime() == 0) {
+				if (item.getAlarmTime() == null && item.getErrorTime() == null) {
 					exceptions.addMessage("Msg_913");
 					// show error list
 					exceptions.throwExceptions();
-				} else {
-					if (item.getAlarmTime() < item.getErrorTime()) {
+				} else if(item.getAlarmTime() != null && item.getErrorTime() != null) {
+					if (item.getAlarmTime() >= item.getErrorTime()) {
 						exceptions.addMessage("Msg_82");
 						// show error list
 						exceptions.throwExceptions();
@@ -65,7 +65,9 @@ public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<
 			} else {
 				Optional<WorkTypeDivergenceReferenceTime> oldDomain = this.itemRepo.findByKey(e.getHistoryId(),
 						new BusinessTypeCode(e.getWorkTypeCodes()), e.getDivergenceTimeNo());
-				return oldDomain.get();
+				WorkTypeDivergenceReferenceTime domainToSave = oldDomain.get();
+				domainToSave.setNotUseAtr(e.getNotUseAtr());
+				return domainToSave;
 			}
 		}).collect(Collectors.toList());
 
