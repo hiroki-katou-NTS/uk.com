@@ -47,7 +47,9 @@
 						</td>
 						<!-- B4未承認項目説明はてな -->
 						<td>
-							<div class="btn-question"><img src="" /></div>
+						</td>
+						<td style="width: 60px;">
+							<button class="btn-question" data-bind="ntsHelpButton: {image: '未承認項目説明.jpg', position: 'bottom center', enable: true }">?</button>
 						</td>
 					</tr>
 				</table>
@@ -78,7 +80,7 @@
 							<td data-bind="text: $parent.getRecord(unapproved)"></td>
 							<td data-bind="text: $parent.getRecord(approved)"></td>
 							<td data-bind="text: $parent.getRecord(denail)"></td>
-							<td><div data-bind="ntsCheckBox: { checked: sendMail }" /></td>
+							<td><div data-bind="ntsCheckBox: { checked: sendMail, enable:  $parent.enable }" /></td>
 						</tr>
 					</tbody>
 				</table>

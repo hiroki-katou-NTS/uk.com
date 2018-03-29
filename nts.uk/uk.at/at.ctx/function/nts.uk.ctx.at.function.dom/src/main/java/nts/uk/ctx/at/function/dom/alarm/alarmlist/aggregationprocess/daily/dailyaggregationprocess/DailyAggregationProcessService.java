@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -21,7 +24,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyAggregationProcessService {
@@ -40,6 +42,9 @@ public class DailyAggregationProcessService {
 	
 	@Inject
 	private DailyPerformanceService dailyPerformanceService;
+	
+	@Inject
+	private ErAlWorkRecordCheckAdapter erAlWorkRecordCheckAdapter;
 
 
 	public List<ValueExtractAlarm> dailyAggregationProcess(String checkConditionCode, PeriodByAlarmCategory period,
@@ -60,7 +65,9 @@ public class DailyAggregationProcessService {
 		List<ValueExtractAlarm> extractDailyRecord = this.extractDailyRecord(dailyAlarmCondition, period, employee, companyID);
 		listValueExtractAlarm.addAll(extractDailyRecord);
 		
-		
+		// tab3: チェック条件
+		List<ValueExtractAlarm> extractCheckCondition =this.extractCheckCondition(dailyAlarmCondition, period, employee, companyID);
+		listValueExtractAlarm.addAll(extractCheckCondition);
 		
 		// tab4: 「システム固定のチェック項目」で実績をチェックする			
 		List<ValueExtractAlarm> extractFixedCondition = this.extractFixedCondition(dailyAlarmCondition, period, employee);
@@ -73,6 +80,22 @@ public class DailyAggregationProcessService {
 	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
 			PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
 		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
+	}
+	
+	private List<ValueExtractAlarm> extractCheckCondition(DailyAlarmCondition dailyAlarmCondition, PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
+		for(GeneralDate date : period.getListDate()) {
+			
+			Map<String, Map<String, Boolean>> mapErAlCheckIdANDEmployee =  erAlWorkRecordCheckAdapter.check(date, Arrays.asList(employee.getId()), dailyAlarmCondition.getExtractConditionWorkRecord());
+	
+			mapErAlCheckIdANDEmployee.entrySet().stream().forEach(e ->{
+				if(e.getValue().get(employee.getId())) {
+					
+				} 
+				
+			});
+		}
+		return listValueExtractAlarm;
 	}
 	
 	

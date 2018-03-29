@@ -35,7 +35,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 	private ScheTimeReflect scheTime;
 	
 	@Override
-	public void startEndTimeOffReflect(PreOvertimeParameter param, WorkInfoOfDailyPerformance workInfo) {
+	public void startEndTimeOffReflect(OvertimeParameter param, WorkInfoOfDailyPerformance workInfo) {
 		//INPUT．勤種反映フラグ(実績)をチェックする
 		if(!param.isActualReflectFlg()) {
 			return;
@@ -43,7 +43,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 		//自動打刻をクリアする
 		this.clearAutomaticEmbossing(param.getEmployeeId(),
 				param.getDateInfo(),
-				workInfo.getRecordWorkInformation().getWorkTypeCode().v(),
+				workInfo.getRecordInfo().getWorkTypeCode().v(),
 				param.isAutoClearStampFlg(),
 				0);
 		//開始終了時刻の反映(事前)
@@ -114,11 +114,11 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 	}
 
 	@Override
-	public void startEndTimeOutput(PreOvertimeParameter param,
+	public void startEndTimeOutput(OvertimeParameter param,
 			WorkInfoOfDailyPerformance workInfo) {
 		//反映する開始終了時刻を求める
-		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getRecordWorkInformation().getWorkTimeCode() == null ? null : workInfo.getRecordWorkInformation().getWorkTimeCode().v(), 
-				workInfo.getRecordWorkInformation().getWorkTypeCode() == null ? null : workInfo.getRecordWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getRecordInfo().getWorkTimeCode().v(), 
+				workInfo.getRecordInfo().getWorkTypeCode() == null ? null : workInfo.getRecordInfo().getWorkTypeCode().v());
 		ScheStartEndTimeReflectOutput findStartEndTime = scheTimereflect.findStartEndTime(param, workInfor);
 		//ジャスト遅刻早退により時刻を編集する
 		StartEndTimeOutput justLateEarly = this.justLateEarly(workInfor.getWorktimeCode(), findStartEndTime);

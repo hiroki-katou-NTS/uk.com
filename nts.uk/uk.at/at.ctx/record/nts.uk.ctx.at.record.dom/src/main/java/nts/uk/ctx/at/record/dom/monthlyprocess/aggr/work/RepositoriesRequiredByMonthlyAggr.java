@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
@@ -49,7 +50,7 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	AffWorkplaceAdapter getAffWorkplace();
 
 	/** 所属雇用履歴の取得 */
-	SyEmploymentAdapter getSyEmployment(); 
+	SyEmploymentAdapter getSyEmployment();
 	
 	/** 日別実績の勤怠時間の取得 */
 	AttendanceTimeRepository getAttendanceTimeOfDaily();
@@ -75,6 +76,9 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	/** 所定時間設定の取得 */
 	PredetemineTimeSettingRepository getPredetermineTimeSet();
 
+	/** 締めの取得 */
+	ClosureRepository getClosure();
+	
 	/** 社員の日別積実績エラー一覧 */
 	EmployeeDailyPerErrorRepository getEmployeeDailyError();
 	
