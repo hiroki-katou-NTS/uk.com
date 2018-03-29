@@ -96,14 +96,14 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 				.map(item -> {
 					KrqdtOvertimeInputPK pk =  new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo(),item.getTimeItemTypeAtr().value);
-					return new KrqdtOvertimeInput(pk, item.getStartTime().v(), item.getEndTime().v(),
+					return new KrqdtOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() == null ? null : item.getEndTime().v(),
 							item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
 
 		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(),
-				domain.getOverTimeAtr().value, domain.getWorkTypeCode().v(), domain.getSiftCode().v(),
+				domain.getOverTimeAtr().value, domain.getWorkTypeCode() == null? null :  domain.getWorkTypeCode().v(), domain.getSiftCode() == null ? null : domain.getSiftCode().v(),
 				domain.getWorkClockFrom1(), domain.getWorkClockTo1(), domain.getWorkClockFrom2(),
 				domain.getWorkClockTo2(), domain.getDivergenceReason(), domain.getFlexExessTime(),
 				domain.getOverTimeShiftNight(), overtimeInputs);
