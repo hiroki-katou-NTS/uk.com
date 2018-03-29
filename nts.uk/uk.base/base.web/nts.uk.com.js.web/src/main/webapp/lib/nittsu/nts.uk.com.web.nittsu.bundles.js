@@ -21527,8 +21527,10 @@ var nts;
                                 };
                                 // Delete row
                                 var deleteRow = function () {
-                                    if ($self.data("igGrid") !== null)
+                                    if ($self.data("igGrid") !== null) {
+                                        $self.data("ntsRowDeleting", true);
                                         $self.data("igGridUpdating").deleteRow(rowId);
+                                    }
                                 };
                                 // Get control
                                 var ntsControl = ntsControls.getControl(controlDef.controlType);
@@ -26072,7 +26074,7 @@ var nts;
                                     return;
                                 }
                                 setting.descriptor.update(startRow, owner._virtualRowCount, owner._virtualDom);
-                                if (!setting.descriptor.keyIdxes) {
+                                if (!setting.descriptor.keyIdxes || $grid.data("ntsRowDeleting")) {
                                     var pk_2 = owner.dataSource.settings.primaryKey;
                                     var keyIdxes_2 = {};
                                     if (owner.dataSource._origDs) {
@@ -26084,6 +26086,7 @@ var nts;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
                                     setting.descriptor.headerParent = owner._headerParent;
+                                    $grid.data("ntsRowDeleting", false);
                                 }
                                 if (rebuild) {
                                     setting.descriptor.fixedTable = owner._fixedTable;

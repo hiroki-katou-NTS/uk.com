@@ -197,7 +197,10 @@ module nts.uk.ui.jqueryExtentions {
                     };
                     // Delete row
                     var deleteRow = () => {
-                        if ($self.data("igGrid") !== null) $self.data("igGridUpdating").deleteRow(rowId);
+                        if ($self.data("igGrid") !== null) {
+                            $self.data("ntsRowDeleting", true);
+                            $self.data("igGridUpdating").deleteRow(rowId);
+                        }
                     };
                     // Get control
                     var ntsControl = ntsControls.getControl(controlDef.controlType);
@@ -4732,7 +4735,7 @@ module nts.uk.ui.jqueryExtentions {
                         return;
                     }
                     setting.descriptor.update(startRow, owner._virtualRowCount, owner._virtualDom); 
-                    if (!setting.descriptor.keyIdxes) {
+                    if (!setting.descriptor.keyIdxes || $grid.data("ntsRowDeleting")) {
                         let pk = owner.dataSource.settings.primaryKey;
                         let keyIdxes = {};
                         if (owner.dataSource._origDs) {
@@ -4744,6 +4747,7 @@ module nts.uk.ui.jqueryExtentions {
                         setting.descriptor.fixedTable = owner._fixedTable;
                         setting.descriptor.headerCells = owner._headerCells;
                         setting.descriptor.headerParent = owner._headerParent;
+                        $grid.data("ntsRowDeleting", false);
                     }
                     if (rebuild) {
                         setting.descriptor.fixedTable = owner._fixedTable;
