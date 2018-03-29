@@ -67,4 +67,13 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr);
+	
+	/**
+	 * Request list No.236
+	 * @param sID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
 }
