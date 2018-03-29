@@ -10,7 +10,7 @@
 		<ui:define name="htmlHead">
 		
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
 		   	</com:ValidatorScript>
 		   	
 			<script>
@@ -92,7 +92,7 @@
 									value: lateGraceTime,
 									inputFormat: 'time',
 									mode: 'time',
-									constraint:'LateEarlyGraceTime',
+									constraint:'AttendanceTime',
 									required: true }" />	
 							<div tabindex="5" data-bind="ntsCheckBox: { 
 									name: '#[KMK003_267]',
@@ -105,7 +105,7 @@
 									value: leaveEarlyGraceTime,
 									inputFormat: 'time',
 									mode: 'time',
-									constraint:'LateEarlyGraceTime',
+									constraint:'AttendanceTime',
 									required: true }" />	
 							<div tabindex="7" data-bind="ntsCheckBox: { 
 									name: '#[KMK003_269]',
