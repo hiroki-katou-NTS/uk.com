@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf018.e.viewmodel {
     import text = nts.uk.resource.getText;
-
+    import getShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         tempData: Array<model.ConfirmationStatus>;
 
@@ -18,6 +18,20 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 new model.ConfirmationStatus("01", "1231 2s ", true, 6, null, 8),
                 new model.ConfirmationStatus("01", "adas  12", true, 1, 4, 8)
             ];
+        }
+
+        /**
+         * 起動する
+         */
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            let params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
+            service.getWorkplaceExperienceStartUp(params).done(function() {
+            
+            })
+            dfd.resolve();
+            return dfd.promise();
         }
 
         sendMail() {

@@ -46,6 +46,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	private final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
 	
+	private final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
+			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -161,6 +164,20 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.getList(c -> c.toDomain());
+		return data;
+	}
+	
+	/**
+	 * Request list No.236
+	 */
+	@Override
+	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate) {
+		List<Application_New> data = this.queryProxy().query(SELECT_APP_BY_CONDS, KrqdtApplication_New.class)
+				.setParameter("employeeID", sID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> c.toDomain());
+		
 		return data;
 	}
 }

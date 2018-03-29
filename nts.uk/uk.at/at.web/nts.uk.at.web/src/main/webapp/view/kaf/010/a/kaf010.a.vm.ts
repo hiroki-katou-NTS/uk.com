@@ -135,7 +135,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                self.kaf000_a.start(self.employeeID, 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });

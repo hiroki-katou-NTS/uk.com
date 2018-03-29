@@ -5,9 +5,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
@@ -24,6 +27,12 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	private WorkInformationRepository workRepository;
 	@Inject
 	private ScheWorkUpdateService scheWorkUpdate;
+	@Inject
+	private PreOvertimeReflectService preOvertimeService;
+	@Inject
+	private CalculateDailyRecordService calculate;
+	@Inject
+	private AttendanceTimeRepository attendanceTime;
 	@Override
 	public ApplicationReflectOutput reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
@@ -56,6 +65,12 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			if(overtimePara.getOvertimePara().getFlexExessTime() > 0) {
 				scheWorkUpdate.updateFlexTime(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), overtimePara.getOvertimePara().getFlexExessTime(), false);
 			}
+			
+			//日別実績の修正からの計算
+			//○日別実績を置き換える Replace daily performance		
+			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()));
+			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 			return output;

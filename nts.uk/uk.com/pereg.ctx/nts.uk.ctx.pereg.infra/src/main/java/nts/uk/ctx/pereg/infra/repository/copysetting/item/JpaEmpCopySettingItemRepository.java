@@ -39,6 +39,15 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 			+ " ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " LEFT JOIN PpestEmployeeCopySettingItem ci ON i.ppemtPerInfoItemPK.perInfoItemDefId = ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0 ORDER BY io.displayOrder ASC";
+	
+	private final static String SELECT_PERINFOITEM_BYCTGID_NO812 = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,i.itemCd,"
+			+ " CASE WHEN (ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId) IS NOT NULL THEN 'True' ELSE 'False' END AS alreadyCopy ,ic.itemParentCd,ic.dateItemType"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemOrder io ON i.ppemtPerInfoItemPK.perInfoItemDefId= io.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+			+ " LEFT JOIN PpestEmployeeCopySettingItem ci ON i.ppemtPerInfoItemPK.perInfoItemDefId = ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId"
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
+			+ " AND ic.dataType != 9 AND ic.dataType != 10 AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
 
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf) {
@@ -87,6 +96,20 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 	public List<EmpCopySettingItem> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId,
 			String contractCd) {
 		List<EmpCopySettingItem> itemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+					return EmpCopySettingItem.createFromJavaType(perInfoCategoryId, String.valueOf(i[0]),
+							String.valueOf(i[1]), String.valueOf(i[2]), Boolean.valueOf(i[3].toString()),
+							i[4] != null ? i[4].toString() : null);
+				});
+
+		return itemList;
+
+	}
+	
+	@Override
+	public List<EmpCopySettingItem> getPerInfoItemByCtgIdNo812(String perInfoCategoryId, String companyId,
+			String contractCd) {
+		List<EmpCopySettingItem> itemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID_NO812, Object[].class)
 				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
 					return EmpCopySettingItem.createFromJavaType(perInfoCategoryId, String.valueOf(i[0]),
 							String.valueOf(i[1]), String.valueOf(i[2]), Boolean.valueOf(i[3].toString()),

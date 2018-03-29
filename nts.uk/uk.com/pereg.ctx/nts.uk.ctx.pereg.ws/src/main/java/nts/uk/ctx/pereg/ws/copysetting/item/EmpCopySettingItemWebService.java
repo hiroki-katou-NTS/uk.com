@@ -46,7 +46,7 @@ public class EmpCopySettingItemWebService {
 	@POST
 	@Path("findby/getPerInfoItemByCtgId")
 	public List<CopySettingItemDto> getPerInfoItemByCtgId(String ctgId) {
-		return this.finder.getPerInfoDefById(ctgId);
+		return this.finder.getPerInfoDefByIdNo812(ctgId);
 	}
 
 }
