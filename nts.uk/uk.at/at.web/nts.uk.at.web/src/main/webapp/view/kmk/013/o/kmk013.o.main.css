@@ -31,3 +31,11 @@
 .guide-message {
 	padding: 12px;
 }
+
+#grid-up-down .upDown-container #grid-up-down-up {
+	margin-top: 6px;
+}
+
+#grid-up-down .upDown-container #grid-up-down-down {
+	margin-top: 13px;
+}

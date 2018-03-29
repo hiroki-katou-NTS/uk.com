@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk013.e {
             itemListRounding: KnockoutObservableArray<ItemModel>;
             itemListRoundingFull: KnockoutObservableArray<ItemModel>;
             itemListExcOutRounding: KnockoutObservableArray<ItemModel>;
+            itemListExcOutRoundingFull: KnockoutObservableArray<ItemModel>;
+            currentRounding: KnockoutObservableArray<ItemModel>;
             listData: KnockoutObservableArray<UnitRouding>;
             isEnable: KnockoutObservable<boolean>;
             isEditable: KnockoutObservable<boolean>;
@@ -20,6 +22,7 @@ module nts.uk.at.view.kmk013.e {
             constructor() {
                 var self = this;
                 self.listData = ko.observableArray([]);
+                
                 self.itemListUnit = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText("Enum_RoundingTime_1Min")),
                     new ItemModel(1, nts.uk.resource.getText("Enum_RoundingTime_5Min")),
@@ -43,9 +46,14 @@ module nts.uk.at.view.kmk013.e {
                 ]);
                 self.itemListExcOutRounding = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up"))
+                ]);
+                self.itemListExcOutRoundingFull = ko.observableArray([
+                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
                     new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
                     new ItemModel(2, "要素の丸めに従う")
                 ]);
+                self.currentRounding = ko.observableArray([]);
                 
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(false);
@@ -53,6 +61,16 @@ module nts.uk.at.view.kmk013.e {
                 self.excRoundingUnit = ko.observable(0);
                 self.excRoundingProc = ko.observable(0);
                 self.isVisibleE22 = ko.observable(false);
+                
+                self.excRoundingUnit.subscribe(function(v) {
+                    if (v == 4 || v == 6) {
+                        self.currentRounding(self.itemListExcOutRoundingFull());
+                    }
+                    else {
+                        self.currentRounding(self.itemListExcOutRounding());
+                    }
+                });
+                
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -105,10 +123,10 @@ module nts.uk.at.view.kmk013.e {
                 blockUI.invisible();
                 service.save(ko.toJS(self.listData())).done(() => {
                     let data = {};
-                    data.roundingUnit = self.excRoundingUnit();
-                    data.roundingProcess = self.excRoundingProc();
+                    data.roundingUnit = self.excData().unit();
+                    data.roundingProcess = self.excData().rounding();
                     service.saveExcOut(data).done(() => {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         blockUI.clear();
                     });
                 }).fail((error) => {
@@ -129,6 +147,8 @@ module nts.uk.at.view.kmk013.e {
             }
 
         }
+        
+        
         class UnitRouding {
             timeItemId: string;
             attendanceItemName: string;
@@ -159,6 +179,7 @@ module nts.uk.at.view.kmk013.e {
                     }
                 });
             }
+
         }
     }
 }

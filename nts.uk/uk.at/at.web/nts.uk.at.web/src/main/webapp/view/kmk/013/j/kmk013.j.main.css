@@ -3,11 +3,13 @@
 }
 
 .child-lb {
-	margin: 3px 0px 5px 35px;
+	margin: 0px 0px 2px 35px;
 }
 
 hr {
 	margin-left: 35px;
+	margin-top: 1px;
+	opacity: 0.4;
 }
 
 .selection {
@@ -15,6 +17,18 @@ hr {
 	width: 250px;
 }
 
+.selection label {
+	padding-top: 3px;
+}
+
 .workSelection {
-	margin-top: 90px;
+	margin-top: 60px;
+}
+
+#itemname {
+	width: 250px;
+}
+
+.left-content {
+	margin-left: 30px;
 }

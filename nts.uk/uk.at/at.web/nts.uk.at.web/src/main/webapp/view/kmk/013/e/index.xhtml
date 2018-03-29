@@ -19,7 +19,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
-				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_225')}</button>
+				<button tabindex="2" class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area">
 			<table>
@@ -31,10 +31,10 @@
 							<hr />
 							<table id="fixed-table" >
 								<colgroup>
-									<col width="200px" />
+									<col width="170px" />
 									<col width="100px" />
-									<col width="50px" />
-									<col width="175px" />
+									<col width="145px" />
+									<col width="170px" />
 								</colgroup>
 								<tbody data-bind="foreach: listData">
 									<tr>
@@ -75,46 +75,48 @@
 						</div>
 						</th>
 						<th class="right-box" data-bind="if: isVisibleE22()">
-							<div class = "round-box">
-								<div class="label">#{i18n.getText('KMK013_273')}</div>
-								<hr />
-								<table>
-									<tr>
-										<td><span class="right-box-component">#{i18n.getText('KMK013_274')}</span></td>
-										<td><div id="unit-combo-box" class="right-box-component"
+							<div class="panel panel-gray-bg">
+								<div class="round-box">
+									<div class="label">#{i18n.getText('KMK013_273')}</div>
+									<hr />
+									<table>
+										<tr>
+											<td><span class="right-box-component">#{i18n.getText('KMK013_274')}</span></td>
+											<td><div id="unit-combo-box" class="right-box-component"
+														data-bind="ntsComboBox: {
+												    name:'#{i18n.getText('KMK013_275')}',
+												    width: 100,
+													options: itemListUnit,
+													optionsValue: 'code',
+													value: excRoundingUnit,
+													optionsText: 'code', 
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+													{ prop: 'name', length : 10 }
+														]}"></div>
+												</td>
+	 										<td><div class="right-box-component" style="margin-right: 10px">#{i18n.getText('KMK013_202')}</div></td>
+	<!-- 										<td><div class="right-box-component" style="margin-right: 10px">分</div></td> -->
+											<td>
+												<div id="rounding-combo-box" class="right-box-component"
 													data-bind="ntsComboBox: {
-											    name:'#{i18n.getText('KMK013_275')}',
-											    width: 100,
-												options: itemListUnit,
-												optionsValue: 'code',
-												value: excRoundingUnit,
-												optionsText: 'code', 
-												editable: $parent.isEditable,
-												enable: $parent.isEnable,
-												columns: [
-												{ prop: 'name', length : 10 }
-													]}"></div>
+											name:'#{i18n.getText('KMK013_276')}',
+											options: currentRounding,
+											optionsValue: 'code',
+											value: excRoundingProc,
+											optionsText: 'code',
+											editable: $parent.isEditable,
+											enable: $parent.isEnable,
+											columns: [
+													{ prop: 'name', length : 10 }
+												]}"></div>
 											</td>
-<!-- 										<td><div class="label">#{i18n.getText('KMK013_202')}</div></td> -->
-										<td><div class="right-box-component" style="margin-right: 10px">分</div></td>
-										<td>
-											<div id="rounding-combo-box" class="right-box-component"
-												data-bind="ntsComboBox: {
-										name:'#{i18n.getText('KMK013_276')}',
-										options: itemListExcOutRounding,
-										optionsValue: 'code',
-										value: excRoundingProc,
-										optionsText: 'code',
-										editable: $parent.isEditable,
-										enable: $parent.isEnable,
-										columns: [
-												{ prop: 'name', length : 10 }
-											]}"></div>
-										</td>
-										<td><button data-bind="ntsHelpButton: {image: 'IMG_KMK013_1.png', position: 'left top' }">?</button>
-										</td>
-									</tr>
-								</table>
+											<td><button data-bind="ntsHelpButton: {image: 'img/IMG_KMK013_1.PNG', position: 'bottom right' }">?</button>
+											</td>
+										</tr>
+									</table>
+								</div>
 							</div>
 						</th>
 					</tr>

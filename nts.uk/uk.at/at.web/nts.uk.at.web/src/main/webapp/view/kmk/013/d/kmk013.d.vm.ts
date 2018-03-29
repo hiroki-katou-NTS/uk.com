@@ -146,7 +146,7 @@ module nts.uk.at.view.kmk013.d {
                         let insuffData = {};
                         insuffData.attendanceTime = self.time();
                         service.saveRefresh(insuffData).done(() => {
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     });
                 }

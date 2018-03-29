@@ -1,5 +1,5 @@
 .panel.panel-gray-bg {
-	width: 570px;
+	width: 600px;
 }
 
 #unit-combo-box {
@@ -14,7 +14,7 @@
 
 .nts-fixed-table .nts-fixed-body-container {
     height: 539px;
-    max-width: 560px !important;
+    max-width: 590px !important;
 }
 
 .right-box {
@@ -24,10 +24,11 @@
 .round-box {
 	border-radius: 5px;
 	border: 1px solid;
-	width: 500px;
+	width: 550px;
 	height: 100px;
 	padding: 20px 10px 0px 20px;
 	margin-left: 20px;
+	background-color: white;
 }
 
 .right-box-component {

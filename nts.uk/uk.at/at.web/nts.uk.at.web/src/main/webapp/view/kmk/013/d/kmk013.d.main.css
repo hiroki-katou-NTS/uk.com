@@ -32,6 +32,7 @@ hr {
 
 .ntsRadioBox {
 	margin-left: 52px;
+	padding-top: 2px;
 }
 
 #left-table {
@@ -48,6 +49,7 @@ hr {
 
 #d4_1 {
 	margin-top: 50px;
+	padding-top: 8px;
 }
 
 #d4_1.form-label>label {
