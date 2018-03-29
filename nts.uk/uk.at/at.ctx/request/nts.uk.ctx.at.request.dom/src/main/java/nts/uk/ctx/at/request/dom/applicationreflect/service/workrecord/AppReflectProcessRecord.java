@@ -24,4 +24,11 @@ public interface AppReflectProcessRecord {
 	 * @return
 	 */
 	public WorkReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para, boolean isPre);
+	/**
+	 * 休暇申請
+	 * @param para
+	 * @param isPre True: 事前, False: 事後
+	 * @return
+	 */
+	public WorkReflectedStatesInfo absenceReflectRecor(AbsenceReflectPara para, boolean isPre);
 }

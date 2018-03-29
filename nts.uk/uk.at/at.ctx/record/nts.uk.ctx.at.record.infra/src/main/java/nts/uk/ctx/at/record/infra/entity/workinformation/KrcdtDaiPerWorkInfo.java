@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -86,6 +87,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 				EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
 				EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class), this.krcdtDaiPerWorkInfoPK.ymd,
+				EnumAdaptor.valueOf(this.dayOfWeek, DayOfWeek.class),
 				KrcdtWorkScheduleTime.toDomain(scheduleTimes));
 		return domain;
 	}
@@ -94,10 +96,10 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 		return new KrcdtDaiPerWorkInfo(
 				new KrcdtDaiPerWorkInfoPK(workInfoOfDailyPerformance.getEmployeeId(),
 						workInfoOfDailyPerformance.getYmd()),
-				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode() !=null ? workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v() : null,
-				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode().v() : null,
-				workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTypeCode() != null ? workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTypeCode().v() : null,
-				workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTimeCode().v() : null,
+				workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode() !=null ? workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v() : null,
+				workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode().v() : null,
+				workInfoOfDailyPerformance.getScheduleInfo().getWorkTypeCode() != null ? workInfoOfDailyPerformance.getScheduleInfo().getWorkTypeCode().v() : null,
+				workInfoOfDailyPerformance.getScheduleInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getScheduleInfo().getWorkTimeCode().v() : null,
 				workInfoOfDailyPerformance.getCalculationState() != null ? workInfoOfDailyPerformance.getCalculationState().value : null,
 				workInfoOfDailyPerformance.getGoStraightAtr() != null ? workInfoOfDailyPerformance.getGoStraightAtr().value : null,
 				workInfoOfDailyPerformance.getBackStraightAtr() != null ? workInfoOfDailyPerformance.getBackStraightAtr().value : null,

@@ -11,6 +11,6 @@ public interface WorkScheduleReflectService {
 	 * @param executionTupe
 	 * @return
 	 */
-	public ScheReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto);
+//	public ScheReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto);
 
 }
