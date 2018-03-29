@@ -19,7 +19,6 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -244,11 +243,31 @@ public class AppHolidayWorkFinder {
 		String companyID = AppContexts.user().companyId();
 		List<CaculationTime> result = new ArrayList<>();
 		// 6.計算処理 : TODO
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTydeCode, siftCD, 100, 200, 100, 200);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
+																GeneralDate.fromString(appDate, DATE_FORMAT),
+																workTydeCode,
+																siftCD,
+																startTime,
+																endTime,
+																startTimeRest,
+																endTimeRest);
 		// 06-01_色表示チェック
-		result = this.holidaySixProcess.checkDisplayColor(breakTime, dailyAttendanceTimeCaculationImport.getHolidayWorkTime(), prePostAtr, inputDate, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION.value, employeeID, companyID, siftCD);
+		result = this.holidaySixProcess.checkDisplayColor(breakTime,
+														dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
+														prePostAtr,
+														inputDate,
+														GeneralDate.fromString(appDate, DATE_FORMAT), 
+														ApplicationType.BREAK_TIME_APPLICATION.value,
+														employeeID,
+														companyID,
+														siftCD);
 		// 06-02_休出時間を取得
-		this.holidaySixProcess.getCaculationHolidayWork(companyID, employeeID, appDate, ApplicationType.BREAK_TIME_APPLICATION.value, result, dailyAttendanceTimeCaculationImport.getHolidayWorkTime());
+		this.holidaySixProcess.getCaculationHolidayWork(companyID,
+				employeeID,
+				appDate,
+				ApplicationType.BREAK_TIME_APPLICATION.value,
+				result,
+				dailyAttendanceTimeCaculationImport.getHolidayWorkTime());
 		return result;
 	}
 	

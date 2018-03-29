@@ -115,7 +115,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 		for(CaculationTime cal : holidayWorks){
 			for(Map.Entry<Integer, TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
 				if(cal.getFrameNo() == entry.getKey()){
-					cal.setCaculationTime(Integer.toString(entry.getValue().getCalTime()));
+					cal.setApplicationTime(entry.getValue().getCalTime());
 				}
 			}
 		}
