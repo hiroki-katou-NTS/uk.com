@@ -8,10 +8,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
@@ -19,7 +17,6 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItem
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -37,6 +34,9 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 
 	@Inject
 	private SelectionItemOrderRepository selectOrderRepo;
+	
+	@Inject
+	private ICompanyRepo companyRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<ReflUnrCompCommand> context) {
@@ -47,7 +47,7 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		//共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する:Thực thi thuật toán 「契約内ゼロ会社の会社IDを取得する」
 		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
 		
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+		List<String> companyIdList = companyRepo.acquireAllCompany();
 		// Delete data:
 		for (String cid : companyIdList) {
 			// History:

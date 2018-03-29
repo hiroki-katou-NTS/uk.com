@@ -12,7 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
@@ -29,6 +29,9 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 
 	@Inject
 	private PerInfoHistorySelectionRepository historySelectionRepository;
+	
+	@Inject
+	private ICompanyRepo companyRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<AddSelectionItemCommand> context) {
@@ -77,7 +80,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 			// 0会社の場合:「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);
 		} else {// FALSE → 全会社 の場合
-			List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+			List<String> companyIdList = companyRepo.acquireAllCompany();
 			for (String cid : companyIdList) {
 				newHistId = IdentifierUtil.randomUniqueId();
 				PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,

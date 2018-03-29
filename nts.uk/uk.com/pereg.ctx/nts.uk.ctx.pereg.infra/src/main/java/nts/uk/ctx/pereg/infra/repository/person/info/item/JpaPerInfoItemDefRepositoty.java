@@ -388,7 +388,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd,
+	public void removePerInfoItemDef(List<String> perInfoCtgIds, String categoryCd, String contractCd,
 			String itemCode) {
 		List<PpemtPerInfoItem> listItem = this.queryProxy()
 				.query(SELECT_ITEMS_BY_LIST_CTG_ID_QUERY, PpemtPerInfoItem.class).setParameter("itemCd", itemCode)
