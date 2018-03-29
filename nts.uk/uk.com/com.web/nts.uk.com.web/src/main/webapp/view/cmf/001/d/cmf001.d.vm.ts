@@ -35,6 +35,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         fileDataTotalLine: KnockoutObservable<number> = ko.observable(null);
         onchange: (filename) => void;
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
+        
+        selectedEncoding: KnockoutObservable<number>;
+        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor(data: any) {
             var self = this;
@@ -48,6 +51,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
             self.listCategoryItem = ko.observableArray([]);
 
+            self.selectedEncoding = ko.observable(3);
+            self.encodingList(model.getEncodingList());
+            
             self.selectedCategory.subscribe((data) => {
                 if (data) {
                     self.loadCategoryItemData(data);
@@ -78,7 +84,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.fileId(fileInfo.id);
             console.log(fileInfo);
             block.invisible();
-            service.getNumberOfLine(self.fileId()).done(function(totalLine: any) {
+            service.getNumberOfLine(self.fileId(),self.selectedEncoding()).done(function(totalLine: any) {
                 self.fileDataTotalLine(totalLine);
                 self.setListMappingData(() => {
                     if (self.listAcceptItem().length > 0) {
@@ -563,7 +569,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             if (self.screenFileCheck()) {
                 //write data mapping
                 block.invisible();
-                service.getRecord(self.fileId(), self.stdCondSet().csvDataItemLineNumber(), self.stdCondSet().csvDataStartLine()).done((rs: Array<any>) => {
+                service.getRecord(self.fileId(), self.stdCondSet().csvDataItemLineNumber(), self.stdCondSet().csvDataStartLine(), self.selectedEncoding()).done((rs: Array<any>) => {
                     let _rsList: Array<model.MappingListData> = _.map(rs, x => {
                         return new model.MappingListData(x.colNum, x.colName, x.sampleData);
                     });

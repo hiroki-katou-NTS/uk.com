@@ -20,21 +20,21 @@ public class CsvDataImportService extends WebService {
 	private CsvImportDataFinder fileFind;
 
 	@POST
-	@Path("getNumberOfLine/{fileId}")
-	public int getNumberOfLine(@PathParam("fileId") String fileId) {
-		return fileFind.getNumberOfLine(fileId);
+	@Path("getNumberOfLine/{fileId}/{endcoding}")
+	public int getNumberOfLine(@PathParam("fileId") String fileId, @PathParam("endcoding") Integer endcoding) {
+		return fileFind.getNumberOfLine(fileId, endcoding);
 	}
 
 	@POST
-	@Path("getRecord/{fileId}/{dataLineNum}/{startLine}")
+	@Path("getRecord/{fileId}/{dataLineNum}/{startLine}/{endcoding}")
 	public List<CsvMappingDataDto> getRecord(@PathParam("fileId") String fileId,
-			@PathParam("dataLineNum") int dataLineNum, @PathParam("startLine") int startLine) {
-		return fileFind.getRecordByIndex(fileId, dataLineNum, startLine);
+			@PathParam("dataLineNum") int dataLineNum, @PathParam("startLine") int startLine, @PathParam("endcoding") Integer endcoding) {
+		return fileFind.getRecordByIndex(fileId, dataLineNum, startLine, endcoding);
 	}
 
 	@POST
-	@Path("getCsvRecord")
-	public List<String> getRecord(GettingCsvDataDto info) {
-		return fileFind.getRecord(info);
+	@Path("getCsvRecord/{endcoding}")
+	public List<String> getRecord(GettingCsvDataDto info, @PathParam("endcoding") Integer endcoding) {
+		return fileFind.getRecord(info, endcoding);
 	}
 }
