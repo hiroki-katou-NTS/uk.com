@@ -117,12 +117,23 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                     service.findCompanySetting(self.worktimeSetting.normalSetting().year()).done(function(data: WorktimeSettingDto) {
                         // Clear Errors
                         self.clearError();
+                        let resultData: WorktimeSettingDto = data;
                         // update mode.
                         // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
-                        if (data.statWorkTimeSetDto && data.statWorkTimeSetDto.regularLaborTime) {
+                        if (!nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto) 
+                        && !nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.regularLaborTime)) {
                             self.isNewMode(false);
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
+                                resultData.statWorkTimeSetDto.normalSetting = new WorktimeNormalDeformSettingDto();
+                            }
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
+                                resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
+                            }
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
+                                resultData.statWorkTimeSetDto.deforLaborSetting = new WorktimeNormalDeformSettingDto();
+                            }
                             // Update Full Data
-                            self.worktimeSetting.updateFullData(data);
+                            self.worktimeSetting.updateFullData(resultData);
                             self.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
                         }
                         else {
