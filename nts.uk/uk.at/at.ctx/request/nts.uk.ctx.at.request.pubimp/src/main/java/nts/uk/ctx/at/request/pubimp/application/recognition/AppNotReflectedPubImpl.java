@@ -15,12 +15,12 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class AppNotReflectedPubImpl implements ApplicationOvertimePub {
+public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 	@Inject
 	private ApplicationRepository_New applicationRepository_New;
 	
@@ -34,7 +34,7 @@ public class AppNotReflectedPubImpl implements ApplicationOvertimePub {
 	 * Request list No.300
 	 */
 	@Override
-	public List<ApplicationOvertimeExport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate, GeneralDate endDate) {
+	public List<ApplicationOvertimeExport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
 		Optional<AppOverTime> appOt = null;
 		Optional<AppHolidayWork> appHdWork = null;

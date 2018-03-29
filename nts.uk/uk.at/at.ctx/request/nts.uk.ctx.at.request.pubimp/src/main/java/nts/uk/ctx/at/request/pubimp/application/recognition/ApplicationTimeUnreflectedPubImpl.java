@@ -14,11 +14,11 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
+import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class ApplicationTimeUnreflectedPubImpl implements ApplicationOvertimePub {
+public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnreflectedPub {
 	@Inject
 	private ApplicationRepository_New applicationRepository_New;
 	
@@ -29,7 +29,7 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationOvertimePub
 	 * Request list No.298
 	 */
 	@Override
-	public List<ApplicationOvertimeExport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate, GeneralDate endDate) {
+	public List<ApplicationOvertimeExport> acquireTotalApplicationTimeUnreflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
 		Optional<AppOverTime> appOt = null;
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
