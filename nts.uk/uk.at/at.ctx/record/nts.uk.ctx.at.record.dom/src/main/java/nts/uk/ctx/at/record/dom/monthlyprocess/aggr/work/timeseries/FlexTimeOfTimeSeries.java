@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -31,7 +32,7 @@ public class FlexTimeOfTimeSeries {
 		
 		this.ymd = ymd;
 		this.flexTime = new FlexTime(
-				TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),
+				TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),
 				new AttendanceTime(0));
 	}
 	
@@ -54,7 +55,7 @@ public class FlexTimeOfTimeSeries {
 	 */
 	public void addMinutesToFlexTimeInFlexTime(int minutes){
 		this.flexTime = new FlexTime(
-				TimeWithCalculationMinusExist.createTimeWithCalculation(
+				TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
 						this.flexTime.getFlexTime().getTime().addMinutes(minutes),
 						this.flexTime.getFlexTime().getCalcTime()),
 				this.flexTime.getBeforeApplicationTime());

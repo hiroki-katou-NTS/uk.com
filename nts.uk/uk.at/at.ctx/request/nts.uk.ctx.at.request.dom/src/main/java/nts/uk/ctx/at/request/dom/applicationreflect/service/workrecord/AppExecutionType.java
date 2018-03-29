@@ -9,9 +9,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum AppExecutionType {
 	/**通常実行*/
-	EXCECUTION(0, "勤務予定"),
+	EXCECUTION(0, "通常実行"),
 	/**	再実行*/
-	RETURN(1, "勤務実績");
+	RETURN(1, "再実行");
 	
 	public final Integer value;
 	

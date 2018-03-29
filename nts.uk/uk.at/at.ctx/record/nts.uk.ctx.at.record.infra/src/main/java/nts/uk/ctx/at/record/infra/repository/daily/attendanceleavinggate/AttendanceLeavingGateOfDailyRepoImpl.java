@@ -47,7 +47,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 			return Collections.emptyList();
 		}
 		return this.queryProxy()
-				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid = :sid AND al.id.ymd <= :end AND al.id.ymd >= :start",
+				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start",
 						KrcdtDayLeaveGate.class)
 				.setParameter("end", baseDate.end()).setParameter("start", baseDate.start())
 				.setParameter("sid", employeeId).getList(c -> c.toDomain());

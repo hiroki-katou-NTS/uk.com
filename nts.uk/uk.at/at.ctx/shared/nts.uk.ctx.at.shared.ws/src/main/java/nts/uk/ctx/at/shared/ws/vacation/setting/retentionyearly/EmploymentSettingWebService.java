@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.EmploymentSaveCommand;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.EmploymentSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.delete.vacation.setting.retentionyearly.DeleteEmploymentSettingUtil;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.EmploymentSettingFinder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.dto.EmploymentSettingFindDto;
 
@@ -33,6 +34,10 @@ public class EmploymentSettingWebService extends WebService {
 	@Inject
 	private EmploymentSettingFinder finder;
 	
+	/** The delete util */
+	@Inject
+	private DeleteEmploymentSettingUtil deleteUtil;
+	
 	/**
 	 * Find.
 	 *
@@ -43,6 +48,18 @@ public class EmploymentSettingWebService extends WebService {
 	@Path("find/{empCode}")
 	public EmploymentSettingFindDto find(@PathParam("empCode") String empCode) {
 		return this.finder.find(empCode);
+	}
+	
+	/**
+	 * Delete.
+	 *
+	 * @param empCode the emp code
+	 * @return the employment setting find dto
+	 */
+	@POST
+	@Path("delete/{empCode}")
+	public void delete(@PathParam("empCode") String empCode) {
+		this.deleteUtil.delete(empCode);
 	}
 	
 	/**

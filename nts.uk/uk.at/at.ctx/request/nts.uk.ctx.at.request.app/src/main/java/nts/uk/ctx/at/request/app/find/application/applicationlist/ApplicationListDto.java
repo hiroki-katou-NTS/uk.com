@@ -6,14 +6,14 @@ import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppAbsenceFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppGoBackInfoFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppHolidayWorkFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppOverTimeInfoFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppPrePostGroup;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppWorkChangeFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationStatus;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 
 @Value
 public class ApplicationListDto {

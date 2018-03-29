@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
+
 /** 日別実績の総労働時間 */
 @Data
 @NoArgsConstructor

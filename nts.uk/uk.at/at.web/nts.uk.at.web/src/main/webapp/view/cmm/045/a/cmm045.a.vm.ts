@@ -61,7 +61,7 @@ module cmm045.a.viewmodel {
                 character.save('AppListExtractCondition', null);
             }
             character.restore("AppListExtractCondition").done((obj) => {
-                console.log(obj);
+//                console.log(obj);
                 characterData = obj;
                 if (obj !== undefined && obj !== null) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
@@ -104,6 +104,7 @@ module cmm045.a.viewmodel {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
                     service.getApplicationList(param).done(function(data) {
+                        console.log(data);
                         self.selectedRuleCode.subscribe(function(codeChanged) {
                             self.filter();
                         });
@@ -116,7 +117,7 @@ module cmm045.a.viewmodel {
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                             self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
                         character.save('AppListExtractCondition', paramSave);
-                        console.log(data);
+//                        console.log(data);
                         let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                         let lstAppGroup: Array<vmbase.AppPrePostGroup> = [];
                         self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
@@ -189,7 +190,7 @@ module cmm045.a.viewmodel {
                             lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange(), self.lstAppAbsence());
 //                        let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                         self.lstApp(lstData);
-                        self.items(vmbase.ProcessHandler.orderByList(lstData));
+                        self.items(lstData);
                         //mode approval - count
                         if (data.appStatusCount != null) {
                             self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -336,7 +337,7 @@ module cmm045.a.viewmodel {
             var self = this;
             $("#grid1").ntsGrid({
                 width: '1320px',
-                height: '700px',
+                height: '530px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 rowVirtualization: true,
@@ -684,46 +685,43 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == null){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
-                appContent006 = self.convertAbsenceAllDay(absence, reason);
+            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+                appContent006 = self.convertAbsenceAllDay(absence);
             }
-            if(absence.relationshipCode != null){//特別休暇申請.続柄コード　＝　入力ありの場合
-                appContent006 = self.convertAbsenceSpecial(absence, reason);
+            if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
+                appContent006 = self.convertAbsenceSpecial(absence);
             }
             if(absence.allDayHalfDayLeaveAtr == 0){//休暇申請.終日半日休暇区分　＝　半日休暇
-                appContent006 = self.convertAbsenceHalfDay(absence, reason);
+                appContent006 = self.convertAbsenceHalfDay(absence);
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent006, self.convertDateTime(app.inputDate),
+                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent006 + reason, self.convertDateTime(app.inputDate),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
         //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
-        convertAbsenceAllDay(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+        convertAbsenceAllDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
-            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]) + reason;
+            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]);
         }
         //※特別休暇申請.続柄コード　＝　入力ありの場合
-        convertAbsenceSpecial(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+        convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
             let result = getText('CMM045_279') + getText('CMM045_248') + self.hdAppSet().specialVaca
-            + absence.relationshipName + day + reason;
+            + absence.relationshipName + day;
             return result;
         }
         //※休暇申請.終日半日休暇区分　＝　半日休暇
-        convertAbsenceHalfDay(absence: vmbase.AppAbsenceFull, reasonApp: string): string{
+        convertAbsenceHalfDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            let reason = reasonApp == '' ? '' : '<br/>' + reasonApp;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
             let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
-            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2 + reason;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2;
             return result;
         }
         convertNameHoliday(holidayType: number): string{
@@ -750,6 +748,51 @@ module cmm045.a.viewmodel {
             }
         }
         /**
+         * 振休振出申請
+         * kaf011 - appType = 10
+         * TO DO
+         */
+        formatComplementLeave(){
+            
+        }
+        //※振出申請のみ同期なし・紐付けなし
+        //申請/承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertA(){
+            
+        }
+        //※振休申請のみ同期なし・紐付けなし
+        //申請/承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertB(){
+            
+        }
+        //※振休振出申請　同期（あり/なし）・紐付けあり
+        //申請モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)表示（２段）
+        convertC(){
+            
+        }
+        //※振休振出申請　同期あり・紐付けあり
+        //承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        //※同じ承認状態
+        convertD(){
+            
+        }
+        //※振休振出申請　同期なし・紐付けあり
+        //承認モード（振出の場合）
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertE(){
+            
+        }
+        //※振休振出申請　同期なし・紐付けあり
+        //承認モード（振休の場合）
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertF(){
+            
+        }
+        /**
          * map data -> fill in grid list
          */
         mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,
@@ -762,7 +805,6 @@ module cmm045.a.viewmodel {
                 let data: vmbase.DataModeApp;
                 if (app.applicationType == 0) {//over time
                     let overtTime = self.findOverTimeById(app.applicationID, lstOverTime);
-
                     if (self.mode() == 1 && app.prePostAtr == 1) {
                         data = self.formatOverTimeAf(app, overtTime, masterInfo, lstAppGroup);
                     } else {
@@ -1010,7 +1052,7 @@ module cmm045.a.viewmodel {
                 if (self.selectedCode() != -1) {
                     self.filterByAppType(self.selectedCode());
                 } else {
-                    self.items(vmbase.ProcessHandler.orderByList(lstData));
+                    self.items(lstData);
                     //mode approval - count
                     if (data.appStatusCount != null) {
                         self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -1104,13 +1146,13 @@ module cmm045.a.viewmodel {
             //luu
                 character.save('AppListExtractCondition', paramNew);
             if (appType == -1) {//全件表示
-                self.items(vmbase.ProcessHandler.orderByList(self.lstApp()));
+                self.items(self.lstApp());
             } else {
                 let lstAppFitler: Array<vmbase.DataModeApp> = _.filter(self.lstApp(), function(item) {
                     return item.appType == appType;
                 });
                 self.items([]);
-                self.items(vmbase.ProcessHandler.orderByList(lstAppFitler));
+                self.items(lstAppFitler);
             }
             let colorBackGr = self.fillColorbackGr();
             let colorsText = self.fillColorText();

@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
  * 
@@ -36,15 +36,28 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @param workNo 勤怠No
 	 * @return　出退勤クラス
 	 */
-	public TimeLeavingWork getAttendanceLeavingWork(WorkNo workNo) {
-		
-		Optional<TimeLeavingWork> attendanceLeavingWorkList = this.timeLeavingWorks.stream()
-				.filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
-		if(!attendanceLeavingWorkList.isPresent()) {
-			throw new RuntimeException("Exist duplicate workNo : " + workNo);
-		}	
-		return attendanceLeavingWorkList.get();		
+	public Optional<TimeLeavingWork> getAttendanceLeavingWork(WorkNo workNo) {
+		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
 	}
+	
+//	/**
+//	 * 計算可能な打刻であるか判定する
+//	 * @return　計算可能である
+//	 */
+//	public Optional<TimeLeavingOfDailyPerformance> desicionAbleCalcStamp(){
+//		List<TimeLeavingWork> correctList = new ArrayList<>();
+//		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
+//			val timeSheet = getAttendanceLeavingWork(timeLeavingWork.getWorkNo());
+//			if(timeSheet.isPresent()) {
+//				if(timeSheet.get().getAttendanceStamp().isPresent()){
+//					
+//				}
+//						
+//			}
+//					
+//		}
+//	}
+	
 	
 	/**
 	 * 指定した勤怠Noのデータを取得する
@@ -59,9 +72,9 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
 	 * @return
 	 */
-	public TimeActualStamp getLeavingWork() {
-		TimeLeavingWork targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.workTimes.v()));
-		return targetAttendanceLeavingWorkTime.getLeaveStamp().get();
+	public Optional<TimeActualStamp> getLeavingWork() {
+		Optional<TimeLeavingWork> targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.workTimes.v()));
+		return (targetAttendanceLeavingWorkTime.isPresent())?targetAttendanceLeavingWorkTime.get().getAttendanceStamp():Optional.empty();
 	}
 	
 	/**
@@ -69,10 +82,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return　true:1回　false:2回目
 	 */
 	public boolean isFirstTimeWork() {
-		if(this.workTimes.v() == 1) {
-			return true;
-		}
-		return false;
+		return (this.workTimes.v()) == 1;
 	}
 
 	/**

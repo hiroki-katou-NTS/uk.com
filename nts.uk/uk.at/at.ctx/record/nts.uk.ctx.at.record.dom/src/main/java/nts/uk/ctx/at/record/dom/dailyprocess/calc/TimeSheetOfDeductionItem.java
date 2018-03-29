@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -108,6 +110,20 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 											this.breakAtr,
 											this.deductionAtr
 											);
+	}
+	
+	/**
+	 * 範囲を比較したい対象
+	 * @return
+	 */
+	public Optional<TimeSheetOfDeductionItem> createDuplicateRange(TimeSpanForCalc timeSpan) {
+		//重複範囲取得
+		val duplicateSpan = timeSpan.getDuplicatedWith(this.calcrange);
+		//重複有
+		if(duplicateSpan.isPresent())
+			return Optional.of(this.replaceTimeSpan(duplicateSpan.get()));
+		//重複無
+		return Optional.empty();
 	}
 	
 
@@ -411,4 +427,6 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		}
 		return false;
 	}
+	
+
 }

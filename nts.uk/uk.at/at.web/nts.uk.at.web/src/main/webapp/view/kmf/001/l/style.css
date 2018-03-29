@@ -60,3 +60,9 @@ table#table tr td.title {
 	width: 170px;
 	min-width: 0px !important
 }
+#table td .flexbox-space-between {
+	display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+}

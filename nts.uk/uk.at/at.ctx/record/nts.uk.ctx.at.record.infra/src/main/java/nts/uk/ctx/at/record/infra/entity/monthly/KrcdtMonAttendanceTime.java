@@ -67,6 +67,10 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 法定労働時間 */
 	@Column(name = "STAT_WORKING_TIME")
 	public int statutoryWorkingTime;
+	
+	/** 総労働時間 */
+	@Column(name = "TOTAL_WORKING_TIME")
+	public int totalWorkingTime;
 
 	/** 実働時間：月別実績の通常変形時間 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)

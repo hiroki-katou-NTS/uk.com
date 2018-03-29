@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -14,9 +15,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
 
-        recWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
-        absWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        absWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
         prePostTypes = ko.observableArray([
             { code: 0, text: text('KAF011_14') },
@@ -40,8 +41,40 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         showReason: KnockoutObservable<number> = ko.observable(0);
 
-        update() {
+        employeeID: KnockoutObservable<string> = ko.observable('');
 
+        version: KnockoutObservable<number> = ko.observable(0);
+
+        update() {
+            block.invisible();
+            let self = this,
+                saveCmd: common.ISaveHolidayShipmentCommand = {
+                    recCmd: ko.mapping.toJS(self.recWk()),
+                    absCmd: ko.mapping.toJS(self.absWk()),
+                    comType: self.appComSelectedCode(),
+                    usedDays: 1,
+                    appCmd: {
+                        appReasonID: self.appReasonSelectedID(),
+                        applicationReason: self.reason(),
+                        prePostAtr: self.prePostSelectedCode(),
+                        enteredPersonSID: self.employeeID(),
+                        version: self.version()
+                        ,
+                    }
+                };
+
+            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+
+            service.update(saveCmd).done(() => {
+                dialog({ messageId: 'Msg_15' });
+
+
+            }).fail((error) => {
+                dialog({ messageId: error.messageId });
+
+            }).always(() => {
+                block.clear();
+            });
         }
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
@@ -73,13 +106,10 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataFromStart(data) {
             let self = this;
             if (data) {
-
-
-
-
                 self.comment(data.drawalReqSet || null);
-
-                self.employeeName(data.employeeName);
+                self.employeeName(data.employeeName || null);
+                self.employeeID(data.employeeID || null);
+                self.version(data.application.version || 0);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
@@ -121,13 +151,13 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
 
 
-        setDataApp(control: common.WorkItems, data, comType?) {
+        setDataApp(control: common.AppItems, data, comType?) {
             let self = this;
             control.wkTypeCD(data.workTypeCD);
             control.wkTimeCD(data.workTimeCD);
             control.changeWorkHoursType(data.changeWorkHoursType);
-            control.workLocationCD(data.workLocationCD);
             control.appDate(data.appDate);
+            control.appID(data.appID);
             if (data.wkTime1) {
                 control.wkTime1().startTime(data.wkTime1.startTime);
                 control.wkTime1().endTime(data.wkTime1.endTime);
