@@ -39,6 +39,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoHistorySele
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionInitQuery;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionQuery;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -201,10 +202,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	
 	// Lanlt
 	@POST
-	@Path("find/{selectionItemId}/{baseDate}/{selectionItemClsAtr}")
-	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId,
-			@PathParam("baseDate") String baseDate, @PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
-		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate, selectionItemClsAtr);
+	@Path("findSelectionInit")
+	public List<SelectionInitDto> getAllSelectionByHistoryId(SelectionInitQuery query) {
+		return this.selecFider.getAllSelectionByHistoryId(query);
 	}
 
 
@@ -229,10 +229,4 @@ public class PerInfoSelectionItemWebservice extends WebService {
 		this.updateSelOrder.handle(lstSelOrder);
 	}
 	
-	
-	@POST
-	@Path("findAllByCompanyId/{selectionItemId}")
-	public List<SelectionInitDto> getAllelectionItemByCompany(@PathParam("selectionItemId")String selectionItemId) {
-		return this.selecFider.getAllSelectionByCompanyId(selectionItemId, GeneralDate.today());
-	}
 }

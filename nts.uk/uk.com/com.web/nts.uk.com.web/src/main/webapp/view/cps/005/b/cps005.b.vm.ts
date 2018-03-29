@@ -406,10 +406,9 @@ module nts.uk.com.view.cps005.b {
                 nts.uk.ui.errors.clearAll();
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
-                    let baseDate = moment(new Date()).format('YYYY-MM-DD');
                     if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
                         new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                            baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                             __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                 if (data.length > 0) {
                                     self.selectionItem().selectionLst([]);
                                     self.selectionItem().selectionLst(data);
@@ -431,7 +430,7 @@ module nts.uk.com.view.cps005.b {
                         if (!value) {
                             return;
                         }
-                        new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                        new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionItem().selectionLst([]);
                                 self.selectionItem().selectionLst(data);
@@ -685,12 +684,11 @@ module nts.uk.com.view.cps005.b {
             }
             self.selectionItemLst(data.selectionItemLst || []);
             self.selectionLst([]);
-            let baseDate = moment(new Date()).format('YYYY-MM-DD');
 
             if (self.selectionItemId() === undefined || self.selectionItemId() === "") {
                 if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
 
-                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                         __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionLst.removeAll();
@@ -709,7 +707,7 @@ module nts.uk.com.view.cps005.b {
                 }
             } else {
 
-                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId), baseDate,
+                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId),
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.selectionLst.removeAll();
@@ -730,7 +728,7 @@ module nts.uk.com.view.cps005.b {
                 if (!value) {
                     return;
                 }
-                new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                     if (data.length > 0) {
                         self.selectionLst.removeAll();
                         self.selectionLst(data);

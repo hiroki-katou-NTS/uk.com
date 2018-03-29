@@ -99,13 +99,16 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
 			List<Selection> selection = new ArrayList<>();
+			String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+			String itemId = addItemCommand.getSingleItem().getSelectionItemId();
+			GeneralDate today = GeneralDate.today();
+			
 			if (addItemCommand.getPersonEmployeeType() == 1) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(
-						addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 0);
+				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 0);
 			} else if (addItemCommand.getPersonEmployeeType() == 2) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(
-						addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 1);
+				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 1);
 			}
+			
 			if (selection == null || selection.size() == 0) {
 
 				throw new BusinessException("Msg_587");

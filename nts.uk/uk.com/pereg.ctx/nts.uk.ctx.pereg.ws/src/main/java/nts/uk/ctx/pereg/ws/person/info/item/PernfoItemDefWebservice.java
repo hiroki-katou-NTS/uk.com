@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.ws.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
