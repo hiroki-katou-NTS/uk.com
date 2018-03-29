@@ -43,6 +43,8 @@ import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
@@ -470,7 +472,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		VacationClass vacation = new VacationClass(new HolidayOfDaily());
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
- 
+		
+		//日別実績の入退門　　　　
+		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = integrationOfDaily.getAttendanceLeavingGate();
+		//日別実績のPCログオン情報　　　
+		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = integrationOfDaily.getPcLogOnInfo();
+		//
+		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = integrationOfDaily.getAttendanceLeave();
+		
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		Optional<WorkTimeDailyAtr> workTime = Optional.empty();
@@ -512,7 +521,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					Collections.emptyList(),
-					Collections.emptyList());
+					Collections.emptyList(),
+					attendanceLeavingGateOfDaily,
+					pCLogOnInfoOfDaily,
+					attendanceLeave);
 	
 		
 

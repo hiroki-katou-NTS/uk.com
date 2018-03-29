@@ -17,12 +17,15 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -141,7 +144,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			   Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
+			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
+			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -161,7 +167,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     bonusPayAutoCalcSet,
 				   																	     calcAtrOfDaily,
 				   																	     eachWorkTimeSet,
-				   																	     eachCompanyTimeSet)));
+				   																	     eachCompanyTimeSet,
+				   																	     attendanceLeavingGateOfDaily,
+				   																	     pCLogOnInfoOfDaily,
+				   																	     attendanceLeave)));
 		return integrationOfDaily;
 	}
 	
@@ -188,7 +197,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			   Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
+			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
+			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
 		
 		/*所定時間*/
 		
@@ -217,11 +229,26 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					eachWorkTimeSet,
 					eachCompanyTimeSet);
 		/*滞在時間の計算*/
-		val stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
-												 new AttendanceTime(0),
-												 new AttendanceTime(0),
-												 new AttendanceTime(0),
-												 new AttendanceTime(0));
+		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
+																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave.get()),
+												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave.get()),
+												 				new AttendanceTime(0),
+												 				new AttendanceTime(0));
+		
+//		//明日はここから
+//		AttendanceTime beforetime = calctio();
+//		AttendanceTime beforetime = calctio();
+//		AttendanceTime beforetime = calctio();
+//		AttendanceTime beforetime = calctio();
+//		AttendanceTime beforetime = taizaiCalc()
+//				
+//				return new StayingTimeOfDaily(new AttendanceTime(0),
+//						 new AttendanceTime(0),
+//						 new AttendanceTime(0),
+//						 new AttendanceTime(0),
+//						 new AttendanceTime(0));
+ 
+			
 		/*不就労時間*/
 		val unEmployedTime = new AttendanceTime(0);
 		/*予定差異時間の計算*/

@@ -35,4 +35,15 @@ public class StayingTimeOfDaily {
 		this.stayingTime = stayingTime;
 		this.afterLeaveTime = afterLeaveTime;
 	}
+	
+	
+//	public static StayingTimeOfDaily calcStayingTimeOfDaily(AttendanceTime beforeWoringTime,
+//															AttendanceTime afterLeaveTime,
+//															AttendanceTime beforePCLogOnTime,
+//															AttendanceTime afterPCLogOffTime) {
+//		
+//		
+//		
+//	}
+	
 }
