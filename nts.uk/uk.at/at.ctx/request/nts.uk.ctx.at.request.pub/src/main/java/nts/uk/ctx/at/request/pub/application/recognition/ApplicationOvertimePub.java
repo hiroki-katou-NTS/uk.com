@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 public interface ApplicationOvertimePub {
 	/**
 	 * 社員、期間から未反映の申請残業時間を集計する
-	 * Request list No.236
+	 * RequestList236
 	 * @param sId
 	 * @param startDate
 	 * @param endDate
