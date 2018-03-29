@@ -168,7 +168,7 @@ public class VerticalTotalOfMonthly {
 			WorkTypeDaysCountTable workTypeDaysCountTable = null;
 			PredetemineTimeSetting predetermineTimeSet = null;
 			if (workInfoOfDaily != null){
-				val recordWorkInfo = workInfoOfDaily.getRecordWorkInformation();
+				val recordWorkInfo = workInfoOfDaily.getRecordInfo();
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
 				val workTimeCode = recordWorkInfo.getWorkTimeCode();
 				workType = workTypeMap.get(workTypeCode);

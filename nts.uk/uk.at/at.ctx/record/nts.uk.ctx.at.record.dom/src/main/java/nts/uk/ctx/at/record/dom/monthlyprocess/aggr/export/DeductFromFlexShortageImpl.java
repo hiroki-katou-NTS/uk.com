@@ -71,7 +71,7 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 		deductedTime = deductedTime.minusMinutes(afterDeduct.getAnnualLeaveDeductTime().v());
 
 		// 控除した時間を年休使用時間に加算する
-		val annualLeave = monthlyCalculation.getTotalWorkingTime().getVacationUseTime().getAnnualLeave();
+		val annualLeave = monthlyCalculation.getAggregateTime().getVacationUseTime().getAnnualLeave();
 		annualLeave.addMinuteToUseTime(deductedTime.v());
 
 		// 控除時間が余分に入力されていないか確認する

@@ -157,7 +157,8 @@ module nts.uk.at.view.kal001.a.model {
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));                        
+                        }));
+                        self.periodByCategory(_.sortBy(self.periodByCategory(), 'category'));                        
                     }).fail((errorTime)=>{
                         alertError(errorTime);
                     });
@@ -233,22 +234,31 @@ module nts.uk.at.view.kal001.a.model {
 
     }
     
+    export class DateValue{
+        startDate : string;
+        endDate: string;
+        constructor(startDate: string, endDate: string){
+            this.startDate = (startDate);
+            this.endDate = (endDate);
+        }
+    }
     
     export class PeriodByCategory{
         category : number;
         categoryName: string;
-        startDate : KnockoutObservable<string>;
-        endDate: KnockoutObservable<string>;
+        dateValue: KnockoutObservable<DateValue>;
         checkBox: KnockoutObservable<boolean>;
-        startMonth: KnockoutObservable<string>;
-        endMonth: KnockoutObservable<string>;
+        typeInput :  string;
         constructor(dto:  service.CheckConditionTimeDto){
             this.category = dto.category;
             this.categoryName = dto.categoryName;
-            this.startDate = ko.observable(dto.startDate);
-            this.endDate = ko.observable(dto.endDate);
-            this.startMonth = ko.observable(dto.startMonth);
-            this.endMonth = ko.observable(dto.endMonth);
+            if(dto.category==2 || dto.category==5){
+                this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
+                this.typeInput = "fullDate";     
+            }else{
+                this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
+                this.typeInput = "yearmonth";   
+            }
             this.checkBox = ko.observable(false);
         }
         

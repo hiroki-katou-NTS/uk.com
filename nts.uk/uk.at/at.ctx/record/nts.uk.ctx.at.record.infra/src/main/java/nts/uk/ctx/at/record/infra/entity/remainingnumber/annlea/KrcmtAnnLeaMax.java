@@ -12,8 +12,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcmtAnnLeaMax extends UkJpaEntity{
 	
 	@Id
-    @Column(name = "EMPLOYEE_ID")
-    public String employeeId;
+    @Column(name = "SID")
+    public String sid;
 	
 	@Column(name = "MAX_TIMES")
     public Integer maxTimes;
@@ -35,7 +35,7 @@ public class KrcmtAnnLeaMax extends UkJpaEntity{
 	
 	@Override
 	protected Object getKey() {
-		return employeeId;
+		return sid;
 	}
 
 }

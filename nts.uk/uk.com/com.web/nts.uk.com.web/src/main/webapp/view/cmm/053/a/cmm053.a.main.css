@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+.container {
+	margin-left: 30px;
+}
+
+.div-line {
+	margin-bottom: 15px;
+	margin-left: 80px;
+}
+
+.column-1 {
+	width: 294px;
+}
+
+#A2_4 {
+	margin: 0 10px 0 10px;
+}

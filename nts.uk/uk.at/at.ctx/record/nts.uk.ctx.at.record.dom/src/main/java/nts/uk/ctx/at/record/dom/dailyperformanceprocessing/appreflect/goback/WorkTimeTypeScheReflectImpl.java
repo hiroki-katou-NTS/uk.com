@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
@@ -25,10 +26,9 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	private WorkTimeIsFluidWork workTimeService;
 	@Inject
 	private ScheWorkUpdateService workUpdate;
-	@Inject
-	private CommonProcessCheckService commonService;
 	@Override
-	public boolean workTimeAndTypeScheReflect(GobackReflectParameter para) {
+	public boolean reflectScheWorkTimeType(GobackReflectParameter para) {
+		//予定勤務種類による勤種・就時を反映できるかチェックする
 		if(!this.checkReflectWorkTimeType(para)) {
 			return false;
 		}
@@ -76,10 +76,49 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 		} 
 		WorkInfoOfDailyPerformance dailyData = optDailyData.get();
 		//勤務種類が休出振出かの判断
-		if(workTypeService.checkWorkTypeIsClosed(dailyData.getScheduleWorkInformation().getWorkTypeCode().v())) {
+		if(workTypeService.checkWorkTypeIsClosed(dailyData.getScheduleInfo().getWorkTypeCode().v())) {
 			return false;
 		} else {
 			return true;
 		}
+	}
+
+	@Override
+	public boolean reflectRecordWorktimetype(GobackReflectParameter para) {
+		//実績勤務種類による勤種・就時を反映できるかチェックする
+		if(this.checkReflectRecordForActual(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(), para.getGobackData().getChangeAppGobackAtr())) {
+			//勤種・就時の反映
+			ReflectParameter reflectPara = new ReflectParameter(para.getEmployeeId(), para.getDateData(), para.getGobackData().getWorkTimeCode(), para.getGobackData().getWorkTypeCode());
+			workUpdate.updateWorkTimeType(reflectPara, false);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean checkReflectRecordForActual(String employeeId, GeneralDate baseDate, boolean outResReflectAtr,
+			ChangeAppGobackAtr changeAppGobackAtr) {
+		//INPUT．勤務を変更するをチェックする
+		if(changeAppGobackAtr == ChangeAppGobackAtr.NOTCHANGE) {
+			return false;
+		}
+		//INPUT．振出・休出時反映する区分をチェックする
+		if(outResReflectAtr) {
+			return true;
+		}
+		//ドメインモデル「日別実績の勤務情報」を取得する
+		Optional<WorkInfoOfDailyPerformance> optWorkInfoOfDaily = workRepository.find(employeeId, baseDate);
+		if(!optWorkInfoOfDaily.isPresent()) {
+			return false;
+		}
+		WorkInfoOfDailyPerformance workInfoOfDaily = optWorkInfoOfDaily.get();
+		//実績勤務種類を取得する
+		WorkInformation recordWorkInformation = workInfoOfDaily.getRecordInfo();
+		//勤務種類が休出振出かの判断
+		if(workTypeService.checkWorkTypeIsClosed(recordWorkInformation.getWorkTypeCode().v())) {
+			return false;
+		} else {
+			return true;
+		}
+		
 	}
 }

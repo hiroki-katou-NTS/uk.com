@@ -59,4 +59,14 @@ public class IrregularWorkingTimeOfMonthly {
 		domain.irregularLegalOverTime = irregularLegalOverTime;
 		return domain;
 	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+
+		if (this.irregularPeriodCarryforwardTime.lessThanOrEqualTo(0)) return new AttendanceTimeMonth(0);
+		return new AttendanceTimeMonth(this.irregularPeriodCarryforwardTime.v());
+	}
 }

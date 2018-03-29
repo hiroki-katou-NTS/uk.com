@@ -2,6 +2,8 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
@@ -22,6 +25,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -52,6 +56,8 @@ public class CommonApprovalRootFinder {
 	private WorkplaceApproverAdapter adapterWp;
 	@Inject
 	private SyJobTitleAdapter adapterJobtitle;
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 	private final int COMPANY = 0;
 	private final int WORKPLACE = 1;
 	/**
@@ -493,5 +499,160 @@ public class CommonApprovalRootFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
 		return adapterJobtitle.findJobTitleByPositionId(companyId, jobTitleId, baseDate);
+	}
+	
+	/**
+	 * Get 上司の設定
+	 * 
+	 * @param employeeId
+	 * @return
+	 */
+	public ManagerSettingDto getPsAppRootBySettingOfManager(String employeeId) {
+		String companyId = AppContexts.user().companyId();
+		String loginId   = AppContexts.user().employeeId();
+		GeneralDate startDate        = null;
+		GeneralDate endDate          = null;
+		GeneralDate startDateCommon  = null;
+		GeneralDate endDateCommon    = null;
+		GeneralDate startDateMonthly = null;
+		GeneralDate endDateMonthly   = null;
+		boolean isNewMode            = false;
+		String departmentCode        = null;
+		String departmentApproverId  = null;
+		String departmentName        = null;
+		String dailyApprovalCode     = null;
+		String dailyApproverId       = null;
+		String dailyApprovalName     = null;
+		boolean hasAuthority         = true;
+		boolean existCommonAppPhase  = false;
+		boolean existMonthlyAppPhase = false;
+		GeneralDate closingStartDate = null;
+		
+		//ドメインモデル「個人別就業承認ルート」を取得する
+		Optional<PersonApprovalRoot> commonPsApp = this.repo.getNewestCommonPsAppRoot(companyId, employeeId);
+		Optional<PersonApprovalRoot> monthlyPsApp = this.repo.getNewestMonthlyPsAppRoot(companyId, employeeId);
+
+		if (commonPsApp.isPresent()) {
+			startDateCommon = commonPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
+			endDateCommon   = commonPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().end();
+			startDate = startDateCommon;
+			endDate   = endDateCommon;
+			//ドメインモデル「承認フェーズ」を取得する
+			Optional<ApprovalPhase> commonApprovalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, commonPsApp.get().getBranchId());
+			if (commonApprovalPhase.isPresent()) {
+				commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
+				//「承認者」を取得する
+				Approver firstApprover = commonApprovalPhase.get().getApprovers().get(0);
+				//履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）
+				if (firstApprover.getApprovalAtr().value == 0) {
+					PersonImport person = this.employeeAdapter.getEmployeeInformation(firstApprover.getEmployeeId());
+					if (!Objects.isNull(person)) {
+						dailyApprovalCode = person.getEmployeeCode();
+						dailyApproverId   = person.getSID();
+						dailyApprovalName = person.getEmployeeName();
+					}
+				}
+				existCommonAppPhase = true;
+			}
+		}
+		if (monthlyPsApp.isPresent()) {
+			startDateMonthly = monthlyPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
+			endDateMonthly   = monthlyPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().end();
+			startDate = startDateMonthly;
+			endDate   = endDateMonthly;
+			//ドメインモデル「承認フェーズ」を取得する
+			Optional<ApprovalPhase> monthlyApprovalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, monthlyPsApp.get().getBranchId());
+			if (monthlyApprovalPhase.isPresent()) {
+				monthlyApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
+				//「承認者」を取得する
+				Approver firstApprover = monthlyApprovalPhase.get().getApprovers().get(0);
+				//履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）
+				if (firstApprover.getApprovalAtr().value == 0) {
+					PersonImport person = this.employeeAdapter.getEmployeeInformation(firstApprover.getEmployeeId());
+					if (!Objects.isNull(person)) {
+						departmentCode       = person.getEmployeeCode();
+						departmentApproverId = person.getSID();
+						departmentName       = person.getEmployeeName();
+					}
+				}
+				existMonthlyAppPhase = true;
+			}
+		}
+
+		if (commonPsApp.isPresent() && monthlyPsApp.isPresent()) {
+			//バラバラ履歴があります。
+			if (startDateCommon.after(startDateMonthly)) {
+				startDate = startDateCommon;
+				endDate   = endDateCommon;
+			}
+			//両方は同じ履歴があります。
+			else {
+				startDate = startDateMonthly;
+				endDate   = endDateMonthly;
+			}
+		}
+		//両方がない。
+		else if (!commonPsApp.isPresent() && !monthlyPsApp.isPresent()) {
+			isNewMode = true;
+		}
+
+		//履歴がありますが承認フェーズ1がありません。
+		if (!existMonthlyAppPhase && !existCommonAppPhase) {
+			isNewMode = true;
+		}
+		// ドメインモデル「締め」を取得する(lấy thông tin ngày chốt ứng với id = 1)
+		// TODO
+		// TODO : Set lại ngày chốt
+		closingStartDate = GeneralDate.today();
+
+		// ログイン者の承認権限を取得する
+		GeneralDate baseDate = Objects.isNull(startDate) ? closingStartDate : startDate;
+		hasAuthority = this.employeeAdapter.canApprovalOnBaseDate(companyId, loginId, baseDate);
+
+		return new ManagerSettingDto(startDate, endDate, isNewMode, departmentCode, departmentApproverId,
+				departmentName, dailyApprovalCode, dailyApproverId, dailyApprovalName, hasAuthority, closingStartDate);
+	}
+
+	public List<PastHistoryDto> getPastHistory(String employeeId) {
+		String companyId = AppContexts.user().companyId();
+		List<PersonApprovalRoot> getAllPsApprovalRoot = repo.getPastHistory(companyId, employeeId);
+
+		Map<GeneralDate, List<PersonApprovalRoot>> grouped = getAllPsApprovalRoot.stream().collect(
+				Collectors.groupingBy(item -> item.getEmploymentAppHistoryItems().get(0).start()));
+
+		List<PastHistoryDto> itemModel = grouped.entrySet().stream().map(item -> {
+			GeneralDate startDate    = null;
+			GeneralDate endDate      = null;
+			String departmentCode    = null;
+			String departmentName    = null;
+			String dailyApprovalCode = null;
+			String dailyApprovalName = null;
+
+			if (!item.getValue().isEmpty()) {
+				for(PersonApprovalRoot psAppRoot: item.getValue()){
+					startDate = psAppRoot.getEmploymentAppHistoryItems().get(0).start();
+					endDate   = psAppRoot.getEmploymentAppHistoryItems().get(0).end();
+					Optional<ApprovalPhase> psAppPhase = this.repoAppPhase.getApprovalFirstPhase(companyId, psAppRoot.getBranchId());
+					if(psAppPhase.isPresent()){
+						Optional<Approver> firstApprover = psAppPhase.get().getApprovers().stream().filter(x-> x.getOrderNumber() == 0).findFirst();
+						if(firstApprover.isPresent()){
+							String sId = firstApprover.get().getEmployeeId();
+							PersonImport person = this.employeeAdapter.getEmployeeInformation(sId);
+							if (psAppRoot.getEmploymentRootAtr().value == 0
+									&& Objects.isNull(psAppRoot.getApplicationType())) {
+								dailyApprovalCode = person.getEmployeeCode();
+								dailyApprovalName = person.getEmployeeName();
+							} else if (psAppRoot.getEmploymentRootAtr().value == 2
+									&& psAppRoot.getConfirmationRootType().value == 1) {
+								departmentCode = person.getEmployeeCode();
+								departmentName = person.getEmployeeName();
+							}
+						}
+					}
+				}
+			}
+			return new PastHistoryDto(startDate, endDate, departmentCode, departmentName, dailyApprovalCode, dailyApprovalName);
+		}).collect(Collectors.toList());
+		return itemModel;
 	}
 }

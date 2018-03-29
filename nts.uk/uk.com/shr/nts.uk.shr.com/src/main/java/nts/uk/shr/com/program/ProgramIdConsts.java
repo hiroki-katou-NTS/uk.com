@@ -655,4 +655,53 @@ public class ProgramIdConsts {
 	public static final String CMM045B = "CMM045B";
 	
 	public static final String CPS001G = "CPS001G";
+	
+	public static final String KTG001A = "KTG001A";
+	public static final String KTG002A = "KTG002A";
+	public static final String KTG028A = "KTG028A";
+	public static final String KTG029A = "KTG029A";
+	
+	//CMF001
+	public static final String CMF001A = "CMF001A";
+	public static final String CMF001B = "CMF001B";
+	public static final String CMF001D = "CMF001D";
+	public static final String CMF001E = "CMF001E";
+	public static final String CMF001F = "CMF001F";
+	public static final String CMF001G = "CMF001G";
+	public static final String CMF001H = "CMF001H";
+	public static final String CMF001I = "CMF001I";
+	public static final String CMF001J = "CMF001J";
+	public static final String CMF001K = "CMF001K";
+	public static final String CMF001L = "CMF001L";
+	public static final String CMF001M = "CMF001M";
+	public static final String CMF001O = "CMF001O";//O, P: is wizard screen
+	public static final String CMF001Q = "CMF001Q";
+	public static final String CMF001R = "CMF001R";
+	public static final String CMF001S = "CMF001S";
+	
+	//CMF002
+	public static final String CMF002A = "CMF002A";
+	public static final String CMF002B = "CMF002B";
+	public static final String CMF002C = "CMF002C";
+	public static final String CMF002D = "CMF002D";
+	public static final String CMF002F = "CMF002F";
+	public static final String CMF002G = "CMF002G";
+	public static final String CMF002H = "CMF002H";
+	public static final String CMF002I = "CMF002I";
+	public static final String CMF002J = "CMF002J";
+	public static final String CMF002K = "CMF002K";
+	public static final String CMF002L = "CMF002L";
+	public static final String CMF002M = "CMF002M";
+	public static final String CMF002N = "CMF002N"; 
+	public static final String CMF002O = "CMF002O"; //O, P, Q, R: is wizard screen
+	public static final String CMF002P = "CMF002P";
+	public static final String CMF002Q = "CMF002Q";
+	public static final String CMF002R = "CMF002R";
+	public static final String CMF002S = "CMF002S";
+	public static final String CMF002T = "CMF002T";
+	public static final String CMF002V1 = "CMF002V1";
+	public static final String CMF002X = "CMF002X";
+	public static final String CMF002Y = "CMF002Y";
+	public static final String CMF002V2 = "CMF002V2";
+	
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
@@ -88,8 +89,8 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 											  Optional.empty(),
 											  overTimeHourSet.getLegalOTframeNo().v(),
 											  new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getLegalOTframeNo().v()),
-													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
-													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
+													  					TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+													  					TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
 													  					new AttendanceTime(0),
 													  					new AttendanceTime(0)));
 	}
@@ -110,7 +111,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 //		}
 		return new OverTimeFrameTime(this.overWorkFrameTime.getOverWorkFrameNo()
 				,this.overWorkFrameTime.getTransferTime()
-				,TimeWithCalculation.sameTime(overTimeWorkTime)
+				,TimeDivergenceWithCalculation.sameTime(overTimeWorkTime)
 				,this.overWorkFrameTime.getBeforeApplicationTime(),
 					new AttendanceTime(0));
 	}

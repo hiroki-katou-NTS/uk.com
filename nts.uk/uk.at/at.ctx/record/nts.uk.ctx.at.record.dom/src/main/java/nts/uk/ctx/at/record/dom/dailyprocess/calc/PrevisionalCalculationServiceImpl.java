@@ -20,12 +20,8 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
@@ -48,7 +44,12 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -146,16 +147,16 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		
 		//日別実績の計算区分作成
 		val calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId,ymd,
-				new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-				new AutoCalRaisingSalarySetting(SalaryCalAttr.USE, SpecificSalaryCalAttr.USE),
-				new AutoCalHolidaySetting(new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-										  new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT)),
-				new AutoCalOfOverTime(new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-									  new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-									  new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-									  new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-									  new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT),
-									  new AutoCalculationSetting(AutoCalAtrOvertime.CALCULATEMBOSS,TimeLimitUpperLimitSetting.NOUPPERLIMIT)),
+				new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS)),
+				new AutoCalRaisingSalarySetting(true,true),
+				new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS),
+										  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS)),
+				new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS),
+									  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS),
+									  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS),
+									  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS),
+									  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS),
+									  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS)),
 				new AutoCalOfLeaveEarlySetting(LeaveAttr.USE,LeaveAttr.USE),
 				new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE)
 				);

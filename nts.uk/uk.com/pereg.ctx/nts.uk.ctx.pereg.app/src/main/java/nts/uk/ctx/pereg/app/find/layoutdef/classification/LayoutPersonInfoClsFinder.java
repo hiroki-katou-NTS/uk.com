@@ -76,10 +76,14 @@ public class LayoutPersonInfoClsFinder {
 					}
 
 					if (listItemDefDto.size() > 1) {
-						if (listItemDefDto.get(0).getItemTypeState().getItemType() == 1) {
+						if (classDto.getLayoutItemType() == LayoutItemType.ITEM) {
+							if (listItemDefDto.get(0).getItemTypeState().getItemType() == 1 || listItemDefDto.get(0).getItemTypeState().getItemType() == 3) {
+								classDto.setListItemDf(listItemDefDto);
+							}else {
+								classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
+							}
+						} else if (classDto.getLayoutItemType() == LayoutItemType.LIST) {
 							classDto.setListItemDf(listItemDefDto);
-						} else {
-							classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
 						}
 					} else if (listItemDefDto.size() == 1) {
 						classDto.setListItemDf(listItemDefDto);

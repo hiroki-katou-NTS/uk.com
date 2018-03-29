@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
@@ -28,6 +29,8 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 	private ApplicationRepository_New applicationRepository;
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
 	protected List<String> handle(CommandHandlerContext<UpdateHolidayWorkCommand> context) {
@@ -53,9 +56,15 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(updateHolidayWorkCommand.getWorkClockStart2(), updateHolidayWorkCommand.getWorkClockEnd2(), updateHolidayWorkCommand.getGoAtr2(), updateHolidayWorkCommand.getBackAtr2()));
 		appHolidayWork.setWorkTypeCode(new WorkTypeCode(updateHolidayWorkCommand.getWorkTypeCode()));
 		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
-		appHolidayWork.setVersion(updateHolidayWorkCommand.getVersion());
-		appHolidayWork.getApplication().setVersion(appHolidayWork.getVersion());
-		
+		appHolidayWork.setVersion(appHolidayWork.getVersion());
+		appHolidayWork.getApplication().setVersion(updateHolidayWorkCommand.getVersion());
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyID, 
+				appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getApplication().getAppDate(), 
+				1, 
+				appHolidayWork.getAppID(), 
+				appHolidayWork.getApplication().getPrePostAtr(), updateHolidayWorkCommand.getVersion());
 		appHolidayWorkRepository.update(appHolidayWork);
 		applicationRepository.updateWithVersion(appHolidayWork.getApplication());
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appHolidayWork.getApplication());
