@@ -14,7 +14,6 @@ module nts.uk.at.view.kmk013.l {
             constructor() {
                 let self = this;
                 self.valueL2_7 = ko.observable(3);
-                self.enable = ko.observable(true);
                 self.valueL2_9 = ko.observable(0);
             }
             
@@ -23,8 +22,10 @@ module nts.uk.at.view.kmk013.l {
                 var dfd = $.Deferred();
                 
                 $.when(service.find()).done(function(data: any) {
-                    self.valueL2_7(data.maxUsage);
-                    self.valueL2_9(data.timeTreatTemporarySame);
+                    if (!_.isUndefined(data)) {
+                        self.valueL2_7(data.maxUsage);
+                        self.valueL2_9(data.timeTreatTemporarySame);    
+                    }
                     dfd.resolve();
                 });
                     
@@ -60,8 +61,6 @@ module nts.uk.at.view.kmk013.l {
                     
                 return dfd.promise();
             }
-            
         }
-        
     }
 }
