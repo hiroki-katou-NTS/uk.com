@@ -5,8 +5,8 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsg;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstWtdvgcTimeEaMsgPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -16,7 +16,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 		implements WorkTypeDivergenceTimeErrorAlarmMessageSetMemento {
 
 	/** The entity. */
-	private KrcstWtdvgcTimeEaMsg entity;
+	private KrcstDvgcwtTimeEaMsg entity;
 
 	/**
 	 * Instantiates a new jpa work type divergence time error alarm message set
@@ -32,7 +32,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento(KrcstWtdvgcTimeEaMsg entity) {
+	public JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento(KrcstDvgcwtTimeEaMsg entity) {
 		this.entity = entity;
 	}
 
@@ -44,7 +44,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 	 */
 	@Override
 	public void setCId(CompanyId cId) {
-		KrcstWtdvgcTimeEaMsgPK pk = new KrcstWtdvgcTimeEaMsgPK();
+		KrcstDvgcwtTimeEaMsgPK pk = new KrcstDvgcwtTimeEaMsgPK();
 		pk.setCid(cId.v());
 
 		this.entity.setId(pk);

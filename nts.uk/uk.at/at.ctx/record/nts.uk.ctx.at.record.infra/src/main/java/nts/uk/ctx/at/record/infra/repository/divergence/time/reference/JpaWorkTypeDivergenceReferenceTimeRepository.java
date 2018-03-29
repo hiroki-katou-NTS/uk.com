@@ -18,10 +18,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK_;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt_;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

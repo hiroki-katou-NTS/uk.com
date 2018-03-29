@@ -20,5 +20,9 @@ public class AppReflectRecordPara {
 	 * 残業申請
 	 */
 	private OvertimeReflectPara overtimeInfor;
+	/**
+	 * 休暇申請
+	 */
+	private AbsenceReflectPara absenceInfor;
 
 }

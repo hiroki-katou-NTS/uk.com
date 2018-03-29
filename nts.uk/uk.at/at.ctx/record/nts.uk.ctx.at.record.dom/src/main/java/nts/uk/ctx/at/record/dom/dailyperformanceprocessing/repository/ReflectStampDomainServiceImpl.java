@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
@@ -171,7 +172,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			// エラーチェック
 			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
-					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
+					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance, reflectStamp.getAttendanceLeavingGateOfDaily());
 		}
 
 		if (lstStampItem != null && lstStampItem.isEmpty()) {
@@ -486,7 +487,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
 			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance,
 			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,
-			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance, AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily) {
 
 		// 出勤系打刻漏れをチェックする
 		this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
@@ -536,12 +537,10 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		UseAtr useAtr2 = UseAtr.USE;
 		if (useAtr2 == UseAtr.USE) {
 			// 入退門の打刻漏れをチェックする
-			// TODO - has not attendanceLeavingGateOfDaily
 			// exitStampCheck.exitStampCheck(companyID, employeeID,
 			// processingDate, attendanceLeavingGateOfDaily,
 			// workInfoOfDailyPerformance);
 			// 入退門の打刻順序不正をチェックする
-			// TODO - has not attendanceLeavingGateOfDaily
 			// exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyID,
 			// employeeID, processingDate, attendanceLeavingGateOfDaily,
 			// timeLeavingOfDailyPerformance);

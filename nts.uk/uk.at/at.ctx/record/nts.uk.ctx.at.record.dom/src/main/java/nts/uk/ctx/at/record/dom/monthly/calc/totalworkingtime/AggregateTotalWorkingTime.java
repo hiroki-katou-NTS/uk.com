@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolid
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -231,5 +232,16 @@ public class AggregateTotalWorkingTime {
 		// 就業時間を集計する
 		this.workTime.aggregate(datePeriod, workingSystem, actualWorkingTime, flexTime,
 				this.overTime, this.holidayWorkTime);
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.workTime.getTotalWorkingTargetTime().v() +
+				this.overTime.getTotalWorkingTargetTime().v() +
+				this.holidayWorkTime.getTotalWorkingTargetTime().v());
 	}
 }

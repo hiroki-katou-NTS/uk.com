@@ -272,7 +272,7 @@ public class HolidayWorkTimeOfMonthly {
 		
 		// 法定内休出にできる時間
 		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalHolidayWork = new AttendanceTime(0);
+		AttendanceTime canLegalHolidayWork = new AttendanceTime(8 * 60);
 		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
 		return canLegalHolidayWork;
 	}
@@ -443,5 +443,15 @@ public class HolidayWorkTimeOfMonthly {
 					aggregateHolidayWorkTime.getTransferTime().getTime().v(),
 					aggregateHolidayWorkTime.getTransferTime().getCalcTime().v());
 		}
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.totalHolidayWorkTime.getTime().v() +
+				this.totalTransferTime.getTime().v());
 	}
 }

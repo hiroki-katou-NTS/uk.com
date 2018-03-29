@@ -18,6 +18,9 @@ public class DivergenceReasonSelectAddCommandHandler extends CommandHandler<Dive
 	@Inject
 	DivergenceReasonSelectRepository divReasonSelectRepo;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<DivergenceReasonSelectAddCommand> context) {
 		// get command

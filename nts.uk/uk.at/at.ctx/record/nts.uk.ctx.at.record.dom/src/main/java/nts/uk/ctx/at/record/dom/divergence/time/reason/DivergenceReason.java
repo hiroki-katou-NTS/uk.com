@@ -6,6 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class DivergenceReason.
  */
+//乖離理由
 @StringMaxLength(60)
 public class DivergenceReason extends StringPrimitiveValue<DivergenceReason> {
 

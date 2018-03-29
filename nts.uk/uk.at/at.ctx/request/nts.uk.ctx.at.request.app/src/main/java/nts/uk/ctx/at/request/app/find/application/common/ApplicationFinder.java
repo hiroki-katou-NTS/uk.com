@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -8,7 +10,19 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalFrameForRemandDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.DetailApproverDto;
+import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempDto;
+import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,16 +35,55 @@ public class ApplicationFinder {
 	@Inject
 	private DetailAppCommonSetService detailAppCommonSetService;
 	
+	@Inject
+	private EmployeeRequestAdapter employeeRequestAdapter;
+
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+//	@Inject
+//	private JobtitleSearchSetAdapter jobtitleSearchSetAdapter;
+	
+	@Inject
+	private ApprovalTempFinder approvalTempFinder;
+	
 	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto){
 		String companyID = AppContexts.user().companyId();
 		return this.applicationRepository.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
 				.stream().map(c -> { return new ApplicationMetaDto(c.getAppID(), c.getAppType().value, c.getAppDate()); })
 				.collect(Collectors.toList());
 	}
-	
+	public ApplicationRemandDto getAppByIdForRemand(String appID){
+		String companyID = AppContexts.user().companyId();
+		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
+		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
+		String applicantPosition = "Employee";
+		List<ApprovalFrameForRemandDto> listApprovalFrame = new ArrayList<ApprovalFrameForRemandDto>();
+		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().get(0).getListApprovalFrame()
+				.forEach(x -> {
+					List<DetailApproverDto> listApprover = new ArrayList<DetailApproverDto>();
+					x.getListApprover().forEach(y -> {
+						listApprover.add(new DetailApproverDto(y.getApproverID(), y.getApproverName(), y.getRepresenterID(), y.getRepresenterName(), "Chef"));
+					});
+					listApprovalFrame.add(new ApprovalFrameForRemandDto(x.getPhaseOrder(), x.getApprovalReason(), listApprover));
+				});
+		return ApplicationRemandDto.fromDomain(appID, application_New.get().getVersion(), approvalRootContentImport.getErrorFlag().value, applicantPosition,  application_New.isPresent() ? employeeRequestAdapter.getEmployeeInfor(application_New.map(Application_New::getEmployeeID).orElse("")) : null , listApprovalFrame);
+	}
+	public ApplicationSendDto getAppByIdForSend(String appID){
+		String companyID = AppContexts.user().companyId();
+		ApprovalTempDto approvalTemplate = approvalTempFinder.findByComId();
+		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
+		List<PesionInforImport> listApproverDetail = new ArrayList<PesionInforImport>();
+		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().get(0).getListApprovalFrame()
+		.forEach(x -> {
+			x.getListApprover().forEach(y -> {
+				listApproverDetail.add(employeeRequestAdapter.getEmployeeInfor(y.getApproverID()));
+			});
+		});
+		return new ApplicationSendDto(approvalTemplate, approvalRootContentImport, listApproverDetail);
+	}
 	public ApplicationMetaDto getAppByID(String appID){
 		String companyID = AppContexts.user().companyId();
 		return ApplicationMetaDto.fromDomain(detailAppCommonSetService.getDetailAppCommonSet(companyID, appID));
 	}
-
 }

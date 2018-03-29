@@ -506,6 +506,17 @@ module cmm045.shr {
             specialVaca: string;
             // 積立年休名称  - 4
             yearResig: string;
+            constructor(obstacleName: string, hdName: string, yearHdName: string, furikyuName: string,
+                timeDigest: string, absenteeism: string, specialVaca: string, yearResig: string){
+                this.obstacleName = obstacleName;
+                this.hdName = hdName;
+                this.yearHdName = yearHdName;
+                this.furikyuName = furikyuName;
+                this.timeDigest = timeDigest;
+                this.absenteeism = absenteeism;
+                this.specialVaca = specialVaca;
+                this.yearResig = yearResig;
+            }
         }
         export class CellState {
             rowId: number;
@@ -534,6 +545,7 @@ module cmm045.shr {
             static orderByList(lstData: Array<DataModeApp>): Array<DataModeApp>{
                 let result: Array<DataModeApp> = [];
                 let lstA0: Array<DataModeApp> = [];
+                let lstA1: Array<DataModeApp> = [];
                 let lstA2: Array<DataModeApp> = [];
                 let lstA4: Array<DataModeApp> = [];
                 let lstA6: Array<DataModeApp> = [];
@@ -550,13 +562,21 @@ module cmm045.shr {
                     if(obj.appType == 6){//holiday work
                         lstA6.push(obj);
                     }
+                    if(obj.appType == 1){//absence
+                        lstA1.push(obj);
+                    }
                 });
                 let sortByA0 =  _.orderBy(lstA0, ["appDate"], ["asc"]);
+                let sortByA1 =  _.orderBy(lstA1, ["appDate"], ["asc"]);
                 let sortByA2 =  _.orderBy(lstA2, ["appDate"], ["asc"]);
                 let sortByA4 =  _.orderBy(lstA4, ["appDate"], ["asc"]);
                 let sortByA6 =  _.orderBy(lstA6, ["appDate"], ["asc"]);
                 //push list A0 (残業申請)
                 _.each(sortByA0, function(obj){
+                    result.push(obj);
+                });
+                //push list A1 (休暇申請)
+                _.each(sortByA1, function(obj){
                     result.push(obj);
                 });
                 //push list A2 (勤務変更申請)
