@@ -26,56 +26,44 @@
 				<div class="main-container">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
 					<hr/>
-					<div tabindex="1" id="initial-focus-h">
 					<div class="margin-first-child">
-						<div class="control-group" tabindex="1" data-bind="ntsRadioButton: {
-							checked: calcMethodFixed,
-							option: {value: 0, text: nts.uk.resource.getText('KMK003_241')},
-							optionValue: 'value',
-							optionText: 'text',
-							group: 'break-method-group'}"></div>
-						<br/>
-						<div class="control-group" tabindex="2" data-bind="ntsRadioButton: {
-							checked: calcMethodFixed,
-							option: {value: 1, text: nts.uk.resource.getText('KMK003_242')},
-							optionValue: 'value',
-							optionText: 'text',
-							group: 'break-method-group'}"></div>
+						<div tabindex="1" id="initial-focus-h" data-bind="ntsRadioBoxGroup: {
+							options: [
+								{value: 0, text: nts.uk.resource.getText('KMK003_241')},
+								{value: 1, text: nts.uk.resource.getText('KMK003_242')},
+								{value: 2, text: nts.uk.resource.getText('KMK003_243')}
+							],
+							optionsValue: 'value',
+							optionsText: 'text',
+							value: calcMethodFixed}"></div>
 					</div>
 					<div class="margin-second-child">
-						<div class="checkbox_display control-group" tabindex="4"
+						<div class="checkbox_display control-group" tabindex="2"
 							data-bind="ntsCheckBox: { checked: isCalcFromSchedule, enable: calcMethodFixed() == 1 }">
 							#{i18n.getText('KMK003_293')}
 						</div>
-						<div class="checkbox_display control-group" tabindex="5"
+						<br/>
+						<div class="checkbox_display control-group" tabindex="3"
 							data-bind="ntsCheckBox: { checked: isReferRestTime, enable: calcMethodFixed() == 1 }">
 							#{i18n.getText('KMK003_294')}
 						</div>
-					</div>
-					<div class="control-group margin-first-child" tabindex="3" data-bind="ntsRadioButton: {
-						checked: calcMethodFixed,
-						option: {value: 2, text: nts.uk.resource.getText('KMK003_243')},
-						optionValue: 'value',
-						optionText: 'text',
-						group: 'break-method-group'}"></div>
-					<div class="margin-second-child">
-						<div class="checkbox_display control-group" tabindex="6"
+						<br/>
+						<div class="checkbox_display control-group" tabindex="4"
 							data-bind="ntsCheckBox: { checked: usePrivateGoOutRest, enable: calcMethodFixed() == 2 }">
 							#{i18n.getText('KMK003_250')}
 						</div>
 						<br/>
-						<div class="checkbox_display control-group" tabindex="7"
+						<div class="checkbox_display control-group" tabindex="5"
 							data-bind="ntsCheckBox: { checked: useAssoGoOutRest, enable: calcMethodFixed() == 2 }">
 							#{i18n.getText('KMK003_251')}
 						</div>
-					</div>
 					</div>
 				</div>
 			</div>
 		
 			<div id="functions-area-bottom">
-				<button tabindex="8" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="9" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
