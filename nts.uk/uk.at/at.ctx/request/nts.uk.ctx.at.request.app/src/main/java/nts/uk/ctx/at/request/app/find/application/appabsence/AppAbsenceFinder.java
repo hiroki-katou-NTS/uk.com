@@ -129,8 +129,8 @@ public class AppAbsenceFinder {
 		
 		if(!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)){
 			for(AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType){
-				if(!appEmploymentSetting.getHolidayTypeUseFlg()){
-					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
+				if(!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6 && appEmploymentSetting.getHolidayOrPauseType() != 5){
+					sortHolidayAppType(holidayAppTypes,appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
 		}
@@ -214,8 +214,8 @@ public class AppAbsenceFinder {
 
 		if (!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
 			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
-				if (!appEmploymentSetting.getHolidayTypeUseFlg()) {
-					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
+				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6 && appEmploymentSetting.getHolidayOrPauseType() != 5) {
+					sortHolidayAppType(holidayAppTypes,appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
 		}
@@ -256,7 +256,7 @@ public class AppAbsenceFinder {
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
 		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// 1.勤務種類を取得する（新規）
-		List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
+		List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue,hdAppSet);
 		result.setWorkTypes(workTypes);
 		// 1.就業時間帯の表示制御(xu li hien thị A6_1)
 		if(CollectionUtil.isEmpty(workTypes)){
@@ -316,8 +316,15 @@ public class AppAbsenceFinder {
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		if(appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value){
 			String workTypeCDForChange = "";
+			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 			// 1.勤務種類を取得する（新規） :TODO
-			List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
+			List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, 
+					companyID, 
+					employeeID,
+					holidayType, 
+					alldayHalfDay,
+					displayHalfDayValue,
+					hdAppSet);
 			if(!CollectionUtil.isEmpty(workTypes)){
 				List<AbsenceWorkType> workTypeForFilter = workTypes.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode == null ? "" : workTypeCode)).collect(Collectors.toList());
 				if(CollectionUtil.isEmpty(workTypeForFilter)){
@@ -357,11 +364,12 @@ public class AppAbsenceFinder {
 				companyID, employeeID, EmploymentRootAtr.APPLICATION.value,
 				EnumAdaptor.valueOf(ApplicationType.ABSENCE_APPLICATION.value, ApplicationType.class),
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
+		
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// 1.勤務種類を取得する（新規）
-		List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
+		List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue,hdAppSet);
 		result.setWorkTypes(workTypes);
 		// 1.就業時間帯の表示制御(xu li hien thị A6_1)
-		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		if (CollectionUtil.isEmpty(workTypes)) {
 			result.setChangeWorkHourFlg(false);
 		} else {
@@ -449,10 +457,11 @@ public class AppAbsenceFinder {
 		if(holidayType == null){
 			return result;
 		}
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// 1.勤務種類を取得する（新規）
 		List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(
 				appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
-				displayHalfDayValue);
+				displayHalfDayValue,hdAppSet);
 		String workTypeCDForChange ="";
 		if(!CollectionUtil.isEmpty(workTypes)){
 			List<AbsenceWorkType> workTypeForFilter = workTypes.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode == null ? "" : workTypeCode)).collect(Collectors.toList());
@@ -465,7 +474,7 @@ public class AppAbsenceFinder {
 		result.setWorkTypes(workTypes);
 		result.setWorkTypeCode(workTypeCDForChange);
 		// 1.就業時間帯の表示制御(xu li hien thị A6_1)
-		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+		
 		if (CollectionUtil.isEmpty(workTypes) || (workTypeCDForChange != null && workTypeCDForChange.equals("")) ) {
 			result.setChangeWorkHourFlg(false);
 		} else {
@@ -627,6 +636,36 @@ public class AppAbsenceFinder {
 			}
 		}
 		return null;
+	}
+	private void sortHolidayAppType(List<Integer> holidayAppTypes,Integer holidayAppType){
+		switch (holidayAppType) {
+		case 0:
+			holidayAppTypes.add(0, holidayAppType);
+			break;
+		case 1:
+			holidayAppTypes.add(1, holidayAppType);
+			break;
+		case 7:
+			holidayAppTypes.add(2, holidayAppType);
+			break;
+		case 2:
+			holidayAppTypes.add(3, holidayAppType);
+			break;
+		case 3:
+			holidayAppTypes.add(4, holidayAppType);
+			break;
+		case 4:
+			holidayAppTypes.add(5, holidayAppType);
+			break;
+		case 5:
+			holidayAppTypes.add(6, holidayAppType);
+			break;
+		case 6:
+			holidayAppTypes.add(7, holidayAppType);
+			break;
+		default:
+			break;
+		}
 	}
 
 }

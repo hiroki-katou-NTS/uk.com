@@ -170,6 +170,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.appComSelectedCode(comType);
             }
         }
+
     }
 
 

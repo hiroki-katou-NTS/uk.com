@@ -39,6 +39,7 @@
 							enable: screenModeNew }"></div>
 
 			</div>
+
 		</div>
 		<div class="div_line" data-bind="if:screenModeNew">
 			<div class="div_line_col_1">
@@ -187,7 +188,7 @@
 
 					<button tabindex="1">#{i18n.getText('KAF011_26')}</button>
 
-					<button tabindex="1">#{i18n.getText('KAF011_27')}</button>
+					<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
 					<span class="caret-right caret-inline"></span>
 				</div>
 
@@ -219,7 +220,7 @@
 				<div class="div_line">
 					<div data-bind="ntsCheckBox: { checked: changeWorkHoursType }">#{i18n.getText('KAF011_29')}</div>
 				</div>
-					<hr style="width: 958px;" />
+				<hr style="width: 958px;" />
 				<div class="div_line">
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
