@@ -60,7 +60,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				return false;
 			}
 			WorkInfoOfDailyPerformance workInforData = optWorkInfor.get();
-			WorkInformation recordWorkInformation = workInforData.getRecordWorkInformation();
+			WorkInformation recordWorkInformation = workInforData.getRecordInfo();
 			//流動勤務かどうかの判断処理
 			return workTimeisFluidWork.checkWorkTimeIsFluidWork(recordWorkInformation.getWorkTimeCode().v());
 		}
