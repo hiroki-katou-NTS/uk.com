@@ -65,7 +65,9 @@ public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<
 			} else {
 				Optional<WorkTypeDivergenceReferenceTime> oldDomain = this.itemRepo.findByKey(e.getHistoryId(),
 						new BusinessTypeCode(e.getWorkTypeCodes()), e.getDivergenceTimeNo());
-				return oldDomain.get();
+				WorkTypeDivergenceReferenceTime domainToSave = oldDomain.get();
+				domainToSave.setNotUseAtr(e.getNotUseAtr());
+				return domainToSave;
 			}
 		}).collect(Collectors.toList());
 
