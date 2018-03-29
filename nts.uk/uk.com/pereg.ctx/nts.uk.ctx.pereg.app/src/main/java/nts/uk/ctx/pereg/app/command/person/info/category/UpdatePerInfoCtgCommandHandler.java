@@ -4,12 +4,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfoCtgCommand> {
@@ -21,22 +20,29 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 	protected void handle(CommandHandlerContext<UpdatePerInfoCtgCommand> context) {
 
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
-		String ctgName = perInfoCtgCommand.getCategoryName();
-		if (CheckNameSpace.checkName(ctgName)) {
+		String categoryName = perInfoCtgCommand.getCategoryName();
+		
+		String contractCode = AppContexts.user().contractCode();
+		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+		
+		
+		if (CheckNameSpace.checkName(categoryName)) {
 			throw new BusinessException("Msg_928");
 		}
-		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
-				perInfoCtgCommand.getCategoryName(), perInfoCtgCommand.getId())) {
+		
+		if (!this.perInfoCtgRep.checkCtgNameIsUnique(zeroCompanyId, categoryName, perInfoCtgCommand.getId())) {
 			throw new BusinessException("Msg_215");
 		}
+		
 		PersonInfoCategory perInfoCtg = this.perInfoCtgRep
-				.getPerInfoCategory(perInfoCtgCommand.getId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
-				.orElse(null);
-		if (perInfoCtg == null) {
-			return;
+				.getPerInfoCategory(perInfoCtgCommand.getId(), contractCode).orElse(null);
+		
+		if (perInfoCtg != null) {
+			perInfoCtg.setCategoryName(categoryName);
+			perInfoCtg.setCategoryType(perInfoCtgCommand.getCategoryType());
+			
+			this.perInfoCtgRep.updatePerInfoCtg(perInfoCtg, contractCode);
 		}
-		perInfoCtg.setCategoryName(perInfoCtgCommand.getCategoryName());
-		perInfoCtg.setCategoryType(perInfoCtgCommand.getCategoryType());
-		this.perInfoCtgRep.updatePerInfoCtg(perInfoCtg, PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
+		
 	}
 }

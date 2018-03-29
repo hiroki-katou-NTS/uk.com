@@ -199,7 +199,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void registerMngData(GeneralDate recDate) {
 		// アルゴリズム「暫定振出管理データの登録」を実行する
-		registerAbsenceLeaveData();
+		registerAbsData();
 		// 振出有効期限内の未相殺振休を取得する
 		getExpDate(recDate);
 
@@ -305,13 +305,13 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private void RegisterDigestionData(SaveHolidayShipmentCommand command) {
-		// アルゴリズム「勤務種類別振休発生数の取得」を実行する takingout
-		BigDecimal takingOutBrkDownDay = getByWorkType(command.getAbsCmd().getWkTypeCD(),
+		// アルゴリズム「勤務種類別振休発生数の取得」を実行する rec
+		BigDecimal absBrkDownDay = getByWorkType(command.getAbsCmd().getWkTypeCD(),
 				WorkTypeClassification.Shooting);
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
-		BigDecimal holidayBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
+		BigDecimal recBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
 				WorkTypeClassification.Shooting);
-		if ((takingOutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
+		if ((absBrkDownDay.compareTo(recBrkDownDay) == 0)) {
 			// アルゴリズム「振休有効期限の決定」を実行する
 			GeneralDate expDate = DemOfexpDate(recDate);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
@@ -325,11 +325,11 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void registerData(SaveHolidayShipmentCommand command, GeneralDate expDate, HolidaySetting holidaySet) {
 		// アルゴリズム「暫定振出管理データの登録」を実行する
-		registerAbsenceLeaveData();
+		registerAbsData();
 
 	}
 
-	private void registerAbsenceLeaveData() {
+	private void registerAbsData() {
 		// TODO 更新用未使用日数を決定する
 		// chưa có thông tin của domain 暫定振出管理データ
 
