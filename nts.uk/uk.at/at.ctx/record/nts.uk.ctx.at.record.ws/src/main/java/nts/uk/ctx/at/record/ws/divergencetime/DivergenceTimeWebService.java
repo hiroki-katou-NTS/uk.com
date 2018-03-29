@@ -30,7 +30,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceType
 
 @Path("at/record/divergencetime")
 @Produces("application/json")
-public class DivergenceTimeWebService extends WebService{
+public class DivergenceTimeWebService extends WebService {
 
 	@Inject
 	private DivergenceTimeFinder getAllDivTime;
@@ -48,90 +48,107 @@ public class DivergenceTimeWebService extends WebService{
 	private DivergenceItemSetFinder getItemSet;
 	@Inject
 	private UpdateDivergenceItemSetCommandHandler updateItemId;
+
 	/**
 	 * get all divergence time
+	 * 
 	 * @return
 	 */
 	@POST
 	@Path("getalldivtime")
-	public List<DivergenceTimeDto> getAllDivTime(){
+	public List<DivergenceTimeDto> getAllDivTime() {
 		return this.getAllDivTime.getAllDivTime();
 	}
+
 	/**
 	 * update divergence time
+	 * 
 	 * @param command
 	 */
 	@POST
 	@Path("updatedivtime")
-	public void updateDivTime(UpdateDivergenceTimeCommand command){
+	public void updateDivTime(UpdateDivergenceTimeCommand command) {
 		this.updateDivTime.handle(command);
 	}
+
 	/**
 	 * get all divergence reason
+	 * 
 	 * @param divTimeId
 	 * @return
 	 */
 	@POST
 	@Path("getalldivreason/{divTimeId}")
-	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId){
+	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId) {
 		return this.getAllDivReason.getAllDivReasonByCode(divTimeId);
 	}
+
 	/**
 	 * add divergence reason
+	 * 
 	 * @param command
 	 */
 	@POST
 	@Path("adddivreason")
-	public void addDivReason(AddDivergenceReasonCommand command){
+	public void addDivReason(AddDivergenceReasonCommand command) {
 		this.addDivReason.handle(command);
 	}
+
 	/**
 	 * update divergence reason
+	 * 
 	 * @param command
 	 */
 	@POST
 	@Path("updatedivreason")
-	public void updateDivReason(UpdateDivergenceReasonCommand command){
+	public void updateDivReason(UpdateDivergenceReasonCommand command) {
 		this.updateDivReason.handle(command);
 	}
+
 	/**
 	 * delete divergence reason
+	 * 
 	 * @param command
 	 */
 	@POST
 	@Path("deletedivreason")
-	public void deleteDivReason(DeleteDivergenceReasonCommand command){
+	public void deleteDivReason(DeleteDivergenceReasonCommand command) {
 		this.delDivReason.handle(command);
 	}
+
 	/**
 	 * get item set
+	 * 
 	 * @param divTimeId
 	 * @return
 	 */
 	@POST
 	@Path("getitemset/{divTimeId}")
-	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId){
+	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId) {
 		return this.getItemSet.getAllDivReasonByCode(divTimeId);
 	}
+
 	/**
 	 * update time item id
+	 * 
 	 * @param command
 	 */
 	@POST
 	@Path("updateTimeItemId")
-	public void updateTimeItemId(List<UpdateDivergenceItemSetCommand> command){
+	public void updateTimeItemId(List<UpdateDivergenceItemSetCommand> command) {
 		this.updateItemId.handle(command);
 	}
+
 	@POST
-	@Path("getAttendanceDivergenceItem")
-	public List<AttendanceTypeDivergenceAdapterDto> getAtType(){
-		//乖離時間：1
-		return this.getItemSet.getAllAtType(1);
+	@Path("getAttendanceDivergenceItem/{divTimeNo}")
+	public List<AttendanceTypeDivergenceAdapterDto> getAtType(@PathParam("divTimeNo") int divTimeNo) {
+		return this.getItemSet.getAllAtType(divTimeNo);
 	}
+
 	@POST
 	@Path("AttendanceDivergenceName")
-	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds){
+	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
 		return this.getItemSet.getAtName(dailyAttendanceItemIds);
 	}
-	
+
 }

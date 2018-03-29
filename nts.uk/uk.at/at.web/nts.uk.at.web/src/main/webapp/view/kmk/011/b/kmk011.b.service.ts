@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk011.b {
           * get all attendance item id(id co the chon)
         */
         export function getAllAttendanceItem(divergenceType: number): JQueryPromise<Array<viewmodel.model.AttendanceType>> {
-            return nts.uk.request.ajax("at", path.getAllAttendanceItem);
+            return nts.uk.request.ajax("at", path.getAllAttendanceItem + "/" +divergenceType);
         }
 
         /**

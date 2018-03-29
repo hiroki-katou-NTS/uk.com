@@ -356,7 +356,7 @@ module nts.uk.at.view.kmk011.b {
             public openDialog021() {
                 var self = this;
                 nts.uk.ui.block.grayout();
-                service.getAllAttendanceItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
+                service.getAllAttendanceItem(self.itemDivergenceTime().divergenceTimeNo).done(function(lstAllItem: Array<model.AttendanceType>) {
                     var listAllId : number[]= [];
                     for (let j = 0; j < lstAllItem.length; j++) {
                         listAllId[j] = lstAllItem[j].attendanceItemId;

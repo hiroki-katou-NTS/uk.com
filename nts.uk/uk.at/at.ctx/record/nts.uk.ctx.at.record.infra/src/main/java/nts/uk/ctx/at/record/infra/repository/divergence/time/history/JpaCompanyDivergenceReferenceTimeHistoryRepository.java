@@ -238,7 +238,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		cq.where(predicates.toArray(new Predicate[] {}));
 
 		// order by insert date
-		cq.orderBy(criteriaBuilder.asc(root.get("insDate")));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstComDrtHist_.strD)));
 
 		// query data
 		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).getResultList();
