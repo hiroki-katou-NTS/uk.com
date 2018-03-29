@@ -466,9 +466,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				throw new BusinessException("Msg_316");
 			}
 			// set info to session
-//			HttpSession session = request.getSession(false);
-//			if (session != null) session.invalidate();
-//			request.getSession(true);
+			request.changeSessionId();
 			this.initSession(optUserImport.get());
 		}
 	}

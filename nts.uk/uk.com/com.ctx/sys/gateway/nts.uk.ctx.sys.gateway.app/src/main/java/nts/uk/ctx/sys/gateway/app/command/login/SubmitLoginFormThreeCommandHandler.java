@@ -86,9 +86,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			this.checkLimitTime(user);
 			
 			//set info to session
-//			HttpSession session = context.getCommand().getRequest().getSession(false);
-//			if (session != null) session.invalidate();
-//			context.getCommand().getRequest().getSession(true);
+			context.getCommand().getRequest().changeSessionId();
 			this.setLoggedInfo(user,em,companyCode);
 			
 			//set role Id for LoginUserContextManager

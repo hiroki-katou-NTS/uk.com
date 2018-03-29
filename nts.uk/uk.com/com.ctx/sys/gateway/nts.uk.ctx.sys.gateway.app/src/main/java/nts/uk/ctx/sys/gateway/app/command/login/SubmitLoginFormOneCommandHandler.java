@@ -60,9 +60,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkLimitTime(user);
 			
 			//set info to session
-//			HttpSession session = context.getCommand().getRequest().getSession(false);
-//			if (session != null) session.invalidate();
-//			context.getCommand().getRequest().getSession(true);
+			context.getCommand().getRequest().changeSessionId();
 			this.initSession(user.get());
 		}
 		return null;
