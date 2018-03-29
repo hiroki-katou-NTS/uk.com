@@ -247,7 +247,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_SIMPLE_ITEM_DEF = String.join(" ",
 			"SELECT i.itemCd, i.itemName FROM PpemtPerInfoItem i",
 			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
-			"WHERE c.categoryCd = :ctgCd and c.cid = :cid and i.abolitionAtr = 0");
+			"WHERE c.categoryCd = :ctgCd and c.cid = :cid");
 
 	private final static String SELECT_ITEMS_ID_BY_CTG_ID = String.join(" ",
 			"SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i",

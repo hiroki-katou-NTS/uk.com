@@ -1,17 +1,33 @@
 package nts.uk.ctx.at.record.infra.entity.remainingnumber;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
-import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Table(name = "KRCMT_SPECIAL_LEAVE_REMA")
-public class KrcmtSpecialLeaveReam extends UkJpaEntity{
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "KRCMT_SPEC_LEAVE_REMAIN")
+public class KrcmtSpecialLeaveReam extends UkJpaEntity implements Serializable{
 	
-	@Embedded
+	/**
+	 * @author laitv
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
 	public KrcmtSpecialLeaveReamPK key;
+	
+	@Column(name = "CID")
+	public String cId;
 	
 	@Column(name = "SID")
 	public String employeeId;

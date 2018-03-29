@@ -574,7 +574,7 @@ module nts.custombinding {
                                             cssClass: ko.computed(function() {
                                                 return root.showColor() && 'color-operation-case-character';
                                             }),
-                                            required: false,
+                                            required: root.required,
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                     <!-- ko if: (root || {}).type == CTRL_TYPE.SET -->
                                     <div class="set-items">
@@ -586,7 +586,7 @@ module nts.custombinding {
                                                 cssClass: ko.computed(function() {
                                                     return root.showColor() && 'color-operation-case-character';
                                                 }),
-                                                required: false,
+                                                required: child.required,
                                                 constraint: undefined  }"></div>
                                             <!-- ko if: (child || {}).type == CTRL_TYPE.SET -->
                                             <!-- ko foreach: { data: _(__items)
@@ -595,7 +595,7 @@ module nts.custombinding {
                                                 })
                                                 .map(function(v, i) { 
                                                     return { 
-                                                        i: (i % 2 == 1 ? i - 1 : i) / 2,
+                                                        i: Math.floor(i / 2),
                                                         v: v
                                                     }
                                                 })

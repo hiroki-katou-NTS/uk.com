@@ -85,6 +85,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.currentValue.subscribe(value => {
                 if (value) {
                     let currentRow: ISpecialLeaveRemaining = _.find(ko.toJS(self.listData), function(item: any) { return item.grantDate == value });
+                    debugger;
                     service.getDetail(currentRow.specialid).done((result: ISpecialLeaveRemaining) => {
                         if (result) {
                             self.bindingData(result);
@@ -111,10 +112,9 @@ module nts.uk.com.view.cps001.i.vm {
 
             let self = this;
             block();
-            service.getAllList().done((data: Array<ISpecialLeaveRemaining>) => {
+            service.getAllList("1B3D3CC4-90FD-4992-9566-12EC72827E4C", 1).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
-                    _.forEach
                     self.listData(self.convertTreeToArray(data));
                     self.currentValue(data[0].grantDate);
                     // Set focus
@@ -129,7 +129,7 @@ module nts.uk.com.view.cps001.i.vm {
 
         }
 
-        /**
+     /**
      * Convert data to new array.
      */
         private convertTreeToArray(dataList: Array<ISpecialLeaveRemaining>): Array<any> {
@@ -212,10 +212,10 @@ module nts.uk.com.view.cps001.i.vm {
             }
         }
 
-        formatEnum(value) {
-            if (value && value === '0') {
+        formatEnum(value : number) {
+            if (value && value === 0) {
                 return '使用可能';
-            } else if (value && value === '1') {
+            } else if (value && value === 1) {
                 return '期限切れ';
             }
         }
@@ -224,11 +224,13 @@ module nts.uk.com.view.cps001.i.vm {
 
         getItemDef() {
             let self = this;
-            let ctgCode: string = "CS00040";
+            let ctgCode: string = "CS00039";
             service.getItemDef(ctgCode).done((data) => {
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });
+            }).fail((data) =>{
+                 self.setGridList();
             });
         }
         setItemDefValue(data: any): JQueryPromise<any> {
@@ -314,7 +316,7 @@ module nts.uk.com.view.cps001.i.vm {
         specialLeaCode: string;
         grantDate: string;
         deadlineDate: string;
-        expStatus: string;
+        expStatus: number;
         registerType: string;
         numberDayGrant: number;
         timeGrant: number;
@@ -334,7 +336,7 @@ module nts.uk.com.view.cps001.i.vm {
         specialLeaCode: string;
         grantDate: string;
         deadlineDate: string;
-        expStatus: string;
+        expStatus: number;
         registerType: string;
         numberDayGrant: number;
         timeGrant: number;
