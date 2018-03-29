@@ -12,14 +12,14 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempFinder;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
-public class ApprovalStatusMailTempWebservice extends WebService {
+public class ApprovalStatusWebservice extends WebService {
 	@Inject
-	private ApprovalStatusMailTempFinder approvalMailTempFinder;
+	private ApprovalStatusFinder approvalMailTempFinder;
 
 	@Inject
 	private RegisterApprovalStatusMailTempCommandHandler registerApprovalStatusMailTempCommandHandler;

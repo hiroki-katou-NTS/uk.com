@@ -22,7 +22,7 @@ import nts.uk.shr.com.mail.SendMailFailedException;
  * 
  * @author dat.lh
  */
-public class ApprovalStatusMailTempFinder {
+public class ApprovalStatusFinder {
 
 	@Inject
 	private ApprovalStatusMailTempRepository finder;
@@ -152,8 +152,7 @@ public class ApprovalStatusMailTempFinder {
 						new MailContents(mailTransmission.getSubject(), mailTransmission.getText()));
 			} catch (SendMailFailedException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				String s = e.getMessage();
+				e.printStackTrace();
 			}
 		}
 	}
@@ -179,7 +178,7 @@ public class ApprovalStatusMailTempFinder {
 	 */
 	private UseSetingDto getTransmissionAttr() {
 		// 月別確認を利用する ← 承認処理の利用設定.月の承認者確認を利用する
-		boolean monthlyConfirm = false;
+		boolean monthlyConfirm = true;
 		// 上司確認を利用する ← 承認処理の利用設定.日の承認者確認を利用する
 		boolean useBossConfirm = true;
 		// 本人確認を利用する ← 本人確認処理の利用設定.日の本人確認を利用する
