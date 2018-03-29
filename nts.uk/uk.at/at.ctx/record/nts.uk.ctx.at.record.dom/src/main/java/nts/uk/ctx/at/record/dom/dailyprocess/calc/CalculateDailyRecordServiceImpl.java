@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -210,9 +211,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 	
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {
+		val copyCalcAtr = integrationOfDaily.getCalAttr();
 		val record = createRecord(integrationOfDaily);
-		if(!record.calculatable) return integrationOfDaily;
-		return calcRecord(record);
+		if(!record.calculatable) {
+			integrationOfDaily.setCalAttr(copyCalcAtr);
+			return integrationOfDaily;
+		}
+		val test = calcRecord(record);
+		test.setCalAttr(copyCalcAtr);
+		return test; 
 	}
 	
 	/**
@@ -307,9 +314,45 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new OverDayEndCalcSetOfExcessHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfExcessSpecialHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
+	
+//		//日別実績の計算区分
+//		if(integrationOfDaily.getCalAttr() != null) return ManageReGetClass.cantCalc();
+//		//日別実績の計算区分の中身をチェック(マスタができれば消せる？）
+//		if((integrationOfDaily.getCalAttr().getRasingSalarySetting() != null)
+//			|| (integrationOfDaily.getCalAttr().getOvertimeSetting() != null)
+//			|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() != null)
+//			|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() != null)
+//			|| (integrationOfDaily.getCalAttr().getFlexExcessTime() != null)
+//			|| (integrationOfDaily.getCalAttr().getDivergenceTime() != null))
+//			return ManageReGetClass.cantCalc();
+		if(integrationOfDaily.getCalAttr() == null
+				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() != null)
+				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() != null)
+				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() != null)
+				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() != null)
+				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() != null)
+				|| (integrationOfDaily.getCalAttr().getDivergenceTime() != null))
+		{
+			val autoCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS);
+			val calAttr = new CalAttrOfDailyPerformance(employeeId, 
+													targetDate,
+													new AutoCalFlexOvertimeSetting(autoCalcSet),
+													new AutoCalRaisingSalarySetting(true,true),
+													new AutoCalRestTimeSetting(autoCalcSet,autoCalcSet),
+													new AutoCalOvertimeSetting(autoCalcSet, 
+																			   autoCalcSet, 
+																			   autoCalcSet, 
+																			   autoCalcSet, 
+																			   autoCalcSet, 
+																			   autoCalcSet),
+													new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
+													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
+			integrationOfDaily.setCalAttr(calAttr);
+		}
+		
 		//自動計算設定
 		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();
-		
+			
 		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
 		
@@ -455,11 +498,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		
 	    //日別実績の入退門　　　　
-		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = integrationOfDaily.getAttendanceLeavingGate();
+		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = manageReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate();
 		//日別実績のPCログオン情報　　　
-		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = integrationOfDaily.getPcLogOnInfo();
+		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = manageReGetClass.getIntegrationOfDaily().getPcLogOnInfo();
 		//
-		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = integrationOfDaily.getAttendanceLeave();
+		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = manageReGetClass.getIntegrationOfDaily().getAttendanceLeave();
 		
 		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
 		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
@@ -511,7 +554,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					eachCompanyTimeSet,
 					attendanceLeavingGateOfDaily,
 					pCLogOnInfoOfDaily,
-					attendanceLeave);
+					attendanceLeave));
 	
 		
 

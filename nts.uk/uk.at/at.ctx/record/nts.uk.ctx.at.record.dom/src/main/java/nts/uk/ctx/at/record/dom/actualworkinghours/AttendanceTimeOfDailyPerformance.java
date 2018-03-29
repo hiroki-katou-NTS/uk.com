@@ -232,8 +232,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					eachCompanyTimeSet);
 		/*滞在時間の計算*/
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
-																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave.get()),
-												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave.get()),
+//																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave.get()),
+//												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave.get()),
+																new AttendanceTime(0),
+																new AttendanceTime(0),
 												 				new AttendanceTime(0),
 												 				new AttendanceTime(0));
 		

@@ -35,6 +35,7 @@ public class IntegrationOfDaily {
 	//日別実績の勤務情報
 	private WorkInfoOfDailyPerformance workInformation;
 	//日別実績の計算区分
+	@Setter
 	private CalAttrOfDailyPerformance calAttr;
 	//日別実績の所属情報
 	private AffiliationInforOfDailyPerfor affiliationInfor;

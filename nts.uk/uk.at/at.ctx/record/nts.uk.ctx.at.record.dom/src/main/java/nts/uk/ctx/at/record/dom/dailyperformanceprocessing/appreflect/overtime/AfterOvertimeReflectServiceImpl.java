@@ -42,10 +42,10 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			}
 			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
 			//予定開始終了時刻の反映
-			WorkTimeTypeOutput workTimeTypeScheData = new WorkTimeTypeOutput( dailyData.getScheduleWorkInformation().getWorkTimeCode().v(), dailyData.getScheduleWorkInformation().getWorkTypeCode().v());		
+			WorkTimeTypeOutput workTimeTypeScheData = new WorkTimeTypeOutput( dailyData.getRecordInfo().getWorkTimeCode().v(), dailyData.getRecordInfo().getWorkTypeCode().v());		
 			afterOverTimeReflect.checkScheWorkStarEndReflect(overtimePara, isWorkReflect, workTimeTypeScheData);
 			//開始終了時刻の反映
-			WorkTimeTypeOutput workTimeTypeRecordData = new WorkTimeTypeOutput(dailyData.getRecordWorkInformation().getWorkTimeCode().v(), dailyData.getRecordWorkInformation().getWorkTypeCode().v());
+			WorkTimeTypeOutput workTimeTypeRecordData = new WorkTimeTypeOutput(dailyData.getRecordInfo().getWorkTimeCode().v(), dailyData.getRecordInfo().getWorkTypeCode().v());
 			afterOverTimeReflect.recordStartEndReflect(overtimePara, workTimeTypeRecordData);
 			//残業時間の反映
 			afterOverTimeReflect.reflectOvertimeFrame(overtimePara);
