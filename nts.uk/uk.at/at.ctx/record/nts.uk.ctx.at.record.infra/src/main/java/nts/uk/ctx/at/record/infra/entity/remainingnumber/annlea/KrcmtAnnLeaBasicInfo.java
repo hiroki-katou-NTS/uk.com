@@ -13,8 +13,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
 	
 	@Id
-    @Column(name = "EMPLOYEE_ID")
-    public String employeeId;
+    @Column(name = "SID")
+    public String sid;
 	
 	@Column(name = "WORK_DAYS_PER_YEAR")
     public int workDaysPerYear;
@@ -30,6 +30,6 @@ public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
 
 	@Override
 	protected Object getKey() {
-		return employeeId;
+		return sid;
 	}
 }

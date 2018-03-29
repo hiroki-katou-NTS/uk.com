@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveNumberInfo;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -14,6 +13,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @AllArgsConstructor
 public class ResvLeaGrantRemNumDto {
 	
+	private String id;
 	/**
 	 * 積立年休付与日
 	 */
@@ -30,7 +30,7 @@ public class ResvLeaGrantRemNumDto {
 	 * 積立年休期限切れ状態
 	 */
 	@PeregItem("IS00400")
-	private LeaveExpirationStatus expirationStatus;
+	private int expirationStatus;
 
 	/**
 	 * 積立年休使用状況
@@ -70,9 +70,10 @@ public class ResvLeaGrantRemNumDto {
 	
 	public static ResvLeaGrantRemNumDto createFromDomain(ReserveLeaveGrantRemainingData domain) {
 		ResvLeaGrantRemNumDto dto = new ResvLeaGrantRemNumDto();
+		dto.id = domain.getRsvLeaID();
 		dto.grantDate = domain.getGrantDate();
 		dto.deadline = domain.getDeadline();
-		dto.expirationStatus = domain.getExpirationStatus();
+		dto.expirationStatus = domain.getExpirationStatus().value;
 		ReserveLeaveNumberInfo details = domain.getDetails();
 		dto.grantDays = details.getGrantNumber().v();
 		dto.useDays = details.getUsedNumber().getDays().v();

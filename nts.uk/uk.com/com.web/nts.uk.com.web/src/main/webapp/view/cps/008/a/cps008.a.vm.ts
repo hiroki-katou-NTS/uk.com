@@ -23,10 +23,12 @@ module cps008.a.viewmodel {
 
 
             self.start();
+
             layout.id.subscribe(id => {
                 if (id) {
 
                     // Gọi service tải dữ liệu ra layout
+                    block();
                     service.getDetails(id).done((data: any) => {
                         if (data) {
                             layout.code(data.layoutCode);
@@ -38,6 +40,7 @@ module cps008.a.viewmodel {
                             layout.classifications(data.listItemClsDto || []);
                             layout.action(LAYOUT_ACTION.UPDATE);
                             $("#A_INP_NAME").focus();
+                            unblock();
                         }
                     });
                 }
@@ -117,11 +120,10 @@ module cps008.a.viewmodel {
             }
 
             // call service savedata
-            invisible();
+            block();
             service.saveData(command).done((_data: any) => {
-
+                unblock();
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-                    unblock();
                     $("#A_INP_NAME").focus();
                 });
 

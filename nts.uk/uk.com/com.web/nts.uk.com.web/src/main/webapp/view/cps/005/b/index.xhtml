@@ -31,7 +31,7 @@
 
 			<div id="functions-area">
 				<div id="functions-area-content">
-					<button tabindex="1" data-bind="click : register">#{i18n.getText('CPS005_10')}</button>
+					<button tabindex="1" data-bind="click : register, enable: currentCtg.isAdd">#{i18n.getText('CPS005_10')}</button>
 					<button tabindex="2" class="proceed"
 						data-bind="click : addUpdateData, enable: isEnableButtonProceed()">#{i18n.getText('CPS005_11')}</button>
 					<button tabindex="3" class="danger"
@@ -66,7 +66,7 @@
 				<div id="contents-area-left">
 					<div data-bind="with: currentItemSelected">
 						<!-- Start perInfoItem selection is not fixed -->
-						<div data-bind="visible: fixedAtr() == 0 ">
+						<div data-bind="visible: fixedAtr() == 0">
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div
@@ -91,7 +91,7 @@
 										immediate: false}" />
 							</div>
 
-							<div data-bind="visible: itemType() == 2">
+							<div data-bind="visible: itemType() == 2  &amp; dataType !=10">
 								<div
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: { required: true }"

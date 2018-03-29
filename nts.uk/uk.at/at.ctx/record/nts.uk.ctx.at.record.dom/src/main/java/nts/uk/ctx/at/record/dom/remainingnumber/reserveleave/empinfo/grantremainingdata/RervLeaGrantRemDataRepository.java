@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremai
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
-
 public interface RervLeaGrantRemDataRepository {
 
 	List<ReserveLeaveGrantRemainingData> find(String employeeId);
@@ -14,5 +12,5 @@ public interface RervLeaGrantRemDataRepository {
 	
 	void update(ReserveLeaveGrantRemainingData data);
 	
-	void delete(String employeeId, GeneralDate grantDate);
+	void delete(String rsvLeaId);
 }
