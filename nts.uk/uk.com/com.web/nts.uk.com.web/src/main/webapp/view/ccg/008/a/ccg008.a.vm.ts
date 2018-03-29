@@ -49,7 +49,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 self.dataSource(data);
                 if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
                     var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                    if (data.topPage.standardMenuUrl.includes(".at.")) { 
+                    if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
                         nts.uk.request.jump("at", res);
                     } else {
                         nts.uk.request.jump(res);
