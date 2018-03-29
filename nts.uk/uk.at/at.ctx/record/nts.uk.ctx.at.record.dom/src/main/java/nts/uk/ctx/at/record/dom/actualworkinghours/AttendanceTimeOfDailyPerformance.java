@@ -24,6 +24,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -149,7 +152,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
 			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
-			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
+			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
+			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
+			   List<DivergenceTime> divergenceTimeList) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -172,7 +177,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     eachCompanyTimeSet,
 				   																	     attendanceLeavingGateOfDaily,
 				   																	     pCLogOnInfoOfDaily,
-				   																	     attendanceLeave)));
+				   																	     attendanceLeave,
+				   																	     forCalcDivergenceDto,
+				   																	     divergenceTimeList)));
+		
 		return integrationOfDaily;
 	}
 	
@@ -202,9 +210,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
 			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
-			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
+			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
+			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
+			   List<DivergenceTime> divergenceTimeList) {
 		
-		/*所定時間*/
+		/*計画所定時間*/
+		/*実績所定労働時間*/
 		
 		/*勤務予定時間の計算*/
 		val workScheduleTime = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(510),new AttendanceTime(0),new AttendanceTime(510)),
@@ -229,7 +240,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					eachWorkTimeSet,
-					eachCompanyTimeSet);
+					eachCompanyTimeSet,
+					forCalcDivergenceDto,
+					divergenceTimeList
+					/*計画所定時間*/
+					/*実績所定労働時間*/
+					/*勤務予定時間の計算*/);
 		/*滞在時間の計算*/
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
 //																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave.get()),

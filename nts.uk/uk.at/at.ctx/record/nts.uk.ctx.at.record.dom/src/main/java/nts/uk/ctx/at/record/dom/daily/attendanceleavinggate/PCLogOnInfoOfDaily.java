@@ -48,7 +48,7 @@ public class PCLogOnInfoOfDaily {
 			}
 			resultList.add(new AttendanceTime(pcLogOn-attendance));
 		}
-		return resultList.stream().map(t -> t.valueAsMinutes()).;;	
+		return new AttendanceTime(resultList.stream().filter(t -> t != null).mapToInt(t -> t.valueAsMinutes()).sum());	
 	}
 	
 }
