@@ -125,6 +125,7 @@ module nts.uk.com.view.cmf001.q {
             public executionCheck(): void {
                 var self = this;
                 let command: CSVManager = new CSVManager(
+                    self.processId(),
                     self.totalRecord(),
                     self.currentRecord(),
                     self.numberFail(),
@@ -154,6 +155,7 @@ module nts.uk.com.view.cmf001.q {
                 self.isStop(false);
                 $('#BTN_STOP').focus();
                 let command: CSVManager = new CSVManager(
+                    self.processId(),
                     self.totalRecord(),
                     self.currentRecord(),
                     self.numberFail(),
@@ -269,13 +271,15 @@ module nts.uk.com.view.cmf001.q {
     }
     // 対象アルゴリズム
     export class CSVManager {
+        processId: string;
         csvLine: number;
         currentLine: number;
         errorCount: number;
         stopMode: number;
         stateBehavior: number;
-        constructor(csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number) {
+        constructor(processId: string, csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number) {
             let self = this;
+            self.processId = processId;
             self.csvLine = csvLine;
             self.currentLine = currentLine;
             self.errorCount = errorCount;
