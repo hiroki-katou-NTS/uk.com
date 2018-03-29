@@ -129,7 +129,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
                                 resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
                             }
-                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.deforLaborSetting)) {
                                 resultData.statWorkTimeSetDto.deforLaborSetting = new WorktimeNormalDeformSettingDto();
                             }
                             // Update Full Data
