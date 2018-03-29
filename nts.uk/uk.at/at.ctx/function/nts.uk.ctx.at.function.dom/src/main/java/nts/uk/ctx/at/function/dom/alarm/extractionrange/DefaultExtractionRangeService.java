@@ -25,6 +25,9 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayGrantDate;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementClassification;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -45,7 +48,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	@Override
 	public List<CheckConditionTimeDto> getPeriodByCategory(String alarmCode, String companyId, int closureId,
 			Integer processingYm) {
-		List<CheckConditionTimeDto> result = new ArrayList<>();
+		List<CheckConditionTimeDto> result = new ArrayList<CheckConditionTimeDto>();
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
@@ -64,6 +67,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			}
 
 		});
+		result.sort((a, b) ->  a.getCategory()- b.getCategory());
 		return result;
 	}
 
@@ -120,73 +124,86 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		if (!publicHolidaySettingOpt.isPresent())
 			throw new RuntimeException("「公休設定」ドメインが見つかりません！");
 		
-		if(!(publicHolidaySettingOpt.get().getPublicHdManagementStartDate() instanceof PublicHoliday ))
-			throw new  RuntimeException("In domain 「公休設定」, the field: 公休管理開始日 is not intance of 公休起算日 \nEAP don't check this Exception. \nPlease view EA!");
-		
-		PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
-		if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
-			countingDate= publicHoliday.getDate().localDate();
-			isYMD = true;
-		}else {			
-			String dayMonth= publicHoliday.getDayMonth().toString();
-			if(dayMonth.length()<4) dayMonth ="0" +dayMonth;
-			countingDate = LocalDate.of(LocalDate.now().getYear(), Integer.valueOf(dayMonth.substring(0, 2)).intValue(),
-					Integer.valueOf(dayMonth.substring(2, 4)).intValue());
-			isYMD= false;
-		}
-		LocalDate currentDate = LocalDate.now();
-		if (isYMD) {
-			long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
-			long index = totalDays / 28;
-
-			switch (periodUnit.getSegmentationOfCycle()) {
-			case ThePreviousCycle:
-				index--;
-			case Period:
-				break;
-			case TheNextCycle:
-				index++;
-			default:
-				break;
+		if(publicHolidaySettingOpt.get().getPublicHdManagementClassification()==PublicHolidayManagementClassification._1_MONTH) {
+			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate)publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
+			
+			if(publicHolidayGrantDate.getPeriod()==PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY) {
+				String processingMonth = yearMonth.toString();				
+				sDate = LocalDate.of(Integer.valueOf(processingMonth.substring(0, 4)).intValue(), Integer.valueOf(processingMonth.substring(4, 6)).intValue(), 1);
+				eDate = sDate.plusMonths(1);
+				eDate.minusDays(1);
+				
+			}else {
+				DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
+				sDate = datePeriod.start().localDate();
+				eDate = datePeriod.end().localDate();								
 			}
-			if (index == -1)
-				throw new RuntimeException("1周期目の期間がシステム日付を含む期間となりますが周期の区分 は 実行日を含む周期の前周期！");
-
-			sDate = countingDate.plusDays(index * 28);
-			eDate = sDate.plusDays(27);
-
-		} else {
-			long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
-			long index = totalDays / 28;
-
-			switch (periodUnit.getSegmentationOfCycle()) {
-			case ThePreviousCycle:
-				index--;
-			case Period:
-				break;
-			case TheNextCycle:
-				index++;
-			default:
-				break;
+			
+		}else {
+			PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
+			if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
+				countingDate= publicHoliday.getDate().localDate();
+				isYMD = true;
+			}else {			
+				String dayMonth= publicHoliday.getDayMonth().toString();
+				if(dayMonth.length()<4) dayMonth ="0" +dayMonth;
+				countingDate = LocalDate.of(LocalDate.now().getYear(), Integer.valueOf(dayMonth.substring(0, 2)).intValue(),
+						Integer.valueOf(dayMonth.substring(2, 4)).intValue());
+				isYMD= false;
 			}
-
-			if (index == -1) {
-				countingDate.minusYears(1);
-				index = 13;
-				sDate = countingDate.plusDays(index * 28);
-				eDate = LocalDate.of(countingDate.getYear(), 12, 31);
-			} else if (index == 14) {
-				countingDate.plusYears(1);
-				index = 0;
+			LocalDate currentDate = LocalDate.now();
+			if (isYMD) {
+				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
+				long index = totalDays / 28;
+	
+				switch (periodUnit.getSegmentationOfCycle()) {
+				case ThePreviousCycle:
+					index--;
+				case Period:
+					break;
+				case TheNextCycle:
+					index++;
+				default:
+					break;
+				}
+				if (index == -1)
+					throw new RuntimeException("1周期目の期間がシステム日付を含む期間となりますが周期の区分 は 実行日を含む周期の前周期！");
+	
 				sDate = countingDate.plusDays(index * 28);
 				eDate = sDate.plusDays(27);
+	
 			} else {
-				sDate = countingDate.plusDays(index * 28);
-				eDate = sDate.plusDays(27);
+				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
+				long index = totalDays / 28;
+	
+				switch (periodUnit.getSegmentationOfCycle()) {
+				case ThePreviousCycle:
+					index--;
+				case Period:
+					break;
+				case TheNextCycle:
+					index++;
+				default:
+					break;
+				}
+	
+				if (index == -1) {
+					countingDate.minusYears(1);
+					index = 13;
+					sDate = countingDate.plusDays(index * 28);
+					eDate = LocalDate.of(countingDate.getYear(), 12, 31);
+				} else if (index == 14) {
+					countingDate.plusYears(1);
+					index = 0;
+					sDate = countingDate.plusDays(index * 28);
+					eDate = sDate.plusDays(27);
+				} else {
+					sDate = countingDate.plusDays(index * 28);
+					eDate = sDate.plusDays(27);
+				}
+	
 			}
-
 		}
-
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
 				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(),
 				sDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),

@@ -99,4 +99,30 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 	}
 
+	/**
+	 * find RecruitmentApp By AppId
+	 * @author hoatt
+	 * @param appId
+	 * @return
+	 */
+	@Override
+	public Optional<RecruitmentApp> findByAppId(String appId) {
+		return this.queryProxy().find(appId, KrqdtRecruitmentApp.class).map(x -> toDomainMain(x));
+	}
+	/**
+	 * convert entity to domain
+	 * @author hoatt
+	 * @param entity
+	 * @return
+	 */
+	private RecruitmentApp toDomainMain(KrqdtRecruitmentApp entity) {
+		RecruitmentWorkingHour workTime1 = new RecruitmentWorkingHour(new WorkTime(entity.getStartWorkTime1()),
+				EnumAdaptor.valueOf(entity.getStartUseAtr1(), NotUseAtr.class), new WorkTime(entity.getEndWorkTime1()),
+				EnumAdaptor.valueOf(entity.getEndUseAtr1(), NotUseAtr.class));
+		RecruitmentWorkingHour workTime2 = new RecruitmentWorkingHour(new WorkTime(entity.getStartWorkTime2()),
+				EnumAdaptor.valueOf(entity.getStartUseAtr2(), NotUseAtr.class), new WorkTime(entity.getEndWorkTime2()),
+				EnumAdaptor.valueOf(entity.getEndUseAtr2(), NotUseAtr.class));
+		return new RecruitmentApp(entity.getAppID(), entity.getWorkTypeCD(), new WorkTimeCode(entity.getWorkTimeCD()),
+				workTime1, workTime2, null);
+	}
 }

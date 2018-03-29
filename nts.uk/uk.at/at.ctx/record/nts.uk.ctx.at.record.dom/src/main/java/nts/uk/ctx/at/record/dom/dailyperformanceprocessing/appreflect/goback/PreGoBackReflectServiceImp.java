@@ -46,7 +46,10 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			//予定時刻の反映
 			afterScheTime.reflectScheTime(para, chkTimeTypeChe);
 			//勤種・就時の反映
+			timeTypeSche.reflectRecordWorktimetype(para);
+			//時刻の反映
 			scheTimeReflect.reflectTime(para, this.workTypetimeReflect(para));
+			
 			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 		} catch (Exception ex) {
 			return new ApplicationReflectOutput(para.getGobackData().getReflectState(), para.getGobackData().getReasoNotReflect());

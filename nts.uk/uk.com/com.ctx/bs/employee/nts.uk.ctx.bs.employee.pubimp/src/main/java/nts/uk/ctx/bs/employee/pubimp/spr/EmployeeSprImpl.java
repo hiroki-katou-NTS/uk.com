@@ -37,8 +37,8 @@ public class EmployeeSprImpl implements EmployeeSprService {
 	@Inject
 	private SyJobTitlePub syJobTitlePub;
 	
-	@Inject
-	private EmpInDesignatedPub empInDesignatedPub;
+	/*@Inject
+	private EmpInDesignatedPub empInDesignatedPub;*/
 	
 	@Inject
 	private IPersonInfoPub personInfoPub;
@@ -92,11 +92,12 @@ public class EmployeeSprImpl implements EmployeeSprService {
 	@Override
 	public List<EmployeeInDesignatedSpr> getEmpInDesignated(String workplaceId, GeneralDate referenceDate,
 			List<Integer> empStatus) {
-		return empInDesignatedPub.getEmpInDesignated(workplaceId, referenceDate, empStatus)
+		/*return empInDesignatedPub.getEmpInDesignated(workplaceId, referenceDate, empStatus)
 				.stream().map(x -> new EmployeeInDesignatedSpr(
 						x.getEmployeeId(), 
 						x.getStatusOfEmp()))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
+		return null;
 	}
 
 	@Override

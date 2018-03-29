@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 /**
  * 
@@ -24,16 +28,16 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	private GeneralDate ymd;
 	
 	//フレックス超過時間: フレックス超過時間の自動計算設定
-	private AutoCalculationSetting flexExcessTime;
+	private AutoCalFlexOvertimeSetting flexExcessTime;
 	
 	//加給: 加給の自動計算設定
 	private AutoCalRaisingSalarySetting rasingSalarySetting;
 	
 	//休出時間: 休出時間の自動計算設定
-	private AutoCalHolidaySetting holidayTimeSetting;
+	private AutoCalRestTimeSetting holidayTimeSetting;
 	
 	//残業時間: 残業時間の自動計算設定
-	private AutoCalOfOverTime overtimeSetting;
+	private AutoCalOvertimeSetting overtimeSetting;
 	
 	//遅刻早退: 遅刻早退の自動計算設定
 	private AutoCalOfLeaveEarlySetting leaveEarlySetting;

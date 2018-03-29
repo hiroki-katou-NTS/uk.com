@@ -28,8 +28,8 @@ public class SprAppStatusImpl implements SprAppStatusService {
 	@Inject
 	private EmployeeSprService employeeSprService;
 	
-	@Inject
-	private ApplicationSprService applicationSprService;
+	/*@Inject
+	private ApplicationSprService applicationSprService;*/
 
 	@Override
 	public List<AppStatusSpr> getAppStatus(String loginEmpCD, String employeeCD, String startDate, String endDate) {
@@ -113,7 +113,7 @@ public class SprAppStatusImpl implements SprAppStatusService {
 	@Override
 	public AppOvertimeStatusSpr getOverTimeAppInfo(GeneralDate appDate, String employeeID, Integer overTimeAtr) {
 		// ドメインモデル「申請」を取得する
-		Optional<AppOverTimeSpr> opAppOverTimeSpr = applicationSprService.getAppOvertimeByDate(appDate, employeeID, overTimeAtr);
+		/*Optional<AppOverTimeSpr> opAppOverTimeSpr = applicationSprService.getAppOvertimeByDate(appDate, employeeID, overTimeAtr);
 		if(!opAppOverTimeSpr.isPresent()){
 			return new AppOvertimeStatusSpr(0, null);
 		}
@@ -129,7 +129,8 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		if(overTimeAtr==0||overTimeAtr==1){
 			return new AppOvertimeStatusSpr(1, appOverTimeSpr.getAppID());
 		}
-		return new AppOvertimeStatusSpr(0, null);
+		return new AppOvertimeStatusSpr(0, null);*/
+		return null;
 	}
 
 }

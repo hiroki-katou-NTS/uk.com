@@ -76,7 +76,7 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 		} 
 		WorkInfoOfDailyPerformance dailyData = optDailyData.get();
 		//勤務種類が休出振出かの判断
-		if(workTypeService.checkWorkTypeIsClosed(dailyData.getScheduleWorkInformation().getWorkTypeCode().v())) {
+		if(workTypeService.checkWorkTypeIsClosed(dailyData.getScheduleInfo().getWorkTypeCode().v())) {
 			return false;
 		} else {
 			return true;
@@ -112,7 +112,7 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 		}
 		WorkInfoOfDailyPerformance workInfoOfDaily = optWorkInfoOfDaily.get();
 		//実績勤務種類を取得する
-		WorkInformation recordWorkInformation = workInfoOfDaily.getRecordWorkInformation();
+		WorkInformation recordWorkInformation = workInfoOfDaily.getRecordInfo();
 		//勤務種類が休出振出かの判断
 		if(workTypeService.checkWorkTypeIsClosed(recordWorkInformation.getWorkTypeCode().v())) {
 			return false;

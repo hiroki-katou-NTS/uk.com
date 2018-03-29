@@ -10,4 +10,11 @@ public interface AbsenceLeaveAppRepository {
 	public void update(AbsenceLeaveApp absApp);
 
 	public void remove(String appID);
+	/**
+	 * find AbsenceLeaveApp By AppId
+	 * @author hoatt
+	 * @param applicationID
+	 * @return
+	 */
+	public Optional<AbsenceLeaveApp> findByAppId(String applicationID);
 }

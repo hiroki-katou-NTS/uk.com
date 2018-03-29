@@ -49,7 +49,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -103,10 +105,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AppCommonSetRepository repoAppCommonSet;
 	@Inject
 	private AppDispNameRepository repoAppDispName;
-//	@Inject
-//	private HdAppSetRepository repoHdAppSet;
-//	@Inject
-//	private RelationshipRepository repoRelationship;
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	@Inject
@@ -117,6 +115,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AgentAdapter agentAdapter;
 	@Inject
 	private AtEmployeeAdapter employeeAdapter;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	/**
 	 * 0 - 申請一覧事前必須チェック
@@ -794,12 +794,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * wait SonLB - kaf011
 	 */
 	@Override
-	public List<Application_New> getListAppComplementLeave(Application_New application) {
+	public List<Application_New> getListAppComplementLeave(Application_New application, String companyId) {
 		// TODO Auto-generated method stub
 		//Check 申請種類 - appType
 		if(!application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
 			return null;
 		}
+		String appId = application.getAppID();
+		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, appId);
 		
 		return null;
 	}

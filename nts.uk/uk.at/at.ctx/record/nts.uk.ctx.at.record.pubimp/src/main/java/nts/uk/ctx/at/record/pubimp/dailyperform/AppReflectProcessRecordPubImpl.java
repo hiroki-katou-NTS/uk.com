@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.pubimp.dailyperform;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionT
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ChangeAppGobackAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.GobackAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.GobackReflectParameter;
@@ -26,6 +30,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordP
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectPubOutput;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -39,6 +44,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private PreOvertimeReflectService preOvertimeReflect;
 	@Inject
 	private AfterOvertimeReflectService afterOvertimeReflect;
+	@Inject
+	private AbsenceReflectService absenceReflect;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
 		CommonCheckParameter paraTemp = new CommonCheckParameter(EnumAdaptor.valueOf(para.getDegressAtr().value, DegreeReflectionAtr.class),
@@ -123,6 +130,21 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isScheTimeOutFlg(),
 				appOver);
 		return overtimePara;
+	}
+
+	@Override
+	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre) {
+		AbsenceReflectParameter absencePara = new AbsenceReflectParameter(param.getEmployeeId(), 
+				param.getBaseDate(), 
+				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class), 
+				param.isScheTimeReflectAtr(), 
+				param.getWorkTypeCode(), 
+				EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class), 
+				EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class)); 
+		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(absencePara, isPre);
+		AppReflectPubOutput dataOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedStatePubRecord.class), 
+				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return dataOutput;
 	}
 
 }

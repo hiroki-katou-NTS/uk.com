@@ -748,6 +748,51 @@ module cmm045.a.viewmodel {
             }
         }
         /**
+         * 振休振出申請
+         * kaf011 - appType = 10
+         * TO DO
+         */
+        formatComplementLeave(){
+            
+        }
+        //※振出申請のみ同期なし・紐付けなし
+        //申請/承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertA(){
+            
+        }
+        //※振休申請のみ同期なし・紐付けなし
+        //申請/承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertB(){
+            
+        }
+        //※振休振出申請　同期（あり/なし）・紐付けあり
+        //申請モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)表示（２段）
+        convertC(){
+            
+        }
+        //※振休振出申請　同期あり・紐付けあり
+        //承認モード
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        //※同じ承認状態
+        convertD(){
+            
+        }
+        //※振休振出申請　同期なし・紐付けあり
+        //承認モード（振出の場合）
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertE(){
+            
+        }
+        //※振休振出申請　同期なし・紐付けあり
+        //承認モード（振休の場合）
+        //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
+        convertF(){
+            
+        }
+        /**
          * map data -> fill in grid list
          */
         mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,

@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.ctx.sys.auth.dom.user.MailAddress;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 
@@ -74,6 +75,7 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 			if (user.isPresent()) {
 				if (user.get().isDefaultUser() == true) {
 					user.get().setExpirationDate(command.getEndValidPeriod());
+ 					userRepo.update(user.get());
 				}
 			}
 		}

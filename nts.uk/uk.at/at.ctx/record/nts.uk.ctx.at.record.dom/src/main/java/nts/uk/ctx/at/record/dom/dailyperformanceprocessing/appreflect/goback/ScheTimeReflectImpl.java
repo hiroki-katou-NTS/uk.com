@@ -45,8 +45,8 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private WorkTimeIsFluidWork workTimeisFluidWork;
-	@Inject
-	private WorkTimezoneLateEarlySetGetMemento workMemento;
+	/*@Inject
+	private WorkTimezoneLateEarlySetGetMemento workMemento;*/
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
 		//予定時刻反映できるかチェックする
@@ -169,7 +169,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return;
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
-			tmpWorkTimeCode = workData.getRecordWorkInformation().getWorkTimeCode().v();
+			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
 		if(this.checkAttendenceReflect(para, 1, true)) {
@@ -270,7 +270,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		
 		//時間丁度の打刻は遅刻・早退とするをチェックする
 		WorkTimeSetting workTimeData = findByCode.get();
-		//TODO can xem lai
+		/*//TODO can xem lai
 		List<OtherEmTimezoneLateEarlySet> lstEmTimezon = workMemento.getOtherClassSet();
 		OtherEmTimezoneLateEarlySet emTimezon;
 		if(isPre) {
@@ -289,7 +289,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return timeData + 1;
 			}
 
-		}
+		}*/
 		return timeData;
 	}
 	@Override

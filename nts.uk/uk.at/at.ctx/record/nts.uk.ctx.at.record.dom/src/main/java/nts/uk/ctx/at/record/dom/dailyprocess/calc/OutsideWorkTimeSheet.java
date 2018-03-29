@@ -18,8 +18,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
@@ -154,7 +154,7 @@ public class OutsideWorkTimeSheet {
 	public void calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeSheet> overTimeWorkSheet,
 			Optional<HolidayWorkTimeSheet> holidayWorkSheet,
 			AutoCalOvertimeSetting autoCalculationOfOverTimeWork,
-			AutoCalcSetOfHolidayWorkTime autoCalcSetOfHolidayWorkTime) {
+			AutoCalRestTimeSetting autoCalcSetOfHolidayWorkTime) {
 		Optional<OverTimeSheet> overTimeWork = Optional.empty();
 		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
 		if (overTimeWorkSheet.isPresent()) {

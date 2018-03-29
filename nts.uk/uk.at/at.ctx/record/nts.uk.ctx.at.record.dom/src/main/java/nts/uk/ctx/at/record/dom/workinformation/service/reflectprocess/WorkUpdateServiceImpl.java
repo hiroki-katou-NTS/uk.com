@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
@@ -59,12 +58,12 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		if(scheUpdate) {
 			lstItem.add(1);
 			lstItem.add(2);
-			dailyPerfor.setScheduleWorkInformation(workInfor);
+			dailyPerfor.setScheduleInfo(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
 			lstItem.add(29);
-			dailyPerfor.setRecordWorkInformation(workInfor);
+			dailyPerfor.setRecordInfo(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		
@@ -439,6 +438,23 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 		
+	}
+	@Override
+	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate) {
+		//日別実績の勤務情報
+		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(employeeId, dateData).get();
+		List<Integer> lstItem = new ArrayList<>();
+		if(scheUpdate) {
+			lstItem.add(1);
+			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			workRepository.updateByKeyFlush(dailyPerfor);
+		} else {
+			lstItem.add(28);
+			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));
+			workRepository.updateByKeyFlush(dailyPerfor);
+		}
+		//日別実績の編集状態
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 	}
 
 

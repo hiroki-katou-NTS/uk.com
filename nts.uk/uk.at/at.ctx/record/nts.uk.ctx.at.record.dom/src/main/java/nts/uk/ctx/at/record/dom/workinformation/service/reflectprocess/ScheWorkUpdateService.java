@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  */
 public interface ScheWorkUpdateService {
 	/**
-	 * 予定勤種・就時の反映
+	 * 勤種・就時の反映
 	 * @param para
 	 * scheUpdate: true: 予定勤種就時を反映, false: 勤種就時を反映
 	 */
@@ -55,5 +55,13 @@ public interface ScheWorkUpdateService {
 	 * @param flexTime
 	 */
 	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre);
+	/**
+	 * 勤務種類
+	 * @param employeeId
+	 * @param dateData
+	 * @param workTypeCode
+	 * @param scheUpdate true: 予定勤務種類, false: 勤務種類
+	 */
+	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate);
 
 }
