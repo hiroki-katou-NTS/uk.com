@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf000.b.service {
         getAppDataDate: "at/request/application/getAppDataByDate",
         getAppByID: "at/request/application/getAppInfoByAppID",
         holidayShipmentRemove: "at/request/application/holidayshipment/remove",
+        holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
     }
 
     export function getAppDataDate(command): JQueryPromise<any> {
@@ -42,7 +43,9 @@ module nts.uk.at.view.kaf000.b.service {
     /**
     * cancel application
     */
-    export function cancelApp(command): JQueryPromise<any> {
+    export function cancelApp(command, appType): JQueryPromise<any> {
+
+        let deleteUrl = appType != 10 ? paths.cancelApp : paths.holidayShipmentCancel;
         return nts.uk.request.ajax("at", paths.cancelApp, command);
     }
 
