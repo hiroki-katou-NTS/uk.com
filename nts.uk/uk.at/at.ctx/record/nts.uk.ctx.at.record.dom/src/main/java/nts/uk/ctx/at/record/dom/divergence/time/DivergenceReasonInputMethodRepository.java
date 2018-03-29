@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface DivergenceReasonInputMethodRepository.
@@ -22,7 +23,7 @@ public interface DivergenceReasonInputMethodRepository {
 	 * @param divTimeNo the div time no
 	 * @return the div time info
 	 */
-	DivergenceReasonInputMethod getDivTimeInfo(String companyId, int divTimeNo);
+	Optional<DivergenceReasonInputMethod> getDivTimeInfo(String companyId, int divTimeNo);
 
 	/**
 	 * Update.

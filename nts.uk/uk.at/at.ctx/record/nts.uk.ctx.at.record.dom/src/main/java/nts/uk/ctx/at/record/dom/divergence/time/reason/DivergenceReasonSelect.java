@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
+
+/**
+ * The Class DivergenceReasonSelect.
+ */
+//乖離理由の選択肢
 @Getter
 @Setter
 @AllArgsConstructor

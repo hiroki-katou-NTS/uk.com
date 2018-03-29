@@ -149,7 +149,7 @@ public class ErAlWorkRecordCheckService {
 		if (workInfos.isEmpty()) { return; }
 		
 		for (WorkInfoOfDailyPerformance info : workInfos) {
-			WorkTypeCode currentWTC = info.getRecordWorkInformation().getWorkTypeCode();
+			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
 			if (setting.getTargetWorkType().contains(currentWTC)) {
 				if (markPreviousDate) {
 					markDate = info.getYmd();

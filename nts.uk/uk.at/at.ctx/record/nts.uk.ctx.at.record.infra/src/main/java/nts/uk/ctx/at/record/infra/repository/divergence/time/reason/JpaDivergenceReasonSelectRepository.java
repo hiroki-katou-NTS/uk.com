@@ -144,7 +144,7 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 		KrcstDvgcReason entity = new KrcstDvgcReason();
 
 		// convert domain to Entity
-		domain.saveToMemento(new JpaDivergenceReasonSelectRepositorySetMemento(entity));
+		domain.saveToMemento(new JpaDivergenceReasonSelectSetMemento(entity));
 
 		// Set DivergenceTimeNo
 		entity.getId().setNo(divTimeNo);
@@ -166,7 +166,7 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 	private DivergenceReasonSelect toDomain(KrcstDvgcReason entity) {
 
 		// convert Enyity to domain
-		DivergenceReasonSelectGetMemento memento = new JpaDivergenceReasonSelectRepositoryGetMemento(entity);
+		DivergenceReasonSelectGetMemento memento = new JpaDivergenceReasonSelectGetMemento(entity);
 
 		return new DivergenceReasonSelect(memento);
 
