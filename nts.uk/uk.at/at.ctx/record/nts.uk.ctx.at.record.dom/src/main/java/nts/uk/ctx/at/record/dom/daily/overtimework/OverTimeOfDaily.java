@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.overtimework;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,14 +10,16 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
@@ -39,6 +42,8 @@ import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -52,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -79,7 +85,7 @@ public class OverTimeOfDaily {
 	private AttendanceTime irregularWithinPrescribedOverTimeWork = new AttendanceTime(0);
 	//フレックス時間
 	@Setter
-	private FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
+	private FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 	
 	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, List<OverTimeFrameTime> frameTimeList
 							   ,Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime) {
@@ -134,7 +140,7 @@ public class OverTimeOfDaily {
 	 * 残業時間が含んでいる加給時間の計算
 	 * @return 加給時間リスト
 	 */
-	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
+	public List<BonusPayTime> calcBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 //		for(OverTimeFrameTimeSheetWork frameTimeSheet : overTimeWorkFrameTimeSheet) {
 //			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
@@ -146,7 +152,7 @@ public class OverTimeOfDaily {
 	 * 残業時間が含んでいる特定日加給時間の計算
 	 * @return 加給時間リスト
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
+	public List<BonusPayTime> calcSpecifiedBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 //		for(OverTimeFrameTimeSheetWork frameTimeSheet : overTimeWorkFrameTimeSheet) {
 //			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
@@ -173,7 +179,7 @@ public class OverTimeOfDaily {
 //			}
 //			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
 //		}
-		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
+		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(totalTime)));
 	}
 	
 	/**
@@ -295,7 +301,7 @@ public class OverTimeOfDaily {
 		//変形法定内残業時間計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
-		FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
+		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		//フレ時間の計算に挑戦
 		if(workTimeDailyAtr.isFlex() && withinWorkTimeSheetList != null) {
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
@@ -332,13 +338,54 @@ public class OverTimeOfDaily {
 	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet) {
 		
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
-		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(calcTime));
+		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 	}
 	
 	/**
-	 * 残業時間実績超過
+	 * 残業時間超過のチェック&エラーゲット 
 	 */
-	public void overRecord() {
-		
+	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+//		returnErrorList.addAll(this.getOverTimeWorkFrameTime().stream()
+//									   						  .filter(tc -> tc.isOverLimitDivergenceTime())
+//									   						  .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
+//									   						  .collect(Collectors.toList()));
+		return returnErrorList;
+	}
+	
+	/**
+	 * 事前残業申請超過のチェック&エラーゲット 
+	 */
+	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+//		returnErrorList.addAll(this.getOverTimeWorkFrameTime().stream()
+//									   						  .filter(tc -> tc.isPreOverLimitDivergenceTime())
+//									   						  .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
+//									   						  .collect(Collectors.toList()));
+		return returnErrorList;
+	}
+	
+	/**
+	 *　フレ超過のチェック＆エラーゲット 
+	 * @return
+	 */
+	public List<EmployeeDailyPerError> checkFlexTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		return (this.getFlexTime().calcOverLimitDivergenceTime() > 0)?Collections.emptyList():Collections.emptyList();
+	}
+	
+	/**
+	 *　事前フレ申請超過のチェック＆エラーゲット 
+	 * @return
+	 */
+	public List<EmployeeDailyPerError> checkPreFlexTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		return (this.getFlexTime().calcPreOverLimitDivergenceTime() > 0)?Collections.emptyList():Collections.emptyList();
 	}
 }

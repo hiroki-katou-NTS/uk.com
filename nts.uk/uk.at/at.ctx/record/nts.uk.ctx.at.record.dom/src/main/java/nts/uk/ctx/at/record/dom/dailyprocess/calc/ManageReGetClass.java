@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -23,6 +24,7 @@ public class ManageReGetClass {
 	CalculationRangeOfOneDay calculationRangeOfOneDay;
 	
 	//日別実績(WORK)
+	@Setter
 	IntegrationOfDaily integrationOfDaily;
 	
 	//就業時間帯設定

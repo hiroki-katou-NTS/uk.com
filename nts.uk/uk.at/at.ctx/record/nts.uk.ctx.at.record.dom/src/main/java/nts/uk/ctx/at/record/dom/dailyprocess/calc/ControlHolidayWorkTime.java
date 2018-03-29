@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 
@@ -25,9 +26,9 @@ public class ControlHolidayWorkTime {
 		for(int holidayWorkNo = 0 ; holidayWorkNo < holidayWorkFrame.size() ; holidayWorkNo++) {
 			HolidayWorkFrameTime a  = returnList.get(holidayWorkFrame.get(holidayWorkNo).getHolidayFrameNo().v().intValue());
 			
-			TimeWithCalculation ove_a = TimeWithCalculation.createTimeWithCalculation(a.getHolidayWorkTime().get().getTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().get().getTime().valueAsMinutes())
+			TimeDivergenceWithCalculation ove_a = TimeDivergenceWithCalculation.createTimeWithCalculation(a.getHolidayWorkTime().get().getTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().get().getTime().valueAsMinutes())
 															  						 ,a.getHolidayWorkTime().get().getCalcTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getHolidayWorkTime().get().getCalcTime().valueAsMinutes()));
-			TimeWithCalculation tran_a = TimeWithCalculation.createTimeWithCalculation(a.getTransferTime().get().getTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getTransferTime().get().getTime().valueAsMinutes())
+			TimeDivergenceWithCalculation tran_a = TimeDivergenceWithCalculation.createTimeWithCalculation(a.getTransferTime().get().getTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getTransferTime().get().getTime().valueAsMinutes())
 																					 ,a.getTransferTime().get().getCalcTime().addMinutes(holidayWorkFrame.get(holidayWorkNo).getTransferTime().get().getCalcTime().valueAsMinutes()));
 			
 			

@@ -19,9 +19,9 @@
 	padding-left: 15px !important;
 }
 
-.nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker{
-	width: 85px;
-}
+/* .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker{ */
+/* 	width: 85px; */
+/* } */
 
 #fixed-table{
     overflow-y: scroll

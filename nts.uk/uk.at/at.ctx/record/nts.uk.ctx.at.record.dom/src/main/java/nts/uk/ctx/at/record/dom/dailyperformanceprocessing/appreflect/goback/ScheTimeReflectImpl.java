@@ -127,7 +127,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return;
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
-			tmpWorkTimeCode = workData.getRecordWorkInformation().getWorkTimeCode().v();
+			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
 		if(this.checkAttendenceReflect(para, 1, true)) {

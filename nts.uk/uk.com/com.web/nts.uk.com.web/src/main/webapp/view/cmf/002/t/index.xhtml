@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 600,
+					height : 410
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="cmf002.t.style.css" />
+			<com:scriptfile path="cmf002.t.vm.js" />
+			<com:scriptfile path="cmf002.t.start.js" />
+			<com:scriptfile path="cmf002.t.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<div class="title_content">
+					<!-- T1ユーザ設定の複写 -->
+						<div class="title_content_left">#{i18n.getText('CMF002_250')}</div>
+					</div>
+					
+					<div class="content_center">
+						<table id="table_content">
+						<!-- row1 -->
+							<tr>
+								<!-- T2コピー元情報： -->
+								<td>
+									<div class="label_top">#{i18n.getText('CMF002_253')}</div>
+								</td>
+								<td class="td_left">
+									<!-- T2_1コード/名称 -->
+									<div style="border-color: #00B050" data-bind="ntsFormLabel: {required: true }" class="form-label enable">
+										<label>#{i18n.getText('CMF002_254')}</label>
+									</div>
+								</td>
+								<!-- T2_2条件設定名 -->
+								<td class="td_center"><div class="lable"><label data-bind="text: conditionCode"></label></div></td>
+								<td class="td_right"><div class="lable"><label data-bind="text: conditionName"></label></div></td>
+							</tr>
+							<!-- row2 -->
+							<tr>
+								<!-- T3コピー先情報： -->
+								<td>
+									<div class="label_top">#{i18n.getText('CMF002_255')}</div>
+								</td>
+								<!-- T3_1条件コード/名称 -->
+								<td class="td_left">
+									<div data-bind="ntsFormLabel: {required: true }" class="form-label enable" >
+										<label>#{i18n.getText('CMF002_254')}</label>
+									</div>
+								</td>	
+								<!-- T3_2コード -->
+								<td><input class="td_center_sp" id="M4" tabindex="1" data-bind="ntsTextEditor: {value: newCondCode, 
+																					name: '#[CMF002_256]',
+																					required: true}" /></td>
+								<!-- T3_3名称 -->
+								<td class="td_right"><input tabindex="2" data-bind="ntsTextEditor: {value: newCondName, 
+																					name: '#[CMF002_257]',
+																					required: true}" /></td>
+							</tr>
+						</table>
+						<!-- T4上書きチェック -->
+						<div class="checkbox_bottom" tabindex="3" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF002_258')}',  style: 'warnpanel'}"></div>
+					</div>
+				</div>
+			</div>
+ 			<div id="functions-area-bottom">
+ 				<!-- T20_1実行-->
+				<button class="x-large" tabindex="4" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_259')}</button>
+				<!-- T20_2キャンセル  -->
+				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF002_260')}</button>
+			</div> 
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

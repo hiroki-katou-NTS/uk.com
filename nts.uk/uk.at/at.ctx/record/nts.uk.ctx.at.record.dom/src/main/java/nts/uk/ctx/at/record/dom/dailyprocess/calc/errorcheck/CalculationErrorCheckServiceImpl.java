@@ -28,8 +28,9 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		for(ErrorAlarmWorkRecord errorItem : errorItemList) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
-			//val addItem = (errorItem.getFixedAtr())?/*システム固定エラーチェック*/:/*ユーザエラーチェック(Tinさんの処理呼ぶ)*/;
-			//integrationOfDaily.getEmployeeError().add(addItem);
+//			val addItem = (errorItem.getFixedAtr())?/*システム固定エラーチェック*/:/*ユーザエラーチェック(Tinさんの処理呼ぶ)*/;
+//			if(addItem.isPresent())
+//				integrationOfDaily.getEmployeeError().add(addItem.get());
 		}
 		return integrationOfDaily;
 	}
