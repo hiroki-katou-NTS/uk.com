@@ -21,21 +21,24 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }" tabindex="1">#{i18n.getText('KMK011_48')}</a>
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }"
+					tabindex="1">#{i18n.getText('KMK011_48')}</a>
 
 				<!--B1_2: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration,enable:enableState"
-					tabindex="2">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: Registration,enable:enableState" tabindex="2">#{i18n.getText('KMK011_3')}</button>
 			</div>
 
-			<div id="content-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
-					<div class="cf">
-						<div style="float: left">
-				<table tabindex="3" id="single-list-dataSource"
-								data-bind="ntsGridList:{
+			<div class="contents-area fixed-flex-layout"
+				style="padding-top: 50px; padding-left: 50px;">
+				<div id="content-area ">
+					<div id="left-content"
+						class="bg-green caret-right caret-background fixed-flex-layout-left">
+						<div class="cf">
+							<div style="float: left">
+								<table tabindex="3" id="single-list-dataSource"
+									data-bind="ntsGridList:{
 									width: 350,
 									height: 255,
 									options: dataSource,
@@ -43,153 +46,155 @@
 									columns: columns,
 									multiple: false,
 									value: currentCode,
-									enable: true}" >
-							</table>
+									enable: true}">
+								</table>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div id="right-content">
-					<table>
-						<colgroup>
-							<col width="135px" />
-							<col width="*" />
-						</colgroup>
+					<div id="right-content" class="fixed-flex-layout-right">
+						<table>
+							<colgroup>
+								<col width="135px" />
+								<col width="*" />
+							</colgroup>
 
-						<tr class="row">
-							<td>
-								<!-- B3_1 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_6')}</div>
-							</td>
-							<td>
-								<!-- B3_2: Setting Use -->
-								<div tabindex="4" style="padding-left: 5px"
-									data-bind="ntsSwitchButton: {
+							<tr class="row">
+								<td>
+									<!-- B3_1 -->
+									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_6')}</div>
+								</td>
+								<td>
+									<!-- B3_2: Setting Use -->
+									<div tabindex="4" style="padding-left: 5px"
+										data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectUse,
 									enable: enableState }">
-								</div>
-							</td>
-						</tr>
-						<tr class="row">
-							<td>
-								<!--B4_1 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_7')}</div>
-							</td>
-							<td style="padding-left: 5px">
-								<!-- B4_2: Divergence Time Name --> <span
-								data-bind="text:divergenceTypeName"></span>
-							</td>
-						</tr>
-						<tr class="row">
-							<td>
-								<!--B3_3 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_9')}</div>
-							</td>
-							<td style="padding-left: 5px">
-								<!-- B3_4: Divergence Time Name --> <input tabindex="5"
-								class="nts-input" id="itemname"
-								data-bind="ntsTextEditor:{
+									</div>
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!--B4_1 -->
+									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_7')}</div>
+								</td>
+								<td style="padding-left: 5px">
+									<!-- B4_2: Divergence Time Name --> <span
+									data-bind="text:divergenceTypeName"></span>
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!--B3_3 -->
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_9')}</div>
+								</td>
+								<td style="padding-left: 5px">
+									<!-- B3_4: Divergence Time Name --> <input tabindex="5"
+									class="nts-input" id="itemname"
+									data-bind="ntsTextEditor:{
 										name: '#[KMK011_30]',
                                          value: divTimeName,
                                          required: true,
                                          constraint: 'DivergenceTimeName',
                                          enable: enableUse,
-                                         option: {width: '180px'}}" 
-                                 />
-							</td>
-						</tr>
-						<tr class="row">
-							<td>
-								<!-- B3_5 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
-							</td>
-							<td style="padding-left: 5px">
-								<!-- B3_6 Open dialog 021-->
-								<button tabindex="6"
-									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
-								<!-- B3_7: Time item name --> <input class="nts-input"
-								id="inpName" style="width: 300px"
-								data-bind="ntsTextEditor:{
+                                         option: {width: '180px'}}" />
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- B3_5 -->
+									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
+								</td>
+								<td style="padding-left: 5px">
+									<!-- B3_6 Open dialog 021-->
+									<button tabindex="6"
+										data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
+									<!-- B3_7: Time item name --> <input class="nts-input"
+									id="inpName" style="width: 300px"
+									data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: timeItemName,
 										required: enableUse,
 										readonly: true,
 										enable: enableUse}" />
-							</td>
-						</tr>
-					</table>
+								</td>
+							</tr>
+						</table>
 						<hr></hr>
-					<table>
-						<colgroup>
-							<col width="135px" />
-							<col width="*" />
-						</colgroup>
-						<tr class="row">
-							<td>
-								<!-- B3_12: Label -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_14')}</div>
-							</td>
-							<td>
-								<!-- B3_13: Set use select -->
-								<div tabindex="7" id="inpUseSet" style="padding-left: 5px"
-									data-bind="ntsSwitchButton: {
+						<table>
+							<colgroup>
+								<col width="135px" />
+								<col width="*" />
+							</colgroup>
+							<tr class="row">
+								<td>
+									<!-- B3_12: Label -->
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_14')}</div>
+								</td>
+								<td>
+									<!-- B3_13: Set use select -->
+									<div tabindex="7" id="inpUseSet" style="padding-left: 5px"
+										data-bind="ntsSwitchButton: {
 									options: useSetBool,
 									optionsValue: 'isUse',
 									optionsText: 'name',
 									value: selectSelect,
 									enable: enableUse }">
-								</div> <!-- B3_14: Open Dialog Divergence Reason -->
-								<button tabindex="8" class="nts-validate" id="inpDialog"
-									data-bind="click: openCDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
-									<!-- B3_19 || B3_20 -->
-										<span style="color:red;margin-left:10px;" data-bind="visible:existedDivergenceReason">#{i18n.getText('KMK011_35')} </span>
-										<span style="color:red;margin-left:10px;" data-bind="visible: !existedDivergenceReason() ">#{i18n.getText('KMK011_34')}</span>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<!-- B3_15: Check error(select) -->
-								<div tabindex="9" style="margin-bottom: 10px"
-									data-bind="ntsCheckBox:{
+									</div> <!-- B3_14: Open Dialog Divergence Reason -->
+									<button tabindex="8" class="nts-validate" id="inpDialog"
+										data-bind="click: openCDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
+									<!-- B3_19 || B3_20 --> <span
+									style="color: red; margin-left: 10px;"
+									data-bind="visible:existedDivergenceReason">#{i18n.getText('KMK011_35')}
+								</span> <span style="color: red; margin-left: 10px;"
+									data-bind="visible: !existedDivergenceReason() ">#{i18n.getText('KMK011_34')}</span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<!-- B3_15: Check error(select) -->
+									<div tabindex="9" style="margin-bottom: 10px"
+										data-bind="ntsCheckBox:{
 									checked: checkErrorSelect,
 									 enable: enableSelect,
 									  text: '#{i18n.getText('KMK011_16')}'}">
-								</div>
-							</td>
-						</tr>
-						<tr class="row">
-							<td>
-								<!-- B3_16: Label -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_17')}</div>
-							</td>
-							<td>
-								<!-- B3_17: Set use input -->
-								<div tabindex="10" style="padding-left: 5px"
-									data-bind="ntsSwitchButton: {
+									</div>
+								</td>
+							</tr>
+							<tr class="row">
+								<td>
+									<!-- B3_16: Label -->
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_17')}</div>
+								</td>
+								<td>
+									<!-- B3_17: Set use input -->
+									<div tabindex="10" style="padding-left: 5px"
+										data-bind="ntsSwitchButton: {
 									options: useSetBool,
 									optionsValue: 'isUse',
 									optionsText: 'name',
 									value: selectInput,
 									enable: enableUse }">
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<!-- A3_18: Check err (input) -->
-								<div tabindex="11"
-									data-bind="ntsCheckBox:{
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<!-- A3_18: Check err (input) -->
+									<div tabindex="11"
+										data-bind="ntsCheckBox:{
 									checked: checkErrorInput,
 									 enable: enableInput,
 									  text: '#{i18n.getText('KMK011_18')}'}">
-								</div>
-							</td>
-						</tr>
-					</table>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
 		</ui:define>
