@@ -207,6 +207,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
             nts.uk.ui.errors.clearAll();
 
             let self = this;
+
+            for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
+                self.codeConvertData().cdConvertDetails()[i].convertCd(self.codeConvertData().convertCd());
+            }
+
             let currentAcceptCodeConvert = self.codeConvertData;
 
             //新規モードか更新モードを判別する
