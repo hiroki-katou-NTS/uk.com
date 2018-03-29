@@ -85,7 +85,6 @@ module nts.uk.com.view.cps001.i.vm {
             self.currentValue.subscribe(value => {
                 if (value) {
                     let currentRow: ISpecialLeaveRemaining = _.find(ko.toJS(self.listData), function(item: any) { return item.grantDate == value });
-                    debugger;
                     service.getDetail(currentRow.specialid).done((result: ISpecialLeaveRemaining) => {
                         if (result) {
                             self.bindingData(result);
@@ -190,6 +189,11 @@ module nts.uk.com.view.cps001.i.vm {
 
         bindingData(result: ISpecialLeaveRemaining): void {
             let self = this;
+            
+            self.dateGrantInp(result.grantDate);
+            self.deadlineDateInp(result.deadlineDate);
+            
+             // detail of grant
             self.dayNumberOfGrants(result.numberDayGrant);
             self.grantTime(result.timeGrant);
 
@@ -213,11 +217,7 @@ module nts.uk.com.view.cps001.i.vm {
         }
 
         formatEnum(value : number) {
-            if (value && value === 0) {
-                return '使用可能';
-            } else if (value && value === 1) {
-                return '期限切れ';
-            }
+           return  value == 0 ? '使用可能' : '期限切れ';
         }
 
 

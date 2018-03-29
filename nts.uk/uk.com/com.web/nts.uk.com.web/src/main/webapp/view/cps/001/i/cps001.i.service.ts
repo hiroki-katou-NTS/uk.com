@@ -14,7 +14,7 @@ module nts.uk.com.view.cps001.i.service {
     }
     
     export function getDetail(specialid: any) {
-         return ajax('at', format(paths.getDetails, specialid));
+         return ajax('at', format(paths.getDetail, specialid));
     }
 
     export function saveData(command: any) {
