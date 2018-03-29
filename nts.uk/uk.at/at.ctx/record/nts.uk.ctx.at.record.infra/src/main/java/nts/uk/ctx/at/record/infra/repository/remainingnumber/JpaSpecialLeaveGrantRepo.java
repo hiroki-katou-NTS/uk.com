@@ -31,7 +31,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				.setParameter("specialLeaCode", specialCode).getList();
 
 		return entities.stream()
-				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.key.specialLeaID, x.employeeId,
+				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.key.specialLeaID,x.cId, x.employeeId,
 						x.specialLeaCode, x.grantDate, x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant,
 						x.timeGrant, x.numberDayUse, x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver,
 						x.numberDayRemain, x.timeRemain))
@@ -79,7 +79,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	private void updateDetail(KrcmtSpecialLeaveReam entity, SpecialLeaveGrantRemainingData data) {
 		entity.employeeId = data.getEmployeeId();
 		entity.specialLeaCode = data.getSpecialLeaveCode().v();
-
+		
 		entity.grantDate = data.getGrantDate();
 		entity.deadlineDate = data.getDeadlineDate();
 		entity.expStatus = data.getExpirationStatus().value;
@@ -118,7 +118,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private SpecialLeaveGrantRemainingData toDomain(KrcmtSpecialLeaveReam e) {
 		// TODO Auto-generated method stub
-		return SpecialLeaveGrantRemainingData.createFromJavaType(e.key.specialLeaID, e.employeeId, e.specialLeaCode,
+		return SpecialLeaveGrantRemainingData.createFromJavaType(e.key.specialLeaID,e.cId, e.employeeId, e.specialLeaCode,
 				e.grantDate, e.deadlineDate, e.expStatus, e.registerType, e.numberDayGrant, e.timeGrant, e.numberDayUse,
 				e.timeUse, e.useSavingDays, e.numberOverDays, e.timeOver, e.numberDayRemain, e.timeRemain);
 	}
@@ -131,7 +131,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				.setParameter("expStatus", expirationStatus? 1:0).getList();
 
 		return entities.stream()
-				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.key.specialLeaID,x.employeeId, x.specialLeaCode, x.grantDate,
+				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.key.specialLeaID,x.cId,x.employeeId, x.specialLeaCode, x.grantDate,
 						x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant, x.timeGrant, x.numberDayUse,
 						x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver, x.numberDayRemain,
 						x.timeRemain))

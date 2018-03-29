@@ -27,7 +27,7 @@ public class AddSpecialLeaCommandHandler extends AsyncCommandHandler<SpecialLeav
 			throw new BusinessException("Msg_1023");
 		}
 		
-		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, command.getSid(), 
+		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(specialId,command.getCid(), command.getSid(), 
 				command.getSpecialLeaCode(), command.getGrantDate(), 
 				command.getDeadlineDate(), command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(), command.getTimeGrant(), 

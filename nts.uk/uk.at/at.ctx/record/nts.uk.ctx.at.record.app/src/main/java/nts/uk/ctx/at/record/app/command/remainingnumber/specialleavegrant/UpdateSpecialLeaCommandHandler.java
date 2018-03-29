@@ -19,13 +19,14 @@ public class UpdateSpecialLeaCommandHandler extends AsyncCommandHandler<SpecialL
 	@Override
 	protected void handle(CommandHandlerContext<SpecialLeaveRemainCommand> context) {
 		SpecialLeaveRemainCommand command = context.getCommand();
+	
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
 			throw new BusinessException("Msg_1023");
 		}
 
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
-				command.getSpecialid(),command.getSid(), command.getSpecialLeaCode(),
+				command.getSpecialid(),command.getCid() ,command.getSid(), command.getSpecialLeaCode(),
 				command.getGrantDate(), command.getDeadlineDate(),
 				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(),command.getTimeGrant(), 

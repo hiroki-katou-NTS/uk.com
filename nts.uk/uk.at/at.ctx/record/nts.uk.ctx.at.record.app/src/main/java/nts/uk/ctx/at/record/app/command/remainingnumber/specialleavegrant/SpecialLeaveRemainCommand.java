@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 public class SpecialLeaveRemainCommand {
 
 	private String specialid;
+	private String cid;
 	private String sid;
 	private int specialLeaCode;
 	private GeneralDate grantDate;
