@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStat
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempFinder;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
@@ -28,7 +29,7 @@ public class ApprovalStatusMailTempWebservice extends WebService {
 	public ApprovalStatusMailTempDto getMail(@PathParam("mailType") int mailType) {
 		return approvalMailTempFinder.findByType(mailType);
 	}
-	
+
 	@POST
 	@Path("getMailBySetting")
 	public List<ApprovalStatusMailTempDto> findBySetting() {
@@ -39,5 +40,17 @@ public class ApprovalStatusMailTempWebservice extends WebService {
 	@Path("registerMail")
 	public void registerMail(List<ApprovalStatusMailTempCommand> command) {
 		registerApprovalStatusMailTempCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("getEmpMail")
+	public EmployeeEmailDto getEmpMail() {
+		return approvalMailTempFinder.findEmpMailAddr();
+	}
+	
+	@POST
+	@Path("sendTestMail/{mailType}")
+	public boolean sendTestMail(@PathParam("mailType") int mailType) {
+		return approvalMailTempFinder.sendTestMail(mailType);
 	}
 }
