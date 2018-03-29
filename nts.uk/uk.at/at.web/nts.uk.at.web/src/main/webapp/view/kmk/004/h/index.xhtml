@@ -50,10 +50,9 @@
 						<td style="width: 120px;" class="padding-bottom">
 							<div id="str-month-txt" class="label">#{i18n.getText('KMK004_79')}</div>
 							<div tabindex="2" style="float: left">
-								<input data-bind="ntsTextEditor: {
+								<input data-bind="ntsNumberEditor: {
 									value: strMonth,
 									option: ko.mapping.fromJS({
-											textmode: 'text',
 											width: '26',
 											textalign: 'left'
 										}),
@@ -66,19 +65,19 @@
 						<td style="width: 240px;" class="padding-bottom">
 							<div id="period-txt" class="label">#{i18n.getText('KMK004_80')}</div>
 							<div tabindex="3" style="float: left">
-								<input data-bind="ntsTextEditor: {
+								<input data-bind="ntsNumberEditor: {
 									value: period,
-									option: ko.mapping.fromJS({
+									option: {
+											width: '60px',
 											unitID: 'MONTHS',
-											textmode: 'text',
-											width: '26',
 											textalign: 'left'
-										}),
+										},
 									required: true,
 									enable: true
 									}" />
 							</div>
-							<div tabindex="4" style="float: right" data-bind="ntsCheckBox: { checked: repeatCls }">#{i18n.getText('KMK004_81')}</div>
+							
+								<div tabindex="4" style="float: right" data-bind="ntsCheckBox: { checked: repeatCls }">#{i18n.getText('KMK004_81')}</div>
 						</td>
 					</tr>
 					
