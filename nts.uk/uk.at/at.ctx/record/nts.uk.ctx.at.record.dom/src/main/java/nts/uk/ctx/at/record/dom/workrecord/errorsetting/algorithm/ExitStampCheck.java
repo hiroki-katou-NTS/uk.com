@@ -35,7 +35,7 @@ public class ExitStampCheck {
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
+				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 			if (attendanceLeavingGateOfDaily != null

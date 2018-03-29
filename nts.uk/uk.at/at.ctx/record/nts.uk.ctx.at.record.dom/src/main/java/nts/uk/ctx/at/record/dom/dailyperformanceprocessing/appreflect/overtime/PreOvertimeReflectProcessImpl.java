@@ -65,8 +65,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//反映前後勤就に変更があるかチェックする
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
-		if(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+		if(!dailyPerfor.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!dailyPerfor.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			 return true;
 		}
 		
@@ -83,8 +83,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//予定開始終了時刻の反映(事前事後共通部分)
 		//WorkTimeTypeOutput timeTypeData = this.getScheWorkTimeType(para.getEmployeeId(), para.getDateInfo());
 		
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getScheduleWorkInformation().getWorkTimeCode() == null ? null : dailyData.getScheduleWorkInformation().getWorkTimeCode().v(),
-				dailyData.getScheduleWorkInformation().getWorkTypeCode() == null ? null : dailyData.getScheduleWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyData.getScheduleInfo().getWorkTimeCode() == null ? null : dailyData.getScheduleInfo().getWorkTimeCode().v(),
+				dailyData.getScheduleInfo().getWorkTypeCode() == null ? null : dailyData.getScheduleInfo().getWorkTypeCode().v());
 		scheStartEndTimeReflect.reflectScheStartEndTime(para, dataOut);
 	}
 	@Override
@@ -119,8 +119,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getScheduleWorkInformation().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleWorkInformation().getWorkTimeCode().v(),
-				dailyPerfor.getScheduleWorkInformation().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getScheduleInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(),
+				dailyPerfor.getScheduleInfo().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTypeCode().v());
 		return dataOut;
 	}
 
@@ -131,8 +131,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordWorkInformation().getWorkTimeCode().v(),
-				dailyPerfor.getRecordWorkInformation().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordInfo().getWorkTimeCode().v(),
+				dailyPerfor.getRecordInfo().getWorkTypeCode().v());
 		return dataOut;
 	}
 
@@ -163,7 +163,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return;
 		}
 		//所定外深夜時間の反映
-		workUpdate.updateBreakNight(employeeId, dateData);
+		workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight);
 	}
 
 	@Override

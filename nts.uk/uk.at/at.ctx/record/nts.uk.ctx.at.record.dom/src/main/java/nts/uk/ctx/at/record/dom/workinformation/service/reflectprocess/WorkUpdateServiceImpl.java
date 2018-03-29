@@ -57,12 +57,12 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		if(scheUpdate) {
 			lstItem.add(1);
 			lstItem.add(2);
-			dailyPerfor.setScheduleWorkInformation(workInfor);
+			dailyPerfor.setScheduleInfo(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
 			lstItem.add(29);
-			dailyPerfor.setRecordWorkInformation(workInfor);
+			dailyPerfor.setRecordInfo(workInfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		
@@ -322,8 +322,6 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = attendanceTimeData.getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();		
 		ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
-		//lam nham khong phair 休出深夜 ma la 法定外残業深夜時間
-		//TODO se lam lai khi co domain nay
 		Optional<HolidayWorkTimeOfDaily> optWorkHolidayTime = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
 		if(!optWorkHolidayTime.isPresent()) {
 			return;
