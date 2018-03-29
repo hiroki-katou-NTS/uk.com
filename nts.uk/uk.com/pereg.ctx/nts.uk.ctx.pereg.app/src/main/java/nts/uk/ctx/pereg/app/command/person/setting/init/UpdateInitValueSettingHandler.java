@@ -48,6 +48,8 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		UpdateInitValueSettingCommand command = context.getCommand();
 
 		Optional<PerInfoInitValueSetting> setting = this.settingRepo.getDetailInitValSetting(command.getSettingId());
+		List<UpdateItemInitValueSettingCommand> itemLst = command.getItemLst().stream().filter( c -> c.getSelectedRuleCode() == 2).collect(Collectors.toList());
+   
 
 		Optional<PerInfoInitValSetCtg> ctgSetting = this.ctgRepo.getDetailInitValSetCtg(command.getSettingId(),
 				command.getPerInfoCtgId());
@@ -316,7 +318,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(2, SaveDataType.class));
 								this.itemRepo.update(itemExist.get());
 
-							} else if (c.getDataType() == 6) {
+							} else if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
 								itemExist.get().setRefMethodType(EnumAdaptor.valueOf(2, ReferenceMethodType.class));
 								itemExist.get().setSaveDataType(EnumAdaptor.valueOf(1, SaveDataType.class));
 								itemExist.get().setStringValue(new StringValue(c.getSelectionId()));
@@ -388,7 +390,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 								item.setIntValue(new IntValue(c.getTime()));
 								this.itemRepo.addItem(item);
 
-							} else if (c.getDataType() == 6) {
+							} else if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
 								// selection
 								item.setSettingId(command.getSettingId());
 								item.setPerInfoCtgId(command.getPerInfoCtgId());
