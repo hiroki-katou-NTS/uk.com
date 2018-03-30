@@ -33,5 +33,10 @@ public class WorkLocationFunAcFinder implements RecordWorkInfoFunAdapter {
 				);
 	}
 
+	@Override
+	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd) {		
+		return recordWorkInfoPub.getWorkTypeCode(employeeId, ymd);
+	}
+
 
 }
