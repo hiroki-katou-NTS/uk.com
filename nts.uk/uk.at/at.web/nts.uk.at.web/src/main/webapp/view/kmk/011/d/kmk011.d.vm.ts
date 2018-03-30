@@ -418,8 +418,11 @@ module nts.uk.at.view.kmk011.d {
             // history mode
             public createMode(): void {
                 let _self = this;
-
+                var histModel : HistModel = _self.histList()[0];
+                var startDate : string = histModel.textDisplay.substr(0,10);
+                nts.uk.ui.windows.setShared('startDateString',startDate);
                 nts.uk.ui.windows.setShared('listHist', _self.histList());
+                
                 //get old HistModel list
                 var oldHistList: HistModel[] = _self.histList();
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
