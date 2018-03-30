@@ -52,7 +52,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
 			+ " WHERE  CTG.abolitionAtr = 0 " + " AND CM.itemType = 2" + " AND ITEM.abolitionAtr = 0 " 
-			+ " AND CM.dataType <> 9 AND CM.dataType <> 10 "
+			+ " AND CM.dataType <> 9 AND CM.dataType <> 10 AND CM.dataType <> 12 "
 			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " ORDER BY E.disporder";
 

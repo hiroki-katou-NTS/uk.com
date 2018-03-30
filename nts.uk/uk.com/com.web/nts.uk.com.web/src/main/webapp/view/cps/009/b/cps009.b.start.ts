@@ -12,10 +12,10 @@ module nts.uk.com.view.cps009.b {
                 columns: [
                     { headerText: '', key: 'perInfoItemDefId', dataType: 'string', width: '50px', hidden: true },
                     { headerText: '', key: 'isRequired', dataType: 'number', width: '50px', hidden: true },
-                    { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
+                    { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox'},
                     { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', dataType: 'string', width: '250px' }
                 ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, tabindex: 2 }],
+                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
                 features: [
                     {
                         name: 'Selection',
@@ -32,20 +32,33 @@ module nts.uk.com.view.cps009.b {
                 }]
             });
             __viewContext.bind(__viewContext["viewModel"]);
-
+            
+            $( document ).ready(function() {
+                $('span.box').attr("tabindex", "2");
+                let beforeIndex = -1;
+                $(window).keyup((e) => {
+    
+                    if (e.which === 9) {
+    
+                        let tabindex = e.target.attributes.tabindex ? e.target.attributes.getNamedItem("tabindex").value : e.target.attributes.getNamedItem("tab-index").value;
+                        if (beforeIndex == 6) {
+                            $("span.box").focus();
+                        }
+                        beforeIndex = parseInt(tabindex);
+    
+                    }
+    
+                });
+            });
+            
         });
 
     });
 }
 
-$(document).delegate("#grid0", "iggridrowsrendered", function(evt, ui) {
-    if ($("#grid0").data("igGrid") === undefined) {
-        return;
-    }
-    _.each(ui.owner.dataSource.data(), (x, i) => {
-        if (x.itemName == '終了日')  { 
-            $("#grid0").ntsGrid("disableNtsControlAt", x.perInfoItemDefId, "disabled", "CheckBox");
-         }
-    });
-   
-});
+$(document).on("click", "#grid0_disabled > span > div > label > input[type='checkbox']", function(evt, ui) {
+    let itemDisable = _.filter(__viewContext["viewModel"].itemInitLst, { itemName: "終了日" });
+    _.each(itemDisable, function(x) {        $("#grid0").ntsGrid("updateRow", x.perInfoItemDefId, { disabled: false });
+    }); 
+ });
+    
