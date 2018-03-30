@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,8 +69,9 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 		predicateList.add(cb.equal(root.get(KshstEmpRegLaborTime_.kshstEmpRegLaborTimePK).get(KshstEmpRegLaborTimePK_.cid), cid));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return this.toDomain(em.createQuery(cq).getResultList());
+		return this.toDomain(em.createQuery(cq).getResultList());	
 	}
+	
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository#findById(java.lang.String, java.lang.String)
@@ -109,7 +111,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 */
 	private List<EmpRegularLaborTime> toDomain(List<KshstEmpRegLaborTime> entities) {
 		if (entities.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 		return entities.stream().map(entity -> new EmpRegularLaborTime(new JpaEmpRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
 	}
