@@ -46,11 +46,11 @@ public class HolidayShipmentDto {
 	/**
 	 * 振出用勤務種類
 	 */
-	private List<WorkTypeDto> takingOutWkTypes;
+	private List<WorkTypeDto> recWkTypes;
 	/**
 	 * 振休用勤務種類
 	 */
-	private List<WorkTypeDto> holidayWkTypes;
+	private List<WorkTypeDto> absWkTypes;
 	/**
 	 * 申請表示設定
 	 */

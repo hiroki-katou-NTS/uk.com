@@ -230,11 +230,11 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	public List<CaculationTime> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
 			ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations) {
 		
-		CaculationTime overtimeCheckResult = new CaculationTime();
+		
 		List<OvertimeInputCaculation> overtimeCal = new ArrayList<>();
 		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
 			// 打刻あり
-			if(siftCD != recordWorkInfoImport.getWorkTimeCode()){
+			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
 				overtimeCal = overtimeInputCaculations;
 				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
 				overtimeHours = printColor(overtimeHours,overtimeCal);
@@ -251,9 +251,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			// 出勤または退勤打刻なし
 			for(CaculationTime caculationTime : overtimeHours){
 				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() >= 0){
-					overtimeCheckResult.setFrameNo(caculationTime.getFrameNo());
-					overtimeCheckResult.setErrorCode(2);
-					overtimeHours.add(overtimeCheckResult);
+					caculationTime.setErrorCode(2);
 				}
 			}
 		}
@@ -269,7 +267,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
 		}else{
 			// 打刻あり
-			if(siftCD != recordWorkInfoImport.getWorkTimeCode()){
+			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
 				overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
 			}else{
 				List<OvertimeInputCaculation> cals = recordWorkInfoImport.getOvertimeCaculation();

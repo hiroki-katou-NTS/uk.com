@@ -30,10 +30,6 @@ public class RecruitmentApp extends AggregateRoot {
 	 */
 	private String workTypeCD;
 	/**
-	 * 勤務場所コード
-	 */
-	private WorkLocationCD workLocationCD;
-	/**
 	 * 就業時間帯
 	 */
 	private WorkTimeCode workTimeCD;

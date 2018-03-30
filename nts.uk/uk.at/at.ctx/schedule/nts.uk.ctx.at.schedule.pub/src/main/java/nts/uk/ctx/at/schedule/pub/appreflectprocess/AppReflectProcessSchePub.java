@@ -11,6 +11,6 @@ public interface AppReflectProcessSchePub {
 	 * 休暇申請
 	 * @param reflectPara
 	 */
-	public void appForLeaveSche(ApplicationReflectParamScheDto reflectPara);
+	public void appForLeaveSche(AppForLeavePubDto appForleaverPara);
 
 }

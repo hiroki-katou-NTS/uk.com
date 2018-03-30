@@ -55,8 +55,8 @@ module nts.uk.at.view.kaf011.shr {
             appEmploymentSettings: Array<any>;
             approvalFunctionSetting: any;
             refDate: string;
-            takingOutWkTypes: Array<any>;
-            holidayWkTypes: Array<any>;
+            recWkTypes: Array<any>;
+            absWkTypes: Array<any>;
             preOrPostType: any;
             appReasons: Array<any>;
             employeeID: string;
@@ -91,7 +91,8 @@ module nts.uk.at.view.kaf011.shr {
                 }
             }
         }
-        export class WorkItems {
+        export class AppItems {
+            appID: KnockoutObservable<string> = ko.observable('');
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
             wkTypeCD: KnockoutObservable<string> = ko.observable('');
             wkTimeCD: KnockoutObservable<string> = ko.observable('');
@@ -99,7 +100,6 @@ module nts.uk.at.view.kaf011.shr {
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
             appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
-            workLocationCD: KnockoutObservable<string> = ko.observable('');
             changeWorkHoursType: KnockoutObservable<number> = ko.observable(1);
 
             constructor() {
@@ -125,13 +125,48 @@ module nts.uk.at.view.kaf011.shr {
                         });
                     }
                 });
+            }
 
+            parseText(date) {
+                return nts.uk.time.formatDate(new Date(date()), "yyyy/MM/dd");
+            }
+
+            parseTime(value) {
+                return nts.uk.time.parseTime(value, true).format()
+            }
+            genWorkingText(childData: common.IWorkTime) {
+                let self = this,
+                    result = childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName;
+                if (childData.first) {
+                    result += ' ' + self.parseTime(childData.first.start) + '~' + self.parseTime(childData.first.end);
+                    if (childData.second) {
+
+                    }
+                }
+                return result;
+
+            }
+
+
+            openCDialog() {
+                let self = this,
+                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                nts.uk.ui.windows.setShared('KAF_011_PARAMS', {
+                    prePostSelectedCode: vm.appComSelectedCode(),
+                    appReasons: vm.appReasons(),
+                    reason: vm.reason(),
+                    appReasonSelectedID: vm.appReasonSelectedID(),
+                    appDate: self.appDate()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {
+
+                });
 
             }
 
             openKDL003() {
                 let self = this,
-                    vm = __viewContext['viewModel'],
                     workTypeCodes = self.wkTypes(),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
@@ -143,12 +178,13 @@ module nts.uk.at.view.kaf011.shr {
                     selectedWorkTimeCode: WorkTimeCd,
                 }, true);
 
+
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     var childData: IWorkTime = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
-                            self.wkText(vm.genWorkingText(childData));
+                            self.wkText(self.genWorkingText(childData));
                         }
                         self.wkTimeCD(childData.selectedWorkTimeCode);
                         if (childData.first) {
@@ -198,6 +234,7 @@ module nts.uk.at.view.kaf011.shr {
             applicationReason: string;
             prePostAtr: number;
             enteredPersonSID: string;
+            version: number;
         }
         export interface IChangeWorkType {
             timezoneUseDtos: Array<ITimezoneUse>;

@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -100,6 +101,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param yearMonth 年月（度）
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
+	 * @param closureOpt 締め
 	 * @param aggregateAtr 集計区分
 	 * @param aggrSettingMonthly 月別実績集計設定
 	 * @param legalTransferOrderSet 法定内振替順設定
@@ -118,6 +120,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			YearMonth yearMonth,
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
+			Optional<Closure> closureOpt,
 			MonthlyAggregateAtr aggregateAtr,
 			AggrSettingMonthly aggrSettingMonthly,
 			LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet,
@@ -148,7 +151,7 @@ public class RegularAndIrregularTimeOfMonthly {
 				
 				// 処理日の職場コードを取得する
 				String workplaceId = "empty";
-				val affWorkplaceOpt = repositories.getAffWorkplaceAdapter().findBySid(employeeId, procDate);
+				val affWorkplaceOpt = repositories.getAffWorkplace().findBySid(employeeId, procDate);
 				if (affWorkplaceOpt.isPresent()){
 					workplaceId = affWorkplaceOpt.get().getWorkplaceId();
 				}
@@ -173,7 +176,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			}
 			
 			// 週の集計をする日か確認する
-			if (this.isAggregateDayOfWeek(procDate, weekStart, datePeriod)){
+			if (this.isAggregateDayOfWeek(procDate, weekStart, datePeriod, closureOpt)){
 			
 				// 週別実績を集計する
 				this.aggregateOfWeekly(companyId, employeeId, datePeriod, workingSystem, aggregateAtr, procDate,
@@ -200,9 +203,11 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param procYmd 処理日
 	 * @param weekStart 週開始
 	 * @param datePeriod 期間（月別集計用）
+	 * @param closureOpt 締め
 	 * @return true：集計する、false：集計しない
 	 */
-	private boolean isAggregateDayOfWeek(GeneralDate procYmd, WeekStart weekStart, DatePeriod datePeriod){
+	private boolean isAggregateDayOfWeek(GeneralDate procYmd, WeekStart weekStart, DatePeriod datePeriod,
+			Optional<Closure> closureOpt){
 		
 		// 週開始から集計する曜日を求める　（週開始の曜日の前日の曜日が「集計する曜日」）
 		int aggregateWeek = 0;
@@ -231,8 +236,14 @@ public class RegularAndIrregularTimeOfMonthly {
 		case TighteningStartDate:
 			
 			// 締め開始日を取得する
-			//*****（未）　取得方法の確認要。仮に、期間開始日の曜日とする。
-			val closureDate = datePeriod.start();
+			GeneralDate closureDate = datePeriod.start();
+			if (closureOpt.isPresent()){
+				val closure = closureOpt.get();
+				val closurePeriodOpt = closure.getClosurePeriodByYmd(datePeriod.start());
+				if (closurePeriodOpt.isPresent()){
+					closureDate = closurePeriodOpt.get().getPeriod().start();
+				}
+			}
 			
 			// 締め開始日の曜日から集計する曜日を求める
 			aggregateWeek = closureDate.dayOfWeek() - 1;
@@ -642,5 +653,15 @@ public class RegularAndIrregularTimeOfMonthly {
 		}
 		
 		return irregularPeriodCarryforwardsTime;
+	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.weeklyTotalPremiumTime.v() + this.monthlyTotalPremiumTime.v() +
+				this.irregularWorkingTime.getTotalWorkingTargetTime().v());
 	}
 }

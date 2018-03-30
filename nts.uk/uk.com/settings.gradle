@@ -108,3 +108,5 @@ include 'query:nts.uk.query.ws'
 include 'query:nts.uk.query.ac'
 include 'query:nts.uk.query.pub'
 include 'query:nts.uk.query.pubimp'
+
+include 'pub:nts.uk.pub.spr'

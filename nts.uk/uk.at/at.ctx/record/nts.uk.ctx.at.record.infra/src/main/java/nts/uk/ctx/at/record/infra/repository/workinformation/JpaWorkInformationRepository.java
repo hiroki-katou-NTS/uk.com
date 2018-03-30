@@ -1,14 +1,13 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
@@ -28,6 +27,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	private static final String DEL_BY_KEY;
 	
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
+	
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_DESC;
 	
 	private static final String FIND_BY_LIST_SID_AND_PERIOD;
 	
@@ -59,7 +60,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
 		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
-
+		builderString.append(" DESC");
+		FIND_BY_PERIOD_ORDER_BY_YMD_DESC = builderString.toString();
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
@@ -93,6 +95,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 	
 	@Override
+	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod) {
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_DESC, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId).setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+	}
+	
+	@Override
 	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds) {
 		return this.queryProxy().query(FIND_BY_LIST_SID_AND_PERIOD, KrcdtDaiPerWorkInfo.class)
 				.setParameter("employeeIds", employeeIds).setParameter("startDate", ymds.start())
@@ -105,44 +114,30 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("ymd", domain.getYmd()).getSingle();
 		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo(new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd()));
 		if(domain != null){
-			if(data.scheduleTimes == null){
-				data.scheduleTimes = new ArrayList<>();
+			if(domain.getRecordInfo() != null){
+				data.recordWorkWorktimeCode = domain.getRecordInfo().getWorkTimeCode() == null 
+						? null : domain.getRecordInfo().getWorkTimeCode().v();
+				data.recordWorkWorktypeCode = domain.getRecordInfo().getWorkTypeCode().v();
 			}
-//			data.krcdtDaiPerWorkInfoPK.employeeId = domain.getEmployeeId();
-//			data.krcdtDaiPerWorkInfoPK.ymd = domain.getYmd();
-			if(domain.getRecordWorkInformation() != null){
-				data.recordWorkWorktimeCode = domain.getRecordWorkInformation().getWorkTimeCode() == null 
-						? null : domain.getRecordWorkInformation().getWorkTimeCode().v();
-				data.recordWorkWorktypeCode = domain.getRecordWorkInformation().getWorkTypeCode().v();
-			}
-			if(domain.getScheduleWorkInformation() != null){
-				data.scheduleWorkWorktimeCode = domain.getScheduleWorkInformation().getWorkTimeCode() == null 
-						? null : domain.getScheduleWorkInformation().getWorkTimeCode().v();
-				data.scheduleWorkWorktypeCode = domain.getScheduleWorkInformation().getWorkTypeCode().v();
+			if(domain.getScheduleInfo() != null){
+				data.scheduleWorkWorktimeCode = domain.getScheduleInfo().getWorkTimeCode() == null 
+						? null : domain.getScheduleInfo().getWorkTimeCode().v();
+				data.scheduleWorkWorktypeCode = domain.getScheduleInfo().getWorkTypeCode().v();
 			}
 			data.calculationState = domain.getCalculationState().value;
 			data.backStraightAttribute = domain.getBackStraightAtr().value;
 			data.goStraightAttribute = domain.getGoStraightAtr().value;
-			
-			List<ScheduleTimeSheet> scheduleTimeSheets = domain.getScheduleTimeSheets();
-			scheduleTimeSheets.stream().forEach(c -> {
-				KrcdtWorkScheduleTime item = data.scheduleTimes.stream().filter(x -> 
-					x.krcdtWorkScheduleTimePK.employeeId.equals(domain.getEmployeeId())
-						&& x.krcdtWorkScheduleTimePK.ymd.equals(domain.getYmd()) 
-						&& x.krcdtWorkScheduleTimePK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
-				
-				if(item != null){
-//					item.krcdtWorkScheduleTimePK.employeeId = domain.getEmployeeId();
-//					item.krcdtWorkScheduleTimePK.ymd = domain.getYmd();
-//					item.krcdtWorkScheduleTimePK.workNo = c.getWorkNo().v();
-					item.attendance = c.getAttendance().valueAsMinutes();
-					item.leaveWork = c.getLeaveWork().valueAsMinutes();
-				} else {
-					KrcdtWorkScheduleTime newItem = new KrcdtWorkScheduleTime(new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
-							c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes());
-					data.scheduleTimes.add(newItem);
-				}
-			});
+			data.dayOfWeek = domain.getDayOfWeek().value;
+			if(data.scheduleTimes != null && !data.scheduleTimes.isEmpty()){
+				this.commandProxy().removeAll(data.scheduleTimes);
+				this.getEntityManager().flush();
+			}
+			data.scheduleTimes = domain.getScheduleTimeSheets().stream().map(c -> 
+								new KrcdtWorkScheduleTime(
+										new KrcdtWorkScheduleTimePK(
+												domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
+												c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
+										.collect(Collectors.toList());
 			this.commandProxy().update(data);
 			this.commandProxy().updateAll(data.scheduleTimes);
 		}
