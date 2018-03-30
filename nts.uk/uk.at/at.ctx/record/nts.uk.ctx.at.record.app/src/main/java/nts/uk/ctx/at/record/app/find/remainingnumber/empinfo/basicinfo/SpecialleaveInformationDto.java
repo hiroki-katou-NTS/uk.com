@@ -34,7 +34,7 @@ public class SpecialleaveInformationDto extends PeregDomainDto {
 	//	次回付与日
 	@PeregItem("IS00300")
 	// TODO Pending QA
-	private GeneralDate nextGrantDate;
+	private String nextGrantDate;
 
 	//	特別休暇残数
 	@PeregItem("IS00301")

@@ -2,12 +2,14 @@ module nts.uk.com.view.cps001.g.vm {
     import getText = nts.uk.resource.getText;
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
+    import block = nts.uk.ui.block.grayout;
+    import unblock = nts.uk.ui.block.clear;
     export class ScreenModel {
 
         // Store create/update mode
         createMode: KnockoutObservable<boolean>;
         columns: KnockoutObservableArray<any>;
-        currentValue: KnockoutObservable<Date>;
+        currentValue: KnockoutObservable<string> = ko.observable('');
         date: KnockoutObservable<string>;
         expirationStatus: KnockoutObservableArray<any>;
         value: KnockoutObservable<number>;
@@ -20,8 +22,8 @@ module nts.uk.com.view.cps001.g.vm {
         grantMinutesH: KnockoutObservable<boolean>;
         usedMinutesH: KnockoutObservable<boolean>;
         remainingMinutesH: KnockoutObservable<boolean>;
-        
-        
+        init: boolean = true;
+        itemDefs: any = [];
         constructor() {
             let _self = this;
 
@@ -33,19 +35,6 @@ module nts.uk.com.view.cps001.g.vm {
                 { code: '1', name: '期限切れ' }
             ]);
 
-            this.columns = ko.observableArray([
-                { headerText: getText('CPS001_110'), type: 'date', key: 'grantDate', width: 100 },
-                { headerText: getText('CPS001_111'), type: 'date', key: 'deadline', width: 100 },
-                { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
-                { headerText: getText('CPS001_128'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
-                { headerText: getText('CPS001_121'), key: 'grantMinutes', width: 60 },
-                { headerText: getText('CPS001_122'), type: 'string', formatter: formatDate, key: 'usedDays', width: 60 },
-                { headerText: getText('CPS001_123'), key: 'usedMinutes', width: 60 },
-                { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 60 },
-                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', width: 60 }
-            ]);
-            _self.currentValue = ko.observable(moment().toDate());
-
             // Subsribe table
             _self.currentValue.subscribe(value => {
                 if (value) {
@@ -53,11 +42,15 @@ module nts.uk.com.view.cps001.g.vm {
                     service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData) => {
                         if (result) {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(result));
+                            if(_self.itemDefs.length > 0){
+                                _self.setItemDefValue(_self.itemDefs).done(() => {
+                                    console.log('done ---');
+                                 });
+                            }   
                         }
                     });
                     $('#idGrantDate').focus();
                 }
-
             });
 
             // Subscribe checkbox
@@ -73,8 +66,8 @@ module nts.uk.com.view.cps001.g.vm {
                 if (_self.listAnnualLeaveGrantRemainData().length) {
                      _self.createMode(false);
                     // Set focus
-                    _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
-                    _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]))
+                    _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
+                    _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]));
                     // Set to update mode
                 } else {
                     _self.create();                    
@@ -87,9 +80,10 @@ module nts.uk.com.view.cps001.g.vm {
         /**
          * Run after page loaded
          */
-        public startPage(): JQueryPromise<any> {
-            let _self = this;
-            service.getAllList().done((data: Array<IAnnualLeaveGrantRemainingData>) => {
+        public startPage(annID? : string): JQueryPromise<any> {
+            let _self = this, 
+            sID = __viewContext.user.employeeId;
+            service.getAllList(sID).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
                     _self.createMode(false);
@@ -99,23 +93,47 @@ module nts.uk.com.view.cps001.g.vm {
                         return  item.expirationStatus === 0;
                     }));
                     // Set focus
-                    //_self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].grantDate);
+                    if (annID) {
+                         _self.currentValue(annID);
+                    } else {
+                        _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
+                        _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]));
+                    }
                 } else {
                     // Set to cr eate mode
                     _self.createMode(true);
                 }
                 $('#idGrantDate').focus();
-                _self.getItemDef();
+                
+                if(_self.init){
+                    _self.getItemDef();
+                    _self.init = false;
+                 }
+                 else {
+                    if(_self.itemDefs.length > 0){
+                    _self.setItemDefValue(_self.itemDefs).done(() => {
+                        console.log('done ---');
+                     });
+                    }    
+                }
+                
             });
         }
          getItemDef(){
             let self = this;
-           
-            service.getItemDef().done((data) => {
-                self.setItemDefValue(data).done(() => {
-                    self.setGridList();
+            if(self.itemDefs.length > 0){
+                self.setItemDefValue(self.itemDefs).done(() => {
+                        self.setGridList();
+                    });
+            }else{
+                service.getItemDef().done((data) => {
+                    self.itemDefs = data;
+                    self.setItemDefValue(data).done(() => {
+                        self.setGridList();
                     });
                 });
+            }
+            
         }
         setItemDefValue(data: any):JQueryPromise<any>{
             let self = this, dfd = $.Deferred();
@@ -156,6 +174,7 @@ module nts.uk.com.view.cps001.g.vm {
         setGridList(){
             let self = this;
             self.columns = ko.observableArray([
+                {type: 'string', key: 'annLeavID', hidden: true },
                 { headerText: getText('CPS001_110'), type: 'date', key: 'grantDate', width: 100 },
                 { headerText: getText('CPS001_111'), type: 'date', key: 'deadline', width: 100 },
                 { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
@@ -166,7 +185,7 @@ module nts.uk.com.view.cps001.g.vm {
                 { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 60 },
                 { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', width: 60, hidden: self.remainingMinutesH()}
             ]);
-                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'grantDate\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:5}"></table>';
+                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:5}"></table>';
                     $("#tbl").html(table);
                     ko.applyBindings(self, $("#tbl")[0]);
         }
@@ -183,6 +202,11 @@ module nts.uk.com.view.cps001.g.vm {
             let _self = this;
             _self.createMode(true);
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
+            if(_self.itemDefs.length > 0){
+                _self.setItemDefValue(_self.itemDefs).done(() => {
+                    console.log('done ---');
+                 });
+            }
             $('#id-grantDate').focus();
         }
         /**
@@ -192,21 +216,32 @@ module nts.uk.com.view.cps001.g.vm {
             let _self = this,
                 command = ko.toJS(_self.currentItem());
             
+            $("#grantDate").trigger("validate");
+            $("#deadline").trigger("validate");
+            $("#grantDays").trigger("validate");
+            $("#usedDays").trigger("validate");
+            $("#remainingDays").trigger("validate");
+            block();
             if (_self.createMode()) {
+                
                 service.add(command).done((message: string) => {
                     info({ messageId: "Msg_15" }).then(function() {
                         _self.startPage();
                     });
+                    unblock();
                 }).fail((message) => {
                     alert(message.message);
+                    unblock();
                 });
             } else {
                 service.update(command).done((message: string) => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        _self.startPage();
+                        _self.startPage(ko.toJS(_self.currentItem()).annLeavID);
                     });
+                    unblock();
                 }).fail((message) => {
                     alert(message.message);
+                    unblock();
                 });
             }
         }
@@ -226,8 +261,9 @@ module nts.uk.com.view.cps001.g.vm {
                 sID = __viewContext.user.employeeId;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                 .ifYes(() => {
+                    block();
                     let command = {
-                        annLeavId: ko.toJS(_self.currentItem()).annLeavId,
+                        annLeavID: ko.toJS(_self.currentItem()).annLeavID,
                         employeeId: sID,
                         grantDate: ko.toJS(_self.currentItem()).grantDate
                     };
@@ -235,14 +271,17 @@ module nts.uk.com.view.cps001.g.vm {
                         info({ messageId: "Msg_15" }).then(function() {
                             _self.startPage();
                         });
-                    }).ifNo(() => {
-                        // Nothing happen
+                        unblock();
                     })
+                     unblock();
+                }).ifNo(() => {
+                        // Nothing happen
                 });
         }
     }
     export interface IAnnualLeaveGrantRemainingData {
-        annLeavId: string;
+        annLeavID: string;
+        employeeId: string;
         grantDate: Date;
         deadline: Date;
         expirationStatus: number;
@@ -255,7 +294,8 @@ module nts.uk.com.view.cps001.g.vm {
     }
 
     export class AnnualLeaveGrantRemainingData {
-        annLeavId: KnockoutObservable<string> = ko.observable(null);
+        annLeavID: KnockoutObservable<string> = ko.observable(null);
+        employeeId: KnockoutObservable<string> = ko.observable(null);
         grantDate: KnockoutObservable<Date> = ko.observable(null);
         deadline: KnockoutObservable<Date> = ko.observable(null);
         expirationStatus: KnockoutObservable<number> = ko.observable(null);
@@ -268,7 +308,7 @@ module nts.uk.com.view.cps001.g.vm {
         constructor(param?: IAnnualLeaveGrantRemainingData) {
             let self = this;
             if (param) {
-                self.annLeavId(param.annLeavId || null);
+                self.annLeavID(param.annLeavID || null);
                 self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
                 self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
                 self.expirationStatus(param.expirationStatus || 0);
@@ -278,6 +318,7 @@ module nts.uk.com.view.cps001.g.vm {
                 self.usedMinutes(param.usedMinutes || null);
                 self.remainingDays(param.remainingDays || null);
                 self.remainingMinutes(param.remainingMinutes || null);
+                self.employeeId(__viewContext.user.employeeId);
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
