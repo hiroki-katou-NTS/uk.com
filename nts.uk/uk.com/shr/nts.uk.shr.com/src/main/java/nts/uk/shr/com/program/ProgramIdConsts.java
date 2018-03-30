@@ -632,6 +632,7 @@ public class ProgramIdConsts {
 	public static final String KAF009A = "KAF009A";
 	public static final String KAF010A = "KAF010A";
 	public static final String KAF011A = "KAF011A";
+	public static final String KAF011C = "KAF011C";
 
 	public static final String CMM051A = "CMM051A";
 
@@ -705,5 +706,6 @@ public class ProgramIdConsts {
 	public static final String CMF002X = "CMF002X";
 	public static final String CMF002Y = "CMF002Y";
 	public static final String CMF002V2 = "CMF002V2";
+
 
 }
