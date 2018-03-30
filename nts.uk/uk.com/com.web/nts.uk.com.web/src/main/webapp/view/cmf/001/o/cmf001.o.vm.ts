@@ -29,6 +29,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
         totalLine: KnockoutObservable<number> = ko.observable(0);
+        
+        selectedEncoding: KnockoutObservable<number>;
+        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -39,7 +42,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 { content: '.step-2' }
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-
+            self.selectedEncoding = ko.observable(3);
+            self.encodingList(model.getEncodingList());
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
                 //画面上の条件コード/名称をクリアする
@@ -135,7 +139,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             let self = this;
             block.invisible();
             $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-                service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
+                service.getNumberOfLine(res[0].id, self.selectedEncoding()).done(function(totalLine: any) {
                     self.totalLine(totalLine);
                     //アップロードCSVが取込開始行に満たない場合                   
                     if (totalLine < self.selectedConditionStartLine()) {
@@ -273,7 +277,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     _.each(_rspList, rs => {
                         columns.push(rs.csvItemNumber() - 1);
                     });
-                    let sv1 = service.getRecord(self.fileId(), columns, self.selectedConditionStartLine() - 1);
+                    let sv1 = service.getRecord(self.fileId(), columns, self.selectedConditionStartLine() - 1, self.selectedEncoding());
                     let sv2 = service.getCategoryItem(self.selectedConditionItem.categoryId);
 
                     $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {

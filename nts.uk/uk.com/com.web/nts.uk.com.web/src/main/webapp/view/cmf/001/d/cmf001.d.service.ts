@@ -40,13 +40,13 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax("com", _path);
     };
     
-    export function getNumberOfLine(fileId: string, encoding: number): JQueryPromise<any> {
-        let _path = format(paths.getNumberOfLine, fileId, encoding);
+    export function getNumberOfLine(fileId: string, endCoding: number): JQueryPromise<any> {
+        let _path = format(paths.getNumberOfLine, fileId, endCoding);
         return ajax('com', _path);
     };
 
-    export function getRecord(fileId: string, dataLineNum: number, startLine: number, encoding: number): JQueryPromise<any> {
-        let _path = format(paths.getRecord, fileId, dataLineNum, startLine, encoding);
+    export function getRecord(fileId: string, dataLineNum: number, startLine: number, endCoding: number): JQueryPromise<any> {
+        let _path = format(paths.getRecord, fileId, dataLineNum, startLine, endCoding);
         return ajax('com', _path);
     };
     

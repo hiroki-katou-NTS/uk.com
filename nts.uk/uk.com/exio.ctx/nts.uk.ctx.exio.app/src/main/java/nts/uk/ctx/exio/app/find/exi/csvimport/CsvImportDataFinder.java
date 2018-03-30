@@ -66,12 +66,12 @@ public class CsvImportDataFinder {
 		return result;
 	}
 
-	public List<String> getRecord(GettingCsvDataDto info, int endcoding) {
+	public List<String> getRecord(GettingCsvDataDto info) {
 		List<String> result;
 		try {
 			// get input stream by fileId
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(info.getFileId());
-			result = FileUtil.getRecord(inputStream, info.getColumns(), info.getIndex(), endcoding);
+			result = FileUtil.getRecord(inputStream, info.getColumns(), info.getIndex(), info.getEndCoding());
 			inputStream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
