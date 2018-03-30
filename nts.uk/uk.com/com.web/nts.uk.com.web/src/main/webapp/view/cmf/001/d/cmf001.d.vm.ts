@@ -589,6 +589,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                     self.listMappingData([]);
                     self.fileId(null);
+                    if (!error.messageId) error.messageId = "Msg_1158"; //RawErrorMessage
                     alertError(error);
                 }).always(() => {
                     block.clear();
