@@ -195,13 +195,118 @@ public class ApprovalStatusFinder {
 			GeneralDate startDate = GeneralDate.fromString(wkpInfoDto.getStartDate(), "yyyy/MM/dd");
 			GeneralDate endDate = GeneralDate.fromString(wkpInfoDto.getEndDate(), "yyyy/MM/dd");
 			// アルゴリズム「承認状況取得社員」を実行する
-			List<String> listEmpCd = employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId, startDate, endDate);
+			List<ApprovalStatusEmpDto> listStatusEmp = this.getApprovalSttEmp(wkpId, new Period(startDate, endDate),
+					wkpInfoDto.getListEmpCd());
+			// アルゴリズム「承認状況取得職場実績確認」を実行する
+			this.getApprovalSttConfirmWkpResults(listStatusEmp, wkpId, useSeting);
+		}
+		return null;
+	}
 
-			// 取得した雇用コードが雇用コード(リスト)に存在する
-			if (listEmpCd.isEmpty())
-				continue;
-			for (String sid : listEmpCd) {
+	/**
+	 * アルゴリズム「承認状況取得社員」を実行する
+	 * 
+	 * @param wkpId
+	 *            職場ID
+	 * @param closurePeriod
+	 *            期間(開始日～終了日)
+	 * @param listEmpCd
+	 *            雇用コード(リスト)
+	 * @return 社員ID＜社員ID、期間＞(リスト)
+	 */
+	private List<ApprovalStatusEmpDto> getApprovalSttEmp(String wkpId, Period closurePeriod, List<String> listEmpCd) {
+		List<ApprovalStatusEmpDto> listSttEmp = new ArrayList<ApprovalStatusEmpDto>();
+		// imported(申請承認)「社員ID（リスト）」を取得する
+		List<String> listSId = employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId, closurePeriod.getStartDate(),
+				closurePeriod.getEndDate());
+		// Waiting for Q&A
+		Period entryLeavePeriod = new Period(GeneralDate.fromString("2018/01/01", "yyyy/MM/dd"),
+				GeneralDate.fromString("2018/05/02", "yyyy/MM/dd"));
+		// 社員ID(リスト)
+		for (String sId : listSId) {
+			// imported(就業)「所属雇用履歴」より雇用コードを取得する
+			List<ApprovalStatusEmpDto> listEmpHist = new ArrayList<ApprovalStatusEmpDto>();
+			// Waiting for Q&A
+			Period empPeriod = new Period(GeneralDate.fromString("2018/01/02", "yyyy/MM/dd"),
+					GeneralDate.fromString("2018/02/02", "yyyy/MM/dd"));
 
+			// 雇用（リスト）
+			for (ApprovalStatusEmpDto sttEmp : listEmpHist) {
+				// 存在しない場合
+				if (listEmpCd.contains(sttEmp.getEmpCd())) {
+					continue;
+				}
+				// 存在する場合
+				// アルゴリズム「承認状況対象期間取得」を実行する
+				Period sttPeriod = this.getApprovalSttPeriod(sId, empPeriod, closurePeriod, entryLeavePeriod);
+				listSttEmp.add(new ApprovalStatusEmpDto(sId, sttPeriod));
+			}
+		}
+		return listSttEmp;
+	}
+
+	/**
+	 * アルゴリズム「承認状況対象期間取得」を実行する
+	 * 
+	 * @param sId
+	 *            社員ID
+	 * @param empPeriod
+	 *            雇用期間（開始日、終了日）
+	 * @param closurePeriod
+	 *            締め期間（開始日、終了日)
+	 * @param inOutPeriod
+	 *            入退社期間（入社年月日、退社年月日
+	 * @return
+	 */
+	private Period getApprovalSttPeriod(String sId, Period empPeriod, Period closurePeriod, Period inOutPeriod) {
+		GeneralDate startDate;
+		GeneralDate endDate;
+		// 雇用期間（開始日）≦締め期間（開始日）
+		if (empPeriod.getStartDate().beforeOrEquals(closurePeriod.getStartDate())) {
+			// 対象期間.開始日＝締め期間（開始日）
+			startDate = closurePeriod.getStartDate();
+		} else {
+			// 対象期間.開始日＝雇用期間（開始日）
+			startDate = empPeriod.getStartDate();
+		}
+		// 対象期間.開始日≦入退社期間（入社年月日）
+		if (startDate.beforeOrEquals(inOutPeriod.getStartDate())) {
+			// 対象期間.開始日＝入退社期間（入社年月日）
+			startDate = inOutPeriod.getStartDate();
+		}
+		// 雇用期間（終了日）≧締め期間（終了日）
+		if (empPeriod.getEndDate().afterOrEquals(closurePeriod.getEndDate())) {
+			// 対象期間終了日＝締め期間（終了日）
+			endDate = closurePeriod.getEndDate();
+		} else {
+			// 対象期間.終了日＝雇用期間（終了日）
+			endDate = empPeriod.getEndDate();
+		}
+		// 対象期間.開始日≧入退社期間（退社年月日）
+		if (endDate.afterOrEquals(inOutPeriod.getEndDate())) {
+			// 対象期間.開始日＝入退社期間（退社年月日）
+			endDate = inOutPeriod.getEndDate();
+		}
+		return new Period(startDate, endDate);
+	}
+
+	/**
+	 * 承認状況取得職場実績確認
+	 * 
+	 * @param listStatusEmp
+	 *            社員ID＜社員ID、期間＞(リスト)
+	 * @param wkpId
+	 *            職場ID
+	 * @param useSeting
+	 *            月別確認を利用する/上司確認を利用する/本人確認を利用する
+	 * @return
+	 */
+	private List<ApprovalStatusActivityDto> getApprovalSttConfirmWkpResults(List<ApprovalStatusEmpDto> listStatusEmp,
+			String wkpId, UseSetingDto useSeting) {
+		for (ApprovalStatusEmpDto sttEmp : listStatusEmp) {
+			//月別確認を利用する
+			if(useSeting.isMonthlyConfirm()){
+				
 			}
 		}
 		return null;

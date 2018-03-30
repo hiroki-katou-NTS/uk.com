@@ -48,6 +48,7 @@ public interface ScheTimeReflect {
 	 * @param workTimeCode
 	 * @param timeData
 	 * @param frameNo
+	 * @param isPre True:開始時刻, false:退勤時刻
 	 * @return
 	 */
 	public Integer justTimeLateLeave(String workTimeCode, Integer timeData, Integer frameNo, boolean isPre);
@@ -56,6 +57,7 @@ public interface ScheTimeReflect {
 	 * @param worktimeCode
 	 * @param scheReflectAtr
 	 * @param scheAndRecordSameChangeFlg
+	 * 
 	 * @return
 	 */
 	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
