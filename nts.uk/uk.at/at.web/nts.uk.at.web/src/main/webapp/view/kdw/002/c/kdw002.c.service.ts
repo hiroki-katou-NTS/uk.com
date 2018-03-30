@@ -5,7 +5,8 @@ module nts.uk.at.view.kdw002.c {
             getEmpRole: "at/record/workrecord/authfuncrest/find-emp-roles",
             //updateDailyService: "at/record/DailyAttdItemAuth/UpdateListDailyAttendanceItemAuthority",
             getDailyAttdItemByRoleID : "at/shared/scherec/dailyattditem/auth/getdailyattd",
-            getListDailyAttdItem : "at/shared/scherec/dailyattditem/getalldailyattd"
+            getListDailyAttdItem : "at/shared/scherec/dailyattditem/getalldailyattd",
+            updateDailyAttdItem :"at/shared/scherec/dailyattditem/auth/updatedailyattd"
             
             }
 //        export function getAttendanceItems(): JQueryPromise<any> {
@@ -18,7 +19,10 @@ module nts.uk.at.view.kdw002.c {
 //        export function updateDailyService(command): JQueryPromise<any> {
 //            return nts.uk.request.ajax(paths.updateDailyService , command);
 //        }
-            
+        export function updateDailyAttdItem(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateDailyAttdItem,command);
+        }
+        
         export function getListDailyAttdItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListDailyAttdItem);
         }

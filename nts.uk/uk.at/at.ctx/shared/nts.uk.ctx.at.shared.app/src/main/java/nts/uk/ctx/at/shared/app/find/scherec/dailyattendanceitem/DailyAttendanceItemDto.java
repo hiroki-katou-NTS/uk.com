@@ -21,13 +21,13 @@ public class DailyAttendanceItemDto {
 	/* 表示番号 */
 	private int displayNumber;
 
-	/* 使用区分 */
+	/* ユーザーが値を変更できる */
 	private int userCanUpdateAtr;
 
 	/* 勤怠項目属性 */
 	private int dailyAttendanceAtr;
 
-	/* ユーザーが値を変更できる */
+	/* 名称の改行位置*/
 	private int nameLineFeedPosition;
 
 	public DailyAttendanceItemDto(String companyId, int attendanceItemId, String attendanceName, int displayNumber, int userCanUpdateAtr, int dailyAttendanceAtr, int nameLineFeedPosition) {

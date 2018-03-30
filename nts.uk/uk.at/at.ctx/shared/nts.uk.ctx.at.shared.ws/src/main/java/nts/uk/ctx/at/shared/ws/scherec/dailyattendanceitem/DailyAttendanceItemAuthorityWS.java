@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityCmd;
+import nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityCmdHandler;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityDto;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemAuthorityFinder;
 
@@ -16,12 +18,21 @@ public class DailyAttendanceItemAuthorityWS {
 	@Inject
 	private DailyAttendanceItemAuthorityFinder finder;
 	
+	@Inject
+	private DailyAttendanceItemAuthorityCmdHandler dailyAttdHandler;
+	
 	
 	@POST
 	@Path("getdailyattd/{roleid}")
 	public DailyAttendanceItemAuthorityDto getDailyAttdItemByRoleID(@PathParam("roleid") String roleID) {
 		DailyAttendanceItemAuthorityDto data = finder.getDailyAttdItemByRoleID(roleID);
 		return data;
+	}
+	
+	@POST
+	@Path("updatedailyattd")
+	public void updateDailyAttd(DailyAttendanceItemAuthorityCmd command) {
+		this.dailyAttdHandler.handle(command);
 	}
 	
 }
