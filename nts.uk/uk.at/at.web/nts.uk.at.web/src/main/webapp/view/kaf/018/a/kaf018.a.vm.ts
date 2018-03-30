@@ -11,13 +11,15 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
         selectedValue: KnockoutObservable<number> = ko.observable(0);
-        isDailyComfirm: KnockoutObservable<boolean> = ko.observable(false);
+        isDailyComfirm: KnockoutObservable<boolean>;
         closureDate: KnockoutObservable<number>;
         startDate: KnockoutObservable<Date>;
         endDate: KnockoutObservable<Date>;
         approvalConfirm: KnockoutObservable<model.ApprovalComfirm> = ko.observable(null);
-        closureDate: KnockoutObservable<number> = ko.observable(0);;
+        closureDate: KnockoutObservable<number> = ko.observable(0);
         closureName: KnockoutObservable<string>;
+        listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         //Control component
         baseDate: KnockoutObservable<Date>;
         selectedWorkplaceId: KnockoutObservableArray<String>;
@@ -32,6 +34,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         
         constructor() {
             var self = this;
+            self.isDailyComfirm = ko.observable(false);
             self.items = ko.observableArray([
                 { code: 0, name: text('KAF018_12') },
                 { code: 1, name: text('KAF018_13') }
@@ -42,6 +45,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             self.checked = ko.observable(true);
             self.selectTarget = ko.observable(2);
             self.closureName = ko.observable('');
+            
             //Control component
             self.baseDate = ko.observable(new Date());
             self.selectedWorkplaceId = ko.observable('');
@@ -83,6 +87,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 self.closureDate = closures.closureDate;
                 self.baseDate(new Date(data.endDate));
                 self.closureName(closures.closeName);
+                self.listEmployeeCode(data.listEmployeeCode);
                 $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                     self.reloadData();
                     $('#tree-grid').focusTreeGridComponent();
@@ -137,7 +142,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             }
         }
         
-        gotoB() {
+        choiceNextScreen() {
             var self = this;
             let params = {
                 closureId: self.selectTarget(),
@@ -145,13 +150,15 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 startDate: self.startDate(),
                 endDate:self.endDate(),
                 closureName: self.closureName(),
-                workplaceId: self.multiSelectedWorkplaceId()
+                listWorkplaceId: self.multiSelectedWorkplaceId(),
+                isConfirmData: self.isDailyComfirm(),
+                listEmployeeCode: self.listEmployeeCode()
             };
-            nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
-        }
-        
-        goToE() {
-                
+            if(self.isDailyComfirm) {
+                nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
+            } else {
+                nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);    
+            }
         }
     }
 

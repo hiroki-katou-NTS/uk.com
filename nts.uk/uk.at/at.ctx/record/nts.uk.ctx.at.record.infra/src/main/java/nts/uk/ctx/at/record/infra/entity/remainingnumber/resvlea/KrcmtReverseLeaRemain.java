@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
@@ -12,8 +12,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCMT_RVSLEA_REMAIN")
 public class KrcmtReverseLeaRemain extends UkJpaEntity {
 	
-	@EmbeddedId
-	public KrcmtReverseLeaRemainPK key;
+	@Id
+	@Column(name = "RVSLEA_ID")
+	public String rvsLeaId;
+	
+	@Column(name = "SID")
+	public String sid;
+
+	@Column(name = "GRANT_DATE")
+	public GeneralDate grantDate;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -38,7 +45,7 @@ public class KrcmtReverseLeaRemain extends UkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return key;
+		return rvsLeaId;
 	}
 
 }

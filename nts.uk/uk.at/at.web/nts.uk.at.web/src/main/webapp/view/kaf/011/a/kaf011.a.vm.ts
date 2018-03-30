@@ -86,7 +86,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
-                
+
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
@@ -165,6 +165,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             //            });
 
         }
+
+       
 
 
     }

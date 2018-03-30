@@ -7,11 +7,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
@@ -51,7 +53,7 @@ public class ApprovalStatusFinder {
 		String cid = AppContexts.user().companyId();
 		List<ApprovalStatusMailTempDto> listMail = new ArrayList<ApprovalStatusMailTempDto>();
 
-		UseSetingDto transmissionAttr = this.getTransmissionAttr();
+		UseSetingDto transmissionAttr = this.getUseSeting();
 
 		listMail.add(this.getApprovalStatusMailTemp(cid, 0));
 		if (transmissionAttr.isUsePersonConfirm()) {
@@ -123,7 +125,7 @@ public class ApprovalStatusFinder {
 		// ログイン者よりメール送信内容を作成する(create nội dung send mail theo người login)
 		List<MailTransmissionContentDto> listMailContent = new ArrayList<MailTransmissionContentDto>();
 		listMailContent.add(new MailTransmissionContentDto(sid, sName, mailAddr, subject, text));
-		UseSetingDto transmissionAttr = this.getTransmissionAttr();
+		UseSetingDto transmissionAttr = this.getUseSeting();
 		// アルゴリズム「承認状況メール送信実行」を実行する
 		this.exeApprovalStatusMailTransmission(listMailContent, domain, transmissionAttr);
 		return false;
@@ -164,8 +166,7 @@ public class ApprovalStatusFinder {
 	 * @param domain
 	 * @param transmissionAttr
 	 */
-	private EmbeddedUrlDto getEmbeddedURL(String eid, ApprovalStatusMailTemp domain,
-			UseSetingDto transmissionAttr) {
+	private EmbeddedUrlDto getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, UseSetingDto transmissionAttr) {
 		String url1 = "123123123";
 		String url2 = "1231ád23123";
 		return new EmbeddedUrlDto(url1, url2);
@@ -176,7 +177,7 @@ public class ApprovalStatusFinder {
 	 * 
 	 * @return
 	 */
-	private UseSetingDto getTransmissionAttr() {
+	private UseSetingDto getUseSeting() {
 		// 月別確認を利用する ← 承認処理の利用設定.月の承認者確認を利用する
 		boolean monthlyConfirm = true;
 		// 上司確認を利用する ← 承認処理の利用設定.日の承認者確認を利用する
@@ -185,5 +186,24 @@ public class ApprovalStatusFinder {
 		boolean usePersonConfirm = true;
 		// Waiting for Q&A
 		return new UseSetingDto(monthlyConfirm, useBossConfirm, usePersonConfirm);
+	}
+
+	public List<ApprovalStatusActivityDto> getStatusActivity(ApprovalStatusActivityData wkpInfoDto) {
+		UseSetingDto useSeting = this.getUseSeting();
+		List<String> listWorkplaceId = wkpInfoDto.getListWorkplaceId();
+		for (String wkpId : listWorkplaceId) {
+			GeneralDate startDate = GeneralDate.fromString(wkpInfoDto.getStartDate(), "yyyy/MM/dd");
+			GeneralDate endDate = GeneralDate.fromString(wkpInfoDto.getEndDate(), "yyyy/MM/dd");
+			// アルゴリズム「承認状況取得社員」を実行する
+			List<String> listEmpCd = employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId, startDate, endDate);
+
+			// 取得した雇用コードが雇用コード(リスト)に存在する
+			if (listEmpCd.isEmpty())
+				continue;
+			for (String sid : listEmpCd) {
+
+			}
+		}
+		return null;
 	}
 }

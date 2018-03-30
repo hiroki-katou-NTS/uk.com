@@ -11,9 +11,11 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
@@ -52,5 +54,11 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("sendTestMail/{mailType}")
 	public boolean sendTestMail(@PathParam("mailType") int mailType) {
 		return approvalMailTempFinder.sendTestMail(mailType);
+	}
+	
+	@POST
+	@Path("getStatusActivity")
+	public List<ApprovalStatusActivityDto> getStatusActivity(ApprovalStatusActivityData wkpInfoDto) {
+		return approvalMailTempFinder.getStatusActivity(wkpInfoDto);
 	}
 }
