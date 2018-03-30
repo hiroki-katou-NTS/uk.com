@@ -192,6 +192,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @param placeId 職場ID
@@ -479,7 +480,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
 																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		//乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = 
+		List<DivergenceTime> divergenceTimeList = divergenceTimeRepository.getAllDivTime(companyId);
 		
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
