@@ -10,6 +10,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 /**
  * The Class Year.
  */
+// 年
 @IntegerRange(min = 1, max = 9999)
 public class Year extends IntegerPrimitiveValue<Year> {
 

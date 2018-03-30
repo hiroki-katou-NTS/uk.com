@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationGobackScheInforDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplicationReflectProcessSche;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ReflectScheDto;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppForLeaveDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppForLeavePubDto;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplyTimeAtrPub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ChangeAtrAppGobackPub;
@@ -31,21 +31,14 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getDatePara(),
 				true,
 				appInfo, 
-				EnumAdaptor.valueOf(reflectSche.getTimeAtr().value, ApplyTimeAtrPub.class),
-				new AppForLeaveDto(null)); 
-		boolean data = appReflectSchePub.goBackDirectlyReflectSch(dto);
-		return data;
+				EnumAdaptor.valueOf(reflectSche.getTimeAtr().value, ApplyTimeAtrPub.class)); 
+		return appReflectSchePub.goBackDirectlyReflectSch(dto);
 	}
 
 	@Override
 	public void forleaveReflect(ReflectScheDto reflectSche) {
-		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(),
-				reflectSche.getDatePara(),
-				true,
-				new ApplicationGobackScheInforDto(ChangeAtrAppGobackPub.CHANGE, null, null, null, null, null, null),
-				ApplyTimeAtrPub.END, 
-				new AppForLeaveDto(reflectSche.getForLeave().getWorkTypeCode().v()));
-		appReflectSchePub.appForLeaveSche(dto);
+		AppForLeavePubDto leavePra = new AppForLeavePubDto(reflectSche.getEmployeeId(), reflectSche.getDatePara(), reflectSche.getForLeave().getWorkTypeCode().v());
+		appReflectSchePub.appForLeaveSche(leavePra);
 	}
 	
 	

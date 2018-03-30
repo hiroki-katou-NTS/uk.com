@@ -11,8 +11,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absencelea
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 
 /**
- * @author sonnlb
- * 振出申請Dto
+ * @author sonnlb 振出申請Dto
  */
 @Data
 @NoArgsConstructor
@@ -27,10 +26,6 @@ public class RecruitmentAppDto {
 	 */
 	private String workTypeCD;
 	/**
-	 * 勤務場所コード
-	 */
-	private String workLocationCD;
-	/**
 	 * 就業時間帯
 	 */
 	private String workTimeCD;
@@ -38,11 +33,11 @@ public class RecruitmentAppDto {
 	/**
 	 * 勤務時間1
 	 */
-	private RecruitmentWorkingHourDto workTime1;
+	private RecruitmentWorkingHourDto wkTime1;
 	/**
 	 * 勤務時間2
 	 */
-	private RecruitmentWorkingHourDto workTime2;
+	private RecruitmentWorkingHourDto wkTime2;
 
 	/**
 	 * 消化対象代休管理
@@ -63,11 +58,11 @@ public class RecruitmentAppDto {
 				domain.getWorkTime2().getEndUseAtr().value);
 		List<SubTargetDigestionDto> subTargetDigestions = new ArrayList<SubTargetDigestionDto>();
 		domain.getSubTargetDigestions().forEach(x -> {
-			subTargetDigestions.add(new SubTargetDigestionDto(x.getRecAppID(), x.getAbsenceLeaveAppID(),
-					x.getHoursUsed(), x.getLeaveMngDataID(), x.getBreakOutDate(), x.getRestState().value));
+			subTargetDigestions.add(new SubTargetDigestionDto(x.getAppID(), x.getHoursUsed(), x.getLeaveMngDataID(),
+					x.getBreakOutDate(), x.getRestState().value, x.getUnknownDate()));
 		});
-		return new RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD(), domain.getWorkLocationCD().v(),
-				domain.getWorkTimeCD().v(), workTime1, workTime2, subTargetDigestions, appDate);
+		return new RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD(), domain.getWorkTimeCD().v(), workTime1,
+				workTime2, subTargetDigestions, appDate);
 
 	}
 }

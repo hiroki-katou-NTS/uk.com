@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplicationReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackReflectParam;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
@@ -20,7 +20,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
 	@Override
-	public void forlearveReflectSche(ApplicationReflectParam reflectParam) {
+	public void forlearveReflectSche(ForleaveReflectParam reflectParam) {
 		//勤務種類を反映する
 		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(reflectParam.getEmployeeId(), reflectParam.getDatePara());		
@@ -31,7 +31,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 		//ドメインモデル「勤務予定基本情報」を編集する
 		BasicSchedule dataUpdate = new BasicSchedule(basicScheOpt.getEmployeeId(), 
 				basicScheOpt.getDate(), 
-				reflectParam.getLeaveInfor().getWorktypeCode(), 
+				reflectParam.getWorktypeCode(), 
 				basicScheOpt.getWorkTimeCode(),
 				basicScheOpt.getConfirmedAtr());
 		basicSche.update(dataUpdate);

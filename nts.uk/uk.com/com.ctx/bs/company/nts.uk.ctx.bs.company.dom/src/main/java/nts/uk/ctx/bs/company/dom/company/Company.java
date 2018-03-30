@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.company.dom.company;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

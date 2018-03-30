@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -102,12 +102,15 @@ public class JpaWorkTypeDivergenceReferenceTimeGetMemento implements WorkTypeDiv
 	 */
 	@Override
 	public Optional<DivergenceReferenceTimeValue> getDivergenceReferenceTimeValue() {
-		BigDecimal alarmTime = this.entity.getAlarmTime();
-		BigDecimal errorTime = this.entity.getErrorTime();
+		BigDecimal alarmTimeB = this.entity.getAlarmTime();
+		BigDecimal errorTimeB = this.entity.getErrorTime();
 
-		return Optional.of(new DivergenceReferenceTimeValue(
-				new DivergenceReferenceTime(alarmTime == null ? 0 : alarmTime.intValue()),
-				new DivergenceReferenceTime(errorTime == null ? 0 : errorTime.intValue())));
+		DivergenceReferenceTime alarmTimeP = alarmTimeB == null ? null
+				: new DivergenceReferenceTime(alarmTimeB.intValue());
+		DivergenceReferenceTime errorTimeP = errorTimeB == null ? null
+				: new DivergenceReferenceTime(errorTimeB.intValue());
+
+		return Optional.of(new DivergenceReferenceTimeValue(alarmTimeP, errorTimeP));
 	}
 
 }

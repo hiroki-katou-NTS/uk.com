@@ -3,11 +3,12 @@ package nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class Selection {
+public class Selection extends AggregateRoot{
 	private String selectionID;
 	private String histId;
 	private SelectionCD selectionCD;

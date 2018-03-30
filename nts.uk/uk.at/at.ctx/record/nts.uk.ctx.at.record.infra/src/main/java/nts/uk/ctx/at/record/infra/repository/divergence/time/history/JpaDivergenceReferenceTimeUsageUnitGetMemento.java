@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtUseUnit;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtUseUnit;
 
 /**
  * The Class JpaDivergenceReferenceTimeUsageUnitGetMemento.

@@ -50,15 +50,15 @@ module nts.uk.at.view.kmk011.e {
                 // work type list
                 _self.listWorkType = ko.observableArray([]);
                 _self.columns2 = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK011_31'), key: 'code', width: 100 },
+                    { headerText: nts.uk.resource.getText('KDW009_6'), key: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText('KMK011_49'), key: 'name', width: 150 }
                 ]);
                 _self.currentCode = ko.observable();
 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') },
-                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') }
+                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') },
+                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }   
                 ]);
                 _self.enable = ko.observable(true);
                 _self.required = ko.observable(true);
@@ -257,16 +257,6 @@ module nts.uk.at.view.kmk011.e {
             }
 
             /**
-             * load data for page
-             */
-            private loadData(): JQueryPromise<any> {
-                let _self = this;
-                var dfd = $.Deferred<any>();
-
-                return dfd.promise();
-            }
-
-            /**
              * find list work type
              */
             private fillListWorkType(): JQueryPromise<any> {
@@ -274,7 +264,7 @@ module nts.uk.at.view.kmk011.e {
                 var dfd = $.Deferred<any>();
 
                 service.getAllWorkType().done((response: any) => {
-                    if(response != null) {
+                    if(response.length != 0) {
                         if(_self.listWorkType().length == 0) {
                             response.forEach((item: any) => {
                                 _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
@@ -286,6 +276,7 @@ module nts.uk.at.view.kmk011.e {
                                 }
                             });
                         }
+                        dfd.resolve();
                     } else {
                         _self.wkTypeCode("");
                         _self.wkTypeName("");
@@ -294,10 +285,12 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(false);
                         _self.enable_button_creat(false);
                         _self.enableSaveDivergenceRefSetting(false);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1051" });    
-                    } 
-
-                    dfd.resolve();
+                        _self.histList([]);
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1051" }).then(() => {
+                            nts.uk.request.jump("/view/kmk/011/d/index.xhtml");    
+                        });
+                        dfd.resolve();
+                    }
                 });
 
                 return dfd.promise();
@@ -472,10 +465,16 @@ module nts.uk.at.view.kmk011.e {
             private getNextHistoryAfterDelete(): string { 
                 let _self = this;
                 let nextHistId: string = null;
-                 
-                let indexOfCurrentHist: number = _self.histList().findIndex(e => e.historyId == _self.selectedHist());
+                var indexOfCurrentHist: number = 0;
+                //find current index
+                for (let index = 0; index < _self.histList().length; index++){
+                    if(_self.histList()[index].historyId == _self.selectedHist()){
+                        indexOfCurrentHist = index;
+                    }
+                }
+                //find next histId
                 if (indexOfCurrentHist == 0){
-                    if(_self.histList().length > 0){
+                    if(_self.histList().length > 1){
                         nextHistId =  _self.histList()[indexOfCurrentHist + 1].historyId;
                         return nextHistId
                     }

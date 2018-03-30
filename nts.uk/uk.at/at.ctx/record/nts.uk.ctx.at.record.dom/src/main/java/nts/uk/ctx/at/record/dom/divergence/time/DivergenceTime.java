@@ -79,6 +79,14 @@ public class DivergenceTime extends AggregateRoot {
 
 	}
 
+	/**
+	 * Checks if is divergence time use.
+	 *
+	 * @return true, if is divergence time use
+	 */
+	public boolean isDivergenceTimeUse() {
+		return this.divTimeUseSet == DivergenceTimeUseSet.USE; 
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

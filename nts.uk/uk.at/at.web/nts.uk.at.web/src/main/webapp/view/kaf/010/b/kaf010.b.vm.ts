@@ -131,7 +131,8 @@ module nts.uk.at.view.kaf010.b {
                 super(listAppMetadata, currentApp);
                 var self = this;
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
-                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                    $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: 216 });
                     $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
@@ -169,7 +170,7 @@ module nts.uk.at.view.kaf010.b {
             
             initData(data: any) {
                 var self = this;
-                self.version = data.version;
+                self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
@@ -565,14 +566,16 @@ module nts.uk.at.view.kaf010.b {
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
+                        $("#inpStartTime1").ntsError("clear"); 
+                        $("#inpEndTime1").ntsError("clear");
                         self.workTypeCd(childData.selectedWorkTypeCode);
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
-                        self.timeStart1(childData.firstStartTime);
-                        self.timeEnd1(childData.firstEndTime);
-                        self.timeStart2(childData.secondStartTime);
-                        self.timeEnd2(childData.secondEndTime);
+                        self.timeStart1(childData.first.start);
+                        self.timeEnd1(childData.first.end);
+                        self.timeStart2(childData.second.start);
+                        self.timeEnd2(childData.second.end);
                         //                    service.getRecordWork(
                         //                        {
                         //                            employeeID: self.employeeID(), 
