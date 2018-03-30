@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +40,12 @@ public class AnnualLeaveNumberInfo {
 		this.grantNumber = AnnualLeaveGrantNumber.createFromJavaType(grantDays, grantMinutes);
 		this.usedNumber = AnnualLeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays);
 		this.remainingNumber = AnnualLeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes);
-		this.usedPercent = new AnnualLeaveUsedPercent(BigDecimal.valueOf(usedPercent));
+		this.usedPercent = new AnnualLeaveUsedPercent(new BigDecimal(0));
+		if (grantDays != 0){
+			String usedPer = new DecimalFormat("#.##").format(usedDays/grantDays);
+			this.usedPercent = new AnnualLeaveUsedPercent(new BigDecimal(usedPer));
+		}
+		
 	}
 
 }

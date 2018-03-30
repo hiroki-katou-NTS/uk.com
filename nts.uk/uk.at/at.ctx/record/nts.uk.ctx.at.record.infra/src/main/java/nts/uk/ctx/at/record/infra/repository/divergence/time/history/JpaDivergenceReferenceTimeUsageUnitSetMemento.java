@@ -43,8 +43,8 @@ public class JpaDivergenceReferenceTimeUsageUnitSetMemento implements Divergence
 	 * BigDecimal)
 	 */
 	@Override
-	public void setWorkTypeUseSet(BigDecimal workTypeUseSet) {
-		this.krcstDrtUseUnit.setWorktypeUseSet(workTypeUseSet);
+	public void setWorkTypeUseSet(boolean workTypeUseSet) {
+		this.krcstDrtUseUnit.setWorktypeUseSet(workTypeUseSet ? BigDecimal.ONE : BigDecimal.ZERO);
 	}
 
 }

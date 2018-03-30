@@ -64,4 +64,6 @@ public interface PerInfoCategoryRepositoty {
 	List<String> getAllCategoryByCtgCD(String categoryCD);
 
 	int getDispOrder(String perInfoCtgId);
+	
+	String getCatId(String cId, String categoryCode);
 }

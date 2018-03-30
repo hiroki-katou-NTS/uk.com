@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplicationReflectParam;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
@@ -28,7 +27,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	@Inject
 	private WorkTypeIsClosedService workTypeService;
 	@Override
-	public boolean isReflectFlag(ApplicationReflectParam gobackPara) {
+	public boolean isReflectFlag(GobackReflectParam gobackPara) {
 		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(gobackPara.getEmployeeId(), gobackPara.getDatePara());		
 		if(!optBasicScheOpt.isPresent()) {
@@ -61,7 +60,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	}
 
 	@Override
-	public boolean isCheckReflect(ApplicationReflectParam gobackPara, BasicSchedule basicScheOpt) {
+	public boolean isCheckReflect(GobackReflectParam gobackPara, BasicSchedule basicScheOpt) {
 		boolean isFlag = false;
 		//INPUT．勤務を変更するをチェックする
 		if(gobackPara.getAppInfor().getChangeAtrAppGoback() == ChangeAtrAppGoback.CHANGE) {

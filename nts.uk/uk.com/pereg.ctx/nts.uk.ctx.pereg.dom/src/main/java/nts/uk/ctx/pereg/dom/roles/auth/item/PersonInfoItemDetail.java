@@ -32,5 +32,7 @@ public class PersonInfoItemDetail {
 	private boolean setting;
 
 	private String itemParentCd;
+	
+	private int dataType;
 
 }

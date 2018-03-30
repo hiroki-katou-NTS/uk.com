@@ -12,6 +12,8 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
+import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 
@@ -22,6 +24,8 @@ public class AppForLeaveWebService extends WebService{
 	private AppAbsenceFinder appForLeaveFinder;
 	@Inject
 	private CreatAppAbsenceCommandHandler creatAppAbsenceCommandHandler;
+	@Inject
+	private UpdateAppAbsenceCommandHandler updateAppAbsenceCommandHandler;
 	
 	@POST
 	@Path("getAppForLeaveStart")
@@ -42,6 +46,11 @@ public class AppForLeaveWebService extends WebService{
 	@Path("getChangeAllDayHalfDay")
 	public AppAbsenceDto getChangeAllDayHalfDay(ParamGetALL param) {
 		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
+	}
+	@POST
+	@Path("getChangeAllDayHalfDayForDetail")
+	public AppAbsenceDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetALL param) {
+		return this.appForLeaveFinder.getChangeByAllDayOrHalfDayForUIDetail(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
 	}
 	@POST
 	@Path("findChangeDisplayHalfDay")
@@ -73,6 +82,12 @@ public class AppForLeaveWebService extends WebService{
 	@Path("getByAppID")
 	public AppAbsenceDto getByAppID(String appID) {
 		return this.appForLeaveFinder.getByAppID(appID);
+	}
+	
+	@POST
+	@Path("update")
+	public List<String> update(UpdateAppAbsenceCommand command) {
+		return this.updateAppAbsenceCommandHandler.handle(command);
 	}
 	
 }

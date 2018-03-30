@@ -27,9 +27,9 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 
 	private String employeeId;
 
-	private WorkInformation recordWorkInformation;
+	private WorkInformation recordInfo;
 
-	private WorkInformation scheduleWorkInformation;
+	private WorkInformation scheduleInfo;
 
 	private CalculationState calculationState;
 
@@ -49,8 +49,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 			WorkInformation scheduleWorkInformation, CalculationState calculationState, NotUseAttribute goStraightAtr,
 			NotUseAttribute backStraightAtr, GeneralDate ymd, List<ScheduleTimeSheet> scheduleTimeSheets) {
 		this.employeeId = employeeId;
-		this.recordWorkInformation = recordWorkInformation;
-		this.scheduleWorkInformation = scheduleWorkInformation;
+		this.recordInfo = recordWorkInformation;
+		this.scheduleInfo = scheduleWorkInformation;
 		this.calculationState = calculationState;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
@@ -62,7 +62,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * 勤務予定を実績に移す
 	 */
 	public void shiftFromScheduleToRecord() {
-		recordWorkInformation = scheduleWorkInformation;
+		recordInfo = scheduleInfo;
 	}
 	
 	/**
@@ -72,8 +72,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public boolean isMatchWorkInfomation() {			
-		if(this.scheduleWorkInformation.getWorkTypeCode()==this.recordWorkInformation.getWorkTypeCode()&&
-				this.scheduleWorkInformation.getWorkTimeCode()==this.recordWorkInformation.getWorkTimeCode()) {
+		if(this.scheduleInfo.getWorkTypeCode()==this.recordInfo.getWorkTypeCode()&&
+				this.scheduleInfo.getWorkTimeCode()==this.recordInfo.getWorkTimeCode()) {
 			return true;
 		}
 		return false;
@@ -99,8 +99,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 			List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
 		this.employeeId = employeeId;
-		this.recordWorkInformation = recordWorkInformation;
-		this.scheduleWorkInformation = scheduleWorkInformation;
+		this.recordInfo = recordWorkInformation;
+		this.scheduleInfo = scheduleWorkInformation;
 		this.calculationState = calculationState;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;

@@ -12,12 +12,15 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Value
 public class ExcessOfStatutoryMidNightTime {
-	private TimeWithCalculation time;
+	private TimeDivergenceWithCalculation time;
 	private AttendanceTime beforeApplicationTime;
 	
+	/**
+	 * 所定外深夜時間の計算 
+	 */
 	public static ExcessOfStatutoryMidNightTime calcExcessTime(OverTimeOfDaily overDaily,HolidayWorkTimeOfDaily holidayDaily) {
-		TimeWithCalculation overTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		TimeWithCalculation holidayTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		TimeDivergenceWithCalculation overTime = TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
+		TimeDivergenceWithCalculation holidayTime = TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		//残業深夜
 		if(overDaily.getExcessOverTimeWorkMidNightTime().isPresent())
 			overTime = overDaily.getExcessOverTimeWorkMidNightTime().get().getTime();
@@ -26,8 +29,41 @@ public class ExcessOfStatutoryMidNightTime {
 		if(holidayDaily.getHolidayMidNightWork().isPresent())
 			holidayTime = holidayDaily.getHolidayMidNightWork().get().calcTotalTime();
 		//return
-		TimeWithCalculation totalTime = overTime.addMinutes(holidayTime.getTime(), holidayTime.getCalcTime());
+		TimeDivergenceWithCalculation totalTime = overTime.addMinutes(holidayTime.getTime(), holidayTime.getCalcTime());
 		return new ExcessOfStatutoryMidNightTime(totalTime, new AttendanceTime(0));
-		
 	}
+	
+	/**
+	 * 実績超過乖離時間の計算
+	 * @return
+	 */
+	public int calcOverLimitDivergenceTime() {
+		return this.getTime().getDivergenceTime().valueAsMinutes() 
+				 + this.getTime().getDivergenceTime().valueAsMinutes();
+	}
+
+	/**
+	 * 実績超過乖離時間が発生しているか判定する
+	 * @return 乖離時間が発生している
+	 */
+	public boolean isOverLimitDivergenceTime() {
+		return this.calcOverLimitDivergenceTime() > 0 ? true:false;
+	}
+	
+	/**
+	 * 事前申請超過時間の計算
+	 * @return
+	 */
+	public int calcPreOverLimitDivergenceTime() {
+		return calcOverLimitDivergenceTime() - this.getBeforeApplicationTime().valueAsMinutes();
+	}
+
+	/**
+	 * 事前申請超過時間が発生しているか判定する
+	 * @return 乖離時間が発生している
+	 */
+	public boolean isPreOverLimitDivergenceTime() {
+		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
+	}
+
 }

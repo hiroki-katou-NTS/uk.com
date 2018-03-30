@@ -1,48 +1,27 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 
 @Stateless
 public class ReflectWorkInformationDomainServiceImpl implements ReflectWorkInformationDomainService{
 	@Inject
-	private WorkInformationRepository workInforRepo;
-	/*
-	// true (reflect) and false (no reflect)
-	@Override
-	public boolean changeWorkInformation(String employeeId, GeneralDate date) {
-		
-		// 1* lấy từ a nam
-		Optional<WorkInfoOfDailyPerformance> WorkInfoOptional = this.workInforRepo.find(employeeId,
-				date);
-		
-		//1*
-		WorkInformation recordWorkInformation = WorkInfoOptional.get().getRecordWorkInformation();
-		// 1* Lấy 休日出勤時の勤務情報  trả về 勤務情報なし  , 公休出勤時 ....
-		//(fixed)
-		String result = "勤務情報なし";
-		// 1* 
-		
-		if("勤務情報なし".equals(result)){
-			return false;
-		}
-		return true;
-	}
-	*/
-	// true (reflect) and false (no reflect)
-	@Override
-	public boolean changeWorkInformation(WorkInfoOfDailyPerformance workInfo) {
-		WorkInformation recordWorkInformation = workInfo.getRecordWorkInformation();
-		// 1* Lấy 休日出勤時の勤務情報  trả về 勤務情報なし  , 公休出勤時 ....
-				//(fixed)
-				String result = "勤務情報なし";
-				// 1* 
-				
-				if("勤務情報なし".equals(result)){
+	private WorkingConditionItemService workingConditionItemService;
+
+	public boolean changeWorkInformation(WorkInfoOfDailyPerformance workInfo,String companyId) {
+		WorkInformation recordWorkInformation = workInfo.getRecordInfo();
+				Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
+						.getHolidayWorkSchedule(companyId, workInfo.getEmployeeId(), workInfo.getYmd(), recordWorkInformation.getWorkTypeCode().v());
+				if(!singleDaySchedule.isPresent()){
+
 					return false;
 				}
 				return true;
