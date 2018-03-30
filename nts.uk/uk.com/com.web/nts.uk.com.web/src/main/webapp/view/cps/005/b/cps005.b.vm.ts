@@ -82,8 +82,8 @@ module nts.uk.com.view.cps005.b {
                 block.invisible();
 
                 newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
-
-                self.checkRequired(newItemDef);
+              
+                if(self.checkRequired(newItemDef)) { return;};
 
                 if (self.isUpdate == true) {
 
@@ -194,13 +194,13 @@ module nts.uk.com.view.cps005.b {
                 nts.uk.ui.windows.close();
             }
 
-            checkRequired(newItemDef: any) {
+            checkRequired(newItemDef: any): boolean {
 
                 if (newItemDef.singleItem.dataType === 1) {
                     if (newItemDef.singleItem.stringItemLength === null) {
                         $("#stringItemLength").focus();
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
 
@@ -208,7 +208,7 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.integerPart === null) {
                         $("#integerPart").focus();
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
 
@@ -217,12 +217,12 @@ module nts.uk.com.view.cps005.b {
                         $("#timeItemMin").focus();
                         newItemDef.singleItem.hintTimeMin("");
                         block.clear();
-                        return;
+                        return true;
                     } else if (newItemDef.singleItem.timeItemMax === null) {
                         $("#timeItemMax").focus();
                         newItemDef.singleItem.hintTimeMax("");
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
 
@@ -230,13 +230,15 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.timePointItemMin === undefined) {
                         $("#timePointItemMin").focus();
                         block.clear();
-                        return;
+                        return true;
                     } else if (newItemDef.singleItem.timePointItemMax === undefined) {
                         $("#timePointItemMax").focus();
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
+                
+                return false;
             }
 
             genTextTime(time) {
