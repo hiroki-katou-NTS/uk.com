@@ -146,7 +146,7 @@ module nts.custombinding {
                     }
 
                     .layout-control .item-classification div.multi-item div.item-control>.set-items .childs-row .child-label {
-                        width: 120px;
+                        width: 130px;
                     }
 
                     .layout-control .item-classification div.multi-item div.item-control>.set-items .childs-row .single-item~.multi-label {
@@ -159,6 +159,12 @@ module nts.custombinding {
 
                     .layout-control .item-classification div.multi-item div.item-control>.set-items .childs-row {
                         width: 530px;
+                    }
+                    
+                    .layout-control .item-classification div.multi-item div.item-control>.set-items .childs-row~.childs-row {
+                        display: block;
+                        margin-top: 10px;
+                        margin-left: 165px;
                     }
 
                     .layout-control .item-classification div.multi-item div.item-control>.set-items .childs-row>* {
@@ -389,6 +395,12 @@ module nts.custombinding {
                         position: absolute;
                     }
 
+                    .layout-control .item-classification .relate-button .value-text,
+                    .layout-control .item-classification .readonly-button .value-text,
+                    .layout-control .item-classification .numeric-button .nts-editor.nts-input {
+                        width: 65px;
+                    }
+
                     .layout-control .item-classification .ui-igcombo-wrapper {
                         width: auto;
                         width: initial;                            
@@ -543,7 +555,7 @@ module nts.custombinding {
                                     }">                                
                                 <!-- ko if: layoutItemType == LAYOUT_TYPE.ITEM -->
                                 <!-- ko if: _roots.length > 1 -->
-                                <div class="multi-item" data-bind="foreach: { data: _(_roots).orderBy(x => x.dispOrder).value(), as: 'root' }">
+                                <div class="multi-item" data-bind="foreach: { data: _(_roots).orderBy(function(x) { return x.dispOrder; }).value(), as: 'root' }">
                                     <div class="item-control" data-bind="let: {
                                             _constraint: _(__items)
                                                 .filter(function(x) {
@@ -599,8 +611,8 @@ module nts.custombinding {
                                                         v: v
                                                     }
                                                 })
-                                                    .groupBy(x => x.i)
-                                                    .map(x => x.map(k => k.v))
+                                                    .groupBy(function(x) { return x.i; })
+                                                    .map(function(x) { return x.map(function(k) { return k.v; }); })
                                                     .value(), as: 'group'} -->
                                             <div class="childs-row">
                                             <!-- ko foreach: { data: group, as: 'young' } -->
@@ -1099,15 +1111,63 @@ module nts.custombinding {
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.RELATE_CATEGORY -->
-                            Relate
-                            <button data-bind="attr: { 
-                                id: nameid, 
-                                title: itemName,
-                                'data-code': itemCode,
-                                'data-category': categoryCode,
-                                'data-required': required,
-                                'data-defv': defValue
-                             }, text: text('CPS001_106'), enable: editable">選択</button>
+                            <div class="relate-button">
+                                <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <button data-bind="attr: { 
+                                    id: nameid, 
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                 }, text: text('CPS001_106'), enable: editable">選択</button>
+                            </div>
+                        <!-- /ko -->
+                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMBERIC_BUTTON -->
+                            <div class="numeric-button">
+                                <input data-bind="ntsNumberEditor: { 
+                                            name: itemName,
+                                            value: value,
+                                            constraint: nameid,
+                                            required: required,
+                                            option: {
+                                                textalign: 'left',
+                                                decimallength: Number(item.decimalPart),
+                                                grouplength: item.numericItemAmount && 3
+                                            },
+                                            enable: editable,
+                                            readonly: readonly
+                                        }, attr: {
+                                            id: nameid, 
+                                            nameid: nameid,
+                                            title: itemName,
+                                            'data-code': itemCode,
+                                            'data-category': categoryCode,
+                                            'data-required': required,
+                                            'data-defv': defValue
+                                        }" />                            
+                                <button data-bind="attr: { 
+                                    id: nameid, 
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                 }, text: text('CPS001_106'), enable: editable">選択</button>
+                            </div>
+                        <!-- /ko -->
+                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
+                            <div class="readonly-button">
+                                <label class="value-text" class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <button data-bind="attr: { 
+                                    id: nameid, 
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                 }, text: text('CPS001_106'), enable: editable">選択</button>
+                            </div>
                         <!-- /ko -->
                     </div>
                 </script>`;
@@ -1798,11 +1858,13 @@ module nts.custombinding {
                                                     }
                                             }
                                         case ITEM_SINGLE_TYPE.READONLY:
-                                            return null;
                                         case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
                                             return null;
                                         case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
-                                            return null;
+                                            return {
+                                                value: !nou(data.value) ? String(data.value) : undefined,
+                                                typeData: 2
+                                            };
                                         case ITEM_SINGLE_TYPE.READONLY_BUTTON:
                                             return null;
                                     }
@@ -1817,27 +1879,28 @@ module nts.custombinding {
                                     if (_.isArray(x)) {
                                         return x.map((m: any) => {
                                             let data = proc(m);
-                                            return {
+                                            return data ? {
                                                 recordId: m.recordId,
                                                 categoryCd: m.categoryCode,
                                                 definitionId: m.itemDefId,
                                                 itemCode: m.itemCode,
                                                 value: data.value,
                                                 'type': data.typeData
-                                            }
+                                            } : null;
                                         });
                                     } else {
                                         let data = proc(x);
-                                        return {
+                                        return data ? {
                                             recordId: x.recordId,
                                             categoryCd: x.categoryCode,
                                             definitionId: x.itemDefId,
                                             itemCode: x.itemCode,
                                             value: data.value,
                                             'type': data.typeData
-                                        };
+                                        } : null;
                                     }
                                 })
+                                .filter(x => !!x)
                                 .groupBy((x: any) => x.categoryCd)
                                 .each(x => {
                                     if (_.isArray(_.first(x))) {
