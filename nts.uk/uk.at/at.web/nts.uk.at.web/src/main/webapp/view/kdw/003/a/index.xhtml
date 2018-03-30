@@ -63,13 +63,17 @@
 			</div>
 			<div id="contents-area">
 				<div id="left-content">
+					<div>
+						<a id="back-navigate" class="goback" style="float: left;"
+							data-bind="ntsLinkButton: {}, click: navigateView">#{i18n.getText('KDW003_87')}</a>
+					</div>
 					<div id="ccg001"></div>
 				</div>
 				<div id="right-content">
 					<div id="daterangepicker"
 						data-bind="ntsDateRangePicker: { 
 							required: true, 
-							enable: true, 
+							enable: showDateRange, 
 							showNextPrevious: true, 
 							value: dateRanger, 
 							maxRange: 'oneMonth'}" />

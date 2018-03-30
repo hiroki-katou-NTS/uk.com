@@ -19,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
@@ -205,6 +206,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
 	        + " AND c.krcdtIdentificationStatusPK.employeeId IN :sids"
 	        + " AND c.krcdtIdentificationStatusPK.processingYmd IN :processingYmds";
+	
+	public final String SELECT_BY_LIST_EMPID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	static {
 		StringBuilder builderString = new StringBuilder();		
@@ -608,6 +611,32 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					"", false);
 		}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> sids) {
+		if(sids.isEmpty()) return Collections.emptyList();
+		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(sids, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
+					.setParameter("listSid", subList).getList());
+		});
+
+		List<String> ids = resultList.stream().map((employee) -> {
+			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
+		}).collect(Collectors.toList());
+		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
+				.setParameter("lstPersonId", ids).getList();
+		return resultList.stream().map((employee) -> {
+			for (BpsmtPerson person : lstPerson) {
+				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
+					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId,
+							employee.employeeCode, person.personName, "", "", "", false);
+				}
+			}
+			return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId, employee.employeeCode, "",
+					"", "", "", false);
+		}).collect(Collectors.toList());
+	}
     
 	@Override
 	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
@@ -789,6 +818,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DailyRecEditSetDto> getDailyRecEditSet(List<String> listEmployeeId, DateRange dateRange) {
+		if(listEmployeeId.isEmpty()) return Collections.emptyList();
 		return this.queryProxy().query(SEL_DAILY_REC_EDIT_SET, KrcdtDailyRecEditSet.class)
 				.setParameter("employeeIds", listEmployeeId).setParameter("ymds", dateRange.toListDate()).getList()
 				.stream().map(s -> {
