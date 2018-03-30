@@ -689,7 +689,7 @@ module a3 {
                      key: "elapsedTime",
                      defaultValue: ko.observable(0), 
                      width: 100, 
-                     template: `<input data-bind="ntsTimeEditor: {
+                     template: `<input class="time-edior-column" data-bind="ntsTimeEditor: {
                             constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',

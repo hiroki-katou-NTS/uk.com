@@ -302,7 +302,7 @@ public class ProgramsManager {
 	/**
 	 * KMK011G
 	 */
-	public static final Program KMK011G = new Program(WebAppId.AT, ProgramIdConsts.KMK011G, "KMK011_68",
+	public static final Program KMK011G = new Program(WebAppId.AT, ProgramIdConsts.KMK011G, "KMK011_69",
 			"/view/kmk/011/g/index.xhtml");
 
 	/**

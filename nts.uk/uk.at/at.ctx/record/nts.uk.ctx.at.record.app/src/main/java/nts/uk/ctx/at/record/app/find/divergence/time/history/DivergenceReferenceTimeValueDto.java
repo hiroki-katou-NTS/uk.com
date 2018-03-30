@@ -9,10 +9,10 @@ import lombok.Data;
 public class DivergenceReferenceTimeValueDto {
 	
 	/** The alarm time. */
-	private int alarmTime; 
+	private Integer alarmTime; 
 	
 	/** The error time. */
-	private int errorTime;
+	private Integer errorTime;
 	
 	/**
 	 * Instantiates a new divergence reference time value dto.
@@ -20,7 +20,7 @@ public class DivergenceReferenceTimeValueDto {
 	 * @param alarmTime the alarm time
 	 * @param errorTime the error time
 	 */
-	public DivergenceReferenceTimeValueDto(int alarmTime, int errorTime) {
+	public DivergenceReferenceTimeValueDto(Integer alarmTime, Integer errorTime) {
 		this.alarmTime = alarmTime;
 		this.errorTime = errorTime;
 	}

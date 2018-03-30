@@ -29,7 +29,7 @@ public class DivergenceReferenceTimeValue extends DomainObject {
 	 * @param errorTime the error time
 	 */
 	public DivergenceReferenceTimeValue(DivergenceReferenceTime alarmTime, DivergenceReferenceTime errorTime) {
-		this.alarmTime = Optional.of(alarmTime);
-		this.errorTime = Optional.of(errorTime);
+		this.alarmTime = Optional.ofNullable(alarmTime);
+		this.errorTime = Optional.ofNullable(errorTime);
 	}
 }
