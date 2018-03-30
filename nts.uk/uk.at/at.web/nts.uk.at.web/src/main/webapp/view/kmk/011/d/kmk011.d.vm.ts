@@ -92,6 +92,7 @@ module nts.uk.at.view.kmk011.d {
                         let histId: string = null;
                         _self.histList().length > 0 ? histId = _self.histList()[0].historyId : histId = null;
                         _self.fillListItemSetting(histId).done(() => {
+                            _self.selectedHist(histId);
                             blockUI.clear();
                             dfd.resolve(_self);
                             $('#list-box-1').focus();
