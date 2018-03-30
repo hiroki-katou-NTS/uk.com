@@ -1,6 +1,5 @@
-package nts.uk.ctx.at.shared.app.find.workrule.closure.dto;
+package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
-import java.time.YearMonth;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -10,16 +9,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
 @Value
 @AllArgsConstructor
-public class ApprovalComfirmDto {
-	/**
-	 * システム選択中の締めIDを取得 
-	 * */
-	private int selectedClosureId;
-	
-	/**
-	 * list closure
-	 */
-	private List<ClosuresDto> closuresDto;
+public class ApprovalStatusPeriorDto {
 	/**
 	 * 開始日
 	 */
@@ -28,10 +18,10 @@ public class ApprovalComfirmDto {
 	 * 終了日
 	 */
 	private GeneralDate endDate;
-	
-	private int processingYm;
 	/**
 	 * list employee code
 	 */
 	private List<ClosureEmployment> employeesCode;
+	
+	private int yearMonth;
 }
