@@ -89,6 +89,7 @@ module nts.uk.at.view.kmk011.b {
                 self.listDivergenceItem = ko.observableArray([]);
                 self.listItemSelected = ko.observableArray([]);
                 self.existedDivergenceReason = ko.observable(false);
+                
                 //subscribe currentCode
                 self.currentCode.subscribe(function(codeChanged) {
                     self.clearError();

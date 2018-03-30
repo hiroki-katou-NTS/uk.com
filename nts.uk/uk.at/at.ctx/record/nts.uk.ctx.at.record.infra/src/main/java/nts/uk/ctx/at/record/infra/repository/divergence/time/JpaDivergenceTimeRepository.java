@@ -71,8 +71,8 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 			this.addAttendance(attendanceList);
 		} else {
 			// get primaty Key
-			KrcstDvgcTimePK PK = new KrcstDvgcTimePK(
-					AppContexts.user().companyId(), divTimeDomain.getDivergenceTimeNo());
+			KrcstDvgcTimePK PK = new KrcstDvgcTimePK(AppContexts.user().companyId(),
+					divTimeDomain.getDivergenceTimeNo());
 
 			// get optional entity
 			Optional<KrcstDvgcTime> optionalEntity = this.queryProxy().find(PK, KrcstDvgcTime.class);
@@ -87,6 +87,34 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
+	 * getDivTimeListByNo(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<DivergenceTime> getDivTimeListByNo(String companyId, List<Integer> divTimeNo) {
+
+		//Define DivergenceTime list
+		List<DivergenceTime> divTimeList = new ArrayList<DivergenceTime>();
+
+		//Foreach integer list 
+		divTimeNo.forEach(item -> {
+			//Get OptionalDivTime
+			Optional<DivergenceTime> optionalDivTime = this.getDivTimeInfo(companyId, item);
+			//if present DivergenceTime
+			if (optionalDivTime.isPresent()) {
+				//get domain
+				DivergenceTime divTime = optionalDivTime.get();
+				//add domain to DivergenceTime list
+				divTimeList.add(divTime);
+			}
+		});
+		//return
+		return divTimeList;
 	}
 
 	/*
