@@ -135,33 +135,27 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $("#grd_Condition tr[aria-selected='true']").focus();
         }
 
-        private uploadFile(): void {
+        private uploadFile(fileInfo: any): void {
             let self = this;
             block.invisible();
-            $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-                service.getNumberOfLine(res[0].id, self.selectedEncoding()).done(function(totalLine: any) {
-                    self.totalLine(totalLine);
-                    //アップロードCSVが取込開始行に満たない場合                   
-                    if (totalLine < self.selectedConditionStartLine()) {
-                        self.resetFile();
-                        alertError({ messageId: "Msg_1059" });
-                    }
-                    //アップロードCSVが取込開始行以上ある
-                    else {
-                        //基盤からファイルIDを取得する
-                        self.fileId(res[0].id);
-                    }
-                }).fail(function(err) {
+            self.fileId(fileInfo.id);
+            service.getNumberOfLine(fileInfo.id, self.selectedEncoding()).done(function(totalLine: any) {
+                self.totalLine(totalLine);
+                //アップロードCSVが取込開始行に満たない場合                   
+                if (totalLine < self.selectedConditionStartLine()) {
                     self.resetFile();
-                    alertError({ messageId: "Msg_910" });
-                }).always(() => {
-                    block.clear();
-                    $("#file-upload").focus();
-                });
+                    alertError({ messageId: "Msg_1059" });
+                }
+                //アップロードCSVが取込開始行以上ある
+                else {
+                    //基盤からファイルIDを取得する
+                    self.fileId(fileInfo.id);
+                }
             }).fail(function(err) {
                 self.resetFile();
-                block.clear();
                 alertError({ messageId: "Msg_910" });
+            }).always(() => {
+                block.clear();
                 $("#file-upload").focus();
             });
         }
@@ -169,7 +163,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         private resetFile(): void {
             let self = this;
             self.fileId(null);
-            $("#file-upload input.nts-editor.nts-input").val("");
+            self.fileName("");
         }
 
         private loadListCondition(sysType): void {
