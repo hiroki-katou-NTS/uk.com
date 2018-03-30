@@ -5,11 +5,19 @@
 }
 
 .div_line_col_1 {
-	width: 130px;
+	width: 150px;
 }
 
 .div_line_col_2 {
 	width: 750px;
+}
+
+.app_date {
+	width: 250px;
+}
+
+.div_line_col_3 {
+	width: 350px;
 }
 
 #number_Info tr>* {
@@ -35,10 +43,6 @@
 
 .change_woking_hours {
 	margin-left: 40px;
-}
-
-#container {
-	margin-left: 20px;
 }
 
 .nts-switch-button {

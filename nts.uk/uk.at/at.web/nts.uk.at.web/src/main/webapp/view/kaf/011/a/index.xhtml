@@ -21,9 +21,6 @@
 			<!-- kaf011 a-->
 			<com:scriptfile path="kaf011.a.vm.js" />
 			<com:scriptfile path="kaf011.a.start.js" />
-
-
-
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 			</com:ValidatorScript>
@@ -39,7 +36,7 @@
 				<!-- A.A1_3 -->
 				<button data-bind=" click: openKDL009" tabindex="1">#{i18n.getText('KAF011_7')}</button>
 				<!-- A.A2_1 -->
-				<button tabindex="1">#{i18n.getText('KAF011_9')}</button>
+				<button tabindex="1" data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
 				<!-- A.A3_1 -->
 				<div id="ckbSendMail"
 					data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>

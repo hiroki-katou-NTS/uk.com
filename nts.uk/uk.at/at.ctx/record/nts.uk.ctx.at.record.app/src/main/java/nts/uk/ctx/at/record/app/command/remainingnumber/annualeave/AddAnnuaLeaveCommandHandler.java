@@ -13,8 +13,8 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AnnuaLeaveCommand, PeregAddCommandResult>
-		implements PeregAddCommandHandler<AnnuaLeaveCommand> {
+public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AddAnnuaLeaveCommand, PeregAddCommandResult>
+		implements PeregAddCommandHandler<AddAnnuaLeaveCommand> {
 
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
@@ -23,16 +23,16 @@ public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AnnuaL
 	private AnnLeaMaxDataRepository maxDataRepo;
 
 	@Override
-	protected PeregAddCommandResult handle(CommandHandlerContext<AnnuaLeaveCommand> context) {
-		AnnuaLeaveCommand c = context.getCommand();
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddAnnuaLeaveCommand> context) {
+		AddAnnuaLeaveCommand c = context.getCommand();
 
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
-				c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate());
+				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(), c.getStandardDate());
 		annLeaBasicInfoRepo.add(basicInfo);
 
-		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
-				c.getUsedTimes(), c.getMaxTimes() - c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes(),
-				c.getMaxMinutes() - c.getUsedMinutes());
+		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes().intValue(),
+				c.getUsedTimes().intValue(), c.getMaxTimes().intValue() - c.getUsedTimes().intValue(), c.getMaxMinutes().intValue(), c.getUsedMinutes().intValue(),
+				c.getMaxMinutes().intValue() - c.getUsedMinutes().intValue());
 		maxDataRepo.add(maxData);
 
 		return new PeregAddCommandResult(null);
@@ -45,7 +45,7 @@ public class AddAnnuaLeaveCommandHandler extends CommandHandlerWithResult<AnnuaL
 
 	@Override
 	public Class<?> commandClass() {
-		return AnnuaLeaveCommand.class;
+		return AddAnnuaLeaveCommand.class;
 	}
 
 }

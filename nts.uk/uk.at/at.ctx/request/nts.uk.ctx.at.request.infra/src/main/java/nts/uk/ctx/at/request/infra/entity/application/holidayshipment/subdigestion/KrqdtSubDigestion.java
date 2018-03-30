@@ -65,9 +65,16 @@ public class KrqdtSubDigestion extends UkJpaEntity implements Serializable {
 	/**
 	 * 振休発生日
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OCCURRENCE_DATE")
 	private GeneralDate occurrenceDate;
+
+	/**
+	 * 休出状態
+	 */
+	@Basic(optional = false)
+	@Column(name = "UNKNOWN_DATE_ATR")
+	private int unknownDate;
 
 	@Override
 	protected Object getKey() {

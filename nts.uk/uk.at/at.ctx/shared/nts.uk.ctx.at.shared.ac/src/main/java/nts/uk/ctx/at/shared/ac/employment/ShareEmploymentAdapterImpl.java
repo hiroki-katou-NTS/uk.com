@@ -4,17 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ac.employment;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentImport;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**
@@ -37,17 +39,20 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 			return new EmpCdNameImport(x.getCode(), x.getName());
 		}).collect(Collectors.toList());
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter#findByEmpCodes(java.lang.String, java.util.List)
+	 * @see nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter
+	 * #findByEmpCodes(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<BsEmploymentImport> findByEmpCodes(String companyId, List<String> empCodes) {
-		return new ArrayList<>();
-//		List<ShEmploymentExport> empExport = this.employment.findByEmpCodes(companyId, empCodes);
-//		return empExport.stream().map(item -> {
-//			return new BsEmploymentImport(item.getCompanyId(), item.getEmploymentCode(), item.getEmploymentName(),
-//					item.getEmpExternalCode(), item.getMemo());
-//		}).collect(Collectors.toList());
+	public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId, GeneralDate baseDate) {
+		Optional<SEmpHistExport> empHistOpt = employment.findSEmpHistBySid(companyId, employeeId, baseDate);
+		if (empHistOpt.isPresent()) {
+			SEmpHistExport empHist = empHistOpt.get();
+			return Optional.of(new BsEmploymentHistoryImport(empHist.getEmployeeId(), empHist.getEmploymentCode(),
+					empHist.getEmploymentName(), empHist.getPeriod()));
+		}
+		return Optional.empty();
 	}
+	
 }

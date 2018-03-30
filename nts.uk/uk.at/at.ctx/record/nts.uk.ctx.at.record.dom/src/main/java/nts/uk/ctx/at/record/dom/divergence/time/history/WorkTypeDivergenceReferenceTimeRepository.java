@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 
 /**
  * The Interface WorkTypeDivergenceReferenceTimeRepository.
@@ -23,7 +22,7 @@ public interface WorkTypeDivergenceReferenceTimeRepository {
 	 * @return the optional
 	 */
 	Optional<WorkTypeDivergenceReferenceTime> findByKey(String histId, BusinessTypeCode workTypeCode,
-			DivergenceType divergenceTimeNo);
+			Integer divergenceTimeNo);
 
 	/**
 	 * Find all.

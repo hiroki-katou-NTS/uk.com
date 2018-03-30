@@ -1,8 +1,7 @@
 package nts.uk.ctx.sys.auth.dom.grant.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,8 +14,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -27,6 +29,9 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 
 	@Inject
 	private UserRepository userRepository;	
+	
+	@Inject
+	private RoleSetService rolesetService;
 
 	@Override
 	public boolean checkSysAdmin(String userID, DatePeriod validPeriod) {
@@ -81,6 +86,21 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 		return false;
 
 	}
+	@Override
+	public String getRoleFromUserId(String userId, int roleType, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
+		if (roleType == RoleType.SYSTEM_MANAGER.value || roleType == RoleType.GROUP_COMAPNY_MANAGER.value)
+			companyId = "000000000000-0000";
+		
+		Optional<RoleIndividualGrant> roleIndOpt = roleIndividualGrantRepo.findByUserCompanyRoleTypeDate(userId, companyId, roleType, baseDate);
+		if(!roleIndOpt.isPresent()) {
+			RoleSet roleset = rolesetService.getRoleSetFromUserId(userId, baseDate);
+			String roleID = roleset.getRoleIDByRoleType(RoleType.valueOf(roleType));
+			return roleID;
+		}
+		
+		return roleIndOpt.get().getRoleId();
+	}
 
 	@Data
 	@AllArgsConstructor
@@ -89,4 +109,10 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 		private GeneralDate startDate;
 		private GeneralDate endDate;
 	}
+
+
+	
+
+
+	
 }

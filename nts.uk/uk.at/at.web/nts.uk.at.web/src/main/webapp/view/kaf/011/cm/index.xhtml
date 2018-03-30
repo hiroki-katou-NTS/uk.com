@@ -39,6 +39,7 @@
 							enable: screenModeNew }"></div>
 
 			</div>
+
 		</div>
 		<div class="div_line" data-bind="if:screenModeNew">
 			<div class="div_line_col_1">
@@ -55,8 +56,7 @@
 			</div>
 		</div>
 		<!-- app rec -->
-		<div
-			data-bind="visible : appComSelectedCode() !=2, with : takingOutWk"
+		<div data-bind="visible : appComSelectedCode() !=2, with : recWk"
 			id="app_rec_container" class="div_line">
 			<div id="app_rec_header" class="div_line app_header">
 				#{i18n.getText('KAF011_1')}</div>
@@ -69,12 +69,14 @@
 				<div class="div_line_col_1">
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
-				<div class="div_line_col_2" data-bind="if:$parent.screenModeNew">
+				<div class="div_line_col_2"
+					data-bind="if:$parent.screenModeNew()==true">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
-				<div class="div_line_col_2">
-					<label class="text_line"></label>
+				<div data-bind="if:$parent.screenModeNew() ==false"
+					class="div_line_col_2 app_date">
+					<label class="text_line" data-bind="text:parseText(appDate)"></label>
 				</div>
 
 			</div>
@@ -93,6 +95,7 @@
 										value: wkTypeCD ,
 										optionsText: 'name',
 										editable: false,
+										required:true,
 										enable: $parent.screenModeNew ,
 										columns: [
 											{ prop: 'name', length: 10 },
@@ -154,7 +157,7 @@
 
 		<!-- app break -->
 		<div id="app_break_container" class="div_line"
-			data-bind="visible : appComSelectedCode() !=1 , with: holidayWk ">
+			data-bind="visible : appComSelectedCode() !=1 , with: absWk ">
 			<div id="app_break_header" class="div_line app_header">
 				#{i18n.getText('KAF011_2')}</div>
 
@@ -167,25 +170,28 @@
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
 				</div>
 
-				<div class="div_line_col_2" data-bind="if:$parent.screenModeNew">
+				<div class="div_line_col_2"
+					data-bind="if:$parent.screenModeNew()==true">
 					<div
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
-				<div data-bind="if:!$parent.screenModeNew">
-					<div class="div_line_col_2">
-						<label class="text_line"></label>
-					</div>
 
-					<div class="div_line_col_3">
-						<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
-						<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
-
-						<button tabindex="1">#{i18n.getText('KAF011_26')}</button>
-
-						<button tabindex="1">#{i18n.getText('KAF011_27')}</button>
-						<span class="caret-right caret-inline"></span>
-					</div>
+				<div data-bind="if:$parent.screenModeNew() ==false"
+					class="div_line_col_2 app_date">
+					<label class="text_line" data-bind="text:parseText(appDate)"></label>
 				</div>
+
+				<div data-bind="if:$parent.screenModeNew() ==false"
+					class="div_line_col_3">
+					<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
+					<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
+
+					<button tabindex="1">#{i18n.getText('KAF011_26')}</button>
+
+					<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
+					<span class="caret-right caret-inline"></span>
+				</div>
+
 			</div>
 			<div class="div_line">
 				<div class="div_line_col_1">
@@ -201,6 +207,7 @@
 										value: wkTypeCD ,
 										optionsText: 'name',
 										editable: false,
+										required:true,
 										enable: $parent.screenModeNew,
 										columns: [
 											{ prop: 'name', length: 10 },
@@ -213,6 +220,7 @@
 				<div class="div_line">
 					<div data-bind="ntsCheckBox: { checked: changeWorkHoursType }">#{i18n.getText('KAF011_29')}</div>
 				</div>
+				<hr style="width: 958px;" />
 				<div class="div_line">
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
@@ -261,19 +269,19 @@
 					data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
-										optionsValue: 'value' ,
+										optionsValue: 'reasonID' ,
 										visibleItemsCount: 5 ,
-										value: appReasonSelectedType ,
-										optionsText: 'name',
+										value: appReasonSelectedID ,
+										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'name', length: 10 },
+											{ prop: 'reasonTemp', length: 10 },
 										]}">
 				</div>
 			</div>
 		</div>
-		<div class="div_line">
+		<div class="div_line" data-bind="if:showReason() ==1">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_17')}</div>
 			</div>

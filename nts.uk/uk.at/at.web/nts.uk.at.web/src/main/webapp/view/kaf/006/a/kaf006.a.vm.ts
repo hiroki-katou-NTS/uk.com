@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         displayEndDateFlg : KnockoutObservable<boolean> = ko.observable(false);
+        enableDisplayEndDate: KnockoutObservable<boolean> = ko.observable(true);
         //current Data
 //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
@@ -22,6 +23,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         startAppDate: KnockoutObservable<string> = ko.observable('');
          // 申請日付
         endAppDate: KnockoutObservable<string> = ko.observable('');
+        appDate: KnockoutObservable<string> = ko.observable('');
         selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
         holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);
         holidayTypeCode: KnockoutObservable<number> = ko.observable(0);
@@ -66,7 +68,14 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         
         typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(true);
         displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(true);
-        
+        // enable
+        enbAllDayHalfDayFlg: KnockoutObservable<boolean> = ko.observable(true);
+        enbWorkType: KnockoutObservable<boolean> = ko.observable(true);
+        enbHalfDayFlg: KnockoutObservable<boolean> = ko.observable(true);
+        enbChangeWorkHourFlg: KnockoutObservable<boolean> = ko.observable(true);
+        enbbtnWorkTime: KnockoutObservable<boolean> = ko.observable(true);
+        enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
+        enbContentReason:  KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             
             let self = this;
@@ -74,7 +83,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 006a AFTER start 000_A
             self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
+                self.kaf000_a.start(self.employeeID,1,1,moment(new Date()).format("YYYY/MM/DD")).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
                 
                 })    
@@ -93,10 +102,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeID: null        
             }).done((data) => {
                 self.initData(data);
-                self.holidayTypeCode.subscribe(function(value){
-                    if (nts.uk.ui.errors.hasError()){return;}
-                    if(!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())){
-                         var dfd = $.Deferred();
+                self.holidayTypeCode.subscribe(function(value) {
+                    if (nts.uk.ui.errors.hasError()) { return; }
+                    if (!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())) {
+                        var dfd = $.Deferred();
                         service.getAllAppForLeave({
                             startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
                             endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
@@ -107,21 +116,29 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         }).done((data) => {
                             self.displayStartFlg(true);
                             self.changeWorkHourValue(data.changeWorkHourFlg);
-                            if(nts.uk.util.isNullOrEmpty(data.workTypes)){
+                            if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
                                 self.typeOfDutys([]);
-                            }else{
+                            } else {
                                 for (let i = 0; i < data.workTypes.length; i++) {
                                     self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
                                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
                                 }
                             }
                             dfd.resolve(data);
-                        }).fail((res) =>{
-                            dfd.reject(res);  
+                        }).fail((res) => {
+                            dfd.reject(res);
                         });
                         return dfd.promise();
                     }
                 });
+                self.selectedAllDayHalfDayValue.subscribe(function(value) {
+                        if(value == 0){
+                            self.enbHalfDayFlg(true);
+                        }else{
+                            self.enbHalfDayFlg(false);
+                        }
+                });
+               
                 // find changeDate
                 self.startAppDate.subscribe(function(value){
                     self.findChangeAppDate(value);
@@ -183,7 +200,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 self.prePostSelected(result.application.prePostAtr);
                 self.displayPrePostFlg(result.prePostFlg);
-                self.kaf000_a.getAppDataDate(0, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
+                self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
                 dfd.resolve(result);
             }).fail((res) => {
                 dfd.reject(res);
@@ -410,7 +427,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         convertListHolidayType(data: any){
             let self =  this;
-            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
+            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "欠勤",3: "特別休暇",4: "積立年休",5: "休日",6: "時間消化",7: "振休"};
             for(let i = 0; i < data.length ; i++){
                 self.holidayTypes.push(new common.HolidayType(i,nameHolidayType[i]));
             }
