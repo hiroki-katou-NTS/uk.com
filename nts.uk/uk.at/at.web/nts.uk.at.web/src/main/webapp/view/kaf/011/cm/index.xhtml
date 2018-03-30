@@ -1,4 +1,5 @@
 <div id="container">
+
 	<div id="content_left">
 		<!-- 	<div class="div_line" id='number_Info'>
 			<div class="div_line_col_1">
@@ -19,7 +20,7 @@
 
 		<div class="div_line">
 			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_11')}</div>
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_11')}</div>
 			</div>
 			<div class="div_line_col_2">
 				<label data-bind="text:employeeName" class="text_line"></label>
@@ -30,7 +31,7 @@
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<div id="swb_pre_post_type" class="cf"
+				<div id="swb_pre_post_type" class="cf" tabindex="2"
 					data-bind="ntsSwitchButton: {
 							options: prePostTypes ,
 							optionsValue: 'code',
@@ -46,7 +47,7 @@
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<div id="swb_app_com" class="cf"
+				<div id="swb_app_com" class="cf" tabindex="3"
 					data-bind="ntsSwitchButton: {
 							options: appComItems ,
 							optionsValue: 'code',
@@ -71,7 +72,7 @@
 				</div>
 				<div class="div_line_col_2"
 					data-bind="if:$parent.screenModeNew()==true">
-					<div
+					<div tabindex="4"
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
 				<div data-bind="if:$parent.screenModeNew() ==false"
@@ -86,11 +87,11 @@
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_28')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<div tabindex="7" id="combo-box"
+					<div tabindex="4" id="combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: wkTypes ,
-										optionsValue: 'value' ,
+										optionsValue: 'workTypeCode' ,
 										visibleItemsCount: 5 ,
 										value: wkTypeCD ,
 										optionsText: 'name',
@@ -109,7 +110,7 @@
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 				</div>
 				<div class="div_line_col_2 working_hour">
-					<button data-bind=" click: openKDL003   " tabindex="1">#{i18n.getText('KAF011_5')}</button>
+					<button data-bind=" click: openKDL003" tabindex="4">#{i18n.getText('KAF011_5')}</button>
 					<div data-bind='text:wkText'></div>
 				</div>
 			</div>
@@ -118,10 +119,10 @@
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 				</div>
 				<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
-					<input
+					<input tabindex="4"
 						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable: true , readonly: false , required: false ,option: timeOption }" />
-					<div class="cf"
+					<div class="cf" tabindex="4"
 						data-bind="ntsSwitchButton: {
 							options: startTypes ,
 							optionsValue: 'code',
@@ -129,11 +130,11 @@
 							value: startType ,
 							enable: true }"></div>
 					<div>#{i18n.getText('KAF011_37')}</div>
-					<input
+					<input tabindex="4"
 						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: endTime , enable: true , readonly: false , required: false,option: timeOption }" />
 
-					<div class="cf"
+					<div class="cf" tabindex="4"
 						data-bind="ntsSwitchButton: {
 							options: endTypes ,
 							optionsValue: 'code',
@@ -172,7 +173,7 @@
 
 				<div class="div_line_col_2"
 					data-bind="if:$parent.screenModeNew()==true">
-					<div
+					<div tabindex="5"
 						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 				</div>
 
@@ -198,11 +199,11 @@
 					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_28')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<div tabindex="7" id="combo-box"
+					<div tabindex="5" id="combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: wkTypes ,
-										optionsValue: 'value' ,
+										optionsValue: 'workTypeCode' ,
 										visibleItemsCount: 5 ,
 										value: wkTypeCD ,
 										optionsText: 'name',
@@ -218,7 +219,8 @@
 			</div>
 			<div class="div_line change_woking_hours">
 				<div class="div_line">
-					<div data-bind="ntsCheckBox: { checked: changeWorkHoursType }">#{i18n.getText('KAF011_29')}</div>
+					<div tabindex="5"
+						data-bind="ntsCheckBox: { checked: changeWorkHoursType }">#{i18n.getText('KAF011_29')}</div>
 				</div>
 				<hr style="width: 958px;" />
 				<div class="div_line">
@@ -228,7 +230,7 @@
 					<div class="div_line_col_2 working_hour">
 						<button
 							data-bind=" enable: changeWorkHoursType ,click:openKDL003 "
-							tabindex="1">#{i18n.getText('KAF011_5')}</button>
+							tabindex="5">#{i18n.getText('KAF011_5')}</button>
 						<div data-bind='text:wkText'></div>
 					</div>
 				</div>
@@ -237,12 +239,12 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
-						<input
+						<input tabindex="5"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable:$parent.changeWorkHoursType , readonly: false , required: false,option: timeOption }" />
 
 						<div>#{i18n.getText('KAF011_37')}</div>
-						<input
+						<input tabindex="5"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: endTime , enable: $parent.changeWorkHoursType , readonly: false , required: false  ,option: timeOption}" />
 
@@ -265,7 +267,7 @@
 				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<div tabindex="7" id="combo-box"
+				<div tabindex="6" id="combo-box"
 					data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
@@ -282,11 +284,12 @@
 			</div>
 		</div>
 		<div class="div_line" data-bind="if:showReason() ==1">
+			<!-- constraint: -->
 			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_17')}</div>
+				<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<textarea style="height: 100px"
+				<textarea style="height: 100px" tabindex="6"
 					data-bind="ntsMultilineEditor: {value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
