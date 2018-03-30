@@ -1016,6 +1016,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.timezones([]);
+                    this.timezones().push(new DeductionTimeModel());
                 }
             }
 
@@ -1678,6 +1679,9 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
                 }
 
+                resetData() {
+                    this.delFromEmTime(false);
+                }
             }
 
             export class GraceTimeSettingModel {
@@ -1796,7 +1800,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    //this.commonSet.resetData();
+                    this.commonSet.resetData();
                     let lateSet = _.find(this.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.LATE);
                     lateSet.updateData(WorkTimezoneLateEarlySetModel.getDefaultOtherSet(LateEarlyAtr.LATE).toDto());
                     let leaveEarlySet = _.find(this.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.EARLY);
