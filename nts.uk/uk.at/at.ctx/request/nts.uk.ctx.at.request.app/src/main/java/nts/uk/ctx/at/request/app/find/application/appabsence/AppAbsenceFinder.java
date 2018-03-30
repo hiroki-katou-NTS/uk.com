@@ -130,13 +130,14 @@ public class AppAbsenceFinder {
 		if(!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)){
 			for(AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType){
 				if(!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6 && appEmploymentSetting.getHolidayOrPauseType() != 5){
-					sortHolidayAppType(holidayAppTypes,appEmploymentSetting.getHolidayOrPauseType());
+					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
 		}
 		if(CollectionUtil.isEmpty(holidayAppTypes)){
 			throw new BusinessException("Msg_473");
 		}
+		holidayAppTypes.sort((a,b) -> a.compareTo(b));
 		result.setHolidayAppTypes(holidayAppTypes);
 		if(appDate != null){
 			 //13.実績の取得
@@ -215,13 +216,14 @@ public class AppAbsenceFinder {
 		if (!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
 			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
 				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6 && appEmploymentSetting.getHolidayOrPauseType() != 5) {
-					sortHolidayAppType(holidayAppTypes,appEmploymentSetting.getHolidayOrPauseType());
+					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
 		}
 		if (CollectionUtil.isEmpty(holidayAppTypes)) {
 			throw new BusinessException("Msg_473");
 		}
+		holidayAppTypes.sort((a,b) -> a.compareTo(b));
 		result.setHolidayAppTypes(holidayAppTypes);
 		getAppReason(result,companyID);
 		// get employeeName, employeeID
@@ -636,36 +638,6 @@ public class AppAbsenceFinder {
 			}
 		}
 		return null;
-	}
-	private void sortHolidayAppType(List<Integer> holidayAppTypes,Integer holidayAppType){
-		switch (holidayAppType) {
-		case 0:
-			holidayAppTypes.add(0, holidayAppType);
-			break;
-		case 1:
-			holidayAppTypes.add(1, holidayAppType);
-			break;
-		case 7:
-			holidayAppTypes.add(2, holidayAppType);
-			break;
-		case 2:
-			holidayAppTypes.add(3, holidayAppType);
-			break;
-		case 3:
-			holidayAppTypes.add(4, holidayAppType);
-			break;
-		case 4:
-			holidayAppTypes.add(5, holidayAppType);
-			break;
-		case 5:
-			holidayAppTypes.add(6, holidayAppType);
-			break;
-		case 6:
-			holidayAppTypes.add(7, holidayAppType);
-			break;
-		default:
-			break;
-		}
 	}
 
 }

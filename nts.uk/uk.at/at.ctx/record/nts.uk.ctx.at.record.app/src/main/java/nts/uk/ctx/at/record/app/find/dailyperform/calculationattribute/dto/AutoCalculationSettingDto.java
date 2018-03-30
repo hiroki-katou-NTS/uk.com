@@ -19,7 +19,7 @@ public class AutoCalculationSettingDto {
 	private int calculationAttr;
 
 	/** 上限の設定: 時間外の上限設定 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "上限の設定")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int upperLimitSetting;
 }

@@ -704,6 +704,8 @@ project (':com.screen:nts.uk.screen.com.app') {
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
 	}
 }
 
