@@ -45,8 +45,8 @@ module nts.uk.at.view.kmk011.d {
 
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
-                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') },
-                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') }
+                    { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') },
+                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }                    
                 ]);
                 _self.enable = ko.observable(true);
                 _self.required = ko.observable(true);
@@ -344,8 +344,8 @@ module nts.uk.at.view.kmk011.d {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         let itemDto = new ComDivergenceTimeSettingDto();
@@ -358,8 +358,8 @@ module nts.uk.at.view.kmk011.d {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         _self.mapObj.get(i).notUseAtr(item.notUseAtr);
@@ -417,11 +417,12 @@ module nts.uk.at.view.kmk011.d {
             // history mode
             public createMode(): void {
                 let _self = this;
+                
                 nts.uk.ui.windows.setShared('listHist', _self.histList());
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
                     _self.fillListHistory().done(() => {
-                        let histId: string = _self.histList()[_self.histList().length - 1].historyId
+                        let histId: string = _self.histList()[_self.histList().length - 1].historyId;
                         _self.selectedHist(histId);
                         $('#list-box-1').focus();
                     })
@@ -459,8 +460,14 @@ module nts.uk.at.view.kmk011.d {
             private getNextHistoryAfterDelete(): string { 
                 let _self = this;
                 let nextHistId: string = null;
-                 
-                let indexOfCurrentHist: number = _self.histList().findIndex(e => e.historyId == _self.selectedHist());
+                var indexOfCurrentHist: number = 0;
+                //find current index
+                for (let index = 0; index < _self.histList().length; index++){
+                    if(_self.histList()[index].historyId == _self.selectedHist()){
+                        indexOfCurrentHist = index;
+                    }
+                }
+                //find next histId
                 if (indexOfCurrentHist == 0){
                     if(_self.histList().length > 1){
                         nextHistId =  _self.histList()[indexOfCurrentHist + 1].historyId;

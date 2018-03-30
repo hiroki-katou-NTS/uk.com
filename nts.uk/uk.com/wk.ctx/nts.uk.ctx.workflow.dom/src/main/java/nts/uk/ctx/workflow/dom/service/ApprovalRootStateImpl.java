@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -30,7 +32,7 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, date);
 		ApprovalRootState approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
-				appID, 
+				appID,  
 				RootType.EMPLOYMENT_APPLICATION, 
 				approvalRootState.getHistoryID(), 
 				date, 
@@ -43,4 +45,12 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 		approvalRootStateRepository.delete(rootStateID);
 	}
 
+	@Override
+	public List<ApprovalRootState> getByPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate, Integer rootType) {
+		return approvalRootStateRepository.findAppByEmployeeIDRecordDate(
+				startDate, 
+				endDate, 
+				employeeID, 
+				rootType);
+	}
 }

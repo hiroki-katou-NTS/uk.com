@@ -90,11 +90,10 @@ module nts.uk.com.view.cmf001.q {
                 // ドメインモデル「外部受入実行結果ログ」に登録する
                 let command: IExacExeResultLog = self.exacExeResultLog;
                 service.addErrorLog(command).done(function(data){
-                    console.log("PROCESS ID:" + data);
                     self.processId(data);
-                    
+                    self.executionCheck();
                 });
-                self.executionCheck();
+                
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -131,7 +130,6 @@ module nts.uk.com.view.cmf001.q {
                     self.numberFail(),
                     self.stopMode(),
                     self.stateBehavior());
-
                 // find task id
                 service.check(command).done(function(res: any) {
                     self.taskId(res.taskInfor.id);

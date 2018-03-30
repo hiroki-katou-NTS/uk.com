@@ -33,10 +33,19 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
 				return reflectRecord.gobackReflectRecord(gobackpara, true);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+				AbsenceReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, true);
 			}
 		} else {
-			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
-				//return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), false);
+			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {				
+				return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), false);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
+				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
+				return reflectRecord.gobackReflectRecord(gobackpara, false);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+				AbsenceReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, false);
 			}
 		}
 		

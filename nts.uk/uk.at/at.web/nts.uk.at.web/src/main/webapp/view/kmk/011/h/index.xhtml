@@ -31,7 +31,7 @@
 				<div class="title-content"
 					style="margin-bottom: 20px; padding-left: 25px; padding-right: 25px;">
 					<!-- H1_7 -->
-					<span>#{i18n.getText('KMK011_8')}</span>
+					<span class="white-space-pre">#{i18n.getText('KMK011_8')}</span>
 				</div>
 
 				<div class="title-content"
@@ -45,7 +45,7 @@
 					<div id="manage_unit"
 						style="padding-left: 25px; padding-right: 25px;">
 						<!--H1-3-->
-						<div tabindex="-1" id="selectWorkTypeCheck,"
+						<div tabindex="1" id="selectWorkTypeCheck"
 							data-bind="ntsCheckBox: { checked: selectWorkTypeCheck, 
 														enable: true, 
 														text: '#{i18n.getText('KMK011_49')}'}">
@@ -56,10 +56,10 @@
 
 			<div id="functions-area-bottom">
 				<!-- H1_5 -->
-				<button tabindex="-1" data-bind="click: closeSaveDialog"
+				<button tabindex="2" data-bind="click: closeSaveDialog"
 					class="x-large proceed">#{i18n.getText('KMK011_65')}</button>
 				<!-- H1_6 -->
-				<button tabindex="-1" data-bind="click: closeDialog">#{i18n.getText('KMK011_63')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KMK011_63')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

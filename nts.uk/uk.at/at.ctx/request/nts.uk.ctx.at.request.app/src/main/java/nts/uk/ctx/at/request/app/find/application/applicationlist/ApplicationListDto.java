@@ -5,13 +5,15 @@ import java.util.List;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppGoBackInfoFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppHolidayWorkFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppOverTimeInfoFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppPrePostGroup;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppWorkChangeFull;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationStatus;
+import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppGoBackInfoFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 
 @Value
 public class ApplicationListDto {
@@ -24,14 +26,12 @@ public class ApplicationListDto {
 	private List<AppGoBackInfoFull> lstAppGoBack;
 	//TH: approval (count)
 	private	ApplicationStatus appStatusCount;
-//	private List<AppStatusApproval> lstStatusApproval;
-//	private List<String> lstTimeColor; 
-//	private List<String> lstFramStatus;
 	private List<AppPrePostGroup> lstAppGroup;
-//	private List<Integer> lstAppType;
 	//phuc vu cho viec loc theo aptype, dem lai trang thai don
 	private List<ApproveAgent> lstAgent;
 	private List<AppHolidayWorkFull> lstAppHdWork;
 	private List<AppWorkChangeFull> lstAppWorkChange;
+	private List<AppAbsenceFull> lstAppAbsence;
 	private List<AppInfor> lstAppInfor;
+	private HdAppSetDto hdAppSet;
 }

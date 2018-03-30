@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -63,12 +64,12 @@ public class LateTimeOfDaily {
 			) {
 
 		//勤務Noに一致する遅刻時間をListで取得する
-		List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
+		List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 																												 .filter(t -> new WorkNo(t.getLateTimeSheet().get().getWorkNo()).equals(workNo))
 																												 .map(t -> t.getLateTimeSheet().get())
 																												 .sorted((lateTimeSheet1,lateTimeSheet2) -> lateTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
 																														 .compareTo(lateTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
-																												 .collect(Collectors.toList());
+																												 .collect(Collectors.toList()):new ArrayList<>();
 		LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 																									  new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 

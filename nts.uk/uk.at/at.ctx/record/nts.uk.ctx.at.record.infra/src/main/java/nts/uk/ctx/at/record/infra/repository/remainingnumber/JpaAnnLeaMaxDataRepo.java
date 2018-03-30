@@ -19,7 +19,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 		Optional<KrcmtAnnLeaMax> entityOpt = this.queryProxy().find(employeeId, KrcmtAnnLeaMax.class);
 		if (entityOpt.isPresent()) {
 			KrcmtAnnLeaMax ent = entityOpt.get();
-			return Optional.of(AnnualLeaveMaxData.createFromJavaType(ent.employeeId, ent.maxTimes, ent.usedTimes,
+			return Optional.of(AnnualLeaveMaxData.createFromJavaType(ent.sid, ent.maxTimes, ent.usedTimes,
 					ent.remainingTimes, ent.maxMinutes, ent.usedMinutes, ent.remainingMinutes));
 		}
 		return Optional.empty();
@@ -28,7 +28,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 	@Override
 	public void add(AnnualLeaveMaxData maxData) {
 		KrcmtAnnLeaMax entity = new KrcmtAnnLeaMax();
-		entity.employeeId = maxData.getEmployeeId();
+		entity.sid = maxData.getEmployeeId();
 		if ( maxData.getHalfdayAnnualLeaveMax().isPresent()) {
 			HalfdayAnnualLeaveMax halfday = maxData.getHalfdayAnnualLeaveMax().get();
 			entity.maxTimes = halfday.getMaxTimes().v();
