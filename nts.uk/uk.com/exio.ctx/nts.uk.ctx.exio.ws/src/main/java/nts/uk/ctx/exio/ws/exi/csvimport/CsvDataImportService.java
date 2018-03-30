@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.ws.exi.csvimport;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -33,8 +34,8 @@ public class CsvDataImportService extends WebService {
 	}
 
 	@POST
-	@Path("getCsvRecord/{endcoding}")
-	public List<String> getRecord(@PathParam("endcoding") Integer endcoding, GettingCsvDataDto info) {
-		return fileFind.getRecord(info, endcoding);
+	@Path("getCsvRecord")
+	public List<String> getRecord(GettingCsvDataDto info) {
+		return fileFind.getRecord(info);
 	}
 }

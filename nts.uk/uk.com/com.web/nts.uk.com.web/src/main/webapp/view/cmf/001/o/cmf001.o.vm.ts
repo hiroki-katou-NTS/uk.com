@@ -29,6 +29,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
         totalLine: KnockoutObservable<number> = ko.observable(0);
+        
+        selectedEncoding: KnockoutObservable<number>;
+        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -39,7 +42,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 { content: '.step-2' }
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-
+            self.selectedEncoding = ko.observable(3);
+            self.encodingList(model.getEncodingList());
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
                 //画面上の条件コード/名称をクリアする
@@ -131,10 +135,11 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $("#grd_Condition tr[aria-selected='true']").focus();
         }
 
-        uploadFile(fileInfo: any) {
-            var self = this;
-            self.fileId(fileInfo.id);
-            service.getNumberOfLine(self.fileId()).done(function(totalLine: any) {
+        private uploadFile(): void {
+            let self = this;
+            block.invisible();
+            $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
+                service.getNumberOfLine(res[0].id, self.selectedEncoding()).done(function(totalLine: any) {
                     self.totalLine(totalLine);
                     //アップロードCSVが取込開始行に満たない場合                   
                     if (totalLine < self.selectedConditionStartLine()) {
@@ -144,7 +149,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //アップロードCSVが取込開始行以上ある
                     else {
                         //基盤からファイルIDを取得する
-                        self.fileId(self.fileId);
+                        self.fileId(res[0].id);
                     }
                 }).fail(function(err) {
                     self.resetFile();
@@ -153,13 +158,18 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     block.clear();
                     $("#file-upload").focus();
                 });
+            }).fail(function(err) {
+                self.resetFile();
+                block.clear();
+                alertError({ messageId: "Msg_910" });
+                $("#file-upload").focus();
+            });
         }
 
         private resetFile(): void {
             let self = this;
-            self.fileName("");
             self.fileId(null);
-           // $("#file-upload input.nts-editor.nts-input").val("");
+            $("#file-upload input.nts-editor.nts-input").val("");
         }
 
         private loadListCondition(sysType): void {
@@ -267,7 +277,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     _.each(_rspList, rs => {
                         columns.push(rs.csvItemNumber() - 1);
                     });
-                    let sv1 = service.getRecord(self.fileId(), columns, self.selectedConditionStartLine() - 1);
+                    let sv1 = service.getRecord(self.fileId(), columns, self.selectedConditionStartLine() - 1, self.selectedEncoding());
                     let sv2 = service.getCategoryItem(self.selectedConditionItem.categoryId);
 
                     $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {
