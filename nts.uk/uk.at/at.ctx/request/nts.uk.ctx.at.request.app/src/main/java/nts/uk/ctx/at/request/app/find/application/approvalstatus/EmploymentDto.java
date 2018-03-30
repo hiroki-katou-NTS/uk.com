@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
  */
 @AllArgsConstructor
 @Value
-public class ApprovalStatusEmpDto {
-	private String sId;
+public class EmploymentDto {
+	private String empCd;
 	private Period closurePeriod;
 }

@@ -13,6 +13,9 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalStatusForEmployee_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
@@ -31,6 +34,9 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private EmployeeRequestAdapter employeeRequestAdapter;
+	
+	@Inject 
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
 	@Inject
 	private MailSender mailsender;
@@ -225,13 +231,13 @@ public class ApprovalStatusFinder {
 		// 社員ID(リスト)
 		for (String sId : listSId) {
 			// imported(就業)「所属雇用履歴」より雇用コードを取得する
-			List<ApprovalStatusEmpDto> listEmpHist = new ArrayList<ApprovalStatusEmpDto>();
+			List<EmploymentDto> listEmpHist = new ArrayList<EmploymentDto>();
 			// Waiting for Q&A
 			Period empPeriod = new Period(GeneralDate.fromString("2018/01/02", "yyyy/MM/dd"),
 					GeneralDate.fromString("2018/02/02", "yyyy/MM/dd"));
 
 			// 雇用（リスト）
-			for (ApprovalStatusEmpDto sttEmp : listEmpHist) {
+			for (EmploymentDto sttEmp : listEmpHist) {
 				// 存在しない場合
 				if (listEmpCd.contains(sttEmp.getEmpCd())) {
 					continue;
@@ -291,9 +297,9 @@ public class ApprovalStatusFinder {
 	}
 
 	/**
-	 * 承認状況取得職場実績確認
+	 * アルゴリズム「承認状況取得職場実績確認」を実行する
 	 * 
-	 * @param listStatusEmp
+	 * @param listEmp
 	 *            社員ID＜社員ID、期間＞(リスト)
 	 * @param wkpId
 	 *            職場ID
@@ -301,14 +307,102 @@ public class ApprovalStatusFinder {
 	 *            月別確認を利用する/上司確認を利用する/本人確認を利用する
 	 * @return
 	 */
-	private List<ApprovalStatusActivityDto> getApprovalSttConfirmWkpResults(List<ApprovalStatusEmpDto> listStatusEmp,
+	private SumCountDto getApprovalSttConfirmWkpResults(List<ApprovalStatusEmpDto> listEmp,
 			String wkpId, UseSetingDto useSeting) {
-		for (ApprovalStatusEmpDto sttEmp : listStatusEmp) {
-			//月別確認を利用する
-			if(useSeting.isMonthlyConfirm()){
-				
+		SumCountDto sumCount = new SumCountDto();
+		// 会社ID
+		String cid = AppContexts.user().companyId();
+		
+		//社員ID(リスト)
+		for (ApprovalStatusEmpDto emp : listEmp) {
+			// 月別確認を利用する
+			if (useSeting.isMonthlyConfirm()) {
+				// imported(申請承認）「上司確認の状況」を取得する
+				List<ApproveRootStatusForEmpImport> listApproval = approvalRootStateAdapter.getApprovalByEmplAndDate(
+						emp.getClosurePeriod().getStartDate(),
+						emp.getClosurePeriod().getEndDate(),
+						emp.getSId(), cid, 2);
+				ApproveRootStatusForEmpImport approval = listApproval.stream().findFirst().get();
+				//承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
+				if (ApprovalStatusForEmployee_New.APPROVED.equals( approval.getApprovalStatus())) {
+					//月別確認件数　＝　＋１
+					sumCount.monthConfirm ++;
+				}
+				//承認状況＝「未承認 」又は「承認中」の場合
+				else{
+					//月別未確認件数　＝　＋１
+					sumCount.monthUnconfirm ++;
+				}
 			}
+
+			// アルゴリズム「承認状況取得日別確認状況」を実行する
+			this.getApprovalSttByDate(emp.getSId(), wkpId, emp.getClosurePeriod(), useSeting.isUseBossConfirm(),
+					useSeting.isUsePersonConfirm(), sumCount);
+			// 各件数を合算する
 		}
-		return null;
+		return sumCount;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況取得日別確認状況」を実行する
+	 * @param sId 社員ID
+	 * @param wkpId 職場ID
+	 * @param period 期間(開始日～終了日)
+	 * @param useBossConfirm 上司確認を利用する
+	 * @param usePersonConfirm 本人確認を利用する
+	 * @param sumCount output
+	 */
+	private void getApprovalSttByDate(String sId, String wkpId, Period period, boolean useBossConfirm,
+			boolean usePersonConfirm, SumCountDto sumCount) {
+		// 期間範囲分の日別確認（リスト）を作成する(Tạo list confirm hàng ngày)
+		List<DailyConfirmDto> listDailyConfirm = new ArrayList<DailyConfirmDto>();
+		
+		// 利用するの場合(use)
+		if (useBossConfirm) {
+			// アルゴリズム「承認状況取得日別上司承認状況」を実行する
+			this.getApprovalSttByDateOfBoss(sId, wkpId, period, listDailyConfirm, sumCount);
+		}
+		// 利用しないの場合
+
+		// 利用するの場合(use)
+		if (usePersonConfirm) {
+			// アルゴリズム「承認状況取得日別本人確認状況」を実行する
+			this.getApprovalSttByDateOfPerson(sId, wkpId, period, listDailyConfirm, sumCount);
+		}
+		// 利用しないの場合
+	}
+
+	/**
+	 * アルゴリズム「承認状況取得日別上司承認状況」を実行する
+	 * @param sId 社員ID
+	 * @param wkpId 職場ID
+	 * @param period 期間(開始日～終了日)
+	 * @param listDailyConfirm output 日別確認（リスト）＜職場ID、社員ID、対象日、本人確認、上司確認＞
+	 * @param sumCount output 上司確認件数,上司未確認件数
+	 */
+	private void getApprovalSttByDateOfBoss(String sId, String wkpId, Period period,
+			List<DailyConfirmDto> listDailyConfirm, SumCountDto sumCount) {
+		// 会社ID
+		String cid = AppContexts.user().companyId();
+		// imported（ワークフロー）「承認ルート状況」を取得する
+		List<ApproveRootStatusForEmpImport> listApproval = approvalRootStateAdapter
+				.getApprovalByEmplAndDate(period.getStartDate(), period.getEndDate(), sId, cid, 0);
+		//承認ルートの状況
+		for (ApproveRootStatusForEmpImport approval : listApproval) {
+			//日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
+			
+		}
+	}
+
+	/**
+	 * アルゴリズム「承認状況取得日別本人確認状況」を実行する
+	 * @param sId 社員ID
+	 * @param wkpId 職場ID
+	 * @param period 期間(開始日～終了日)
+	 * @param listDailyConfirm output 日別確認（リスト）＜職場ID、社員ID、対象日、本人確認、上司確認＞
+	 * @param sumCount output
+	 */
+	private void getApprovalSttByDateOfPerson(String sId, String wkpId, Period period,
+			List<DailyConfirmDto> listDailyConfirm, SumCountDto sumCount) {
 	}
 }
