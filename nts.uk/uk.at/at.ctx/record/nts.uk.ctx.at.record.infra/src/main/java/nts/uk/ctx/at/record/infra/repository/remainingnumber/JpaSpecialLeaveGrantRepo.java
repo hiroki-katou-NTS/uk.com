@@ -7,10 +7,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.KrcmtSpecialLeaveReamPK;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfo;
 
 @Stateless
 public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLeaveGrantRepository {
@@ -22,7 +25,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND e.expStatus = :expStatus order by a.grantDate";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a"
-			+ " WHERE a.employeeId = :employeeId and a.grantDate = :grantDate and a.specialLeaCode = :specialLeaCode";
+			+ " WHERE a.key.specialLeaID = :specialid ";
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode) {
@@ -40,16 +43,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public void add(SpecialLeaveGrantRemainingData data) {
-		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
-		entity.key.specialLeaID = data.getSpecialId();
-		updateDetail(entity, data);
-		this.commandProxy().insert(entity);
+		
+		this.commandProxy().insert(toEntity(data));
 	}
 
 	@Override
 	public void update(SpecialLeaveGrantRemainingData data) {
 
-		Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
+		Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(new KrcmtSpecialLeaveReamPK(data.getSpecialId()),
 				KrcmtSpecialLeaveReam.class);
 		if (entityOpt.isPresent()) {
 			KrcmtSpecialLeaveReam entity = entityOpt.get();
@@ -60,11 +61,9 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	}
 
 	@Override
-	public void delete(String employeeId, int specialLeaCode, GeneralDate grantDate) {
+	public void delete(String specialid) {
 		this.getEntityManager().createQuery(DELETE_QUERY)
-		.setParameter("employeeId", employeeId)
-		.setParameter("grantDate", grantDate)
-		.setParameter("specialLeaCode", specialLeaCode);
+		.setParameter("specialid", specialid);
 	}
 
 	@Override
@@ -114,6 +113,55 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 							: 0;
 		}
 
+	}
+	
+	/**
+	 * Convert to entity
+	 * @param domain
+	 * @return
+	 */
+	private KrcmtSpecialLeaveReam toEntity(SpecialLeaveGrantRemainingData data){
+		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
+		
+		entity.key.specialLeaID = data.getSpecialId();
+		entity.employeeId = data.getEmployeeId();
+		entity.specialLeaCode = data.getSpecialLeaveCode().v();
+		
+		entity.grantDate = data.getGrantDate();
+		entity.deadlineDate = data.getDeadlineDate();
+		entity.expStatus = data.getExpirationStatus().value;
+		entity.registerType = data.getRegisterType().value;
+		// grant data
+		entity.numberDayGrant = data.getDetails().getGrantNumber().getDayNumberOfGrant().v();
+		entity.timeGrant = data.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
+				? data.getDetails().getGrantNumber().getTimeOfGrant().get().v()
+				: 0;
+		// remain data
+		entity.numberDayRemain = data.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
+		entity.timeRemain = data.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
+				? data.getDetails().getRemainingNumber().getTimeOfRemain().get().v()
+				: 0;
+		// use data
+		entity.numberDayUse = data.getDetails().getUsedNumber().getDayNumberOfUse().v();
+		entity.timeUse = data.getDetails().getUsedNumber().getTimeOfUse().isPresent()
+				? data.getDetails().getUsedNumber().getTimeOfUse().get().v()
+				: 0;
+		// use Saving data(tai lieu đang bảo truyền null vào)
+		entity.useSavingDays = data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
+				? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
+				: 0;
+		// Over
+		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
+			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
+					.getNumberOverDays().v();
+			entity.timeOver = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
+					.isPresent()
+							? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
+									.get().v()
+							: 0;
+		}
+		
+		return entity;
 	}
 
 	private SpecialLeaveGrantRemainingData toDomain(KrcmtSpecialLeaveReam e) {

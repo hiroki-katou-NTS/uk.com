@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -28,8 +29,10 @@ public class AddSpecialLeaCommandHandler extends AsyncCommandHandler<SpecialLeav
 		}
 		
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(specialId,command.getCid(), command.getSid(), 
-				command.getSpecialLeaCode(), command.getGrantDate(), 
-				command.getDeadlineDate(), command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
+				command.getSpecialLeaCode(), 
+				GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd"),
+				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),
+				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(), command.getTimeGrant(), 
 				command.getNumberDayUse(),command.getTimeUse(), 
 				null, 

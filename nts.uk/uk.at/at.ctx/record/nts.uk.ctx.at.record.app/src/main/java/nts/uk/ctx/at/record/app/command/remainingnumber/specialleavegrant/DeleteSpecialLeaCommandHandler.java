@@ -17,7 +17,7 @@ public class DeleteSpecialLeaCommandHandler extends AsyncCommandHandler<DeleteSp
 	protected void handle(CommandHandlerContext<DeleteSpecialLeaCommand> context) {
 		DeleteSpecialLeaCommand command = context.getCommand();
 		
-		repo.delete(command.getEmployeeId(),command.getSpecialCode() ,command.getGrantDate());
+		repo.delete(command.getSpecialid());
 		
 	}
 
