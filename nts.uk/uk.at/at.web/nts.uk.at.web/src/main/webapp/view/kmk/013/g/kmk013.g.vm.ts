@@ -14,29 +14,29 @@ module nts.uk.at.view.kmk013.g {
             constructor() {
                 var self = this;
                 self.flexSettingOpt = ko.observableArray<ItemModel>([
-                    new ItemModel(0, nts.uk.resource.getText("KMK013_209")),
-                    new ItemModel(1, nts.uk.resource.getText("KMK013_210"))
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_209")),
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_210"))
                 ]);
                 
                 self.aggWorkSetOpt = ko.observableArray<ItemModel>([
-                    new ItemModel(0, nts.uk.resource.getText("KMK013_209")),
-                    new ItemModel(1, nts.uk.resource.getText("KMK013_210"))
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_209")),
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_210"))
                 ]);
                 self.tempWorkOpt = ko.observableArray<ItemModel>([
-                    new ItemModel(0, nts.uk.resource.getText("KMK013_209")),
-                    new ItemModel(1, nts.uk.resource.getText("KMK013_210"))
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_209")),
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_210"))
                 ]);
                 self.multipleWorkOpt = ko.observableArray<ItemModel>([
-                    new ItemModel(0, nts.uk.resource.getText("KMK013_209")),
-                    new ItemModel(1, nts.uk.resource.getText("KMK013_210"))
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_209")),
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_210"))
                 ]);
                 
                 
                 // Set default setting to Not use
-                self.flexSetting = ko.observable(1);
-                self.aggWorkSet = ko.observable(1);
-                self.tempWorkSet = ko.observable(1);
-                self.multipleWorkSet = ko.observable(1);
+                self.flexSetting = ko.observable(0);
+                self.aggWorkSet = ko.observable(0);
+                self.tempWorkSet = ko.observable(0);
+                self.multipleWorkSet = ko.observable(0);
             }
             // Start Page
             public startPage(): JQueryPromise<void> {
