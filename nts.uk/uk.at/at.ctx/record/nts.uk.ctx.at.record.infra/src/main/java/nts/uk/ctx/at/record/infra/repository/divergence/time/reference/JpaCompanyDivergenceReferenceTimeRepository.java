@@ -20,7 +20,6 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK_;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt_;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -41,10 +40,10 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 * nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType)
 	 */
 	@Override
-	public Optional<CompanyDivergenceReferenceTime> findByKey(String histId, DivergenceType divergenceTimeNo) {
+	public Optional<CompanyDivergenceReferenceTime> findByKey(String histId, Integer divergenceTimeNo) {
 		KrcstDrtPK pk = new KrcstDrtPK();
 		pk.setHistId(histId);
-		pk.setDvgcTimeNo(divergenceTimeNo.value);
+		pk.setDvgcTimeNo(divergenceTimeNo);
 
 		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(null);
 

@@ -151,7 +151,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		}
 		
 		//残業時間の反映
-		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame());
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame(), true);
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return;
 		}
 		//所定外深夜時間の反映
-		workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight);
+		workUpdate.updateTimeShiftNight(employeeId, dateData, overShiftNight, true);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		}
 		//フレックス時間を反映する
 		//日別実績の残業時間
-		workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime);
+		workUpdate.updateFlexTime(employeeId, dateDate, flexExessTime, true);
 	}
 
 }

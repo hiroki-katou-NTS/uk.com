@@ -18,8 +18,4 @@ public class ApplicationReflectParamScheDto {
 	private ApplicationGobackScheInforDto gobackInfor;
 	/**直行直帰申請 の　時刻の反映：　固定（開始）	 */
 	private ApplyTimeAtrPub applyTimeAtr;
-	/**
-	 * 休暇申請
-	 */
-	private AppForLeaveDto leaveInfo;
 }

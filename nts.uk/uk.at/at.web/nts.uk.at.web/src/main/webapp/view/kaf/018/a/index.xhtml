@@ -7,15 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 1500, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf018.a.main.css" />
-			<com:scriptfile path="kaf018.a.service.js" />
+ 		    <com:scriptfile path="kaf018.a.service.js" />
 			<com:scriptfile path="kaf018.a.vm.js" />
 			<com:scriptfile path="kaf018.a.start.js" />
 			<!-- KCP004 -->
-			<com:stylefile path="/view/kcp/004/a/a.min.css" of="/nts.uk.at.web" />
-			<com:scriptfile path="/view/kcp/004/a/kcp004.a.service.js" of="/nts.uk.at.web" />
-			<com:scriptfile path="/view/kcp/004/a/a.min.js" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 		</ui:define>
 
 		<ui:define name="content">
@@ -25,28 +25,29 @@
 			</div>
 			<div id="contents-area">
 				<!-- A5パネル -->
-				<div class = "content-area-left" data-bind="ntsPanel:{width: '350px', height: '430px', direction: 'right', showIcon: true, visible: true}">
+				<div class = "content-area-left" data-bind="ntsPanel:{width: '456px', height: '430px', direction: 'right', showIcon: true, visible: true}">
 					<div class ="content-top">
 						<table>
 							<tr>
 								<td>
 									<!-- A3対象締め（ラベル） -->
-									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+									<div class="content-top-lable" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
 								</td>
 								<td>
 									<!-- A3_1対象締め -->
-									<div id="combo-box" tabindex="2"
+									<div id="combo-box" tabindex="2" class="fix-combobox"
 										data-bind="ntsComboBox: {
-										        optionsValue: 'code',
+										        optionsValue: 'closureId',
 										        visibleItemsCount: 5,
-										        optionsText: 'name',
+										        optionsText: 'closeName',
 										        name: '#[KAF018_10]',
 										        required: true,
 										        value: selectTarget,
 										        options: targets,
 										        enable: true,
 										        columns: [
-										         { prop: 'name', length: 10 },
+										         { prop: 'closureId', length: 4},  
+										         { prop: 'closeName', length: 10},
 										        ]}">
 									</div>
 								</td>
@@ -55,30 +56,40 @@
 					</div>
 					<!-- A2職場リスト -->
 					<div  class ="content-bottom" tabindex="3">
+						<div id="tree-grid"></div>
 					</div>
 				</div>
 				<!-- A4形式選択 -->
 				<div class="content-area-right" tabindex="4">
 				 	<!-- A4_1申請承認 -->
-					<div class ="format-selected" data-bind="ntsRadioButton: {checked: selectedValue1 , 
- 			                enable: true,
- 			                option: items()[0],
-			                optionValue: 'code',
- 			                optionText: 'name',
- 			                group: 'effectDigitCls' }"></div>
 					<!-- A4_2日別・月別確認  -->
-			        <div class ="format-selected" data-bind="ntsRadioButton: {checked: selectedValue2 ,
-			                enable: true, 
-			                option: items()[1], 
-			                optionValue: 'code', 
-			                optionText: 'name',
-			                group: 'effectDigitCls'} "></div>
-			        <!-- A4_2_1日別・月別確認（チェック） -->
-			        <div class ="format-checkbox" data-bind="ntsCheckBox: { checked: true, enable: enable, text: '#{i18n.getText('KAF018_14')}' }"></div>
+					<div class = "format-selected"
+							data-bind="ntsRadioBoxGroup: {
+								options: items,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedValue,
+								enable: enable}">
+					</div>
+					<div class ="format-checkbox" data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: enable, text: '#{i18n.getText('KAF018_14')}' }"></div>
 					<!-- A10抽出 -->
-					<button class ="btn-excute large" tabindex="5" data-bind="click: gotoB">#{i18n.getText('KAF018_16')}</button>
+					<button class ="btn-excute large" tabindex="5" data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
 				</div>
 				<div class="clear"></div>
+				<div>
+						<table class="table-tree-sample" data-bind="with: rowSelected">
+							<tr>
+								<td style="min-width: 130px;"><label
+									style="margin-right: 10px;">Workplace id:</label></td>
+								<td><span data-bind='text: workplaceId'></span></td>
+							</tr>
+							<tr>
+								<td style="min-width: 130px;"><label
+									style="margin-right: 10px;">Workplace code:</label></td>
+								<td><span data-bind='text: workplaceCode'></span></td>
+							</tr>
+						</table>
+					</div>
 			</div>
 		</ui:define>
 	</ui:composition>
