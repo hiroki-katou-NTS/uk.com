@@ -67,19 +67,14 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 */
 	@Override
 	public Optional<ShainRegularLaborTime> find(String cid, String empId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstShaRegLaborTime> cq = cb.createQuery(KshstShaRegLaborTime.class);
-		Root<KshstShaRegLaborTime> root = cq.from(KshstShaRegLaborTime.class);
+		Optional<KshstShaRegLaborTime> optEntity = this.queryProxy().find(new KshstShaRegLaborTimePK(cid, empId), KshstShaRegLaborTime.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(
-				cb.equal(root.get(KshstShaRegLaborTime_.kshstShaRegLaborTimePK).get(KshstShaRegLaborTimePK_.cid), cid));
-		predicateList.add(cb
-				.equal(root.get(KshstShaRegLaborTime_.kshstShaRegLaborTimePK).get(KshstShaRegLaborTimePK_.sid), empId));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -103,9 +98,6 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @return the shain regular work time
 	 */
 	private ShainRegularLaborTime toDomain(KshstShaRegLaborTime entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity));
 	}
 	
@@ -116,7 +108,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @return the list
 	 */
 	private List<ShainRegularLaborTime> toDomain(List<KshstShaRegLaborTime> entities) {
-		if (entities.isEmpty()) {
+		if (entities == null || entities.isEmpty()) {
 			return Collections.emptyList();
 		}
 		return entities.stream().map(entity -> new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());

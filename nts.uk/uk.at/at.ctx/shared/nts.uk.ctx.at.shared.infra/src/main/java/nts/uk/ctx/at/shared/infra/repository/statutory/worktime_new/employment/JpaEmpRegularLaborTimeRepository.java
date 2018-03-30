@@ -78,17 +78,13 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 */
 	@Override
 	public Optional<EmpRegularLaborTime> findById(String cid, String employmentCode) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstEmpRegLaborTime> cq = cb.createQuery(KshstEmpRegLaborTime.class);
-		Root<KshstEmpRegLaborTime> root = cq.from(KshstEmpRegLaborTime.class);
+		Optional<KshstEmpRegLaborTime> optEntity = this.queryProxy().find(new KshstEmpRegLaborTimePK(cid, employmentCode), KshstEmpRegLaborTime.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstEmpRegLaborTime_.kshstEmpRegLaborTimePK).get(KshstEmpRegLaborTimePK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstEmpRegLaborTime_.kshstEmpRegLaborTimePK).get(KshstEmpRegLaborTimePK_.empCd), employmentCode));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -110,7 +106,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @return the list
 	 */
 	private List<EmpRegularLaborTime> toDomain(List<KshstEmpRegLaborTime> entities) {
-		if (entities.isEmpty()) {
+		if (entities == null ||entities.isEmpty()) {
 			return Collections.emptyList();
 		}
 		return entities.stream().map(entity -> new EmpRegularLaborTime(new JpaEmpRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
@@ -123,9 +119,6 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 * @return the emp regular work time
 	 */
 	private EmpRegularLaborTime toDomain(KshstEmpRegLaborTime entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new EmpRegularLaborTime(new JpaEmpRegularLaborTimeGetMemento(entity));
 	}
 }
