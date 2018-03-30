@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;

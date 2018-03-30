@@ -60,6 +60,8 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculationMethodOfConstraintTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -210,7 +212,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		val copyIntegrationOfDaily = integrationOfDaily;
 		if (integrationOfDaily.getAffiliationInfor() == null) return integrationOfDaily;
 		// 実績データの計算
-		return this.calculateRecord(integrationOfDaily);		
+		return this.calcDailyAttendancePerformance(integrationOfDaily);		
 	}
 
 	
@@ -509,6 +511,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = manageReGetClass.getIntegrationOfDaily().getPcLogOnInfo();
 		//
 		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = manageReGetClass.getIntegrationOfDaily().getAttendanceLeave();
+		//総拘束時間の計算
+		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = new CalculateOfTotalConstraintTime(new CompanyId(companyId),CalculationMethodOfConstraintTime.REQUEST_FROM_ENTRANCE_EXIT);
 		
 		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
 		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
@@ -534,7 +538,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
 																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		//乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = 
+		List<DivergenceTime> divergenceTimeList = divergenceTimeRepository.getAllDivTime(companyId);
 		
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
@@ -567,32 +571,25 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					pCLogOnInfoOfDaily,
 					attendanceLeave,
 					forCalcDivergenceDto,
-					divergenceTimeList));
+					divergenceTimeList,
+					calculateOfTotalConstraintTime));
 	
-		//手修正された項目の値を計算前に戻す 
-		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> attendanceItemIdList = copyIntegrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
-																								   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
-																			               .map(editState -> editState.getAttendanceItemId())
-																			               .collect(Collectors.toList());
-		//
-		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
-		//
-		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
-		//
-		DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
-		
+	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+		  List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
+		       && editState.getYmd().equals(copyIntegrationOfDaily.getAffiliationInfor().getYmd()))
+		        .map(editState -> editState.getAttendanceItemId())
+		        .distinct()
+		        .collect(Collectors.toList());
 
-//		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
-				   && editState.getYmd().equals(copyIntegrationOfDaily.getAffiliationInfor().getYmd()))
-        .map(editState -> editState.getAttendanceItemId())
-        .distinct()
-        .collect(Collectors.toList());
-		
-		afterDailyRecordDto.merge(itemValueList);
-				
-		IntegrationOfDaily calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		  IntegrationOfDaily calcResultIntegrationOfDaily = manageReGetClass.getIntegrationOfDaily();  
+		  if(!attendanceItemIdList.isEmpty()) {
+		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily); 
+		   List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
+		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(manageReGetClass.getIntegrationOfDaily()); 
+		   afterDailyRecordDto.merge(itemValueList);
+		   //手修正された項目の値を計算前に戻す   
+		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		  }
 			
 		/*日別実績への項目移送*/
 		//return integrationOfDaily;

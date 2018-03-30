@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -154,7 +156,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
 			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTime> divergenceTimeList) {
+			   List<DivergenceTime> divergenceTimeList,
+			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -179,7 +182,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     pCLogOnInfoOfDaily,
 				   																	     attendanceLeave,
 				   																	     forCalcDivergenceDto,
-				   																	     divergenceTimeList)));
+				   																	     divergenceTimeList,
+				   																	     calculateOfTotalConstraintTime)));
 		
 		return integrationOfDaily;
 	}
@@ -212,7 +216,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
 			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTime> divergenceTimeList) {
+			   List<DivergenceTime> divergenceTimeList,
+			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime) {
 		
 		/*計画所定時間*/
 		/*実績所定労働時間*/
@@ -247,13 +252,11 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					/*実績所定労働時間*/
 					/*勤務予定時間の計算*/);
 		/*滞在時間の計算*/
-		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
-//																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave.get()),
-//												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave.get()),
-																new AttendanceTime(0),
-																new AttendanceTime(0),
-												 				new AttendanceTime(0),
-												 				new AttendanceTime(0));
+		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK),
+																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.GO_WORK),
+												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.GO_WORK),
+												 				StayingTimeOfDaily.calcStayingTimeOfDaily(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave,calculateOfTotalConstraintTime),
+												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK));
 		
 //		//明日はここから
 //		AttendanceTime beforetime = calctio();
