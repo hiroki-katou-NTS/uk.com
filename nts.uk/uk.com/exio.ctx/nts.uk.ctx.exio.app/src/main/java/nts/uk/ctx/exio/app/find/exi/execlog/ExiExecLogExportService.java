@@ -47,7 +47,7 @@ public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>
     	for (ErrorContentDto errorContentDto : lstError) {
     		nameSetting = errorContentDto.getNameSetting();
     		condImport.add("受入する条件");
-    		condImport.add(errorContentDto.getResultLog().getExternalProcessId() + "	"+ nameSetting);
+    		condImport.add(errorContentDto.getResultLog().getConditionSetCd() + "	"+ nameSetting);
     		dateTime.add("受入開始日時");
     		dateTime.add(errorContentDto.getResultLog().getProcessStartDatetime().toString());
     		totalCount.add("トータル件数");
@@ -60,18 +60,18 @@ public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>
     		errorCount.add(errorContentDto.getResultLog().getErrorCount() + "" );
     		errorCount.add("件");
     		 
-    		for (int i=0; i< errorContentDto.getErrorLog().length; i++) {
-    			ExacErrorLogDto errorContentList = errorContentDto.getErrorLog()[i];
-    			Map<String, Object> errorItem = new HashMap<>();
-    			errorItem.put(header.get(0), i);
-    			errorItem.put(header.get(1), errorContentList.getRecordNumber());
-    			errorItem.put(header.get(2), errorContentList.getCsvErrorItemName());
-    			errorItem.put(header.get(3), errorContentList.getItemName());
-    			errorItem.put(header.get(4), errorContentList.getCsvAcceptedValue());
-    			errorItem.put(header.get(5), errorContentList.getErrorContents());
-    			
-    			dataSource.add(errorItem);
-			}
+//    		for (int i=0; i< errorContentDto.getErrorLog().length; i++) {
+//    			ExacErrorLogDto errorContentList = errorContentDto.getErrorLog()[i];
+//    			Map<String, Object> errorItem = new HashMap<>();
+//    			errorItem.put(header.get(0), i);
+//    			errorItem.put(header.get(1), errorContentList.getRecordNumber());
+//    			errorItem.put(header.get(2), errorContentList.getCsvErrorItemName());
+//    			errorItem.put(header.get(3), errorContentList.getItemName());
+//    			errorItem.put(header.get(4), errorContentList.getCsvAcceptedValue());
+//    			errorItem.put(header.get(5), errorContentList.getErrorContents());
+//    			
+//    			dataSource.add(errorItem);
+//			}
     		
 		}
     	

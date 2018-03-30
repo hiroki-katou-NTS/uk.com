@@ -3,14 +3,21 @@ package nts.uk.ctx.exio.app.command.exi.csvimport;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateful;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
 
 @Stateful
 public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<CsvImportDataCommand> {
+	@Inject 
+	private ExacErrorLogRepository exacErrorLogRepository;
+	
 	private static final String NUMBER_OF_ERROR = "エラー件数";
 	private static final String NUMBER_OF_SUCCESS = "処理カウント";
 	private static final String NUMBER_OF_TOTAL = "処理トータルカウント";
@@ -42,9 +49,11 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 				break;
 			}
 
-			
+			if(i %5 == 0){
+				exacErrorLogRepository.add(new ExacErrorLog(i, "cid", command.getProcessId(), "csvErrorItemName", "csvAcceptedValue", "errorContents", 100, GeneralDateTime.ymdhms(2018,03,14,10,10,10), "ITEM_NAME", 1));
+				setter.updateData(NUMBER_OF_ERROR, i/5);
+			}
 			setter.updateData(NUMBER_OF_SUCCESS, i);
-			setter.updateData(NUMBER_OF_ERROR, i/5);
 			setter.updateData(STATUS, command.getStateBehavior());
 			
 			try {
