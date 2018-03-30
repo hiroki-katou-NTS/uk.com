@@ -10,13 +10,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.ErAlApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.ErAlApplicationAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
-import nts.uk.ctx.at.function.dom.adapter.dailyperform.DailyRecordWorkAdapter;
+import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
+import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.MessageWRExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorImport;
@@ -47,10 +49,6 @@ public class DailyPerformanceService {
 	@Inject
 	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameService;
 
-	// get attendance value 勤怠項目価値
-	@Inject
-	private DailyRecordWorkAdapter dailyRecordWorkAdapter;
-
 	// エラー発生時に呼び出す申請一覧
 	@Inject
 	private ErAlApplicationAdapter erAlApplicationAdapter;
@@ -58,6 +56,9 @@ public class DailyPerformanceService {
 	// 書いた申請
 	@Inject
 	private ApplicationAdapter applicationAdapter;
+	
+	@Inject
+	private DailyAttendanceItemAdapter attendanceItemAdapter; 
 
 	public List<ValueExtractAlarm> aggregationProcess(DailyAlarmCondition dailyAlarmCondition, PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
 		List<ValueExtractAlarm> valueExtractAlarmList = new ArrayList<>();
@@ -68,7 +69,7 @@ public class DailyPerformanceService {
 
 		// 勤務実績のエラーアラーム
 		List<ErrorAlarmWorkRecordAdapterDto> errorAlarmWorkRecord = errorAlarmWorkRecordAdapter.getListErAlByListCode(companyID, listErrorAlarmCode);
-		Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap = errorAlarmWorkRecord.parallelStream().collect(Collectors.toMap(ErrorAlarmWorkRecordAdapterDto::getCode, x -> x));
+		Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap = errorAlarmWorkRecord.stream().collect(Collectors.toMap(ErrorAlarmWorkRecordAdapterDto::getCode, x -> x));
 
 		// 社員の日別実績エラー一覧
 		List<EmployeeDailyPerErrorImport> employeeDailyList = employeeDailyAdapter.getByErrorAlarm(employee.getId(), new DatePeriod(period.getStartDate(), period.getEndDate()), listErrorAlarmCode);
@@ -110,17 +111,67 @@ public class DailyPerformanceService {
 		Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = messageList.stream().collect(Collectors.toMap(MessageWRExtraConAdapterDto::getDisplayMessage, x -> x));
 
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
-			// Attendance name and value
+			// Attendance name			
 			Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
 					.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
-			// List<ItemValue> attendanceValueList = dailyRecordWorkAdapter
-			// .getByEmployeeList(employee.getId(), eDaily.getDate(),
-			// eDaily.getAttendanceItemList()).getItems();
-
-			// アラーム値メッセージ caculate from attendance Name and attendance value
+			// Attendance value
+			AttendanceResultImport attendanceResult= attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
+			List<AttendanceItemValueImport> attendanceValue = attendanceResult.getAttendanceItems()==null? new ArrayList<AttendanceItemValueImport>(): attendanceResult.getAttendanceItems();
+			Map<Integer, AttendanceItemValueImport> mapAttendance = attendanceValue.stream().collect(Collectors.toMap( AttendanceItemValueImport::getItemId, x->x));
+			
+			// アラーム値メッセージ 
+			String alarmItem ="";
 			String alarmContent = "";
-			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), eDaily.getDate().toString(), TextResource.localize("KAL010_1"), errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName(),
-					alarmContent, errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
+			
+			if(eDaily.getErrorAlarmWorkRecordCode().equals("S001")) {		
+				
+				alarmItem = TextResource.localize("KAL010_2");
+				
+				eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
+				for(Integer id: eDaily.getAttendanceItemList()) {
+					alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName();
+				}
+				if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
+				
+			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S004")) {
+				
+				alarmItem = TextResource.localize("KAL010_3");
+				eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
+				int i=0;
+				for(Integer id: eDaily.getAttendanceItemList()) {
+					i+=1;
+					if(i%2 != 0) {
+						alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();						
+					}else {
+						alarmContent +="、　"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();
+					}					
+				}
+				if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
+				
+			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S005")) {
+				
+				alarmItem = TextResource.localize("KAL010_4");
+				
+			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S003")) {
+				
+				
+			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S007")) {
+				
+				
+			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S008")) {
+				
+				
+			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S006")) {
+				
+				
+			}else {
+				alarmItem = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName();
+			}
+			
+			
+			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), eDaily.getDate().toString(), TextResource.localize("KAL010_1"),
+					alarmItem, alarmContent,
+					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
 
 			valueExtractAlarmList.add(data);
 		}
