@@ -105,6 +105,7 @@
 											<div id="file-upload" class="form_step0" tabindex="4"
 												style="display: inline-block;"
 												data-bind="ntsFileUpload:{
+													stereoType: 'csvfile',
 													name: '#[CMF001_446]', 
 													text: '#{i18n.getText('CMF001_447')}',
 													filename: fileName,
@@ -112,8 +113,8 @@
 													aslink: false,
 													enable: true,
 													required: true,
-													immediateUpload: false,
-													onchange: uploadFile.bind($data)}">
+													immediateUpload: true,
+													uploadFinished: uploadFile}">
 											</div>
 										</td>
 									</tr>
