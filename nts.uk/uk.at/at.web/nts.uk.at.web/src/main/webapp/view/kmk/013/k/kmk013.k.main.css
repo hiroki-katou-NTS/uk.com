@@ -22,3 +22,7 @@
 .right-content > div > .label {
 	width: auto;
 }
+
+.right-content > div:nth-child(3) {
+	padding-top:3px;
+}
