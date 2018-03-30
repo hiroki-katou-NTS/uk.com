@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 600,
-					height : 470
+					height : 430
 				};
 			</script>
 
@@ -28,23 +28,24 @@
 				<div>#{i18n.getText('KMK011_57')}</div>
 
 				<div style="margin: 20px 0;">
-					<div style="float: left" 
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_58')}</div>
+					<div style="float: left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_58')}</div>
 
 					<div id="start_date" tabindex="1"
 						data-bind="ntsDatePicker: {name: '#[KMK011_59]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD', option: {width: '70px'}}"></div>
 					<span style="margin: 0 20px 0 20px;">#{i18n.getText('CMM011_26')}</span>
-					<div id = "end_date" tabindex="2"
+					<div id="end_date" tabindex="2"
 						data-bind="ntsDatePicker: {name: '#[KMK011_61]', required: true, value: endDate, dateFormat: 'YYYY/MM/DD', option: {width: '70px'}}"></div>
-						
+
 				</div>
-				<div tabindex="3" style="margin-left: 135px; margin-top: 20px;" data-bind="ntsRadioBoxGroup: {
+				<div tabindex="3" style="margin-left: 135px; margin-top: 20px;"
+					data-bind="ntsRadioBoxGroup: {
 						name: '#[KMK011_30]',
 						options: itemListRadio,
 						optionsValue: 'id',
 						optionsText: 'name',
 						value: selectedId,
-						enable: enableRadio}, visible: visibleRadio"></div>
+						enable: enableRadio}, visible: visibleRadio
+						"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="4"
