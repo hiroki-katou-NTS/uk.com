@@ -145,6 +145,29 @@ module nts.uk.at.view.kaf011.shr {
                         });
                     }
                 });
+
+                self.appDate.subscribe((newDate) => {
+                    self.changeDate();
+                });
+            }
+
+            changeDate() {
+                block.invisible();
+                let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                    changeDateParam = {
+                        holidayDate: vm.absWk().appDate(),
+                        takingOutDate: vm.recWk().appDate(),
+                        comType: vm.appComSelectedCode(),
+                        uiType: 0
+
+                    }
+                service.changeDay(changeDateParam).done((data) => {
+                    vm.employeeID(data.employeeID);
+                    vm.prePostSelectedCode(data.preOrPostType);
+                    vm.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
+                }).always(() => {
+                    block.clear();
+                });;
             }
 
             parseText(date) {
