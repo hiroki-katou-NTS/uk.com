@@ -76,11 +76,25 @@ module nts.uk.at.view.kmk003.j {
                 _self.stampLeavingWork2Start = ko.observable(0);
                 _self.stampLeavingWork2End = ko.observable(0);
                 
+                _self.stampGoWork1Start.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampGoWork1End.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampGoWork2Start.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampGoWork2End.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampLeavingWork1Start.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampLeavingWork1End.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampLeavingWork2Start.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampLeavingWork2End.subscribe(() => nts.uk.ui.errors.clearAll());
+                
                 _self.stampGoWorkFlowStart = ko.observable(0);
                 _self.stampGoWorkFlowEnd = ko.observable(0);
                 _self.stampTwoTimeReflect = ko.observable(0);
                 _self.stampLeavingWorkFlowStart = ko.observable(0);
                 _self.stampLeavingWorkFlowEnd = ko.observable(0);
+                
+                _self.stampGoWorkFlowStart.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampGoWorkFlowEnd.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampLeavingWorkFlowStart.subscribe(() => nts.uk.ui.errors.clearAll());
+                _self.stampLeavingWorkFlowEnd.subscribe(() => nts.uk.ui.errors.clearAll());
                 
                 _self.prioritySettingEntering = ko.observable(0);
                 _self.prioritySettingExit = ko.observable(0);
@@ -155,6 +169,20 @@ module nts.uk.at.view.kmk003.j {
             public save(): void {
                 let _self = this;
                 
+                // Validate Msg_770
+                if (_self.isFlow()) {
+                    _self.validTimeRange("stampGoWorkFlowStart", "stampGoWorkFlowEnd", _self.stampGoWorkFlowStart(), _self.stampGoWorkFlowEnd(), "KMK003_270");
+                    _self.validTimeRange("stampLeavingWorkFlowStart", "stampLeavingWorkFlowEnd", _self.stampLeavingWorkFlowStart(), _self.stampLeavingWorkFlowEnd(), "KMK003_273");
+                } else {
+                    _self.validTimeRange("stampGoWork1Start", "stampGoWork1End", _self.stampGoWork1Start(), _self.stampGoWork1End(), "KMK003_271");
+                    _self.validTimeRange("stampGoWork2Start", "stampGoWork2End", _self.stampGoWork2Start(), _self.stampGoWork2End(), "KMK003_272");
+                    _self.validTimeRange("stampLeavingWork1Start", "stampLeavingWork1End", _self.stampLeavingWork1Start(), _self.stampLeavingWork1End(), "KMK003_274");
+                    _self.validTimeRange("stampLeavingWork2Start", "stampLeavingWork2End", _self.stampLeavingWork2Start(), _self.stampLeavingWork2End(), "KMK003_275");
+                }
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
+                
                 let dataObject: any = {
                     prioritySettingEntering: _self.prioritySettingEntering(),
                     prioritySettingExit: _self.prioritySettingExit(),
@@ -192,7 +220,39 @@ module nts.uk.at.view.kmk003.j {
             public close(): void {
                 nts.uk.ui.windows.close();
             }
-                       
+                   
+            /**
+             * Validate time range
+             */
+            private validTimeRange(startInputId: string, endInputId: string, startTime: number, endTime: number, paramId: string) {
+                let self = this;
+                if($('#' + startInputId).prop('disabled') && $('#' + endInputId).prop('disabled')) {
+                    return true;
+                }
+                
+                // clear error
+                $('#' + startInputId).ntsError('clear');
+                $('#' + endInputId).ntsError('clear');
+                
+                // validate
+                $('#' + startInputId).ntsEditor('validate');
+                $('#' + endInputId).ntsEditor('validate');
+                
+                if ($('#' + startInputId).ntsError('hasError') || $('#' + endInputId).ntsError('hasError')) {
+                    return false;
+                }
+                if (startTime >= endTime) {
+                    $('#' + startInputId).ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText(paramId)]});
+                    if (!$('#' + startInputId).parent().hasClass('error')) {
+                        _.defer(() =>$('#' + startInputId).parent().addClass('error'));
+                    }
+                    if (!$('#' + endInputId).parent().hasClass('error')) {
+                        _.defer(() =>$('#' + endInputId).parent().addClass('error'));
+                    }
+                    return false;
+                }
+                return true;
+            }
         }
     }    
 }

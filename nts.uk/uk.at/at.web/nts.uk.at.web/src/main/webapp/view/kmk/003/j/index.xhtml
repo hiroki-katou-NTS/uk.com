@@ -37,7 +37,7 @@
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK003_270')}</div>		
 							<div>
-								<input tabindex="9" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="9" id="stampGoWorkFlowStart" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_270]',		
 										value: stampGoWorkFlowStart,
 										inputFormat: 'time',
@@ -49,7 +49,7 @@
 										readonly: false,
 										immediate: false }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="10" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="10" id="stampGoWorkFlowEnd" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_270]',		
 										value: stampGoWorkFlowEnd,
 										inputFormat: 'time',
@@ -80,7 +80,7 @@
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK003_273')}</div>		
 							<div>
-								<input tabindex="12" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="12" id="stampLeavingWorkFlowStart" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_273]',		
 										value: stampLeavingWorkFlowStart,
 										inputFormat: 'time',
@@ -92,7 +92,7 @@
 										readonly: false,
 										immediate: false }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="13" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="13" id="stampLeavingWorkFlowEnd" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_273]',		
 										value: stampLeavingWorkFlowEnd,
 										inputFormat: 'time',
@@ -112,7 +112,7 @@
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_270')}</div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
-								<input tabindex="1" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="1" id="stampGoWork1Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_271]',		
 										value: stampGoWork1Start,
 										inputFormat: 'time',
@@ -124,7 +124,7 @@
 										readonly: false,
 										immediate: false }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="2" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="2" id="stampGoWork1End" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_271]',		
 										value: stampGoWork1End,
 										inputFormat: 'time',
@@ -141,7 +141,7 @@
 							<div style="width: 150px;"></div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_37')}</span>		
-								<input tabindex="3" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="3" id="stampGoWork2Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_272]',		
 										value: stampGoWork2Start,
 										inputFormat: 'time',
@@ -153,7 +153,7 @@
 										readonly: false,
 										immediate: false }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="4" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="4" id="stampGoWork2End" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_272]',		
 										value: stampGoWork2End,
 										inputFormat: 'time',
@@ -170,7 +170,7 @@
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_273')}</div>		
 							<div>
 								<span class="label">#{i18n.getText('KMK003_36')}</span>		
-								<input tabindex="5" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="5" id="stampLeavingWork1Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_274]',		
 										value: stampLeavingWork1Start,
 										inputFormat: 'time',
@@ -182,7 +182,7 @@
 										readonly: false,
 										immediate: false }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="6" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="6" id="stampLeavingWork1End" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_274]',		
 										value: stampLeavingWork1End,
 										inputFormat: 'time',
@@ -199,7 +199,7 @@
 							<div style="width: 150px;"></div>	
 							<div>
 								<span class="label">#{i18n.getText('KMK003_37')}</span>		
-								<input tabindex="7" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="7" id="stampLeavingWork2Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_275]',		
 										value: stampLeavingWork2Start,
 										inputFormat: 'time',
@@ -211,7 +211,7 @@
 										readonly: false,
 										immediate: false }" />
 								<span class="label">#{i18n.getText('KMK003_160')}</span>		
-								<input tabindex="8" class="input-warp" data-bind="ntsTimeWithDayEditor: {
+								<input tabindex="8" id="stampLeavingWork2End" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_275]',		
 										value: stampLeavingWork2End,
 										inputFormat: 'time',
