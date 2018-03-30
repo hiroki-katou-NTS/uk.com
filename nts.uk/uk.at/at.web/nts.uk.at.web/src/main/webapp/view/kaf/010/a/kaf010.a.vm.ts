@@ -176,7 +176,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             overtimeHours: ko.toJS(self.overtimeHours)    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
+                            self.kaf000_a.getAppDataDate(6, moment(value).format(self.DATE_FORMAT), false);
                             //self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);

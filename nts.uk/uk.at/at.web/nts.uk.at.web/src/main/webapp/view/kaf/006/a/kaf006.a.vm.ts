@@ -200,7 +200,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 self.prePostSelected(result.application.prePostAtr);
                 self.displayPrePostFlg(result.prePostFlg);
-                self.kaf000_a.getAppDataDate(0, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
+                self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
                 dfd.resolve(result);
             }).fail((res) => {
                 dfd.reject(res);
