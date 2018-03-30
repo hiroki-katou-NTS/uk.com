@@ -20,7 +20,7 @@ public class AddMonPerformanceFunCommandHandler extends CommandHandler<MonPerfor
     @Override
     protected void handle(CommandHandlerContext<MonPerformanceFunCommand> context) {
         MonPerformanceFunCommand addCommand = context.getCommand();
-        repository.add(MonPerformanceFun.createFromJavaType(addCommand.getCid(), addCommand.getComment(), addCommand.getDailySelfChkDispAtr()));
+        repository.add(MonPerformanceFun.createFromJavaType(addCommand.getCid(), addCommand.getComment(), addCommand.isDailySelfChkDispAtr() ? 1 : 0));
     
     }
 }

@@ -21,8 +21,8 @@ public class AddIdentityProcessCommandHandler extends CommandHandler<IdentityPro
     protected void handle(CommandHandlerContext<IdentityProcessCommand> context) {
         IdentityProcessCommand addCommand = context.getCommand();
         repository.add(IdentityProcess.createFromJavaType(addCommand.getCid(), 
-											        		addCommand.getUseDailySelfCk(), 
-											        		addCommand.getUseMonthSelfCK(), 
+											        		addCommand.isUseDailySelfCk()? 1 : 0, 
+											        		addCommand.isUseMonthSelfCK()? 1 : 0, 
 											        		addCommand.getYourselfConfirmError()));
     
     }

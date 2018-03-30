@@ -2,11 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
 * 本人確認処理の利用設定
@@ -36,9 +33,9 @@ public class IdentityProcess extends AggregateRoot
     */
     private YourselfConfirmError yourselfConfirmError;
     
-    public static IdentityProcess createFromJavaType(String cid, int useConfirmByYourself, int useIdentityOfMonth, int yourselfConfirmError)
-    {
-        IdentityProcess  identityProcess =  new IdentityProcess(cid, useConfirmByYourself, useIdentityOfMonth, EnumAdaptor.valueOf(yourselfConfirmError, YourselfConfirmError.class));
+    public static IdentityProcess createFromJavaType(String cid, int useConfirmByYourself, int useIdentityOfMonth, Integer yourselfConfirmError){
+        IdentityProcess  identityProcess =  new IdentityProcess(cid, useConfirmByYourself, useIdentityOfMonth, 
+        															yourselfConfirmError == null ? null : EnumAdaptor.valueOf(yourselfConfirmError, YourselfConfirmError.class));
         return identityProcess;
     }
     

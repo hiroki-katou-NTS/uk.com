@@ -23,24 +23,25 @@ public class ApprovalProcessDto
      private String jobTitleId;
      
     /**
-    * 上司確認を利用する
+    * 日の承認者確認を利用する
     */
-    private int useDayApproverConfirm;
+    private int useDailyBossChk;
     
     /**
     * 月の承認者確認を利用する
     */
-    private int useMonthApproverComfirm;
+    private int useMonthBossChk;
     
     /**
     * エラーがある場合の上司確認
     */
-    private int supervisorConfirmError;
+    private Integer supervisorConfirmError;
     
     
-    public static ApprovalProcessDto fromDomain(ApprovalProcess domain)
-    {
-        return new ApprovalProcessDto(domain.getCid(), domain.getJobTitleId(), domain.getUseDayApproverConfirm(), domain.getUseMonthApproverComfirm(), domain.getSupervisorConfirmError().value);
+    public static ApprovalProcessDto fromDomain(ApprovalProcess domain){
+        return new ApprovalProcessDto(domain.getCid(), domain.getJobTitleId(), 
+						        		domain.getUseDailyBossChk(), domain.getUseMonthBossChk(), 
+						        		domain.getSupervisorConfirmError() == null ? null : domain.getSupervisorConfirmError().value);
     }
     
 }

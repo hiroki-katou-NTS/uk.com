@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class MonPerformanceFunCommand
@@ -21,7 +19,7 @@ public class MonPerformanceFunCommand
     /**
     * 日別の本人確認を表示する
     */
-    private int dailySelfChkDispAtr;
+    private boolean dailySelfChkDispAtr;
     
     private Long version;
 

@@ -20,7 +20,9 @@ public class UpdateApprovalProcessCommandHandler extends CommandHandler<Approval
     @Override
     protected void handle(CommandHandlerContext<ApprovalProcessCommand> context) {
         ApprovalProcessCommand updateCommand = context.getCommand();
-        repository.update(ApprovalProcess.createFromJavaType(updateCommand.getCid(), updateCommand.getJobTitleId(), updateCommand.getUseDayApproverConfirm(), updateCommand.getUseMonthApproverComfirm(), updateCommand.getSupervisorConfirmError()));
+        repository.update(ApprovalProcess.createFromJavaType(updateCommand.getCid(), updateCommand.getJobTitleId(), 
+    														updateCommand.isUseDailyBossChk() ? 1 : 0, updateCommand.isUseMonthBossChk() ? 1 : 0, 
+											        		updateCommand.getSupervisorConfirmError()));
     
     }
 }

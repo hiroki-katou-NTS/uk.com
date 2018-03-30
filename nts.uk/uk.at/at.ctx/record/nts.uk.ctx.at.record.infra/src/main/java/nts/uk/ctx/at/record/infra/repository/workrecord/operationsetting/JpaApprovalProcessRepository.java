@@ -45,8 +45,8 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
         if (null == updateApprovalProcess) {
             return;
         }
-        updateApprovalProcess.useDayApproverConfirm = newApprovalProcess.useDayApproverConfirm;
-        updateApprovalProcess.useMonthApproverComfirm = newApprovalProcess.useMonthApproverComfirm;
+        updateApprovalProcess.useDailyBossChk = newApprovalProcess.useDailyBossChk;
+        updateApprovalProcess.useMonthBossChk = newApprovalProcess.useMonthBossChk;
         updateApprovalProcess.supervisorConfirmError = newApprovalProcess.supervisorConfirmError;
         this.commandProxy().update(updateApprovalProcess);
     }

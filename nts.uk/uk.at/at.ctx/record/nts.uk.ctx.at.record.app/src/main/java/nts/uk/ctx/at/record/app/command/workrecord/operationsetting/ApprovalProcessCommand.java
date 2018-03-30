@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class ApprovalProcessCommand
@@ -19,19 +17,19 @@ public class ApprovalProcessCommand
      private String jobTitleId;
      
     /**
-    * 上司確認を利用する
+    * 日の承認者確認を利用する
     */
-    private int useDayApproverConfirm;
+    private boolean useDailyBossChk;
     
     /**
     * 月の承認者確認を利用する
     */
-    private int useMonthApproverComfirm;
+    private boolean useMonthBossChk;
     
     /**
     * エラーがある場合の上司確認
     */
-    private int supervisorConfirmError;
+    private Integer supervisorConfirmError;
     
     private Long version;
 

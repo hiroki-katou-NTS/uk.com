@@ -30,14 +30,14 @@ public class IdentityProcessDto
     /**
     * エラーがある場合の本人確認
     */
-    private int yourselfConfirmError;
+    private Integer yourselfConfirmError;
     
     
     public static IdentityProcessDto fromDomain(IdentityProcess domain)
     {
         return new IdentityProcessDto(domain.getCid(), domain.getUseDailySelfCk(), 
 						        		domain.getUseMonthSelfCK(), 
-						        		domain.getYourselfConfirmError().value);
+						        		domain.getYourselfConfirmError() == null ? null : domain.getYourselfConfirmError().value);
     }
     
 }

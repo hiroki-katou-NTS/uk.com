@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_APPROVAL_PROCESS")
+@Table(name = "KRCMT_BOSS_CHECK_SET")
 public class KrcmtApprovalProcess extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -36,29 +36,29 @@ public class KrcmtApprovalProcess extends UkJpaEntity implements Serializable
     * 職位ID
     */
     @Basic(optional = true)
-    @Column(name = "JOB_TITLE_ID")
+    @Column(name = "JOB_TITLE_NOT_BOSS_CHECK")
     public String jobTitleId;
     
     /**
-    * 上司確認を利用する
+    * 日の承認者確認を利用する
     */
     @Basic(optional = false)
-    @Column(name = "USE_DAY_APPROVER_CONFIRM")
-    public int useDayApproverConfirm;
+    @Column(name = "USE_DAILY_BOSS_CHECK")
+    public int useDailyBossChk;
     
     /**
     * 月の承認者確認を利用する
     */
     @Basic(optional = false)
-    @Column(name = "USE_MONTH_APPROVER_COMFIRM")
-    public int useMonthApproverComfirm;
+    @Column(name = "USE_MONTHLY_BOSS_CHECK")
+    public int useMonthBossChk;
     
     /**
     * エラーがある場合の上司確認
     */
     @Basic(optional = true)
     @Column(name = "SUPERVISOR_CONFIRM_ERROR")
-    public int supervisorConfirmError;
+    public Integer supervisorConfirmError;
     
     @Override
     protected Object getKey()
@@ -67,10 +67,15 @@ public class KrcmtApprovalProcess extends UkJpaEntity implements Serializable
     }
 
     public ApprovalProcess toDomain() {
-        return new ApprovalProcess(this.approvalProcessPk.cid, this.jobTitleId, this.useDayApproverConfirm, this.useMonthApproverComfirm, EnumAdaptor.valueOf(this.supervisorConfirmError, YourselfConfirmError.class));
+        return new ApprovalProcess(this.approvalProcessPk.cid, this.jobTitleId, 
+					        		this.useDailyBossChk, this.useMonthBossChk, 
+					        		supervisorConfirmError == null ? null : EnumAdaptor.valueOf(this.supervisorConfirmError, YourselfConfirmError.class));
     }
     public static KrcmtApprovalProcess toEntity(ApprovalProcess domain) {
-        return new KrcmtApprovalProcess(new KrcmtApprovalProcessPk(domain.getCid()), domain.getJobTitleId(), domain.getUseDayApproverConfirm(), domain.getUseMonthApproverComfirm(), domain.getSupervisorConfirmError().value);
+        return new KrcmtApprovalProcess(new KrcmtApprovalProcessPk(domain.getCid()), domain.getJobTitleId(), 
+							        		domain.getUseDailyBossChk(), 
+							        		domain.getUseMonthBossChk(), 
+							        		domain.getSupervisorConfirmError() == null ? null : domain.getSupervisorConfirmError().value);
     }
 
 }

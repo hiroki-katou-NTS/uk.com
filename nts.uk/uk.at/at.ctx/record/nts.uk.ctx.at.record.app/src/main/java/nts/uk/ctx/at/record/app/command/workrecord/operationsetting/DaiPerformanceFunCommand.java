@@ -20,60 +20,60 @@ public class DaiPerformanceFunCommand {
 	/**
 	 * 1ヵ月の確認・承認が完了した場合、メッセージを表示する
 	 */
-	private int monthChkMsgAtr;
+	private boolean monthChkMsgAtr;
 
 	/**
 	 * 36協定情報を表示する
 	 */
-	private int disp36Atr;
+	private boolean disp36Atr;
 
 	/**
 	 * クリアした内容は手修正にする
 	 */
-	private int clearManuAtr;
+	private boolean clearManuAtr;
 
 	/**
 	 * フレックス勤務者のフレックス不足情報を表示する
 	 */
-	private int flexDispAtr;
+	private boolean flexDispAtr;
 
 	/**
 	 * 休出計算区分を変更する場合、休出深夜計算区分を変更する
 	 */
-	private int breakCalcUpdAtr;
+	private boolean breakCalcUpdAtr;
 
 	/**
 	 * 休憩時刻を自動で設定する
 	 */
-	private int breakTimeAutoAtr;
+	private boolean breakTimeAutoAtr;
 
 	/**
 	 * 休日の場合、出勤/退勤時刻をクリアにする
 	 */
-	private int breakClrTimeAtr;
+	private boolean breakClrTimeAtr;
 
 	/**
 	 * 出勤/退勤時刻を自動で設定する
 	 */
-	private int autoSetTimeAtr;
+	private boolean autoSetTimeAtr;
 
 	/**
 	 * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する
 	 */
-	private int ealyCalcUpdAtr;
+	private boolean ealyCalcUpdAtr;
 
 	/**
 	 * 残業計算区分を変更する場合、残業深夜区分を変更する
 	 */
-	private int overtimeCalcUpdAtr;
+	private boolean overtimeCalcUpdAtr;
 
 	/**
 	 * 法定内残業計算区分を変更する場合、法定内深夜残業計算区分を変更する
 	 */
-	private int lawOverCalcUpdAtr;
+	private boolean lawOverCalcUpdAtr;
 
 	/**
 	 * 自動で設定した内容は手修正にする
 	 */
-	private int manualFixAutoSetAtr;
+	private boolean manualFixAutoSetAtr;
 }

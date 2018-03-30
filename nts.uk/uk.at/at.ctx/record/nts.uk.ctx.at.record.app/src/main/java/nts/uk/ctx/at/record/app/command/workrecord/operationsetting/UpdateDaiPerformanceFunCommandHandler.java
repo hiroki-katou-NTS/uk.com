@@ -21,18 +21,18 @@ public class UpdateDaiPerformanceFunCommandHandler extends CommandHandler<DaiPer
     protected void handle(CommandHandlerContext<DaiPerformanceFunCommand> context) {
         DaiPerformanceFunCommand updateCommand = context.getCommand();
         repository.update(DaiPerformanceFun.createFromJavaType(updateCommand.getCid(), updateCommand.getComment(), 
-        		updateCommand.getMonthChkMsgAtr(), 
-        		updateCommand.getDisp36Atr(), 
-        		updateCommand.getClearManuAtr(), 
-        		updateCommand.getFlexDispAtr(), 
-        		updateCommand.getBreakCalcUpdAtr(), 
-        		updateCommand.getBreakTimeAutoAtr(), 
-        		updateCommand.getBreakClrTimeAtr(), 
-        		updateCommand.getAutoSetTimeAtr(), 
-        		updateCommand.getEalyCalcUpdAtr(), 
-        		updateCommand.getOvertimeCalcUpdAtr(), 
-        		updateCommand.getLawOverCalcUpdAtr(), 
-        		updateCommand.getManualFixAutoSetAtr()));
+        		updateCommand.isMonthChkMsgAtr() ? 1 : 0, 
+        		updateCommand.isDisp36Atr() ? 1 : 0, 
+        		updateCommand.isClearManuAtr() ? 1 : 0, 
+        		updateCommand.isFlexDispAtr() ? 1 : 0, 
+        		updateCommand.isBreakCalcUpdAtr() ? 1 : 0, 
+        		updateCommand.isBreakTimeAutoAtr() ? 1 : 0, 
+        		updateCommand.isBreakClrTimeAtr() ? 1 : 0, 
+        		updateCommand.isAutoSetTimeAtr() ? 1 : 0, 
+        		updateCommand.isEalyCalcUpdAtr() ? 1 : 0, 
+        		updateCommand.isOvertimeCalcUpdAtr() ? 1 : 0, 
+        		updateCommand.isLawOverCalcUpdAtr() ? 1 : 0, 
+        		updateCommand.isManualFixAutoSetAtr()? 1 : 0));
     
     }
 }

@@ -33,7 +33,7 @@ module nts.uk.at.view.kdw006.b {
 
                 self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
                     cid: '',
-                    comment: '',
+                    comment: null,
                     monthChkMsgAtr: null,
                     disp36Atr: null,
                     clearManuAtr: null,
@@ -52,7 +52,7 @@ module nts.uk.at.view.kdw006.b {
 
                 self.monPerformanceFunDto = ko.observable(new MonPerformanceFunDto({
                     cid: '',
-                    comment: '',
+                    comment: null,
                     dailySelfChkDispAtr: null
                 }));
 

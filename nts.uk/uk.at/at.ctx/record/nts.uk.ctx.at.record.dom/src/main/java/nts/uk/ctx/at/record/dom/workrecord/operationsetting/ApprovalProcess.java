@@ -24,23 +24,27 @@ public class ApprovalProcess extends AggregateRoot
      private String jobTitleId;
      
     /**
-    * 上司確認を利用する
+    * 日の承認者確認を利用する
     */
-    private int useDayApproverConfirm;
+    private int useDailyBossChk;
     
     /**
     * 月の承認者確認を利用する
     */
-    private int useMonthApproverComfirm;
+    private int useMonthBossChk;
     
     /**
     * エラーがある場合の上司確認
     */
     private YourselfConfirmError supervisorConfirmError;
     
-    public static ApprovalProcess createFromJavaType(String cid, String jobTitleId, int useDayApproverConfirm, int useMonthApproverComfirm, int supervisorConfirmError)
-    {
-        ApprovalProcess  approvalProcess =  new ApprovalProcess(cid, jobTitleId, useDayApproverConfirm, useMonthApproverComfirm,  EnumAdaptor.valueOf(supervisorConfirmError, YourselfConfirmError.class));
+    public static ApprovalProcess createFromJavaType(String cid, String jobTitleId, 
+											    		int useDailyBossChk, 
+											    		int useMonthBossChk, 
+											    		Integer supervisorConfirmError){
+        ApprovalProcess  approvalProcess =  new ApprovalProcess(cid, jobTitleId, 
+        														useDailyBossChk, useMonthBossChk,  
+        														supervisorConfirmError == null ? null : EnumAdaptor.valueOf(supervisorConfirmError, YourselfConfirmError.class));
         return approvalProcess;
     }
     

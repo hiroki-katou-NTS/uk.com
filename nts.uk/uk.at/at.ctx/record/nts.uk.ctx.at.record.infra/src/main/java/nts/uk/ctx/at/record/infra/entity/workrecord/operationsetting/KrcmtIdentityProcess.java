@@ -51,7 +51,7 @@ public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "YOURSELF_CONFIRM_ERROR")
-    public int yourselfConfirmError;
+    public Integer yourselfConfirmError;
     
     @Override
     protected Object getKey()
@@ -62,13 +62,13 @@ public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
     public IdentityProcess toDomain() {
         return new IdentityProcess(this.identityProcessPk.cid, this.useDailySelfCk, 
 					        		this.useMonthSelfCK, 
-					        		EnumAdaptor.valueOf(this.yourselfConfirmError, YourselfConfirmError.class));
+					        		this.yourselfConfirmError == null ? null : EnumAdaptor.valueOf(this.yourselfConfirmError, YourselfConfirmError.class));
     }
     public static KrcmtIdentityProcess toEntity(IdentityProcess domain) {
         return new KrcmtIdentityProcess(new KrcmtIdentityProcessPk(domain.getCid()), 
 						        		domain.getUseDailySelfCk(),
 						        		domain.getUseMonthSelfCK(), 
-						        		domain.getYourselfConfirmError().value);
+						        		domain.getYourselfConfirmError() == null ? null : domain.getYourselfConfirmError().value);
     }
 
 }
