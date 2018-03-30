@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -107,6 +108,19 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 		}
 		return new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity));
 	}
+	
+	/**
+	 * To domain.
+	 *
+	 * @param entities the entities
+	 * @return the list
+	 */
+	private List<ShainRegularLaborTime> toDomain(List<KshstShaRegLaborTime> entities) {
+		if (entities.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return entities.stream().map(entity -> new ShainRegularLaborTime(new JpaShainRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository#findAll(java.lang.String)
@@ -128,6 +142,6 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 
 		List<KshstShaRegLaborTime> resultList = em.createQuery(cq).getResultList();
 
-		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		return this.toDomain(resultList);
 	}
 }
