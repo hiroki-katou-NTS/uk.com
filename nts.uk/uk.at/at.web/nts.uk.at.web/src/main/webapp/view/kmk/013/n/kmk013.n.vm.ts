@@ -30,8 +30,6 @@ module nts.uk.at.view.kmk013.n {
                         self.start(dt.startTime);
                         self.end(dt.endTime);
                         self.isCreated(true);
-                        console.log("start: " + self.start());
-                        console.log("data: " + dt.startTime);
                     }
                     dfd.resolve();
                 });
@@ -39,25 +37,39 @@ module nts.uk.at.view.kmk013.n {
             }
             saveData(): void {
                 let self = this;
-                let data = self.data;
-                data.start = self.start();
-                data.end = self.end();
-                if (self.start() >= self.end()){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_1022' });
-                } else if (self.isCreated()){
-                    service.update(data).done(
-                        () => {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-                        }
-                    );
-                } else {
-                    service.save(data).done(
-                        () => {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-                        }
-                    );
+                $('#start').ntsError('check');
+                $('#end').ntsError('check');
+                
+                if (!$('#start').ntsError('hasError') && !$('#end').ntsError('hasError')) {
+                    let data = self.data;
+                    data.start = self.start();
+                    data.end = self.end();
+                    if (self.start() >= self.end()){
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_1022' });
+                    } else if (self.isCreated()){
+                        service.update(data).done(
+                            () => {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                            }
+                        );
+                    } else {
+                        service.save(data).done(
+                            () => {
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                            }
+                        );
+                    }
                 }
             }
+            saveEnabled = ko.computed(() => {
+                let self = this;
+                $('#start').ntsError('check');
+                $('#end').ntsError('check');
+                
+                if (!$('#start').ntsError('hasError') && !$('#end').ntsError('hasError')) {
+                    return true;
+                } else return false;
+            });
         }
     }
 }
