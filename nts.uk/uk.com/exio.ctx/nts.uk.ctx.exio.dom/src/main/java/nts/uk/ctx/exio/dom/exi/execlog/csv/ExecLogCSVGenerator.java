@@ -60,7 +60,9 @@ public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements E
 		// list error
 		if (!headers.isEmpty()){
 			this.drawHeader(cells, headers);
-			this.drawTableBody(cells, headers, datas);
+			if (!datas.isEmpty()){
+				this.drawTableBody(cells, headers, datas);
+			}
 		}
 		reportContext.processDesigner();
 
