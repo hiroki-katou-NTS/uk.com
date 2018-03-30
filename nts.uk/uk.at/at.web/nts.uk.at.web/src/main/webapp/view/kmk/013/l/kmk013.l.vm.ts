@@ -13,7 +13,7 @@ module nts.uk.at.view.kmk013.l {
             
             constructor() {
                 let self = this;
-                self.valueL2_7 = ko.observable(3);
+                self.valueL2_7 = ko.observable(0);
                 self.valueL2_9 = ko.observable(0);
             }
             
@@ -50,6 +50,10 @@ module nts.uk.at.view.kmk013.l {
                 let obj = <any>{};
                 obj.maxUsage = self.valueL2_7();
                 obj.timeTreatTemporarySame = self.valueL2_9();
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                
                 $.when(service.save(obj)).done(function(data: any) {
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     $.when(self.loadData()).done(function() {
