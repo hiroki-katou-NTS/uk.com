@@ -34,7 +34,7 @@ public class CsvDataImportService extends WebService {
 
 	@POST
 	@Path("getCsvRecord/{endcoding}")
-	public List<String> getRecord(GettingCsvDataDto info, @PathParam("endcoding") Integer endcoding) {
+	public List<String> getRecord(@PathParam("endcoding") Integer endcoding, GettingCsvDataDto info) {
 		return fileFind.getRecord(info, endcoding);
 	}
 }
