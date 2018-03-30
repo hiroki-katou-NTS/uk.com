@@ -6,22 +6,16 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
- * @author sonnlb
- * 消化対象代休管理Dto
+ * @author sonnlb 消化対象代休管理Dto
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class SubTargetDigestionDto {
 	/**
-	 * 振出申請ID
+	 * 申請ID
 	 */
-	private String recAppID;
-
-	/**
-	 * 振休申請ID
-	 */
-	private String absenceLeaveAppID;
+	private String appID;
 
 	/**
 	 * 使用時間数
@@ -41,4 +35,9 @@ public class SubTargetDigestionDto {
 	 * 休出状態
 	 */
 	private int restState;
+
+	/**
+	 * 日付不明
+	 */
+	private int unknownDate;
 }

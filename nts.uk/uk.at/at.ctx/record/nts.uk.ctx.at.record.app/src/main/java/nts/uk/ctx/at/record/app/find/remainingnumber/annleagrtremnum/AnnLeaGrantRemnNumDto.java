@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -30,7 +29,7 @@ public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 	 * 年休期限切れ状態
 	 */
 	@PeregItem("IS00387")
-	private LeaveExpirationStatus expirationStatus;
+	private int expirationStatus;
 
 	/**
 	 * 年休使用状況
@@ -96,7 +95,7 @@ public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 		AnnLeaGrantRemnNumDto dto = new AnnLeaGrantRemnNumDto();
 		dto.grantDate = domain.getGrantDate();
 		dto.deadline = domain.getDeadline();
-		dto.expirationStatus = domain.getExpirationStatus();
+		dto.expirationStatus = domain.getExpirationStatus().value;
 		dto.grantDays = domain.getDetails().getGrantNumber().getDays().v();
 		dto.grantMinutes = domain.getDetails().getGrantNumber().getMinutes().isPresent()
 				? domain.getDetails().getGrantNumber().getMinutes().get().v() : 0;

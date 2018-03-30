@@ -51,12 +51,6 @@ public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 	@Column(name = "CHANGE_WORK_HOURS_ATR")
 	private int changeWorkHoursAtr;
 
-	/**
-	 * 勤務場所コード
-	 */
-	@Basic(optional = true)
-	@Column(name = "WORK_LOCATION_CD")
-	private String workLocationCD;
 
 	/**
 	 * 就業時間帯

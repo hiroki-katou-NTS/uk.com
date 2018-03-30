@@ -52,9 +52,9 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 						if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() != entry.getValue().getCalTime()){
 							breakTime.setErrorCode(3); // 色定義名：計算値
 						}
-						if(entry.getValue().getCalTime() == 0){
+						if(entry.getValue().getCalTime()!= null && entry.getValue().getCalTime() == 0){
 							continue;
-						}else if(entry.getValue().getCalTime() > 0){
+						}else if(entry.getValue().getCalTime()!= null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
 									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
@@ -86,23 +86,25 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 }
 	@Override
 	public List<CaculationTime> getCaculationHolidayWork(String companyID, String employeeId, String appDate,
-			int appType, List<CaculationTime> holidayWorks, Map<Integer, TimeWithCalculationImport> holidayWorkCal) {
+			int appType, List<CaculationTime> holidayWorks, Map<Integer, TimeWithCalculationImport> holidayWorkCal,int prePostAtr) {
 		// 0時跨ぎチェック
 		//事前申請を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
-		if(overtimeRestAppCommonSetting.isPresent()){
-			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
-				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
-				if(application.size() > 0){
-					Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
-							.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());
-					if(appHolidayWork.isPresent()){
-						List<HolidayWorkInput> holidayWorkInputs = holidayWorkInputRepository.getHolidayWorkInputByAttendanceType(appHolidayWork.get().getCompanyID(), appHolidayWork.get().getAppID(),
-								AttendanceType.BREAKTIME.value);
-						for(HolidayWorkInput holidayWorkInput : holidayWorkInputs){
-							for(CaculationTime cal : holidayWorks){
-								if(cal.getFrameNo() == holidayWorkInput.getFrameNo()){
-									cal.setPreAppTime(Integer.toString(holidayWorkInput.getApplicationTime().v()));
+		if(prePostAtr == 1){
+			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+			if(overtimeRestAppCommonSetting.isPresent()){
+				if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
+					List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+					if(application.size() > 0){
+						Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
+								.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());
+						if(appHolidayWork.isPresent()){
+							List<HolidayWorkInput> holidayWorkInputs = holidayWorkInputRepository.getHolidayWorkInputByAttendanceType(appHolidayWork.get().getCompanyID(), appHolidayWork.get().getAppID(),
+									AttendanceType.BREAKTIME.value);
+							for(HolidayWorkInput holidayWorkInput : holidayWorkInputs){
+								for(CaculationTime cal : holidayWorks){
+									if(cal.getFrameNo() == holidayWorkInput.getFrameNo()){
+										cal.setPreAppTime(Integer.toString(holidayWorkInput.getApplicationTime().v()));
+									}
 								}
 							}
 						}
@@ -115,7 +117,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 		for(CaculationTime cal : holidayWorks){
 			for(Map.Entry<Integer, TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
 				if(cal.getFrameNo() == entry.getKey()){
-					cal.setCaculationTime(Integer.toString(entry.getValue().getCalTime()));
+					cal.setApplicationTime(entry.getValue().getCalTime());
 				}
 			}
 		}

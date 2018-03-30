@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTim
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 public interface HolidayService {
 	
@@ -22,7 +23,7 @@ public interface HolidayService {
 	 * @param appDate
 	 * @return
 	 */
-	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<PersonalLaborCondition> personalLablorCodition);
+	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition);
 	/**
 	 * 4_b.勤務種類を取得する（詳細）
 	 * @param companyID
@@ -32,13 +33,14 @@ public interface HolidayService {
 	 * @param personalLablorCodition
 	 * @return
 	 */
-	public WorkTypeHolidayWork getListWorkType(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<PersonalLaborCondition> personalLablorCodition);
+	public WorkTypeHolidayWork getListWorkType(String companyID,
+			String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<WorkingConditionItem> personalLablorCodition);
 	/**
 	 * 4_c.初期選択
 	 * @param workType
 	 * @param appDate
 	 */
-	public void getWorkType(String companyID,WorkTypeHolidayWork workType,GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition);
+	public void getWorkType(String companyID,WorkTypeHolidayWork workType,GeneralDate appDate, String employeeID,Optional<WorkingConditionItem> personalLablorCodition);
 	/**
 	 * 5.就業時間帯を取得する
 	 * @param companyID
@@ -47,7 +49,7 @@ public interface HolidayService {
 	 * @param baseDate
 	 * @return
 	 */
-	public WorkTimeHolidayWork getWorkTimeHolidayWork(String companyID, String employeeID,GeneralDate baseDate,Optional<PersonalLaborCondition> personalLablorCodition);
+	public WorkTimeHolidayWork getWorkTimeHolidayWork(String companyID, String employeeID,GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition);
 	
 	/**
 	 * insert HolidayWork
