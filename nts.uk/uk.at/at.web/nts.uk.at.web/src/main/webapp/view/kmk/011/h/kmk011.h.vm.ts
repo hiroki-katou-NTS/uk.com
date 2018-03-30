@@ -20,6 +20,7 @@ module nts.uk.at.view.kmk011.h {
                 service.find().done(function(value: any) {
                     if (value != null) {
                         _self.selectWorkTypeCheck(value.workTypeUseSet)
+                        $("#selectWorkTypeCheck").focus();
                     }
                 });
                 dfd.resolve();

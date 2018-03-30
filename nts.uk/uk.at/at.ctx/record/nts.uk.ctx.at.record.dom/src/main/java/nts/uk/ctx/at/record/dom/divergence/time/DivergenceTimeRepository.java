@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface DivergenceTimeRepository.
@@ -22,7 +23,7 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeNo the div time no
 	 * @return the div time info
 	 */
-	DivergenceTime getDivTimeInfo(String companyId, int divTimeNo);
+	Optional<DivergenceTime> getDivTimeInfo(String companyId, int divTimeNo);
 
 	/**
 	 * Find attendance id.

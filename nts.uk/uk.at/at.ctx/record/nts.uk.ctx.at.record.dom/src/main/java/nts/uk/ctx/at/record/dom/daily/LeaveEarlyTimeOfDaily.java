@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,20 +67,17 @@ public class LeaveEarlyTimeOfDaily {
 			) {
 
 		//勤務Noに一致する早退時間をListで取得する
-		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
+		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 																												 .filter(t -> new WorkNo(t.getLeaveEarlyTimeSheet().get().getWorkNo()).equals(workNo))
 																												 .map(t -> t.getLeaveEarlyTimeSheet().get())
 																												 .sorted((leaveEarlyTimeSheet1,leaveEarlyTimeSheet2) -> leaveEarlyTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
 																														 .compareTo(leaveEarlyTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
-																												 .collect(Collectors.toList());
+																												 .collect(Collectors.toList()):new ArrayList<>();
 		LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 				  																 new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 
 		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 																				 new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
-		
-		
-		
 		if(!leaveEarlyTimeSheetList.isEmpty()) {
 			//早退時間帯を１つの時間帯にする。
 			forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),

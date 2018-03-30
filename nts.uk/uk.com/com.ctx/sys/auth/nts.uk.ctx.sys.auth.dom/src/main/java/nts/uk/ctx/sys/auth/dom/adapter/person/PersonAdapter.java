@@ -19,5 +19,12 @@ public interface PersonAdapter {
 	 * @return the list
 	 */
 	List<PersonImport> findByPersonIds(List<String> personIds);
+	/**
+	 * 
+	 * @param listSID
+	 * @return 個人社員基本情報
+	 * RequestList.No1
+	 */
+	List<EmployeeBasicInforAuthImport> listPersonInfor(List<String> listSID);
 	
 }

@@ -19,7 +19,6 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -72,6 +71,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -119,6 +120,8 @@ public class AppHolidayWorkFinder {
 	private WorkTypeRepository workTypeRepository;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	
 	/**
@@ -162,6 +165,7 @@ public class AppHolidayWorkFinder {
 				result.setEmployeeID(employeeID);
 			}
 			result.setEmployeeName(employeeName);
+		
 		return result;
 	}
 	/**
@@ -244,11 +248,31 @@ public class AppHolidayWorkFinder {
 		String companyID = AppContexts.user().companyId();
 		List<CaculationTime> result = new ArrayList<>();
 		// 6.計算処理 : TODO
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTydeCode, siftCD, 100, 200, 100, 200);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
+																GeneralDate.fromString(appDate, DATE_FORMAT),
+																workTydeCode,
+																siftCD,
+																startTime,
+																endTime,
+																startTimeRest,
+																endTimeRest);
 		// 06-01_色表示チェック
-		result = this.holidaySixProcess.checkDisplayColor(breakTime, dailyAttendanceTimeCaculationImport.getHolidayWorkTime(), prePostAtr, inputDate, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION.value, employeeID, companyID, siftCD);
+		result = this.holidaySixProcess.checkDisplayColor(breakTime,
+														dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
+														prePostAtr,
+														inputDate,
+														GeneralDate.fromString(appDate, DATE_FORMAT), 
+														ApplicationType.BREAK_TIME_APPLICATION.value,
+														employeeID,
+														companyID,
+														siftCD);
 		// 06-02_休出時間を取得
-		this.holidaySixProcess.getCaculationHolidayWork(companyID, employeeID, appDate, ApplicationType.BREAK_TIME_APPLICATION.value, result, dailyAttendanceTimeCaculationImport.getHolidayWorkTime());
+		this.holidaySixProcess.getCaculationHolidayWork(companyID,
+				employeeID,
+				appDate,
+				ApplicationType.BREAK_TIME_APPLICATION.value,
+				result,
+				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),prePostAtr);
 		return result;
 	}
 	
@@ -285,7 +309,7 @@ public class AppHolidayWorkFinder {
 				if(workType != null){
 					appHolidayWorkDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 				}
-				Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
+				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
 				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 				// 4_b.勤務種類を取得する（詳細）
 				WorkTypeHolidayWork WorkTypes =  holidayService.getListWorkType(companyID, appHolidayWork.getApplication().getEmployeeID(), appEmploymentWorkType, appHolidayWork.getApplication().getAppDate(), personalLablorCodition);
@@ -451,6 +475,7 @@ public class AppHolidayWorkFinder {
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);
+		result.setPrePostCanChangeFlg(displayPrePost.isPrePostCanChangeFlg());
 		//4.勤務種類を取得する, 5.就業時間帯を取得する, 01-17_休憩時間取得
 		getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result);
 		//01-14_勤務時間取得
@@ -555,7 +580,7 @@ public class AppHolidayWorkFinder {
 				// 4.勤務種類を取得する : TODO
 				GeneralDate baseDate = appCommonSettingOutput.generalDate;
 				//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
-				Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,baseDate);
+				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 				WorkTypeHolidayWork WorkTypes =  holidayService.getWorkTypes(companyID, employeeID, appEmploymentWorkType, baseDate, personalLablorCodition);
 				result.setWorkTypes(WorkTypes.getWorkTypeCodes());

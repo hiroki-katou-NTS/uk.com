@@ -18,4 +18,14 @@ public class SpecialLeaveGrantNumber {
 	//時間
 	public Optional<TimeOfGrant> timeOfGrant;
 	
+	private SpecialLeaveGrantNumber(int days, Integer minutes) {
+		this.dayNumberOfGrant = new DayNumberOfGrant(days);
+		this.timeOfGrant = minutes != null ? Optional.of(new TimeOfGrant(minutes)) : Optional.empty();
+	}
+
+	public static SpecialLeaveGrantNumber createFromJavaType(int days, Integer minutes) {
+		return new SpecialLeaveGrantNumber(days, minutes);
+	}
+
+	
 }

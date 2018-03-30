@@ -493,6 +493,55 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		}
 		return false;
 	}
+	@Override
+	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
+			String companyID) {
+		List<ApprovalRootState> approvalRootStates = new ArrayList<>();
+		if(rootType == null){
+			// xử lí 承認者と期間から承認ルートインスタンスを取得する（ルート種類指定なし）
+			 approvalRootStates = this.approvalRootStateRepository
+					.findEmployeeAppByApprovalRecordDateAndNoRootType(startDate, endDate, approverID);
+			 
+		}else{
+			// 承認者と期間から承認ルートインスタンスを取得する
+			 approvalRootStates = this.approvalRootStateRepository
+					.findEmployeeAppByApprovalRecordDate(startDate, endDate, approverID, rootType);
+		}
+		// ドメインモデル「代行承認」を取得する
+		List<Agent> agents = this.agentRepository.findByApproverAndDate(companyID, approverID, startDate, endDate);
+		List<String> employeeApproverID = new ArrayList<>();
+		employeeApproverID.add(approverID);
+		if (!CollectionUtil.isEmpty(agents)) {
+			for (Agent agent : agents) {
+				// ドメインモデル「承認ルートインスタンス」を取得する
+				employeeApproverID.add(agent.getEmployeeId());
+				List<ApprovalRootState> approvalRootStateAgents = this.approvalRootStateRepository
+						.findEmployeeAppByApprovalRecordDate(startDate, endDate, agent.getEmployeeId(), rootType);
+				if (!CollectionUtil.isEmpty(approvalRootStateAgents)) {
+					for (ApprovalRootState approver : approvalRootStateAgents) {
+						approvalRootStates.add(approver);
+					}
+				}
+			}
+		}
+		if(CollectionUtil.isEmpty(approvalRootStates)){
+			return false;
+		}
+		boolean result = false;
+		for(ApprovalRootState approval : approvalRootStates){
+			ApproverPersonExport ApproverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID);
+			if(ApproverPersonExport.getAuthorFlag() && ApproverPersonExport.getApprovalAtr().equals(ApprovalBehaviorAtrExport.UNAPPROVED) && !ApproverPersonExport.getExpirationAgentFlag()){
+				result = true;
+				break;
+			}else{
+				result = false;
+			}
+		}
+		
+		
+		
+		return result;
+	}
 
 	
 }
