@@ -51,12 +51,12 @@ module cps001.h.vm {
             self.columns = ko.observableArray([
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70 },
-                { headerText: text("CPS001_121"), key: 'grantDays', width: 70 },
-                { headerText: text("CPS001_130"), key: 'useDays', width: 70 },
-                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70 },
-                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70 }
+                { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },                
+                { headerText: text("CPS001_121"), key: 'grantDays', width: 70 , formatter: self.formatterDate},
+                { headerText: text("CPS001_130"), key: 'useDays', width: 70 , formatter: self.formatterDate},
+                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70,formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70,formatter: self.formatterDate },
+                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70, formatter: self.formatterExState}
             ]);
         }
         load(): JQueryPromise<any> {
@@ -162,7 +162,7 @@ module cps001.h.vm {
                     grantDate = moment.utc(item.grantDate(), "YYYY/MM/DD"),
                     deadline = moment.utc(item.deadline(), "YYYY/MM/DD");
                 if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
-                    error({ messageId: "Msg_1023", messageParams: [] });
+                    error({ messageId: "Msg_1023"});
                     return;
                 }
                 if (self.isCreate()) {
@@ -171,7 +171,8 @@ module cps001.h.vm {
                         item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
                             self.load().done(() => {
                                 if (self.items().length > 0) {
-                                    self.currentItem(_.difference(self.items(), currItem)[0].id);
+                                    let newId = _.difference(_.map(self.items(), (i)=>{return i.id;}), _.map(currItem, (i) => {return i.id;}));
+                                    self.currentItem(newId);
                                 }
                                 alert({ messageId: "Msg_15" });
                                 unblock();
@@ -204,6 +205,19 @@ module cps001.h.vm {
             self.currentItem("-1");
             self.enableRemoveBtn(false);
             self.isCreate(true);
+        }
+        
+        formatterDate(value){
+            return value + "日";
+        }
+        
+        formatterExState(value: number){
+            if(value == 1){ 
+                    return "使用可能";
+            }else{
+                return "期限切れ";
+            }
+            
         }
 
     }
