@@ -48,6 +48,7 @@ module nts.uk.com.view.cps001.g.vm {
                                  });
                             }   
                         }
+                         $('#id-grantDate').focus();
                     });
                     $('#idGrantDate').focus();
                 }
@@ -179,11 +180,11 @@ module nts.uk.com.view.cps001.g.vm {
                 { headerText: getText('CPS001_111'), type: 'date', key: 'deadline', width: 100 },
                 { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
                 { headerText: getText('CPS001_128'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
-                { headerText: getText('CPS001_121'), key: 'grantMinutes', width: 60, hidden: self.grantMinutesH()},
+                { headerText: getText('CPS001_121'), key: 'grantMinutes', formatter: formatTime, width: 80, hidden: self.grantMinutesH()},
                 { headerText: getText('CPS001_122'), type: 'string', formatter: formatDate, key: 'usedDays', width: 60 },
-                { headerText: getText('CPS001_123'), key: 'usedMinutes', width: 60, hidden: self.usedMinutesH()},
+                { headerText: getText('CPS001_123'), key: 'usedMinutes', formatter: formatTime, width: 80, hidden: self.usedMinutesH()},
                 { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 60 },
-                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', width: 60, hidden: self.remainingMinutesH()}
+                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 80, hidden: self.remainingMinutesH()}
             ]);
                     let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:5}"></table>';
                     $("#tbl").html(table);
@@ -258,7 +259,11 @@ module nts.uk.com.view.cps001.g.vm {
          */
         public remove(): void {
             let _self = this,
-                sID = __viewContext.user.employeeId;
+                sID = __viewContext.user.employeeId,
+                currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) { 
+                    return item.annLeavID == ko.toJS(_self.currentItem()).annLeavID;
+                }),
+                finalIndex = _self.listAnnualLeaveGrantRemainData().length -1;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                 .ifYes(() => {
                     block();
@@ -268,8 +273,17 @@ module nts.uk.com.view.cps001.g.vm {
                         grantDate: ko.toJS(_self.currentItem()).grantDate
                     };
                     service.deleteLeav(command).done((message: string) => {
-                        info({ messageId: "Msg_15" }).then(function() {
-                            _self.startPage();
+                        info({ messageId: "Msg_16" }).then(function() {
+                            
+                            // set focus
+                            if (currentIndex ===0 && currentIndex === finalIndex){
+                                _self.create();    
+                            } else if (currentIndex !==0 && currentIndex === finalIndex ){
+                                currentIndex = currentIndex -1;
+                            } else {
+                                currentIndex = currentIndex + 1;    
+                            }
+                            _self.startPage(_self.listAnnualLeaveGrantRemainData()[currentIndex].annLeavID);
                         });
                         unblock();
                     })
@@ -322,8 +336,6 @@ module nts.uk.com.view.cps001.g.vm {
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
-                console.log(value);
-                console.log(self.grantDate());
                 if (value && __viewContext.viewModel.createMode()) {
                     service.lostFocus(value).done((data: Date) => {
                         if (data){
@@ -334,7 +346,17 @@ module nts.uk.com.view.cps001.g.vm {
             });
         }
     }
-
+    
+    function formatTime(value, row) {
+        if (value) {
+            let hour = Math.floor(Math.abs(value)/60);
+            let minutes = Math.floor(Math.abs(value)%60);
+            return hour + ':' + (minutes < 10 ? ("0" + minutes) : minutes);
+        } else {
+            return '';    
+        }
+    }
+    
     function formatDate(value, row) {
         if (value) {
             return value + '日';
