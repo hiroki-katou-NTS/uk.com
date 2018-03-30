@@ -131,11 +131,10 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $("#grd_Condition tr[aria-selected='true']").focus();
         }
 
-        private uploadFile(): void {
-            let self = this;
-            block.invisible();
-            $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-                service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
+        uploadFile(fileInfo: any) {
+            var self = this;
+            self.fileId(fileInfo.id);
+            service.getNumberOfLine(self.fileId()).done(function(totalLine: any) {
                     self.totalLine(totalLine);
                     //アップロードCSVが取込開始行に満たない場合                   
                     if (totalLine < self.selectedConditionStartLine()) {
@@ -145,7 +144,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //アップロードCSVが取込開始行以上ある
                     else {
                         //基盤からファイルIDを取得する
-                        self.fileId(res[0].id);
+                        self.fileId(self.fileId);
                     }
                 }).fail(function(err) {
                     self.resetFile();
@@ -154,18 +153,13 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     block.clear();
                     $("#file-upload").focus();
                 });
-            }).fail(function(err) {
-                self.resetFile();
-                block.clear();
-                alertError({ messageId: "Msg_910" });
-                $("#file-upload").focus();
-            });
         }
 
         private resetFile(): void {
             let self = this;
+            self.fileName("");
             self.fileId(null);
-            $("#file-upload input.nts-editor.nts-input").val("");
+           // $("#file-upload input.nts-editor.nts-input").val("");
         }
 
         private loadListCondition(sysType): void {
