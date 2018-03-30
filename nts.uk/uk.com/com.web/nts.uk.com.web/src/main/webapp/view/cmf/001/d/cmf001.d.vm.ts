@@ -370,6 +370,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                         });
                     });
                 }).fail(function(error) {
+                    if (!error.messageId) error.messageId = "Msg_904"; //エラーリストにエラーメッセージがある場合
                     alertError(error);
                 }).always(() => {
                     block.clear();
