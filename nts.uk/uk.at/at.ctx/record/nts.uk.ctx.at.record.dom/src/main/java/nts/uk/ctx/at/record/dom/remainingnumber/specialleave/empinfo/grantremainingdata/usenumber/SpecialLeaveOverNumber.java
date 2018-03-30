@@ -15,8 +15,17 @@ import lombok.Setter;
 public class SpecialLeaveOverNumber {
 	
 	// 日数
-	public DayNumberOfExeeded dayNumberOfExeeded;
+	public DayNumberOver numberOverDays;
 	// 時間
-	public Optional<TimeOfExeeded> timeOfExeeded;
+	public Optional<TimeOver> timeOver;
+	
+	private SpecialLeaveOverNumber(int days, Integer minutes) {
+		this.numberOverDays = new DayNumberOver(days);
+		this.timeOver = minutes != null ? Optional.of(new TimeOver(minutes)) : Optional.empty();
+	}
+
+	public static SpecialLeaveOverNumber createFromJavaType(int days, Integer minutes) {
+		return new SpecialLeaveOverNumber(days, minutes);
+	}
 
 }

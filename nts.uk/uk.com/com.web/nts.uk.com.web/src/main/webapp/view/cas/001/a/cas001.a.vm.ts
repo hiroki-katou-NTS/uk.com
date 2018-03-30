@@ -26,7 +26,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         currentCategoryId: KnockoutObservable<string> = ko.observable('');
         allowPersonRef: KnockoutObservable<number> = ko.observable(1);
         allowOtherRef: KnockoutObservable<number> = ko.observable(1);
-        RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
+        roleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         checkboxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
         component: ccg.component.viewmodel.ComponentModel = new ccg.component.viewmodel.ComponentModel({
             roleType: 8,
@@ -69,7 +69,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 newPersonRole.loadRoleCategoriesList(newRoleId, false).done(() => {
                     if (!self.currentCategoryId()) {
-                        newPersonRole.setCtgSelectedId(self.RoleCategoryList());
+                        newPersonRole.setCtgSelectedId(self.roleCategoryList());
                     }
 
 
@@ -83,7 +83,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     return;
                 }
 
-                let newCategory = _.find(self.RoleCategoryList(), (roleCategory) => {
+                let newCategory = _.find(self.roleCategoryList(), (roleCategory) => {
 
                     return roleCategory.categoryId === categoryId;
 
@@ -178,7 +178,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             $("#item_role_table_body").igGrid("option", "dataSource", currentList);
         }
 
-        OpenDModal() {
+        openDModal() {
 
             let self = this;
 
@@ -195,7 +195,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
         }
 
-        OpenCModal() {
+        openCModal() {
 
             let self = this,
                 currentRole = {
@@ -219,7 +219,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
         }
 
-        InitializationItemGrid() {
+        initializationItemGrid() {
             let self = this,
                 switchString = `<div id='{0}_auth' class='selected_all_auth'
                                     data-bind="ntsSwitchButton: {
@@ -234,6 +234,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', '!!allowOtherRef()'),
 
                 seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef()');
+            let array2E =  [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') },
+                                { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') }];
+            let array3E =  [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') },
+                                { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                                { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }];
+            
 
             service.getAllItemIdRequired().done(function(data) {
                 $("#item_role_table_body").ntsGrid({
@@ -258,9 +264,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                         {
                             name: 'SwitchButtons',
-                            options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') },
-                                { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
-                                { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                            options: array3E,
                             optionsValue: 'value',
                             optionsText: 'text',
                             controlType: 'SwitchButtons',
@@ -381,7 +385,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             personRole.loadRoleCategoriesList(personRole.roleId, true).done(function() {
 
-                if (self.RoleCategoryList().length > 0) {
+                if (self.roleCategoryList().length > 0) {
 
                     self.currentRole().currentCategory().loadRoleItems(self.currentRoleId(), selectedId).done(function() {
                         self.checkboxSelectedAll(false);
@@ -402,7 +406,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            self.InitializationItemGrid();
+            self.initializationItemGrid();
 
             self.loadPersonRoleList().done(function() {
 
@@ -546,6 +550,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         parrentCd: string;
         otherAuth: number;
         selfAuth: number;
+        dataType : number;
     }
 
     export class PersonRole {
@@ -595,7 +600,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
                 if (result.length <= 0) {
-                    screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
+                    screenModel.roleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
                     dialog({ messageId: "Msg_217" });
                     dfd.resolve();
                 }
@@ -606,7 +611,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         self.setCtgSelectedId(result);
                     }
                 }
-                screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
+                screenModel.roleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
 
 
 
@@ -734,6 +739,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         otherAuth: number;
         selfAuth: number;
         itemCd: string;
+        dataType : number;
 
         constructor(param: IPersonRoleItem) {
             let self = this;
@@ -745,6 +751,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.itemCd = param ? param.itemCd : '';
             self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
             self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
+            self.dataType = param? param.dataType : '';
         }
     }
 

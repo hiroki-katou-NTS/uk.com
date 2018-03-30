@@ -12,10 +12,10 @@ module nts.uk.com.view.cps009.b {
                 columns: [
                     { headerText: '', key: 'perInfoItemDefId', dataType: 'string', width: '50px', hidden: true },
                     { headerText: '', key: 'isRequired', dataType: 'number', width: '50px', hidden: true },
-                    { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox'},
+                    { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                     { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', dataType: 'string', width: '250px' }
                 ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true , tabindex: 2 }],
+                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, tabindex: 2 }],
                 features: [
                     {
                         name: 'Selection',
@@ -38,5 +38,14 @@ module nts.uk.com.view.cps009.b {
     });
 }
 
-
-
+$(document).delegate("#grid0", "iggridrowsrendered", function(evt, ui) {
+    if ($("#grid0").data("igGrid") === undefined) {
+        return;
+    }
+    _.each(ui.owner.dataSource.data(), (x, i) => {
+        if (x.itemName == '終了日')  { 
+            $("#grid0").ntsGrid("disableNtsControlAt", x.perInfoItemDefId, "disabled", "CheckBox");
+         }
+    });
+   
+});

@@ -200,6 +200,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @param placeId 職場ID
@@ -325,7 +326,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new OverDayEndCalcSetOfExcessHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfExcessSpecialHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
-	
+		
 //		//日別実績の計算区分
 //		if(integrationOfDaily.getCalAttr() != null) return ManageReGetClass.cantCalc();
 //		//日別実績の計算区分の中身をチェック(マスタができれば消せる？）
@@ -359,7 +360,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 													new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
 													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 			integrationOfDaily.setCalAttr(calAttr);
-		}
+		}	
 		
 		//自動計算設定
 		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();

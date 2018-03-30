@@ -128,9 +128,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 					timeSheetFrameNo.getAttendance().v(),
 					para.getTime());
 		}
-		
-		lstTimeSheetFrameNo.add(para.getFrameNo(), timeSheet);
-		dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
+		dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
+		dailyPerfor.getScheduleTimeSheets().add(timeSheet);		
+		//dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
 		workRepository.updateByKeyFlush(dailyPerfor);
 		
 		
@@ -450,7 +450,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態

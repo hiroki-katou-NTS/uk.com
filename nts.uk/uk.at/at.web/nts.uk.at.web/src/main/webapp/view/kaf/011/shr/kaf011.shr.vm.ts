@@ -147,6 +147,24 @@ module nts.uk.at.view.kaf011.shr {
 
             }
 
+
+            openCDialog() {
+                let self = this,
+                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                nts.uk.ui.windows.setShared('KAF_011_PARAMS', {
+                    prePostSelectedCode: vm.appComSelectedCode(),
+                    appReasons: vm.appReasons(),
+                    reason: vm.reason(),
+                    appReasonSelectedID: vm.appReasonSelectedID(),
+                    appDate: self.appDate()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {
+
+                });
+
+            }
+
             openKDL003() {
                 let self = this,
                     workTypeCodes = self.wkTypes(),

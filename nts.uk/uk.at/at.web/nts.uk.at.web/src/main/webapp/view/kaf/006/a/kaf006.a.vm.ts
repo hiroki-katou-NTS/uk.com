@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 006a AFTER start 000_A
             self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,0,moment(new Date()).format("YYYY/MM/DD")).done(function(){
+                self.kaf000_a.start(self.employeeID,1,1,moment(new Date()).format("YYYY/MM/DD")).done(function(){
                     self.approvalSource = self.kaf000_a.approvalList;
                 
                 })    
@@ -200,7 +200,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 self.prePostSelected(result.application.prePostAtr);
                 self.displayPrePostFlg(result.prePostFlg);
-                self.kaf000_a.getAppDataDate(0, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
+                self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
                 dfd.resolve(result);
             }).fail((res) => {
                 dfd.reject(res);
@@ -427,7 +427,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         convertListHolidayType(data: any){
             let self =  this;
-            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
+            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "欠勤",3: "特別休暇",4: "積立年休",5: "休日",6: "時間消化",7: "振休"};
             for(let i = 0; i < data.length ; i++){
                 self.holidayTypes.push(new common.HolidayType(i,nameHolidayType[i]));
             }

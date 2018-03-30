@@ -10,6 +10,11 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 @Getter
 // domain name: 積立年休付与残数データ
 public class ReserveLeaveGrantRemainingData extends AggregateRoot {
+	
+	/**
+	 * 積立年休付与残数データID
+	 */
+	private String rsvLeaID;
 
 	/**
 	 * 社員ID
@@ -41,7 +46,7 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 	 */
 	private ReserveLeaveNumberInfo details;
 
-	public static ReserveLeaveGrantRemainingData createFromJavaType(String employeeId, GeneralDate grantDate,
+	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
 		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();

@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.shared.dom.adapter.employment;
 
 import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 
 public interface ShareEmploymentAdapter {
@@ -25,5 +28,5 @@ public interface ShareEmploymentAdapter {
 	 * @param empCodes the emp codes
 	 * @return the list
 	 */
-	List<BsEmploymentImport> findByEmpCodes(String companyId, List<String> empCodes);
+	Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId, GeneralDate baseDate);
 }
