@@ -20,7 +20,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             { code: 1, text: text('KAF011_20') },
             { code: 2, text: text('KAF011_21') },
         ]);
-        appComSelectedCode: KnockoutObservable<number> = ko.observable(1);
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
         appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
 
@@ -48,9 +48,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         constructor() {
             let self = this;
-          
+
         }
-       
+
 
         start(): JQueryPromise<any> {
             block.invisible();
@@ -129,7 +129,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     self.clearData();
                 });
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
 
             }).always(() => {
                 block.clear();
@@ -144,7 +144,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         }
 
-       
+
 
 
     }

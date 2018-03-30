@@ -149,10 +149,8 @@
 					data-bind="with:$parent.comment">
 					<div class="div_line"
 						data-bind="text:
-					 deferredComment
-					,css: { 'bold': deferredBold }"></div>
-
-
+					 pickUpComment
+					,css: { 'bold': pickUpBold }"></div>
 				</div>
 
 			</div>
@@ -258,8 +256,9 @@
 					data-bind="with:$parent.comment">
 					<div class="div_line"
 						data-bind="text:
-					 pickUpComment
-					,css: { 'bold': pickUpBold }"></div>
+					 deferredComment
+					,css: { 'bold': deferredBold }"></div>
+
 
 
 				</div>
@@ -293,7 +292,9 @@
 			</div>
 			<div class="div_line_col_2">
 				<textarea style="height: 100px" tabindex="6"
-					data-bind="ntsMultilineEditor: {value: reason ,name: '#{i18n.getText('KAF011_17')}',
+					data-bind="ntsMultilineEditor: {
+					constraint: 'AppReason',
+					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'

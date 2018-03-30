@@ -18,19 +18,19 @@ module nts.uk.at.view.kaf011.shr {
             startTime: KnockoutObservable<number> = ko.observable(null);
             endTime: KnockoutObservable<number> = ko.observable(null);
             startTypes: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 1, text: text('KAF011_39') },
-                { code: 2, text: text('KAF011_40') }
+                { code: 0, text: text('KAF011_39') },
+                { code: 1, text: text('KAF011_40') }
             ]);
             startType: KnockoutObservable<number> = ko.observable(1);
             endTypes: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 1, text: text('KAF011_42') },
-                { code: 2, text: text('KAF011_43') }
+                { code: 0, text: text('KAF011_42') },
+                { code: 1, text: text('KAF011_43') }
             ]);
             endType: KnockoutObservable<number> = ko.observable(1);
 
             timeOption = ko.mapping.fromJS({
                 timeWithDay: true,
-                width: "130px"
+                width: "70px"
             });
             constructor(IWorkingHour?) {
                 if (IWorkingHour) {
@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf011.shr {
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
             appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
-            changeWorkHoursType: KnockoutObservable<number> = ko.observable(1);
+            changeWorkHoursType: KnockoutObservable<number> = ko.observable(0);
 
             constructor() {
                 let self = this;

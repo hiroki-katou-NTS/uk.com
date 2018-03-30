@@ -306,11 +306,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void RegisterDigestionData(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する rec
-		BigDecimal absBrkDownDay = getByWorkType(command.getAbsCmd().getWkTypeCD(),
-				WorkTypeClassification.Shooting);
+		BigDecimal absBrkDownDay = getByWorkType(command.getAbsCmd().getWkTypeCD(), WorkTypeClassification.Shooting);
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
-		BigDecimal recBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
-				WorkTypeClassification.Shooting);
+		BigDecimal recBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(), WorkTypeClassification.Shooting);
 		if ((absBrkDownDay.compareTo(recBrkDownDay) == 0)) {
 			// アルゴリズム「振休有効期限の決定」を実行する
 			GeneralDate expDate = DemOfexpDate(recDate);
@@ -534,19 +532,19 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
 		List<Application_New> apps = appRepo.getApp(sID, appDate, prePostAtr, ApplicationType.ABSENCE_APPLICATION.value)
 				.stream()
-				.filter(x -> x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED)
-						|| x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.DENIAL))
+				.filter(x -> !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED)
+						&& !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.DENIAL))
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(apps)) {
 			apps = appRepo.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
-					.filter(x -> x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED))
+					.filter(x -> !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED)
+							&& !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.DENIAL))
 					.collect(Collectors.toList());
 			if (!CollectionUtil.isEmpty(apps)) {
-				throw new BusinessException("Msg_700");
-
+				throw new BusinessException("Msg_700", " ", appDate.toString());
 			}
 		} else {
-			throw new BusinessException("Msg_700");
+			throw new BusinessException("Msg_700", " ", appDate.toString());
 		}
 
 	}
