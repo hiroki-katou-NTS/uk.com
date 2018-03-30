@@ -10,16 +10,19 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprint;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprintPK;
+
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author phongtq
+ * The Class JpaStampReflectionManagementRepository.
  *
+ * @author phongtq
  */
 
 @Stateless
 public class JpaStampReflectionManagementRepository extends JpaRepository
 		implements StampReflectionManagementRepository {
 
+	/** The Constant FIND. */
 	private static final String FIND;
 
 	static {
@@ -30,12 +33,21 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 		FIND = builderString.toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository#findByCid(java.lang.String)
+	 */
 	@Override
 	public Optional<StampReflectionManagement> findByCid(String companyId) {
 		return this.queryProxy().query(FIND, KrcmtStampImprint.class).setParameter("companyId", companyId)
 				.getSingle(f -> toDomain(f));
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param krcdtStampReflect the krcdt stamp reflect
+	 * @return the stamp reflection management
+	 */
 	private static StampReflectionManagement toDomain(KrcmtStampImprint krcdtStampReflect) {
 		StampReflectionManagement stampReflectionManagement = StampReflectionManagement.createJavaType(
 				krcdtStampReflect.krcdtStampReflectPK.companyId, krcdtStampReflect.breakSwitchClass,
@@ -43,20 +55,16 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 				krcdtStampReflect.actualStampOfPriorityClass,
 				krcdtStampReflect.reflectWorkingTimeClass,
 				krcdtStampReflect.goBackOutCorrectionClass,
-				krcdtStampReflect.managementOfEntrance,
-				krcdtStampReflect.autoStampForFutureDayClass,
-				krcdtStampReflect.outingAtr,
-				krcdtStampReflect.maxUseCount);
+				krcdtStampReflect.autoStampForFutureDayClass
+				);
 		return stampReflectionManagement;
 	}
 	
-	private static EntryAndExitManage toEntryAndExitManageDto(KrcmtStampImprint krcdtStampReflect) {
-		return EntryAndExitManage.builder().CID(krcdtStampReflect.krcdtStampReflectPK.companyId)
-									.notUseAtr(krcdtStampReflect.managementOfEntrance == 1 ? true : false)
-									.build();
-	}
 
-	@Override
+	/* (non-Javadoc)
+ * @see nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository#update(nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement)
+ */
+@Override
 	public void update(StampReflectionManagement reflectionManagement) {
 		KrcmtStampImprintPK stampImprintPK = new KrcmtStampImprintPK(reflectionManagement.getCompanyId());
 		KrcmtStampImprint imprint = this.queryProxy().find(stampImprintPK, KrcmtStampImprint.class).get();
@@ -65,18 +73,25 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 		imprint.actualStampOfPriorityClass= reflectionManagement.getActualStampOfPriorityClass().value;
 		imprint.reflectWorkingTimeClass= reflectionManagement.getReflectWorkingTimeClass().value;
 		imprint.goBackOutCorrectionClass= reflectionManagement.getGoBackOutCorrectionClass().value;
-		imprint.managementOfEntrance= reflectionManagement.getManagementOfEntrance().value;
 		imprint.autoStampForFutureDayClass= reflectionManagement.getAutoStampForFutureDayClass().value;
-		imprint.outingAtr= reflectionManagement.getOutingAtr().value;
-		imprint.maxUseCount= reflectionManagement.getMaxUseCount();
 		this.commandProxy().update(imprint);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository#add(nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement)
+	 */
 	@Override
 	public void add(StampReflectionManagement reflectionManagement) {
 		this.commandProxy().insert(convertToDbType(reflectionManagement));
 		
 	}
+		
+		/**
+		 * Convert to db type.
+		 *
+		 * @param atten the atten
+		 * @return the krcmt stamp imprint
+		 */
 		private KrcmtStampImprint convertToDbType(StampReflectionManagement atten) {
 		KrcmtStampImprint newEntity = KrcmtStampImprint.toEntity(atten);
 		KrcmtStampImprintPK attSetPK = new KrcmtStampImprintPK(atten.getCompanyId());
@@ -88,23 +103,11 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 			updateEntity.actualStampOfPriorityClass = atten.getActualStampOfPriorityClass().value;
 			updateEntity.reflectWorkingTimeClass = atten.getReflectWorkingTimeClass().value;
 			updateEntity.goBackOutCorrectionClass = atten.getGoBackOutCorrectionClass().value;
-			updateEntity.managementOfEntrance = atten.getManagementOfEntrance().value;
 			updateEntity.autoStampForFutureDayClass = atten.getAutoStampForFutureDayClass().value;
-			updateEntity.outingAtr = atten.getOutingAtr().value;
-			updateEntity.maxUseCount = atten.getMaxUseCount();
 			
 			updateEntity.krcdtStampReflectPK = attSetPK;
 			return updateEntity;
 		}
 		return  newEntity;
 	}
-
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository#getEntryExitManageDomain(java.lang.String)
-		 */
-		@Override
-		public Optional<EntryAndExitManage> getEntryExitManageDomain(String companyId) {
-			return this.queryProxy().query(FIND, KrcmtStampImprint.class).setParameter("companyId", companyId)
-					.getSingle(f -> toEntryAndExitManageDto(f));
-		}
 }

@@ -3,12 +3,9 @@ package nts.uk.ctx.at.shared.infra.repository.workrecord.monthlyresults.roleopen
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleofovertimework.KrcstRoleOTWorkPK;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriodPK;
-import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaRoleOfOpenPeriodSetMemento.
  */

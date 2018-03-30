@@ -5,14 +5,19 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfO
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriod;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaRoleOfOpenPeriodGetMemento.
  */
 public class JpaRoleOfOpenPeriodGetMemento implements RoleOfOpenPeriodGetMemento{
 
+	/** The krcst role of open period. */
 	private KrcstRoleOfOpenPeriod krcstRoleOfOpenPeriod;
 	
+	/**
+	 * Instantiates a new jpa role of open period get memento.
+	 *
+	 * @param entity the entity
+	 */
 	public JpaRoleOfOpenPeriodGetMemento(KrcstRoleOfOpenPeriod entity) {
 		this.krcstRoleOfOpenPeriod = entity;
 	}

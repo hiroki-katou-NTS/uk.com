@@ -1,8 +1,8 @@
 module nts.uk.at.view.kmk013.h {
     export module viewmodel {
         export class ScreenModel {
-            roundingRules1: KnockoutObservableArray<any>;
-            selectedRuleCode1: any;
+            itemListH2_3: KnockoutObservableArray<any>;
+            selectedH2_3: KnockoutObservable<number>;
             itemListH6_5: KnockoutObservableArray<any>;
             selectedCodeH6_5: KnockoutObservable<any>;
             
@@ -34,11 +34,11 @@ module nts.uk.at.view.kmk013.h {
             
             constructor() {
                 var self = this;
-                self.roundingRules1 = ko.observableArray([
+                self.itemListH2_3 = ko.observableArray([
                     { code: 1, name: nts.uk.resource.getText('KMK013_229') },
                     { code: 0, name: nts.uk.resource.getText('KMK013_230') }
                 ]);
-                self.selectedRuleCode1 = ko.observable(1);
+                self.selectedH2_3 = ko.observable(1);
                 
                 self.valueH6_3 = ko.observable(3);   
                 self.selectedCodeH6_5 = ko.observable(0);
@@ -103,48 +103,52 @@ module nts.uk.at.view.kmk013.h {
             }
             initData(): void {
                 let self = this;
-                service.findByCompanyId().done((data) => {
-                    if (data) {
-//                        self.data = data;
-                        //入退門の管理をする
-                        self.selectedRuleCode1(data.managementOfEntrance);
-                        // 外出管理.外出理由の初期値
-                        self.selectedCodeH6_5(data.outingAtr);
-                        // 最大使用回数       
-                        self.valueH6_3(data.maxUseCount);
-                        // 自動打刻セット反映.自動打刻反映区分
+                $.when(service.findByCompanyId(), 
+                        service.findOutManageByCID(),
+                        service.findManageEntryExitByCID()).done((data: any, dataOutManage: any, dataManageEntryExit: any) => {
+                   if (data) {
                         self.selectedIdH3_2(data.autoStampReflectionClass);
-                        // 自動打刻セット反映.未来日区分
                         self.selectedIdH4_2(data.autoStampForFutureDayClass);
-                        // 自動打刻セット反映.外出補正区分
                         self.selectedIdH7_2(data.goBackOutCorrectionClass);
-                        // 打刻の反映.就業時間帯反映区分
                         self.selectedIdH5_2(data.reflectWorkingTimeClass);
-                        // 打刻の反映.実打刻と申請の優先区分
                         self.selectedIdH8_2(data.actualStampOfPriorityClass);
-                        // 打刻の反映.休出切替区分
                         self.selectedIdH9_2(data.breakSwitchClass);
-                    }
+                   }
+                    
+                   if (dataOutManage) {
+                        self.selectedCodeH6_5(dataOutManage.initValueReasonGoOut);
+                        self.valueH6_3(dataOutManage.maxUsage);
+                   } 
+                    
+                   if (dataManageEntryExit) {
+                       self.selectedH2_3(dataManageEntryExit.useClassification);
+                   }
                 });
             }
             saveData(): void {
                 let self = this;
                 let data = <any>{};
-                data.managementOfEntrance = self.selectedRuleCode1();
-                data.outingAtr =self.selectedCodeH6_5();
-                data.maxUseCount = self.valueH6_3();
+                let dataOutManage = <any>{};
+                let dataManageEntryExit = <any>{};
+                
                 data.autoStampReflectionClass = self.selectedIdH3_2();
                 data.autoStampForFutureDayClass =self.selectedIdH4_2();
                 data.goBackOutCorrectionClass =self.selectedIdH7_2();
                 data.reflectWorkingTimeClass =self.selectedIdH5_2();
                 data.actualStampOfPriorityClass = self.selectedIdH8_2();
                 data.breakSwitchClass =self.selectedIdH9_2();
-                service.save(data).done(
-                    () => {
-                        nts.uk.ui.dialog.info({messageId: 'Msg_15'});
-                        $( "#h2_3" ).focus();
-                    }
-                );
+                
+                dataOutManage.initValueReasonGoOut =self.selectedCodeH6_5();
+                dataOutManage.maxUsage = self.valueH6_3();
+                
+                dataManageEntryExit.useClassification1 = self.selectedH2_3();
+                dataManageEntryExit.abc = "234";
+                
+                $.when(service.save(data), service.saveOutManage(dataOutManage), service.saveManageEntryExit(dataManageEntryExit)).done(() => {
+                    nts.uk.ui.dialog.info({messageId: 'Msg_15'});
+                        $( "#h2_3" ).focus();        
+                });
+                
             }
         }
         

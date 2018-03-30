@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperio
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriodPK_;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriod_;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaRoleOpenPeriodRepository.
  */

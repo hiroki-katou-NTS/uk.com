@@ -57,6 +57,7 @@ module nts.uk.at.view.kmk013.l {
                         dfd.resolve();
                     });
                     $( "#l2_7" ).focus();
+                }).always(() => {
                 });
                     
                 return dfd.promise();

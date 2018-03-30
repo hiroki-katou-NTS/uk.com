@@ -878,6 +878,45 @@ module nts.uk.at.view.kmk013.b {
                                         self.notifyVarKnockoutchange();
                         return;
                     }
+                    
+                    if (_.isNull(data[0].hourlyPaymentAdditionSet)) {
+                        data[0].hourlyPaymentAdditionSet = <any>{};
+                        data[0].hourlyPaymentAdditionSet = {
+                                                "companyId":null, "calcPremiumVacation":0, "addition1":0, "deformatExcValue":0, "incChildNursingCare":0, "deduct":0,
+                                                "calculateIncludeIntervalExemptionTime1":0, "calcWorkHourVacation":0, "addition2":0, "calculateIncludCareTime":0,
+                                                "notDeductLateLeaveEarly":0, "calculateIncludeIntervalExemptionTime2":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
+                                                };
+                    }
+                    
+                    if (_.isNull(data[0].irregularWork)) {
+                        data[0].irregularWork = <any>{};
+                        data[0].irregularWork = {
+                                                "companyId":null, "calcActualOperationPre":0, "exemptTaxTimePre":0, "incChildNursingCarePre":0, "predeterminedOvertimePre":0,
+                                                "additionTimePre":0, "notDeductLateleavePre":0, "exemptTaxTimeWork":0, "minusAbsenceTimeWork":0, "calcActualOperationWork":0, 
+                                                "incChildNursingCareWork":0,"notDeductLateleaveWork":0, "predeterminDeficiencyWork":0,"additionTimeWork":0, "enableSetPerWorkHour1":0, 
+                                                "enableSetPerWorkHour2":0, "additionWithinMonthlyStatutory":0
+                                                };
+                    }
+                    
+                    if (_.isNull(data[0].flexWork)) {
+                        data[0].flexWork = <any>{};
+                        data[0].flexWork = {
+                                                "companyId":null, "calcPremiumVacation":0, "addition1":0, "deformatExcValue":0, "incChildNursingCare":0, "deduct":0,
+                                                "calculateIncludeIntervalExemptionTime1":0, "calcWorkHourVacation":0, "addition2":0, "calculateIncludCareTime":0,
+                                                "notDeductLateLeaveEarly":0, "calculateIncludeIntervalExemptionTime2":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
+                                                };
+                    }
+                    
+                    if (_.isNull(data[0].hourlyPaymentAdditionSet)) {
+                        data[0].hourlyPaymentAdditionSet = <any>{};
+                        data[0].hourlyPaymentAdditionSet = {
+                                                "companyId":null, "calcPremiumVacation":0, "addition1":0, "deformatExcValue":0, "incChildNursingCare":0, "deduct":0,
+                                                "calculateIncludeIntervalExemptionTime1":0, "calcWorkHourVacation":0, "addition2":0, "calculateIncludCareTime":0,
+                                                "notDeductLateLeaveEarly":0, "calculateIncludeIntervalExemptionTime2":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
+                                                };
+                    }
+                    self.notifyVarKnockoutchange();
+                    
                     self.oldData(data[0]);
                     let obj = data[0];
                     //実績の就業時間帯を参照する

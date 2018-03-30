@@ -3,13 +3,10 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.EnumType;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * @author phongtq
  *  休暇加算時間設定
@@ -58,7 +55,7 @@ public class HolidayAddtion extends AggregateRoot {
 	private WorkDepLabor irregularWork;
 	
 	/*B3_8*/
-	/*時間外超過の加算設定*/
+	/*就業時間の加算設定管理*/
 	private AddSetManageWorkHour additionSettingOfOvertime;
 	
 	/*時給者の加算設定*/

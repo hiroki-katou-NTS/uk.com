@@ -73,7 +73,7 @@
 }
 
 #contents-area > div:nth-child(1) {
-	flex: 0.25;
+	/* flex: 0.5; */
 	margin-top:10px;
 	margin-left:20px;
 }
@@ -81,8 +81,9 @@
 #contents-area > div:nth-child(2) {
 	display: flex;
 	flex-direction: column;
-	flex: 0.75;
+	/* flex: 0.75; */
 	margin-top:10px;
+	margin-left: 100px;
 }
 
 .style-radio {
@@ -110,7 +111,7 @@
 }
 
 .out-manage {
-	margin-top: 10px
+	margin-top: 6px;
 }
 
 #h2_3 > .nts-switch-button{
