@@ -182,21 +182,21 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	public HolidayShipmentDto changeDay(String takingOutDateInput, String holidayDateImput, int comType, int uiType) {
+	public HolidayShipmentDto changeDay(String recDateInput, String absDateImput, int comType, int uiType) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.fromString(
-				comType == ApplicationCombination.Abs.value ? holidayDateImput : takingOutDateInput, DATE_FORMAT);
-		GeneralDate takingOutDate = comType == ApplicationCombination.Rec.value
-				? GeneralDate.fromString(takingOutDateInput, DATE_FORMAT) : null;
+				comType == ApplicationCombination.Abs.value ? absDateImput : recDateInput, DATE_FORMAT);
+		GeneralDate recDate = comType == ApplicationCombination.Rec.value
+				? GeneralDate.fromString(recDateInput, DATE_FORMAT) : null;
 		GeneralDate holidayDate = comType == ApplicationCombination.Abs.value
-				? GeneralDate.fromString(holidayDateImput, DATE_FORMAT) : null;
+				? GeneralDate.fromString(absDateImput, DATE_FORMAT) : null;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
 
-		changeAppDate(takingOutDate, holidayDate, companyID, employeeID, uiType, output);
+		changeAppDate(recDate, holidayDate, companyID, employeeID, uiType, output);
 
 		return output;
 	}

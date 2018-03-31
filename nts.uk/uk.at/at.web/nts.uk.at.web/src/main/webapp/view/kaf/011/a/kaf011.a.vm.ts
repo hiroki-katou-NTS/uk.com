@@ -103,9 +103,15 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.showReason(data.applicationSetting.appReasonDispAtr);
             }
         }
+        validate() {
+
+            $(".combo-box").trigger("validate");
+
+        }
 
         register() {
-            block.invisible();
+
+
             let self = this,
                 saveCmd: common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
@@ -123,7 +129,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 };
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
-
+            self.validate();
+            if (nts.uk.ui.errors.hasError()) { return; }
+            block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
                     self.clearData();

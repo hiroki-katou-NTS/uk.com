@@ -94,7 +94,7 @@ module nts.uk.at.view.kaf011.shr {
         export class AppItems {
             appID: KnockoutObservable<string> = ko.observable('');
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
-            wkTypeCD: KnockoutObservable<string> = ko.observable('');
+            wkTypeCD: KnockoutObservable<string> = ko.observable(null);
             wkTimeCD: KnockoutObservable<string> = ko.observable('');
             wkTimeName: KnockoutObservable<string> = ko.observable('');
             wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
@@ -147,6 +147,9 @@ module nts.uk.at.view.kaf011.shr {
                 });
 
                 self.appDate.subscribe((newDate) => {
+                    if (newDate.length > 10) {
+                        return;
+                    }
                     self.changeDate();
                 });
             }
