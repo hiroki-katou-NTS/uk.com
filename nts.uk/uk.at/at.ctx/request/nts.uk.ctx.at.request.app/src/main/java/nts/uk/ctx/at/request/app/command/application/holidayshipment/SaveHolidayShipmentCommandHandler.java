@@ -632,9 +632,11 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	private void checkTime(int startTime, int endTime) {
-		if (startTime > endTime) {
-			throw new BusinessException("Msg_966");
+	private void checkTime(Integer startTime, Integer endTime) {
+		if (startTime != null && endTime != null) {
+			if (startTime > endTime) {
+				throw new BusinessException("Msg_966");
+			}
 		}
 	}
 
