@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         Monthly = 1
     }
     export class ScreenModel {
-        screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
+        screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Monthly);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "全てを表示する" },
