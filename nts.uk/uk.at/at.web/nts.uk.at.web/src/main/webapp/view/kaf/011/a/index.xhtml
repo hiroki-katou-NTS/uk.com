@@ -21,8 +21,9 @@
 			<!-- kaf011 a-->
 			<com:scriptfile path="kaf011.a.vm.js" />
 			<com:scriptfile path="kaf011.a.start.js" />
+
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -38,7 +39,7 @@
 				<!-- A.A2_1 -->
 				<button tabindex="1" data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
 				<!-- A.A3_1 -->
-				<div id="ckbSendMail"
+				<div id="ckbSendMail" tabindex="1"
 					data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>
 			</div>
 

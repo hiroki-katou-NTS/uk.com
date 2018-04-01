@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -11,6 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 // 会社の乖離基準時間
 @Getter
+@Setter
 public class CompanyDivergenceReferenceTime extends AggregateRoot {
 	
 	/** The divergence time no. */

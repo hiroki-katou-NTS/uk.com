@@ -71,36 +71,41 @@ module nts.uk.at.view.kmk011.i {
 
                 //subscribe currentCode
                 self.currentCode.subscribe((codeChanged) => {
-                    self.multilineeditorErr.errorMessage("");
-                    self.multilineeditorAlarm.alarmMessage("");
-                    let mode: number = nts.uk.ui.windows.getShared('settingMode');
+                    if (codeChanged != 0) {
+                        self.multilineeditorErr.errorMessage("");
+                        self.multilineeditorAlarm.alarmMessage("");
+                        let mode: number = nts.uk.ui.windows.getShared('settingMode');
 
-                    if (mode == SettingMode.COMPANY) {
-                        self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                            if (itemDivTime == null) {
-                                self.multilineeditorErr.errorMessage("");
-                                self.multilineeditorAlarm.alarmMessage("");
-                            } else {
-                                self.itemDivergenceTime(itemDivTime);
-                                self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
-                            }
+                        if (mode == SettingMode.COMPANY) {
+                            self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
+                                if (itemDivTime == null) {
+                                    self.multilineeditorErr.errorMessage("");
+                                    self.multilineeditorAlarm.alarmMessage("");
+                                } else {
+                                    self.itemDivergenceTime(itemDivTime);
+                                    self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                    self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                                }
 
-                        });
-                    } else {
-                        self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                            if (itemDivTime == null) {
-                                self.multilineeditorErr.errorMessage("");
-                                self.multilineeditorAlarm.alarmMessage("");
-                            } else {
-                                self.itemDivergenceTime(itemDivTime);
-                                self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
-                            }
+                            });
+                        } else {
+                            self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
+                                if (itemDivTime == null) {
+                                    self.multilineeditorErr.errorMessage("");
+                                    self.multilineeditorAlarm.alarmMessage("");
+                                } else {
+                                    self.itemDivergenceTime(itemDivTime);
+                                    self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                    self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                                }
 
-                        });
+                            });
+                        }
                     }
-
+                    else {
+                        self.multilineeditorErr.errorMessage("");
+                        self.multilineeditorAlarm.alarmMessage("");
+                    }
                 });
             }
 
@@ -149,6 +154,7 @@ module nts.uk.at.view.kmk011.i {
                             });
                         }
                     }
+                    $("#btn_005").focus();
                     dfd.resolve();
                 })
                 return dfd.promise();

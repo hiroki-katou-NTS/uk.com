@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_IDENTITY_PROCESS")
+@Table(name = "KRCMT_SELF_CHECK_SET")
 public class KrcmtIdentityProceSet extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,10 +28,10 @@ public class KrcmtIdentityProceSet extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcmtIdentityProceSetPK krcmtIdentityProceSetPK;
 	
-	@Column(name = "USE_CONFIRM_BY_YOURSELF")
+	@Column(name = "USE_DAILY_SELF_CHECK")
 	public int useConfirmByYourself;
 	
-	@Column(name = "USE_IDENTITY_OF_MONTH")
+	@Column(name = "USE_MONTHLY_SELF_CHECK")
 	public int useIdentityOfMonth;
 	
 	@Column(name = "YOURSELF_CONFIRM_ERROR")

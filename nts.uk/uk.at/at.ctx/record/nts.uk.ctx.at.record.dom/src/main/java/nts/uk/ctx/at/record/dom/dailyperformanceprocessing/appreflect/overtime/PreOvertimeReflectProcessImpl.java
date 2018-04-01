@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -143,16 +144,17 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		if(!para.isTimeReflectFlg()) {
 			return;
 		}
+		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
-			if(entry.getValue() <= 0) {
-				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
-			}			
+			if(entry.getValue() > 0) {
+				tmp.put(entry.getKey(), entry.getValue());
+			}
 		}
 		
 		//残業時間の反映
-		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame(), true);
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, true);
 	}
 
 	@Override

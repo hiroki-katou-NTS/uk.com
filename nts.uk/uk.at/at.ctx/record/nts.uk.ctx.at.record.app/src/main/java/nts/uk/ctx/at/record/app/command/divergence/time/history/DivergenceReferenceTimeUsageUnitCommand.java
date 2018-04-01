@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.divergence.time.history;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 
 /**
@@ -11,7 +9,7 @@ import lombok.Data;
 public class DivergenceReferenceTimeUsageUnitCommand {
 
 	/** The work type use set. */
-	private BigDecimal workTypeUseSet;
+	private boolean workTypeUseSet;
 
 	/**
 	 * Instantiates a new divergence reference time usage unit command.
@@ -27,7 +25,7 @@ public class DivergenceReferenceTimeUsageUnitCommand {
 	 * @param listDataSetting
 	 *            the list data setting
 	 */
-	public DivergenceReferenceTimeUsageUnitCommand(BigDecimal workTypeUseSet) {
+	public DivergenceReferenceTimeUsageUnitCommand(boolean workTypeUseSet) {
 		this.workTypeUseSet = workTypeUseSet;
 	}
 }
