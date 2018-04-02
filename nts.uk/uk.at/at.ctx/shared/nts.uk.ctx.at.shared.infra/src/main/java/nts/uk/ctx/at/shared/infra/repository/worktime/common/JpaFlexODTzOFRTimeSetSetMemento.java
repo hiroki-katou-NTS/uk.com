@@ -33,6 +33,9 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	public JpaFlexODTzOFRTimeSetSetMemento(KshmtFlexOdRtSet entity) {
 		super();
 		this.entity = entity;
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
+			this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
+		}
 	}
 
 
