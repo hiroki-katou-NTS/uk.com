@@ -419,7 +419,7 @@ module nts.uk.at.view.kmk011.d {
             public createMode(): void {
                 let _self = this;
                 if(_self.histList().length >0){                    
-                    var histModel: HistModel = _self.histList()[0];
+                    var histModel: any = _self.histList()[0];
                     var startDate: string = histModel.textDisplay.substr(0, 10);
                     nts.uk.ui.windows.setShared('startDateString', startDate);
                     }
@@ -448,9 +448,9 @@ module nts.uk.at.view.kmk011.d {
             }
 
             // get HistModel from 2 HistModel list
-            private getDiffHist(list1: HistModel[], list2: HistModel[]): HistModel {
+            private getDiffHist(list1: any, list2: any): HistModel {
                 var _self = this;
-                var length = list2.length - 1;
+                var length: number = list2.length - 1;
                 for (var i = 0; i <= length; i++) {
                     // Check every Id in list1
                     if (!_self.isSameId(list2[i].historyId, list1)) {
@@ -460,8 +460,8 @@ module nts.uk.at.view.kmk011.d {
             }
 
             //Check Id in list
-            private isSameId(histId: string, list: HistModel[]): boolean {
-                var length = list.length - 1;
+            private isSameId(histId: string, list: any): boolean {
+                var length: number = list.length - 1;
                 for (var i = 0; i <= length; i++) {
                     if (histId == list[i].historyId) return true;
                 }
