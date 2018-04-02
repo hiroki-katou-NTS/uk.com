@@ -96,7 +96,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public void remove(String cid, String wkpId) {
-		this.commandProxy().remove(KshstWkpRegLaborTimePK.class, new KshstWkpRegLaborTimePK(cid, wkpId));
+		this.commandProxy().remove(KshstWkpRegLaborTime.class, new KshstWkpRegLaborTimePK(cid, wkpId));
 	}
 	
 	/**
