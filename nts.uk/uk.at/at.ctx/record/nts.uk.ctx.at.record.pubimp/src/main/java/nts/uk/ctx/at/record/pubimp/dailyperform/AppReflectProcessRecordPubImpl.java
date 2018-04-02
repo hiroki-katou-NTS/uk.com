@@ -5,10 +5,10 @@ import javax.inject.Inject;
 import javax.persistence.EnumType;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AbsenceReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.DegreeReflectionAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
@@ -140,11 +140,12 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre) {
-		AbsenceReflectParameter absencePara = new AbsenceReflectParameter(param.getEmployeeId(), 
+		CommonReflectParameter absencePara = new CommonReflectParameter(param.getEmployeeId(), 
 				param.getBaseDate(), 
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class), 
 				param.isScheTimeReflectAtr(), 
 				param.getWorkTypeCode(), 
+				"",
 				EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class), 
 				EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class)); 
 		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(absencePara, isPre);
