@@ -1,24 +1,18 @@
 module nts.uk.at.view.kdw002.c {
     export module service {
         var paths: any = {
-            //getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
+            //daily
             getEmpRole: "at/record/workrecord/authfuncrest/find-emp-roles",
-            //updateDailyService: "at/record/DailyAttdItemAuth/UpdateListDailyAttendanceItemAuthority",
             getDailyAttdItemByRoleID : "at/shared/scherec/dailyattditem/auth/getdailyattd",
             getListDailyAttdItem : "at/shared/scherec/dailyattditem/getalldailyattd",
-            updateDailyAttdItem :"at/shared/scherec/dailyattditem/auth/updatedailyattd"
-            
+            updateDailyAttdItem :"at/shared/scherec/dailyattditem/auth/updatedailyattd",
+            //monthly
+            getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall"
             }
-//        export function getAttendanceItems(): JQueryPromise<any> {
-//            return nts.uk.request.ajax(paths.getAttendanceItems);
-//        }
+        //daily
         export function getEmpRole(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getEmpRole);
         }
-//        
-//        export function updateDailyService(command): JQueryPromise<any> {
-//            return nts.uk.request.ajax(paths.updateDailyService , command);
-//        }
         export function updateDailyAttdItem(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateDailyAttdItem,command);
         }
@@ -31,7 +25,11 @@ module nts.uk.at.view.kdw002.c {
             return nts.uk.request.ajax(paths.getDailyAttdItemByRoleID +"/" +roleID);
         }
         
-
+        // monthly
+        export function getListMonthlyAttdItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getListMonthlyAttdItem);
+        }
+        
         
     }
 }

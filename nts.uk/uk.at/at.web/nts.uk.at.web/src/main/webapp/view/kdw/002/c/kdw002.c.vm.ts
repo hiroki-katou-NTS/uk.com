@@ -8,16 +8,22 @@ module nts.uk.at.view.kdw002.c {
             listAttdItem: Array<any>;
             dailyServiceTypeControl: KnockoutObservable<DailyAttendanceItemAuth>;
             columns: Array<any>;
+            //monthly
+            listAttdMonthlyItem: Array<any>;
 
             bussinessCodeItems: KnockoutObservableArray<BusinessType>;
             bussinessColumn: KnockoutObservableArray<any>;
             currentRoleId: KnockoutObservable<any>;
             txtSearch: KnockoutObservable<string>;
+            
             constructor() {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
                 self.listAttdItem = [];
                 self.dailyServiceTypeControl = ko.observable(null);
+                //monthly
+                self.listAttdItem = [];
+                self.listAttdMonthlyItem = [];
 
                 this.bussinessColumn = ko.observableArray([
                     { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
@@ -50,13 +56,10 @@ module nts.uk.at.view.kdw002.c {
 
 
 
-
-                    let dfdGetDailyServiceTypeControl = self.getDailyAttdItemByRoleID(roleId);
-                    //let dfdGetListDailyAttdItem = self.getListDailyAttdItem();
-
-                    //$.when(dfdGetListDailyAttdItem,dfdGetDailyServiceTypeControl).done(
+                    if(roleId){
+                        let dfdGetDailyServiceTypeControl = self.getDailyAttdItemByRoleID(roleId);
+                    }
                     $.when(dfdGetDailyServiceTypeControl).done(
-                        //(DailyServiceTypeControls, attendanceItems) => {
                         (DailyServiceTypeControls) => {
                             $('#useCheckAll').prop('checked', false);
                             $('#youCanCheckAll').prop('checked', false);
@@ -139,29 +142,39 @@ module nts.uk.at.view.kdw002.c {
                 });
                 self.txtSearch = ko.observable("");
             }
-            /*
+            
             copy(): void {
                 var self = this;
-                var bussinessCodeItems = self.bussinessCodeItems();
-                var currentRoleId = self.currentRoleId();
-                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.currentRoleId() });
-                var businessTypeName = bussinessCodeItem.roleName;
-                var data = {
-                    code: currentRoleId, name: businessTypeName, bussinessItems: bussinessCodeItems
-                }
-                nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
+//                var bussinessCodeItems = self.bussinessCodeItems();
+//                var currentRoleId = self.currentRoleId();
+//                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.currentRoleId() });
+//                var businessTypeName = bussinessCodeItem.roleName;
+//                var data = {
+//                    code: currentRoleId, name: businessTypeName, bussinessItems: bussinessCodeItems
+//                }
+//                let object: IObjectDuplication = {
+//                    code: bussinessCodeItem,
+//                    name: businessTypeName,
+//                    targetType: 1,
+//                    itemListSetting: bussinessCodeItems,
+//                    baseDate: moment(self.baseDate()).toDate()
+//                };
+//                nts.uk.ui.windows.sub.modal("com","/view/cdl/023/a/index.xhtml");
+//                
+//                nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
             }
-            */
+            
 
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.getListDailyAttdItem().done(function(data) {
+                let dfdGetListDailyAttdItem = self.getListDailyAttdItem();
+                let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
+                $.when(dfdGetListDailyAttdItem,dfdGetListMonthlyAttdItem).done(function(dfdGetListDailyAttdItemData,dfdGetListMonthlyAttdItemData){
                     self.currentRoleId.valueHasMutated();
                     dfd.resolve();
                 });
-
                 return dfd.promise();
             }
 
@@ -189,18 +202,18 @@ module nts.uk.at.view.kdw002.c {
 
                     } else {
                         if (self.listAttdItem.length != 0) {
-                            for (let j = 0; j < data.length; j++) {
+                            for (let j = 0; j < data.displayAndInput.length; j++) {
                                 for (let i = 0; i < self.listAttdItem.length; i++) {
-                                    if (data[j].itemDailyID == self.listAttdItem[i].attendanceItemId) {
+                                    if (data.displayAndInput[j].itemDailyID == self.listAttdItem[i].attendanceItemId) {
                                         listDefault.push(
                                             new DisplayAndInputControl(
                                                 self.listAttdItem[i].attendanceItemId,
                                                 self.listAttdItem[i].attendanceName,
                                                 self.listAttdItem[i].displayNumber,
                                                 self.listAttdItem[i].userCanUpdateAtr,
-                                                data[j].toUse,
-                                                data[j].canBeChangedByOthers,
-                                                data[j].youCanChangeIt));
+                                                data.displayAndInput[j].toUse,
+                                                data.displayAndInput[j].canBeChangedByOthers,
+                                                data.displayAndInput[j].youCanChangeIt));
                                         break;
                                     }//end if        
                                 }//end for 2
@@ -224,6 +237,16 @@ module nts.uk.at.view.kdw002.c {
                 });
                 return dfd.promise();
             }
+            //monthly
+            getListMonthlyAttdItem() {
+                let self = this;
+                let dfd = $.Deferred();
+                service.getListMonthlyAttdItem().done(function(data) {
+                    self.listAttdMonthlyItem = data;
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
 
             submitData(): void {
                 var self = this;
@@ -235,26 +258,6 @@ module nts.uk.at.view.kdw002.c {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
-
-                //                                var self = this;
-                //                var dataSource = $('#grid').data('igGrid').dataSource;
-                //                var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                //                let DailyServiceTypeControls = [];
-                //                filteredData.forEach(dstc => {
-                //                    DailyServiceTypeControls.push(new DailyServiceTypeControl({
-                //                        attendanceItemId: dstc.attendanceItemId,
-                //                        authorityId: self.currentRoleId(),
-                //                        youCanChangeIt: dstc.youCanChangeIt,
-                //                        canBeChangedByOthers: dstc.canBeChangedByOthers,
-                //                        use: dstc.use
-                //                    }));
-                //                });
-                //                nts.uk.ui.block.invisible();
-                //                service.updateDailyService(DailyServiceTypeControls).done(x => {
-                //                    infor(nts.uk.resource.getMessage("Msg_15", []));
-                //                }).always(function() {
-                //                    nts.uk.ui.block.clear();
-                //                });
             }
 
             navigateView(): void {

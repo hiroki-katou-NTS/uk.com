@@ -40,8 +40,8 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 	public void updateDailyAttdItemAuth(DailyAttendanceItemAuthority dailyAttendanceItemAuthority) {
 		KshstDailyAttdItemAuth newEntity =KshstDailyAttdItemAuth.toEntity(dailyAttendanceItemAuthority.getCompanyID(), 
 				dailyAttendanceItemAuthority.getAuthorityDailyId(), dailyAttendanceItemAuthority);
-		Optional<KshstDailyAttdItemAuth> updateEntity = this.queryProxy().find(newEntity.getKshstDailyAttdItemAuthPK(), KshstDailyAttdItemAuth.class);
-			updateEntity.get().dailyServiceTypeControls =newEntity.dailyServiceTypeControls;
+		KshstDailyAttdItemAuth updateEntity = this.queryProxy().find(newEntity.getKshstDailyAttdItemAuthPK(), KshstDailyAttdItemAuth.class).get();
+			updateEntity.dailyServiceTypeControls =newEntity.dailyServiceTypeControls;
 			this.commandProxy().update(updateEntity);
 		
 	}
@@ -49,7 +49,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 	public void addDailyAttdItemAuth(DailyAttendanceItemAuthority dailyAttendanceItemAuthority) {
 		KshstDailyAttdItemAuth newEntity =KshstDailyAttdItemAuth.toEntity(dailyAttendanceItemAuthority.getCompanyID(), 
 				dailyAttendanceItemAuthority.getAuthorityDailyId(), dailyAttendanceItemAuthority);
-		this.commandProxy().insert(newEntity);
+		this.commandProxy().insert(newEntity); 
 	}
 
 

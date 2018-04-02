@@ -21,6 +21,7 @@ public class DailyAttendanceItemAuthorityCmdHandler extends CommandHandler<Daily
 	protected void handle(CommandHandlerContext<DailyAttendanceItemAuthorityCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		DailyAttendanceItemAuthorityCmd command = context.getCommand();
+		command.setCompanyID(companyID);
 		Optional<DailyAttendanceItemAuthority> data = repo.getDailyAttdItem(companyID, command.getAuthorityDailyId());
 		if(data.isPresent()) {
 			repo.updateDailyAttdItemAuth(DailyAttendanceItemAuthorityCmd.fromCommand(command));
