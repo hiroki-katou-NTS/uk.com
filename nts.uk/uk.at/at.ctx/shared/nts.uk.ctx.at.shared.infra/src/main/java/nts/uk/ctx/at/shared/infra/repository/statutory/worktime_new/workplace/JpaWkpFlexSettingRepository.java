@@ -70,7 +70,7 @@ public class JpaWkpFlexSettingRepository extends JpaRepository implements WkpFle
 
 	@Override
 	public void remove(String cid, String wkpId, int year) {
-		this.commandProxy().remove(KshstWkpFlexSetPK.class,
+		this.commandProxy().remove(KshstWkpFlexSet.class,
 				new KshstWkpFlexSetPK(cid, wkpId, year));
 	}
 
