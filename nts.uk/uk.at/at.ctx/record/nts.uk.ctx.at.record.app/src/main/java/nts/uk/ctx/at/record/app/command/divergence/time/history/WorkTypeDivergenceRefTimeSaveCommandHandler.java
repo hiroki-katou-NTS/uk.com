@@ -11,7 +11,6 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
 
@@ -45,12 +44,12 @@ public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<
 		// validate
 		command.getListDataSetting().stream().forEach(item -> {
 			if (item.getNotUseAtr().value == USE) {
-				if (item.getAlarmTime() == 0 && item.getErrorTime() == 0) {
+				if (item.getAlarmTime() == null && item.getErrorTime() == null) {
 					exceptions.addMessage("Msg_913");
 					// show error list
 					exceptions.throwExceptions();
-				} else {
-					if (item.getAlarmTime() < item.getErrorTime()) {
+				} else if(item.getAlarmTime() != null && item.getErrorTime() != null) {
+					if (item.getAlarmTime() >= item.getErrorTime()) {
 						exceptions.addMessage("Msg_82");
 						// show error list
 						exceptions.throwExceptions();
@@ -65,8 +64,10 @@ public class WorkTypeDivergenceRefTimeSaveCommandHandler extends CommandHandler<
 				return new WorkTypeDivergenceReferenceTime(e);
 			} else {
 				Optional<WorkTypeDivergenceReferenceTime> oldDomain = this.itemRepo.findByKey(e.getHistoryId(),
-						new BusinessTypeCode(e.getWorkTypeCodes()), DivergenceType.valueOf(e.getDivergenceTimeNo()));
-				return oldDomain.get();
+						new BusinessTypeCode(e.getWorkTypeCodes()), e.getDivergenceTimeNo());
+				WorkTypeDivergenceReferenceTime domainToSave = oldDomain.get();
+				domainToSave.setNotUseAtr(e.getNotUseAtr());
+				return domainToSave;
 			}
 		}).collect(Collectors.toList());
 

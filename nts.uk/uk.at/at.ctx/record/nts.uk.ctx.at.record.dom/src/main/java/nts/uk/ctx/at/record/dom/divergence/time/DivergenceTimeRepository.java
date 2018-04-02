@@ -17,6 +17,15 @@ public interface DivergenceTimeRepository {
 	List<DivergenceTime> getAllDivTime(String companyId);
 
 	/**
+	 * Gets the div time list by no.
+	 *
+	 * @param company the company
+	 * @param divTimeNo the div time no
+	 * @return the div time list by no
+	 */
+	List<DivergenceTime> getDivTimeListByNo(String companyId,List<Integer> divTimeNo);
+
+	/**
 	 * Gets the div time info.
 	 *
 	 * @param companyId the company id

@@ -19,8 +19,8 @@ import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
-import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceNameDto;
-import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.DivergenceAttendanceTypeDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
 
 /**
  * The Class DivergenceTimeWebService.
@@ -131,10 +131,10 @@ public class DivergenceTimeWebService extends WebService {
 	 * @return the at type
 	 */
 	@POST
-	@Path("getAttendanceDivergenceItem")
-	public List<DivergenceAttendanceTypeDto> getAtType() {
+	@Path("getAttendanceDivergenceItem/{divTimeNo}")
+	public List<AttendanceTypeDivergenceAdapterDto> getAtType(@PathParam("divTimeNo") int divTimeNo) {
 
-		return this.divTimeAttendanceFinder.getAllAtType(1);
+		return this.divTimeAttendanceFinder.getAllAtType(divTimeNo);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class DivergenceTimeWebService extends WebService {
 	 */
 	@POST
 	@Path("AttendanceDivergenceName")
-	public List<DivergenceAttendanceNameDto> getAtName(List<Integer> dailyAttendanceItemIds) {
+	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
 		return this.divTimeAttendanceFinder.getAtName(dailyAttendanceItemIds);
 
 	}

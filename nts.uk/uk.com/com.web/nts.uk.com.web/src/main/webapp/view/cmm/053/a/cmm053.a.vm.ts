@@ -178,10 +178,10 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //「登録」ボタンをクリックする
         regSettingManager_click(data) {
             let self = this;
-            block.invisible();
             $("#A2_3").trigger("validate");
             $("#A2_7").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
                 let startDate = new Date(self.settingManager().startDate());
                 let closingStartDate = new Date(self.settingManager().closingStartDate());
                 //開始日＜締めの開始日
@@ -196,9 +196,10 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     settingManager.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
                     settingManager.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
                     service.updateHistoryByManagerSetting(settingManager).done(result => {
-                        self.initScreen();
                         //情報メッセージMsg_15
-                        dialog.info({ messageId: "Msg_15" });
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.initScreen();
+                        });
                     }).fail(error => {
                         dialog.alertError({ messageId: error.messageId })
                     }).always(function() {
@@ -206,7 +207,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     });
                 }
             }
-            block.clear();
         }
 
         //削除する
@@ -222,9 +222,10 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                 settingManager.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
                 settingManager.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
                 service.updateHistoryByManagerSetting(settingManager).done(result => {
-                    self.initScreen();
                     //情報メッセージ　Msg-16を表示する
-                    dialog.info({ messageId: "Msg_16" });
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.initScreen();
+                    });
                 }).always(function() {
                     block.clear();
                 });
@@ -275,7 +276,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
 
             //画面を新規モードにする
             self.screenMode(EXECUTE_MODE.NEW_MODE);
-
             //フォーカス制御
             $('#A2_3').focus();
 

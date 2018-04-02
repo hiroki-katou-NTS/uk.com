@@ -40,7 +40,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 		AppCommonPara para = new AppCommonPara(EnumAdaptor.valueOf(info.getDegressAtr().value, DegreeReflectionPubAtr.class),
 				EnumAdaptor.valueOf(info.getExecutiontype().value, ExecutionPubType.class),
 				EnumAdaptor.valueOf(info.getStateReflection().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(info.getStateReflectionReal().value, ReflectedStatePubRecord.class)); 
+				info.getStateReflectionReal() == null ? null : EnumAdaptor.valueOf(info.getStateReflectionReal().value, ReflectedStatePubRecord.class)); 
 		return recordPub.appReflectProcess(para);
 	}
 
@@ -51,10 +51,10 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.getGobackData().getWorkTypeCode(), 
 				para.getGobackData().getStartTime1(),
 				para.getGobackData().getEndTime1(), 
-				para.getGobackData().getStartTime1(),
+				para.getGobackData().getStartTime2(),
 				para.getGobackData().getEndTime2(),
 				EnumAdaptor.valueOf(para.getGobackData().getReflectState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(para.getGobackData().getReasoNotReflect().value, ReasonNotReflectPubRecord.class));
+				para.getGobackData().getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(para.getGobackData().getReasoNotReflect().value, ReasonNotReflectPubRecord.class));
 		GobackReflectPubParameter pubPara = new GobackReflectPubParameter(para.getEmployeeId(), 
 				para.getDateData(),
 				para.isOutResReflectAtr(),
@@ -121,7 +121,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getReasoNotReflect().value, ReasonNotReflectPubRecord.class));
 		AppReflectPubOutput dataReflect = recordPub.absenceReflect(absenceReflect, isPre);
 		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
-				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
+				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
 		return dataOutput;
 	}
 	
