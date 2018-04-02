@@ -271,6 +271,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_DataTypeValue_TIMEPOINT');
                 case 6:
                     return getText('Enum_DataTypeValue_SELECTION');
+                case 7:
+                    return getText('Enum_DataTypeValue_SELECTION_RADIO');
+                case 8:
+                    return getText('Enum_DataTypeValue_SELECTION_BUTTON');
+                case 9:
+                    return getText('Enum_DataTypeValue_READONLY');
             }
 
 
@@ -369,6 +375,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             return self.currentItem().itemTypeState.itemType;
 
+        }
+        
+        displayB2_48() {
+            let self = this;
+            return self.itemType()===2 && self.dataType() !== 10;    
         }
 
         genParamDisplayOrder(paramList) {
