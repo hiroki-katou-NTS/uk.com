@@ -2,11 +2,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import lombok.Data;
 
-/**
- * 
- * @author lamdt
- *
- */
 @Data
 public class MPCellDataDto {
 	

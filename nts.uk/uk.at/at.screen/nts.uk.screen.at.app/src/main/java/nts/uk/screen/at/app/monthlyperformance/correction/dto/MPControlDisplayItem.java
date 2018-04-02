@@ -14,10 +14,6 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
-/**
- * @author hungnm
- *
- */
 @Data
 public class MPControlDisplayItem {
 	// sheet dtos

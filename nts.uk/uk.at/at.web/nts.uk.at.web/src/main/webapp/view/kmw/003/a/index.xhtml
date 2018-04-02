@@ -43,29 +43,36 @@
 			<div id="functions-area">
 				<div id="function-content">
 					<!--A1_1 確定ボタン--> 
-					<button data-bind="enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMW003_2')}</button>
+					<button data-bind="enable: $root.errors.isEmpty , 
+										visible: showButton().available_A1_1,
+										enable: showButton().enable_A1_1" class="proceed">#{i18n.getText('KMW003_2')}</button>
 					<!--A1_2 保存ボタン--> 
-					<button data-bind="{}">#{i18n.getText('KMW003_3')}</button>
+					<button data-bind="{visible:showButton().available_A1_2,
+										enable: showButton().enable_A1_2}">#{i18n.getText('KMW003_3')}</button>
 					<!--A1_3 就業確定ボタン--> 
-					<button data-bind="{}">#{i18n.getText('KMW003_4')}</button>
+					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
 					<!--A1_4 抽出条件の設定ボタン--> 
-					<button data-bind="{click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
+					<button data-bind="{visible:showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
 					<!--A1_5 表示項目の選択ボタン--> 
-					<button data-bind="{click: displayItem}">#{i18n.getText('KMW003_6')}</button>
+					<button data-bind="{click: displayItem, enable:showButton().enable_A1_5}">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
 					<!--A1_6 修正履歴ボタン-->					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
-					<button data-bind="{}">#{i18n.getText('KMW003_31')}</button>
+					<com:ko-if bind="showButton().available_A1_8">
+						<button data-bind="{click:unlockProcess}">#{i18n.getText('KMW003_31')}</button>
+					</com:ko-if>
 					<!--A1_9 再ロックボタン--> 
-					<button data-bind="{}">#{i18n.getText('KMW003_32')}</button>
+					<com:ko-if bind="showButton().available_A1_9">
+						<button data-bind="{click:lockProcess}">#{i18n.getText('KMW003_32')}</button>
+					</com:ko-if>
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">				
-					<div>
+					<div style="min-width: 100px">
 						<!--A1_11 ロック解除中--> 
-						<div class="label warning">#{i18n.getText('KMW003_34')}</div>	
+						<div class="label warning" data-bind="{visible:showButton().available_A1_11}">#{i18n.getText('KMW003_34')}</div>	
 						<!--A2_1 社員範囲選択--> 						
 						<div id="ccg001"></div>
 					</div>					
@@ -86,11 +93,11 @@
 						<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>
 						<!--A4_4 実績期間選択--> 
 						<div  id="dislayFormatLbl" data-bind="ntsComboBox: {
-								options: displayFormatOptions,
+								options: actualTimeOptionDisp,
 								optionsValue: 'code',
-								value: displayFormat,
+								value: actualTimeSelectedCode,
 								optionsText: 'name',
-								enable: true,
+								enable: showButton().enable_multiActualTime,
 								name:'#[KMW003_12]',
 								columns: [
 									{ prop: 'name', length: 10 },
@@ -103,7 +110,7 @@
 						<!--A4_2 対象締め日--> 
 						<div data-bind="{text: '末締め'}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
 						<!--A4_6 複数実績メッセージ--> 
-						<div id="multi-archieve-message" class="label">#{i18n.getText('KMW003_13')}</div>
+						<div id="multi-archieve-message" data-bind="{visible:showButton().enable_multiActualTime}" class="label">#{i18n.getText('KMW003_13')}</div>
 					</div>
 					<div id="content-grid-not">
 						<!--A5_1 一括承認ボタン--> 
@@ -113,7 +120,7 @@
 						<!--A5_3 凡例ボタン--> 
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
 						<!--A5_4 列幅保存ボタン--> 							
-						<button id="btn-saveColumnWidth" data-bind="{}">#{i18n.getText('KMW003_15')}</button>
+						<button id="btn-saveColumnWidth" data-bind="{visible:showButton().available_A5_4, enable:showButton().enable_A5_4}">#{i18n.getText('KMW003_15')}</button>
 						<div class="setting-container">
 							<!--A5_5 画面固有情報の設定ボタン--> 
 							<button id="btn-setting" data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
@@ -152,8 +159,7 @@
 						<table id="dpGrid"></table>
 					</div>
 					<!--A7_1 コメント--> 
-					<span style="margin: 10px 0 0 18px; display: inline-block;"
-						data-bind="text: comment"></span>
+					<span style="margin: 10px 0 0 0px; display: inline-block;" data-bind="text: comment"></span>
 				</div>
 				<div id="tooltip"><span id="textLock"></span></div>
 			</div>

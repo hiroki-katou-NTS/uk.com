@@ -61,7 +61,8 @@ public class MPHeaderDto {
 		
 		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", "", false, "Label", true, true));
 		//G_1   状態
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_21"), "state", "String", "30px", "", false, "FlexImage", true, true));
+		//lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_21"), "state", "String", "30px", "", false, "FlexImage", true, true));
+		lstHeader.add(new MPHeaderDto("状<br>態", "state", "String", "30px", "", false, "FlexImage", true, true));
 		//G_2 アラーム/エラー	
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_22"), "error", "String", "60px", "", false, "Label", true, true));
 		//G_3 社員コード
@@ -76,10 +77,10 @@ public class MPHeaderDto {
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_25"), "identify", "boolean", "35px", "", false,
 				"Checkbox", true, true));
 		//G_8 日別確認
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "190px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "190px", "#00FF00", false,
 				"Label", true, true));
 		//G_9 日別実績の修正
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "35px", "", false,
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "35px", "#00b050", false,
 				"Button", true, true));
 		return lstHeader;
 	}

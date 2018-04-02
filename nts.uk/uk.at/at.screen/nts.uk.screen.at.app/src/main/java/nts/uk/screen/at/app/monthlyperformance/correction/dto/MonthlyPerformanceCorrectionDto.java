@@ -9,9 +9,10 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
+import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * TODO
@@ -27,6 +28,18 @@ public class MonthlyPerformanceCorrectionDto {
 	private List<MPDataDto> lstData;
 	private Map<String, String > data;
 	private List<MPCellStateDto> lstCellState;
+	/**
+	 * 本人確認処理の利用設定
+	 */
+	private IdentityProcessDto identityProcess;
+	/**
+	 * 実績修正画面で利用するフォーマット
+	 */
+	private FormatPerformanceDto formatPerformance;
+	/**
+	 * ログイン社員の月別実績の権限を取得する
+	 */
+	private List<MonthlyPerformanceAuthorityDto> authorityDto;
 	/**
 	 * list fixed header
 	 */
@@ -56,7 +69,11 @@ public class MonthlyPerformanceCorrectionDto {
 	 * 期間：取得した期間に一致する
 	 * ※一致する期間がない場合は、先頭を選択状態にする
 	 */
-	private DatePeriod selectedActualTime;
+	private ActualTime selectedActualTime;
+	/**
+	 * 画面項目の非活制御をする
+	 */
+	private int actualTimeState;
 	
 	public MonthlyPerformanceCorrectionDto(){
 		super();
