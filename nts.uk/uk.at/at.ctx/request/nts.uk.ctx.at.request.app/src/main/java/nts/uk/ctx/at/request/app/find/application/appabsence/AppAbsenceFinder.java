@@ -131,7 +131,7 @@ public class AppAbsenceFinder {
 		startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate,
 				ApplicationType.ABSENCE_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
 		if(appCommonSettingOutput.appTypeDiscreteSettings != null){
-			result.setMailFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN));
+			result.setMailFlg(!appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN));
 		}
 		// 1-1.起動時のエラーチェック
 		List<Integer> holidayAppTypes = new ArrayList<>();

@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         selectedTypeOfDuty:  KnockoutObservable<number> = ko.observable(null);
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
+        changeWorkHourValueFlg: KnockoutObservable<boolean> = ko.observable(false);
 //        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(false);
         displayStartFlg: KnockoutObservable<boolean> = ko.observable(false);
         contentFlg: KnockoutObservable<boolean> = ko.observable(true);
@@ -118,7 +119,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             alldayHalfDay: self.selectedAllDayHalfDayValue()
                         }).done((data) => {
                             self.displayStartFlg(true);
-                            self.changeWorkHourValue(data.changeWorkHourFlg);
+                            self.changeWorkHourValueFlg(data.changeWorkHourFlg);
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
                                 self.typeOfDutys([]);
                             } else {
@@ -200,7 +201,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTypeCode: self.selectedTypeOfDuty(),
                 alldayHalfDay: self.selectedAllDayHalfDayValue()
             }).done((result) => {
-                self.changeWorkHourValue(result.changeWorkHourFlg);
+                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if( !nts.uk.util.isNullOrEmpty(result.workTypes)){
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -234,7 +235,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
                 alldayHalfDay: value
             }).done((result) =>{
-                self.changeWorkHourValue(result.changeWorkHourFlg);
+                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
@@ -271,7 +272,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTypeCode: self.selectedTypeOfDuty(),
                 alldayHalfDay: self.selectedAllDayHalfDayValue()
             }).done((result) =>{
-                self.changeWorkHourValue(result.changeWorkHourFlg);
+                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
@@ -307,7 +308,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTypeCode: self.selectedTypeOfDuty(),
                 workTimeCode: self.workTimeCode()
             }).done((result) =>{
-                self.changeWorkHourValue(result.changeWorkHourFlg);
+                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if(result.startTime1 != null){
                     self.timeStart1(result.startTime1);    
                 }
