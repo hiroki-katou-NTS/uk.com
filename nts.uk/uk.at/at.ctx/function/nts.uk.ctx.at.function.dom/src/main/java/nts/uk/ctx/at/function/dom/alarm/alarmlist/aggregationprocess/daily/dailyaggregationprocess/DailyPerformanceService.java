@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.MessageWRExtraConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.EmployeeDailyPerErrorImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
@@ -28,6 +29,8 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -57,8 +60,20 @@ public class DailyPerformanceService {
 	@Inject
 	private ApplicationAdapter applicationAdapter;
 	
+	//Get attendance  value
 	@Inject
 	private DailyAttendanceItemAdapter attendanceItemAdapter; 
+	
+	// Get work type code
+	@Inject
+	private RecordWorkInfoFunAdapter recordWorkInfoFunAdapter;
+	
+	// Get work type name
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	
+	
 
 	public List<ValueExtractAlarm> aggregationProcess(DailyAlarmCondition dailyAlarmCondition, PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
 		List<ValueExtractAlarm> valueExtractAlarmList = new ArrayList<>();
@@ -111,66 +126,11 @@ public class DailyPerformanceService {
 		Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = messageList.stream().collect(Collectors.toMap(MessageWRExtraConAdapterDto::getDisplayMessage, x -> x));
 
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
-			// Attendance name			
-			Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
-					.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
-			// Attendance value
-			AttendanceResultImport attendanceResult= attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
-			List<AttendanceItemValueImport> attendanceValue = attendanceResult.getAttendanceItems()==null? new ArrayList<AttendanceItemValueImport>(): attendanceResult.getAttendanceItems();
-			Map<Integer, AttendanceItemValueImport> mapAttendance = attendanceValue.stream().collect(Collectors.toMap( AttendanceItemValueImport::getItemId, x->x));
 			
-			// アラーム値メッセージ 
-			String alarmItem ="";
-			String alarmContent = "";
-			
-			if(eDaily.getErrorAlarmWorkRecordCode().equals("S001")) {		
-				
-				alarmItem = TextResource.localize("KAL010_2");
-				
-				eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
-				for(Integer id: eDaily.getAttendanceItemList()) {
-					alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName();
-				}
-				if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
-				
-			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S004")) {
-				
-				alarmItem = TextResource.localize("KAL010_3");
-				eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
-				int i=0;
-				for(Integer id: eDaily.getAttendanceItemList()) {
-					i+=1;
-					if(i%2 != 0) {
-						alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();						
-					}else {
-						alarmContent +="、　"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();
-					}					
-				}
-				if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
-				
-			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S005")) {
-				
-				alarmItem = TextResource.localize("KAL010_4");
-				
-			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S003")) {
-				
-				
-			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S007")) {
-				
-				
-			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S008")) {
-				
-				
-			}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S006")) {
-				
-				
-			}else {
-				alarmItem = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName();
-			}
-			
-			
+			AlarmContentMessage alarmContentMessage = this.calculateAlarmContentMessage(eDaily, companyID, errorAlarmMap);
+						
 			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), eDaily.getDate().toString(), TextResource.localize("KAL010_1"),
-					alarmItem, alarmContent,
+					alarmContentMessage.getAlarmItem(), alarmContentMessage.getAlarmContent(),
 					errAlarmCheckIDToMessage.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID()).getDisplayMessage());
 
 			valueExtractAlarmList.add(data);
@@ -179,10 +139,104 @@ public class DailyPerformanceService {
 		return valueExtractAlarmList;
 
 	}
+	
+	
 
 	private boolean intersectTwoListAppType(List<Integer> listAppType1, List<Integer> listAppType2) {
 		List<Integer> intersect = listAppType1.stream().filter(listAppType2::contains).collect(Collectors.toList());
 		return !intersect.isEmpty();
 	}
+	
+	
+	
+	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap ) {
+		// Attendance name			
+					Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
+							.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
+					// Attendance value
+					AttendanceResultImport attendanceResult= attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
+					List<AttendanceItemValueImport> attendanceValue = attendanceResult.getAttendanceItems()==null? new ArrayList<AttendanceItemValueImport>(): attendanceResult.getAttendanceItems();
+					Map<Integer, AttendanceItemValueImport> mapAttendance = attendanceValue.stream().collect(Collectors.toMap( AttendanceItemValueImport::getItemId, x->x));
+					
+					// アラーム値メッセージ 
+					String alarmItem ="";
+					String alarmContent = "";
+					
+					if(eDaily.getErrorAlarmWorkRecordCode().equals("S001")) {		
+						
+						alarmItem = TextResource.localize("KAL010_2");
+						
+						eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
+						for(Integer id: eDaily.getAttendanceItemList()) {
+							alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName();
+						}
+						if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
+						
+					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S004")) {
+						
+						alarmItem = TextResource.localize("KAL010_3");
+						eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
+						int i=0;
+						for(Integer id: eDaily.getAttendanceItemList()) {
+							i+=1;
+							if(i%2 != 0) {
+								alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();						
+							}else {
+								alarmContent +="、　"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();
+							}					
+						}
+						if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
+						
+					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S005")) {
+
+						alarmItem = TextResource.localize("KAL010_4");
+
+						Optional<String> optWorkTypeCode = recordWorkInfoFunAdapter.getWorkTypeCode(eDaily.getEmployeeID(), eDaily.getDate());
+						if (!optWorkTypeCode.isPresent())
+							throw new RuntimeException("Not found work type code!");
+						Optional<WorkType> optWorkType = workTypeRepository.findByPK(companyID, optWorkTypeCode.get());
+						if (!optWorkType.isPresent())
+							throw new RuntimeException(" WorkType domain not found!");
+						
+						alarmContent =TextResource.localize("KAL010_5", optWorkType.get().getName().v(), mapAttendance.get(16).getValue(), mapAttendance.get(19).getValue());
+
+					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S003")) {
+						
+						alarmItem = TextResource.localize("KAL010_12");
+						eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
+						
+						
+						int i=0;
+						for(Integer id: eDaily.getAttendanceItemList()) {
+							i+=1;
+							if(i%2 != 0) {
+								alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName();						
+							}else {
+								alarmContent +="、　"+ attendanceNameMap.get(id).getAttendanceItemName();
+							}					
+						}
+						if(alarmContent.length()>0) alarmContent = TextResource.localize("KAL010_2") +" " + alarmContent.substring(1, alarmContent.length());
+						
+						
+					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S007")) {
+						alarmItem = TextResource.localize("KAL010_68");
+						Integer id = eDaily.getAttendanceItemList().get(0);
+						alarmItem= TextResource.localize("KAL010_69", attendanceNameMap.get(id).getAttendanceItemName(), mapAttendance.get(id).getValue());
+						
+					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S008")) {
+						alarmItem = TextResource.localize("KAL010_70");
+						Integer id = eDaily.getAttendanceItemList().get(0);
+						alarmItem= TextResource.localize("KAL010_71", attendanceNameMap.get(id).getAttendanceItemName(), mapAttendance.get(id).getValue());
+						
+					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S006")) {
+						alarmItem = TextResource.localize("KAL010_17");
+						alarmContent = TextResource.localize("KAL010_18");
+					}else {
+						alarmItem = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName();
+					}
+		
+		return new AlarmContentMessage(alarmItem, alarmContent);
+	}
+	
 
 }
