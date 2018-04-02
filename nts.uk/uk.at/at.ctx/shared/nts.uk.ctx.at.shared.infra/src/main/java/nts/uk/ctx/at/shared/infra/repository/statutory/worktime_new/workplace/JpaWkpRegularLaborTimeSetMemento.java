@@ -28,8 +28,8 @@ public class JpaWkpRegularLaborTimeSetMemento implements WkpRegularLaborTimeSetM
 	public JpaWkpRegularLaborTimeSetMemento(KshstWkpRegLaborTime entity) {
 		super();		
 		if(entity.getKshstWkpRegLaborTimePK() == null){				
-			entity.setKshstWkpRegLaborTimePK(new KshstWkpRegLaborTimePK());
 		}
+		entity.setKshstWkpRegLaborTimePK(new KshstWkpRegLaborTimePK());
 		this.entity = entity;
 	}
 
