@@ -29,7 +29,6 @@ module nts.uk.at.view.kmk004.d {
             isLoading: KnockoutObservable<boolean>;
             
             worktimeVM: WorktimeSettingVM.ScreenModel;
-            
             workplaceCode: KnockoutObservable<string>;
             workplaceName: KnockoutObservable<string>;
             
@@ -179,10 +178,10 @@ module nts.uk.at.view.kmk004.d {
                     return;
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
+                    let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year, workplaceId: self.selectedWorkplaceId() }
                     service.removeWorkplaceSetting(command).done(() => {
                         self.isNewMode(true);
-                        self.removeAlreadySettingWorkplace(workplace.workplaceId());
+                        self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
                         
                         // TODO: new form
                         
@@ -250,7 +249,7 @@ module nts.uk.at.view.kmk004.d {
                 }
                 
                 let saveCommand: WorkspaceWorktimeSettingDtoSaveCommand = new WorkspaceWorktimeSettingDtoSaveCommand();
-                saveCommand.updateData(self.selectedWorkspaceId(), self.worktimeVM.worktimeSetting);
+                saveCommand.updateData(self.selectedWorkplaceId(), self.worktimeVM.worktimeSetting);
                 
                 service.saveWorkplaceSetting(ko.toJS(saveCommand)).done(() => {
                     self.isNewMode(false);
