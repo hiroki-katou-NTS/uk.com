@@ -23,7 +23,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_1')} </a>
-				<button class="proceed save" data-bind="enable: $root.errors.isEmpty, click:save" >#{i18n.getText('KMK013_2')}</button>
+				<button tabindex="2" class="proceed save" data-bind="enable: $root.errors.isEmpty, click:save" >#{i18n.getText('KMK013_2')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -34,7 +34,7 @@
 							<div>
 								<hr />
 							</div>
-							<div id="b23"
+							<div tabindex="3" id="b23"
 								data-bind="ntsRadioBoxGroup: {
 										name:'#{i18n.getText('KMK013_4')}',
 										options: itemsB23,
@@ -48,7 +48,7 @@
 							<div>
 								<hr />
 							</div>
-							<div
+							<div tabindex="4"
 								data-bind="ntsRadioBoxGroup: {
 										name:'#{i18n.getText('KMK013_8')}',
 										options: itemsB29,
@@ -64,7 +64,7 @@
 								<hr />
 							</div>
 							<div style="display: flex">
-								<div
+								<div tabindex="5"
 									data-bind="ntsRadioBoxGroup: {
 											name:'#{i18n.getText('KMK013_12')}',
 											options: itemsB215,
@@ -76,7 +76,7 @@
 									<div>
 										<div class="time">
 										<span class="label">#{i18n.getText('KMK013_15')}</span> 
-										<input class="input-time" data-bind="ntsTimeEditor: {
+										<input tabindex="6" class="input-time" data-bind="ntsTimeEditor: {
 										value: timeB219,
 										constraint: 'DailyTime',
 										
@@ -88,19 +88,19 @@
 									</div>
 									<div class="time">
 										<span class="label">#{i18n.getText('KMK013_17')}</span>
-										<input class="input-time" data-bind="ntsTimeEditor: {
+										<input tabindex="7" class="input-time" data-bind="ntsTimeEditor: {
 										value: timeB221,
 										constraint: 'DailyTime',
 										
 										enable: enableB217,
 										inputFormat: 'time',
 										mode: 'time',
-										name: '#[KMK013_17]',
+										name: '#[KMK013_18]',
 										required: true}" />
 									</div>
 									<div class="time">
 										<span class="label">#{i18n.getText('KMK013_19')}</span>
-										<input class="input-time" data-bind="ntsTimeEditor: {
+										<input tabindex="8" class="input-time" data-bind="ntsTimeEditor: {
 										value: timeB223,
 										constraint: 'DailyTime',
 										
@@ -108,7 +108,7 @@
 										enable: enableB217,
 										inputFormat: 'time',
 										mode: 'time',
-										name: '#[KMK013_18]',
+										name: '#[KMK013_19]',
 										required: true}" />
 									</div>
 								</div>
@@ -138,9 +138,9 @@
 													enable: enableB2_28,
 													name: '#KMK013_247'}" class="time-hd-add-method"></div>
 							<!-- B2_37 -->
-							<div id="b2_37">#{i18n.getText('KMK013_252')}</div>
+							<div data-bind="if: conditionDisplay15" id="b2_37">#{i18n.getText('KMK013_252')}</div>
 							<!-- B2_32 -->
-							<div>
+							<div data-bind="if: conditionDisplay15">
 								<hr id="b2_32" class="time-hd-add-method"/>
 							</div>
 							<!-- B2_33 -->
@@ -152,7 +152,8 @@
 													optionsText: 'name',
 													value: selectedIdB2_33,
 													enable: enableB2_33,
-													name: '#KMK013_250'}" class="time-hd-add-method"></div>
+													name: '#KMK013_250'}, 
+													if: conditionDisplay15" class="time-hd-add-method"></div>
 
 						</td>
 						<td class="right-contents">
@@ -197,8 +198,8 @@
 												<td class="b5_inner_left">
 													<div class="label">#{i18n.getText('KMK013_28')}</div>
 												</td>
-												<td>
-													<label class="ntsRadioBox"> <input tabindex="16" type="radio"
+												<td tabindex="16">
+													<label class="ntsRadioBox"> <input type="radio"
 															name="textRadioB54"
 															data-bind="checkedValue: 1, checked: selectedValueB54" />
 															<span class="box"></span><span class="label"
@@ -231,8 +232,8 @@
 												<td class="b5_inner_left">
 													<div class="label">#{i18n.getText('KMK013_29')}</div>
 												</td>
-												<td>
-													<label class="ntsRadioBox"> <input tabindex="23" type="radio"
+												<td tabindex="23">
+													<label class="ntsRadioBox"> <input type="radio"
 															name="textRadioB515"
 															data-bind="checkedValue: 1, checked: selectedValueB515" />
 															<span class="box"></span><span class="label"
@@ -263,9 +264,9 @@
 													<!-- B8_2 -->
 													<div class="label">#{i18n.getText('KMK013_28')}</div>
 												</td>
-												<td>
+												<td tabindex="29">
 													<!-- B8_5 -->
-													<label class="ntsRadioBox"> <input tabindex="29" type="radio"
+													<label class="ntsRadioBox"> <input  type="radio"
 															name="textRadioB8_5"
 															data-bind="checkedValue: true, checked: selectedValueB8_5" />
 															<span class="box"></span><span class="label"
@@ -311,9 +312,9 @@
 													<!-- B8_3 -->
 													<div class="label">#{i18n.getText('KMK013_29')}</div>
 												</td>
-												<td>
+												<td tabindex="36">
 													<!-- B8_16 -->
-													<label class="ntsRadioBox"> <input tabindex="36" type="radio"
+													<label class="ntsRadioBox"> <input  type="radio"
 															name="textRadioB8_16"
 															data-bind="checkedValue: true, checked: selectedValueB8_16" />
 															<span class="box"></span><span class="label"
@@ -351,8 +352,8 @@
 												<td class="b5_inner_left">
 													<div class="label">#{i18n.getText('KMK013_48')}</div>
 												</td>
-												<td>
-													<label class="ntsRadioBox"> <input tabindex="42" type="radio"
+												<td tabindex="42">
+													<label class="ntsRadioBox"> <input  type="radio"
 															name="textRadioB64"
 															data-bind="checkedValue: 1, checked: selectedValueB64" />
 															<span class="box"></span><span class="label"
@@ -378,8 +379,8 @@
 												<td class="b5_inner_left">
 													<div class="label">#{i18n.getText('KMK013_49')}</div>
 												</td>
-												<td>
-													<label class="ntsRadioBox"> <input tabindex="49" type="radio"
+												<td tabindex="49">
+													<label class="ntsRadioBox"> <input  type="radio"
 															name="textRadioB612"
 															data-bind="checkedValue: 1, checked: selectedValueB612" />
 															<span class="box"></span><span class="label"
@@ -419,8 +420,8 @@
 												<td class="b5_inner_left">
 													<div class="label">#{i18n.getText('KMK013_66')}</div>
 												</td>
-												<td>
-													<label class="ntsRadioBox"> <input tabindex="58" type="radio"
+												<td tabindex="58">
+													<label class="ntsRadioBox"> <input  type="radio"
 															name="textRadioB74"
 															data-bind="checkedValue: 1, checked: selectedValueB74" />
 															<span class="box"></span><span class="label"
@@ -453,8 +454,8 @@
 												<td class="b5_inner_left">
 													<div class="label">#{i18n.getText('KMK013_67')}</div>
 												</td>
-												<td>
-													<label tabindex="65" class="ntsRadioBox"> <input type="radio"
+												<td tabindex="65">
+													<label  class="ntsRadioBox"> <input type="radio"
 															name="textRadioB715"
 															data-bind="checkedValue: 1, checked: selectedValueB715" />
 															<span class="box"></span><span class="label"

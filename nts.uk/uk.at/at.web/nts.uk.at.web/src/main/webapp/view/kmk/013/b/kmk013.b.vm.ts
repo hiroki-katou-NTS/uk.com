@@ -142,8 +142,14 @@ module nts.uk.at.view.kmk013.b {
             workClass1: KnockoutObservable<any>;
             workClass2: KnockoutObservable<any>;
             
+            conditionDisplay15: KnockoutObservable<boolean>;
+            conditionDisplay26: KnockoutObservable<boolean>;
+            
             constructor() {
                 var self = this;
+                
+                self.conditionDisplay15 = ko.observable(true);
+                self.conditionDisplay26 = ko.observable(true);
                 
                 self.workClass1 = ko.observable(0);
                 self.workClass2 = ko.observable(1);
@@ -334,8 +340,10 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB8_20(false);
                         self.enableB8_21(false);
                         self.enableB8_23(false);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
-                        });
+                        if (self.selectedValueB8_5() == true) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                            });
+                        }
                         self.selectedValueB8_6(true);
                     }
                 });
@@ -437,8 +445,8 @@ module nts.uk.at.view.kmk013.b {
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK013_25"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText("KMK013_422"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-3', title: nts.uk.resource.getText("KMK013_26"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-4', title: nts.uk.resource.getText("KMK013_27"), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-3', title: nts.uk.resource.getText("KMK013_26"), content: '.tab-content-3', enable: ko.observable(true), visible: self.conditionDisplay15 },
+                    { id: 'tab-4', title: nts.uk.resource.getText("KMK013_27"), content: '.tab-content-4', enable: ko.observable(true), visible: self.conditionDisplay26 },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
                 self.checkedB33 = ko.observable(false);
@@ -569,10 +577,16 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB515.subscribe((newValue) => {
                     if (newValue == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                        if (self.selectedValueB54() == 1) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                                self.selectedValueB54(0);
+                                self.enableB515(false);
+                            });    
+                        } else {
                             self.selectedValueB54(0);
                             self.enableB515(false);
-                        });
+                        }
+                        
                     } else {
                         self.enableB515(true);
                     }
@@ -657,13 +671,22 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB612.subscribe((newValue) => {
                     if (newValue == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                        if (self.selectedValueB64() == 1) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                                self.selectedValueB64(0);
+                                self.enableB612(false);
+                                if(self.checkedB616() == true){
+                                    self.enableB616(true);    
+                                }
+                            });    
+                        } else {
                             self.selectedValueB64(0);
-                            self.enableB612(false);
-                            if(self.checkedB616() == true){
-                                self.enableB616(true);    
-                            }
-                        });
+                                self.enableB612(false);
+                                if(self.checkedB616() == true){
+                                    self.enableB616(true);    
+                                }
+                        }
+                        
                         self.enableB6_23(false);
                     } else {
                         self.enableB612(true);
@@ -770,10 +793,15 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB715.subscribe((newValue) => {
                     if (newValue == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                        if (self.selectedValueB74() == 1) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
+                                self.selectedValueB74(0);
+                                self.enableB715(false);
+                            });        
+                        } else {
                             self.selectedValueB74(0);
                             self.enableB715(false);
-                        });
+                        }
                     } else {
                         self.enableB715(true);
                     }
@@ -834,8 +862,6 @@ module nts.uk.at.view.kmk013.b {
                         self.checkedB720(false);
                     }
                 });
-
-
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -847,7 +873,15 @@ module nts.uk.at.view.kmk013.b {
             }
             initData(): void {
                 let self = this;
-                service.findByCompanyId().done((data) => {
+                $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
+                    if (dataDomainSet != null) {
+                        // condition 15
+                        self.conditionDisplay15(dataDomainSet.flexWorkManagement == 1? true : false);
+                        
+                        // condition 26
+                        self.conditionDisplay26(dataDomainSet.useAggDeformedSetting == 1? true : false);
+                    }
+                    
                     if (data[0] == null) {
                         self.oldData({  "companyId":null, "referComHolidayTime":0, "oneDay":0, "morning":0, "afternoon":0, "referActualWorkHours":0, "notReferringAch":0,
                                         "annualHoliday":0, "specialHoliday":0, "yearlyReserved":0,
@@ -1078,7 +1112,7 @@ module nts.uk.at.view.kmk013.b {
 //                    self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
                     
                     self.notifyVarKnockoutchange();
-                });
+                });    
             }
             
             notifyVarKnockoutchange(): void {
