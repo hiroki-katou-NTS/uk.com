@@ -38,7 +38,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             self.itemInitLst = [];
-            self.currentCtg = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '', categoryType: 1 });
+            self.currentCtg = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '', categoryType: 1 };
             self.categoryName(self.currentCtg.ctgName);
             
             service.getAllItemByCtgId(self.currentCtg.settingId, self.currentCtg.categoryId).done(function(data) {
