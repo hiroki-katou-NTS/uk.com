@@ -1,13 +1,12 @@
 package nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
-public class EmployeeInfoImport {
-	
+public class EmpInfoImport {
+
 	/** The company id. */
 	private String companyId;
 
@@ -17,10 +16,8 @@ public class EmployeeInfoImport {
 	/** The employee id. */
 	private String employeeId;
 
-	/** The employee name */
-	private String employeeName;
-	
 	/** The person Id. */
-	private String personId;
+	private String personId ;
 
+	private String perName ;
 }
