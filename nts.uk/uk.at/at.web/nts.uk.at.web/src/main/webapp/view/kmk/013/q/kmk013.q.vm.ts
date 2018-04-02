@@ -75,22 +75,26 @@ module nts.uk.at.view.kmk013.q {
                             // DB don't have data
                             if (_.isEmpty(dataRoleOpenPeriod) || _.isEmpty(dataRoleOTWork)) {
                                 for (let i=0; i<10; i++) {
-                                    self.overtimeList.push({ overtimeName: nts.uk.resource.getText('KMK013_152') + dataOvertimeworkframe[i].overtimeWorkFrNo + " " + dataOvertimeworkframe[i].overtimeWorkFrName, 
+                                    self.overtimeList.push({ overtimeNo: nts.uk.resource.getText('KMK013_152') + dataOvertimeworkframe[i].overtimeWorkFrNo,
+                                                             overtimeName: dataOvertimeworkframe[i].overtimeWorkFrName,
                                                             otWorkRoleSelect: ko.observable(0), 
                                                             enable: dataOvertimeworkframe[i].useAtr == 1 ? ko.observable(true) : ko.observable(false)});
-                                    self.roleFrameList.push({ nameHDFrame: nts.uk.resource.getText('KMK013_157') + dataWorkdayoffframe[i].workdayoffFrNo + " " + dataWorkdayoffframe[i].workdayoffFrName, 
+                                    self.roleFrameList.push({ HDFrameNo: nts.uk.resource.getText('KMK013_157') + dataWorkdayoffframe[i].workdayoffFrNo, 
+                                                                HDFrameName: dataWorkdayoffframe[i].workdayoffFrName,
                                                                 roleFrameSelect: ko.observable(0), 
                                                                 enable: dataWorkdayoffframe[i].useAtr == 1 ? ko.observable(true) : ko.observable(false)});
                                 }                                
                             } else {
                                 _.forEach(dataRoleOTWork, function(value: any, index) {
-                                    self.overtimeList.push({ overtimeName: nts.uk.resource.getText('KMK013_152') + dataOvertimeworkframe[index].overtimeWorkFrNo + " " + dataOvertimeworkframe[index].overtimeWorkFrName, 
+                                    self.overtimeList.push({ overtimeNo: nts.uk.resource.getText('KMK013_152') + dataOvertimeworkframe[index].overtimeWorkFrNo,
+                                                            overtimeName: dataOvertimeworkframe[index].overtimeWorkFrName, 
                                                             otWorkRoleSelect: ko.observable(value.roleOTWork), 
                                                             enable: dataOvertimeworkframe[index].useAtr == 1 ? ko.observable(true) : ko.observable(false)});
                                 });
                                     
                                 _.forEach(dataRoleOpenPeriod, function(value: any, index) {
-                                     self.roleFrameList.push({ nameHDFrame: nts.uk.resource.getText('KMK013_157') + dataWorkdayoffframe[index].workdayoffFrNo + " " + dataWorkdayoffframe[index].workdayoffFrName, 
+                                     self.roleFrameList.push({ HDFrameNo: nts.uk.resource.getText('KMK013_157') + dataWorkdayoffframe[index].workdayoffFrNo,
+                                                                HDFrameName: dataWorkdayoffframe[index].workdayoffFrName, 
                                                                 roleFrameSelect: ko.observable(value.roleOfOpenPeriod), 
                                                                 enable: dataWorkdayoffframe[index].useAtr == 1 ? ko.observable(true) : ko.observable(false)});
                                 });    

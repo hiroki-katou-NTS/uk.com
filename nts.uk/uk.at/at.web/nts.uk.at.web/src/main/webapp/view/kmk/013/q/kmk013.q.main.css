@@ -2,28 +2,33 @@
 	border: 1px solid black;
 }
 
-.overtimeListQ5_1 tr > td:nth-child(2) > div > label{
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label{
 	border-left: 1px solid black;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(1){
 	background-color: #CFF1A5;
-	width: 185px;
+	width: 70px;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(2){
+	background-color: #CFF1A5;
+	width: 115px;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(3){
 	background-color: #F2F2F2;
 }
 
-.overtimeListQ5_1 tr > td:nth-child(2) > div > label:nth-child(1){
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(1){
 	width: 140px;
 }
 
-.overtimeListQ5_1 tr > td:nth-child(2) > div > label:nth-child(2){
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(2){
 	width: 140px;
 }
 
-.overtimeListQ5_1 tr > td:nth-child(2) > div > label:nth-child(3){
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(3){
 	width: 230px;
 }
 
@@ -128,7 +133,7 @@
 }
 
 .help-btn {
-    margin-left: 166px;
+    margin-left: 185px;
 }
 
 #img-chart-tab-2 {
@@ -178,4 +183,8 @@
 
 #img-chart-tab-2 > img {
 	margin-top: -12px;
+}
+
+.tableQ8_1 tr > td:nth-child(3) {
+	vertical-align: top
 }
