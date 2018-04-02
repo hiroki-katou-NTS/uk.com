@@ -87,9 +87,9 @@ module nts.uk.at.view.kmk004.shared.model {
             self.normalWorktime().updateData(dto.regularLaborTime);
             self.deformLaborWorktime().updateData(dto.transLaborTime);
 
-            self.normalSetting().updateData(dto);
+            self.normalSetting().updateData(dto, SelectedSettingType.NORMAL_SETTING);
             self.flexSetting().updateData(dto);
-            self.deformLaborSetting().updateData(dto);
+            self.deformLaborSetting().updateData(dto, SelectedSettingType.DEFORM_LABOR_SETTING);
         }
 
         public updateDetailData(dto: MonthlyCalSettingDto): void {
@@ -965,13 +965,21 @@ module nts.uk.at.view.kmk004.shared.model {
             }
         }
 
-        public updateData(dto: StatutoryWorktimeSettingDto): void {
+        public updateData(dto: StatutoryWorktimeSettingDto, key: number): void {
             let self = this;
             self.year(dto.year);
-            self.statutorySetting().forEach(i => {
-                let updatedData: MonthlyUnitDto = dto.normalSetting.statutorySetting.filter(j => i.month() == j.month)[0];
-                i.updateData(updatedData);
-            });
+            if (key == SelectedSettingType.NORMAL_SETTING) {
+                self.statutorySetting().forEach(i => {
+                    let updatedData: MonthlyUnitDto = dto.normalSetting.statutorySetting.filter(j => i.month() == j.month)[0];
+                    i.updateData(updatedData);
+                });
+            } else {
+                self.statutorySetting().forEach(i => {
+                    let updatedData: MonthlyUnitDto = dto.deforLaborSetting.statutorySetting.filter(j => i.month() == j.month)[0];
+                    i.updateData(updatedData);
+                });
+            }
+            
         }
 
         public sortMonth(startMonth: number): void {
@@ -1203,5 +1211,10 @@ module nts.uk.at.view.kmk004.shared.model {
             self.isIncludeLegalExcessOutside = false;
             self.isIncludeHolidayExcessOutside = false;
         }
+    }
+    
+    export class SelectedSettingType {
+        static NORMAL_SETTING = 1;
+        static DEFORM_LABOR_SETTING = 2;
     }
 }

@@ -20,6 +20,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
         import NormalSetParams = nts.uk.at.view.kmk004.shared.model.NormalSetParams ;
         import FlexSetParams = nts.uk.at.view.kmk004.shared.model.FlexSetParams;
         import DeformSetParams = nts.uk.at.view.kmk004.shared.model.DeformSetParams ;
+        import SelectedSettingType = nts.uk.at.view.kmk004.shared.model.SelectedSettingType;
         
         export class ScreenModel {
             
@@ -166,9 +167,9 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.normalWorktime().updateData(dto.regularLaborTime);
                 self.deformLaborWorktime().updateData(dto.transLaborTime);
     
-                self.normalSetting().updateData(dto, 1);
+                self.normalSetting().updateData(dto, SelectedSettingType.NORMAL_SETTING);
                 self.flexSetting().updateData(dto);
-                self.deformLaborSetting().updateData(dto, 2);
+                self.deformLaborSetting().updateData(dto, SelectedSettingType.DEFORM_LABOR_SETTING);
             }
     
             public updateDetailData(dto: MonthlyCalSettingDto): void {
