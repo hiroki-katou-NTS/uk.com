@@ -1,0 +1,40 @@
+@CHARSET "UTF-8";
+
+.contents {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.contentkcp005 {
+	margin-top: 40px;
+	margin-left: 100px;
+}
+
+.contentDetail {
+	margin-top: 40px;
+	margin-left: 40px;
+}
+
+.lableData {
+	width: 125px;
+}
+/* #list-box_grid_displayContainer {
+	height: 110px !important;
+}
+*/
+#list-box_grid_scrollContainer {
+	height: 83.6px !important;
+} 
+
+#list-box_grid_container {
+	width: 245px !important;
+	height: 84px !important;
+}
+#list-box_grid_displayContainer {
+	width: 228px !important;
+	height: 83.6px !important;
+}
+#list-box_grid {
+	height: 83.6px !important;
+	overflow: hidden;
+}
