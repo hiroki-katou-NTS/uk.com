@@ -228,7 +228,7 @@ module nts.uk.at.view.kaf006.b{
             self.convertListHolidayType(data.holidayAppTypes);
             self.holidayTypeCode(data.holidayAppType);
             self.displayPrePostFlg(data.prePostFlg);
-            self.displayWorkTimeName(data.workTimeCode + data.workTimeName);
+            self.displayWorkTimeName(data.workTimeCode +"　"+ data.workTimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -256,6 +256,8 @@ module nts.uk.at.view.kaf006.b{
                 let appDateAll = data.application.startDate + nts.uk.resource.getText('KAF005_38')　+ data.application.endDate;
                 self.appDate(appDateAll);
             }
+            self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+            self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
             
             if(data.initMode == 0){
                 // display Mode

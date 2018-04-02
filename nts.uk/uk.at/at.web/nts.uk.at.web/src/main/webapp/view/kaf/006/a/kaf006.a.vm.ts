@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(true);
+        mailFlag: KnockoutObservable<boolean> = ko.observable(true);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         displayEndDateFlg : KnockoutObservable<boolean> = ko.observable(false);
         enableDisplayEndDate: KnockoutObservable<boolean> = ko.observable(true);
@@ -121,6 +122,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
                                 self.typeOfDutys([]);
                             } else {
+                                self.typeOfDutys.removeAll();
+                                self.workTypecodes.removeAll();
                                 for (let i = 0; i < data.workTypes.length; i++) {
                                     self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
                                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
@@ -155,6 +158,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 });
                 self.selectedTypeOfDuty.subscribe((value) =>{
                    self.findChangeWorkType(value); 
+                });
+                self.displayWorkTimeName.subscribe((value) =>{
+                    self.changeDisplayWorkime();
                 });
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);    
@@ -196,6 +202,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).done((result) => {
                 self.changeWorkHourValue(result.changeWorkHourFlg);
                 if( !nts.uk.util.isNullOrEmpty(result.workTypes)){
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
@@ -230,12 +238,15 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes.removeAll();
                     self.workTimeCodes(result.workTimeCodes);
                 }
                  dfd.resolve(result);
@@ -264,6 +275,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
@@ -271,6 +284,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.selectedTypeOfDuty(result.workTypeCode);
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes.removeAll();
                     self.workTimeCodes(result.workTimeCodes);
                 }
                  dfd.resolve(result);
@@ -316,6 +330,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.holidayTypeCode(null);
             self.displayPrePostFlg(data.prePostFlg);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
+            self.mailFlag(data.mailFlg);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -418,7 +433,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     }
                 });
             });
-            
+        }
+        changeDisplayWorkime(){
+            let self = this;
             self.eblTimeStart1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
             self.eblTimeEnd1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
         }

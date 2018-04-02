@@ -41,7 +41,7 @@
 				</div>
 				<div class="cell valign-center-kaf006">
 					<!--A3_8 複数日-->
-					<div class="row-cell-margin" tabindex="8"
+					<div class="row-cell-margin-kaf006" tabindex="8"
 						data-bind="ntsCheckBox: { checked: displayEndDateFlg, enable: enableDisplayEndDate, text: '#{i18n.getText('KAF006_12')}'},visible: screenModeNew"></div>
 				</div>
 				<div class="cell valign-center-kaf006"
@@ -55,7 +55,7 @@
 				</div>
 				<div class="cell valign-center-kaf006"
 					data-bind="visible : displayEndDateFlg">
-					<div class="row-cell-margin">
+					<div class="row-cell-margin-kaf006">
 						<!--A3_11 終了日-->
 						<div tabindex="10" id="inpAppDate" class="right-content-kaf006"
 							data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',required:true, value: endAppDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
@@ -149,7 +149,7 @@
 						</div>
 						<div class="cell valign-center-kaf006">
 							<!--A6_5 就業時間帯選択対象-->
-							<label class="row-cell-margin" data-bind="text: displayWorkTimeName"></label>
+							<label class="row-cell-margin-kaf006" data-bind="text: displayWorkTimeName"></label>
 						</div>
 					</div>
 				</div>
@@ -165,7 +165,7 @@
 							<div>
 								<!--A6_7 開始時刻-->
 								<input 
-									class="row-cell-margin inputDate-kaf006 right-content-kaf006"
+									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpStartTime2"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
 								<!--A6_8 ～-->
@@ -176,7 +176,7 @@
 							<div>
 								<!--A6_9 終了時刻-->
 								<input tabindex="11"
-									class="row-cell-margin inputDate-kaf006 right-content-kaf006"
+									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpEndTime2"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
 							</div>

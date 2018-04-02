@@ -43,6 +43,8 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
@@ -50,6 +52,8 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -99,6 +103,8 @@ public class AppAbsenceFinder {
 	private BeforePreBootMode beforePreBootMode;
 	@Inject 
 	private InitMode initMode;
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	public AppAbsenceDto getAppForLeave(String appDate, String employeeID){
 		
@@ -124,6 +130,9 @@ public class AppAbsenceFinder {
 		// アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
 		startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate,
 				ApplicationType.ABSENCE_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
+		if(appCommonSettingOutput.appTypeDiscreteSettings != null){
+			result.setMailFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN));
+		}
 		// 1-1.起動時のエラーチェック
 		List<Integer> holidayAppTypes = new ArrayList<>();
 		
@@ -210,6 +219,12 @@ public class AppAbsenceFinder {
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appAbsence.getApplication().getEmployeeID(),appAbsence.getApplication().getAppDate());
 		result.setWorkTimeCodes(listWorkTimeCodes);
+		if(result.getWorkTimeCode() != null){
+			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,result.getWorkTimeCode()).isPresent() ? workTimeRepository.findByCode(companyID,result.getWorkTimeCode()).get() : null;
+			if(workTime != null){
+				result.setWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
+			}
+		}
 		// 1-1.起動時のエラーチェック
 		List<Integer> holidayAppTypes = new ArrayList<>();
 
