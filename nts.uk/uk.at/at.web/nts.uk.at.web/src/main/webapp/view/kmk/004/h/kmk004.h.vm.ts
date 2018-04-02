@@ -27,13 +27,14 @@ module nts.uk.at.view.kmk004.h {
                 let self = this;
                 let params: DeformSetParams = nts.uk.ui.windows.getShared("DEFORM_SET_PARAM");
                 
-                self.startWeekList = ko.observableArray([new ItemModel(StartWeek.SUNDAY, '日曜日'),
+                self.startWeekList = ko.observableArray([
                     new ItemModel(StartWeek.MONDAY, '月曜日'),
                     new ItemModel(StartWeek.TUESDAY, '火曜日'),
                     new ItemModel(StartWeek.WEDNESDAY, '水曜日'),
                     new ItemModel(StartWeek.THURSDAY, '木曜日'),
                     new ItemModel(StartWeek.FRIDAY, '金曜日'),
                     new ItemModel(StartWeek.SATURDAY, '土曜日'),
+                    new ItemModel(StartWeek.SUNDAY, '日曜日'),
                     new ItemModel(StartWeek.CLOSURE_STR_DATE, '締め開始日')]);
                 
                 self.includeExtraAggrOpt = ko.observableArray([
