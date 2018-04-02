@@ -97,7 +97,7 @@ module nts.uk.at.view.kmk013.q {
                             }                            
                         }
                             
-//                        $( "#tab-panel" ).focus();
+                        $( "#tab-panel" ).focus();
                     dfd.resolve();    
                 });  
                 return dfd.promise();

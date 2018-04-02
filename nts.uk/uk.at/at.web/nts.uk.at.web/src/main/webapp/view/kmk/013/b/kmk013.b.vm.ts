@@ -197,7 +197,7 @@ module nts.uk.at.view.kmk013.b {
                     new BoxModel(1, nts.uk.resource.getText('KMK013_37'))
                 ]);
                 self.selectedIdB8_9 = ko.observable(0);
-                self.enableB8_9 = ko.observable(true);
+                self.enableB8_9 = ko.observable(false);
                 
                 self.checkedB8_7= ko.observable(false);
                 self.enableB8_7= ko.observable(false);

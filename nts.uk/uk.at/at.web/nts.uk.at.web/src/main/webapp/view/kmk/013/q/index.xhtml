@@ -18,7 +18,7 @@
 			<div id="functions-area">
 				<!-- Q1_1 -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/k/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_382')} </a>
 				<!-- Q1_2 -->	
 				<button tabindex="2" class="proceed save" data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KMK013_2')}</button>
@@ -26,7 +26,7 @@
 			<div id="contents-area">
 				
 				<!-- Q2_1 -->
-				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+				<div tabindex="4" id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1 ">
 						<div class="help-btn">
 							<!-- Q4_1 -->
