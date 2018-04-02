@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.PresenceDataApprovedImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
@@ -31,7 +30,7 @@ public class KTG002QueryProcessor {
 	@Inject
 	private DailyPerformanceAdapter dailyPerformanceAdapter;
 
-	public PresenceDataApprovedImport confirmDailyActual() {
+	public boolean confirmDailyActual() {
 		// アルゴリズム「雇用に基づく締めを取得する」をする
 		String employmentCode = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
@@ -56,6 +55,6 @@ public class KTG002QueryProcessor {
 		// dailyPerformanceAdapter.findByIdDateAndType(employeeID, closureStartDate,
 		// closureEndDate, 0);
 
-		return null;
+		return false;
 	}
 }
