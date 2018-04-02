@@ -24,6 +24,7 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="../e/kmk004.e.service.js" />
+			<com:scriptfile path="../shr/kmk004.shared.model.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.service.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.vm.js" />
 			<com:scriptfile path="kmk004.c.service.js" />
@@ -51,7 +52,7 @@
 				<div id="list-employment" class="pull-left fixed-flex-layout-left" style="margin-top: 10px"></div>
 				<div class="right-content pull-left fixed-flex-layout-right" style="min-width: 600px" data-bind="ifnot: isLoading">
 					<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
-						<com:ko tag="with" bind="worktimeSetting">
+						<com:ko tag="with" bind="worktimeVM">
 							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />
 						</com:ko>
 					</fieldset>
@@ -62,7 +63,7 @@
 			<div class="control-group" style="white-space: nowrap">
 				<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
 				<span id="lblEmploymentCode"></span>
-				<span id="lblEmploymentName></span>
+				<span id="lblEmploymentName"></span>
 			</div>
 		</ui:define>
 	</ui:composition>

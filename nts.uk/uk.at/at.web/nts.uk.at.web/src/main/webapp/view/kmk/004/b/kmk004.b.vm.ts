@@ -1,6 +1,23 @@
 module nts.uk.at.view.kmk004.b {
     export module viewmodel {
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
+        import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;   
+        import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;   
+        import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;   
+        import FlexMonth = nts.uk.at.view.kmk004.shared.model.FlexMonth;   
+        import NormalSetting = nts.uk.at.view.kmk004.shared.model.NormalSetting;   
+        import WorkingTimeSetting = nts.uk.at.view.kmk004.shared.model.WorkingTimeSetting; 
+        import Monthly = nts.uk.at.view.kmk004.shared.model.Monthly;   
+        import WorktimeSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDto; 
+        import WorktimeNormalDeformSetting = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSetting;   
+        import WorktimeFlexSetting1 = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1; 
+        import NormalWorktime = nts.uk.at.view.kmk004.shared.model.NormalWorktime; 
+        import FlexWorktimeAggrSetting = nts.uk.at.view.kmk004.shared.model.FlexWorktimeAggrSetting;
+        import WorktimeSettingDtoSaveCommand = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDtoSaveCommand;
+        import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+        import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+        import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+        
         
         export class ScreenModel {
             

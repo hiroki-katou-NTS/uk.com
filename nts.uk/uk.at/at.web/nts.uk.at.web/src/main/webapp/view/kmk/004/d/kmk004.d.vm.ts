@@ -1,6 +1,24 @@
 module nts.uk.at.view.kmk004.d {
     export module viewmodel {
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
+        import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;   
+        import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;   
+        import FlexDaily = nts.uk.at.view.kmk004.shared.model.FlexDaily;   
+        import FlexMonth = nts.uk.at.view.kmk004.shared.model.FlexMonth;   
+        import NormalSetting = nts.uk.at.view.kmk004.shared.model.NormalSetting;   
+        import WorkingTimeSetting = nts.uk.at.view.kmk004.shared.model.WorkingTimeSetting; 
+        import Monthly = nts.uk.at.view.kmk004.shared.model.Monthly;   
+        import WorktimeSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDto; 
+        import WorktimeNormalDeformSetting = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSetting;   
+        import WorktimeFlexSetting1 = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1; 
+        import NormalWorktime = nts.uk.at.view.kmk004.shared.model.NormalWorktime; 
+        import FlexWorktimeAggrSetting = nts.uk.at.view.kmk004.shared.model.FlexWorktimeAggrSetting;
+        import WorktimeSettingDtoSaveCommand = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDtoSaveCommand;
+        import WorktimeNormalDeformSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSettingDto;
+        import WorktimeFlexSetting1Dto = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1Dto;
+        import StatutoryWorktimeSettingDto = nts.uk.at.view.kmk004.shared.model.StatutoryWorktimeSettingDto;
+        import MonthlyCalSettingDto = nts.uk.at.view.kmk004.shared.model.MonthlyCalSettingDto;
+        import WorktimeSetting = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel.WorktimeSetting;
         
         export class ScreenModel {
             
@@ -10,8 +28,7 @@ module nts.uk.at.view.kmk004.d {
             isNewMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             
-            workplaceWTSetting: WorkPlaceWTSetting;
-            worktimeSetting: WorktimeSettingVM.ScreenModel;
+            worktimeVM: WorktimeSettingVM.ScreenModel;
             
             workplaceCode: KnockoutObservable<string>;
             workplaceName: KnockoutObservable<string>;
@@ -36,8 +53,7 @@ module nts.uk.at.view.kmk004.d {
                 ]);
                 self.baseDate = ko.observable(new Date());
                 
-                self.worktimeSetting = new WorktimeSettingVM.ScreenModel();
-                self.workplaceWTSetting = new WorkPlaceWTSetting();
+                self.worktimeVM = new WorktimeSettingVM.ScreenModel();
                 self.alreadySettingWorkplaces = ko.observableArray([]);
                 self.selectedWorkplaceId = ko.observable('');
                 self.setWorkplaceComponentOption();
@@ -45,13 +61,6 @@ module nts.uk.at.view.kmk004.d {
                     if (code) {
                         self.loadWorkplaceSetting(code);
                     }
-                });
-                
-                self.workplaceWTSetting.workplaceCode.subscribe(function(v) {
-                    self.workplaceCode(v);
-                });
-                self.workplaceWTSetting.workplaceName.subscribe(function(v) {
-                    self.workplaceName(v);
                 });
             }
             
@@ -61,9 +70,8 @@ module nts.uk.at.view.kmk004.d {
                 
                 nts.uk.ui.block.invisible();
                 self.isLoading(true);
-                self.workplaceWTSetting.year(self.worktimeSetting.companyWTSetting.year());
                 
-                self.worktimeSetting.initialize().done(() => {
+                self.worktimeVM.initialize().done(() => {
                     WorktimeSettingVM.getStartMonth().done((month) => {
                         self.startMonth = ko.observable(month);
                         
@@ -84,16 +92,9 @@ module nts.uk.at.view.kmk004.d {
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
                     self.isLoading(false);
 
-                    // Force to reload.
-                    if (self.workplaceWTSetting.workplaceId() === self.selectedWorkplaceId()) {
-                        self.loadWorkplaceSetting(self.selectedWorkplaceId());
-                    }
-                    
                     $('#workplaceYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
-                    self.workplaceWTSetting.selectedTab('tab-1');
-                    
                     
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
                     ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
@@ -125,40 +126,45 @@ module nts.uk.at.view.kmk004.d {
              */
             public loadWorkplaceSetting(id?: string): void {
                 let self = this;
-                let currentSetting = self.workplaceWTSetting;
-                let request;
-                // workplaceId changed.
-                if (id) {
-                    request = { year: currentSetting.year(), workplaceId: id };
-                }
-                // Year changed. workplaceId is unchanged
-                else {
-                    request = { year: currentSetting.year(), workplaceId: currentSetting.workplaceId() };
-                    // Reload alreadySetting list.
-                    self.setAlreadySettingWorkplaceList();
-                }
-                service.findWorkplaceSetting(request)
+                let wpkId = self.selectedWorkplaceId();
+                service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
+                        // Clear Errors
                         self.clearError();
+                        let resultData: WorktimeSettingDto = data;
                         // update mode.
-                        if (data) {
-                            self.isNewMode(false);
-                            self.workplaceWTSetting.updateData(data);
+                        // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
+                        if (!nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto) 
+                        && !nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.regularLaborTime)) {
+                            self.worktimeVM.isNewMode(false);
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
+                                resultData.statWorkTimeSetDto.normalSetting = new WorktimeNormalDeformSettingDto();
+                            }
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
+                                resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
+                            }
+                            if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.deforLaborSetting)) {
+                                resultData.statWorkTimeSetDto.deforLaborSetting = new WorktimeNormalDeformSettingDto();
+                            }
+                            // Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(resultData);
+                            self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
+                            
+                            self.setWorkplaceCodeName($('#list-workplace').getDataList(), wpkId);
                         }
-                        // new mode.
                         else {
-                            self.isNewMode(true);
-                            let newSetting = new WorkPlaceWTSetting();
-                            // reserve selected year.
-                            newSetting.year(currentSetting.year());
-                            self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                            // new mode.
+                            self.worktimeVM.isNewMode(true);
+                            let newSetting = new WorktimeSettingDto();
+                            // Reserve selected year.
+                            newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
+                            // Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                            
+                            self.setWorkplaceCodeName($('#list-workplace').getDataList(), '');
                         }
-                        // Set code + name + id.
-                        let tree = $('#list-workplace').getDataList();
-                        self.workplaceWTSetting.workplaceId(request.workplaceId);
-                        self.setWorkplaceCodeName(tree, request.workplaceId);
                         // Sort month.
-                        self.workplaceWTSetting.sortMonth(self.startMonth());
+                        self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                     });
             }
             
@@ -171,20 +177,15 @@ module nts.uk.at.view.kmk004.d {
                     return;
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    let workplace = self.workplaceWTSetting;
                     let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
                     service.removeWorkplaceSetting(command).done(() => {
                         self.isNewMode(true);
                         self.removeAlreadySettingWorkplace(workplace.workplaceId());
-                        // Reserve current code + name + year + id.
-                        let newSetting = new WorkPlaceWTSetting();
-                        newSetting.year(workplace.year());
-                        newSetting.workplaceId(workplace.workplaceId());
-                        newSetting.workplaceCode(workplace.workplaceCode());
-                        newSetting.workplaceName(workplace.workplaceName());
-                        self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                        
+                        // TODO: new form
+                        
                         // Sort month.
-                        self.workplaceWTSetting.sortMonth(self.startMonth());
+                        self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
@@ -214,8 +215,8 @@ module nts.uk.at.view.kmk004.d {
                 for (let data of treeData) {
                     // Found!
                     if (data.workplaceId == workPlaceId) {
-                        self.workplaceWTSetting.workplaceCode(data.code);
-                        self.workplaceWTSetting.workplaceName(data.name);
+                        self.workplaceCode(data.code);
+                        self.workplaceName(data.name);
                     }
                     // Continue to find in childs.
                     if (data.childs.length > 0) {
@@ -229,7 +230,7 @@ module nts.uk.at.view.kmk004.d {
              */
             private setAlreadySettingWorkplaceList(): void {
                 let self = this;
-                service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listId => {
+                service.findAllWorkplaceSetting().done(listId => {
                     self.alreadySettingWorkplaces(_.map(listId, function(id) {
                         return { workplaceId: id, isAlreadySetting: true };
                     }));
@@ -245,9 +246,13 @@ module nts.uk.at.view.kmk004.d {
                 if (self.hasError()) {
                     return;
                 }
-                service.saveWorkplaceSetting(ko.toJS(self.workplaceWTSetting)).done(() => {
+                
+                let saveCommand: WorkspaceWorktimeSettingDtoSaveCommand = new WorkspaceWorktimeSettingDtoSaveCommand();
+                saveCommand.updateData(self.selectedWorkspaceId(), self.worktimeVM.worktimeSetting);
+                
+                service.saveWorkplaceSetting(ko.toJS(saveCommand)).done(() => {
                     self.isNewMode(false);
-                    self.addAlreadySettingWorkplace(self.workplaceWTSetting.workplaceId());
+                    self.addAlreadySettingWorkplace(self.selectedWorkplaceId());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
@@ -279,8 +284,8 @@ module nts.uk.at.view.kmk004.d {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    if ($('#workplaceYearPicker').ntsError('hasError')) {
-                        self.workplaceWTSetting.year(new Date().getFullYear());
+                    if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
                     }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
@@ -288,39 +293,39 @@ module nts.uk.at.view.kmk004.d {
             }
         } // ----- end Screen Model
         
-        export class WorkPlaceWTSetting {
-            deformationLaborSetting: DeformationLaborSetting;
-            flexSetting: FlexSetting;
-            normalSetting: NormalSetting;
-            year: KnockoutObservable<number>;
-            workplaceId: KnockoutObservable<string>;
-            workplaceCode: KnockoutObservable<string>;
-            workplaceName: KnockoutObservable<string>;
-            selectedTab: KnockoutObservable<string>;
+        class WorkspaceStatutoryWorktimeSettingDto extends StatutoryWorktimeSettingDto {
+            workplaceId: string;
+        }
+        
+        class WorkspaceMonthlyCalSettingDto extends MonthlyCalSettingDto {
+            workplaceId: string;
+        }
+        
+        export class WorkspaceWorktimeSettingDtoSaveCommand {
 
+            /** The save com stat work time set command. */
+            saveStatCommand: WorkspaceStatutoryWorktimeSettingDto;
+    
+            /** The save com flex command. */
+            saveMonthCommand: WorkspaceMonthlyCalSettingDto;
+    
             constructor() {
                 let self = this;
-                self.selectedTab = ko.observable('tab-1');
-                self.workplaceId = ko.observable('');
-                self.workplaceCode = ko.observable('');
-                self.workplaceName = ko.observable('');
-                self.year = ko.observable(new Date().getFullYear());
-                self.deformationLaborSetting = new DeformationLaborSetting();
-                self.flexSetting = new FlexSetting();
-                self.normalSetting = new NormalSetting();
+                self.saveStatCommand = new WorkspaceStatutoryWorktimeSettingDto();
+                self.saveMonthCommand = new WorkspaceMonthlyCalSettingDto();
             }
-            public updateData(dto: any): void {
+    
+            public updateYear(year: number): void {
                 let self = this;
-                self.year(dto.year);
-                self.normalSetting.updateData(dto.normalSetting);
-                self.deformationLaborSetting.updateData(dto.deformationLaborSetting);
-                self.flexSetting.updateData(dto.flexSetting);
+                self.saveStatCommand.year = year;
             }
-            public sortMonth(startMonth: number): void {
+    
+            public updateData(workplaceId: string, model: WorktimeSetting): void {
                 let self = this;
-                self.normalSetting.statutorySetting.sortMonth(startMonth);
-                self.deformationLaborSetting.statutorySetting.sortMonth(startMonth);
-                self.flexSetting.sortMonth(startMonth);
+                self.saveStatCommand.workplaceId = workplaceId;
+                self.saveStatCommand.updateData(model);
+                self.saveMonthCommand.workplaceId = workplaceId;
+                self.saveMonthCommand.updateData(model);
             }
         }
     }

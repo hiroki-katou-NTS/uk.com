@@ -990,49 +990,7 @@ module nts.uk.at.view.kmk004.shared.model {
             self.statutorySetting(sortedList);
         }
     }
-    /**
-     * 会社別フレックス勤務月間労働時間
-     */
-    export class WorktimeFlexSetting {
-        year: KnockoutObservable<number>;
-        // 法定時間: 月単位
-        statutorySetting: KnockoutObservableArray<MonthlyTime>;
-        // 所定時間: 月単位
-        specifiedSetting: KnockoutObservableArray<MonthlyTime>;
-
-        constructor() {
-            let self = this;
-            self.year = ko.observable(new Date().getFullYear());
-            self.statutorySetting = ko.observableArray([]);
-            self.specifiedSetting = ko.observableArray([]);
-            for (let i = 1; i < 13; i++) {
-                let m = new MonthlyTime();
-                m.month(i);
-                m.time(0);
-                self.statutorySetting.push(m);
-                self.statutorySetting.push(m);
-            }
-        }
-
-        public sortMonth(startMonth: number): void {
-            let self = this;
-            let statutorySortedList: Array<any> = new Array<any>();
-            let specifiedSortedList: Array<any> = new Array<any>();
-            for (let i = 0; i < 12; i++) {
-                if (startMonth > 12) {
-                    // reset month.
-                    startMonth = 1;
-                }
-                let statutoryValue = self.statutorySetting().filter(m => startMonth == m.month())[0];
-                let specifiedValue = self.specifiedSetting().filter(m => startMonth == m.month())[0];
-                statutorySortedList.push(statutoryValue);
-                specifiedSortedList.push(specifiedValue);
-                startMonth++;
-            }
-            self.statutorySetting(statutorySortedList);
-            self.specifiedSetting(specifiedSortedList);
-        }
-    }
+    
 
     /**
      * 会社別フレックス勤務月間労働時間

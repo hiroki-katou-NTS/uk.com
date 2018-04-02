@@ -52,7 +52,7 @@
 				<div id="list-workplace" class="pull-left fixed-flex-layout-left" style="margin-top: 10px"></div>
 				<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
 				<fieldset data-bind="allowEdit: (selectedWorkplaceId())">
-					<com:ko tag="with" bind="worktimeSetting">
+					<com:ko tag="with" bind="worktimeVM">
 						<ui:include src="../shr/kmk004.worktime.setting.xhtml" />
 					</com:ko>					
 				</fieldset>
