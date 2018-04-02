@@ -3,7 +3,11 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywo
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -23,7 +27,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Override
-	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
+	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
 		try {
 			// 予定勤種・就時の反映
 			holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
@@ -44,9 +48,10 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			workUpdate.updateTimeShiftNight(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getNightTime(), true);
 			IntegrationOfDaily calculateData = calculate.calculate(overTimeService.calculateForAppReflect(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate()));
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			return true;
+			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 		} catch (Exception e) {
-			return false;
+			return new ApplicationReflectOutput(EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
+					holidayWorkPara.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
 		}
 		
 	}

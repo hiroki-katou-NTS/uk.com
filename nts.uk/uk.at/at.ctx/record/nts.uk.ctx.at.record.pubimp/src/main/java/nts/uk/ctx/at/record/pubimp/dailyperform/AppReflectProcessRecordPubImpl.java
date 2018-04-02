@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.Gob
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PreGoBackReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.P
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectPubOutput;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
@@ -46,6 +48,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private AfterOvertimeReflectService afterOvertimeReflect;
 	@Inject
 	private AbsenceReflectService absenceReflect;
+	@Inject
+	private PreHolidayWorktimeReflectService holidayworkService;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
 		CommonCheckParameter paraTemp = new CommonCheckParameter(EnumAdaptor.valueOf(para.getDegressAtr().value, DegreeReflectionAtr.class),
@@ -145,6 +149,12 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		AppReflectPubOutput dataOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedStatePubRecord.class), 
 				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return dataOutput;
+	}
+
+	@Override
+	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

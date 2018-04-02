@@ -47,5 +47,11 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre);
+	/**
+	 * 	勤務実績に反映: 事前申請の処理(休日出勤申請)
+	 * @param param
+	 * @return
+	 */
+	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param);
 	
 }
