@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.PresenceDataApprovedImport;
 import nts.uk.screen.at.app.ktgwidget.KTG002QueryProcessor;
 
 @Path("screen/at/ktg002")
@@ -17,7 +16,7 @@ public class KTG002WebService {
 	
 	@POST
 	@Path("checkDisplay")
-	public PresenceDataApprovedImport checkDisplay(){
+	public boolean checkDisplay(){
 		return queryProcessor.confirmDailyActual();
 	}
 }
