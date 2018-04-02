@@ -6,5 +6,5 @@ import nts.arc.time.GeneralDate;
 
 public interface DailyAggregationProcessPub {
 
-	DailyAggregationProcessExport findByID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate);
+//	DailyAggregationProcessExport findByID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate);
 }
