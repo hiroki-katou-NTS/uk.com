@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -390,7 +391,27 @@ public class ApprovalStatusFinder {
 		//承認ルートの状況
 		for (ApproveRootStatusForEmpImport approval : listApproval) {
 			//日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
-			
+			Optional<DailyConfirmDto> confirm = listDailyConfirm.stream().filter(
+					x -> x.getWkpId().equals(wkpId) && x.getSId().equals(sId) && x.getTargetDate().equals(period))
+					.findFirst();
+			//登録されていない場合(Chưa đăng ký
+			if (!confirm.isPresent()) {
+				// 日別確認（リスト）に追加する
+				DailyConfirmDto newDailyConfirm = new DailyConfirmDto(wkpId, sId, period, false, false);
+				listDailyConfirm.add(newDailyConfirm);
+			}
+
+			// 承認ルート状況.承認状況
+			if (ApprovalStatusForEmployee_New.APPROVED.equals(approval.getApprovalStatus())) {
+				// 「承認済」の場合
+				// 上司確認件数 ＝＋１
+				sumCount.bossConfirm ++;
+			}
+			else {
+				// 「未承認」又は「承認中」の場合
+				// 上司未確認件数 ＝＋１
+				sumCount.bossUnconfirm ++;
+			}
 		}
 	}
 
