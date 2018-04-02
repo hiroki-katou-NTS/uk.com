@@ -1,8 +1,7 @@
 package nts.uk.ctx.exio.dom.exi.condset;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.StringRegEx;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
@@ -14,7 +13,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  */
 
 @StringMaxLength(3)
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringRegEx("^[a-zA-Z0-9_-]{1,3}$")
 @ZeroPaddedCode
 public class AcceptanceConditionCode extends CodePrimitiveValue<AcceptanceConditionCode> {
 

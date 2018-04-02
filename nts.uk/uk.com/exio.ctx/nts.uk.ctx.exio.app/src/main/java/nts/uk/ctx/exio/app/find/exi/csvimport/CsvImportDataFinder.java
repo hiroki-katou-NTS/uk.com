@@ -22,13 +22,13 @@ public class CsvImportDataFinder {
 
 	private final int MAX_LENGTH_COLNAME = 40;
 
-	public int getNumberOfLine(String fileId) {
+	public int getNumberOfLine(String fileId, int endcoding) {
 		int totalRecord = 0;
 		try {
 			// get input stream by fileId
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 
-			totalRecord = FileUtil.getNumberOfLine(inputStream);
+			totalRecord = FileUtil.getNumberOfLine(inputStream, endcoding);
 			inputStream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -36,13 +36,13 @@ public class CsvImportDataFinder {
 		return totalRecord;
 	}
 
-	public List<CsvMappingDataDto> getRecordByIndex(String fileId, int dataLineNum, int startLine) {
+	public List<CsvMappingDataDto> getRecordByIndex(String fileId, int dataLineNum, int startLine, int endcoding) {
 		List<CsvMappingDataDto> result = new ArrayList<>();
 		try {
 			// get input stream by fileId
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 
-			List<List<String>> data = FileUtil.getRecordByIndex(inputStream, dataLineNum, startLine);
+			List<List<String>> data = FileUtil.getRecordByIndex(inputStream, dataLineNum, startLine, endcoding);
 			inputStream.close();
 			List<String> errorList = new ArrayList<>();
 			for (int i = 0; i < data.size(); i++) {
@@ -71,7 +71,7 @@ public class CsvImportDataFinder {
 		try {
 			// get input stream by fileId
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(info.getFileId());
-			result = FileUtil.getRecord(inputStream, info.getColumns(), info.getIndex());
+			result = FileUtil.getRecord(inputStream, info.getColumns(), info.getIndex(), info.getEndCoding());
 			inputStream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);

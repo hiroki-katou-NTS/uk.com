@@ -55,6 +55,30 @@
 	margin-left: 75px;
 }
 .tbl-monthly {
-	display: inline;
-	margin-left: 170px;
+	margin-top: 10px;
+	margin-left: 100px;
+}
+.float-left {
+	float: left;
+}
+.setting-panel {
+	width: 200px;
+	height: 200px;
+	margin-bottom: 10px;
+}
+#aggr-setting-content {
+	width: 300px;
+	margin-top: 40px;
+	margin-left: 20px;
+}
+.open-Detail {
+	float: right;
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+#tab-1 {
+	height: 620px;
+}
+#radio-box-content .ntsRadioBox {
+	height: 40px;
 }

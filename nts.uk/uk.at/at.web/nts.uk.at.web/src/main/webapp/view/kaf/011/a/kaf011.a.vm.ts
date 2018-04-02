@@ -20,33 +20,38 @@ module nts.uk.at.view.kaf011.a.screenModel {
             { code: 1, text: text('KAF011_20') },
             { code: 2, text: text('KAF011_21') },
         ]);
-        appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(1);
 
         appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
 
-        takingOutWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
-        holidayWk: KnockoutObservable<common.WorkItems> = ko.observable(new common.WorkItems());
+        absWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
         appReasons = ko.observableArray([]);
 
-        appReasonSelectedType: KnockoutObservable<string> = ko.observable('');
+        appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
 
         reason: KnockoutObservable<string> = ko.observable('');
 
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
 
         employeeID: KnockoutObservable<string> = ko.observable('');
+
         employeeName: KnockoutObservable<string> = ko.observable('');
 
-        manualSendMailAtr: KnockoutObservable<number> = ko.observable(0);
+        manualSendMailAtr: KnockoutObservable<number> = ko.observable(1);
+
         comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+
+        showReason: KnockoutObservable<number> = ko.observable(0);
+
         constructor() {
             let self = this;
-            self.takingOutWk().appDate.subscribe((newDate) => {
+            self.recWk().appDate.subscribe((newDate) => {
                 self.changeDate();
             });
-            self.holidayWk().appDate.subscribe((newDate) => {
+            self.absWk().appDate.subscribe((newDate) => {
                 self.changeDate();
             });
         }
@@ -54,14 +59,15 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             let vm: ViewModel = __viewContext['viewModel'],
                 changeDateParam = {
-                    holidayDate: vm.holidayWk().appDate(),
-                    takingOutDate: vm.takingOutWk().appDate(),
+                    holidayDate: vm.absWk().appDate(),
+                    takingOutDate: vm.recWk().appDate(),
                     comType: vm.appComSelectedCode(),
-                    uiType: 1
+                    uiType: 0
 
                 }
             service.changeDay(changeDateParam).done((data) => {
                 vm.employeeID(data.employeeID);
+                vm.prePostSelectedCode(data.preOrPostType);
             }).always(() => {
                 block.clear();
 
@@ -75,12 +81,11 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 startParam = {
                     sID: null,
                     appDate: self.appDate(),
-                    uiType: 1
+                    uiType: 0
                 };
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
-
 
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
@@ -91,20 +96,19 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
             return dfd.promise();
         }
-        genWorkingText(childData: common.IWorkTime) {
-            let self = this,
-                result = childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName;
-            if (childData.first) {
-                result += ' ' + self.parseTime(childData.first.start) + '~' + self.parseTime(childData.first.end);
-                if (childData.second) {
 
-                }
-            }
-            return result;
-
+        clearData() {
+            let self = this;
+            self.recWk(new common.AppItems());
+            self.absWk(new common.AppItems());
+            self.reason('');
         }
-        parseTime(value) {
-            return nts.uk.time.parseTime(value, true).format()
+
+        openCMM018() {
+            let self = this;
+            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
+            nts.uk.sessionStorage.setItemAsJson(nts.uk.request.STORAGE_KEY_TRANSFER_DATA, { screen: 'Application', employeeId: self.employeeID() });
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
         }
 
         setDataFromStart(data: common.IHolidayShipment) {
@@ -112,40 +116,40 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (data) {
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
-                self.takingOutWk().wkTypes(data.takingOutWkTypes || []);
-                self.holidayWk().wkTypes(data.holidayWkTypes || []);
+                self.recWk().wkTypes(data.recWkTypes || []);
+                self.absWk().wkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasons || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
-                if (data.drawalReqSet) {
-                    self.comment(data.drawalReqSet);
-                }
+                self.comment(data.drawalReqSet || null);
+                self.showReason(data.applicationSetting.appReasonDispAtr);
             }
         }
 
         register() {
             block.invisible();
             let self = this,
-
                 saveCmd: common.ISaveHolidayShipmentCommand = {
-                    recCmd: ko.mapping.toJS(self.takingOutWk()),
-                    absCmd: ko.mapping.toJS(self.holidayWk()),
+                    recCmd: ko.mapping.toJS(self.recWk()),
+                    absCmd: ko.mapping.toJS(self.absWk()),
                     comType: self.appComSelectedCode(),
                     usedDays: 1,
                     appCmd: {
-                        appReasonID: self.appReasonSelectedType(),
+                        appReasonID: self.appReasonSelectedID(),
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
+                        version: 0
+                        ,
                     }
                 };
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
 
             service.save(saveCmd).done(() => {
-                dialog({ messageId: 'Msg_15' });
-
-
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    self.clearData();
+                });
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
 
@@ -161,6 +165,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             //            });
 
         }
+
+       
 
 
     }

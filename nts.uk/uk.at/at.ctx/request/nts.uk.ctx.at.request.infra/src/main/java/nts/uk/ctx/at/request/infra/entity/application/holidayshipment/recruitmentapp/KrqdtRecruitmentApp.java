@@ -49,14 +49,6 @@ public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
 	private String workTypeCD;
 
 	/**
-	 * 勤務場所コード
-	 */
-
-	@Basic(optional = false)
-	@Column(name = "WORK_LOCATION_CD")
-	private String workLocationCD;
-
-	/**
 	 * 就業時間帯
 	 */
 

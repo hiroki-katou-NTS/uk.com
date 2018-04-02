@@ -105,6 +105,7 @@
 											<div id="file-upload" class="form_step0" tabindex="4"
 												style="display: inline-block;"
 												data-bind="ntsFileUpload:{
+													stereoType: 'csvfile',
 													name: '#[CMF001_446]', 
 													text: '#{i18n.getText('CMF001_447')}',
 													filename: fileName,
@@ -112,8 +113,26 @@
 													aslink: false,
 													enable: true,
 													required: true,
-													immediateUpload: false,
-													onchange: uploadFile.bind($data)}">
+													immediateUpload: true,
+													uploadFinished: uploadFile}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td>
+											<span class="label">#{i18n.getText('CMF001_146')}</span>									
+										</td>
+										<td>
+											<div data-bind="ntsComboBox: {
+													options: encodingList,
+													optionsValue: 'value',
+													value: selectedEncoding,
+													optionsText: 'name',
+													editable: false,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 5}]}" style="margin-left: 30px;">
 											</div>
 										</td>
 									</tr>

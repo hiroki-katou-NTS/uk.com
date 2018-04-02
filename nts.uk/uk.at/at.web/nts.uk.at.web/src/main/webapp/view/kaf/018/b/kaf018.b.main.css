@@ -2,12 +2,10 @@
 	margin: 20px;
 }
 #tbl-control{
-	width: 900px;
+	width: 1000px;
 	margin-bottom: 10px;
 }
-#tbl-control td{
-	padding: 5px;
-}
+
 .fixed-table thead th{
 	text-align: center;
 }
@@ -20,6 +18,10 @@
 	text-align: left;
 }
 
+.content-question {
+	width: 60px;	
+}
+
 .btn-question {
-	text-align: right;
+	float: right;
 }

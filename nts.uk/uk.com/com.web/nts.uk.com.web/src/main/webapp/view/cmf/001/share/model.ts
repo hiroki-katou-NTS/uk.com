@@ -142,6 +142,12 @@ module nts.uk.com.view.cmf001.share.model {
         ];
     }
     
+   export function getEncodingList(): Array<EncodingModel> {
+        return [
+            new model.EncodingModel(3, 'Shift JIS')
+        ];
+    }
+    
     export class StandardAcceptanceConditionSetting {
         conditionSettingCode: KnockoutObservable<string>;
         dispConditionSettingCode: string;
@@ -177,6 +183,16 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    
+    export class EncodingModel {
         code: number;
         name: string;
 

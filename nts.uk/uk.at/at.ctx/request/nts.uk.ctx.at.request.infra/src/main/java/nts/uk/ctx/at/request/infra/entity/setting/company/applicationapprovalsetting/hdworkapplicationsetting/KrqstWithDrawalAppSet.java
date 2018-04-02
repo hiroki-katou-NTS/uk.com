@@ -77,6 +77,14 @@ public class KrqstWithDrawalAppSet extends UkJpaEntity implements Serializable{
 	/** 休出時間 **/
 	@Column(name = "REST_TIME")
 	public int restTime;
+	
+	/** 実績超過打刻優先設定 **/
+	@Column(name = "OVERRIDE_SET")
+	public int overrideSet;
+	
+	/** 打刻漏れ計算区分 **/
+	@Column(name = "CALCULATION_STAMP_MISS")
+	public int calStampMiss;
 
 	@Override
 	protected Object getKey() {

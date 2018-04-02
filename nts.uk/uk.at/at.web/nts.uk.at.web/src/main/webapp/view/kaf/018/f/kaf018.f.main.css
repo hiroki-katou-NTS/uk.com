@@ -1,0 +1,16 @@
+.align-right{
+	text-align: right;
+}
+
+#contents-area {
+	margin: 20px;
+}
+
+.tbl-control {
+	width: 1000px;
+	margin-bottom: 10px;
+}
+
+.tbl-control td {
+	padding: 5px;
+}
