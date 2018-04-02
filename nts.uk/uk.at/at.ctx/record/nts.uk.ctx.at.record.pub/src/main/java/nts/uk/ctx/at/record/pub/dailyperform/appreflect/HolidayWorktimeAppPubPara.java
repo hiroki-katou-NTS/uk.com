@@ -1,22 +1,15 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
+package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 
-/**
- * 休日出勤申請parameter
- * @author do_dt
- *
- */
 @AllArgsConstructor
-@Getter
 @Setter
-public class HolidayWorktimeAppPara {
+@Getter
+public class HolidayWorktimeAppPubPara {
 	/**
 	 * 勤務種類
 	 */
@@ -36,10 +29,9 @@ public class HolidayWorktimeAppPara {
 	/**
 	 * 反映状態
 	 */
-	private ReflectedStateRecord reflectedState;
+	private ReflectedStatePubRecord reflectedState;
 	/**
 	 * 反映不可理由
 	 */
-	private ReasonNotReflectRecord reasonNotReflect;
-
+	private ReasonNotReflectDailyPubRecord reasonNotReflect;
 }
