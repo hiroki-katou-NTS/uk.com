@@ -112,8 +112,13 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> preworkInformation = workInformationRepository.find(employeeId, ymd);
 		String setWorkTimeCode = null;
-		if(workTimeCode != null )
+		if(workTimeCode != null ) {
 			setWorkTimeCode = workTimeCode.v();
+		}
+		else {
+			return Optional.empty();
+		}
+		
 		WorkInfoOfDailyPerformance workInformation = new WorkInfoOfDailyPerformance(employeeId, 
 																				   new WorkInformation(setWorkTimeCode,workTypeCode.toString()), 
 																				   null, 
