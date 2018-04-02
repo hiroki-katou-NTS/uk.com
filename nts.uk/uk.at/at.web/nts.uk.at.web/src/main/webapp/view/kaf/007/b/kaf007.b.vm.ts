@@ -104,6 +104,16 @@ module nts.uk.at.view.kaf007.b {
                             let backHomeAtr2 = self.appWorkChange().workChange().backHomeAtr2;
                             goWorkAtr2(nts.uk.util.isNullOrUndefined(goWorkAtr2()) ? 1: goWorkAtr2());
                             backHomeAtr2(nts.uk.util.isNullOrUndefined(backHomeAtr2()) ? 1: backHomeAtr2());
+                            
+                            //就業時間帯名(A6_4、B6_4)で、「null」の場合は空白にしてください
+                            let typeCd = self.appWorkChange().workChange().workTypeCd;
+                            let typeName = self.appWorkChange().workChange().workTypeName;                
+                            let timeCd = self.appWorkChange().workChange().workTimeCd;
+                            let timeName = self.appWorkChange().workChange().workTimeName;
+                            typeCd(typeCd() === null ? '' : typeCd());
+                            typeName(typeName() === null ? '' : typeName());
+                            timeCd(timeCd() === null ? '' : timeCd());
+                            timeName(timeName() === null ? '' : timeName());
                             //application data
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
