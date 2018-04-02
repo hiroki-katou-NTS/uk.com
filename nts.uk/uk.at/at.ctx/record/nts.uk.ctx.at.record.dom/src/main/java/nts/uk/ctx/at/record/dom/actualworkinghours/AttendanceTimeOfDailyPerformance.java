@@ -251,26 +251,14 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					/*計画所定時間*/
 					/*実績所定労働時間*/
 					/*勤務予定時間の計算*/);
-		/*滞在時間の計算*/
-		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK),
-																pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.GO_WORK),
-												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.GO_WORK),
-												 				StayingTimeOfDaily.calcStayingTimeOfDaily(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave,calculateOfTotalConstraintTime),
-												 				attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK));
 		
-//		//明日はここから
-//		AttendanceTime beforetime = calctio();
-//		AttendanceTime beforetime = calctio();
-//		AttendanceTime beforetime = calctio();
-//		AttendanceTime beforetime = calctio();
-//		AttendanceTime beforetime = taizaiCalc()
-//				
-//				return new StayingTimeOfDaily(new AttendanceTime(0),
-//						 new AttendanceTime(0),
-//						 new AttendanceTime(0),
-//						 new AttendanceTime(0),
-//						 new AttendanceTime(0));
- 
+
+		/*滞在時間の計算*/
+		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(pCLogOnInfoOfDaily.isPresent()?pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK):new AttendanceTime(0),
+																pCLogOnInfoOfDaily.isPresent()?pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.GO_WORK):new AttendanceTime(0),
+																attendanceLeavingGateOfDaily.isPresent()?attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.GO_WORK):new AttendanceTime(0),
+																StayingTimeOfDaily.calcStayingTimeOfDaily(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave,calculateOfTotalConstraintTime),
+																attendanceLeavingGateOfDaily.isPresent()?attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK):new AttendanceTime(0));
 			
 		/*不就労時間*/
 		val unEmployedTime = new AttendanceTime(0);

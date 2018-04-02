@@ -43,8 +43,9 @@ public class AttendanceLeavingGateOfDaily {
 			//入門または退門時間の取得
 			int attendanceLeavingGateTime = 0;
 			if(attendanceLeavingGate.getAttendance().isPresent()) {
-				attendanceLeavingGateTime = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance().get().getTimeWithDay().valueAsMinutes():
-														  	  attendanceLeavingGate.getLeaving().get().getTimeWithDay().valueAsMinutes();
+				TimeWithDayAttr gateTime = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance().get().getTimeWithDay():
+					                                                    attendanceLeavingGate.getLeaving().get().getTimeWithDay();
+				attendanceLeavingGateTime = gateTime!=null?gateTime.valueAsMinutes():0;
 			}
 			//出勤または退勤時間の取得
 			int stamp = 0;
@@ -55,7 +56,7 @@ public class AttendanceLeavingGateOfDaily {
 					if(timeActualstamp.isPresent()) {
 						Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
 						if(workStamp.isPresent()) {
-							stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
+							stamp = workStamp.get().getTimeWithDay()!=null?workStamp.get().getTimeWithDay().valueAsMinutes():0;
 						}
 					}
 				}
@@ -97,7 +98,7 @@ public class AttendanceLeavingGateOfDaily {
 	 */
 	public Optional<AttendanceLeavingGate> getAttendanceLeavingGate(WorkNo workNo) {
 		if(!this.attendanceLeavingGates.isEmpty()) {
-			List<AttendanceLeavingGate> list = this.attendanceLeavingGates.stream().filter(t -> t.getWorkNo()==workNo).collect(Collectors.toList());
+			List<AttendanceLeavingGate> list = this.attendanceLeavingGates.stream().filter(t -> t.getWorkNo().equals(workNo)).collect(Collectors.toList());
 			return list.isEmpty()?Optional.empty():Optional.of(list.get(0));
 		}
 		return Optional.empty();

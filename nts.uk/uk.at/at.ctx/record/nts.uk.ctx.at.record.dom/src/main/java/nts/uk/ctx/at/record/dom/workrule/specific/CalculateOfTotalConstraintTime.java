@@ -64,7 +64,18 @@ public class CalculateOfTotalConstraintTime {
 																			   												  return t.getStart()!=null?0:0-t.getStart().valueAsMinutes();
 																			   											  }
 																			   											  return t.getEnd().valueAsMinutes()-t.getStart().valueAsMinutes();})
-																			   											  .sum());		
+																			   											  .sum());
+//		    List<TimeSpanForCalc> a = createCalculateOfTotalConstraintTimeSheetList(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave);
+//	
+//			AttendanceTime result = new AttendanceTime(a.stream().filter(t->t!=null).mapToInt(t -> {if(t.getStart()==null) {
+//											  return t.getEnd()!=null?0:t.getEnd().valueAsMinutes();
+//										  }else if(t.getEnd()==null) {
+//											  return t.getStart()!=null?0:0-t.getStart().valueAsMinutes();
+//										  }
+//										  return t.getEnd().valueAsMinutes()-t.getStart().valueAsMinutes();})
+//										  .sum());		
+		
+		
 		return result;
 	}
 	
@@ -79,10 +90,10 @@ public class CalculateOfTotalConstraintTime {
 			  																   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
 			  																   Optional<TimeLeavingOfDailyPerformance> attendanceLeave){
 		List<TimeSpanForCalc> list = new ArrayList<>();
-		TimeWithDayAttr attendance = null;
-		TimeWithDayAttr leave = null;
 		
 		for(int i=1;i<3;i++) {
+			TimeWithDayAttr attendance = null;
+			TimeWithDayAttr leave = null;
 			//出勤、退勤時間の取得
 			if(attendanceLeave.isPresent()) {
 				if(attendanceLeave.get().getAttendanceLeavingWork(i).isPresent()) {
@@ -134,24 +145,36 @@ public class CalculateOfTotalConstraintTime {
 		TimeWithDayAttr end = null;
 		if(this.calcMethod.isREQUEST_FROM_ENTRANCE_EXIT_OUTSIDE_ATTENDANCE()||this.calcMethod.isREQUEST_FROM_PC_OUTSIDE_ATTENDANCE()) {//出勤退勤よりも外側の場合のみ
 			//出勤＞比較対象開始の時
-			if(attendance.greaterThan(ComparisonStart.valueAsMinutes())||ComparisonStart!=null) {
+			if(ComparisonStart==null) {
+				start = attendance;
+			}else if(attendance==null) {
 				start = ComparisonStart;
+			}else if(attendance.greaterThan(ComparisonStart.valueAsMinutes())) {
+				start = ComparisonStart;
+			}else {
+				start = attendance;
 			}
-			start = attendance;
 			//退勤1＞比較対象終了の時
-			if(ComparisonEnd.greaterThan(leave.valueAsMinutes())||ComparisonEnd!=null) {
-			end = ComparisonEnd;
+			if(ComparisonEnd==null) {
+				end = leave;
+			}else if(leave==null) {
+				end = ComparisonEnd;
+			}else if(ComparisonEnd.greaterThan(leave.valueAsMinutes())) {
+				end = ComparisonEnd;
+			}else {
+				end = leave;
 			}
-			end = leave;
 		}else {//入門退門から求める場合
 			if(ComparisonStart!=null){
 				start = ComparisonStart;
+			}else {
+				start = attendance;
 			}
-			start = attendance;
 			if(ComparisonEnd!=null) {
 				end = ComparisonEnd;
+			}else {
+				end = leave;
 			}
-			end = leave;
 		}
 		return new TimeSpanForCalc(start, end);
 	}

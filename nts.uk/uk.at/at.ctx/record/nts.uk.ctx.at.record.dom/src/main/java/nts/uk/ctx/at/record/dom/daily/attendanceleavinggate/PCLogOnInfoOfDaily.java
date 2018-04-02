@@ -38,7 +38,7 @@ public class PCLogOnInfoOfDaily {
 		List<AttendanceTime> resultList = new ArrayList<>();
 		for(LogOnInfo logOn : this.logOnInfo) {
 			//PCログオン
-			int pcLogOn = logOn.getLogOnLogOffTime(goLeavingWorkAtr).valueAsMinutes();
+			int pcLogOn = logOn.getLogOnLogOffTime(goLeavingWorkAtr)!=null?logOn.getLogOnLogOffTime(goLeavingWorkAtr).valueAsMinutes():0;
 			//出勤または退勤時間の取得
 			int stamp = 0;
 			if(attendanceLeave.isPresent()) {
@@ -48,7 +48,7 @@ public class PCLogOnInfoOfDaily {
 					if(timeActualstamp.isPresent()) {
 						Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
 						if(workStamp.isPresent()) {
-							stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
+							stamp = workStamp.get().getTimeWithDay()!=null?workStamp.get().getTimeWithDay().valueAsMinutes():0;
 						}
 					}
 				}
