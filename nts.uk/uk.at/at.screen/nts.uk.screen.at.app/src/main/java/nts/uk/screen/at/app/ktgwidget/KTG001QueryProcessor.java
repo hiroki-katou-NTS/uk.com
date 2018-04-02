@@ -9,6 +9,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.PresenceDataApprovedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
@@ -30,12 +32,26 @@ public class KTG001QueryProcessor {
 	@Inject
 	private DailyPerformanceAdapter dailyPerformanceAdapter;
 	
+	@Inject
+	private ShareEmploymentAdapter shareEmpAdapter;
+	
 	public PresenceDataApprovedImport confirmDailyActual() {
 		// アルゴリズム「雇用に基づく締めを取得する」をする
-		String employmentCode = AppContexts.user().employeeCode();
 		String cid = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		Optional<ClosureEmployment> closureEmploymentOpt = closureEmploymentRepo.findByEmploymentCD(cid, employmentCode);
+		
+		Optional<BsEmploymentHistoryImport> empHistoryOpt = shareEmpAdapter.findEmploymentHistory(cid, employeeID, GeneralDate.today());
+		if(!empHistoryOpt.isPresent()){
+			throw new RuntimeException("Not found Employment history by employeeId:" + employeeID);
+		}
+		
+		BsEmploymentHistoryImport empHistory = empHistoryOpt.get();
+		
+		Optional<ClosureEmployment> closureEmploymentOpt = closureEmploymentRepo.findByEmploymentCD(cid, empHistory.getEmploymentCode());
+		if(!closureEmploymentOpt.isPresent()){
+			throw new RuntimeException("Not found Employment history by employeeCd:" + empHistory.getEmploymentCode());
+		}
+		
 		int closureID = closureEmploymentOpt.get().getClosureId();
 		
 		// アルゴリズム「処理年月と締め期間を取得する」を実行する
