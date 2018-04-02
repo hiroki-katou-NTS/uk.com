@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.pub.dailyperform.businesstype;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 
 /**
- * 社員の勤務種別を取得する
+ * <<Public>> 社員の勤務種別を取得する
  * 
  * @author Trung Tran
  *
@@ -16,5 +19,5 @@ public interface BusTypeOfEmpHimPub {
 	 *            基準日：年月日
 	 * @return
 	 */
-	public BusTypeOfEmpHisDto getData(String sId, GeneralDate baseDate);
+	public List<BusinessTypeOfEmployee> getData(String sId, GeneralDate baseDate);
 }

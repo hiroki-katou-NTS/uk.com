@@ -11,6 +11,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         divReasonCode: KnockoutObservable<string>; // show value divergenceReasonCode in C3_2
         divReasonContent: KnockoutObservable<string>; //show value C3_3 input tex
         enableCode: KnockoutObservable<boolean>; //define for enable code (=true with NEW_MODE)
+        enableContent: KnockoutObservable<boolean>; //define for enable content
+        enableMode: KnockoutObservable<boolean>;//define for enable content mode for switchButton
         itemDivReason: KnockoutObservable<model.DivergenceReason>;
         divTimeId: KnockoutObservable<number>;
         index_of_itemDelete: any;
@@ -41,26 +43,48 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             self.divTimeId = ko.observable(null);
             self.enableDel = ko.observable(true);
             self.checkModel = ko.observable(true);
+            self.enableContent =ko.observable(true);
+            self.enableMode =ko.observable(true);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
-                // var t0 = performance.now();
-                self.clearError();
-                self.itemDivReason(self.findItemDivTime(codeChanged));
-                if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
-                    return;
-                }
-                // self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
-                self.enableCode(false);
-                self.divReasonCode(self.itemDivReason().divergenceReasonCode);
-                self.divReasonContent(self.itemDivReason().reason);
-                self.requiredAtr(self.itemDivReason().reasonRequired);
-                if (self.dataSource().length > 1) {
-                    self.enableDel(true);
-                }
-                else self.enableDel(false);
+                if(codeChanged != ""){                    
+                    self.clearError();
+                    //get data
+                    self.itemDivReason(self.findItemDivTime(codeChanged));
+                    
+                    //check null data
+                    if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
+                        return;
+                    }
+                    
+                    //fill data
+                    self.enableCode(false);
+                    self.enableContent(true);
+                    self.divReasonCode(self.itemDivReason().divergenceReasonCode);
+                    self.divReasonContent(self.itemDivReason().reason);
+                    self.requiredAtr(self.itemDivReason().reasonRequired);
+                    if (self.dataSource().length > 1) {
+                        self.enableDel(true);
+                    }
+                    else self.enableDel(false);
+                    
+                    if(self.mode){
+                        self.enableMode(true);    
+                    }
+                    else
+                        self.enableMode(false);
 
-                $("#inpReason").focus();
-                // var t1 = performance.now();
+                    $("#inpReason").focus();
+                    }
+                 else{
+                    //Disable and blank content
+                    self.divReasonCode("");
+                    self.divReasonContent("");
+                    self.enableCode(false);
+                    self.enableContent(false);
+                    self.enableDel(false);
+                    self.enableMode(false);
+                    }
             });
 
             var notice = nts.uk.resource.getText("KMK011_78");
@@ -168,14 +192,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                                 self.addDivReason();
                             }
                     }
-                    else {
-                        blockUI.clear();
-                    }
-
                 }
             });
-
-
 
             blockUI.clear();
         }

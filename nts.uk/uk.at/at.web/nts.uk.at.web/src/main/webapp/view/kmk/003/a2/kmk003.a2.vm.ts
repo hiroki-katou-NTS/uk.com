@@ -195,6 +195,7 @@ module a2 {
                     return;
                 }
                 self.convertData();
+                self.bindDataToScreen();
             });
         }
 

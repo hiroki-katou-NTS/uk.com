@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BsEmploymentImport {
+public class BsEmploymentHistoryImport {
 
 	/** The company id. */
-	// 会社ID.
-	private String companyId;
+	private String employeeId;
 
 	/** The employment code. */
 	// 雇用コード.
@@ -23,11 +23,6 @@ public class BsEmploymentImport {
 	// 雇用名称.
 	private String employmentName;
 
-	/** The emp external code. */
-	// 雇用外部コード.
-	private String empExternalCode;
-
-	/** The memo. */
-	// メモ.
-	private String memo;
+	// 期間 .
+	private DatePeriod period;
 }

@@ -479,7 +479,6 @@ module nts.uk.at.view.kmk003.a {
             //save worktime data
             public save() {
                 let self = this;
-                self.isClickSave(true);
                 // re validate
                 self.validateInput();
 

@@ -15,7 +15,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
@@ -44,10 +43,10 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<WorkTypeDivergenceReferenceTime> findByKey(String histId, BusinessTypeCode workTypeCode,
-			DivergenceType divergenceTimeNo) {
+			Integer divergenceTimeNo) {
 		KrcstDrtPK pk = new KrcstDrtPK();
 		pk.setHistId(histId);
-		pk.setDvgcTimeNo(divergenceTimeNo.value);
+		pk.setDvgcTimeNo(divergenceTimeNo);
 
 		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(null);
 
@@ -63,7 +62,7 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	@Override
 	public List<WorkTypeDivergenceReferenceTime> findAll(String histId, BusinessTypeCode workTypeCode) {
 		// query data
-		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId);
+		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId, new ArrayList<Integer>());
 
 		// return
 		return krcstDrts.isEmpty() ? new ArrayList<WorkTypeDivergenceReferenceTime>()
@@ -126,15 +125,40 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
-		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId);
+		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId, new ArrayList<Integer>());
 
 		targetHistories.forEach(history -> {
-			// set new history ID
-			history.getId().setHistId(destHistId);
+			// copy to new entity
+			KrcstDrt drt = new KrcstDrt();
+			KrcstDrtPK pk = new KrcstDrtPK(destHistId, history.getId().getDvgcTimeNo());
+			drt.setId(pk);
+			drt.setDvgcTimeUseSet(history.getDvgcTimeUseSet());
+			drt.setAlarmTime(history.getAlarmTime());
+			drt.setErrorTime(history.getErrorTime());
 
 			// Insert to DB
-			this.commandProxy().insert(history);
+			this.commandProxy().insert(drt);
 		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * WorkTypeDivergenceReferenceTimeRepository#findByHistoryIdAndDivergenceTimeNos
+	 * (java.lang.String,
+	 * nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.
+	 * BusinessTypeCode, java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<WorkTypeDivergenceReferenceTime> findByHistoryIdAndDivergenceTimeNos(BusinessTypeCode worktypeCode,
+			String historyId, List<Integer> divTimeNos) {
+		// query data
+		List<KrcstDrt> krcstDrts = this.findByHistoryId(historyId, divTimeNos);
+
+		// return
+		return krcstDrts.isEmpty() ? new ArrayList<WorkTypeDivergenceReferenceTime>()
+				: krcstDrts.stream().map(item -> this.toDomain(item, worktypeCode)).collect(Collectors.toList());
 	}
 
 	/**
@@ -181,7 +205,7 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 *            the history id
 	 * @return the list
 	 */
-	private List<KrcstDrt> findByHistoryId(String historyId) {
+	private List<KrcstDrt> findByHistoryId(String historyId, List<Integer> divTimeNos) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
@@ -193,6 +217,9 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
+		if (!divTimeNos.isEmpty()) {
+			predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(divTimeNos));
+		}
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));

@@ -565,14 +565,16 @@ module nts.uk.at.view.kaf010.b {
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
+                        $("#inpStartTime1").ntsError("clear"); 
+                        $("#inpEndTime1").ntsError("clear");
                         self.workTypeCd(childData.selectedWorkTypeCode);
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
-                        self.timeStart1(childData.firstStartTime);
-                        self.timeEnd1(childData.firstEndTime);
-                        self.timeStart2(childData.secondStartTime);
-                        self.timeEnd2(childData.secondEndTime);
+                        self.timeStart1(childData.first.start);
+                        self.timeEnd1(childData.first.end);
+                        self.timeStart2(childData.second.start);
+                        self.timeEnd2(childData.second.end);
                         //                    service.getRecordWork(
                         //                        {
                         //                            employeeID: self.employeeID(), 
