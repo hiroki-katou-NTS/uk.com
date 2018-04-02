@@ -130,6 +130,16 @@ module nts.uk.at.view.kmk004.b {
                         self.loadEmployeeSetting();
                     }
                 });
+                
+                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                    // Validate
+                    if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.worktimeVM.worktimeSetting.updateYear(val);
+                        self.loadEmployeeSetting();
+                    }
+                });
             }
 
             public startPage(): JQueryPromise<void> {
