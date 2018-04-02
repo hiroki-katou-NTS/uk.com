@@ -120,11 +120,10 @@
 									</tr>
 									<tr>
 										<td></td>
-										<td>
-											<span class="label">#{i18n.getText('CMF001_146')}</span>									
-										</td>
-										<td>
-											<div data-bind="ntsComboBox: {
+										<td colspan="2">
+											<label>#{i18n.getText('CMF001_146')}</label>									
+											<div style="display: inline-table; margin-left: 30px;"  
+													data-bind="ntsComboBox: {
 													options: encodingList,
 													optionsValue: 'value',
 													value: selectedEncoding,
@@ -132,7 +131,7 @@
 													editable: false,
 													enable: true,
 													columns: [
-														{ prop: 'name', length: 5}]}" style="margin-left: 30px;">
+														{ prop: 'name', length: 5}]}">
 											</div>
 										</td>
 									</tr>
