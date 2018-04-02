@@ -24,7 +24,6 @@ module nts.uk.at.view.kmk004.a {
             
             worktimeVM: WorktimeSettingVM.ScreenModel;
             usageUnitSetting: UsageUnitSetting;
-            companyWTSetting: CompanyWTSetting;
             
             constructor() {
                 let self = this;
@@ -34,7 +33,6 @@ module nts.uk.at.view.kmk004.a {
                 
                 // Data model.
                 self.usageUnitSetting = new UsageUnitSetting();
-                self.companyWTSetting = new CompanyWTSetting();
                 
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
@@ -160,16 +158,18 @@ module nts.uk.at.view.kmk004.a {
                     return;
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    let selectedYear = self.companyWTSetting.year();
+                    let selectedYear = self.worktimeVM.worktimeSetting.normalSetting().year;
                     let command = { year: selectedYear }
                     service.removeCompanySetting(command).done(() => {
-                        // Reserve current year.
-                        let newSetting = new CompanyWTSetting();
-                        newSetting.year(selectedYear);
-                        self.companyWTSetting.updateData(ko.toJS(newSetting));
-                        // Sort month.
-                        self.companyWTSetting.sortMonth(self.worktimeVM.startMonth());
+                        
+                        // new mode.
                         self.worktimeVM.isNewMode(true);
+                        let newSetting = new WorktimeSettingDto();
+                        // Reserve selected year.
+                        newSetting.updateYear(selectedYear);
+                        // Update Full Data
+                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
@@ -190,7 +190,7 @@ module nts.uk.at.view.kmk004.a {
                 if (nts.uk.ui._viewModel) {
                     // Reset year if has error.
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
-                        self.companyWTSetting.year(new Date().getFullYear());
+                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
                     }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
@@ -208,37 +208,5 @@ module nts.uk.at.view.kmk004.a {
                 });
             }
         } // --- end ScreenModel
-        
-        export class CompanyWTSetting {
-            deformationLaborSetting: DeformationLaborSetting;
-            flexSetting: FlexSetting;
-            normalSetting: NormalSetting;
-            year: KnockoutObservable<number>;
-            selectedTab: KnockoutObservable<string>;
-            // Update
-    
-            constructor() {
-                let self = this;
-                self.selectedTab = ko.observable('tab-1');
-                self.year = ko.observable(new Date().getFullYear());
-                self.deformationLaborSetting = new DeformationLaborSetting();
-                self.flexSetting = new FlexSetting();
-                self.normalSetting = new NormalSetting();
-            }
-    
-            public updateData(dto: any): void {
-                let self = this;
-                self.year(dto.year);
-                self.normalSetting.updateData(dto.normalSetting);
-                self.deformationLaborSetting.updateData(dto.deformationLaborSetting);
-                self.flexSetting.updateData(dto.flexSetting);
-            }
-            public sortMonth(startMonth: number): void {
-                let self = this;
-                self.normalSetting.statutorySetting.sortMonth(startMonth);
-                self.deformationLaborSetting.statutorySetting.sortMonth(startMonth);
-                self.flexSetting.sortMonth(startMonth);
-            }
-        }
     }
 }
