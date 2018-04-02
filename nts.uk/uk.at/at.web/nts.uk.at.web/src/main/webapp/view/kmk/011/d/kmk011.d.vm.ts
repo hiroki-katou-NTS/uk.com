@@ -418,9 +418,15 @@ module nts.uk.at.view.kmk011.d {
             // history mode
             public createMode(): void {
                 let _self = this;
-                var histModel : HistModel = _self.histList()[0];
-                var startDate : string = histModel.textDisplay.substr(0,10);
-                nts.uk.ui.windows.setShared('startDateString',startDate);
+                if(_self.histList().length >0){                    
+                    var histModel: HistModel = _self.histList()[0];
+                    var startDate: string = histModel.textDisplay.substr(0, 10);
+                    nts.uk.ui.windows.setShared('startDateString', startDate);
+                    }
+                else
+                    {
+                        nts.uk.ui.windows.setShared('startDateString', "");
+                    }
                 nts.uk.ui.windows.setShared('listHist', _self.histList());
                 
                 //get old HistModel list
