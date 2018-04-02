@@ -127,8 +127,8 @@ module nts.uk.at.view.kmk011.d {
 
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
-                        //                        $('#error_time_' + i).ntsEditor("validate");   
+                        $('#com_alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
+                        //                        $('#com_error_time_' + i).ntsEditor("validate");   
                     }
 
                 }
@@ -215,8 +215,8 @@ module nts.uk.at.view.kmk011.d {
                 _self.clearErrors();
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("validate");
-                        $('#error_time_' + i).ntsEditor("validate");
+                        $('#com_alarm_time_' + i).ntsEditor("validate");
+                        $('#com_error_time_' + i).ntsEditor("validate");
                     }
 
                 }
@@ -234,8 +234,8 @@ module nts.uk.at.view.kmk011.d {
                 // Clear errors
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("clear");
-                        $('#error_time_' + i).ntsEditor("clear");
+                        $('#com_alarm_time_' + i).ntsEditor("clear");
+                        $('#com_error_time_' + i).ntsEditor("clear");
                     }
                 }
 

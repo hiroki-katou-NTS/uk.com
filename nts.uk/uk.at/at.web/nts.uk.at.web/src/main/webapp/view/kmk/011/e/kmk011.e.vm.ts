@@ -228,8 +228,8 @@ module nts.uk.at.view.kmk011.e {
                 _self.clearErrors();
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("validate");
-                        $('#error_time_' + i).ntsEditor("validate");
+                        $('#workType_alarm_time_' + i).ntsEditor("validate");
+                        $('#workType_error_time_' + i).ntsEditor("validate");
                     }
 
                 }
@@ -247,8 +247,8 @@ module nts.uk.at.view.kmk011.e {
                 // Clear errors
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("clear");
-                        $('#error_time_' + i).ntsEditor("clear");
+                        $('#workType_alarm_time_' + i).ntsEditor("clear");
+                        $('#workType_error_time_' + i).ntsEditor("clear");
                     }
                 }
 
