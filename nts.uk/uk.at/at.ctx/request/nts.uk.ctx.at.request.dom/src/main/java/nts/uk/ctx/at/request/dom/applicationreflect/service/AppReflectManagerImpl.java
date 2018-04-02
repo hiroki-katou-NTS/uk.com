@@ -14,6 +14,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -23,6 +25,8 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppExecut
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectRecordPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackAppRequestPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorktimeAppRequestPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeAppParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.PriorStampRequestAtr;
@@ -44,6 +48,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private GoBackDirectlyRepository gobackRepo;
 	@Inject
 	private AppAbsenceRepository absenceRepo;
+	@Inject
+	private AppHolidayWorkRepository holidayWorkRepo;
 
 	@Override
 	public void reflectEmployeeOfApp(Application_New appInfor) {
@@ -51,6 +57,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		OvertimeReflectPara overTimeTmp = null;
 		AppOverTime appOvertimeData = null;
 		AbsenceReflectPara absenceInfor = null;
+		HolidayWorkReflectPara holidayworkInfor = null;
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
 		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
@@ -64,22 +71,54 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				return;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-			absenceInfor = this.getAbsence(appInfor);
+			//TODO lam trong lan giao hang tiep theo
+			/*absenceInfor = this.getAbsence(appInfor);
 			if(absenceInfor == null) {
+				return;
+			}*/
+		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
+			holidayworkInfor = this.getHolidayWork(appInfor);
+			if(holidayworkInfor == null) {
 				return;
 			}
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
 		//TODO 勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
 		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
-		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);
-		
-		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, appGobackTmp, overTimeTmp, absenceInfor);
+		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);		
+		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, appGobackTmp, overTimeTmp, absenceInfor, holidayworkInfor);
 		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
 		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
 		appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
 		appRepo.updateWithVersion(appInfor);
 	}
+	
+	private HolidayWorkReflectPara getHolidayWork(Application_New appInfor) {
+		HolidayWorkReflectPara holidayPara = null;
+		Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
+		if(!getFullAppHolidayWork.isPresent()) {
+			return holidayPara;
+		}
+		AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();
+		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();
+		if(!holidayWorkData.getHolidayWorkInputs().isEmpty()) {
+			holidayWorkData.getHolidayWorkInputs().stream().forEach(x -> {
+				if(x.getAttendanceType() == AttendanceType.RESTTIME) {
+					mapOvertimeFrame.put(x.getFrameNo(), x.getApplicationTime().v());
+				}
+			});
+		}
+		HolidayWorktimeAppRequestPara appPara = new HolidayWorktimeAppRequestPara(holidayWorkData.getWorkTypeCode().v(), 
+				holidayWorkData.getWorkTimeCode().v(),
+				mapOvertimeFrame,
+				holidayWorkData.getHolidayShiftNight(),
+				appInfor.getReflectionInformation().getStateReflectionReal(), 
+				appInfor.getReflectionInformation().getNotReasonReal() == null ? null : appInfor.getReflectionInformation().getNotReasonReal().get()); 
+		holidayPara = new HolidayWorkReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, ScheAndRecordSameChangeFlg.ALWAY, true, appPara);
+		return holidayPara;
+		
+	}
+	
 	private AbsenceReflectPara getAbsence(Application_New appInfor) {
 		AbsenceReflectPara absenceInfor = null;
 		Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
@@ -136,7 +175,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		}
 		AppOverTime appOvertimeData = getFullAppOvertime.get();
 		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();
-		if(appOvertimeData.getOverTimeInput() != null) {
+		if(!appOvertimeData.getOverTimeInput().isEmpty()) {
 			appOvertimeData.getOverTimeInput().stream().forEach(x -> {
 				if(x.getAttendanceType() == AttendanceType.NORMALOVERTIME && x.getFrameNo() <= 10) {
 					mapOvertimeFrame.put(x.getFrameNo(), x.getApplicationTime().v());
