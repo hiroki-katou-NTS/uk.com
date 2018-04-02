@@ -651,52 +651,26 @@ module nts.uk.at.view.kmk004.shared.model {
 
         public updateData(model: WorktimeFlexSetting1): void {
             let self = this;
-            self.statutorySetting.forEach(i => {
-                let flexData: FlexMonthlyTime = model.flexSettingDetail().filter(j => i.month == j.month())[0];
-                let updatedData: MonthlyTime = new MonthlyTime();
-                updatedData.month(flexData.month());
-                updatedData.time(flexData.statutoryTime());
 
-                i.updateData(updatedData);
-            });
+            // clear list
+            self.statutorySetting.length = 0;
+            self.specifiedSetting.length = 0;
 
-            self.specifiedSetting.forEach(i => {
-                let flexData: FlexMonthlyTime = model.flexSettingDetail().filter(j => i.month == j.month())[0];
-                let updatedData: MonthlyTime = new MonthlyTime();
-                updatedData.month(flexData.month());
-                updatedData.time(flexData.specifiedTime());
-                i.updateData(updatedData);
+            // to dto
+            model.flexSettingDetail().forEach(i => {
+                const statutory = new MonthlyUnitDto();
+                statutory.month = i.month();
+                statutory.monthlyTime = i.statutoryTime();
+                self.statutorySetting.push(statutory);
+
+                const specified = new MonthlyUnitDto();
+                specified.month = i.month();
+                specified.monthlyTime = i.specifiedTime();
+                self.specifiedSetting.push(specified);
             });
         }
-        //            public sortMonth(startMonth: number): void {
-        //                let self = this;
-        //                let sortedList: Array<any> = new Array<any>();
-        //                let flexSortedList: Array<any> = new Array<any>();
-        //                for (let i = 0; i < 12; i++) {
-        //                    if (startMonth > 12) {
-        //                        // reset month.
-        //                        startMonth = 1;
-        //                    }
-        //                    let flexValue = self.flexSettingDetail().filter(m => startMonth == m.month())[0];
-        //                    flexSortedList.push(flexValue);
-        //                    startMonth++;
-        //                }
-        //                self.flexSettingDetail(flexSortedList);
-        //            }
     }
 
-    //        export class FlexMonthlyTimeDto {
-    //            month: KnockoutObservable<number>;
-    //            statutoryTime: KnockoutObservable<number>;
-    ////            specifiedMonth: KnockoutObservable<number>;
-    //            specifiedTime: KnockoutObservable<number>;
-    //            constructor() {
-    //                let self = this;
-    //                self.month = ko.observable(new Date().getMonth());
-    //                self.statutoryTime = ko.observable(0);
-    //                self.specifiedTime = ko.observ
-    //            }
-    //        }
 
     /**
      * 通常勤務の法定内集計設定
