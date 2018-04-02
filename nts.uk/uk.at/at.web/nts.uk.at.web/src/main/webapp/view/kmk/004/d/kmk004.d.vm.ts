@@ -25,7 +25,6 @@ module nts.uk.at.view.kmk004.d {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             baseDate: KnockoutObservable<Date>;
             
-            isNewMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             
             worktimeVM: WorktimeSettingVM.ScreenModel;
@@ -41,7 +40,6 @@ module nts.uk.at.view.kmk004.d {
             
             constructor() {
                 let self = this;
-                self.isNewMode = ko.observable(true);
                 self.isLoading = ko.observable(true);
                 
                 // Datasource.
@@ -56,9 +54,19 @@ module nts.uk.at.view.kmk004.d {
                 self.alreadySettingWorkplaces = ko.observableArray([]);
                 self.selectedWorkplaceId = ko.observable('');
                 self.setWorkplaceComponentOption();
-                self.selectedWorkplaceId.subscribe(code => {
-                    if (code) {
-                        self.loadWorkplaceSetting(code);
+                self.selectedWorkplaceId.subscribe(wkpId => {
+                    if (wkpId) {
+                        self.loadWorkplaceSetting();
+                    }
+                });
+                
+                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                    // Validate
+                    if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.worktimeVM.worktimeSetting.updateYear(val);
+                        self.loadWorkplaceSetting();
                     }
                 });
             }
@@ -125,7 +133,7 @@ module nts.uk.at.view.kmk004.d {
             /**
              * Load workplace setting.
              */
-            public loadWorkplaceSetting(id?: string): void {
+            public loadWorkplaceSetting(): void {
                 let self = this;
                 let wpkId = self.selectedWorkplaceId();
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
@@ -180,7 +188,7 @@ module nts.uk.at.view.kmk004.d {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year, workplaceId: self.selectedWorkplaceId() }
                     service.removeWorkplaceSetting(command).done(() => {
-                        self.isNewMode(true);
+                        self.worktimeVM.isNewMode(true);
                         self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
                         
                         // TODO: new form
@@ -252,7 +260,7 @@ module nts.uk.at.view.kmk004.d {
                 saveCommand.updateData(self.selectedWorkplaceId(), self.worktimeVM.worktimeSetting);
                 
                 service.saveWorkplaceSetting(ko.toJS(saveCommand)).done(() => {
-                    self.isNewMode(false);
+                    self.worktimeVM.isNewMode(false);
                     self.addAlreadySettingWorkplace(self.selectedWorkplaceId());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {

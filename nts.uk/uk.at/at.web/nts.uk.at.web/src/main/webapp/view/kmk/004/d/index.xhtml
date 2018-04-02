@@ -46,7 +46,7 @@
 				<span class="title">#{i18n.getText('Com_Workplace')}</span>
 				<span class="action-bar">
 				<button tabindex="2" data-bind="click: saveWorkplace, enable: (selectedWorkplaceId()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
-				<button tabindex="4" class="danger" data-bind="click: removeWorkplace, disable: isNewMode() || !selectedWorkplaceId()">#{i18n.getText('KMK004_29')}</button>
+				<button tabindex="4" class="danger" data-bind="click: removeWorkplace, disable: worktimeVM.isNewMode() || !selectedWorkplaceId()">#{i18n.getText('KMK004_29')}</button>
 				</span>
 			</div>
 			<div class="contents-area cf fixed-flex-layout">

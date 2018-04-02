@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk004.a {
                 
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
-                    if ($('#companyYearPicker').ntsError('hasError')) {
+                    if ($('#worktimeYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.worktimeVM.worktimeSetting.updateYear(val);
@@ -59,7 +59,6 @@ module nts.uk.at.view.kmk004.a {
                         self.loadCompanySettingNewest().done(() => {
                             // Update flag.
                             self.worktimeVM.isLoading(false);
-                            $('#companyYearPicker').focus();
                             
                             dfd.resolve();
                         });
@@ -143,7 +142,7 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeCompanySetting(): void {
                 let self = this;
-                if ($('#companyYearPicker').ntsError('hasError')) {
+                if ($('#worktimeYearPicker').ntsError('hasError')) {
                     return;
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
@@ -191,7 +190,7 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
                     // Reset year if has error.
-                    if ($('#companyYearPicker').ntsError('hasError')) {
+                    if ($('#worktimeYearPicker').ntsError('hasError')) {
                         self.companyWTSetting.year(new Date().getFullYear());
                     }
                     // Clear error inputs
@@ -206,7 +205,7 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/004/e/index.xhtml").onClosed(() => {
                     self.loadUsageUnitSetting();
-                    $('#companyYearPicker').focus();
+                    $('#worktimeYearPicker').focus();
                 });
             }
         } // --- end ScreenModel

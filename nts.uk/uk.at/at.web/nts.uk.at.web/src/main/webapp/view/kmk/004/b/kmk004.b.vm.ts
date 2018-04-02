@@ -14,6 +14,11 @@ module nts.uk.at.view.kmk004.b {
         import NormalWorktime = nts.uk.at.view.kmk004.shared.model.NormalWorktime; 
         import FlexWorktimeAggrSetting = nts.uk.at.view.kmk004.shared.model.FlexWorktimeAggrSetting;
         import WorktimeSettingDtoSaveCommand = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDtoSaveCommand;
+        import WorktimeNormalDeformSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSettingDto;
+        import WorktimeFlexSetting1Dto = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1Dto;
+        import StatutoryWorktimeSettingDto = nts.uk.at.view.kmk004.shared.model.StatutoryWorktimeSettingDto;
+        import MonthlyCalSettingDto = nts.uk.at.view.kmk004.shared.model.MonthlyCalSettingDto;
+        import WorktimeSetting = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel.WorktimeSetting;
         import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
         import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
         import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
@@ -23,13 +28,14 @@ module nts.uk.at.view.kmk004.b {
             
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             
-            worktimeSetting: WorktimeSettingVM.ScreenModel;
+            worktimeVM: WorktimeSettingVM.ScreenModel;
             
             isNewMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             
             startMonth: KnockoutObservable<number>;
             
+            selectedEmployeeId: KnockoutObservable<string>;
             displayEmployeeCode: KnockoutObservable<string>;
             displayEmployeeName: KnockoutObservable<string>;
             
@@ -83,11 +89,12 @@ module nts.uk.at.view.kmk004.b {
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK004_5"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 
-                self.worktimeSetting = new WorktimeSettingVM.ScreenModel();
+                self.worktimeVM = new WorktimeSettingVM.ScreenModel();
                 self.selectedEmployee = ko.observableArray([]);
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 
+                self.selectedEmployeeId = ko.observable('');
                 self.displayEmployeeCode = ko.observable('');
                 self.displayEmployeeName = ko.observable('');
                 
@@ -101,15 +108,23 @@ module nts.uk.at.view.kmk004.b {
                     if (code != null && code.length > 0) {
                         let empt = _.find(self.selectedEmployee(), item => item.employeeCode == code);
                         if (empt) {
+                            self.selectedEmployeeId(empt.employeeId);
                             self.displayEmployeeCode(code);
                             self.displayEmployeeName(empt.employeeName);
                             self.isNewMode( !(_.find(self.alreadySettingPersonal(), item => item.code == code ) != null) );
                             return;
                         }
                     }
+                    self.selectedEmployeeId('');
                     self.displayEmployeeCode('');
                     self.displayEmployeeName('');
                     self.isNewMode(true);
+                });
+                
+                self.selectedEmployeeId.subscribe(function(Id) {
+                    if (Id.length > 0) {
+                        self.loadEmployeeSetting();
+                    }
                 });
             }
 
@@ -121,7 +136,7 @@ module nts.uk.at.view.kmk004.b {
                 self.isLoading(true);
 
                 // Load component.
-                self.worktimeSetting.initialize().done(() => {
+                self.worktimeVM.initialize().done(() => {
                     WorktimeSettingVM.getStartMonth().done((month) => {
                         self.startMonth = ko.observable(month);
                         
@@ -297,12 +312,127 @@ module nts.uk.at.view.kmk004.b {
                 };
             }
             
-            public saveEmployeeSetting(): void {
+            private loadEmployeeSetting(): void {
+                let self = this;
                 
+                let empId = self.selectedEmployeeId();
+                
+                nts.uk.ui.block.invisible();
+                service.findEmployeeSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), empId).done((data) => {
+                    self.clearError();
+                    let resultData: WorktimeSettingDto = data;
+                    // update mode.
+                    // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
+                    if (!nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto) 
+                    && !nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.regularLaborTime)) {
+                        self.worktimeVM.isNewMode(false);
+                        if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
+                            resultData.statWorkTimeSetDto.normalSetting = new WorktimeNormalDeformSettingDto();
+                        }
+                        if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
+                            resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
+                        }
+                        if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.deforLaborSetting)) {
+                            resultData.statWorkTimeSetDto.deforLaborSetting = new WorktimeNormalDeformSettingDto();
+                        }
+                        // Update Full Data
+                        self.worktimeVM.worktimeSetting.updateFullData(resultData);
+                        self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
+                    }
+                    else {
+                        // new mode.
+                        self.worktimeVM.isNewMode(true);
+                        let newSetting = new WorktimeSettingDto();
+                        // Reserve selected year.
+                        newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
+                        // Update Full Data
+                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                    }
+                    
+                    // Sort month.
+                    self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+            public saveEmployeeSetting(): void {
+                let self = this;
+                // Validate
+                if (self.worktimeVM.hasError()) {
+                    return;
+                }
+                nts.uk.ui.block.invisible();
+                
+                let saveCommand: EmployeeWorktimeSettingDtoSaveCommand = new EmployeeWorktimeSettingDtoSaveCommand();
+                saveCommand.updateData(self.selectedEmployeeId(), self.worktimeVM.worktimeSetting);
+                
+                service.saveEmployeeSetting(ko.toJS(saveCommand)).done(() => {
+                    self.isNewMode(false);
+                    self.addAlreadySettingPersonal(self.displayEmployeeCode());
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(error => {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
             
             public removeEmployeeSetting(): void {
+                let self = this;
+                nts.uk.ui.block.invisible();
                 
+                let sid = self.selectedEmployeeId();
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.removeEmployeeSetting({ year: self.worktimeVM.worktimeSetting.normalSetting().year(), sid: sid }).done(() => {
+                        self.isNewMode(true);
+                        self.removeAlreadySettingPersonal(self.displayEmployeeCode());
+                        self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
+            }
+            
+            /**
+             * Add alreadySetting employment.
+             */
+            private addAlreadySettingPersonal(code:string): void {
+                let self = this;
+                let l = self.alreadySettingPersonal().filter(i => code == i.code);
+                if (l[0]) {
+                    return;
+                }
+                self.alreadySettingPersonal.push({ code: code, isAlreadySetting: true });
+            }
+            
+            /**
+             * Remove alreadySetting employment.
+             */
+            private removeAlreadySettingEmployment(code: string): void {
+                let self = this;
+                let ase = self.alreadySettingPersonal().filter(i => code == i.code)[0];
+                self.alreadySettingPersonal.remove(ase);
+            }
+            
+            /**
+             * Clear all errors.
+             */
+            private clearError(): void {
+                let self = this;
+                if (nts.uk.ui._viewModel) {
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
+                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
+                    }
+                    // Clear error inputs
+                    $('.nts-input').ntsError('clear');
+                }
             }
         } // --- end ScreenModel
         
@@ -325,6 +455,42 @@ module nts.uk.at.view.kmk004.b {
             static SELECT_ALL = 2;
             static SELECT_FIRST_ITEM = 3;
             static NO_SELECT = 4;
+        }
+        
+        class EmployeeStatutoryWorktimeSettingDto extends StatutoryWorktimeSettingDto {
+            employeeId: string;
+        }
+        
+        class EmployeeMonthlyCalSettingDto extends MonthlyCalSettingDto {
+            employeeId: string;
+        }
+        
+        export class EmployeeWorktimeSettingDtoSaveCommand {
+
+            /** The save com stat work time set command. */
+            saveStatCommand: EmployeeStatutoryWorktimeSettingDto;
+    
+            /** The save com flex command. */
+            saveMonthCommand: EmployeeMonthlyCalSettingDto;
+    
+            constructor() {
+                let self = this;
+                self.saveStatCommand = new EmployeeStatutoryWorktimeSettingDto();
+                self.saveMonthCommand = new EmployeeMonthlyCalSettingDto();
+            }
+    
+            public updateYear(year: number): void {
+                let self = this;
+                self.saveStatCommand.year = year;
+            }
+    
+            public updateData(employeeId: string, model: WorktimeSetting): void {
+                let self = this;
+                self.saveStatCommand.employeeId = employeeId;
+                self.saveStatCommand.updateData(model);
+                self.saveMonthCommand.employeeId = employeeId;
+                self.saveMonthCommand.updateData(model);
+            }
         }
     }
 }

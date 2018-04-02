@@ -13,13 +13,13 @@
 					width : 900,
 					height : 700
 				};
-			</script>
+			</script>   -->
 			<com:ValidatorScript>
 					nts.uk.ctx.at.shared.dom.common.Year
 					nts.uk.ctx.at.shared.dom.common.DailyTime
 					nts.uk.ctx.at.shared.dom.common.MonthlyTime
 					nts.uk.ctx.at.shared.dom.common.WeeklyTime
-   			</com:ValidatorScript>   -->
+   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -48,15 +48,15 @@
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('Com_Person')}</span>
 				<span class="action-bar">
-				<button tabindex="2" data-bind="click: saveEmployeeSetting, enable: (selectedEmployeeCode()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
-				<button tabindex="4" class="danger" data-bind="click: removeEmployeeSetting, disable: isNewMode() || !selectedEmployeeCode()">#{i18n.getText('KMK004_29')}</button>
+				<button tabindex="2" data-bind="click: saveEmployeeSetting, enable: (selectedEmployeeId()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
+				<button tabindex="4" class="danger" data-bind="click: removeEmployeeSetting, disable: worktimeVM.isNewMode() || !selectedEmployeeCode()">#{i18n.getText('KMK004_29')}</button>
 				</span>
 			</div>
 			<div class="contents-area cf fixed-flex-layout" style="margin-left: 0px;">
 				<div id="ccgcomponent"></div>
 				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 10px; margin-left: 50px;"></div>
 				<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
-					<fieldset data-bind="with: worktimeSetting">
+					<fieldset data-bind="with: worktimeVM">
 						<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
 					</fieldset>
 				</div>

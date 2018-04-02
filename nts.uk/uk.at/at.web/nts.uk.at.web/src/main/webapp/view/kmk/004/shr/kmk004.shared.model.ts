@@ -135,7 +135,7 @@ module nts.uk.at.view.kmk004.shared.model {
             nts.uk.ui.windows.setShared('NORMAL_SET_PARAM', params, true);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/004/f/index.xhtml").onClosed(() => {
-                $('#companyYearPicker').focus();
+                $('#worktimeYearPicker').focus();
 
                 // Get params
                 var normalSetOutput: NormalSetParams = nts.uk.ui.windows.getShared('NORMAL_SET_OUTPUT');
@@ -167,7 +167,7 @@ module nts.uk.at.view.kmk004.shared.model {
             nts.uk.ui.windows.setShared('FLEX_SET_PARAM', params, true);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/004/g/index.xhtml").onClosed(() => {
-                $('#companyYearPicker').focus();
+                $('#worktimeYearPicker').focus();
 
                 // get params from dialog 
                 var flexSetOutput: FlexSetParams = nts.uk.ui.windows.getShared('FLEX_SET_OUTPUT');
@@ -209,7 +209,7 @@ module nts.uk.at.view.kmk004.shared.model {
             nts.uk.ui.windows.setShared('DEFORM_SET_PARAM', params, true);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/004/h/index.xhtml").onClosed(() => {
-                $('#companyYearPicker').focus();
+                $('#worktimeYearPicker').focus();
 
                 // Get params
                 var deformSetOutput: DeformSetParams = nts.uk.ui.windows.getShared('DEFORM_SET_OUTPUT');

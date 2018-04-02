@@ -31,7 +31,6 @@ module nts.uk.at.view.kmk004.c {
             alreadySettingEmployments: KnockoutObservableArray<any>;
             selectedEmploymentCode: KnockoutObservable<string>;
             
-            isNewMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             
             employmentCode: KnockoutObservable<string>;
@@ -41,7 +40,6 @@ module nts.uk.at.view.kmk004.c {
             
             constructor() {
                 let self = this;
-                self.isNewMode = ko.observable(true);
                 self.isLoading = ko.observable(true);
                 
                 // Datasource.
@@ -68,6 +66,16 @@ module nts.uk.at.view.kmk004.c {
                         self.employmentName('');
                     }
                     
+                });
+                
+                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                    // Validate
+                    if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.worktimeVM.worktimeSetting.updateYear(val);
+                        self.loadEmploymentSetting(self.selectedEmploymentCode());
+                    }
                 });
             }
                 
@@ -122,7 +130,6 @@ module nts.uk.at.view.kmk004.c {
                 let self = this;
                 service.findEmploymentSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), code)
                     .done(function(data) {
-                        self.clearError();
                         // Clear Errors
                         self.clearError();
                         let resultData: WorktimeSettingDto = data;
@@ -214,7 +221,7 @@ module nts.uk.at.view.kmk004.c {
                 saveCommand.updateData(self.selectedEmploymentCode(), self.worktimeVM.worktimeSetting);
                 
                 service.saveEmploymentSetting(ko.toJS(saveCommand)).done(() => {
-                    self.isNewMode(false);
+                    self.worktimeVM.isNewMode(false);
                     self.addAlreadySettingEmloyment(self.selectedEmploymentCode());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
@@ -234,7 +241,7 @@ module nts.uk.at.view.kmk004.c {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), employmentCode: emplCode }
                     service.removeEmploymentSetting(command).done(() => {
-                        self.isNewMode(true);
+                        self.worktimeVM.isNewMode(true);
                         self.removeAlreadySettingEmployment(emplCode);
                         
                         // TODO: bind new form
@@ -307,7 +314,7 @@ module nts.uk.at.view.kmk004.c {
             employmentCode: string;
         }
         
-        class EmployeeMonthlyCalSettingDto extends MonthlyCalSettingDto {
+        class EmploymentMonthlyCalSettingDto extends MonthlyCalSettingDto {
             employmentCode: string;
         }
         
@@ -317,12 +324,12 @@ module nts.uk.at.view.kmk004.c {
             saveStatCommand: EmploymentStatutoryWorktimeSettingDto;
     
             /** The save com flex command. */
-            saveMonthCommand: EmployeeMonthlyCalSettingDto;
+            saveMonthCommand: EmploymentMonthlyCalSettingDto;
     
             constructor() {
                 let self = this;
                 self.saveStatCommand = new EmploymentStatutoryWorktimeSettingDto();
-                self.saveMonthCommand = new EmployeeMonthlyCalSettingDto();
+                self.saveMonthCommand = new EmploymentMonthlyCalSettingDto();
             }
     
             public updateYear(year: number): void {
