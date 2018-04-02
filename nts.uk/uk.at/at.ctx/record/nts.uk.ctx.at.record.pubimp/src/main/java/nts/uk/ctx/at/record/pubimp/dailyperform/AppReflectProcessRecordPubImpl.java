@@ -21,6 +21,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.Gob
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PreGoBackReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimeAppPara;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
@@ -153,8 +155,22 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param) {
-		// TODO Auto-generated method stub
-		return null;
+		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(param.getHolidayWorkPara().getWorkTypeCode(),
+				param.getHolidayWorkPara().getWorkTimeCode(),
+				param.getHolidayWorkPara().getMapWorkTimeFrame(),
+				param.getHolidayWorkPara().getNightTime(),
+				EnumAdaptor.valueOf(param.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
+				param.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(param.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
+				param.getBaseDate(),
+				param.isHolidayWorkReflectFlg(), 
+				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
+				param.isScheReflectFlg(),
+				appPara);
+		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);
+		
+		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
+				outputData.getReflectedState() == null? null : EnumAdaptor.valueOf(outputData.getReflectedState().value, ReasonNotReflectPubRecord.class));
 	}
 
 }
