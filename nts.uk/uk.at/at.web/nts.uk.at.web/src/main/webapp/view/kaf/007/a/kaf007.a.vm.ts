@@ -58,10 +58,18 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             // 申請日を変更する          
             //Start Date
             application.startDate.subscribe(value => {
+                $("#inputdatestart").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 self.changeApplicationDate(value, common.AppDateType.StartDate);
             });
             //End Date
             application.endDate.subscribe(value => {
+                $("#inputdateend").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 self.changeApplicationDate(value, common.AppDateType.EndDate);
             });
         }
