@@ -4,6 +4,11 @@ import java.util.List;
 
 import lombok.Value;
 
+/**
+ * 
+ * @author dat.lh
+ *
+ */
 @Value
 public class ApprovalStatusActivityData {
 	private String startDate;

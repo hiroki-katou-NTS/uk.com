@@ -59,7 +59,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput preGobackReflect(GobackReflectPubParameter para) {
 		ApplicationReflectOutput reflectInfor = preGobackReflect.gobackReflect(this.toDomainGobackReflect(para));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				reflectInfor.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 
@@ -67,7 +67,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput afterGobackReflect(GobackReflectPubParameter para) {		
 		ApplicationReflectOutput reflectInfor = preGobackReflect.afterGobackReflect(this.toDomainGobackReflect(para));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				reflectInfor.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 	private GobackReflectParameter toDomainGobackReflect(GobackReflectPubParameter para) {
@@ -79,7 +79,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				para.getGobackData().getStartTime2(),
 				para.getGobackData().getEndTime2(),
 				EnumAdaptor.valueOf(para.getGobackData().getReflectState().value, ReflectedStateRecord.class),
-				EnumAdaptor.valueOf(para.getGobackData().getReasoNotReflect().value, ReasonNotReflectRecord.class));
+				para.getGobackData().getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(para.getGobackData().getReasoNotReflect().value, ReasonNotReflectRecord.class));
 		GobackReflectParameter gobackPara = new GobackReflectParameter(para.getEmployeeId(),
 				para.getDateData(),
 				para.isOutResReflectAtr(),

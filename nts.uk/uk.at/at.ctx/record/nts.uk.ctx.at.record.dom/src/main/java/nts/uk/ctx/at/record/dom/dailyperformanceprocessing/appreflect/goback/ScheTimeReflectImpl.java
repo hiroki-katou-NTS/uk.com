@@ -20,7 +20,11 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -45,12 +49,12 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private WorkTimeIsFluidWork workTimeisFluidWork;
-	/*@Inject
-	private WorkTimezoneLateEarlySetGetMemento workMemento;*/
+	@Inject
+	private FlexWorkSettingRepository flexWorkRepository;
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
 		//予定時刻反映できるかチェックする
-		if(this.checkScheReflect(para.getGobackData().getWorkTimeCode(), para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg())) {
+		if(!this.checkScheReflect(para.getGobackData().getWorkTimeCode(), para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg())) {
 			return;
 		}
 		//(開始時刻)反映する時刻を求める
@@ -107,11 +111,14 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//INPUT．予定時刻反映区分をチェックする
 		if(scheTimeReflectAtr == ScheTimeReflectAtr.APPTIME) {
 			//INPUT．申請する時刻をチェックする
-			if(applyTimeAtr == ApplyTimeAtr.START) {
+			if(timeData > 0) {
 				reflectOutput.setReflectFlg(true);
 				reflectOutput.setTimeOfDay(timeData);
+				return reflectOutput;	
+			} else {
+				return reflectOutput;
 			}
-			return reflectOutput;
+			
 		} else {
 			//INPUT．勤種・就時の反映できるフラグをチェックする
 			if(timeTypeScheReflect) {
@@ -212,7 +219,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			if(isPre && frameNo == 1 && para.getGobackData().getStartTime1() != null
 					|| isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null
 					|| !isPre && frameNo == 1 && para.getGobackData().getEndTime1() != null
-					|| !isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null) {
+					|| !isPre && frameNo == 2 && para.getGobackData().getEndTime2() != null) {
 				return true;
 			} else {
 				return false;
@@ -262,34 +269,43 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Override
 	public Integer justTimeLateLeave(String workTimeCode, Integer timeData, Integer frameNo, boolean isPre) {
 		String companyId = AppContexts.user().companyId();
-		//ドメインモデル「就業時間帯の設定」を取得する
-		Optional<WorkTimeSetting> findByCode = workTimeRepository.findByCode(companyId, workTimeCode);
-		if(!findByCode.isPresent()) {
+		
+		//時間丁度の打刻は遅刻・早退とするをチェックする		
+		Optional<FlexWorkSetting> optFlexWorkSetting = flexWorkRepository.find(companyId, workTimeCode);
+		if(!optFlexWorkSetting.isPresent()) {
 			return timeData;
 		}
-		
-		//時間丁度の打刻は遅刻・早退とするをチェックする
-		WorkTimeSetting workTimeData = findByCode.get();
-		/*//TODO can xem lai
-		List<OtherEmTimezoneLateEarlySet> lstEmTimezon = workMemento.getOtherClassSet();
-		OtherEmTimezoneLateEarlySet emTimezon;
-		if(isPre) {
-			emTimezon = lstEmTimezon.stream()
-					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.LATE && x.getGraceTimeSet().getGraceTime().v() == frameNo).collect(Collectors.toList()).get(0);//dieu kien khong dung
-			
-		} else {
-			emTimezon = lstEmTimezon.stream()
-					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.EARLY && x.getGraceTimeSet().getGraceTime().v() == frameNo).collect(Collectors.toList()).get(0);//dieu kien khong dung
-
+		FlexWorkSetting flexWorkSetting = optFlexWorkSetting.get();
+		WorkTimezoneCommonSet commonSetting = flexWorkSetting.getCommonSetting();
+		WorkTimezoneLateEarlySet lateEarlySet = commonSetting.getLateEarlySet();
+		List<OtherEmTimezoneLateEarlySet> lstOtherClassSets = lateEarlySet.getOtherClassSets();
+		if(lstOtherClassSets.isEmpty()) {
+			return timeData;
 		}
-		if(emTimezon.isStampExactlyTimeIsLateEarly()) {
+		OtherEmTimezoneLateEarlySet emTimezon = null;
+		if(isPre) {
+			List<OtherEmTimezoneLateEarlySet> temp = lstOtherClassSets.stream()
+					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.LATE)
+					.collect(Collectors.toList());
+			if(!temp.isEmpty()) {
+				emTimezon = temp.get(0);
+			}
+		} else {
+			List<OtherEmTimezoneLateEarlySet> temp = lstOtherClassSets.stream()
+					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.EARLY)
+					.collect(Collectors.toList());
+			if(!temp.isEmpty()) {
+				emTimezon = temp.get(0);
+			}
+		}
+		if(emTimezon != null && emTimezon.isStampExactlyTimeIsLateEarly()) {
 			if(isPre) {
 				return timeData - 1;				
 			} else {
 				return timeData + 1;
 			}
 
-		}*/
+		}
 		return timeData;
 	}
 	@Override

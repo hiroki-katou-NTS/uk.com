@@ -77,20 +77,29 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put(425, "日別実績の特定日区分.特定日区分.特定日区分10");
 
 		ITEM_ID_CONTAINER.put(627, "日別実績の計算区分.残業時間.早出残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(824, "日別実績の計算区分.残業時間.早出残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(628, "日別実績の計算区分.残業時間.早出深夜残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(825, "日別実績の計算区分.残業時間.早出深夜残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(629, "日別実績の計算区分.残業時間.普通残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(826, "日別実績の計算区分.残業時間.普通残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(630, "日別実績の計算区分.残業時間.普通深夜残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(827, "日別実績の計算区分.残業時間.普通深夜残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(631, "日別実績の計算区分.残業時間.法定内残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(828, "日別実績の計算区分.残業時間.法定内残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(632, "日別実績の計算区分.残業時間.法定内深夜残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(829, "日別実績の計算区分.残業時間.法定内深夜残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(633, "日別実績の計算区分.休出時間.休出時間.計算区分");
+		ITEM_ID_CONTAINER.put(830, "日別実績の計算区分.休出時間.休出時間.上限の設定");
 		ITEM_ID_CONTAINER.put(634, "日別実績の計算区分.休出時間.休出深夜時間.計算区分");
+		ITEM_ID_CONTAINER.put(831, "日別実績の計算区分.休出時間.休出深夜時間.上限の設定");
 		ITEM_ID_CONTAINER.put(635, "日別実績の計算区分.フレックス超過時間.計算区分");
+		ITEM_ID_CONTAINER.put(832, "日別実績の計算区分.フレックス超過時間.上限の設定");
 		ITEM_ID_CONTAINER.put(636, "日別実績の計算区分.加給.加給");
 		ITEM_ID_CONTAINER.put(637, "日別実績の計算区分.加給.特定加給");
 		ITEM_ID_CONTAINER.put(638, "日別実績の計算区分.遅刻早退.遅刻");
 		ITEM_ID_CONTAINER.put(639, "日別実績の計算区分.遅刻早退.早退");
 		ITEM_ID_CONTAINER.put(640, "日別実績の計算区分.乖離時間");
-
+		
 		ITEM_ID_CONTAINER.put(76,  "日別実績の入退門.入退門時刻.終了時間.場所コード1");
 		ITEM_ID_CONTAINER.put(80,  "日別実績の入退門.入退門時刻.終了時間.場所コード2");
 		ITEM_ID_CONTAINER.put(84,  "日別実績の入退門.入退門時刻.終了時間.場所コード3");
