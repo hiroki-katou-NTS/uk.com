@@ -98,10 +98,10 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             });
 
             //社員コードを入力する
-            self.settingManager().departmentCode.subscribe(result => {
-                if (result) {
+            self.settingManager().departmentCode.subscribe(value => {
+                if (value) {
                     if (!self.isInitDepartment) {
-                        self.getEmployeeByCode(result, APPROVER_TYPE.DEPARTMENT_APPROVER);
+                        self.getEmployeeByCode(value, APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }
                     self.isInitDepartment = false;
                 }
@@ -201,7 +201,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                             self.initScreen();
                         });
                     }).fail(error => {
-                        dialog.alertError({ messageId: error.messageId })
+                        dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
                         block.clear();
                     });
@@ -245,17 +245,25 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //社員コードを入力する
         getEmployeeByCode(employeeCode: any, approverType:number) {
             let self = this;
-            service.getEmployeeByCode(employeeCode).done(result => {
+            let hasAuthority = self.settingManager().hasAuthority();
+            block.invisible();
+            service.getEmployeeByCode(employeeCode, hasAuthority).done(result => {
                 if (result) {
                     if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                         self.settingManager().departmentName(result.employeeName);
                     } else {
                         self.settingManager().dailyApprovalName(result.employeeName);
                     }
-                } else {
-                    self.settingManager().departmentName('');
-                    self.settingManager().dailyApprovalName(''); 
                 }
+            }).fail(error => {
+                if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
+                    self.settingManager().departmentName('');
+                } else {
+                    self.settingManager().dailyApprovalName('');
+                }
+                dialog.alertError({ messageId: error.messageId });
+            }).always(() => {
+                block.clear();
             });
         }
 
