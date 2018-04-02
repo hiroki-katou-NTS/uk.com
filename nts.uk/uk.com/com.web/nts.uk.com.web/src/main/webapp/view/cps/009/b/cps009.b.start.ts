@@ -37,22 +37,16 @@ module nts.uk.com.view.cps009.b {
                 $('span.box').attr("tabindex", "2");
                 let beforeIndex = -1;
                 $(window).keyup((e) => {
-    
                     if (e.which === 9) {
-    
                         let tabindex = e.target.attributes.tabindex ? e.target.attributes.getNamedItem("tabindex").value : e.target.attributes.getNamedItem("tab-index").value;
                         if (beforeIndex == 6) {
-                            $("span.box").focus();
+                            $("#grid0_disabled > span > div > label > span.box").focus();
                         }
                         beforeIndex = parseInt(tabindex);
-    
                     }
-    
                 });
             });
-            
         });
-
     });
 }
 
