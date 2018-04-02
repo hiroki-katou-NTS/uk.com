@@ -52,6 +52,13 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.baseDate = ko.observable(new Date());
                 
                 self.worktimeSetting = new WorktimeSetting();
+                let year = localStorage.getItem("nts-uk-kmk004-worktime-year-selection");
+                if (!!year) {
+                    self.worktimeSetting.normalSetting().year(parseInt(year));
+                }
+                self.worktimeSetting.normalSetting().year.subscribe((v) => {
+                    localStorage.setItem("nts-uk-kmk004-worktime-year-selection", v);
+                });
                 
                 // Update
                 self.aggrSelectionItemList = ko.observableArray([

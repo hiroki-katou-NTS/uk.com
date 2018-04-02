@@ -54,13 +54,11 @@
 			</div>
 			<div class="contents-area cf fixed-flex-layout" style="margin-left: 0px;">
 				<div id="ccgcomponent"></div>
-				<div style="margin-top: 30px;">
-					<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 10px; margin-left: 50px;"></div>
-					<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
-						<fieldset data-bind="with: worktimeVM">
-							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
-						</fieldset>
-					</div>
+				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
+				<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
+					<fieldset data-bind="with: worktimeVM">
+						<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
+					</fieldset>
 				</div>
 			</div>
 		</ui:define>
