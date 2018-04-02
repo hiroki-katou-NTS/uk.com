@@ -131,7 +131,8 @@ module nts.uk.at.view.kaf010.b {
                 super(listAppMetadata, currentApp);
                 var self = this;
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
-                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                    $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: 216 });
                     $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });

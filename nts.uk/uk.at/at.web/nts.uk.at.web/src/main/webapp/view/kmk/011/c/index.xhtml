@@ -37,9 +37,9 @@
 					class="button separate-button fix-button"
 					data-bind="click: closeDialog">#{i18n.getText('KMK011_21')}</button>
 			</div>
-			<div id="content-area">
+			<div id="content-area" class="contents-area fixed-flex-layout">
 				<div id="left-content" style="float: left"
-					class="bg-green caret-right caret-background">
+					class="bg-green caret-right caret-background fixed-flex-layout-left">
 					<div style="float: left; margin: 20px">
 						<!-- C2_2: List Divergence Reason -->
 						<table tabindex="5" id="single-list"
@@ -55,7 +55,8 @@
 						</table>
 					</div>
 				</div>
-				<div id="right-content" style="float: left;">
+				<div id="right-content" style="float: left;"
+					class="fixed-flex-layout-right">
 					<table>
 						<colgroup>
 							<col width="213px" />
@@ -64,19 +65,20 @@
 						<tr class="row">
 							<td>
 								<!-- C3_1: Label -->
-								<div data-bind="ntsFormLabel: {required: true,constraint:['DiverdenceReasonCode','DivergenceReasonContent'] }">#{i18n.getText('KMK011_37')}</div>
+								<div
+									data-bind="ntsFormLabel: {required: true,constraint:['DiverdenceReasonCode','DivergenceReasonContent'] }">#{i18n.getText('KMK011_37')}</div>
 							</td>
 							<td>
-							<!-- C3_2: Divergence Reason Code -->
-							<input tabindex="6" class="nts-input" id="inpCode"
+								<!-- C3_2: Divergence Reason Code --> <input tabindex="6"
+								class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
 										  name: '#[KMK011_22]',
                                           value: divReasonCode,
                                           constraint: 'DiverdenceReasonCode', 
                                           enable: enableCode, 
-                                          required: true}"/> 
-								<!-- C3_3: Divergence Reason Content --> 
-								<input tabindex="7" class="nts-input" id="inpReason"
+                                          required: true}" />
+								<!-- C3_3: Divergence Reason Content --> <input tabindex="7"
+								class="nts-input" id="inpReason"
 								data-bind="ntsTextEditor: {
 										  name: '#[KMK011_23]',
                                           value: divReasonContent,
@@ -104,10 +106,12 @@
 						<tr>
 							<td></td>
 							<td>
-							<p><span data-bind="text: textNotice01"></span></p>
-							<p><span data-bind="text: textNotice02"></span></p> 
-								<!-- B3_6: Text --> 
-								<!-- <p><span>#{i18n.getText('KMK011_78')}</span></p> -->
+								<p>
+									<span data-bind="text: textNotice01"></span>
+								</p>
+								<p>
+									<span data-bind="text: textNotice02"></span>
+								</p> <!-- B3_6: Text --> <!-- <p><span>#{i18n.getText('KMK011_78')}</span></p> -->
 							</td>
 						</tr>
 

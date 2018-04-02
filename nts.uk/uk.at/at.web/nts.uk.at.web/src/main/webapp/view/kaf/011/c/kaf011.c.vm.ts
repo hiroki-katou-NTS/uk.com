@@ -26,7 +26,6 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         constructor() {
             let self = this;
-
             let param = nts.uk.ui.windows.getShared('KAF_011_PARAMS');
             if (param) {
                 self.prePostSelectedCode(param.prePostSelectedCode);
@@ -65,9 +64,4 @@ module nts.uk.at.view.kaf011.c.screenModel {
         }
 
     }
-
-
-
-
-
 }

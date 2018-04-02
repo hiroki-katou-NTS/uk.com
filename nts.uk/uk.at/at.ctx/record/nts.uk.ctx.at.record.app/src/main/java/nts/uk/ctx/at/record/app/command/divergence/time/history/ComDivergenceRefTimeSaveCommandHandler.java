@@ -59,7 +59,9 @@ public class ComDivergenceRefTimeSaveCommandHandler extends CommandHandler<ComDi
 				return new CompanyDivergenceReferenceTime(e);
 			}else {
 				Optional<CompanyDivergenceReferenceTime> oldDomain = this.repository.findByKey(e.getHistoryId(), e.getDivergenceTimeNo());
-				return oldDomain.get();
+				CompanyDivergenceReferenceTime domainToSave = oldDomain.get();
+				domainToSave.setNotUseAtr(e.getNotUseAtr());
+				return domainToSave;
 			}
 		}).collect(Collectors.toList());
 		

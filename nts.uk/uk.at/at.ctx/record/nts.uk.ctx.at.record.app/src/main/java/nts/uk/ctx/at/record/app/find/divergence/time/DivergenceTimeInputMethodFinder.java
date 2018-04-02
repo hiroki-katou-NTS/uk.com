@@ -113,7 +113,7 @@ public class DivergenceTimeInputMethodFinder {
 		Optional<DivergenceTime> optionalDivTimeInfo = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
 
 		// Convert to Dto and return
-		if (optionalDivTimeInfo != null) {
+		if (optionalDivTimeInfo.isPresent()) {
 			DivergenceTime divTimeInfo = optionalDivTimeInfo.get();
 			DivergenceTimeDto divTimeDto = new DivergenceTimeDto();
 			divTimeInfo.saveToMemento(divTimeDto);
