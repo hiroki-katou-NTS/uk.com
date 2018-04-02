@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk004.b {
                     self.isNewMode(true);
                 });
             }
-                
+
             public startPage(): JQueryPromise<void> {
                 nts.uk.ui.block.invisible();
                 let self = this;

@@ -98,7 +98,9 @@ module nts.uk.at.view.kmk004.d {
                     
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
                     ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
-                })
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
             
             /**
@@ -230,9 +232,9 @@ module nts.uk.at.view.kmk004.d {
              */
             private setAlreadySettingWorkplaceList(): void {
                 let self = this;
-                service.findAllWorkplaceSetting().done(listId => {
-                    self.alreadySettingWorkplaces(_.map(listId, function(id) {
-                        return { workplaceId: id, isAlreadySetting: true };
+                service.findAllWorkplaceSetting().done(listWpl => {
+                    self.alreadySettingWorkplaces(_.map(listWpl, function(data) {
+                        return { workplaceId: data.workplaceId, isAlreadySetting: true };
                     }));
                 });
             }

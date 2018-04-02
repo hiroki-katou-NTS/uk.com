@@ -63,7 +63,7 @@ module nts.uk.at.view.kmk004.c {
                     self.employmentCode(code);
                     if (code) {
                         self.loadEmploymentSetting(code);
-                        self.employmentName('');
+                        self.setEmploymentName(code);
                     } else {
                         self.employmentName('');
                     }
@@ -143,8 +143,6 @@ module nts.uk.at.view.kmk004.c {
                             // Update Full Data
                             self.worktimeVM.worktimeSetting.updateFullData(resultData);
                             self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
-                            
-                            self.setEmploymentName(data.statWorkTimeSetDto.emplCode);
                         }
                         else {
                             // new mode.
@@ -154,8 +152,6 @@ module nts.uk.at.view.kmk004.c {
                             newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
                             // Update Full Data
                             self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
-                            
-                            self.setEmploymentName('');
                         }
                         
                         // Sort month.
@@ -169,7 +165,7 @@ module nts.uk.at.view.kmk004.c {
             private setEmploymentName(code: string): void {
                 let self = this;
                 let list = $('#list-employment').getDataList();
-                if (list) {
+                if (list && code.length > 0) {
                     let empt = _.find(list, item => item.code == code);
                     self.employmentName(empt.name);
                     self.employmentCode(empt.code);
@@ -197,9 +193,9 @@ module nts.uk.at.view.kmk004.c {
             private setAlreadySettingEmploymentList(): void {
                 let self = this;
                 // TODO: service.findAllEmploymentSetting(self.employmentWTSetting.year()).done(listCode => {
-                service.findAllEmploymentSetting().done(listCode => {
-                    self.alreadySettingEmployments(_.map(listCode, function(code) {
-                        return { code: code, isAlreadySetting: true };
+                service.findAllEmploymentSetting().done(listEmpl => {
+                    self.alreadySettingEmployments(_.map(listEmpl, function(item) {
+                        return { code: item.employmentCode, isAlreadySetting: true };
                     }));
                 });
             }
