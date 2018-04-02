@@ -4,6 +4,7 @@ module nts.uk.at.view.kmk004.d {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             screenModel.postBindingProcess();
+            $('#worktimeYearPicker').focus();
             
             $("#sidebar").ntsSideBar("active", 2);
         });
