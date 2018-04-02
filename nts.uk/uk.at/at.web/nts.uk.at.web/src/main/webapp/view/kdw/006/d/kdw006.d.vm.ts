@@ -34,19 +34,20 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                 dataSource: self.functionalRestriction(),
                 primaryKey: 'functionNo',
                 virtualization: true,
-                virtualizationMode: 'continuous',
+                virtualizationMode: 'continuous',  
+                hidePrimaryKey: true,
                 columns: [
-                    { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px', hidden: true },
+                    { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px' },
                     { headerText: getText('KDW006_49'), key: 'displayName', dataType: 'string', width: '320px' },
                     { headerText: getText('KDW006_50'), key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
                     { headerText: getText('KDW006_51'), key: 'description', dataType: 'string', width: '370px' }
                 ],
-                features: [  { 
-                                            name: 'Selection',
-                                            mode: 'row',
-                                            multipleSelection: true
-                                        }],
-               // ntsFeatures: [{ name: 'CopyPaste' }],
+                features: [{
+                    name: 'Selection',
+                    mode: 'row',
+                    multipleSelection: true
+                }],
+                // ntsFeatures: [{ name: 'CopyPaste' }],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
             });
         }
