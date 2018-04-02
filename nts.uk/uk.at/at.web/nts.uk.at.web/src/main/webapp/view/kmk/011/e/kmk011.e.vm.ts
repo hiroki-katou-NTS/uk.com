@@ -271,7 +271,7 @@ module nts.uk.at.view.kmk011.e {
                             });
                         } else {
                             response.forEach((item: any) => {
-                                if (_self.listWorkType().filter(e => e.code != item.businessTypeCode).length == 0) {
+                                if (_self.listWorkType().filter(e => e.code == item.businessTypeCode).length == 0) {
                                     _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
                                 }
                             });
