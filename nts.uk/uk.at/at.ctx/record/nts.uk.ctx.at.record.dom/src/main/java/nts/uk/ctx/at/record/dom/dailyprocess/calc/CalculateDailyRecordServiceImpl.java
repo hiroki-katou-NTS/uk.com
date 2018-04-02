@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -42,6 +43,11 @@ import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
@@ -58,6 +64,8 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculationMethodOfConstraintTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -212,7 +220,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		val copyIntegrationOfDaily = integrationOfDaily;
 		if (integrationOfDaily.getAffiliationInfor() == null) return integrationOfDaily;
 		// 実績データの計算
-		return this.calcDailyAttendancePerformance(integrationOfDaily);
+		return this.calcDailyAttendancePerformance(integrationOfDaily);		
 	}
 
 	
@@ -241,6 +249,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
+		/*日別実績(Work)の退避*/
+		val copyIntegrationOfDaily = integrationOfDaily;
 			
 		/*1日の計算範囲クラスを作成*/
 		val oneRange = createOneDayRange(integrationOfDaily);
@@ -359,7 +369,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//自動計算設定
 		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();
-		
+			
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		List<WorkTimezoneOtherSubHolTimeSet> subhol = new ArrayList<>();
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
@@ -513,6 +523,34 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		
+		
+//		//高須テスト用--------------------------------------------------------------------------------
+//		List<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<>();
+//		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(1),
+//										   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
+//										   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
+//		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(2),
+//				   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
+//				   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
+//		//日別実績の入退門　　
+//		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = Optional.of(new AttendanceLeavingGateOfDaily(employeeId,targetDate,attendanceLeavingGates));
+//		List<LogOnInfo> logOnInfo = new ArrayList<>();
+//		logOnInfo.add(new LogOnInfo(new PCLogOnNo(1),new TimeWithDayAttr(420),new TimeWithDayAttr(1200)));
+//		logOnInfo.add(new LogOnInfo(new PCLogOnNo(2),new TimeWithDayAttr(420),new TimeWithDayAttr(1200)));
+//		//日別実績のPCログオン情報　　　
+//		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = Optional.of(new PCLogOnInfoOfDaily(employeeId,targetDate,logOnInfo));
+//		
+//		//高須テスト用--------------------------------------------------------------------------------
+		
+	    //日別実績の入退門　　　　
+		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = manageReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate();
+		//日別実績のPCログオン情報　　　
+		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = manageReGetClass.getIntegrationOfDaily().getPcLogOnInfo();
+		//日別実績の出退勤
+		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = manageReGetClass.getIntegrationOfDaily().getAttendanceLeave();
+		//総拘束時間の計算
+		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = new CalculateOfTotalConstraintTime(new CompanyId(companyId),CalculationMethodOfConstraintTime.REQUEST_FROM_ENTRANCE_EXIT);
+		
 		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
 		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
  
@@ -566,30 +604,32 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					calcAtrOfDaily,
 					manageReGetClass.getSubHolTransferSetList(),
 					eachCompanyTimeSet,
+					attendanceLeavingGateOfDaily,
+					pCLogOnInfoOfDaily,
+					attendanceLeave,
 					forCalcDivergenceDto,
-					divergenceTimeList));
+					divergenceTimeList,
+					calculateOfTotalConstraintTime));
 	
-		
+	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+		  List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
+		       && editState.getYmd().equals(copyIntegrationOfDaily.getAffiliationInfor().getYmd()))
+		        .map(editState -> editState.getAttendanceItemId())
+		        .distinct()
+		        .collect(Collectors.toList());
 
-//		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
-				   && editState.getYmd().equals(copyIntegrationOfDaily.getAffiliationInfor().getYmd()))
-        .map(editState -> editState.getAttendanceItemId())
-        .distinct()
-        .collect(Collectors.toList());
-
-		IntegrationOfDaily calcResultIntegrationOfDaily = manageReGetClass.getIntegrationOfDaily();		
-		if(!attendanceItemIdList.isEmpty()) {
-			DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
-			List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		
-			DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(manageReGetClass.getIntegrationOfDaily());	
-			afterDailyRecordDto.merge(itemValueList);
-			//手修正された項目の値を計算前に戻す 		
-			calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
-		}
+		  IntegrationOfDaily calcResultIntegrationOfDaily = manageReGetClass.getIntegrationOfDaily();  
+		  if(!attendanceItemIdList.isEmpty()) {
+		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily); 
+		   List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
+		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(manageReGetClass.getIntegrationOfDaily()); 
+		   afterDailyRecordDto.merge(itemValueList);
+		   //手修正された項目の値を計算前に戻す   
+		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		  }
 			
 		/*日別実績への項目移送*/
-		//eturn integrationOfDaily;
+		//return integrationOfDaily;
 		return calcResultIntegrationOfDaily;
 	}
 	

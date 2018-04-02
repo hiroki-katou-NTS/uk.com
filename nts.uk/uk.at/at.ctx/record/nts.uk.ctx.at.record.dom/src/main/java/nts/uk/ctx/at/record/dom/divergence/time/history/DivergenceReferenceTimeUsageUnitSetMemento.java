@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import java.math.BigDecimal;
-
 public interface DivergenceReferenceTimeUsageUnitSetMemento {
 
 	/**
@@ -16,5 +14,5 @@ public interface DivergenceReferenceTimeUsageUnitSetMemento {
 	 *
 	 * @param workTypeUseSet the new work type use set
 	 */
-	void setWorkTypeUseSet(BigDecimal workTypeUseSet);
+	void setWorkTypeUseSet(boolean workTypeUseSet);
 }

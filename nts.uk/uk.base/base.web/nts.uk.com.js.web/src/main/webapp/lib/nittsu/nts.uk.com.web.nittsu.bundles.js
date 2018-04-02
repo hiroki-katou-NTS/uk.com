@@ -3346,8 +3346,12 @@ var nts;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
                 var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
-                function keepUsedLoginPage() {
-                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+                function keepUsedLoginPage(url) {
+                    if (url === undefined) {
+                        keepUsedLoginPage(location.current.serialize());
+                        return;
+                    }
+                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, url);
                 }
                 login.keepUsedLoginPage = keepUsedLoginPage;
                 function jumpToUsedLoginPage() {
@@ -21421,17 +21425,22 @@ var nts;
                             $self.igGrid(options);
                             return;
                         }
+                        dist.query(options.ntsFeatures);
                         if (options.hidePrimaryKey) {
                             _.forEach(options.columns, function (c) {
                                 if (c.key === options.primaryKey) {
                                     c.width = "1px";
+                                    if (columnSize.exists($self)) {
+                                        columnSize.save($self, c.key, 1);
+                                    }
+                                    feature.merge(options, feature.RESIZING, columnSize.createResizeOptions());
                                     return false;
                                 }
                             });
                         }
                         var flatCols = validation.scanValidators($self, options.columns);
                         // Cell color
-                        var cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
+                        var cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
                         $self.addClass('compact-grid nts-grid');
                         if ($self.closest(".nts-grid-wrapper").length === 0) {
                             $self.wrap($("<div class='nts-grid-wrapper'/>"));
@@ -21458,7 +21467,8 @@ var nts;
                                     onSelect: function (value) {
                                         var fs = this;
                                         var hiddenCount = fs.hiddenRows ? fs.hiddenRows.length : 0;
-                                        if (value && ++fs.quantity === (options.dataSource.length - hiddenCount)) {
+                                        var disableCount = fs.disableRows ? fs.disableRows.size : 0;
+                                        if (value && ++fs.quantity === (options.dataSource.length - hiddenCount - disableCount)) {
                                             fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
                                             fs.selectAll = true;
                                         }
@@ -21521,8 +21531,10 @@ var nts;
                                 };
                                 // Delete row
                                 var deleteRow = function () {
-                                    if ($self.data("igGrid") !== null)
+                                    if ($self.data("igGrid") !== null) {
+                                        $self.data("ntsRowDeleting", true);
                                         $self.data("igGridUpdating").deleteRow(rowId);
+                                    }
                                 };
                                 // Get control
                                 var ntsControl = ntsControls.getControl(controlDef.controlType);
@@ -21601,7 +21613,6 @@ var nts;
                         updating.addFeature(options);
                         options.autoCommit = true;
                         options.tabIndex = -1;
-                        dist.query(options.ntsFeatures);
                         // Decorate editor border
                         events.onCellClick($self);
                         // Common settings
@@ -21674,6 +21685,28 @@ var nts;
                             options.features.splice(replaceId, 1, newFeature);
                         }
                         feature_2.replaceBy = replaceBy;
+                        /**
+                         * Merge feature.
+                         */
+                        function merge(options, featureName, feature) {
+                            var findId = -1;
+                            var obj;
+                            _.forEach(options.features, function (f, id) {
+                                if (feature.name === featureName) {
+                                    obj = f;
+                                    findId = id;
+                                    return false;
+                                }
+                            });
+                            if (findId > -1) {
+                                _.merge(obj, feature);
+                                options.features.splice(findId, 1, obj);
+                            }
+                            else {
+                                options.features.push(feature);
+                            }
+                        }
+                        feature_2.merge = merge;
                         /**
                          * Check enable
                          */
@@ -22641,6 +22674,22 @@ var nts;
                             columnWidths[col.key] = parseInt(col.width);
                         }
                         /**
+                         * Exists.
+                         */
+                        function exists($grid) {
+                            return uk.localStorage.getItem(getStorageKey($grid)).isPresent();
+                        }
+                        columnSize.exists = exists;
+                        /**
+                         * Create resize options.
+                         */
+                        function createResizeOptions(key) {
+                            var resizing = { name: feature.RESIZING };
+                            resizing.columnSettings = [{ columnKey: key, allowResizing: false, minimumWidth: 0 }];
+                            return resizing;
+                        }
+                        columnSize.createResizeOptions = createResizeOptions;
+                        /**
                          * Load data
                          */
                         function load($grid) {
@@ -22789,13 +22838,13 @@ var nts;
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.ENABLE_ALL_CONTROLS:
-                                    enableNtsControls($grid, params[0], params[1]);
+                                    enableNtsControls($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DISABLE_CONTROL:
                                     disableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DISABLE_ALL_CONTROLS:
-                                    disableNtsControls($grid, params[0], params[1]);
+                                    disableNtsControls($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DIRECT_ENTER:
                                     var direction = $grid.data(internal.ENTER_DIRECT);
@@ -22849,9 +22898,40 @@ var nts;
                         /**
                          * Disable controls
                          */
-                        function disableNtsControls($grid, columnKey, controlType) {
+                        function disableNtsControls($grid, columnKey, controlType, header) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
+                            if (header && controlType === ntsControls.CHECKBOX) {
+                                var setting = $grid.data(internal.SETTINGS);
+                                if (setting && setting.descriptor && setting.descriptor.colIdxes) {
+                                    var key = setting.descriptor.colIdxes[columnKey];
+                                    var cellElm = void 0;
+                                    var headerCells = setting.descriptor.headerCells;
+                                    if (!headerCells) {
+                                        cellElm = setting.descriptor.headerParent.find("th").filter(function () {
+                                            var c = $(this);
+                                            var id = c.attr("id");
+                                            if (!id)
+                                                return false;
+                                            var parts = id.split("_");
+                                            id = parts[parts.length - 1];
+                                            return c.css("display") !== "none" && id === columnKey;
+                                        });
+                                    }
+                                    else {
+                                        var cells = headerCells.filter(function (c) {
+                                            return c.css("display") !== "none";
+                                        });
+                                        cellElm = cells[key];
+                                    }
+                                    if (cellElm) {
+                                        var control = ntsControls.getControl(controlType);
+                                        if (control) {
+                                            control.disable(cellElm);
+                                        }
+                                    }
+                                }
+                            }
                             for (var i = 0; i < ds.length; i++) {
                                 var id = ds[i][primaryKey];
                                 disableNtsControlAt($grid, id, columnKey, controlType);
@@ -22864,6 +22944,37 @@ var nts;
                         function enableNtsControls($grid, columnKey, controlType) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
+                            if (header && controlType === ntsControls.CHECKBOX) {
+                                var setting = $grid.data(internal.SETTINGS);
+                                if (setting && setting.descriptor && setting.descriptor.colIdxes) {
+                                    var key = setting.descriptor.colIdxes[columnKey];
+                                    var cellElm = void 0;
+                                    var headerCells = setting.descriptor.headerCells;
+                                    if (!headerCells) {
+                                        cellElm = setting.descriptor.headerParent.find("th").filter(function () {
+                                            var c = $(this);
+                                            var id = c.attr("id");
+                                            if (!id)
+                                                return false;
+                                            var parts = id.split("_");
+                                            id = parts[parts.length - 1];
+                                            return c.css("display") !== "none" && id === columnKey;
+                                        });
+                                    }
+                                    else {
+                                        var cells = headerCells.filter(function (c) {
+                                            return c.css("display") !== "none";
+                                        });
+                                        cellElm = cells[key];
+                                    }
+                                    if (cellElm) {
+                                        var control = ntsControls.getControl(controlType);
+                                        if (control) {
+                                            control.enable(cellElm);
+                                        }
+                                    }
+                                }
+                            }
                             for (var i = 0; i < ds.length; i++) {
                                 var id = ds[i][primaryKey];
                                 enableNtsControlAt($grid, id, columnKey, controlType);
@@ -22878,9 +22989,10 @@ var nts;
                             var control = ntsControls.getControl(controlType);
                             if (uk.util.isNullOrUndefined(control))
                                 return;
-                            control.disable($(cellContainer));
-                            if (!$(cellContainer).hasClass(color.Disable))
-                                $(cellContainer).addClass(color.Disable);
+                            var $cellContainer = $(cellContainer);
+                            control.disable($cellContainer);
+                            if (!$cellContainer.hasClass(color.Disable))
+                                $cellContainer.addClass(color.Disable);
                             color.pushDisable($grid, { id: rowId, columnKey: columnKey });
                         }
                         /**
@@ -22891,8 +23003,9 @@ var nts;
                             var control = ntsControls.getControl(controlType);
                             if (uk.util.isNullOrUndefined(control))
                                 return;
-                            control.enable($(cellContainer));
-                            $(cellContainer).removeClass(color.Disable);
+                            var $cellContainer = $(cellContainer);
+                            control.enable($cellContainer);
+                            $cellContainer.removeClass(color.Disable);
                             color.popDisable($grid, { id: rowId, columnKey: columnKey });
                         }
                         /**
@@ -22903,26 +23016,14 @@ var nts;
                             var primaryKey = $grid.igGrid("option", "primaryKey");
                             if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX)
                                 return;
-                            var setting = $grid.data(internal.SETTINGS);
-                            var states = setting.disableStates;
-                            var _loop_3 = function (i) {
-                                var id = ds[i][primaryKey];
-                                var cols = void 0;
-                                if (states && (cols = states[id])) {
-                                    var found_1 = false;
-                                    cols.forEach(function (c, i) {
-                                        if (c === key) {
-                                            found_1 = true;
-                                            return false;
-                                        }
-                                    });
-                                    if (found_1)
-                                        return "continue";
-                                }
-                                updating.updateCell($grid, id, key, true, undefined, true);
-                            };
+                            var cbSelect = $grid.data(internal.CB_SELECTED);
+                            var colCb = cbSelect[key];
                             for (var i = 0; i < ds.length; i++) {
-                                _loop_3(i);
+                                var id = ds[i][primaryKey];
+                                if (colCb && colCb.disableRows
+                                    && colCb.disableRows.has(id))
+                                    continue;
+                                updating.updateCell($grid, id, key, true, undefined, true);
                             }
                         }
                         /**
@@ -22933,26 +23034,13 @@ var nts;
                             var primaryKey = $grid.igGrid("option", "primaryKey");
                             if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX)
                                 return;
-                            var setting = $grid.data(internal.SETTINGS);
-                            var states = setting.disableStates;
-                            var _loop_4 = function (i) {
-                                var id = ds[i][primaryKey];
-                                var cols = void 0;
-                                if (states && (cols = states[id])) {
-                                    var found_2 = false;
-                                    cols.forEach(function (c, i) {
-                                        if (c === key) {
-                                            found_2 = true;
-                                            return false;
-                                        }
-                                    });
-                                    if (found_2)
-                                        return "continue";
-                                }
-                                updating.updateCell($grid, id, key, false, undefined, true);
-                            };
+                            var cbSelect = $grid.data(internal.CB_SELECTED);
+                            var colCb = cbSelect[key];
                             for (var i = 0; i < ds.length; i++) {
-                                _loop_4(i);
+                                var id = ds[i][primaryKey];
+                                if (colCb && colCb.disableRows && colCb.disableRows.has(id))
+                                    continue;
+                                updating.updateCell($grid, id, key, false, undefined, true);
                             }
                         }
                         /**
@@ -23146,23 +23234,26 @@ var nts;
                                     .on("change", function () {
                                     var $cb = $(this);
                                     var selected = $cb.is(":checked");
-                                    _.forEach(options.dataSource, function (r) {
-                                        if (!r)
-                                            return;
-                                        var id = r[options.primaryKey];
-                                        if (columnConf && columnConf.hiddenRows
-                                            && columnConf.hiddenRows.some(function (v) { return v === id; }))
-                                            return;
-                                        updating.updateCell($grid, id, ui.columnKey, selected, undefined, true);
-                                    });
                                     var cbSelectCols = $grid.data(internal.CB_SELECTED);
                                     var cbSelectConf = cbSelectCols[column[0]];
                                     if (!cbSelectConf)
                                         return;
+                                    _.forEach(options.dataSource, function (r) {
+                                        if (!r)
+                                            return;
+                                        var id = r[options.primaryKey];
+                                        if (cbSelectConf && (cbSelectConf.hiddenRows
+                                            && cbSelectConf.hiddenRows.some(function (v) { return v === id; }))
+                                            || (cbSelectConf.disableRows
+                                                && cbSelectConf.disableRows.has(id)))
+                                            return;
+                                        updating.updateCell($grid, id, ui.columnKey, selected, undefined, true);
+                                    });
                                     cbSelectConf.selectAll = selected;
                                     if (selected) {
                                         var hiddenCount = cbSelectConf.hiddenRows ? cbSelectConf.hiddenRows.length : 0;
-                                        cbSelectConf.quantity = options.dataSource.length - hiddenCount;
+                                        var disableCount = cbSelectConf.disableRows ? cbSelectConf.disableRows.size : 0;
+                                        cbSelectConf.quantity = options.dataSource.length - hiddenCount - disableCount;
                                         return;
                                     }
                                     cbSelectConf.quantity = 0;
@@ -23276,7 +23367,17 @@ var nts;
                                         }
                                     }
                                 });
-                                _.forEach(options, function (opt) {
+                                var distinction = data.controlDef.distinction;
+                                var switchOptions;
+                                if (distinction && (switchOptions = distinction[data.rowId])) {
+                                    switchOptions = options.filter(function (o) {
+                                        return switchOptions.indexOf(o.value) > -1;
+                                    });
+                                }
+                                else {
+                                    switchOptions = options;
+                                }
+                                _.forEach(switchOptions, function (opt) {
                                     var value = opt[optionsValue];
                                     var text = opt[optionsText];
                                     var btn = $('<button>').text(text).css("height", "26px")
@@ -24148,7 +24249,7 @@ var nts;
                                     var targetColumn = targetCol;
                                     // Errors
                                     var comboErrors = [];
-                                    var _loop_5 = function () {
+                                    var _loop_3 = function () {
                                         var nextColumn = void 0;
                                         var columnKey = targetColumn.key;
                                         var cellElement = self.$grid.igGrid("cellById", $gridRow.data("id"), columnKey);
@@ -24206,7 +24307,7 @@ var nts;
                                         targetIndex = nextColumn.index;
                                     };
                                     for (var i = 0; i < row.length; i++) {
-                                        var state_1 = _loop_5();
+                                        var state_1 = _loop_3();
                                         if (state_1 === "break")
                                             break;
                                     }
@@ -24443,7 +24544,13 @@ var nts;
                             options.rendered = function (evt, ui) {
                                 var $grid = $(evt.target);
                                 events.Handler.pull($grid, options).turnOn();
-                                $(this).data(internal.CB_SELECTED, cbSelectionColumns);
+                                var cbSelect = $grid.data(internal.CB_SELECTED);
+                                if (cbSelect) {
+                                    _.merge(cbSelect, cbSelectionColumns);
+                                }
+                                else {
+                                    $grid.data(internal.CB_SELECTED, cbSelectionColumns);
+                                }
                                 // Bind events for fixed table part
                                 var $fixedTbl = fixedColumns.getFixedTable($grid);
                                 if ($fixedTbl.length > 0) {
@@ -24915,26 +25022,80 @@ var nts;
                         color.Calculation = "ntsgrid-calc";
                         color.Disable = "ntsgrid-disable";
                         var CellFormatter = (function () {
-                            function CellFormatter($grid, features) {
+                            function CellFormatter($grid, features, ntsFeatures, flatCols) {
                                 this.$grid = $grid;
                                 // Cell
-                                this.cellStateFeatureDef = feature.find(features, feature.CELL_STATE);
-                                this.setStatesTable(features);
+                                this.cellStateFeatureDef = feature.find(ntsFeatures, feature.CELL_STATE);
+                                this.setStatesTable(ntsFeatures);
                                 // Row
-                                this.rowDisableFeatureDef = feature.find(features, feature.ROW_STATE);
+                                this.rowDisableFeatureDef = feature.find(ntsFeatures, feature.ROW_STATE);
                                 if (!uk.util.isNullOrUndefined(this.rowDisableFeatureDef)
                                     && !uk.util.isNullOrUndefined(this.rowDisableFeatureDef.rows)) {
                                     this.disableRows = _.groupBy(this.rowDisableFeatureDef.rows, "rowId");
+                                    this.addDisableRows(features, ntsFeatures, flatCols);
                                 }
                                 // Text color
-                                this.textColorFeatureDef = feature.find(features, feature.TEXT_COLOR);
-                                this.setTextColorsTableMap(features);
+                                this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
+                                this.setTextColorsTableMap(ntsFeatures);
                             }
+                            /**
+                             * Add disable rows.
+                             */
+                            CellFormatter.prototype.addDisableRows = function (features, ntsFeatures, flatCols) {
+                                var self = this;
+                                var sheetMng = self.$grid.data(internal.SHEETS);
+                                var columns;
+                                if (sheetMng) {
+                                    columns = sheetMng.sheetColumns[sheetMng.currentSheet];
+                                }
+                                else {
+                                    var sheetFt_1 = feature.find(ntsFeatures, feature.SHEET);
+                                    if (sheetFt_1) {
+                                        var sheetDf_1 = sheetFt_1.sheets.filter(function (s) {
+                                            return s.name === sheetFt_1.initialDisplay;
+                                        })[0];
+                                        if (!sheetDf_1)
+                                            return;
+                                        self.rowDisableFeatureDef.rows.forEach(function (i) {
+                                            sheetDf_1.columns.forEach(function (c) {
+                                                self.addDisableState(i.rowId, c);
+                                            });
+                                        });
+                                        var columnFixingFt_1 = feature.find(features, feature.COLUMN_FIX);
+                                        if (columnFixingFt_1) {
+                                            self.rowDisableFeatureDef.rows.forEach(function (i) {
+                                                columnFixingFt_1.columnSettings.forEach(function (c) {
+                                                    self.addDisableState(i.rowId, c.columnKey);
+                                                });
+                                            });
+                                        }
+                                        return;
+                                    }
+                                    else {
+                                        columns = flatCols;
+                                    }
+                                }
+                                if (columns) {
+                                    var setCellDisable_1 = function (cols) {
+                                        cols.forEach(function (c) {
+                                            if (c.group) {
+                                                setCellDisable_1(c.group);
+                                                return;
+                                            }
+                                            self.rowDisableFeatureDef.rows.forEach(function (i) {
+                                                self.addDisableState(i.rowId, c.key);
+                                            });
+                                        });
+                                    };
+                                    setCellDisable_1(columns);
+                                }
+                            };
                             /**
                              * Set states table
                              */
                             CellFormatter.prototype.setStatesTable = function (features) {
                                 var _this = this;
+                                var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef))
                                     return;
                                 var rowIdName = this.cellStateFeatureDef.rowId;
@@ -24944,6 +25105,9 @@ var nts;
                                 this.rowStates = _.groupBy(this.statesTable, rowIdName);
                                 _.forEach(this.rowStates, function (value, key) {
                                     _this.rowStates[key] = _.groupBy(_this.rowStates[key], function (item) {
+                                        if (item[stateName].indexOf(color.Disable) > -1) {
+                                            self.addDisableState(item[rowIdName], item[columnKeyName]);
+                                        }
                                         return item[columnKeyName];
                                     });
                                 });
@@ -25053,7 +25217,7 @@ var nts;
                                             var disableRow = self.disableRows[cell.id];
                                             if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                                 $gridCell.addClass(color.Disable);
-                                                self.addDisableState(cell.id, cell.columnKey);
+                                                //                                    self.addDisableState(cell.id, cell.columnKey);
                                             }
                                         }
                                         // Set cell states
@@ -25065,8 +25229,7 @@ var nts;
                                                 return;
                                             _.forEach(cellState[0][stateName], function (stt) {
                                                 $gridCell.addClass(stt);
-                                                if (stt === color.Disable)
-                                                    self.addDisableState(cell.id, cell.columnKey);
+                                                //                                    if (stt === color.Disable) self.addDisableState(cell.id, cell.columnKey);
                                             });
                                         }
                                     }, 0);
@@ -25079,25 +25242,22 @@ var nts;
                              */
                             CellFormatter.prototype.addDisableState = function (id, key) {
                                 var self = this;
-                                var setting = self.$grid.data(internal.SETTINGS);
-                                if (!setting)
+                                var cbSelect = self.$grid.data(internal.CB_SELECTED);
+                                if (!cbSelect) {
+                                    cbSelect = {};
+                                    self.$grid.data(internal.CB_SELECTED, cbSelect);
+                                }
+                                var cbColConf = cbSelect[key];
+                                if (!cbColConf) {
+                                    var ds = new Set();
+                                    ds.add(id);
+                                    cbSelect[key] = { disableRows: ds };
                                     return;
-                                if (!setting.disableStates) {
-                                    setting.disableStates = {};
-                                    var cs = new Set();
-                                    cs.add(key);
-                                    setting.disableStates[id] = cs;
-                                    return;
                                 }
-                                var cols = setting.disableStates[id];
-                                if (!cols) {
-                                    var cs = new Set();
-                                    cs.add(key);
-                                    setting.disableStates[id] = cs;
+                                if (!cbColConf.disableRows) {
+                                    cbColConf.disableRows = new Set();
                                 }
-                                else {
-                                    setting.disableStates[id].add(key);
-                                }
+                                cbColConf.disableRows.add(id);
                             };
                             /**
                              * Style common controls.
@@ -25117,7 +25277,7 @@ var nts;
                                     if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                         cell.$element.addClass(color.Disable);
                                         utils.disableNtsControl($grid, cell, controlType);
-                                        self.addDisableState(cell.id, cell.columnKey);
+                                        //                            self.addDisableState(cell.id, cell.columnKey);
                                     }
                                 }
                                 // Set cell states
@@ -25130,7 +25290,7 @@ var nts;
                                     _.forEach(cellState[0][stateName], function (stt) {
                                         if (stt === color.Disable && !cell.$element.hasClass(color.Disable)) {
                                             utils.disableNtsControl($grid, cell, controlType);
-                                            self.addDisableState(cell.id, cell.columnKey);
+                                            //                                self.addDisableState(cell.id, cell.columnKey);
                                         }
                                         cell.$element.addClass(stt);
                                     });
@@ -25914,10 +26074,11 @@ var nts;
                                     setting.descriptor.fixedColumns = owner._fixedColumns;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
+                                    setting.descriptor.headerParent = owner._headerParent;
                                     return;
                                 }
                                 setting.descriptor.update(startRow, owner._virtualRowCount, owner._virtualDom);
-                                if (!setting.descriptor.keyIdxes) {
+                                if (!setting.descriptor.keyIdxes || $grid.data("ntsRowDeleting")) {
                                     var pk_2 = owner.dataSource.settings.primaryKey;
                                     var keyIdxes_2 = {};
                                     if (owner.dataSource._origDs) {
@@ -25928,10 +26089,13 @@ var nts;
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
+                                    setting.descriptor.headerParent = owner._headerParent;
+                                    $grid.data("ntsRowDeleting", false);
                                 }
                                 if (rebuild) {
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
+                                    setting.descriptor.headerParent = owner._headerParent;
                                 }
                             });
                         }

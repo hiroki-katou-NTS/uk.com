@@ -25,5 +25,5 @@ public class AttendanceLeavingGate {
 		this.workNo = workNo;
 		this.attendance = Optional.ofNullable(attendance);
 		this.leaving = Optional.ofNullable(leaving);
-	}
+	}	
 }

@@ -85,14 +85,10 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	@Override
 	public DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain) {
-		if(domain.getWorkInformation() != null) {
-			this.employeeId(domain.getWorkInformation().getEmployeeId());
-			this.workingDate(domain.getWorkInformation().getYmd());
-		}
 		this.withWorkInfo(domain.getWorkInformation());
 		this.withCalcAttr(domain.getCalAttr());
 		this.withAffiliationInfo(domain.getAffiliationInfor());
-		if(!CollectionUtil.isEmpty(domain.getEmployeeError())) {
+		if(!domain.getEmployeeError().isEmpty()) {
 			this.withEmployeeErrors(domain.getEmployeeError().get(0));
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
@@ -106,7 +102,6 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withAnyItems(domain.getAnyItemValue().orElse(null));
 		this.withEditStates(domain.getEditState());
 		this.withTemporaryTime(domain.getTempTime().orElse(null));
-		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
 		return this;
 	}
 	
