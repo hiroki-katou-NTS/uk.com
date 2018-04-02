@@ -63,6 +63,9 @@ module nts.uk.at.view.kaf011.shr {
             employeeName: string;
             drawalReqSet: any;
             appTypeSet: any;
+            absApp: any;
+            application: any;
+            recApp: any;
         }
 
         export interface IAppTypeSet {
@@ -163,18 +166,19 @@ module nts.uk.at.view.kaf011.shr {
             wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
-            appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
+            appDate: KnockoutObservable<String> = ko.observable(moment().format('yyyy/MM/dd'));
             changeWorkHoursType: KnockoutObservable<number> = ko.observable(0);
 
             constructor() {
                 let self = this;
                 self.wkTypeCD.subscribe((newWkType) => {
-                    block.invisible();
+                    let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                    if (!vm.screenModeNew()) { return; }
                     let changeWkTypeParam = {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
-
                     };
+                    block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         if (data) {
                             if (data.timezoneUseDtos) {
@@ -210,10 +214,21 @@ module nts.uk.at.view.kaf011.shr {
                 });
 
                 self.appDate.subscribe((newDate) => {
-                    if (newDate.length > 10) {
-                        return;
-                    }
-                    self.changeDate();
+                    block.invisible();
+                    let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                        changeDateParam = {
+                            holidayDate: vm.absWk().appDate(),
+                            takingOutDate: vm.recWk().appDate(),
+                            comType: vm.appComSelectedCode(),
+                            uiType: 0
+
+                        }
+                    service.changeDay(changeDateParam).done((data) => {
+                        vm.employeeID(data.employeeID);
+                        vm.prePostSelectedCode(data.preOrPostType);
+                    }).always(() => {
+                        block.clear();
+                    });;
                 });
             }
 
@@ -236,35 +251,32 @@ module nts.uk.at.view.kaf011.shr {
             }
 
             showWorkingTime1() {
-
                 let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                if (self.wkType().workAtr() == 0 || vm.drawalReqSet().deferredWorkTimeSelect() != 0) {
+                if (self.wkType().workAtr() == 0) {
                     return false;
+                }
+                if (self.wkType().workAtr() == 1) {
+                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 0) {
+                        return false;
+                    }
+                    if (vm.drawalReqSet().deferredWorkTimeSelect() != 1) {
+                        return true;
+                    }
+
+                }
+                if (self.wkType().workAtr() == 2) {
+                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 0) {
+                        return false;
+                    }
+                    if (vm.drawalReqSet().deferredWorkTimeSelect() != 1) {
+                        return true;
+                    }
                 }
                 return true;
             }
 
-            changeDate() {
-                block.invisible();
-                let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
-                    changeDateParam = {
-                        holidayDate: vm.absWk().appDate(),
-                        takingOutDate: vm.recWk().appDate(),
-                        comType: vm.appComSelectedCode(),
-                        uiType: 0
-
-                    }
-                service.changeDay(changeDateParam).done((data) => {
-                    vm.employeeID(data.employeeID);
-                    vm.prePostSelectedCode(data.preOrPostType);
-                    vm.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
-                }).always(() => {
-                    block.clear();
-                });;
-            }
-
             parseText(date) {
-                return nts.uk.time.formatDate(new Date(date()), "yyyy/MM/dd");
+                return nts.uk.time.formatDate(new Date(date()), "YYYY/MM/DD");
             }
 
             parseTime(value) {
@@ -378,7 +390,7 @@ module nts.uk.at.view.kaf011.shr {
             applicationReason: string;
             prePostAtr: number;
             enteredPersonSID: string;
-            version: number;
+            appVersion: number;
         }
         export interface IChangeWorkType {
             timezoneUseDtos: Array<ITimezoneUse>;

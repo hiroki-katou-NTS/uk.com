@@ -48,7 +48,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -169,7 +168,7 @@ public class HolidayShipmentScreenAFinder {
 		takingOutWkTypeCD = takingOutWkTimeCD = holiDayWkTypeCD = holidayWkTimeCD = null;
 		// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 		commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD, deadDate,
-				holiDayWkTypeCD, holidayWkTimeCD, output);
+				holiDayWkTypeCD, holidayWkTimeCD, output, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		if (wkTimeCD != null) {
 			String wkTypeCD = output.getRecWkTypes().size() > 0 ? output.getRecWkTypes().get(0).getWorkTypeCode() : "";
@@ -207,10 +206,10 @@ public class HolidayShipmentScreenAFinder {
 		return output;
 	}
 
-	private void changeAppDate(GeneralDate takingOutDate, GeneralDate holidayDate, String companyID, String employeeID,
+	private void changeAppDate(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
 			int uiType, HolidayShipmentDto output) {
 		// アルゴリズム「基準申請日の決定」を実行する
-		GeneralDate baseDate = DetRefDate(takingOutDate, holidayDate);
+		GeneralDate baseDate = DetRefDate(recDate, absDate);
 		int rootAtr = EmploymentRootAtr.APPLICATION.value;
 		AppCommonSettingOutput appCommonSet = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID, rootAtr, ApplicationType.BREAK_TIME_APPLICATION, baseDate);
@@ -312,7 +311,7 @@ public class HolidayShipmentScreenAFinder {
 
 	public void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate recDate,
 			String recWkTypeCD, String recWkTimeCD, GeneralDate absDate, String absWkTypeCD, String absWkTimeCD,
-			HolidayShipmentDto output) {
+			HolidayShipmentDto output, AppCommonSettingOutput appSetOutput) {
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
 		if (withDrawalReqSetOpt.isPresent()) {
@@ -324,7 +323,7 @@ public class HolidayShipmentScreenAFinder {
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 		// アルゴリズム「基準日別設定の取得」を実行する
 		getDateSpecificSetting(companyID, employeeID, refDate, false, recWkTypeCD, recWkTimeCD, absWkTypeCD,
-				absWkTimeCD, appCommonSettingOutput, output);
+				absWkTimeCD, appSetOutput, output);
 		// アルゴリズム「実績の取得」を実行する
 		getAchievement(companyID, employeeID, recDate);
 		// アルゴリズム「実績の取得」を実行する
@@ -341,7 +340,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private void getDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean getSetting,
+	public void getDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean getSetting,
 			String recWkTypeCD, String recWkTimeCode, String absWkTypeCD, String absWkTimeCD,
 			AppCommonSettingOutput appCommonSet, HolidayShipmentDto output) {
 		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
@@ -368,12 +367,12 @@ public class HolidayShipmentScreenAFinder {
 
 			}
 			// アルゴリズム「振出用勤務種類の取得」を実行する
-			output.setRecWkTypes(getWorkTypeFor(companyID, employmentCD, recWkTypeCD).stream()
+			output.setRecWkTypes(getWorkTypeFor(companyID, employmentCD, recWkTypeCD, appCommonSet).stream()
 					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 
 			// INPUT.振出就業時間帯コード＝設定なし
 			// アルゴリズム「振休用勤務種類の取得」を実行する
-			output.setAbsWkTypes(getWorkTypeFor(companyID, employmentCD, absWkTypeCD).stream()
+			output.setAbsWkTypes(getWorkTypeFor(companyID, employmentCD, absWkTypeCD, appCommonSet).stream()
 					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 			// INPUT.振休就業時間帯コード＝設定なし
 		}
@@ -397,14 +396,15 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private List<WorkType> getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD) {
+	private List<WorkType> getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD,
+			AppCommonSettingOutput appCommonSet) {
 
 		// ドメインモデル「勤務種類」を取得する
 
 		List<WorkType> wkTypes = wkTypeRepo.findWorkTypeForPause(companyID);
 		// アルゴリズム「対象勤務種類の抽出」を実行する
 		List<WorkType> outputWkTypes = extractTargetWkTypes(companyID, employmentCode, BreakOutType.PAUSE.value,
-				wkTypes);
+				wkTypes, appCommonSet);
 		if (!StringUtils.isEmpty(wkTypeCD)) {
 			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
 			appliedWorkType(companyID, outputWkTypes, wkTypeCD);
@@ -430,8 +430,8 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	private List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType,
-			List<WorkType> wkTypes) {
-		Optional<AppEmploymentSetting> empSetOpt = appCommonSettingOutput.appEmploymentWorkType.stream()
+			List<WorkType> wkTypes, AppCommonSettingOutput appCommonSet) {
+		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
 				.filter(x -> x.getHolidayOrPauseType() == breakOutType).findFirst();
 		if (empSetOpt.isPresent()) {
 			AppEmploymentSetting empSet = empSetOpt.get();
@@ -460,7 +460,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private HolidayShipmentDto commonProcessBeforeStart(ApplicationType appType, String companyID, String employeeID,
+	public HolidayShipmentDto commonProcessBeforeStart(ApplicationType appType, String companyID, String employeeID,
 			GeneralDate baseDate) {
 		HolidayShipmentDto result = new HolidayShipmentDto();
 		int rootAtr = 1;

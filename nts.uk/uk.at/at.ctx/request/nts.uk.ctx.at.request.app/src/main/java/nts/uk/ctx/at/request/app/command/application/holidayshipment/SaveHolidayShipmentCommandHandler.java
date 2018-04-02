@@ -129,12 +129,16 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		SaveHolidayShipmentCommand command = context.getCommand();
 		sID = command.getAppCmd().getEnteredPersonSID();
-		absDate = GeneralDate.fromString(command.getAbsCmd().getAppDate(), DATE_FORMAT);
+		absDate = convertDate(command.getAbsCmd().getAppDate());
 		recDate = GeneralDate.fromString(command.getRecCmd().getAppDate(), DATE_FORMAT);
 		comType = command.getComType();
 		// アルゴリズム「振休振出申請の新規登録」を実行する
 		createNewForHolidayBreakge(command);
 
+	}
+
+	private GeneralDate convertDate(String appDate) {
+		return GeneralDate.fromString(appDate.substring(0, 10), DATE_FORMAT);
 	}
 
 	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command) {
@@ -429,7 +433,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = preconditionCheck(command);
+		appReason = preconditionCheck(command, companyID, appType);
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawReqSet = withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「申請前勤務種類の取得」を実行する takingout
@@ -579,9 +583,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	public String preconditionCheck(SaveHolidayShipmentCommand command) {
+	public String preconditionCheck(SaveHolidayShipmentCommand command, String companyID, ApplicationType appType) {
 		// アルゴリズム「申請理由の生成と検査」を実行する
-		String reason = GenAndInspectionOfAppReason(command);
+		String reason = GenAndInspectionOfAppReason(command, companyID, appType);
 		// INPUT.振出申請に申請理由を設定する
 
 		if (isSaveRec()) {
@@ -640,7 +644,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		}
 	}
 
-	private String GenAndInspectionOfAppReason(SaveHolidayShipmentCommand command) {
+	private String GenAndInspectionOfAppReason(SaveHolidayShipmentCommand command, String companyID,
+			ApplicationType appType) {
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
 				.getAppTypeDiscreteSettingByAppType(companyID, appType.value).get();
 		String appReason = Strings.EMPTY;

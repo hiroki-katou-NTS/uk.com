@@ -130,7 +130,7 @@ public class HolidayShipmentScreenBFinder {
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
-						absAppDate, absWorkTypeCD, absWorkTimeCD, output);
+						absAppDate, absWorkTypeCD, absWorkTimeCD, output,appCommonSettingOutput);
 
 			}
 		}
