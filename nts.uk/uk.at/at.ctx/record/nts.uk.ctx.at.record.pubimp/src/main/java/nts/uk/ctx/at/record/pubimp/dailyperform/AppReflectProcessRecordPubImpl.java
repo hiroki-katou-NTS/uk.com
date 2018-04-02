@@ -8,12 +8,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.DegreeReflectionAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ChangeAppGobackAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.GobackAppParameter;
@@ -21,6 +21,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.Gob
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PreGoBackReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.PriorStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflectAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimeAppPara;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
@@ -138,11 +140,12 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre) {
-		AbsenceReflectParameter absencePara = new AbsenceReflectParameter(param.getEmployeeId(), 
+		CommonReflectParameter absencePara = new CommonReflectParameter(param.getEmployeeId(), 
 				param.getBaseDate(), 
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class), 
 				param.isScheTimeReflectAtr(), 
 				param.getWorkTypeCode(), 
+				"",
 				EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class), 
 				EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class)); 
 		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(absencePara, isPre);
@@ -153,8 +156,22 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param) {
-		// TODO Auto-generated method stub
-		return null;
+		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(param.getHolidayWorkPara().getWorkTypeCode(),
+				param.getHolidayWorkPara().getWorkTimeCode(),
+				param.getHolidayWorkPara().getMapWorkTimeFrame(),
+				param.getHolidayWorkPara().getNightTime(),
+				EnumAdaptor.valueOf(param.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
+				param.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(param.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
+				param.getBaseDate(),
+				param.isHolidayWorkReflectFlg(), 
+				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
+				param.isScheReflectFlg(),
+				appPara);
+		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);
+		
+		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
+				outputData.getReflectedState() == null? null : EnumAdaptor.valueOf(outputData.getReflectedState().value, ReasonNotReflectPubRecord.class));
 	}
 
 }

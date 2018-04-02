@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedS
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
 
@@ -26,6 +30,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private CalculateDailyRecordService calculate;
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
+	@Inject
+	private WorkInformationRepository workRepository;
 	@Override
 	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
 		try {
@@ -42,6 +48,16 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode()); 
 			workUpdate.updateWorkTimeType(reflectInfo, false);
+			//TODO can xac nhan lai xem co can phai lam khong
+			/*//予定勤種・就時反映後の予定勤種・就時を取得する
+			//勤種・就時反映後の予定勤種・就時を取得する
+			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
+			if(!optDailyData.isPresent()) {
+				return new ApplicationReflectOutput(EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
+						holidayWorkPara.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+			}
+			//予定開始終了時刻の反映
+			*/
 			//事前休出時間の反映
 			holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame());
 			//事前所定外深夜時間の反映
