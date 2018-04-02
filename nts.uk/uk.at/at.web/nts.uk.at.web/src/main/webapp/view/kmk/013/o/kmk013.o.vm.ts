@@ -45,17 +45,25 @@ module nts.uk.at.view.kmk013.o {
                 var data = nts.uk.ui.windows.getShared('KMK013_0_Order');
                 if (data) {
                     self.vacationSortingOrderDisp.removeAll();
+                    let model;
                     for (var i = 0; i <= 3; i++) {
-                        if (data.substitute == i)
-                            self.vacationSortingOrderDisp.push(new ItemModel(0,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_376")));
-                        if (data.sixtyHour == i)
-                            self.vacationSortingOrderDisp.push(new ItemModel(1,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_377")));
-                        if (data.annual == i)
-                            self.vacationSortingOrderDisp.push(new ItemModel(2,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_378")));
-                        if (data.special == i)
-                            self.vacationSortingOrderDisp.push(new ItemModel(3,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_379")));
+                        if (data.substitute == i) {
+                            model = new ItemModel(0,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_376"));
+                        } else if (data.sixtyHour == i) {
+                            model = new ItemModel(1,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_377"));
+                        } else if (data.annual == i) {
+                            model = new ItemModel(2,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_378"));
+                        } else if (data.special == i) {
+                            model = new ItemModel(3,self.positionTextArray()[i],nts.uk.resource.getText("KMK013_379"));
+                        }
+                        if (i == 0) {
+                            self.currentVacation(model.name);
+                        }
+                        self.vacationSortingOrderDisp.push(model);
                     }
+                    
                 }
+                
                 
                 dfd.resolve();
                 
