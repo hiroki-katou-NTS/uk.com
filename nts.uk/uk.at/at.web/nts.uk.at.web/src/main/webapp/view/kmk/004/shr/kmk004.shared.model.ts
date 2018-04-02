@@ -1,4 +1,22 @@
 module nts.uk.at.view.kmk004.shared.model {
+    import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
+    
+    export function loadUsageUnitSetting(): JQueryPromise<any> {
+        return UsageUnitSettingService.findUsageUnitSetting();
+    }
+    
+    export class UsageUnitSetting {
+        employee: KnockoutObservable<boolean>;
+        employment: KnockoutObservable<boolean>;
+        workplace: KnockoutObservable<boolean>;
+
+        constructor() {
+            let self = this;
+            self.employee = ko.observable(true);
+            self.employment = ko.observable(true);
+            self.workplace = ko.observable(true);
+        }
+    }
 
     export class CompanyWTSetting {
         deformationLaborSetting: DeformationLaborSetting;

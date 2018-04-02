@@ -39,9 +39,9 @@
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="visible: true" style="display: none">
 				<li><a tabindex="-1"  href="#tabpanel-0" data-bind="click: function() { location.href='../a/index.xhtml'; }" >#{i18n.getText('Com_Company')}</a></li>
-				<li><a tabindex="-1" href="#tabpanel-0" data-bind="click: function() { location.href='../c/index.xhtml'; }" >#{i18n.getText('Com_Employment')}</a></li>
-				<li><a tabindex="-1" href="#tabpanel-0" data-bind="click: function() { location.href='../d/index.xhtml'; }" >#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a tabindex="1" href="#tabpanel-0" data-bind="click: function() { location.href='../b/index.xhtml'; }" class="active" >#{i18n.getText('Com_Person')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-1" data-bind="click: function() { location.href='../c/index.xhtml'; }, visible: usageUnitSetting.employment()" >#{i18n.getText('Com_Employment')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" data-bind="click: function() { location.href='../d/index.xhtml'; }, visible: usageUnitSetting.workplace()" >#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a tabindex="1" href="#tabpanel-3" data-bind="click: function() { location.href='../b/index.xhtml'; }, visible: usageUnitSetting.employee()">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -54,11 +54,13 @@
 			</div>
 			<div class="contents-area cf fixed-flex-layout" style="margin-left: 0px;">
 				<div id="ccgcomponent"></div>
-				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 10px; margin-left: 50px;"></div>
-				<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
-					<fieldset data-bind="with: worktimeVM">
-						<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
-					</fieldset>
+				<div style="margin-top: 30px;">
+					<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 10px; margin-left: 50px;"></div>
+					<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
+						<fieldset data-bind="with: worktimeVM">
+							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
+						</fieldset>
+					</div>
 				</div>
 			</div>
 		</ui:define>

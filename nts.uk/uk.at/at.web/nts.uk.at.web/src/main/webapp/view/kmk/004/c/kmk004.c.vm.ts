@@ -1,5 +1,8 @@
 module nts.uk.at.view.kmk004.c {
     export module viewmodel {
+        import Common = nts.uk.at.view.kmk004.shared.model;
+        import UsageUnitSetting = nts.uk.at.view.kmk004.shared.model.UsageUnitSetting;
+        import UsageUnitSettingDto =  nts.uk.at.view.kmk004.e.service.model.UsageUnitSettingDto
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
         import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;   
         import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;   
@@ -25,6 +28,7 @@ module nts.uk.at.view.kmk004.c {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             
             worktimeVM: WorktimeSettingVM.ScreenModel;
+            usageUnitSetting: UsageUnitSetting;
             
             // Employment list component.
             employmentComponentOption: any;
@@ -42,6 +46,7 @@ module nts.uk.at.view.kmk004.c {
                 let self = this;
                 self.isLoading = ko.observable(true);
                 
+                self.usageUnitSetting = new UsageUnitSetting();
                 // Datasource.
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK004_3"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -87,11 +92,19 @@ module nts.uk.at.view.kmk004.c {
                 self.isLoading(true);
 
                 // Load component.
-                self.worktimeVM.initialize().done(() => {
-                    WorktimeSettingVM.getStartMonth().done((month) => {
-                        self.startMonth = ko.observable(month);
-                        
-                        dfd.resolve();
+                Common.loadUsageUnitSetting().done((res: UsageUnitSettingDto) => {
+                    self.usageUnitSetting.employee(res.employee);
+                    self.usageUnitSetting.employment(res.employment);
+                    self.usageUnitSetting.workplace(res.workPlace);
+                    
+                    self.worktimeVM.initialize().done(() => {
+                        WorktimeSettingVM.getStartMonth().done((month) => {
+                            self.startMonth = ko.observable(month);
+                            
+                            dfd.resolve();
+                        }).fail(() => {
+                            nts.uk.ui.block.clear();
+                        });
                     }).fail(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -241,13 +254,16 @@ module nts.uk.at.view.kmk004.c {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), employmentCode: emplCode }
                     service.removeEmploymentSetting(command).done(() => {
-                        self.worktimeVM.isNewMode(true);
                         self.removeAlreadySettingEmployment(emplCode);
                         
-                        // TODO: bind new form
-//                        self.employmentWTSetting.updateData(ko.toJS(newEmpt));
+                        // new mode.
+                        self.worktimeVM.isNewMode(true);
+                        let newSetting = new WorktimeSettingDto();
+                        // Reserve selected year.
+                        newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
+                        // Update Full Data
+                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
                         
-                        // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {

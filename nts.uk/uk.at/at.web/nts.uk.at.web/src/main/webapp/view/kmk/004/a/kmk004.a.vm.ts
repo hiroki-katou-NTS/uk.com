@@ -1,6 +1,8 @@
 module nts.uk.at.view.kmk004.a {
     export module viewmodel {
-        import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
+        import Common = nts.uk.at.view.kmk004.shared.model;
+        import UsageUnitSetting = nts.uk.at.view.kmk004.shared.model.UsageUnitSetting;
+        import UsageUnitSettingDto =  nts.uk.at.view.kmk004.e.service.model.UsageUnitSettingDto
         import WorktimeSettingVM = nts.uk.at.view.kmk004.shr.worktime.setting.viewmodel;
         import DeformationLaborSetting = nts.uk.at.view.kmk004.shared.model.DeformationLaborSetting;   
         import FlexSetting = nts.uk.at.view.kmk004.shared.model.FlexSetting;   
@@ -71,6 +73,18 @@ module nts.uk.at.view.kmk004.a {
                 return dfd.promise();
             }
             
+            private loadUsageUnitSetting(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                Common.loadUsageUnitSetting().done((res: UsageUnitSettingDto) => {
+                    self.usageUnitSetting.employee(res.employee);
+                    self.usageUnitSetting.employment(res.employment);
+                    self.usageUnitSetting.workplace(res.workPlace);
+                    
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
             
             public saveCompanySettingNewest(): void {
                 let self = this;
@@ -169,21 +183,6 @@ module nts.uk.at.view.kmk004.a {
             }
             
             /**
-             * Load usage unit setting.
-             */
-            public loadUsageUnitSetting(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred<any>();
-                UsageUnitSettingService.findUsageUnitSetting().done(function(res: UsageUnitSettingService.model.UsageUnitSettingDto) {
-                    self.usageUnitSetting.employee(res.employee);
-                    self.usageUnitSetting.employment(res.employment);
-                    self.usageUnitSetting.workplace(res.workPlace);
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
-            /**
              * Clear all errors.
              */
             private clearError(): void {
@@ -209,19 +208,6 @@ module nts.uk.at.view.kmk004.a {
                 });
             }
         } // --- end ScreenModel
-        
-        export class UsageUnitSetting {
-            employee: KnockoutObservable<boolean>;
-            employment: KnockoutObservable<boolean>;
-            workplace: KnockoutObservable<boolean>;
-
-            constructor() {
-                let self = this;
-                self.employee = ko.observable(true);
-                self.employment = ko.observable(true);
-                self.workplace = ko.observable(true);
-            }
-        }
         
         export class CompanyWTSetting {
             deformationLaborSetting: DeformationLaborSetting;
