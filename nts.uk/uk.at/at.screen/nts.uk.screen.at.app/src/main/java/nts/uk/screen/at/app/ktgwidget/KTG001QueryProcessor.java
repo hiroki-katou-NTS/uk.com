@@ -50,9 +50,7 @@ public class KTG001QueryProcessor {
 			· Date (start date) <= Tightening start date
 			· Date (end date) <= closing end date + 1 month
 			· Route type <= Employment application*/
-
-		//PresenceDataApprovedImport result = dailyPerformanceAdapter.findByIdDateAndType(employeeID, closureStartDate, closureEndDate, 0);
-		
-		return null;
+		PresenceDataApprovedImport result = dailyPerformanceAdapter.findByIdDateAndType(employeeID, closureStartDate, closureEndDate, 0);
+		return result;
 	}
 }
