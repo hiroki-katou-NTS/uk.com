@@ -42,9 +42,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(1);
 
-        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+        drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
         showReason: KnockoutObservable<number> = ko.observable(0);
+
+        displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
+
+        appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
 
         constructor() {
             let self = this;
@@ -99,13 +103,21 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.appReasons(data.appReasons || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
-                self.comment(data.drawalReqSet || null);
+                self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
+                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
             }
+        }
+        validate() {
+
+            $(".combo-box").trigger("validate");
+
         }
 
         register() {
-            block.invisible();
+
+
             let self = this,
                 saveCmd: common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
@@ -123,7 +135,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 };
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
-
+            self.validate();
+            if (nts.uk.ui.errors.hasError()) { return; }
+            block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
                     self.clearData();

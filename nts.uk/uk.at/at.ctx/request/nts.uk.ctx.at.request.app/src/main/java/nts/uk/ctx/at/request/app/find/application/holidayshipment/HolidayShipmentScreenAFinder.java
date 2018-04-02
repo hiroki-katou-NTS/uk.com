@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
@@ -45,6 +46,9 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -117,6 +121,8 @@ public class HolidayShipmentScreenAFinder {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private BasicScheduleService basicService;
+	@Inject
+	private RequestSettingRepository reqSetRepo;
 
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
@@ -182,21 +188,21 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	public HolidayShipmentDto changeDay(String takingOutDateInput, String holidayDateImput, int comType, int uiType) {
+	public HolidayShipmentDto changeDay(String recDateInput, String absDateImput, int comType, int uiType) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		GeneralDate baseDate = GeneralDate.fromString(
-				comType == ApplicationCombination.Abs.value ? holidayDateImput : takingOutDateInput, DATE_FORMAT);
-		GeneralDate takingOutDate = comType == ApplicationCombination.Rec.value
-				? GeneralDate.fromString(takingOutDateInput, DATE_FORMAT) : null;
+		GeneralDate baseDate = GeneralDate
+				.fromString(comType == ApplicationCombination.Abs.value ? absDateImput : recDateInput, DATE_FORMAT);
+		GeneralDate recDate = comType == ApplicationCombination.Rec.value
+				? GeneralDate.fromString(recDateInput, DATE_FORMAT) : null;
 		GeneralDate holidayDate = comType == ApplicationCombination.Abs.value
-				? GeneralDate.fromString(holidayDateImput, DATE_FORMAT) : null;
+				? GeneralDate.fromString(absDateImput, DATE_FORMAT) : null;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
 
-		changeAppDate(takingOutDate, holidayDate, companyID, employeeID, uiType, output);
+		changeAppDate(recDate, holidayDate, companyID, employeeID, uiType, output);
 
 		return output;
 	}
@@ -467,6 +473,17 @@ public class HolidayShipmentScreenAFinder {
 		result.setRefDate(appCommonSettingOutput.generalDate);
 
 		result.setApplicationSetting(ApplicationSettingDto.convertToDto(appCommonSettingOutput.applicationSetting));
+		Optional<RequestSetting> reqSetOpt = reqSetRepo.findByCompany(companyID);
+		if (reqSetOpt.isPresent()) {
+			RequestSetting reqSet = reqSetOpt.get();
+			Optional<AppTypeSetDto> appTypeSetDtoOpt = AppTypeSetDto.convertToDto(reqSet).stream()
+					.filter(x -> x.getAppType().equals(appType.value)).findFirst();
+
+			if (appTypeSetDtoOpt.isPresent()) {
+				result.setAppTypeSet(appTypeSetDtoOpt.get());
+			}
+
+		}
 
 		result.setManualSendMailAtr(
 				appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value == 1 ? true : false);

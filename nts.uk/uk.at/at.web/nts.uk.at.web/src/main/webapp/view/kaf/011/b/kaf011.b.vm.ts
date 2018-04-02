@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         employeeName: KnockoutObservable<string> = ko.observable('');
 
-        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+        comment: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 

@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
@@ -18,9 +20,18 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalStatusForEmployee_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 /**
@@ -41,6 +52,16 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private MailSender mailsender;
+	
+	@Inject
+	private ClosureService closureService;
+	
+	/** The repository. */
+	@Inject
+	private ClosureRepository repository;
+	
+	@Inject
+	ClosureEmploymentRepository closureEmpRepo;
 
 	public ApprovalStatusMailTempDto findByType(int mailType) {
 		// 会社ID
@@ -425,5 +446,91 @@ public class ApprovalStatusFinder {
 	 */
 	private void getApprovalSttByDateOfPerson(String sId, String wkpId, Period period,
 			List<DailyConfirmDto> listDailyConfirm, SumCountDto sumCount) {
+	}
+	
+	/**
+	 * アルゴリズム「承認状況指定締め日取得」を実行する
+	 * Acquire approval situation designated closing date
+	 * @return approval situation
+	 */
+	public ApprovalComfirmDto findAllClosure() {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		int processingYm = 0;
+		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
+		//ドメインモデル「就業締め日」を取得する　<shared>
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		int selectedClosureId = 0;
+		List<ClosuresDto> closureDto = closureList.stream().map(x -> {
+			int closureId = x.getClosureId().value;
+			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
+				return new ClosureHistoryForComDto( x1.getClosureName().v(), x1.getClosureId().value, x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(), x1.getStartYearMonth().v().intValue());
+			}).collect(Collectors.toList());
+			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
+					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
+			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
+		}).collect(Collectors.toList());
+		
+		//ユーザー固有情報「選択中の就業締め」を取得する
+		//TODO neeed to get closureId init
+		
+		
+		//就業締め日（リスト）の先頭の締めIDを選択
+		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
+		if (closure.isPresent()) {
+			val closureId = closure.get().getClosureId();
+			selectedClosureId = closureId;
+			val closureOpt = this.repository.findById(companyId, closureId);
+			if (closureOpt.isPresent()) {
+				val closureItem = closureOpt.get();
+				// 当月の期間を算出する
+				val yearMonth = closureItem.getClosureMonth().getProcessingYm();
+				processingYm = yearMonth.v();
+				//アルゴリズム「承認状況指定締め期間設定」を実行する
+				//アルゴリズム「当月の期間を算出する」を実行する
+				DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, yearMonth);
+				startDate = closurePeriod.start();
+				endDate = closurePeriod.end();
+				//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+				listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
+			} else {
+				throw new RuntimeException("Could not find closure");
+			}
+		}
+		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmployeeCode);
+	}
+	
+	/**
+	 * アルゴリズム「承認状況指定締め期間設定」を実行する
+	 * @param closureId
+	 * @param closureDate
+	 * @return
+	 */
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId, int closureDate) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		int processingYmNew = 0;
+		// 当月の期間を算出する
+		YearMonth processingYm = new YearMonth(closureDate);
+		
+		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
+		Optional<Closure> closure = repository.findById(companyId, closureId);
+		if(!closure.isPresent()){
+			throw new RuntimeException("Could not find closure");
+		}
+		
+		val yearMonth = closure.get().getClosureMonth().getProcessingYm();
+		processingYmNew = yearMonth.v();
+		//アルゴリズム「当月の期間を算出する」を実行する
+		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
+		startDate = closurePeriod.start();
+		endDate = closurePeriod.end();
+		//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+		listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
+		return new ApprovalStatusPeriorDto(startDate, endDate, listEmployeeCode, processingYmNew);
 	}
 }
