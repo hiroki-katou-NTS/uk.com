@@ -116,6 +116,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     self.listCategoryItem.push(selectedCItem);
                     self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['itemNo']));
                     self.listSelectedCategoryItem.remove(selectedCItem);
+                    self.selectedCategoryItem(selectedCItem.itemNo);
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
                         self.listAcceptItem()[i].acceptItemNumber(i + 1);
                     }
@@ -123,6 +124,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                         self.selectedAcceptItem(self.listAcceptItem().length);
                     else
                         self.selectedAcceptItem.valueHasMutated();
+
+                    self.selectedCategoryItem(selectedCItem.itemNo);
                 }
             } else {
                 alertError({messageId: "Msg_897"});
@@ -139,6 +142,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
                 self.listCategoryItem.remove(selectedItem);
+                self.selectedAcceptItem(self.listAcceptItem().length);
                 if (selectedIndex >= self.listCategoryItem().length && self.listCategoryItem().length > 0)
                     self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 1].itemNo);
                 else
