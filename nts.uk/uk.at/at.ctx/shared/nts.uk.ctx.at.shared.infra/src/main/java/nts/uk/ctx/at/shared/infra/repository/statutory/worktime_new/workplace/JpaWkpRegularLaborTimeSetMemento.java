@@ -48,7 +48,7 @@ public class JpaWkpRegularLaborTimeSetMemento implements WkpRegularLaborTimeSetM
 	 */
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.entity.getKshstWkpRegLaborTimePK().setCid(workplaceId.v());
+		this.entity.getKshstWkpRegLaborTimePK().setWkpId(workplaceId.v());
 	}
 
 	/*
