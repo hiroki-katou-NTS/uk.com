@@ -359,13 +359,15 @@ public class HolidayShipmentScreenAFinder {
 
 			}
 			// アルゴリズム「振出用勤務種類の取得」を実行する
-			output.setRecWkTypes(getWorkTypeFor(companyID, employmentCD, recWkTypeCD, appCommonSet).stream()
-					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
+			output.setRecWkTypes(
+					getWorkTypeFor(companyID, employmentCD, recWkTypeCD, appCommonSet, BreakOutType.WORKING_DAY)
+							.stream().map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 
 			// INPUT.振出就業時間帯コード＝設定なし
 			// アルゴリズム「振休用勤務種類の取得」を実行する
-			output.setAbsWkTypes(getWorkTypeFor(companyID, employmentCD, absWkTypeCD, appCommonSet).stream()
-					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
+			output.setAbsWkTypes(
+					getWorkTypeFor(companyID, employmentCD, absWkTypeCD, appCommonSet, BreakOutType.HOLIDAY).stream()
+							.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 			// INPUT.振休就業時間帯コード＝設定なし
 		}
 
@@ -389,14 +391,19 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	private List<WorkType> getWorkTypeFor(String companyID, String employmentCode, String wkTypeCD,
-			AppCommonSettingOutput appCommonSet) {
+			AppCommonSettingOutput appCommonSet, BreakOutType workType) {
 
-		// ドメインモデル「勤務種類」を取得する
-
-		List<WorkType> wkTypes = wkTypeRepo.findWorkTypeForPause(companyID);
+		List<WorkType> wkTypes;
+		if (workType.equals(BreakOutType.HOLIDAY)) {
+			// ドメインモデル「勤務種類」を取得する
+			wkTypes = wkTypeRepo.findWorkTypeForPause(companyID);
+		} else {
+			// ドメインモデル「勤務種類」を取得する
+			wkTypes = wkTypeRepo.findWorkTypeForShorting(companyID);
+		}
 		// アルゴリズム「対象勤務種類の抽出」を実行する
-		List<WorkType> outputWkTypes = extractTargetWkTypes(companyID, employmentCode, BreakOutType.PAUSE.value,
-				wkTypes, appCommonSet);
+		List<WorkType> outputWkTypes = extractTargetWkTypes(companyID, employmentCode, workType.value, wkTypes,
+				appCommonSet);
 		if (!StringUtils.isEmpty(wkTypeCD)) {
 			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
 			appliedWorkType(companyID, outputWkTypes, wkTypeCD);
