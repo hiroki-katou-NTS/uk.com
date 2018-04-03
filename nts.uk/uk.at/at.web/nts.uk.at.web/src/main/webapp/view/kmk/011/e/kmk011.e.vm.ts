@@ -278,6 +278,8 @@ module nts.uk.at.view.kmk011.e {
                         }
                         dfd.resolve();
                     } else {
+                        _self.listWorkType([]);
+                        _self.currentCode(null);
                         _self.wkTypeCode("");
                         _self.wkTypeName("");
                         _self.enable_button_edit(false);
@@ -286,6 +288,7 @@ module nts.uk.at.view.kmk011.e {
                         _self.enable_button_creat(false);
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.histList([]);
+                        _self.selectedHist(null);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1051" }).then(() => {
                             nts.uk.request.jump("/view/kmk/011/d/index.xhtml");
                         });
@@ -396,8 +399,8 @@ module nts.uk.at.view.kmk011.e {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         let itemDto = new WorkTypeDivergenceTimeSettingDto();
@@ -410,8 +413,8 @@ module nts.uk.at.view.kmk011.e {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         _self.mapObj.get(i).notUseAtr(item.notUseAtr);
