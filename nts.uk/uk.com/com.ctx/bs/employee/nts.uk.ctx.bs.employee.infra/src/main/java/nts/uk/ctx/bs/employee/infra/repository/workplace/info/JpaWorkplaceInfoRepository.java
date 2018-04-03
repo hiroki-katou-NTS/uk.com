@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -23,14 +22,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfoPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo_;
-import nts.uk.ctx.bs.employee.infra.repository.workplace.JpaWorkplaceGetMemento;
 
 /**
  * The Class JpaWorkplaceInfoRepository.
@@ -219,8 +215,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	/**
 	 * To entity.
 	 *
-	 * @param workplaceInfo
-	 *            the workplace info
+	 * @param workplaceInfo the workplace info
 	 * @return the bsymt workplace info
 	 */
 	private BsymtWorkplaceInfo toEntity(WorkplaceInfo workplaceInfo) {
@@ -342,6 +337,9 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 				.collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByHistory(java.util.List)
+	 */
 	@Override
 	public List<WorkplaceInfo> findByHistory(List<Workplace> workplace) {
 		if (CollectionUtil.isEmpty(workplace)) {

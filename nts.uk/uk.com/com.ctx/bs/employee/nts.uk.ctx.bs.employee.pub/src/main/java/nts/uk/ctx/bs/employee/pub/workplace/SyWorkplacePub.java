@@ -66,7 +66,7 @@ public interface SyWorkplacePub {
 	 * @return the list
 	 */
 	// RequestList83
-	// 職場IDと基準日から上位�場を取得す�
+	// 職場IDと基準日から上位�場を取得す�
 	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
 
 	/**
@@ -131,14 +131,16 @@ public interface SyWorkplacePub {
 	List<WkpConfigAtTimeExport> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
 	
 	/**
-	 * ind by sid and basedate
-	 * 
-	 * @param sid
-	 * @param baseDate
-	 * @return
+	 * Find by S id and base date.
+	 *
+	 * @param sids the sids
+	 * @param baseDate the base date
+	 * @return the list
 	 */
 	// RequestList 227
 	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	/**
 	 * Find wkp by wkp id.
 	 *
 	 * @param companyId the company id
