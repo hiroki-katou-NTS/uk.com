@@ -1015,8 +1015,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.timezones([]);
-                    this.timezones().push(new DeductionTimeModel());
+                    this.timezones([]);                    
                 }
             }
 

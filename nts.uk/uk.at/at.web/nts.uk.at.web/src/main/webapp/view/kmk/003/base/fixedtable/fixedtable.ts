@@ -741,7 +741,9 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     _.defer(() => screenModel.itemList.valueHasMutated());
                 });
                 // Add default data
-                screenModel.addMinRows();
+                if (screenModel.minRow > 0) {
+                    screenModel.addMinRows();
+                }
             });
         });
     }
