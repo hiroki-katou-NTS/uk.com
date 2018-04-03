@@ -15,7 +15,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
@@ -44,10 +43,10 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<WorkTypeDivergenceReferenceTime> findByKey(String histId, BusinessTypeCode workTypeCode,
-			DivergenceType divergenceTimeNo) {
+			Integer divergenceTimeNo) {
 		KrcstDrtPK pk = new KrcstDrtPK();
 		pk.setHistId(histId);
-		pk.setDvgcTimeNo(divergenceTimeNo.value);
+		pk.setDvgcTimeNo(divergenceTimeNo);
 
 		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(null);
 
@@ -129,11 +128,16 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId);
 
 		targetHistories.forEach(history -> {
-			// set new history ID
-			history.getId().setHistId(destHistId);
+			// copy to new entity
+			KrcstDrt drt = new KrcstDrt();
+			KrcstDrtPK pk = new KrcstDrtPK(destHistId, history.getId().getDvgcTimeNo());
+			drt.setId(pk);
+			drt.setDvgcTimeUseSet(history.getDvgcTimeUseSet());
+			drt.setAlarmTime(history.getAlarmTime());
+			drt.setErrorTime(history.getErrorTime());
 
 			// Insert to DB
-			this.commandProxy().insert(history);
+			this.commandProxy().insert(drt);
 		});
 	}
 

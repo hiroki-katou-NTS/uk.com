@@ -168,8 +168,8 @@ public class Closure extends AggregateRoot {
 				}
 			}
 			if (endState == 0) break;
-			if (endState < 0) yearMonth = yearMonth.nextMonth();
-			if (endState > 0) yearMonth = yearMonth.previousMonth();
+			if (endState < 0) yearMonth = yearMonth.previousMonth();
+			if (endState > 0) yearMonth = yearMonth.nextMonth();
 		}
 		return Optional.ofNullable(closurePeriod);
 	}

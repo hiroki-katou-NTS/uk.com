@@ -30,7 +30,7 @@ module nts.uk.at.view.kmk011.f {
                     new BoxModel(0, nts.uk.resource.getText("KMK011_73", ["2017/04/01"])),
                     new BoxModel(1, nts.uk.resource.getText("KMK011_29"))
                 ]);
-                _self.selectedId = ko.observable(1);
+                _self.selectedId = ko.observable(0);
                 _self.enableRadio = ko.observable(true);
                 _self.visibleRadio = ko.observable(true);   
             }

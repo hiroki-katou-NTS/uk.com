@@ -13,7 +13,11 @@ module nts.uk.at.view.kdw007.a.service {
         getAllWorkTime: "at/shared/worktimeset/findAll",
         getWorkTimeByListCode: "at/shared/worktime/findByCodes",
         getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
-        getAllAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
+        getAllAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
+        getAllMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/getall",
+        updateMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/update",
+        findMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/findbycheckid/",
+        removeMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/remove"
     }
 
     export function getAll() {
@@ -66,6 +70,22 @@ module nts.uk.at.view.kdw007.a.service {
     
     export function getAllAttendanceItem() {
         return nts.uk.request.ajax("at", paths.getAllAttendanceItem);
+    }
+    
+    export function getAllMonthlyCondition() {
+        return nts.uk.request.ajax("at", paths.getAllMonthlyCondition);
+    }
+    
+    export function updateMonthlyCondition(param){
+        return nts.uk.request.ajax("at", paths.updateMonthlyCondition, param);
+    }
+    
+    export function findMonthlyCondition(checkId, errorCode) {
+        return nts.uk.request.ajax("at", paths.findMonthlyCondition + checkId + "/" + errorCode);
+    }
+    
+    export function removeMonthlyCondition(code) {
+        return nts.uk.request.ajax("at",paths.removeMonthlyCondition, code);
     }
 
 }

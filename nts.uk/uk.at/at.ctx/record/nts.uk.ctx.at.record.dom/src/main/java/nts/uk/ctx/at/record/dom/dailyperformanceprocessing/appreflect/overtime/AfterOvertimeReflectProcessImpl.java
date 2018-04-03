@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -96,7 +97,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Override
 	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
 		//自動打刻をクリアする
-		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(), overtimePara.isAutoClearStampFlg(), null);
+		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(), overtimePara.isAutoClearStampFlg(), 0);
 		//出退勤時刻反映できるかチェックする
 		if(!overtimePara.isActualReflectFlg()
 				&& !overtimePara.isScheTimeOutFlg()) {
@@ -167,14 +168,15 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 
 	@Override
 	public void reflectOvertimeFrame(OvertimeParameter para) {
+		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
-			if(entry.getValue() <= 0) {
-				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
+			if(entry.getValue() > 0) {
+				tmp.put(entry.getKey(), entry.getValue());
 			}
 		}
-		scheWorkUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame(), false);
+		scheWorkUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, false);
 	}
 
 	@Override

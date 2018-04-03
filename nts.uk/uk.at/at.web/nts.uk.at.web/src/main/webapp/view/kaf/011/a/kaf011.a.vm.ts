@@ -48,31 +48,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         constructor() {
             let self = this;
-            self.recWk().appDate.subscribe((newDate) => {
-                self.changeDate();
-            });
-            self.absWk().appDate.subscribe((newDate) => {
-                self.changeDate();
-            });
+          
         }
-        changeDate() {
-            block.invisible();
-            let vm: ViewModel = __viewContext['viewModel'],
-                changeDateParam = {
-                    holidayDate: vm.absWk().appDate(),
-                    takingOutDate: vm.recWk().appDate(),
-                    comType: vm.appComSelectedCode(),
-                    uiType: 0
-
-                }
-            service.changeDay(changeDateParam).done((data) => {
-                vm.employeeID(data.employeeID);
-                vm.prePostSelectedCode(data.preOrPostType);
-            }).always(() => {
-                block.clear();
-
-            });;
-        }
+       
 
         start(): JQueryPromise<any> {
             block.invisible();
@@ -86,7 +64,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
-                
+
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
@@ -165,6 +143,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             //            });
 
         }
+
+       
 
 
     }

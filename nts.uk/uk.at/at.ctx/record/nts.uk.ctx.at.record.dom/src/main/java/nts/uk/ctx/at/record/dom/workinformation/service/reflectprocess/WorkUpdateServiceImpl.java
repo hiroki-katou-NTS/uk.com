@@ -128,9 +128,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 					timeSheetFrameNo.getAttendance().v(),
 					para.getTime());
 		}
-		
-		lstTimeSheetFrameNo.add(para.getFrameNo(), timeSheet);
-		dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
+		dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
+		dailyPerfor.getScheduleTimeSheets().add(timeSheet);		
+		//dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
 		workRepository.updateByKeyFlush(dailyPerfor);
 		
 		

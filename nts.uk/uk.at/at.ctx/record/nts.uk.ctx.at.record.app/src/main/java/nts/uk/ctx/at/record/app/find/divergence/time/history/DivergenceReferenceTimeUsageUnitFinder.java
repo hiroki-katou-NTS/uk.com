@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.divergence.time.history;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -29,7 +30,7 @@ public class DivergenceReferenceTimeUsageUnitFinder {
 		Optional<DivergenceReferenceTimeUsageUnit> opt = divergenReferenceTimeUsageUnitRepo.findByCompanyId(companyId);
 		if (opt.isPresent()) {
 			DivergenceReferenceTimeUsageUnitDto dto = new DivergenceReferenceTimeUsageUnitDto(opt.get().getCId(),
-					opt.get().getWorkTypeUseSet());
+					opt.get().isWorkTypeUseSet() ? BigDecimal.ONE : BigDecimal.ZERO);
 			return dto;
 		}
 

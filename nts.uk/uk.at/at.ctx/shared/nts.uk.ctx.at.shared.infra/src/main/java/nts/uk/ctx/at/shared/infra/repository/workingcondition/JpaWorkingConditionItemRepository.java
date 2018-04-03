@@ -302,6 +302,55 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * getBySidAndHistId(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String histId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
+				.createQuery(KshmtWorkingCondItem.class);
+
+		// root data
+		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.sid), employeeId));
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.historyId), histId));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+		List<KshmtWorkingCondItem> result = query.getResultList();
+
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// exclude select
+		return Optional.of(new WorkingConditionItem(
+				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
+	}
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#deleteMonthlyPattern(java.lang.String)
 	 */
