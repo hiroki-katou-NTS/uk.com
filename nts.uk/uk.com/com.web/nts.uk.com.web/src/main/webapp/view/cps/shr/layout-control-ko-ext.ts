@@ -587,9 +587,14 @@ module nts.custombinding {
                                                 return root.showColor() && 'color-operation-case-character';
                                             }),
                                             required: root.required,
-                                            constraint: _constraint.length && _constraint || undefined  }"></div>
+                                            constraint: _constraint.length && _constraint || undefined }"></div>
                                     <!-- ko if: (root || {}).type == CTRL_TYPE.SET -->
-                                    <div class="set-items">
+                                    <div class="set-items" data-bind="let: {
+                                            has_single: !!_(__items).filter(function(x) {
+                                                        return x.type == CTRL_TYPE.SINGLE &&
+                                                               x.itemParentCode == root.itemCode;
+                                                    }).value().length
+                                        }">
                                         <div class="set-group math-title" data-bind="text: text('CPS001_114')"></div>
                                     <!-- ko foreach: { data: _.filter(__items, function(x) {return x.itemParentCode == root.itemCode;}), as: 'child' } -->
                                         <div class="set-group">
@@ -611,12 +616,21 @@ module nts.custombinding {
                                                         v: v
                                                     }
                                                 })
-                                                    .groupBy(function(x) { return x.i; })
-                                                    .map(function(x) { return x.map(function(k) { return k.v; }); })
-                                                    .value(), as: 'group'} -->
+                                                .groupBy(function(x) { return x.i; })
+                                                .map(function(x) { 
+                                                    return x.map(function(k) { 
+                                                        return k.v;
+                                                    }); 
+                                                })
+                                                .value(), as: 'group'} -->
                                             <div class="childs-row">
                                             <!-- ko foreach: { data: group, as: 'young' } -->
-                                                <div class="child-label multi-label" data-bind="text: young.itemName"></div>
+                                                <!-- ko if: has_single && $index() -->
+                                                    <div class="child-label multi-label" data-bind="text: young.itemName"></div>
+                                                <!-- /ko -->
+                                                <!-- ko if: !has_single -->
+                                                    <div class="child-label multi-label" data-bind="text: young.itemName"></div>
+                                                <!-- /ko -->
                                                 <div class="single-item" data-bind="template: { 
                                                         data: young,
                                                         name: 'ctr_template'

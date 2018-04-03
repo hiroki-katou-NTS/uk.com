@@ -47,8 +47,8 @@ public class DivergenceReferenceTimeUsageUnitDto implements DivergenceReferenceT
 	 * DivergenceReferenceTimeUsageUnitGetMemento#getWorkTypeUseSet()
 	 */
 	@Override
-	public BigDecimal getWorkTypeUseSet() {
-		return this.workTypeUseSet;
+	public boolean getWorkTypeUseSet() {
+		return this.workTypeUseSet.equals(BigDecimal.ONE);
 	}
 
 }

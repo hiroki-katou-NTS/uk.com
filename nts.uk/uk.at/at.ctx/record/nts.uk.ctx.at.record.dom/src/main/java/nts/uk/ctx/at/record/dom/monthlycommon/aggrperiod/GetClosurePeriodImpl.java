@@ -78,7 +78,7 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 		for (val closureIdHistory: this.closureIdHistories){
 			
 			// 締めID履歴の期間内で締め処理期間を作成
-			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEnd);
+			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEnd.addMonths(1));
 		}
 		
 		for (val aggrPeriod : this.aggrPeriods){

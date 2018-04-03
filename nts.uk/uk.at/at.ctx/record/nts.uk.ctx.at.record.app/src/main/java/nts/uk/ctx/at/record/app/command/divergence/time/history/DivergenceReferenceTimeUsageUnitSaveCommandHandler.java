@@ -46,7 +46,7 @@ public class DivergenceReferenceTimeUsageUnitSaveCommandHandler
 		// update
 		if (opt.isPresent()) {
 			DivergenceReferenceTimeUsageUnit domain = opt.get();
-			domain.setWorkTypeUseSet(command.getWorkTypeUseSet());
+			domain.setWorkTypeUseSet(command.isWorkTypeUseSet());
 			this.divergenceRepo.update(domain);
 		}
 	}

@@ -96,6 +96,7 @@ module nts.uk.at.view.kaf011.shr {
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
             wkTypeCD: KnockoutObservable<string> = ko.observable('');
             wkTimeCD: KnockoutObservable<string> = ko.observable('');
+            wkTimeName: KnockoutObservable<string> = ko.observable('');
             wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
@@ -105,7 +106,6 @@ module nts.uk.at.view.kaf011.shr {
             constructor() {
                 let self = this;
                 self.wkTypeCD.subscribe((newWkType) => {
-
                     if (self.wkTimeCD()) {
                         block.grayout();
                         let changeWkTypeParam = {
@@ -116,15 +116,58 @@ module nts.uk.at.view.kaf011.shr {
                         service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                             if (data) {
                                 if (data.timezoneUseDtos) {
-                                    self.wkTime1().startTime(data.timezoneUseDtos[0].start);
-                                    self.wkTime1().endTime(data.timezoneUseDtos[0].end);
+                                    let timeZone1 = data.timezoneUseDtos[0];
+                                    let timeZone2 = data.timezoneUseDtos[1];
+                                    if (timeZone1) {
+                                        self.wkTime1().startTime(timeZone1.start);
+                                        self.wkTime1().endTime(timeZone1.end);
+                                        self.wkTime1().startType(timeZone1.useAtr);
+                                        self.wkTime1().endType(timeZone1.useAtr);
+                                    } else {
+                                        self.wkTime1(new WorkingHour());
+                                    }
+                                    if (timeZone2) {
+                                        self.wkTime2().startTime(timeZone2.start);
+                                        self.wkTime2().endTime(timeZone2.end);
+                                        self.wkTime2().startType(timeZone2.useAtr);
+                                        self.wkTime2().startType(timeZone2.useAtr);
+                                    } else {
+                                        self.wkTime2(new WorkingHour());
+                                    }
+                                } else {
+                                    self.wkTime1(new WorkingHour());
+                                    self.wkTime2(new WorkingHour());
                                 }
+                                self.updateWorkingText();
                             }
                         }).always(() => {
                             block.clear();
                         });
                     }
                 });
+
+                self.appDate.subscribe((newDate) => {
+                    self.changeDate();
+                });
+            }
+
+            changeDate() {
+                block.invisible();
+                let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                    changeDateParam = {
+                        holidayDate: vm.absWk().appDate(),
+                        takingOutDate: vm.recWk().appDate(),
+                        comType: vm.appComSelectedCode(),
+                        uiType: 0
+
+                    }
+                service.changeDay(changeDateParam).done((data) => {
+                    vm.employeeID(data.employeeID);
+                    vm.prePostSelectedCode(data.preOrPostType);
+                    vm.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
+                }).always(() => {
+                    block.clear();
+                });;
             }
 
             parseText(date) {
@@ -134,22 +177,37 @@ module nts.uk.at.view.kaf011.shr {
             parseTime(value) {
                 return nts.uk.time.parseTime(value, true).format()
             }
-            genWorkingText(childData: common.IWorkTime) {
+            updateWorkingText() {
                 let self = this,
-                    result = childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName;
-                if (childData.first) {
-                    result += ' ' + self.parseTime(childData.first.start) + '~' + self.parseTime(childData.first.end);
-                    if (childData.second) {
-
-                    }
+                    text = self.wkTimeCD() + ' ' + self.wkTimeName();
+                if (self.wkTime1().startTime()) {
+                    text += ' ' + self.parseTime(self.wkTime1().startTime()) + '~' + self.parseTime(self.wkTime1().endTime());
                 }
-                return result;
+                self.wkText(text);
+
+            }
+
+
+            openCDialog() {
+                let self = this,
+                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                nts.uk.ui.windows.setShared('KAF_011_PARAMS', {
+                    prePostSelectedCode: vm.appComSelectedCode(),
+                    appReasons: vm.appReasons(),
+                    reason: vm.reason(),
+                    appReasonSelectedID: vm.appReasonSelectedID(),
+                    appDate: self.appDate()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {
+
+                });
 
             }
 
             openKDL003() {
                 let self = this,
-                    workTypeCodes = self.wkTypes(),
+                    workTypeCodes = self.wkTypes().map(function(x) { return x.workTypeCode; }),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
 
@@ -165,15 +223,18 @@ module nts.uk.at.view.kaf011.shr {
                     //view all code of selected item 
                     var childData: IWorkTime = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
-                        if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
-                            self.wkText(self.genWorkingText(childData));
-                        }
-                        self.wkTimeCD(childData.selectedWorkTimeCode);
                         if (childData.first) {
                             self.wkTypeCD(childData.selectedWorkTypeCode);
                             self.wkTime1().startTime(childData.first.start);
                             self.wkTime1().endTime(childData.first.end);
+                            self.wkTimeName(childData.selectedWorkTimeName);
                         }
+                        self.wkTimeCD(childData.selectedWorkTimeCode);
+                        if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
+                            self.updateWorkingText();
+                        }
+
+
                     }
                 });
 

@@ -503,8 +503,13 @@ module nts.uk.request {
         let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
         let STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
         
-        export function keepUsedLoginPage() {
-            uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+        export function keepUsedLoginPage(url?: string) {
+            if (url === undefined) {
+                keepUsedLoginPage(location.current.serialize());
+                return;
+            }
+            
+            uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, url);
         }
         
         export function jumpToUsedLoginPage() {

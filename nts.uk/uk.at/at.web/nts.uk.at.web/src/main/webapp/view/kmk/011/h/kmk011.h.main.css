@@ -20,8 +20,6 @@
     padding-top:25px
 }
 
-
-
 #contents-area.scrE{
 	padding-left: 30px;
 	padding-right: 30px;
@@ -31,8 +29,6 @@
 	padding-top: 25px;
 	padding-bottom: 35px;
 }
-
-/* moi them */
     
 .scrE #manage_unit > div{
 	padding-bottom:20px;
@@ -44,4 +40,8 @@
 
 .scrE #radioBoxTypeSelectScrF > label:nth-child(1) {
 	padding-right: 60px
+}
+
+.white-space-pre {
+    white-space: pre-wrap;
 }
