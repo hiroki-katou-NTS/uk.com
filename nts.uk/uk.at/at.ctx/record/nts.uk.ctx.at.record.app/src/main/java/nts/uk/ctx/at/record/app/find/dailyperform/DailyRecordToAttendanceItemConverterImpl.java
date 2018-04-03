@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPe
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforOfDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -107,6 +109,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withEditStates(domain.getEditState());
 		this.withTemporaryTime(domain.getTempTime().orElse(null));
 		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
+//		this.withRemarks(domain.get)
 		return this;
 	}
 	
@@ -202,6 +205,18 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	public DailyRecordToAttendanceItemConverter withPCLogInfo(PCLogOnInfoOfDaily domain) {
 		this.dailyRecord.pcLogInfo(PCLogOnInforOfDailyPerformDto.from(domain));
+		return this;
+	}
+
+	@Override
+	public DailyRecordToAttendanceItemConverter withRemark(RemarksOfDailyPerform domain) {
+		this.dailyRecord.addRemarks(RemarksOfDailyDto.getDto(domain));
+		return this;
+	}
+
+	@Override
+	public DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyPerform> domain) {
+		this.dailyRecord.remarks(domain.stream().map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList()));
 		return this;
 	}
 	
