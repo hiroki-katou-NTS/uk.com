@@ -3,12 +3,15 @@ package nts.uk.ctx.pereg.app.find.common;
 import java.util.Date;
 
 import lombok.Getter;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 
 @Getter
 public class ComboBoxParam {
 
 	private ReferenceTypes comboBoxType;
+	
+	private PersonEmployeeType personEmployeeType;
 	
 	private boolean required;
 	

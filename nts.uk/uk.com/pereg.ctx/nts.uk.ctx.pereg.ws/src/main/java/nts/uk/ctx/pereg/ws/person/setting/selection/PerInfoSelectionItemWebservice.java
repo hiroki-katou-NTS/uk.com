@@ -194,10 +194,8 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Lanlt
 	@POST
 	@Path("findAllCombox")
-	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery  query) {
-		//return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
-		
-		return this.selecFider.getAllComboxByHistoryId(query, PersonEmployeeType.EMPLOYEE);
+	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery query) {
+		return this.selecFider.getAllComboxByHistoryId(query);
 	}
 	
 	// Lanlt

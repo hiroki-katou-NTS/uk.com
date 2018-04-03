@@ -173,7 +173,7 @@ public class ComboBoxRetrieveFactory {
 		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired, perEmplType);
 	}
 
-	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam, PersonEmployeeType perEmplType) {
+	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam) {
 		ReferenceTypes refType = comboBoxParam.getComboBoxType();
 		String refCode = "";
 		switch (refType) {
@@ -188,7 +188,7 @@ public class ComboBoxRetrieveFactory {
 		}
 		return getComboBox(refType, refCode, GeneralDate.legacyDate(comboBoxParam.getStandardDate()),
 				comboBoxParam.getEmployeeId(), comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(),
-				comboBoxParam.isRequired(),perEmplType);
+				comboBoxParam.isRequired(), comboBoxParam.getPersonEmployeeType());
 
 	}
 

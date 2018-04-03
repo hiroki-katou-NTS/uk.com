@@ -131,7 +131,7 @@ public class SelectionFinder {
 
 	}
 
-	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery dto, PersonEmployeeType perEmplType) {
+	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery dto) {
 		GeneralDate baseDateConvert = GeneralDate.fromString(dto.getBaseDate(), "yyyy-MM-dd");
 		SelectionItemDto selectionItemDto = null;
 		String companyId = AppContexts.user().companyId();
@@ -143,7 +143,7 @@ public class SelectionFinder {
 			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
 					dto.getSelectionItemRefType());
 			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert,
-					true,perEmplType);
+					true, PersonEmployeeType.EMPLOYEE);
 
 		}
 		return new ArrayList<>();
