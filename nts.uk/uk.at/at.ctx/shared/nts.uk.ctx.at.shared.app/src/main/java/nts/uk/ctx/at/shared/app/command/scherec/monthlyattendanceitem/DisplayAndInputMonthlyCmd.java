@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.InputControlMonthly;
 
 @Getter
 @Setter
@@ -31,6 +33,17 @@ public class DisplayAndInputMonthlyCmd {
 		this.toUse = toUse;
 		this.youCanChangeIt = youCanChangeIt;
 		this.canBeChangedByOthers = canBeChangedByOthers;
+	}
+	
+	public static DisplayAndInputMonthly fromCommand(DisplayAndInputMonthlyCmd command) {
+		return new DisplayAndInputMonthly(
+				command.getItemMonthlyId(),
+				command.isToUse(),
+				new InputControlMonthly(
+					command.isYouCanChangeIt(),
+					command.isCanBeChangedByOthers()
+						)
+				);
 	}
 	
 	
