@@ -10,7 +10,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecialLeaveGrantDto extends PeregDomainDto{
+public class SpecialLeaveGrantDto{
 	
 
 	private String specialid;
