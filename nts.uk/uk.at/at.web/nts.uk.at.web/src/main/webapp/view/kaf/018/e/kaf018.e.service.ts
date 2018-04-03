@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf018.e {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getWorkplaceExperienceStartUp: "at/request/application/approvalstatus/getStatusActivity",
+            getWorkplaceExperienceStartUp: "at/record/realitystatus/getStatusActivity",
         }
 
         /**
