@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
@@ -10,6 +12,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_RVSLEA_REMAIN")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class KrcmtReverseLeaRemain extends UkJpaEntity {
 	
 	@Id

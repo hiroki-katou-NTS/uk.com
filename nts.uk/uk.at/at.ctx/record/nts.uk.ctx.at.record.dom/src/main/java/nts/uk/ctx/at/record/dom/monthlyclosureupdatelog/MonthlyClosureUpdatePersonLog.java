@@ -13,16 +13,16 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class MonthlyClosureUpdatePersonLog extends AggregateRoot {
 
-	//社員ID
+	// 社員ID
 	private String employeeId;
 
-	//月締め更新ログID
+	// 月締め更新ログID
 	private String monthlyClosureUpdateLogId;
 
-	//実行結果
-	private final MonthlyClosurePersonExecutionResult executionResult;
+	// 実行結果
+	private MonthlyClosurePersonExecutionResult executionResult;
 
-	//実行状況
+	// 実行状況
 	private MonthlyClosurePersonExecutionStatus executionStatus;
 
 	public MonthlyClosureUpdatePersonLog(String employeeId, String monthlyClosureUpdateLogId, int executionResult,
@@ -32,6 +32,23 @@ public class MonthlyClosureUpdatePersonLog extends AggregateRoot {
 		this.monthlyClosureUpdateLogId = monthlyClosureUpdateLogId;
 		this.executionResult = EnumAdaptor.valueOf(executionResult, MonthlyClosurePersonExecutionResult.class);
 		this.executionStatus = EnumAdaptor.valueOf(executionStatus, MonthlyClosurePersonExecutionStatus.class);
+	}
+
+	public MonthlyClosureUpdatePersonLog(String employeeId, String monthlyClosureUpdateLogId,
+			MonthlyClosurePersonExecutionResult executionResult, MonthlyClosurePersonExecutionStatus executionStatus) {
+		super();
+		this.employeeId = employeeId;
+		this.monthlyClosureUpdateLogId = monthlyClosureUpdateLogId;
+		this.executionResult = executionResult;
+		this.executionStatus = executionStatus;
+	}
+
+	public void updateResult(MonthlyClosurePersonExecutionResult result) {
+		this.executionResult = result;
+	}
+
+	public void updateStatus(MonthlyClosurePersonExecutionStatus status) {
+		this.executionStatus = status;
 	}
 
 }

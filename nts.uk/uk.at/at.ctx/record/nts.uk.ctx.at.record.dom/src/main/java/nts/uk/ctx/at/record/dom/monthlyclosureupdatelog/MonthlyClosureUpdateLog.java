@@ -18,34 +18,34 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 public class MonthlyClosureUpdateLog extends AggregateRoot {
 
-	//ID
+	// ID
 	private String id;
-	
-	//会社ID
+
+	// 会社ID
 	private String companyId;
-	
-	//実行状況
+
+	// 実行状況
 	private MonthlyClosureExecutionStatus executionStatus;
-	
-	//完了状態
+
+	// 完了状態
 	private MonthlyClosureCompleteStatus completeStatus;
-	
-	//実行日時
+
+	// 実行日時
 	private GeneralDateTime executionDateTime;
-	
-	//実行期間
+
+	// 実行期間
 	private DatePeriod executionPeriod;
 
-	//実行社員ID
+	// 実行社員ID
 	private String executeEmployeeId;
 
-	//対象年月
+	// 対象年月
 	private YearMonth targetYearMonth;
 
-	//締めID
+	// 締めID
 	private ClosureId closureId;
 
-	//締め日
+	// 締め日
 	private ClosureDate closureDate;
 
 	public MonthlyClosureUpdateLog(String id, String companyId, int executionStatus, int completeStatus,
@@ -62,6 +62,14 @@ public class MonthlyClosureUpdateLog extends AggregateRoot {
 		this.targetYearMonth = targetYearMonth;
 		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
 		this.closureDate = closureDate;
+	}
+
+	public void updateCompleteStatus(MonthlyClosureCompleteStatus status) {
+		this.completeStatus = status;
+	}
+
+	public void updateExecuteStatus(MonthlyClosureExecutionStatus status) {
+		this.executionStatus = status;
 	}
 
 }

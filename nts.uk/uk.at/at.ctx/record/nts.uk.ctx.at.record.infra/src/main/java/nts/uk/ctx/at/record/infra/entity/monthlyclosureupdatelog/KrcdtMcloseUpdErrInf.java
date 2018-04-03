@@ -49,7 +49,7 @@ public class KrcdtMcloseUpdErrInf extends UkJpaEntity {
 		this.atr = atr;
 	}
 
-	public KrcdtMcloseUpdErrInf fromDomain(MonthlyClosureUpdateErrorInfor domain) {
+	public static KrcdtMcloseUpdErrInf fromDomain(MonthlyClosureUpdateErrorInfor domain) {
 		return new KrcdtMcloseUpdErrInf(domain.getEmployeeId(), domain.getMonthlyClosureUpdateLogId(),
 				domain.getResourceId(), domain.getErrorMessage(), domain.getAtr().value);
 	}
