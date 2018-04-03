@@ -215,7 +215,9 @@ public class RegisterLayoutFinder {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
 			int dataTypeValue = item.getItem().getDataTypeValue();
-			if (dataTypeValue >= DataTypeValue.SELECTION.value) {
+			
+			if (dataTypeValue == DataTypeValue.SELECTION.value || dataTypeValue == DataTypeValue.SELECTION_BUTTON.value
+					|| dataTypeValue == DataTypeValue.SELECTION_RADIO.value) {
 
 				SelectionItemDto selectionItemDto = null;
 
@@ -234,7 +236,6 @@ public class RegisterLayoutFinder {
 					Object value =  processor.getValue(dto);
 					item.setValue(value);
 				}
-
 			}
 		}
 		item.setActionRole(EnumAdaptor.valueOf(state, ActionRole.class));

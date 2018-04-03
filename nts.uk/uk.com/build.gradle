@@ -1071,6 +1071,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.app')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
+		
+		compile(group: 'bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 	}
 }
 

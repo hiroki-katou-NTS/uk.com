@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -18,6 +18,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveItemCommand, String> {
@@ -39,12 +40,16 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 
 	@Inject
 	private PerInfoInitValueSetItemRepository itemInitRepo;
+	
+	@Inject
+	private ICompanyRepo companyRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<RemoveItemCommand> context) {
 		RemoveItemCommand removeCommand = context.getCommand();
-		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+		String contractCd = AppContexts.user().contractCode();
+		List<String> companyIdList = companyRepo.acquireAllCompany();
+
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(removeCommand.getPerInfoItemDefId(), contractCd).orElse(null);
 
@@ -52,28 +57,36 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 			return null;
 		}
 
-		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(itemDef.getPerInfoCategoryId(), contractCd)
-				.orElse(null);
+		String categoryId = itemDef.getPerInfoCategoryId();
+		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(categoryId, contractCd).orElse(null);
 		if (category == null) {
 			return null;
 		}
-		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
-				category.getCategoryCode().v());
-		if (this.isCheckData(itemDef.getItemCode().toString(), perInfoCtgIds)) {
+		String categoryCode = category.getCategoryCode().v();
+
+		List<String> categoryIdList = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList, categoryCode);
+
+		String itemCode = itemDef.getItemCode().toString();
+		if (this.isCheckData(itemCode, categoryIdList)) {
 			throw new BusinessException("Msg_214");
 		}
-		perInfoCtgIds.add(itemDef.getPerInfoCategoryId());
-		this.pernfoItemDefRep.removePerInfoItemDefRoot(perInfoCtgIds, category.getCategoryCode().v(), contractCd,
-				itemDef.getItemCode().v());
+
+		categoryIdList.add(categoryId);
+		this.pernfoItemDefRep.removePerInfoItemDef(categoryIdList, categoryCode, contractCd, itemCode);
 		return null;
 	}
 
 	private boolean isCheckData(String itemCode, List<String> ctgLst) {
-		boolean itemAuth = this.itemAuthRepo.hasItemData(itemCode, ctgLst),
-				itemInit = this.itemInitRepo.hasItemData(itemCode, ctgLst),
-				isEmpData = this.empInfoRepo.hasItemData(itemCode, ctgLst),
-				isPerData = this.perItemRepo.hasItemData(ctgLst, itemCode);
-		if (itemAuth || itemInit || isEmpData || isPerData) {
+		if (itemAuthRepo.hasItemData(itemCode, ctgLst)) {
+			return true;
+		}
+		if (itemInitRepo.hasItemData(itemCode, ctgLst)) {
+			return true;
+		}
+		if (empInfoRepo.hasItemData(itemCode, ctgLst)) {
+			return true;
+		}
+		if (perItemRepo.hasItemData(ctgLst, itemCode)) {
 			return true;
 		}
 		return false;

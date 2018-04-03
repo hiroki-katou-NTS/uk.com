@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Data
@@ -17,6 +14,7 @@ public class SpecialLeaveGrantDto extends PeregDomainDto{
 	
 
 	private String specialid;
+	private String cid;
 	private String sid;
 	private int specialLeaCode;
 	private GeneralDate grantDate;
@@ -36,6 +34,7 @@ public class SpecialLeaveGrantDto extends PeregDomainDto{
 	public static SpecialLeaveGrantDto createFromDomain(SpecialLeaveGrantRemainingData domain) {
 		SpecialLeaveGrantDto dto = new SpecialLeaveGrantDto();
 		dto.specialid = domain.getSpecialId();
+		dto.cid = domain.getCId();
 		dto.sid = domain.getEmployeeId();
 		dto.specialLeaCode = domain.getSpecialLeaveCode().v();
 		dto.grantDate = domain.getGrantDate();
