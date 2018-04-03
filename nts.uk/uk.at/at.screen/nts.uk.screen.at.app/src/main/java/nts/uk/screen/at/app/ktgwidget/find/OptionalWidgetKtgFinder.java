@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.PublicHolidaySettingAdapter;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -22,6 +24,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private ClosureRepository closureRepository;
+	
+	@Inject
+	private OptionalWidgetAdapter optionalWidgetAdapter; 
 
 	public ClosurePeriod getCurrentMonth(String employmentCode) {
 		String companyId = AppContexts.user().companyId();

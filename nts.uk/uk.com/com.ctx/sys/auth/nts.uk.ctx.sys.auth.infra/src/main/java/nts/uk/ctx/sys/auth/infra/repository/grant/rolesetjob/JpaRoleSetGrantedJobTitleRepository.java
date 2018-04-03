@@ -90,8 +90,10 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		}
 	}
 
-	private final String SELECT_BY_JOBTITLECD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail  "
-												+ " WHERE c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId" ;
+	private final String SELECT_BY_JOBTITLECD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
+			+ " AND c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId";
+			
 
 	@Override
 	public Optional<String> getRoleSetCd(String companyId, String jobTitleId) {
