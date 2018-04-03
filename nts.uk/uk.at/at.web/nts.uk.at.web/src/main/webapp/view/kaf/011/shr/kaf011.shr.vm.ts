@@ -124,7 +124,7 @@ module nts.uk.at.view.kaf011.shr {
             pickUpBold: KnockoutObservable<boolean> = ko.observable(false);
             deferredWorkTimeSelect: KnockoutObservable<number> = ko.observable(0);
             simulAppliReq: KnockoutObservable<number> = ko.observable(0);
-            permissionDivision: KnockoutObservable<number> = ko.observable(0);
+            permissionDivision: KnockoutObservable<any> = ko.observable(null);
             constructor(drawalReqSet) {
                 if (drawalReqSet) {
                     this.deferredComment(drawalReqSet.deferredComment || '');
@@ -133,7 +133,7 @@ module nts.uk.at.view.kaf011.shr {
                     this.pickUpBold(drawalReqSet.deferredBold || false);
                     this.deferredWorkTimeSelect(drawalReqSet.deferredWorkTimeSelect || 0);
                     this.simulAppliReq(drawalReqSet.simulAppliReq || 0);
-                    this.permissionDivision(drawalReqSet.permissionDivision || 0);
+                    this.permissionDivision(drawalReqSet.permissionDivision || 1);
 
                     let comItems;
                     if (this.simulAppliReq() == 1) {
@@ -166,8 +166,8 @@ module nts.uk.at.view.kaf011.shr {
             wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
-            appDate: KnockoutObservable<String> = ko.observable(moment().format('yyyy/MM/dd'));
-            changeWorkHoursType: KnockoutObservable<number> = ko.observable(0);
+            appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
+            changeWorkHoursType: KnockoutObservable<any> = ko.observable(null);
 
             constructor() {
                 let self = this;
