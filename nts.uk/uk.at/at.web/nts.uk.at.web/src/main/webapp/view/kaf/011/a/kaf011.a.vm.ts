@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         ]);
         appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
-        appDate: KnockoutObservable<String> = ko.observable(moment().format('yyyy/MM/dd'));
+        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
