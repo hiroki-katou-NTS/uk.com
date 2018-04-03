@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtWorkRecordExtraCon;
@@ -59,17 +60,15 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 		this.commandProxy().remove(KrcmtWorkRecordExtraCon.class,errorAlarmCheckID);
 		
 	}
-
+	private final String SELECT_WREC_BY_LIST_ID = "SELECT c FROM KrcmtWorkRecordExtraCon c WHERE c.errorAlarmCheckID IN :listErrorAlarmID";
 	@Override
 	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID) {
-		List<WorkRecordExtractingCondition> data = new  ArrayList<>();
-		for(String errorAlarmID : listErrorAlarmID) {
-			Optional<WorkRecordExtractingCondition> workRecordExtractingCondition =  getWorkRecordExtraConById(errorAlarmID);
-			if(workRecordExtractingCondition.isPresent()) {
-				data.add(workRecordExtractingCondition.get());
-			}
-		}
-		return data;
+		List<WorkRecordExtractingCondition> datas = new ArrayList<>();
+		CollectionUtil.split(listErrorAlarmID, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(SELECT_WREC_BY_LIST_ID, KrcmtWorkRecordExtraCon.class)
+					.setParameter("listErrorAlarmID", subIdList).getList(c->c.toDomain()));
+		});
+		return datas;
 	}
 
 }
