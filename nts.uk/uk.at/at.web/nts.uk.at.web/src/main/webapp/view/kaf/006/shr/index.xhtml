@@ -181,7 +181,7 @@
 								value: holidayTypeCode,
 								enable: screenModeNew }"></div>
 		</div> -->
-		<div data-bind="visible : displayStartFlg">
+		<div data-bind="css : {disappear: !displayStartFlg()}">
 			<div class="valign-center-kaf006  control-group-kaf006"
 				data-bind="visible: contentFlg">
 				<!--A5_1 勤務種類-->
@@ -261,21 +261,20 @@
 				</div>
 			</div>
 			<!--定型理由 -->
-			<div
-				class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
-				data-bind="if: typicalReasonDisplayFlg">
+			<div class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
+				data-bind="css: { disappear: !typicalReasonDisplayFlg() }">
 				<!--A7_1 申請定型理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
 				<!--A7_2 申請定型理由-->
-				<div tabindex="15" class="combo-box"
+				<div tabindex="15" class="combo-box-kaf006"
 					data-bind="ntsComboBox: {name: '#[KAF006_24]', 
-								options: reasonCombo,
+								options: reasonCombo ,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: enbReasonCombo,
-								columns: [{ prop: 'reasonName', length: 10 }]}">
+								columns: [{ prop: 'reasonName',length: 10 }]}">
 				</div>
 			</div>
 			<!-- 申請理由（ラベル) -->
