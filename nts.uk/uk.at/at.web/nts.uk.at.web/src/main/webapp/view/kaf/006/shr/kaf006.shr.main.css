@@ -136,9 +136,5 @@ div.form-label.broken {
 .margin-left-for-workChange-kaf006{
 	    margin-left: 150px;
 }
-.overlay-reason {
-	position: relative;
-	z-index: 1;
-}
 #tbl td{ padding: 5px 0px;}
 #tbl td.thut{padding-left: 5px !important;}
