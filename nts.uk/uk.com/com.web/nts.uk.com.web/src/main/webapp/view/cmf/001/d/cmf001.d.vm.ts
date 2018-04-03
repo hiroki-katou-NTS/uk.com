@@ -36,7 +36,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         onchange: (filename) => void;
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
         
-        selectedEncoding: KnockoutObservable<number>;
+        selectedEncoding: KnockoutObservable<number> = ko.observable(3);
         encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor(data: any) {
@@ -51,7 +51,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
             self.listCategoryItem = ko.observableArray([]);
 
-            self.selectedEncoding = ko.observable(3);
             self.encodingList(model.getEncodingList());
             
             self.selectedCategory.subscribe((data) => {
@@ -405,7 +404,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                         cond.deleteExistData, cond.acceptMode, 
                                                         cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber, 
                                                         cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine, 
+                                                        cond.characterCode,
                                                         cond.deleteExistDataMethod, cond.categoryId));
+                    if (cond.characterCode == null)
+                        self.selectedEncoding = ko.observable(3);
+                    else
+                        self.selectedEncoding = ko.observable(cond.characterCode);
                     service.getAllCategory().done((rs: Array<any>) => {
                         if (rs && rs.length) {
                             let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
@@ -537,6 +541,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 block.invisible();
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
+                self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerData(command).done(() => {
                     self.enableCategory(false);

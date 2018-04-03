@@ -44,7 +44,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     let d2 = service.getAllStdItemData(self.systemType(), data);
                     $.when( d1, d2 ).done(function ( result, rs ) {
                         if (result) {
-                            let item = new model.StandardAcceptanceConditionSetting(result.systemType, result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine, result.deleteExistDataMethod, result.categoryId);
+                            let item = new model.StandardAcceptanceConditionSetting(
+                                result.systemType, result.conditionSettingCode, result.conditionSettingName, 
+                                result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, 
+                                result.csvDataStartLine, result.characterCode, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
                             if (nts.uk.util.isNullOrUndefined(self.transitData))
@@ -191,7 +194,17 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
         registerCondition() {
             let self = this;
-            let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().systemType(), self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine(), self.selectedStandardImportSetting().deleteExistDataMethod(), self.selectedStandardImportSetting().categoryId());
+            let data = new model.StandardAcceptanceConditionSetting(
+                self.selectedStandardImportSetting().systemType(), 
+                self.selectedStandardImportSetting().conditionSettingCode(), 
+                self.selectedStandardImportSetting().conditionSettingName(), 
+                self.selectedStandardImportSetting().deleteExistData(), 
+                self.selectedStandardImportSetting().acceptMode(), 
+                self.selectedStandardImportSetting().csvDataItemLineNumber(), 
+                self.selectedStandardImportSetting().csvDataStartLine(), 
+                self.selectedStandardImportSetting().characterCode(), 
+                self.selectedStandardImportSetting().deleteExistDataMethod(), 
+                self.selectedStandardImportSetting().categoryId());
             if (data.deleteExistData() ==  model.NOT_USE_ATR.NOT_USE) {
                 data.deleteExistDataMethod(null);
             }
