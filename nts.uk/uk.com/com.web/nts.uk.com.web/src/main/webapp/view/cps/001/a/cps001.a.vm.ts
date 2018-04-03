@@ -393,6 +393,7 @@ module cps001.a.vm {
 
             if (emp.employeeId() == logInId) {
                 // show message if delete self
+                alert({messageId: 'Msg_1109'});
                 return;
             }
 
