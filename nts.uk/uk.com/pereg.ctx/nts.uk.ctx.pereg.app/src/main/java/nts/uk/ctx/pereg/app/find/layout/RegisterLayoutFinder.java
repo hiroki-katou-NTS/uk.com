@@ -218,9 +218,9 @@ public class RegisterLayoutFinder {
 		item.setItemParentCode(itemDef.getItemParentCode());
 		
 		// Get company id
-		String companyId = AppContexts.user().companyId();
+		String contactCD = AppContexts.user().contractCode();
 		// Get Command
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(setItem.getCategoryCode(),companyId);
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemDef.getPerInfoCtgId(),contactCD);
 		
 		if (!perInfoCategory.isPresent()){
 			throw new RuntimeException("invalid PersonInfoCategory");
