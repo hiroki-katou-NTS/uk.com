@@ -687,7 +687,6 @@ public class ProgramsManager {
 	public static final Program KMK004H = new Program(WebAppId.AT, ProgramIdConsts.KMK004H, "KMK004_44",
 			"/view/kmk/004/h/index.xhtml");
 	
-	
 	/** The Constant KMK012A. */
 	public static final Program KMK012A  = new Program(WebAppId.AT, ProgramIdConsts.KMK012A, "KMK012_11",
 			"/view/kmk/012/a/index.xhtml");
