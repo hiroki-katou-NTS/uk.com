@@ -202,12 +202,20 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-            if(self.currentAlarmCode()=='' ) return;
           
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
             }
+            if(self.currentAlarmCode()=='' ){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
+                return;
+            }
+            if(listPeriodByCategory.length==0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1168" });
+                return;    
+            }            
+            
             block.invisible();
             service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 

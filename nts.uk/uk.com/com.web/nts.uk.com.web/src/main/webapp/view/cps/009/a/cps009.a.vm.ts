@@ -104,11 +104,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
-                debugger;
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
                         primitiveConst(obj);
-                        
                         i = i + 1;
                         return new PerInfoInitValueSettingItemDto({
                             categoryType: currentCtg.categoryType,
@@ -252,7 +250,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 params = {
                     settingId: self.initSettingId(),
                     ctgName: ctgCurrent != undefined ? ko.toJS(ctgCurrent.categoryName) : '',
-                    categoryId: self.currentItemId()
+                    categoryId: self.currentItemId(),
+                    categoryType: ctgCurrent.categoryType
                 };
             self.ctgIdUpdate(false);
             setShared('CPS009B_PARAMS', params);
@@ -271,6 +270,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
+//                                self.currentCategory().itemList()[i].selectedCode("0");
                             }
                         });
                     }
@@ -926,7 +926,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || undefined);
+                self.selectedCode = ko.observable(params.stringValue || "1");
             }
 
 

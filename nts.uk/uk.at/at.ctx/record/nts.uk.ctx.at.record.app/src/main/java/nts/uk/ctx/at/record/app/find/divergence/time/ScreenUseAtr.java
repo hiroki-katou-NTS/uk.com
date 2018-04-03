@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.divergence.time;
 /**
  * The Enum ScreenUseAtr.
  */
+// 勤怠項目を利用する画面
 public enum ScreenUseAtr {
 
 	/** The personnel expenses. */

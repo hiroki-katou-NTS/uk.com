@@ -18,6 +18,9 @@ public class KrcmtReverseLeaRemain extends UkJpaEntity {
 	
 	@Column(name = "SID")
 	public String sid;
+	
+	@Column(name = "CID")
+	public String cid;
 
 	@Column(name = "GRANT_DATE")
 	public GeneralDate grantDate;

@@ -53,19 +53,19 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 次回年休付与日
 	 */
 	@PeregItem("IS00281")	
-	private GeneralDate nextTimeGrantDate;
+	private String nextTimeGrantDate;
 	
 	/**
 	 * 次回年休付与日数
 	 */
 	@PeregItem("IS00282")	
-	private Double nextTimeGrantDays;
+	private String nextTimeGrantDays;
 	
 	/**
 	 * 次回時間年休付与上限
 	 */
 	@PeregItem("IS00283")	
-	private int nextTimeMaxTime;
+	private String nextTimeMaxTime;
 	
 	/**
 	 * 年間所定労働日数
