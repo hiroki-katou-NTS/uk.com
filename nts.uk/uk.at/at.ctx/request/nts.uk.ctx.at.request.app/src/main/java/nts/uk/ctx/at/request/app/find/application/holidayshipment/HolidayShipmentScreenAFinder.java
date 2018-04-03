@@ -122,8 +122,6 @@ public class HolidayShipmentScreenAFinder {
 	private BasicScheduleService basicService;
 	@Inject
 	private RequestSettingRepository reqSetRepo;
-
-	final static String DATE_FORMAT = "yyyy/MM/dd";
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 	AppCommonSettingOutput appCommonSettingOutput;
 	RecruitmentApp recApp;
@@ -142,10 +140,9 @@ public class HolidayShipmentScreenAFinder {
 	 * @return HolidayShipmentDto
 	 */
 	// Screen A Start
-	public HolidayShipmentDto startPage(String employeeID, String initDateInput, int uiType) {
+	public HolidayShipmentDto startPage(String employeeID, GeneralDate initDate, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
 		String companyID = AppContexts.user().companyId();
-		GeneralDate initDate = initDateInput == null ? null : GeneralDate.fromString(initDateInput, DATE_FORMAT);
 		// アルゴリズム「起動前共通処理（新規）」を実行する
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
 
@@ -187,21 +184,16 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	public HolidayShipmentDto changeDay(String recDateInput, String absDateImput, int comType, int uiType) {
+	public HolidayShipmentDto changeDay(GeneralDate recDate, GeneralDate absDate, int comType, int uiType) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		GeneralDate baseDate = GeneralDate
-				.fromString(comType == ApplicationCombination.Abs.value ? absDateImput : recDateInput, DATE_FORMAT);
-		GeneralDate recDate = comType == ApplicationCombination.Rec.value
-				? GeneralDate.fromString(recDateInput, DATE_FORMAT) : null;
-		GeneralDate holidayDate = comType == ApplicationCombination.Abs.value
-				? GeneralDate.fromString(absDateImput, DATE_FORMAT) : null;
+		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
 
-		changeAppDate(recDate, holidayDate, companyID, employeeID, uiType, output);
+		changeAppDate(recDate, absDate, companyID, employeeID, uiType, output);
 
 		return output;
 	}
