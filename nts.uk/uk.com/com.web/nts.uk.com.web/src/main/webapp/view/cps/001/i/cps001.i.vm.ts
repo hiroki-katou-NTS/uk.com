@@ -208,6 +208,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.timeReam(null);
             self.dayNumberOver(null);
             self.timeOver(null);
+            self.selectedRuleCode(0);
             $('#idDateGrantInp').focus();
         }
 
