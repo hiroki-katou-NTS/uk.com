@@ -42,7 +42,7 @@
 				<div class="fixed-flex-layout-left">
 					<table id="single-list"
 						data-bind="ntsGridList: {								
-								height: 255,
+								height: 550,
 								dataSource: items_A2,
 								primaryKey: 'topPageCode'	,
 								columns: columns_A2,
@@ -84,11 +84,11 @@
 						</span>
 					</div>
 					<div class="control-group valign-center">
-						<div id="height"
+						<div 
 							data-bind="ntsFormLabel: { constraint: 'Height', required: true }">
 							#{i18n.getText('KTG028_12')}</div>
 						<span class="label" id="widget-height">#{i18n.getText('KTG028_13')}</span> <span
-							data-bind="with: texteditorA5_4"> <input
+							data-bind="with: texteditorA5_4"> <input id="height"
 							data-bind="ntsNumberEditor: {
 							name:'#{i18n.getText('KTG028_14')}',
 							value: value,

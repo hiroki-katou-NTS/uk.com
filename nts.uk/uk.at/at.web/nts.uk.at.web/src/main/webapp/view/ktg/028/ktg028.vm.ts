@@ -32,7 +32,7 @@ module nts.uk.at.view.ktg028.viewmodel {
             self.currentCodeList_A7 = ko.observableArray([]);
             self.columns_A7 = ko.observableArray([
                 { headerText: '', key: 'value', width: 100, hidden: true },
-                { headerText: '', key: 'name', width: 300 }
+                { headerText: nts.uk.resource.getText('KTG028_44'), key: 'name', width: 350 }
             ]);
             self.texteditorA3_2 = {
                 value: ko.observable(''),
