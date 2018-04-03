@@ -88,3 +88,7 @@
 #tab-panel .ui-widget-content:not(.disappear) {
 	min-height: 630px;
 }
+span#lblEmployeeCode {
+	display: inline-blockl;
+	width: 120px;
+}

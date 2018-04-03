@@ -202,7 +202,7 @@ module nts.uk.at.view.kmk004.d {
                     return;
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year, workplaceId: self.selectedWorkplaceId() }
+                    let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), workplaceId: self.selectedWorkplaceId() }
                     service.removeWorkplaceSetting(command).done(() => {
                         self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
                         
@@ -264,7 +264,7 @@ module nts.uk.at.view.kmk004.d {
                 let self = this;
                 service.findAllWorkplaceSetting().done(listWpl => {
                     self.alreadySettingWorkplaces(_.map(listWpl, function(data) {
-                        return { workplaceId: data.workplaceId, isAlreadySetting: true };
+                        return { workplaceId: data.wkpId, isAlreadySetting: true };
                     }));
                 });
             }
