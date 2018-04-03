@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk013.e {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                $("#fixed-table").ntsFixedTable({ height: 500, width: 540 });
+                $("#fixed-table").ntsFixedTable({ height: 300, width: 560 });
                 self.initData();
                 dfd.resolve();
                 return dfd.promise();
