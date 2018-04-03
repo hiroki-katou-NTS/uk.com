@@ -44,19 +44,15 @@ public class RemandImpl implements RemandService {
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
-		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
-		for(int i = 5; i >= order ; i--){
-			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(5-i);
-			List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
-			if(CollectionUtil.isEmpty(approvers)){
-				continue;
-			}
+		List<ApprovalPhaseState> listApprovalPhase = approvalRootState.getListApprovalPhaseState();
+		listApprovalPhase.sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
+		listApprovalPhase.forEach(approvalPhaseState -> {
 			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED);
 			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
 				phaseNotApprovalFlag = Boolean.logicalAnd(phaseNotApprovalFlag, approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED));
 			}
 			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-				continue;
+				return;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
 				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
@@ -66,7 +62,7 @@ public class RemandImpl implements RemandService {
 				approvalFrame.setApprovalReason("");
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-		};
+		});
 		approvalRootStateRepository.update(approvalRootState);
 		// 送信者ID＝送信先リスト
 		ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(5-order);

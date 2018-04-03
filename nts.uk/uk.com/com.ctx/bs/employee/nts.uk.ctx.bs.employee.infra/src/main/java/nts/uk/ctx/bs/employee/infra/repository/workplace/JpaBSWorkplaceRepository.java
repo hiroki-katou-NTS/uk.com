@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
@@ -226,8 +227,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 	/**
 	 * To entity.
 	 *
-	 * @param workplace
-	 *            the workplace
+	 * @param workplace the workplace
 	 * @return the list
 	 */
 	private List<BsymtWorkplaceHist> toEntity(Workplace workplace) {
@@ -248,6 +248,42 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 		workplace.saveToMemento(memento);
 
 		return lstEntity;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository#findWorkplace(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Workplace findWorkplace(String companyId, String workplaceId, GeneralDate baseDate) {
+		// get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+        CriteriaQuery<BsymtWorkplaceHist> cq = criteriaBuilder
+                .createQuery(BsymtWorkplaceHist.class);
+        Root<BsymtWorkplaceHist> root = cq.from(BsymtWorkplaceHist.class);
+
+        // select root
+        cq.select(root);
+
+        // add where
+        List<Predicate> lstpredicateWhere = new ArrayList<>();
+        lstpredicateWhere.add(criteriaBuilder.equal(
+                root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.cid), companyId));
+        lstpredicateWhere.add(criteriaBuilder.equal(
+                root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.wkpid), workplaceId));
+        lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(BsymtWorkplaceHist_.endD), baseDate));
+        lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(BsymtWorkplaceHist_.strD), baseDate));
+
+        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+
+        List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
+        // check empty
+        if (CollectionUtil.isEmpty(lstBsymtWorkplaceHist)) {
+            return null;
+        }
+        return new Workplace(new JpaWorkplaceGetMemento(lstBsymtWorkplaceHist));
 	}
 
 }

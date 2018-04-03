@@ -224,6 +224,7 @@ project (':at.ctx:shared:nts.uk.ctx.at.shared.ac') {
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 	}
 }
 

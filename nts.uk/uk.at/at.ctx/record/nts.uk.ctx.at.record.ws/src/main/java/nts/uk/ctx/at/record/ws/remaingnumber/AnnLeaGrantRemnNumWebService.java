@@ -45,7 +45,11 @@ public class AnnLeaGrantRemnNumWebService extends WebService{
 	public List<AnnLeaGrantRemnNumDto> getAnnLeaByCheckState(String employeeId, Boolean checkState) {
 		return finder.getListDataByCheckState(employeeId,checkState);
 	}
-	
+	@POST
+	@Path("getDetail")
+	public AnnLeaGrantRemnNumDto getDetail(String id) {
+		return finder.getDetail(id);
+	}
 
 	@POST
 	@Path("lostFocus")

@@ -45,7 +45,6 @@ module nts.uk.com.view.cmm053.b.viewmodel {
         initScreen() {
             let self = this;
             self.employeeId = getShared("CMM053A_employeeId");
-            self.employeeId = "8f9edce4-e135-4a1e-8dca-ad96abe405d6";
             block.invisible();
             service.getPastHistory(self.employeeId).done((result: Array<any>) => {
                 if (result && result.length > 0) {

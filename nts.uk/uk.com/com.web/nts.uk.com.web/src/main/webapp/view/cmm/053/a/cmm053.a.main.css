@@ -13,6 +13,10 @@
 	width: 294px;
 }
 
+div.form-label>label {
+	white-space: normal;
+}
+
 #A2_4 {
 	margin: 0 10px 0 10px;
 }

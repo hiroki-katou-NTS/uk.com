@@ -4,5 +4,6 @@ module nts.uk.com.view.cps001.i {
         __viewContext['viewModel'] = new vm.ScreenModel();
         __viewContext.bind(__viewContext['viewModel']);
         __viewContext['viewModel'].startPage();
+         $('#idDateGrantInp').focus();
     });
 }

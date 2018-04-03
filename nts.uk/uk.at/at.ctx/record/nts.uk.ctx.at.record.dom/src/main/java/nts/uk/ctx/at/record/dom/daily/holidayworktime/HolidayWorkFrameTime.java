@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -16,6 +17,7 @@ public class HolidayWorkFrameTime {
 	private HolidayWorkFrameNo holidayFrameNo;
 	private Finally<TimeDivergenceWithCalculation> holidayWorkTime;
 	private Finally<TimeDivergenceWithCalculation> transferTime;
+	@Setter	
 	private Finally<AttendanceTime> beforeApplicationTime;
 	
 	/**

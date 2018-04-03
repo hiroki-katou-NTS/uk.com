@@ -24,5 +24,9 @@ public class AppReflectRecordPara {
 	 * 休暇申請
 	 */
 	private AbsenceReflectPara absenceInfor;
+	/**
+	 * 休日出勤申請
+	 */
+	private HolidayWorkReflectPara holidayworkInfor;
 
 }

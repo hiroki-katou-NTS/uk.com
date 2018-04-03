@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.app.command.person.info.item.AddItemCommand;
 import nts.uk.ctx.pereg.app.command.person.info.item.MappingDtoToDomain;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -27,6 +28,9 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
+	
+	@Inject
+	private ICompanyRepo companyRepo;
 
 	private final static String SPECIAL_CTG_CODE = "CO";
 	private final static String SPECIAL_ITEM_CODE = "IO";
@@ -47,13 +51,13 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 
 		String newCategoryCode = this.createNewCode(this.perInfoCtgRep.getPerInfoCtgCodeLastest(contractCd),
 				SPECIAL_CTG_CODE);
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
-
+		
 		// add PersonInfoCategory of zero-company.
 		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(zeroCompanyId, newCategoryCode, categoryName,
 				categoryType);
 		this.perInfoCtgRep.addPerInfoCtgRoot(perInfoCtg, contractCd);
 
+		List<String> companyIdList = companyRepo.acquireAllCompany();
 		// add PersonInfoCategory for list of companyId. Which have the same contract code.
 		this.perInfoCtgRep.addPerInfoCtgWithListCompany(perInfoCtg, contractCd, companyIdList);
 		

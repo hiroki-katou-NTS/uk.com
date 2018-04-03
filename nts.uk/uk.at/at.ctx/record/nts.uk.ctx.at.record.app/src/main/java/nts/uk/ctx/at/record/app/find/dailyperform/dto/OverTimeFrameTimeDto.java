@@ -14,11 +14,11 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class OverTimeFrameTimeDto {
 
 	/** 振替時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "振替時間", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "振替時間")
 	private CalcAttachTimeDto transferTime;
 
 	/** 残業時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "残業時間", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "残業時間")
 	private CalcAttachTimeDto overtime;
 
 	/** 事前申請時間: 勤怠時間 */
