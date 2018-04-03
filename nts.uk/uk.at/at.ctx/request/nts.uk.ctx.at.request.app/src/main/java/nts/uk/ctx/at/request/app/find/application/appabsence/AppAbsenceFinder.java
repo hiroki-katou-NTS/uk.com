@@ -648,10 +648,13 @@ public class AppAbsenceFinder {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
 				if(workTimeCode != null && workTimeCode.equals("")){
-					PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
-							.findByWorkTimeCode(companyID, workTimeCode).get()
-							.getPrescribedTimezoneSetting();
-					return prescribedTzs;
+					if(this.predTimeRepository
+							.findByWorkTimeCode(companyID, workTimeCode).isPresent()){
+						PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
+								.findByWorkTimeCode(companyID, workTimeCode).get()
+								.getPrescribedTimezoneSetting();
+						return prescribedTzs;
+					}
 				}
 			}
 		}
