@@ -641,6 +641,9 @@ public class AppAbsenceFinder {
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
 			WorkStyle workStyle = basicScheduleService.checkWorkDay(WkTypeOpt.get().getWorkTypeCode().toString());
+			if(workStyle == null){
+				return null;
+			}
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する

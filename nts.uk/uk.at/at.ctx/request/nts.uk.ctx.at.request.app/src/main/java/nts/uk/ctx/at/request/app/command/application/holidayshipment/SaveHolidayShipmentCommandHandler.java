@@ -115,8 +115,6 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
-	final static String DATE_FORMAT = "yyyy/MM/dd";
-
 	String sID;
 	GeneralDate absDate;
 	GeneralDate recDate;
@@ -129,16 +127,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		SaveHolidayShipmentCommand command = context.getCommand();
 		sID = command.getAppCmd().getEnteredPersonSID();
-		absDate = convertDate(command.getAbsCmd().getAppDate());
-		recDate = GeneralDate.fromString(command.getRecCmd().getAppDate(), DATE_FORMAT);
+		absDate = command.getAbsCmd().getAppDate();
+		recDate = command.getRecCmd().getAppDate();
 		comType = command.getComType();
 		// アルゴリズム「振休振出申請の新規登録」を実行する
 		createNewForHolidayBreakge(command);
 
-	}
-
-	private GeneralDate convertDate(String appDate) {
-		return GeneralDate.fromString(appDate.substring(0, 10), DATE_FORMAT);
 	}
 
 	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command) {
