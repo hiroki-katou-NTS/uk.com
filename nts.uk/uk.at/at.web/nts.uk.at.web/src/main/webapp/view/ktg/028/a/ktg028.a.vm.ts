@@ -1,4 +1,4 @@
-module nts.uk.at.view.ktg028.viewmodel {
+module nts.uk.at.view.ktg028.a.viewmodel {
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
     export class ScreenModel {
         texteditorA3_2: any;

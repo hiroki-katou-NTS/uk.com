@@ -1,4 +1,4 @@
-module nts.uk.at.view.ktg028.service {
+module nts.uk.at.view.ktg028.a.service {
     var paths: any = {
         findAll: "sys/portal/widget/findAll",
         add: "sys/portal/widget/add",
