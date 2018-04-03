@@ -13,6 +13,9 @@
 					height : 710
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.common.calendar.Month
+   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<!-- <com:scriptfile path="kmk004.g.service.js" /> -->
@@ -52,6 +55,7 @@
 							<div tabindex="2" style="float: left">
 								<input data-bind="ntsNumberEditor: {
 									value: strMonth,
+									constraint:'Month',
 									option: ko.mapping.fromJS({
 											width: '26',
 											textalign: 'left'
@@ -67,6 +71,7 @@
 							<div tabindex="3" style="float: left">
 								<input data-bind="ntsNumberEditor: {
 									value: period,
+									constraint:'Month',
 									option: {
 											width: '60px',
 											unitID: 'MONTHS',
