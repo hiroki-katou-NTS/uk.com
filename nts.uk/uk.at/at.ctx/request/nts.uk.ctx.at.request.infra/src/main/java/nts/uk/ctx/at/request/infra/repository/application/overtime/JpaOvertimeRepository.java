@@ -120,11 +120,15 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 	@Override
 	public Optional<AppOverTime> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr) {
 		List<AppOverTime> appOverTimeList = this.queryProxy().query(FIND_BY_ATR, KrqdtAppOvertime.class)
-				.setParameter("overTimeAtr", overTimeAtr)
+				.setParameter("overtimeAtr", overTimeAtr.value)
 				.getList(e -> convertToDomain(e));
+		List<AppOverTime> fullList = appOverTimeList.stream()
+				.map(x -> this.getFullAppOvertime(x.getCompanyID(), x.getAppID()).orElse(null)).collect(Collectors.toList());
 		List<AppOverTime> resultList = appOverTimeList.stream()
 			.filter(x -> {
+				if(x==null) return false;
 				Application_New app = x.getApplication();
+				if(app==null) return false;
 				return app.getAppDate().equals(appDate)&&
 						app.getEmployeeID().equals(employeeID)&&
 						app.getPrePostAtr().equals(PrePostAtr.PREDICT);
