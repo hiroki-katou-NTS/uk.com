@@ -25,6 +25,7 @@ module nts.uk.at.view.kaf006.b{
         startAppDate: KnockoutObservable<string> = ko.observable('');
          // 申請日付
         endAppDate: KnockoutObservable<string> = ko.observable('');
+        dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
         appDate: KnockoutObservable<string> = ko.observable('');
         selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
         holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);

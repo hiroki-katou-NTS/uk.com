@@ -214,7 +214,6 @@ module nts.uk.at.view.kaf011.shr {
                 });
 
                 self.appDate.subscribe((newDate) => {
-                    block.invisible();
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
                         changeDateParam = {
                             holidayDate: vm.absWk().appDate(),
@@ -223,6 +222,8 @@ module nts.uk.at.view.kaf011.shr {
                             uiType: 0
 
                         }
+                    if (!vm.screenModeNew() || !newDate) { return; }
+                    block.invisible();
                     service.changeDay(changeDateParam).done((data) => {
                         vm.employeeID(data.employeeID);
                         vm.prePostSelectedCode(data.preOrPostType);
@@ -276,7 +277,7 @@ module nts.uk.at.view.kaf011.shr {
             }
 
             parseText(date) {
-                return nts.uk.time.formatDate(new Date(date()), "YYYY/MM/DD");
+                return nts.uk.time.formatDate(date(), "YYYY/MM/DD");
             }
 
             parseTime(value) {
