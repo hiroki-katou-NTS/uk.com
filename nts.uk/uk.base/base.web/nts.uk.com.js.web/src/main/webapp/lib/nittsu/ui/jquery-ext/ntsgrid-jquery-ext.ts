@@ -97,7 +97,7 @@ module nts.uk.ui.jqueryExtentions {
                         if (columnSize.exists($self)) {
                             columnSize.save($self, c.key, 1);
                         }
-                        feature.merge(options, feature.RESIZING, columnSize.createResizeOptions());
+                        feature.merge(options, feature.RESIZING, columnSize.createResizeOptions(c.key));
                         return false;
                     }
                 });
@@ -365,7 +365,7 @@ module nts.uk.ui.jqueryExtentions {
                 let findId: number = -1;
                 let obj;
                 _.forEach(options.features, function(f: any, id: number) {
-                    if (feature.name === featureName) {
+                    if (f.name === featureName) {
                         obj = f;
                         findId = id;
                         return false;
