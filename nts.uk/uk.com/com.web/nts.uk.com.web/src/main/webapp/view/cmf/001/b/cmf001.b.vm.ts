@@ -50,10 +50,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                                 result.csvDataStartLine, result.characterCode, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
-                            if (nts.uk.util.isNullOrUndefined(self.transitData))
-                                $("#B3_4").focus();
-                            else
-                                $("#B4_21").focus();
+                            if (!nts.uk.util.isNullOrUndefined(self.transitData)) $("#B4_21").focus();
                             _.defer(() => {nts.uk.ui.errors.clearAll()});
                         }
                         if (rs && rs.length) {
@@ -216,11 +213,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                 service.registerStdData(command).done(function() {
                     self.getAllData(data.conditionSettingCode()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
-                            if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                $("#B3_4").focus();
-                            } else {
-                                $("#B4_3").focus();
-                            }
+                            if (self.screenMode() != model.SCREEN_MODE.UPDATE) $("#B4_3").focus();
                         });
                     });
                 }).fail(error => {
