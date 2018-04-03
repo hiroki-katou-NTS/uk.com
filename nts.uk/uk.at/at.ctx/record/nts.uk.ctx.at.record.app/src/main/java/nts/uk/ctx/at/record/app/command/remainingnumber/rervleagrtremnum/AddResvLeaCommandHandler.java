@@ -25,7 +25,7 @@ public class AddResvLeaCommandHandler extends AsyncCommandHandler<AddResvLeaRema
 				IdentifierUtil.randomUniqueId(), c.getEmployeeId(), c.getGrantDate(), c.getDeadline(),
 				c.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value, c.getGrantDays(), c.getUseDays(),
 				c.getOverLimitDays(), c.getRemainingDays());
-		resvLeaRepo.add(data);
+		resvLeaRepo.add(data, AppContexts.user().companyId());
 	}
 
 }

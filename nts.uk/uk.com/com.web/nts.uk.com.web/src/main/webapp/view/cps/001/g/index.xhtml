@@ -48,7 +48,7 @@
 					<!-- <table tabindex="6" id="single-list"
 						data-bind="ntsGridList: {			
 		 				dataSource: listAnnualLeaveGrantRemainData, 
-						primaryKey: 'grantDate', 
+						primaryKey: 'annLeavId', 
 						columns: columns, 
 						multiple: false, 
 		 				value: currentValue,
@@ -56,34 +56,37 @@
 		 				rows:5
 			 		}"></table> -->
 				</div>
-				<table id="tbl-detail">
+				<table id="tbl-detail" data-bind="with: currentItem">
 					<tr>
 						<td data-itemCode="IS00385"><div
 								data-bind="ntsFormLabel: {required: true }">abc</div></td>
 
 						<td>
 							<div tabindex="7" id="idGrantDate"
-								data-bind="ntsDatePicker: {value: currentItem().grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
+								data-bind="ntsDatePicker: {value: grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
 					<tr>
 						<td data-itemCode="IS00386"><div
 								data-bind="ntsFormLabel: {required: false }">abc</div></td>
 						<td>
-							<div tabindex="8"
-								data-bind="ntsDatePicker: {value: currentItem().deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+							<div tabindex="8" id="deadline"
+								data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 					</tr>
 					<tr>
 						<td data-itemCode="IS00387"><div
 								data-bind="ntsFormLabel: {required: true }">abc</div></td>
 						<td>
-							<div class="cf" tabindex="9"
+							<div class="cf" tabindex="9" id = "expirationStatus"
 								data-bind="ntsSwitchButton: {
-								options: $parent.expirationStatus,
+								options: [
+							                 { code: '0', name: '使用可能'},
+							                 { code: '1', name: '期限切れ'}
+							             ],
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: currentItem().expirationStatus,
+								value: expirationStatus,
 								required: true,
 								enable: true }"></div>
 						</td>
@@ -99,10 +102,10 @@
 								<tr>
 									<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
 									<td data-itemCode="IS00390" class="tdTxt"><div>abc</div></td>
-									<td><input class="resize_Edittor" tabindex="10"
+									<td><input class="resize_Edittor" tabindex="10" id = "grantDays"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
-	                                      value: currentItem().grantDays,
+	                                      value: grantDays,
 	                                      option: {
 	                                       decimallength: 1
 	                                      },
@@ -113,10 +116,10 @@
 									<td><table>
 											<tr>
 												<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div>abc</div></td>
-												<td><input class="resize_Edittor" tabindex="11"
+												<td><input class="resize_Edittor" tabindex="11" id = "grantMinutes"
 													data-bind="ntsTimeEditor: {
-															value: currentItem().grantMinutes,
-															required: true,
+															value: grantMinutes,
+															required: false,
 															enable: true,
 															mode: 'time',
 															inputFormat: 'time',
@@ -131,10 +134,10 @@
 										<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div>
 									</td>
 									<td data-itemCode="IS00393" class="tdTxt"><div>abc</div></td>
-									<td><input tabindex="12" class="resize_Edittor"
+									<td><input tabindex="12" class="resize_Edittor" id = "usedDays"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
-	                                      value: currentItem().usedDays,
+	                                      value: usedDays,
 	                                      option: {
 	                                       decimallength: 1
 	                                      },
@@ -145,10 +148,10 @@
 									<td><table>
 											<tr>
 												<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div>abc</div></td>
-												<td><input class="resize_Edittor" tabindex="13"
+												<td><input class="resize_Edittor" tabindex="13" id = "usedMinutes"
 													data-bind="ntsTimeEditor: {
-										value: currentItem().usedMinutes,
-										required: true,
+										value: usedMinutes,
+										required: false,
 										enable: true,
 										mode: 'time',
 										inputFormat: 'time',
@@ -163,10 +166,10 @@
 										<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div>
 									</td>
 									<td data-itemCode="IS00396" class="tdTxt"><div>abc</div></td>
-									<td><input class="resize_Edittor" tabindex="14"
+									<td><input class="resize_Edittor" tabindex="14" id = "remainingDays"
 										data-bind="ntsNumberEditor: {
 	         							  name: '',
-	                                      value: currentItem().remainingDays,
+	                                      value: remainingDays,
 	                                      option: {
 	                                       decimallength: 1
 	                                      },
@@ -177,10 +180,10 @@
 									<td><table>
 											<tr>
 												<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div>abc</div></td>
-												<td><input class="resize_Edittor" tabindex="15"
+												<td><input class="resize_Edittor" tabindex="15" id = "remainingMinutes"
 													data-bind="ntsTimeEditor: {
-										value: currentItem().remainingMinutes,
-										required: true,
+										value: remainingMinutes,
+										required: false,
 										enable: true,
 										readonly: false,
 										mode: 'time',

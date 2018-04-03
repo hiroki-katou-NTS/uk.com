@@ -36,21 +36,21 @@
 
 				<div class="div_line">#{i18n.getText('KAF011_63')}</div>
 
-				<div class="div_line">
+				<div class="div_line" data-bind="if:displayPrePostFlg()!=0">
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
-
 					</div>
 					<div class="div_line_col_2">
-						<div id="swb_pre_post_type" class="cf"
+						<div id="swb_pre_post_type" class="cf" tabindex="2"
 							data-bind="ntsSwitchButton: {
 							options: prePostTypes ,
 							optionsValue: 'code',
 							optionsText: 'text',
 							value: prePostSelectedCode ,
-							enable: true }"></div>
+							enable: screenModeNew }"></div>
 
 					</div>
+
 				</div>
 
 				<div class="div_line">
@@ -62,12 +62,13 @@
 							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 				</div>
-				<div class="div_line">
+				<div class="div_line"
+					data-bind="if:appTypeSet().displayFixedReason !=0">
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<div tabindex="7" id="combo-box"
+						<div tabindex="6" class="combo-box"
 							data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
@@ -83,13 +84,17 @@
 						</div>
 					</div>
 				</div>
-				<div class="div_line">
+				<div class="div_line"
+					data-bind="if:appTypeSet().displayAppReason !=0">
+					<!-- constraint: -->
 					<div class="div_line_col_1">
-						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_17')}</div>
+						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<textarea style="height: 100px"
-							data-bind="ntsMultilineEditor: {value: reason ,name: '#{i18n.getText('KAF011_17')}',
+						<textarea style="height: 100px" tabindex="6"
+							data-bind="ntsMultilineEditor: {
+					constraint: 'AppReason',
+					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'
