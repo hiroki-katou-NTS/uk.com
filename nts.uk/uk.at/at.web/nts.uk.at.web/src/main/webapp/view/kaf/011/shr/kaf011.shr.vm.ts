@@ -120,8 +120,10 @@ module nts.uk.at.view.kaf011.shr {
         export class DrawalReqSet {
             deferredComment: KnockoutObservable<string> = ko.observable('');
             deferredBold: KnockoutObservable<boolean> = ko.observable(false);
+            deferredLettleColor: KnockoutObservable<string> = ko.observable('');
             pickUpComment: KnockoutObservable<string> = ko.observable('');
             pickUpBold: KnockoutObservable<boolean> = ko.observable(false);
+            pickUpLettleColor: KnockoutObservable<string> = ko.observable('');
             deferredWorkTimeSelect: KnockoutObservable<number> = ko.observable(0);
             simulAppliReq: KnockoutObservable<number> = ko.observable(0);
             permissionDivision: KnockoutObservable<any> = ko.observable(null);
@@ -134,7 +136,8 @@ module nts.uk.at.view.kaf011.shr {
                     this.deferredWorkTimeSelect(drawalReqSet.deferredWorkTimeSelect || 0);
                     this.simulAppliReq(drawalReqSet.simulAppliReq || 0);
                     this.permissionDivision(drawalReqSet.permissionDivision || 1);
-
+                    this.deferredLettleColor(drawalReqSet.deferredLettleColor);
+                    this.pickUpLettleColor(drawalReqSet.pickUpLettleColor);
                     let comItems;
                     if (this.simulAppliReq() == 1) {
                         comItems = [
@@ -248,6 +251,36 @@ module nts.uk.at.view.kaf011.shr {
                 if (self.wkType().workAtr() == 0 || vm.drawalReqSet().deferredWorkTimeSelect() == 0) {
                     return false;
                 }
+
+                let morningType = self.wkType().morningCls(),
+                    afternoonType = self.wkType().afternoonCls(),
+                    Pause = 8,
+                    Attendance = 0;
+
+                if (self.wkType().workAtr() == 1) {
+                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 1) {
+                        if ((afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance)) {
+                            return true;
+                        } else {
+                            let wktype = "1234569";
+                            if ((wktype.indexOf(afternoonType) != -1 && morningType == Pause) || (wktype.indexOf(morningType) != -1 && afternoonType == Pause)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+
+                        }
+                    }
+                }
+
+                if (self.wkType().workAtr() == 2) {
+                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 1) {
+                        if (afternoonType != 0 && morningType != 0) {
+                            return false;
+                        }
+                    }
+
+                }
                 return true;
             }
 
@@ -347,10 +380,14 @@ module nts.uk.at.view.kaf011.shr {
             }
         }
         export class WkType {
-            workAtr: KnockoutObservable<number> = ko.observable(0);
-            constructor(wkType) {
+            workAtr: KnockoutObservable<any> = ko.observable(null);
+            afternoonCls: KnockoutObservable<any> = ko.observable(null);
+            morningCls: KnockoutObservable<any> = ko.observable(null);
+            constructor(wkType?) {
                 if (wkType) {
                     this.workAtr(wkType.workAtr);
+                    this.afternoonCls(wkType.afternoonCls);
+                    this.morningCls(wkType.morningCls);
                 }
             }
         }
