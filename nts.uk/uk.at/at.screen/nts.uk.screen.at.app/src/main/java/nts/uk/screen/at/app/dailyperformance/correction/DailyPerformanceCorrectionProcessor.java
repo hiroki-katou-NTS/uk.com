@@ -296,10 +296,9 @@ public class DailyPerformanceCorrectionProcessor {
 		//List<EmployeeInfoFunAdapterDto> employeeInfoAdapter = changeEmployeeIds.isEmpty() ? Collections.emptyList() :  employeeInfoFunAdapter.getListPersonInfor(changeEmployeeIds);
 		//screenDto.setLstEmployee(converEmployeeList(employeeInfoAdapter));
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
-		if(displayFormat == 0 && !changeEmployeeIds.isEmpty()){
-			val sidShare = changeEmployeeIds.get(0);
-			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : sidShare)).collect(Collectors.toList());
-		}
+//		if(displayFormat == 0 && !changeEmployeeIds.isEmpty()){
+//			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : objectShare.getIndividualTarget())).collect(Collectors.toList());
+//		}
 		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
 		List<WorkPlaceHistImport> wPH = workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart));
