@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,9 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
@@ -44,6 +48,9 @@ public class PerInfoItemDefForLayoutFinder {
 
 	@Inject
 	AffCompanyHistRepository achFinder;
+	
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	/***
 	 * set value for item
@@ -61,7 +68,16 @@ public class PerInfoItemDefForLayoutFinder {
 	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
 			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate,
 			Map<Integer, Map<String, List<ComboBoxObject>>> combobox) {
-		setData(itemForLayout, empId, ctgType, itemDef, perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox);
+		
+		// Get contractcode
+		String contractCD = AppContexts.user().contractCode();
+		// Get perInfoCategory
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemForLayout.getPerInfoCtgId(), contractCD);
+		
+		if (!perInfoCategory.isPresent()){
+			return;
+		}
+		setData(itemForLayout, empId, ctgType, itemDef, perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox, perInfoCategory.get().getPersonEmployeeType());
 		List<PerInfoItemDefForLayoutDto> childrenItems = getChildrenItems(itemDef, empId, ctgType, perInfoCd, dispOrder,
 				isCtgViewOnly, sDate, combobox, itemForLayout.getActionRole());
 		itemForLayout.setLstChildItemDef(childrenItems);
@@ -70,10 +86,23 @@ public class PerInfoItemDefForLayoutFinder {
 	public List<PerInfoItemDefForLayoutDto> getChildrenItems(PersonInfoItemDefinition parentItem, String empId,
 			int ctgType, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate,
 			Map<Integer, Map<String, List<ComboBoxObject>>> combobox, ActionRole role) {
+		
+		
+				
 		List<PersonInfoItemDefinition> parentItems = new ArrayList<>();
 		parentItems.add(parentItem);
 		List<PerInfoItemDefForLayoutDto> items = new ArrayList<>();
 		int index;
+		
+		// Get contractcode
+		String contractCD = AppContexts.user().contractCode();
+		// Get perInfoCategory
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(parentItem.getPerInfoCategoryId(), contractCD);
+		
+		if (!perInfoCategory.isPresent()){
+			return items;
+		}
+				
 		while (parentItems.size() > 0) {
 			PersonInfoItemDefinition itemDef = parentItems.stream().findFirst().get();
 			index = parentItems.indexOf(itemDef);
@@ -86,7 +115,7 @@ public class PerInfoItemDefForLayoutFinder {
 					PerInfoItemDefForLayoutDto itemForLayout = new PerInfoItemDefForLayoutDto();
 					itemForLayout.setItemParentCode(itemDef.getItemCode().v());
 					itemForLayout.setActionRole(role);
-					setData(itemForLayout, empId, ctgType, i, perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox);
+					setData(itemForLayout, empId, ctgType, i, perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox, perInfoCategory.get().getPersonEmployeeType());
 					if (i.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
 						parentItems.add(i);
 					}
@@ -100,7 +129,7 @@ public class PerInfoItemDefForLayoutFinder {
 
 	private void setData(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
 			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate,
-			Map<Integer, Map<String, List<ComboBoxObject>>> combobox) {
+			Map<Integer, Map<String, List<ComboBoxObject>>> combobox, PersonEmployeeType perEmplType) {
 
 		itemForLayout.setCtgType(ctgType);
 		if (isCtgViewOnly)
@@ -129,7 +158,7 @@ public class PerInfoItemDefForLayoutFinder {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
 
 				List<ComboBoxObject> lstCombo = getCombo(selectionItemDto, combobox, empId, sDate,
-						itemDef.getIsRequired() == IsRequired.REQUIRED);
+						itemDef.getIsRequired() == IsRequired.REQUIRED, perEmplType);
 				itemForLayout.setLstComboxBoxValue(lstCombo);
 
 			}
@@ -138,7 +167,7 @@ public class PerInfoItemDefForLayoutFinder {
 
 	private List<ComboBoxObject> getCombo(SelectionItemDto selectionItemDto,
 			Map<Integer, Map<String, List<ComboBoxObject>>> combobox, String empId, GeneralDate sDate,
-			boolean isRequired) {
+			boolean isRequired, PersonEmployeeType perEmplType) {
 		List<Object> key = new ArrayList<Object>();
 		ReferenceTypes dataType = selectionItemDto.getReferenceType();
 		key.add(dataType.value);
@@ -161,13 +190,13 @@ public class PerInfoItemDefForLayoutFinder {
 			if (mapComboValue.containsKey(key.get(1))) {
 				return mapComboValue.get(key.get(1));
 			} else {
-				List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired);
+				List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired, perEmplType);
 				mapComboValue.put((String) key.get(1), returnList);
 				combobox.put((Integer) key.get(0), mapComboValue);
 				return returnList;
 			}
 		} else {
-			List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired);
+			List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired, perEmplType);
 			Map<String, List<ComboBoxObject>> mapComboValue = new HashMap<>();
 			mapComboValue.put((String) key.get(1), returnList);
 			combobox.put((Integer) key.get(0), mapComboValue);
@@ -196,7 +225,7 @@ public class PerInfoItemDefForLayoutFinder {
 	}
 
 	public List<ComboBoxObject> getLstComboBoxValue(SelectionItemDto selectionItemDto, String empId,
-			GeneralDate baseDate, boolean isRequired) {
+			GeneralDate baseDate, boolean isRequired, PersonEmployeeType perEmplType) {
 
 		GeneralDate standardDate = baseDate;
 		if (baseDate == null) {
@@ -205,6 +234,6 @@ public class PerInfoItemDefForLayoutFinder {
 			standardDate = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
 					.collect(Collectors.toList()).get(0).start();
 		}
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, isRequired);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, isRequired, perEmplType);
 	}
 }

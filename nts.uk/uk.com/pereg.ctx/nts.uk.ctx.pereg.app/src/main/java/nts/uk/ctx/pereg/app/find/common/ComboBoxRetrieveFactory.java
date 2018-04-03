@@ -54,6 +54,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -147,7 +148,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -169,10 +170,10 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired);
+		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired, perEmplType);
 	}
 
-	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam) {
+	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam, PersonEmployeeType perEmplType) {
 		ReferenceTypes refType = comboBoxParam.getComboBoxType();
 		String refCode = "";
 		switch (refType) {
@@ -187,7 +188,7 @@ public class ComboBoxRetrieveFactory {
 		}
 		return getComboBox(refType, refCode, GeneralDate.legacyDate(comboBoxParam.getStandardDate()),
 				comboBoxParam.getEmployeeId(), comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(),
-				comboBoxParam.isRequired());
+				comboBoxParam.isRequired(),perEmplType);
 
 	}
 
@@ -315,8 +316,8 @@ public class ComboBoxRetrieveFactory {
 		return new ArrayList<>();
 	}
 
-	private List<ComboBoxObject> getCodeNameComboBox(String typeCode, GeneralDate standardDate) {
-		List<SelectionInitDto> selectionList = selectionFinder.getAllSelectionByCompanyId(typeCode, standardDate);
+	private List<ComboBoxObject> getCodeNameComboBox(String typeCode, GeneralDate standardDate, PersonEmployeeType perEmplType) {
+		List<SelectionInitDto> selectionList = selectionFinder.getAllSelectionByCompanyId(typeCode, standardDate,perEmplType);
 		List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
 		for (SelectionInitDto selection : selectionList) {
 			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
@@ -338,7 +339,7 @@ public class ComboBoxRetrieveFactory {
 	}
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
-			GeneralDate standardDate, String employeeId, String workplaceId, boolean isCps002, boolean isRequired) {
+			GeneralDate standardDate, String employeeId, String workplaceId, boolean isCps002, boolean isRequired, PersonEmployeeType perEmplType) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -347,7 +348,7 @@ public class ComboBoxRetrieveFactory {
 			resultList = getEnumComboBox(RefCd);
 			break;
 		case CODE_NAME:
-			resultList = getCodeNameComboBox(RefCd, standardDate);
+			resultList = getCodeNameComboBox(RefCd, standardDate,perEmplType);
 			break;
 		case DESIGNATED_MASTER:
 			resultList = getMasterComboBox(RefCd, employeeId, standardDate, isCps002, workplaceId);
