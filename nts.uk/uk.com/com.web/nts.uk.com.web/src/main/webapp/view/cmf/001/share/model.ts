@@ -405,7 +405,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
             this.decimalSelect = ko.observable(decimalSelect);
-            this.hourMinSelect = ko.observable(hourMinSelect);
+            this.hourMinSelect = ko.observable(hourMinSelect || 0);
             this.delimiterSet = ko.observable(delimiterSet);
             this.roundProc = ko.observable(roundProc);
             this.roundProcCls = ko.observable(roundProcCls);
@@ -433,7 +433,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
             this.decimalSelect = ko.observable(decimalSelect);
-            this.hourMinSelect = ko.observable(hourMinSelect);
+            this.hourMinSelect = ko.observable(hourMinSelect || 0);
             this.delimiterSet = ko.observable(delimiterSet);
             this.roundProc = ko.observable(roundProc);
             this.roundProcCls = ko.observable(roundProcCls);
