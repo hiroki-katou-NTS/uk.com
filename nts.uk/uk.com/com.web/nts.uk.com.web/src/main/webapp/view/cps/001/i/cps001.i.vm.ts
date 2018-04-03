@@ -76,13 +76,15 @@ module nts.uk.com.view.cps001.i.vm {
 
 
         //data recive from cps001.a
-        specialCode: KnockoutObservable<string>;
+        categoryCode: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             let self = this;
             let sid = __viewContext.user.employeeId;
+            
+            let data : any = getShared('CPS001GHI_VALUES');
 
-            self.specialCode = getShared('CPS001I_PARAM');
+            self.categoryCode(data.ctgCode);
 
             self.expStateTitle = ko.observable('expDateTitle');
             self.roundingRules = ko.observableArray([
@@ -135,6 +137,7 @@ module nts.uk.com.view.cps001.i.vm {
         loadData(index?: number): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             self.checked(false);
+            
             service.getAllList("1B3D3CC4-90FD-4992-9566-12EC72827E4C", 1).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
@@ -310,7 +313,6 @@ module nts.uk.com.view.cps001.i.vm {
             nts.uk.ui.windows.close();
         }
 
-
         bindingData(result: ISpecialLeaveRemaining): void {
             let self = this;
 
@@ -349,8 +351,8 @@ module nts.uk.com.view.cps001.i.vm {
 
         getItemDef() {
             let self = this;
-            let ctgCode: string = "CS00039";
-            service.getItemDef(ctgCode).done((data: Array<IItem>) => {
+            let ctgCode: IData = self.genSpecialCode(self.categoryCode());
+            service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });
@@ -375,7 +377,6 @@ module nts.uk.com.view.cps001.i.vm {
                                 $(this).parent().css("display", "none");
                             }
                             let timeType = itemCodeArray[itemCodeArray.length - 1];
-                            debugger;
                             switch (timeType) {
                                 case "dayNumberOfGrants":
                                     self.nameDayNumberOfGrant(itemDef.itemName);
@@ -401,10 +402,10 @@ module nts.uk.com.view.cps001.i.vm {
                                 case "timeReam":
                                     self.timeReamH = ko.observable(!itemDef.display);
                                     break;
-                                    
+
                             }
-                            
-                            
+
+
                         }
                     });
                 }
@@ -434,13 +435,119 @@ module nts.uk.com.view.cps001.i.vm {
             ko.applyBindings(self, $("#tbl")[0]);
         }
 
+        genSpecialCode(categoryCode: string): IData {
+
+            switch (categoryCode) {
+                case 'CS00025':
+                    return {
+                        specialCode: 1,
+                        ctgCodeChirld: 'CS00039'
+                    };
+                case 'CS00026':
+                    return {
+                        specialCode: 2,
+                        ctgCodeChirld: 'CS00040'
+                    };
+                case 'CS00027':
+                    return {
+                        specialCode: 3,
+                        ctgCodeChirld: 'CS00041'
+                    };
+                case 'CS00028':
+                    return {
+                        specialCode: 4,
+                        ctgCodeChirld: 'CS00042'
+                    };
+                case 'CS00029':
+                    return {
+                        specialCode: 5,
+                        ctgCodeChirld: 'CS00043'
+                    };
+                case 'CS00030':
+                    return {
+                        specialCode: 6,
+                        ctgCodeChirld: 'CS00044'
+                    };
+                case 'CS00031':
+                    return {
+                        specialCode: 7,
+                        ctgCodeChirld: 'CS00045'
+                    };
+                case 'CS00032':
+                    return {
+                        specialCode: 8,
+                        ctgCodeChirld: 'CS00046'
+                    };
+                case 'CS00033':
+                    return {
+                        specialCode: 9,
+                        ctgCodeChirld: 'CS00047'
+                    };
+                case 'CS00034':
+                    return {
+                        specialCode: 10,
+                        ctgCodeChirld: 'CS00048'
+                    };
+                case 'CS00049':
+                    return {
+                        specialCode: 11,
+                        ctgCodeChirld: 'CS00059'
+                    };
+                case 'CS00050':
+                    return {
+                        specialCode: 12,
+                        ctgCodeChirld: 'CS00060'
+                    };
+                case 'CS00051':
+                    return {
+                        specialCode: 13,
+                        ctgCodeChirld: 'CS00061'
+                    };
+                case 'CS00052':
+                    return {
+                        specialCode: 14,
+                        ctgCodeChirld: 'CS00062'
+                    };
+                case 'CS00053':
+                    return {
+                        specialCode: 15,
+                        ctgCodeChirld: 'CS00063'
+                    };
+                case 'CS00054':
+                    return {
+                        specialCode: 16,
+                        ctgCodeChirld: 'CS00064'
+                    };
+                case 'CS00055':
+                    return {
+                        specialCode: 17,
+                        ctgCodeChirld: 'CS00065'
+                    };
+                case 'CS00056':
+                    return {
+                        specialCode: 18,
+                        ctgCodeChirld: 'CS00066'
+                    };
+                case 'CS00057':
+                    return {
+                        specialCode: 19,
+                        ctgCodeChirld: 'CS00067'
+                    };
+                case 'CS00058':
+                    return {
+                        specialCode: 20,
+                        ctgCodeChirld: 'CS00068'
+                    };
+            }
+        }
+
 
     }
 
     // data truyen tu man cps001.a
-    interface IDataShare {
-        sid: string;
-        ctgCode: string;
+    interface IData {
+        specialCode: number;
+        ctgCodeChirld: string;
     }
 
     interface IItem {
