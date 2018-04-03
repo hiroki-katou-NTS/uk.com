@@ -46,7 +46,7 @@ public class JpaWkpFlexSettingRepository extends JpaRepository implements WkpFle
 		KshstWkpFlexSet entity = this
 				.queryProxy().find(
 						new KshstWkpFlexSetPK(setting.getCompanyId().v(),
-								setting.getCompanyId().v(), setting.getYear().v()),
+								setting.getWorkplaceId().v(), setting.getYear().v()),
 						KshstWkpFlexSet.class)
 				.get();
 		setting.saveToMemento(new JpaWkpFlexSettingSetMemento(entity));
