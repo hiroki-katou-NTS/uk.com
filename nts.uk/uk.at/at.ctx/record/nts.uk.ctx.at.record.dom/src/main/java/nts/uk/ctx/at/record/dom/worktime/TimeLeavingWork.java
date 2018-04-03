@@ -102,5 +102,24 @@ public class TimeLeavingWork extends DomainObject{
 		this.attendanceStamp = attendanceStamp;
 		this.leaveStamp = leaveStamp;
 	}
+
+	/**
+	 * 打刻漏れをしているかチェックする
+	 * @return 打刻漏れをしていない 
+	 */
+	public boolean checkLeakageStamp() {
+		//出勤時刻が無い
+		if(!this.getAttendanceStamp().isPresent() 
+			&& !this.getAttendanceStamp().get().getStamp().isPresent()
+			&& this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+			return false;
+		}
+		if(!this.getLeaveStamp().isPresent() 
+				&& !this.getLeaveStamp().get().getStamp().isPresent()
+				&& this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
+			return false;
+		}
+		return true;
+	}
 	
 }
