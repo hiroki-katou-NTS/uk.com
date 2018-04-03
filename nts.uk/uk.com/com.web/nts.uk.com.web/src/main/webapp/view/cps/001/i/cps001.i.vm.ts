@@ -108,7 +108,7 @@ module nts.uk.com.view.cps001.i.vm {
                     self.listData(self.convertData(self.listFullData()));
                     self.currentValue(self.listData()[0].specialid);
                 } else {
-                   self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
+                    self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
                         return item.expStatus == 0;
                     })));
                 }
@@ -127,6 +127,7 @@ module nts.uk.com.view.cps001.i.vm {
 
         loadData(index?: number): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            self.checked(false);
             service.getAllList("1B3D3CC4-90FD-4992-9566-12EC72827E4C", 1).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
@@ -251,7 +252,7 @@ module nts.uk.com.view.cps001.i.vm {
 
             service.saveData(command).done((_data: any) => {
                 info({ messageId: "Msg_15" }).then(function() {
-                    self.loadData(saveItemIndex);
+                    self.loadData(0);
                 });
                 unblock();
             }).fail((error: any) => {
@@ -281,18 +282,8 @@ module nts.uk.com.view.cps001.i.vm {
                     if (currentRow != undefined) {
                         let itemListLength = self.listData().length;
                         service.remove(currentRow.specialid).done((_data: any) => {
-                            if (itemListLength === 1) {
-                                self.loadData(0);
-                                unblock();
-                            } else if (itemListLength - 1 === indexItemDelete) {
-                                self.loadData(indexItemDelete - 1);
-                                unblock();
-                            } else if (itemListLength - 1 > indexItemDelete) {
-                                self.loadData(indexItemDelete + 1);
-                                unblock();
-                            }
-
                             showDialog.info({ messageId: "Msg_16" }).then(function() {
+                                self.loadData(0);
                                 unblock();
                             });
                         }).fail((error: any) => {
