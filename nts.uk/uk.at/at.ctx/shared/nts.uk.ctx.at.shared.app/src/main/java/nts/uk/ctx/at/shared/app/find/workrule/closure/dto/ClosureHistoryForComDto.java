@@ -19,7 +19,7 @@ public class ClosureHistoryForComDto implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The close name. */
+	/** The closure name. */
 	private String closeName;
 
 	/** The closure id. */

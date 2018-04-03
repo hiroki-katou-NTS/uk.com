@@ -168,14 +168,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                                 self.addDivReason();
                             }
                     }
-                    else {
-                        blockUI.clear();
-                    }
-
                 }
             });
-
-
 
             blockUI.clear();
         }

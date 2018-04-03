@@ -26,6 +26,9 @@ public class SpecialleaveInformationFinder {
 	@Inject
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
 	
+	@Inject
+	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+	
 	public PeregDomainDto getSingleData(PeregQuery query, int specialLeaveCD) {
 		Optional<SpecialLeaveBasicInfo> spLeaBasicInfo = specialLeaveBasicInfoRepository.getBySidLeaveCd(query.getEmployeeId(), specialLeaveCD);
 		if (spLeaBasicInfo.isPresent()){
@@ -33,7 +36,10 @@ public class SpecialleaveInformationFinder {
 			List<SpecialLeaveGrantRemainingData> grantRemain = specialLeaveGrantRepo.getAllByExpStatus(query.getEmployeeId(), specialLeaveCD, true);
 			dto.setSpHDRemain(specialLeaveGrantRemainService.calDayTime(grantRemain));
 			// TODO Item IS00300 QA 111
-			dto.setNextGrantDate(GeneralDate.max());
+			Optional<SpecialLeaveBasicInfo> spLeave = specialLeaveBasicInfoRepo.getBySidLeaveCd(query.getEmployeeId(), specialLeaveCD);
+			if (spLeave.isPresent()){
+				dto.setNextGrantDate(spLeave.get().getGrantSetting().getGrantDate().toString("yyyy/MM/dd"));
+			}
 			return dto;
 		}
 		

@@ -15,7 +15,7 @@ public class ClosuresDto {
 	// 締めＩＤ
 	private int closureId;
 
-	/** The close name. */
+	/** The closure name. */
 	private String closeName;
 	
 	/** The closure date. */

@@ -75,25 +75,34 @@ public class LayoutPersonInfoClsFinder {
 						}
 					}
 
-					if (listItemDefDto.size() > 1) {
-						if (classDto.getLayoutItemType() == LayoutItemType.ITEM) {
-							if (listItemDefDto.get(0).getItemTypeState().getItemType() == 1 || listItemDefDto.get(0).getItemTypeState().getItemType() == 3) {
-								classDto.setListItemDf(listItemDefDto);
-							}else {
-								classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
-							}
-						} else if (classDto.getLayoutItemType() == LayoutItemType.LIST) {
-							classDto.setListItemDf(listItemDefDto);
-						}
-					} else if (listItemDefDto.size() == 1) {
+					List<String> roots = listItemDefDto.stream()
+							.filter(f -> f.getItemParentCode().equals("") || f.getItemParentCode() == null)
+							.map(m -> m.getItemCode()).collect(Collectors.toList());
+
+					if (roots.size() > 1) {
 						classDto.setListItemDf(listItemDefDto);
 					} else {
-						classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
-					}
+						if (listItemDefDto.size() > 1) {
+							if (classDto.getLayoutItemType() == LayoutItemType.ITEM) {
+								if (listItemDefDto.get(0).getItemTypeState().getItemType() == 1
+										|| listItemDefDto.get(0).getItemTypeState().getItemType() == 3) {
+									classDto.setListItemDf(listItemDefDto);
+								} else {
+									classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
+								}
+							} else if (classDto.getLayoutItemType() == LayoutItemType.LIST) {
+								classDto.setListItemDf(listItemDefDto);
+							}
+						} else if (listItemDefDto.size() == 1) {
+							classDto.setListItemDf(listItemDefDto);
+						} else {
+							classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
+						}
 
-					if (classDto.getLayoutItemType() == LayoutItemType.ITEM && !listItemDefDto.isEmpty()
-							&& listItemDefDto.get(0) != null) {
-						classDto.setClassName(listItemDefDto.get(0).getItemName());
+						if (classDto.getLayoutItemType() == LayoutItemType.ITEM && !listItemDefDto.isEmpty()
+								&& listItemDefDto.get(0) != null) {
+							classDto.setClassName(listItemDefDto.get(0).getItemName());
+						}
 					}
 				}
 

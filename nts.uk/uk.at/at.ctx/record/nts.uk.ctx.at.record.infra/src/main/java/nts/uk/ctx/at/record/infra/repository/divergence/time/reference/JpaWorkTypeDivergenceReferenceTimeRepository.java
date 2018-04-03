@@ -128,11 +128,16 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId);
 
 		targetHistories.forEach(history -> {
-			// set new history ID
-			history.getId().setHistId(destHistId);
+			// copy to new entity
+			KrcstDrt drt = new KrcstDrt();
+			KrcstDrtPK pk = new KrcstDrtPK(destHistId, history.getId().getDvgcTimeNo());
+			drt.setId(pk);
+			drt.setDvgcTimeUseSet(history.getDvgcTimeUseSet());
+			drt.setAlarmTime(history.getAlarmTime());
+			drt.setErrorTime(history.getErrorTime());
 
 			// Insert to DB
-			this.commandProxy().insert(history);
+			this.commandProxy().insert(drt);
 		});
 	}
 

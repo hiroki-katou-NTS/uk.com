@@ -39,7 +39,6 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 */
 	@Override
 	public String getCompanyId() {
-		// TODO Auto-generated method stub
 		return this.krcstDrtUseUnit.getCid();
 	}
 
@@ -50,9 +49,8 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 * DivergenceReferenceTimeUsageUnitGetMemento#getWorkTypeUseSet()
 	 */
 	@Override
-	public BigDecimal getWorkTypeUseSet() {
-		// TODO Auto-generated method stub
-		return this.krcstDrtUseUnit.getWorktypeUseSet();
+	public boolean getWorkTypeUseSet() {
+		return this.krcstDrtUseUnit.getWorktypeUseSet().equals(BigDecimal.ONE);
 	}
 
 }

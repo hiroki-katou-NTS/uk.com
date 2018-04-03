@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -18,11 +17,11 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 public class RaisingSalaryTimeDailyPerformDto {
 
 	/** 特定日加給時間 : 加給時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定加給時間", needCheckIDWithIndex = true, listMaxLength = 10, indexField = "raisingSalaryNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定加給時間", listMaxLength = 10, indexField = "raisingSalaryNo")
 	private List<RaisingSalaryTimeDto> specificDayOfRaisingSalaryTime;
 
 	/** 加給時間 : 加給時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "加給時間", needCheckIDWithIndex = true, listMaxLength = 10, indexField = "raisingSalaryNo")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "加給時間", listMaxLength = 10, indexField = "raisingSalaryNo")
 	private List<RaisingSalaryTimeDto> raisingSalaryTime;
 	
 	public static RaisingSalaryTimeDailyPerformDto toDto(RaiseSalaryTimeOfDailyPerfor domain){
