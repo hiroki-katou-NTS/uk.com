@@ -78,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
@@ -89,6 +90,16 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -201,6 +212,33 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
 	
+	@Inject
+	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
+	
+	@Inject
+	private ShainTransLaborTimeRepository shainTransLaborTimeRepository;
+	
+	@Inject
+	private WkpRegularLaborTimeRepository wkpRegularLaborTimeRepository;
+	
+	@Inject
+	private WkpTransLaborTimeRepository wkpTransLaborTimeRepository;
+	
+	@Inject
+	private EmpRegularWorkTimeRepository empRegularWorkTimeRepository;
+	
+	@Inject
+	private EmpTransWorkTimeRepository empTransWorkTimeRepository;
+	
+	@Inject
+	private ComRegularLaborTimeRepository comRegularLaborTimeRepository;
+	
+	@Inject
+	private ComTransLaborTimeRepository comTransLaborTimeRepository;
+	
+	@Inject
+	private UsageUnitSettingRepository usageUnitSettingRepository;
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @param placeId 職場ID
@@ -271,6 +309,35 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(workType.get().getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 			oneRange.getPredetermineTimeSetForCalc().endTimeSetStartTime();
 		}
+		
+		/*社員別通常勤務労働時間*/
+		val shainRegularLaborTime = shainRegularWorkTimeRepository.find(companyId, employeeId);
+		/*社員別変形労働労働時間*/
+		val shainTransLaborTime = shainTransLaborTimeRepository.find(companyId, employeeId);
+		/*職場別通常勤務労働時間*/
+		val wkpRegularLaborTime = wkpRegularLaborTimeRepository.find(companyId, employeeId);
+		/*職場別変形労働労働時間*/
+		val wkpTransLaborTime = wkpTransLaborTimeRepository.find(companyId, employeeId);
+		/*雇用別通常勤務労働時間*/
+		val empRegularLaborTime = empRegularWorkTimeRepository.findById(companyId, employeeId);
+		/*雇用別変形労働労働時間*/
+		val empTransLaborTime = empTransWorkTimeRepository.find(companyId, employeeId);
+		/*会社別通常勤務労働時間*/
+		val comRegularLaborTime = comRegularLaborTimeRepository.find(companyId);
+		/*会社別変形労働労働時間*/
+		val comTransLaborTime = comTransLaborTimeRepository.find(companyId);
+		/*労働時間と日数の設定の利用単位の設定*/
+		val usageUnitSetting = usageUnitSettingRepository.findByCompany(companyId);
+		/*法定労働時間(日単位)*/
+		val dailyUnit = usageUnitSetting.isPresent()?usageUnitSetting.get().getDailyUnit(personalInfo.getWorkingSystem(), 
+				 shainRegularLaborTime, 
+				 shainTransLaborTime, 
+				 wkpRegularLaborTime, 
+				 wkpTransLaborTime, 
+				 empRegularLaborTime, 
+				 empTransLaborTime, 
+				 comRegularLaborTime, 
+				 comTransLaborTime):new DailyUnit(new TimeOfDay(0));
 		
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
@@ -451,7 +518,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				throw new RuntimeException("unknown workTimeMethodSet" + workTime.get().getWorkTimeDivision().getWorkTimeMethodSet());
 			}
 		}
-		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime, workType, subhol, personalInfo);
+		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime, workType, subhol, personalInfo ,dailyUnit);
 	}
 	
 	/**

@@ -64,18 +64,7 @@ public class CalculateOfTotalConstraintTime {
 																			   												  return t.getStart()!=null?0:0-t.getStart().valueAsMinutes();
 																			   											  }
 																			   											  return t.getEnd().valueAsMinutes()-t.getStart().valueAsMinutes();})
-																			   											  .sum());
-//		    List<TimeSpanForCalc> a = createCalculateOfTotalConstraintTimeSheetList(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave);
-//	
-//			AttendanceTime result = new AttendanceTime(a.stream().filter(t->t!=null).mapToInt(t -> {if(t.getStart()==null) {
-//											  return t.getEnd()!=null?0:t.getEnd().valueAsMinutes();
-//										  }else if(t.getEnd()==null) {
-//											  return t.getStart()!=null?0:0-t.getStart().valueAsMinutes();
-//										  }
-//										  return t.getEnd().valueAsMinutes()-t.getStart().valueAsMinutes();})
-//										  .sum());		
-		
-		
+																			   											  .sum());	
 		return result;
 	}
 	

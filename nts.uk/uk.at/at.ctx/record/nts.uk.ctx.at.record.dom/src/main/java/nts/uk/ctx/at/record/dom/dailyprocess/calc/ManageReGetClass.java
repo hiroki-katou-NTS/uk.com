@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -39,6 +40,9 @@ public class ManageReGetClass {
 	//労働制
 	DailyCalculationPersonalInformation personalInfo;
 	
+	//法定労働時間(日単位)
+	DailyUnit dailyUnit;
+	
 	//計算処理に入ることができるかフラグ
 	//(造語)
 	Boolean calculatable;
@@ -49,7 +53,7 @@ public class ManageReGetClass {
 	private ManageReGetClass(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-			DailyCalculationPersonalInformation personalInfo, Boolean calculatable) {
+			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit, Boolean calculatable) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -57,6 +61,7 @@ public class ManageReGetClass {
 		this.workType = workType;
 		this.subHolTransferSetList = subHolTransferSetList;
 		this.personalInfo = personalInfo;
+		this.dailyUnit = dailyUnit;
 		this.calculatable = calculatable;
 	}
 	
@@ -69,7 +74,8 @@ public class ManageReGetClass {
 									null, 
 									null, 
 									null, 
-									null, 
+									null,
+									null,
 									false);
 				
 	}
@@ -80,13 +86,14 @@ public class ManageReGetClass {
 	public static ManageReGetClass canCalc(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 										  Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 										  List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-										  DailyCalculationPersonalInformation personalInfo) {
+										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
 									workType,
 									subHolTransferSetList,
 									personalInfo,
+									dailyUnit,
 									true);
 	
 	}
