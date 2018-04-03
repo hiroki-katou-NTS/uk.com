@@ -131,8 +131,8 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
 			} else
 				return Optional.empty();
-		} else
-			return Optional.empty();
+		}
+		return this.findByCompanyIDAndEmpCD(companyID, employeeCD);
 	}
 
 	@Override
@@ -147,8 +147,8 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
 			} else
 				return Optional.empty();
-		} else
-			return Optional.empty();
+		}
+		return this.getByComIDAndEmpCD(companyID, employeeCD);
 	}
 
 }
