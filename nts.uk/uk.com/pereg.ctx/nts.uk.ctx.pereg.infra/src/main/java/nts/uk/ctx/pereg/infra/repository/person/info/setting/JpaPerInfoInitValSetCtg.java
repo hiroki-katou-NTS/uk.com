@@ -33,7 +33,8 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " LEFT JOIN PpemtPersonInitValueSettingCtg c "
 			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId "
 			+ " AND c.settingCtgPk.settingId = :settingId " + " WHERE ( b.abolitionAtr = 0 "
-			+ " AND cm.personEmployeeType = 2 " + " AND ( cm.categoryType <> 2 " + " AND cm.categoryType <> 5 )"
+			+ " AND cm.personEmployeeType = 2 " + " AND  cm.categoryType <> 2 " + " AND cm.categoryType <> 5 "
+			+ " AND cm.initValMasterObjCls = 1"
 			+ " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId )" + " ORDER BY e.disporder ";
 
 	private final String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"

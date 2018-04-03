@@ -575,21 +575,17 @@ module cps002.a.vm {
 
         prev() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
             if (self.currentStep() === 2　&& self.createTypeId() !== 3) {
                 self.gotoStep1();
-                nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
-
-
-
-
         }
 
         saveBasicInfo(command, employeeId) {

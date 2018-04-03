@@ -3,14 +3,18 @@ package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -26,6 +30,11 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	private final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h" 
 			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
+	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtEmploymentHist a"
+			+ " INNER JOIN BsymtEmploymentHistItem b on a.hisId = b.hisId"
+			+ " WHERE a.sid IN :listSid ";
+
+	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
 	 * 
@@ -179,6 +188,35 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		}
 		updateEntity(aferItem.get(), histItem.get());
 		this.commandProxy().update(histItem.get());
+	}
+	
+	// convert to domain
+		private EmploymentHistory toDomain(BsymtEmploymentHist entity) {
+			EmploymentHistory domain = new EmploymentHistory(entity.companyId, entity.sid,
+					new ArrayList<DateHistoryItem>());
+			DateHistoryItem dateItem = new DateHistoryItem(entity.hisId,
+					new DatePeriod(entity.strDate, entity.endDate));
+			domain.getHistoryItems().add(dateItem);
+
+			return domain;
+		}
+
+	@Override
+	public List<EmploymentHistory> getByListSid(List<String> employeeIds) {
+		
+		if(employeeIds.isEmpty())
+			return null;
+		
+		 // Split query.
+		  List<BsymtEmploymentHist> resultList = new ArrayList<>();
+		  
+		  CollectionUtil.split(employeeIds, 1000, (subList) -> {
+		   resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtEmploymentHist.class)
+		     .setParameter("listSid", subList).getList());
+		  });
+
+		  return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		
 	}
 
 

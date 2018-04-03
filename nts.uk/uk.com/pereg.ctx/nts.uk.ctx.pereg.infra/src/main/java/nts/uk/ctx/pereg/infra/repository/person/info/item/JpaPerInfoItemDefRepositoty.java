@@ -245,7 +245,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	// lanlt end
 	private final static String SELECT_SIMPLE_ITEM_DEF = String.join(" ",
-			"SELECT i.itemCd, i.itemName FROM PpemtPerInfoItem i",
+			"SELECT i.itemCd, i.itemName , i.abolitionAtr FROM PpemtPerInfoItem i",
 			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE c.categoryCd = :ctgCd and c.cid = :cid");
 
@@ -388,7 +388,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd,
+	public void removePerInfoItemDef(List<String> perInfoCtgIds, String categoryCd, String contractCd,
 			String itemCode) {
 		List<PpemtPerInfoItem> listItem = this.queryProxy()
 				.query(SELECT_ITEMS_BY_LIST_CTG_ID_QUERY, PpemtPerInfoItem.class).setParameter("itemCd", itemCode)

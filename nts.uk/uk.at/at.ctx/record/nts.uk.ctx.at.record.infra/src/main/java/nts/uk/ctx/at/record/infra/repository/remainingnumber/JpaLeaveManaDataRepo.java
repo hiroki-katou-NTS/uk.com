@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.Column;
-import javax.persistence.Id;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;

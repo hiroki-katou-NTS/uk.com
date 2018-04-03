@@ -26,11 +26,9 @@ public class PerInfoInitValueSettingItemWebservice extends WebService {
 	@POST
 	@Path("find/{settingId}/{perInfoCtgId}")
 	public List<PerInfoInitValueSettingItemDto> getAllItem(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
-		List<PerInfoInitValueSettingItemDto> x = this.finder.getAllItem(settingId, perInfoCtgId);
-		return x;
+		return this.finder.getAllItem(settingId, perInfoCtgId);
 	}
 	
-
 	@POST
 	@Path("findRequired/{settingId}/{perInfoCtgId}")
 	public CategoryStateDto getAllItemRequired(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
