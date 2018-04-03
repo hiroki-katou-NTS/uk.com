@@ -198,15 +198,17 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                         if (self.enableCode() == false) {
                             self.convertCode(self.divReasonCode());
                             self.updateDivReason();
-                        } else
+                        } else {
                             if (self.enableCode() == true) {//add divergence
                                 self.addDivReason();
                             }
+                        }
                     }
                 }
             });
 
             blockUI.clear();
+            $("#inpReason").focus();
         }
 
         addDivReason() {
@@ -222,12 +224,12 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             }
             var divReason = new model.DivergenceReason(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.addDivReason(divReason).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getAllDivReasonNew(divReason.divergenceReasonCode).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.getAllDivReasonNew(divReason.divergenceReasonCode).done(function() {
                         $("#inpReason").focus();
                     })
-                blockUI.clear();
-
+                    blockUI.clear();
+                });
             }).fail(function(error) {
                 blockUI.clear();
                 $('#inpCode').ntsError('set', error);
@@ -251,7 +253,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                         $("#inpReason").focus();
                     })
                     blockUI.clear();
-                });;
+                });
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
