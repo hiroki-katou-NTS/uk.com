@@ -182,9 +182,9 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         self.findAll().done(function() {
                             self.currentCode_A2(data.topPageCode);
                         });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId });
                     }).always(function() {
                         nts.uk.ui.block.clear();
                         $("#name").focus();
@@ -201,11 +201,11 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         self.findAll().done(function() {
                             self.currentCode_A2(data.topPageCode);
                         });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15')).then(() => {
+                        nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
                             $("#name").focus();
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(() => {
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
                             $("#code").focus();
                         });
                     }).always(function() {
