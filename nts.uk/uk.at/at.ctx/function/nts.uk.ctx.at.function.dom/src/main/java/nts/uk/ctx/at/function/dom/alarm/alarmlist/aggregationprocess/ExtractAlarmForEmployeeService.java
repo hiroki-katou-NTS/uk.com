@@ -55,7 +55,7 @@ public class ExtractAlarmForEmployeeService {
 				WorkplaceImport workplaceImport =optWorkplaceImport.get();
 				employee.setWorkplaceId(workplaceImport.getWorkplaceId());
 				employee.setWorkplaceCode(workplaceImport.getWorkplaceCode());
-				employee.setWorkplaceName(workplaceImport.getWkpDisplayName());
+				employee.setWorkplaceName(workplaceImport.getWorkplaceName());
 			}else {
 				employee.setWorkplaceId(null);
 				employee.setWorkplaceCode(null);

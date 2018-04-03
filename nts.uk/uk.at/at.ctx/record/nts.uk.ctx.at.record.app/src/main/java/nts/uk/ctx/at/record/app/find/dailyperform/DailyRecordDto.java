@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPe
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforOfDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
@@ -103,6 +104,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/** PCログオン情報: 日別実績のPCログオン情報 */
 	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績のPCログオン情報", isOptional = true)
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
+	
+	/** 備考: 日別実績の備考 */
+	@AttendanceItemLayout(layout = "Q", jpPropertyName = "日別実績の備考", listMaxLength = 5, indexField = "remarkNo")
+	private List<RemarksOfDailyDto> remarks = new ArrayList<>();
 
 	public static DailyRecordDto builder() {
 		return new DailyRecordDto();
@@ -215,6 +220,24 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	
 	public DailyRecordDto pcLogInfo(PCLogOnInforOfDailyPerformDto pcLogInfo) {
 		this.pcLogInfo = Optional.ofNullable(pcLogInfo);
+		return this;
+	}
+	
+	public DailyRecordDto addRemarks(RemarksOfDailyDto remarks) {
+		this.remarks.add(remarks);
+		return this;
+	}
+
+	public DailyRecordDto addRemarks(List<RemarksOfDailyDto> remarks) {
+		if (breakTime == null) {
+			return this;
+		}
+		this.remarks.addAll(remarks);
+		return this;
+	}
+
+	public DailyRecordDto remarks(List<RemarksOfDailyDto> remarks) {
+		this.remarks = remarks == null ? new ArrayList<>() : remarks;
 		return this;
 	}
 

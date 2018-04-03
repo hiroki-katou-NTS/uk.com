@@ -3,12 +3,14 @@ module nts.uk.at.view.kal001.c {
     export module viewmodel {
         export class ScreenModel {
             //table
-            columns: Array<any>;//nts.uk.ui.NtsGridListColumn
+            columns: KnockoutObservableArray<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
             //data
             listEmployee: KnockoutObservableArray<model.EmployeeSendEmail>;
             isSendToMe: KnockoutObservable<boolean>;
             isSendToManager: KnockoutObservable<boolean>;
+            shareEmployee : KnockoutObservableArray<model.ShareEmployee>;
+            
             constructor() {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
@@ -20,6 +22,8 @@ module nts.uk.at.view.kal001.c {
                         false,
                         false,
                         'workplace ' + i,
+                        'workplaceName' +'i',
+                        'employeeId' +i,
                         'employeeCode' + i,
                         'employeeName' + i
                     );
@@ -28,14 +32,14 @@ module nts.uk.at.view.kal001.c {
 
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'GUID', width: 1, hidden: true },
-                    { headerText: getText('KAL001_23'), key: 'isSendToMe', width: 50, ntsControl: 'isSendToMe' },
-                    { headerText: getText('KAL001_24'), key: 'isSendToManager', width: 50, ntsControl: 'isSendToManager' },
-                    { headerText: getText('KAL001_27'), key: 'workplace', width: 150 },
-                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 150 },
+                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToMe' },
+                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToManager' },
+                    { headerText: getText('KAL001_27'), key: 'workplaceId', width: 150 },
+                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 300 },
                     { headerText: getText('KAL001_26'), key: 'employeeName', width: 150 }
                 ]);
                 $("#grid").ntsGrid({
-                    width: '580px',
+                    width: '650px',
                     height: '350px',
                     dataSource: self.listEmployee(),
                     primaryKey: 'GUID',
@@ -44,7 +48,7 @@ module nts.uk.at.view.kal001.c {
                     columns: self.columns(),
                     features: [{ name: 'Resizing' },
                         {
-                            name: 'Selection',
+                            name: 'Selection', 
                             mode: 'row',
                             multipleSelection: false
                         }
@@ -73,7 +77,11 @@ module nts.uk.at.view.kal001.c {
              closeDialog(){
                  nts.uk.ui.windows.close();
             }
-
+             sendEmail(){
+                 let self = this;
+                 console.log(" tu dep trai");                 
+                 return;
+            }
 
 
 
@@ -85,24 +93,41 @@ module nts.uk.at.view.kal001.c {
 
         export class EmployeeSendEmail {
             GUID: string;
-            isSendToMe: boolean;
-            isSendToManager: boolean;
-            workplace: string;
+            isSendToMe:  KnockoutObservable<boolean>;
+            isSendToManager: KnockoutObservable<boolean>;
+            workplaceId: string;
+            workplaceName: string;
+            employeeId: string;
             employeeCode: string;
             employeeName: string;
             constructor(isSendToMe: boolean,
                 isSendToManager: boolean,
-                workplace: string,
+                workplaceId: string,
+                workplaceName: string,
+                employeeId: string, 
                 employeeCode: string,
                 employeeName: string) {
                 this.GUID = nts.uk.util.randomId();
-                this.isSendToMe = isSendToMe;
-                this.isSendToManager = isSendToManager;
-                this.workplace = workplace;
+                this.isSendToMe = ko.observable(isSendToMe);
+                this.isSendToManager = ko.observable( isSendToManager);
+                this.workplaceId = workplaceId;
+                this.workplaceName = workplaceName;
+                this.employeeId = employeeId;
                 this.employeeCode = employeeCode;
                 this.employeeName = employeeName;
             }
 
+        }
+        
+        export class ShareEmployee{
+            employeeId: string;
+            workplaceId: string;
+            workplaceName: string;
+            constructor(employeeId: string, workplaceId, workplaceName: string){
+                this.employeeId = employeeId;
+                this.workplaceId = workplaceId;
+                this.workplaceName= workplaceName;
+            }    
         }
 
     }//end module model
