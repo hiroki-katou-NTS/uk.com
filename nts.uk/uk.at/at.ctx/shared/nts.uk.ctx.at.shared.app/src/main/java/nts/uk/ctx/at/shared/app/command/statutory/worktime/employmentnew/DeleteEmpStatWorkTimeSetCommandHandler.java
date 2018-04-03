@@ -53,12 +53,12 @@ public class DeleteEmpStatWorkTimeSetCommandHandler
 		int year = command.getYear();
 		String emplCode = command.getEmploymentCode();
 		
-		// remove with companyId, employmentCode & year
-		this.empNormalSettingRepository.delete(companyId, emplCode, year);
-		this.empFlexSettingRepository.delete(companyId, emplCode, year);
-		this.empDeforLaborSettingRepository.delete(companyId, emplCode, year);
-		this.empRegularWorkTimeRepository.delete(companyId, emplCode);
-		this.empTransWorkTimeRepository.delete(companyId, emplCode);
+		// remove with companyId, employmentCode & year if present
+		this.empNormalSettingRepository.find(companyId, emplCode, year).ifPresent((setting -> this.empNormalSettingRepository.delete(companyId, emplCode, year)));
+		this.empFlexSettingRepository.find(companyId, emplCode, year).ifPresent((setting -> this.empFlexSettingRepository.delete(companyId, emplCode, year)));
+		this.empDeforLaborSettingRepository.find(companyId, emplCode, year).ifPresent((setting -> this.empDeforLaborSettingRepository.delete(companyId, emplCode, year)));
+		this.empRegularWorkTimeRepository.findById(companyId, emplCode).ifPresent((setting -> this.empRegularWorkTimeRepository.delete(companyId, emplCode)));
+		this.empTransWorkTimeRepository.find(companyId, emplCode).ifPresent((setting -> this.empTransWorkTimeRepository.delete(companyId, emplCode)));
 	}
 
 }

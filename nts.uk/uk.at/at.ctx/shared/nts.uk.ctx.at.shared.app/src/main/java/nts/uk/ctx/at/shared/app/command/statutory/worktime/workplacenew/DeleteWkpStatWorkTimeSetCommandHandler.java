@@ -53,12 +53,12 @@ public class DeleteWkpStatWorkTimeSetCommandHandler
 		int year = command.getYear();
 		String wkpId = command.getWorkplaceId();
 		
-		// remove with companyId, workplaceId & year
-		this.wkpNormalSettingRepository.remove(companyId, wkpId, year);
-		this.wkpFlexSettingRepository.remove(companyId, wkpId, year);
-		this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year);
-		this.wkpRegularWorkTimeRepository.remove(companyId, wkpId);
-		this.wkpTransLaborTimeRepository.remove(companyId, wkpId);
+		// remove with companyId, workplaceId & year if present
+		this.wkpNormalSettingRepository.find(companyId, wkpId, year).ifPresent((setting) -> this.wkpNormalSettingRepository.remove(companyId, wkpId, year));
+		this.wkpFlexSettingRepository.find(companyId, wkpId, year).ifPresent((setting) -> this.wkpFlexSettingRepository.remove(companyId, wkpId, year));
+		this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year).ifPresent((setting) -> this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year));
+		this.wkpRegularWorkTimeRepository.find(companyId, wkpId).ifPresent((setting) -> this.wkpRegularWorkTimeRepository.remove(companyId, wkpId));
+		this.wkpTransLaborTimeRepository.find(companyId, wkpId).ifPresent((setting) -> this.wkpTransLaborTimeRepository.remove(companyId, wkpId));
 	}
 
 }

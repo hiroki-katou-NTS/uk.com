@@ -54,11 +54,11 @@ public class DeleteShainStatWorkTimeSetCommandHandler
 		String employeeId = command.getEmployeeId();
 		
 		// remove with companyId, employeeId & year
-		this.shainNormalSettingRepository.delete(companyId, employeeId, year);
-		this.shainFlexSettingRepository.delete(companyId, employeeId, year);
-		this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year);
-		this.shainRegularWorkTimeRepository.delete(companyId, employeeId);
-		this.shainSpeDeforLaborTimeRepository.delete(companyId, employeeId);
+		this.shainNormalSettingRepository.find(companyId, employeeId, year).ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
+		this.shainFlexSettingRepository.find(companyId, employeeId, year).ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
+		this.shainDeforLaborSettingRepository.find(companyId, employeeId, year).ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
+		this.shainRegularWorkTimeRepository.find(companyId, employeeId).ifPresent((setting) -> this.shainRegularWorkTimeRepository.delete(companyId, employeeId));
+		this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId).ifPresent((setting) -> this.shainSpeDeforLaborTimeRepository.delete(companyId, employeeId));
 	}
 
 }
