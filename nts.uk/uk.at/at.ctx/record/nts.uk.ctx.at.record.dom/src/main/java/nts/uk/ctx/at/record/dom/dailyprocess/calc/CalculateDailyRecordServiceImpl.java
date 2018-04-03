@@ -56,7 +56,7 @@ import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -213,8 +213,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
 
-	@Inject
-	private OotsukaProcessService ootsukaProcessService;
+//	@Inject
+//	private OotsukaProcessService ootsukaProcessService;
 	
 	@Inject
 	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
@@ -445,7 +445,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
 			val flexWork = holidayAddtionRepository.findByCId(employeeId).get().getFlexWork();
 			/*大塚モード*/
-			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
+//			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 			
 			/*前日の勤務情報取得  */
 			WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInfo);
@@ -478,7 +478,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
 				val regularWork = holidayAddtionRepository.findByCId(companyId).get().getRegularWork();
 				/*大塚モード*/
-				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
+//				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 				
 				
 				/*前日の勤務情報取得  */
