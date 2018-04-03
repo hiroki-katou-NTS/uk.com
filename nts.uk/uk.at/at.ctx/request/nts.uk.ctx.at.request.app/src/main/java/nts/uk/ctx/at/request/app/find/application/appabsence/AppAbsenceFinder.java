@@ -109,10 +109,10 @@ public class AppAbsenceFinder {
 	public AppAbsenceDto getAppForLeave(String appDate, String employeeID){
 		
 		AppAbsenceDto result = new AppAbsenceDto();
-		boolean checkCaller = true;
+		boolean checkCaller = false;
 		if(employeeID == null){
 			employeeID = AppContexts.user().employeeId();
-			checkCaller = false;
+			checkCaller = true;
 		}
 		String companyID = AppContexts.user().companyId();
 		// 1-1.新規画面起動前申請共通設定を取得する

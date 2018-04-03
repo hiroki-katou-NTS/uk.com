@@ -33,6 +33,7 @@ module nts.uk.at.view.kaf006.b{
         selectedTypeOfDuty:  KnockoutObservable<number> = ko.observable(null);
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
+        changeWorkHourValueFlg: KnockoutObservable<boolean> = ko.observable(true);
 //        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(false);
         displayStartFlg: KnockoutObservable<boolean> = ko.observable(true);
         contentFlg: KnockoutObservable<boolean> = ko.observable(true);
@@ -403,7 +404,7 @@ module nts.uk.at.view.kaf006.b{
             let self =  this;
             let nameHolidayType  = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
             for(let i = 0; i < data.length ; i++){
-                self.holidayTypes.push(new common.HolidayType(i,nameHolidayType[i]));
+                self.holidayTypes.push(new common.HolidayType(data[i],nameHolidayType[data[i]]));
             }
         }
         
