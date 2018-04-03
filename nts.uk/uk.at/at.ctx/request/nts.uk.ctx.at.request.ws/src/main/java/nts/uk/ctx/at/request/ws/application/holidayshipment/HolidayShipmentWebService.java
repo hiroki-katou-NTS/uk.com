@@ -44,7 +44,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_work_type")
 	public ChangeWorkTypeDto changeWorkType(ChangeWorkTypeParam param) {
-		return this.aFinder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
+		return this.aFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
 	}
 
 	@POST
@@ -100,7 +100,7 @@ class StartBParam {
 
 @Value
 class ChangeWorkTypeParam {
-	private String workTypeCD;
+	private String wkTypeCD;
 	private String wkTimeCD;
 }
 

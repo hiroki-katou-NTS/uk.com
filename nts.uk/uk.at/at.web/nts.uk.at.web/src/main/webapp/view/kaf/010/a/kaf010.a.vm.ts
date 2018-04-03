@@ -138,7 +138,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 self.kaf000_a.start(self.employeeID, 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                    $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                     $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
                     $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
@@ -194,27 +195,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }
                     return dfd.promise();
                     });
-//                self.prePostSelected.subscribe(function(value){
-//                    let dfd =$.Deferred();
-//                        service.checkConvertPrePost({
-//                            prePostAtr: value,
-//                            appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-//                            siftCD: self.siftCD(),
-//                            overtimeHours: ko.toJS(self.overtimeHours) 
-//                        }).done((data) =>{
-//                            self.convertpreAppOvertimeDto(data);
-//                            self.convertAppOvertimeReferDto(data);
-//                            self.referencePanelFlg(data.referencePanelFlg);
-//                            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-//                            self.preAppPanelFlg(data.preAppPanelFlg);
-//                            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-//                            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-//                            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-//                        }).fail((res) =>{
-//                            dfd.reject(res);    
-//                        });
-//                     return dfd.promise();
-//                });
+                   self.prePostSelected.subscribe(function(value){
+                      if(value == 0){
+                           $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
+                      }else if(value == 1){
+                           $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                      }
+                       
+                    });
+                
                 
                 //Check work content Changed
                 self.checkWorkContentChanged();
@@ -285,6 +274,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.instructInfor(data.holidayInstructInformation);
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
+            self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);

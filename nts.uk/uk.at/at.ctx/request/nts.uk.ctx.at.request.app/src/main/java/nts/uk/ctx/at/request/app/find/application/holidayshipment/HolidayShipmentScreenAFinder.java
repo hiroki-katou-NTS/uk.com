@@ -166,8 +166,7 @@ public class HolidayShipmentScreenAFinder {
 				holiDayWkTypeCD, holidayWkTimeCD, output);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		if (wkTimeCD != null) {
-			String wkTypeCD = output.getRecWkTypes().size() > 0
-					? output.getRecWkTypes().get(0).getWorkTypeCode() : "";
+			String wkTypeCD = output.getRecWkTypes().size() > 0 ? output.getRecWkTypes().get(0).getWorkTypeCode() : "";
 			if (!wkTypeCD.equals("")) {
 				output.setChangeWkType(getWkTimeInitValue(companyID, wkTypeCD, wkTimeCD));
 			}
@@ -343,7 +342,7 @@ public class HolidayShipmentScreenAFinder {
 		Optional<EmploymentHistoryImported> empImpOpt = wpAdapter.getEmpHistBySid(companyID, employeeID, refDate);
 		// アルゴリズム「所属職場を含む上位職場を取得」を実行する
 		List<String> wpkIds = empAdaptor.findWpkIdsBySid(companyID, employeeID, refDate);
-		if (empImpOpt.isPresent() && CollectionUtil.isEmpty(wpkIds)) {
+		if (empImpOpt.isPresent()) {
 			String employmentCD = empImpOpt.get().getEmploymentCode();
 
 			if (getSetting) {
@@ -356,11 +355,12 @@ public class HolidayShipmentScreenAFinder {
 							.add(AppEmploymentSettingDto.fromDomain(appEmploymentSettingOpt.get()));
 				}
 				// アルゴリズム「申請承認機能設定の取得」を実行する
-				output.setApprovalFunctionSetting(
-						ApprovalFunctionSettingDto.convertToDto(AcApprovalFuncSet(companyID, wpkIds)));
+				if (!CollectionUtil.isEmpty(wpkIds)) {
+					output.setApprovalFunctionSetting(
+							ApprovalFunctionSettingDto.convertToDto(AcApprovalFuncSet(companyID, wpkIds)));
+				}
 
 			}
-
 			// アルゴリズム「振出用勤務種類の取得」を実行する
 			output.setRecWkTypes(getWorkTypeFor(companyID, employmentCD, recWkTypeCD).stream()
 					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
@@ -370,7 +370,6 @@ public class HolidayShipmentScreenAFinder {
 			output.setAbsWkTypes(getWorkTypeFor(companyID, employmentCD, absWkTypeCD).stream()
 					.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
 			// INPUT.振休就業時間帯コード＝設定なし
-
 		}
 
 	}

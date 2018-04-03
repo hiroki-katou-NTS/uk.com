@@ -165,6 +165,7 @@ public class AppHolidayWorkFinder {
 				result.setEmployeeID(employeeID);
 			}
 			result.setEmployeeName(employeeName);
+		
 		return result;
 	}
 	/**
@@ -474,6 +475,7 @@ public class AppHolidayWorkFinder {
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);
+		result.setPrePostCanChangeFlg(displayPrePost.isPrePostCanChangeFlg());
 		//4.勤務種類を取得する, 5.就業時間帯を取得する, 01-17_休憩時間取得
 		getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result);
 		//01-14_勤務時間取得
