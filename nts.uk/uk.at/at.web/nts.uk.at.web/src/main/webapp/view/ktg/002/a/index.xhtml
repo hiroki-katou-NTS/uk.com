@@ -7,25 +7,34 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="ktg002.a.vm.js" />
-			<com:scriptfile path="ktg002.a.start.js" />
-			<com:scriptfile path="ktg002.a.service.js" />
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="ktg001.a.style.css" />
+			<com:scriptfile path="ktg001.a.service.js" />
+			<com:scriptfile path="ktg001.a.vm.js" />
+			<com:scriptfile path="ktg001.a.start.js" />
 		</ui:define>
-		
-		<table>
-			<tr>
-				<td colspan="2"><label class="a1">#{i18n.getText('KTG002_2')}</label></td>
-			</tr>
-			<tr>
-				<td colspan="2"><label class="a1_1">#{i18n.getText('KTG002_3')}</label></td>
-			</tr>
-			<tr>
-				<td><label class="a2_1"><span data-bind="text: presenceAppTxt"></span></label></td>
-				<td><button><i class="icon icon-button-arrow-right"></i></button></td>
-			</tr>
-		</table>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<table class="widget-table">     
+					<tr>
+						<td>#{i18n.getText('KTG001_2')}</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG001_3')}</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG001_5')}</td>
+						<td class="go-button"><button data-bind = " click : dailyPerformanceConfirm">
+								<i data-bind="ntsIcon: { no: 144 }"></i>
+							</button></td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
 	</ui:composition>
 </body>
 </html>

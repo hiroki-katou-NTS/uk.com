@@ -1,25 +1,31 @@
 module nts.uk.at.view.ktg002.a.viewmodel {
+    import block = nts.uk.ui.block;
+    import windows = nts.uk.ui.windows;
     export class ScreenModel {
-        presenceAppTxt: KnockoutObservable<string>;
-        presenceAppData: KnockoutObservableArray<any>;
-        
+
+
         constructor() {
             let self = this;
-            
-            self.presenceAppData = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("KTG002_4") },
-                { code: '1', name: nts.uk.resource.getText("KTG002_5") }
-            ]);
-            
-            self.presenceAppTxt = ko.observable("");
+
         }
 
-        startPage(): JQueryPromise<any> {
+        /**
+         * startPage
+         */
+        public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            
+            service.getData().done((data) => {
+                console.log(data);
+            });
             dfd.resolve();
             return dfd.promise();
+        }
+        dailyPerformanceConfirm() {
+            block.invisible();
+            windows.sub.modeless("/view/kdw/004/a/index.xhtml").onClosed(() => {
+                block.clear();
+            });
         }
     }
 }
