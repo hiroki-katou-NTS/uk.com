@@ -72,30 +72,17 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 if (selectedValue == 0){
                     $('#G2_5').ntsError('clear');
                     $('#G2_8').ntsError('clear');
-                }else{
-                    $('#G2_5').ntsError('check');
-                    $('#G2_8').ntsError('check');
                 }
             });
             self.numDataFormatSetting().decimalDivision.subscribe(function(selectedValue: any) {
                 if (selectedValue == 0){
                     $('#G3_6').ntsError('clear');
-                }else{
-                    $('#G3_6').ntsError('check');
                 }
             });
             self.numDataFormatSetting().fixedValue.subscribe(function(selectedValue: any) {
                 if (selectedValue == 0){
                     $('#G5_5').ntsError('clear');
-                    if (self.numDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE){
-                        $('#G2_5').ntsError('check');
-                        $('#G2_8').ntsError('check');
-                    }
-                    if (self.numDataFormatSetting().decimalDivision() == model.DECIMAL_DEVISION.DECIMAL){
-                       $('#G3_6').ntsError('check'); 
-                    }
                 }else{
-                    $('#G5_5').ntsError('check');
                     $('#G2_5').ntsError('clear');
                     $('#G2_8').ntsError('clear');
                     $('#G3_6').ntsError('clear');
