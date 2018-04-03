@@ -203,10 +203,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         
         //登録ボタンを押下
         regAcceptCodeConvert_Click() {
-            nts.uk.ui.errors.clearAll();
-
+            
             let self = this;
-
+            block.invisible();
             for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
                 self.codeConvertData().cdConvertDetails()[i].convertCd(self.codeConvertData().convertCd());
             }
@@ -254,6 +253,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
             
             if(_emptyData){
                 dialog.alertError({ messageId: "Msg_1016", messageParams : [1]} );
+                block.clear();
                 return;
             }
 
@@ -270,10 +270,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     $('tr[data-id=' + _errorCodeDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_1015', messageParams: [_errorCodeDuplicate[i].outputItem] });
                 }
             }
-
+            $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                block.invisible();
-
                 self.codeConvertData().cdConvertDetails(_.filter(self.codeConvertData().cdConvertDetails(), x => !_.isEmpty(x.outputItem()) && !_.isEmpty(x.systemCd())));
 
                 //画面の項目を、ドメインモデル「受入コード変換」に登録/更新する
@@ -303,6 +301,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         block.clear();
                     });
                 }
+            } else {
+                block.clear();
             }
         }
         
