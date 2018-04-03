@@ -1,4 +1,4 @@
-module nts.uk.at.view.ktg028.viewmodel {
+module nts.uk.at.view.ktg028.a.viewmodel {
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
     export class ScreenModel {
         texteditorA3_2: any;
@@ -32,7 +32,7 @@ module nts.uk.at.view.ktg028.viewmodel {
             self.currentCodeList_A7 = ko.observableArray([]);
             self.columns_A7 = ko.observableArray([
                 { headerText: '', key: 'value', width: 100, hidden: true },
-                { headerText: '', key: 'name', width: 300 }
+                { headerText: nts.uk.resource.getText('KTG028_44'), key: 'name', width: 350 }
             ]);
             self.texteditorA3_2 = {
                 value: ko.observable(''),
@@ -182,9 +182,9 @@ module nts.uk.at.view.ktg028.viewmodel {
                         self.findAll().done(function() {
                             self.currentCode_A2(data.topPageCode);
                         });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId });
                     }).always(function() {
                         nts.uk.ui.block.clear();
                         $("#name").focus();
@@ -201,11 +201,11 @@ module nts.uk.at.view.ktg028.viewmodel {
                         self.findAll().done(function() {
                             self.currentCode_A2(data.topPageCode);
                         });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15')).then(() => {
+                        nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
                             $("#name").focus();
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message).then(() => {
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId }).then(() => {
                             $("#code").focus();
                         });
                     }).always(function() {
