@@ -176,7 +176,7 @@ public class CheckConvertPrePost {
 				overtimeInputDto.setFrameNo(overTimeInput.getFrameNo());
 				overtimeInputDto.setStartTime(overTimeInput.getStartTime()== null ? null : overTimeInput.getStartTime().v());
 				overtimeInputDto.setEndTime(overTimeInput.getEndTime() == null ? null : overTimeInput.getEndTime().v());
-				overtimeInputDto.setApplicationTime(overTimeInput.getApplicationTime().v());
+				overtimeInputDto.setApplicationTime(overTimeInput.getApplicationTime() == null ? null : overTimeInput.getApplicationTime().v());
 				overtimeInputDtos.add(overtimeInputDto);
 				frameNo.add(overTimeInput.getFrameNo());
 			}
@@ -234,9 +234,7 @@ public class CheckConvertPrePost {
 	}
 	private String convert(int minute) {
 		String hourminute = Strings.EMPTY;
-		if (minute == -1) {
-			return null;
-		} else if (minute == 0) {
+		 if (minute == 0) {
 			hourminute = ZEZO_TIME;
 		} else {
 			int hour = Math.abs(minute) / 60;
