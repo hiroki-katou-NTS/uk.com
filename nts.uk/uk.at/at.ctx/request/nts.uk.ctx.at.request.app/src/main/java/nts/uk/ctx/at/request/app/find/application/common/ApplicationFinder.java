@@ -71,16 +71,20 @@ public class ApplicationFinder {
 	}
 	public ApplicationSendDto getAppByIdForSend(String appID){
 		String companyID = AppContexts.user().companyId();
+		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
 		ApprovalTempDto approvalTemplate = approvalTempFinder.findByComId();
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
 		List<PesionInforImport> listApproverDetail = new ArrayList<PesionInforImport>();
 		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().get(0).getListApprovalFrame()
-		.forEach(x -> {
+		.forEach(x -> { 
 			x.getListApprover().forEach(y -> {
 				listApproverDetail.add(employeeRequestAdapter.getEmployeeInfor(y.getApproverID()));
 			});
 		});
-		return new ApplicationSendDto(approvalTemplate, approvalRootContentImport, listApproverDetail);
+		if (application_New.isPresent()){
+			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(application_New.get()), approvalTemplate, approvalRootContentImport, listApproverDetail, application_New.isPresent() ? employeeRequestAdapter.getEmployeeInfor(application_New.map(Application_New::getEmployeeID).orElse("")) : null );
+		}
+		return null;
 	}
 	public ApplicationMetaDto getAppByID(String appID){
 		String companyID = AppContexts.user().companyId();

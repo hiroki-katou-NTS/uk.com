@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,15 +14,16 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
@@ -51,6 +53,7 @@ import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -88,6 +91,8 @@ public class PerInfoItemDefFinder {
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
+	
+	@Inject ICompanyRepo companyRepo;
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId, int personEmployeeType) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
@@ -131,7 +136,7 @@ public class PerInfoItemDefFinder {
 
 	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(String perInfoItemDefId,
 			int personEmployeeType) {
-
+		
 		PerInfoItemDefDto itemDefDto = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).map(item -> {
 					return mappingFromDomaintoDto(item, 0);
@@ -141,17 +146,9 @@ public class PerInfoItemDefFinder {
 
 		String itemDefaultName = this.pernfoItemDefRep.getItemDefaultName(ctgDto.getCategoryCode(),
 				itemDefDto.getItemCode());
-		PerInfoItemChangeDefDto item = mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0, personEmployeeType);
-
-		return item;
-	};
-
-	private PerInfoItemChangeDefDto mappingFromDomaintoChangeDto(PerInfoItemDefDto itemDefDto, String defaultName,
-			int dispOrder, int personEmployeeType) {
+		
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
-
-		GeneralDate baseDateConvert = GeneralDate.today();
-		List<SelectionInitDto> selectionLst = new ArrayList<>();
+		List<SelectionInitDto> selectionDtoList = new ArrayList<>();
 
 		if (itemDefDto.getItemTypeState().getItemType() == 2) {
 			ItemTypeStateDto x = itemDefDto.getItemTypeState();
@@ -160,47 +157,90 @@ public class PerInfoItemDefFinder {
 				if (y.getDataTypeState().getDataTypeValue() == 6) {
 					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
 					if (selelection.getReferenceType().value == 2) {
-						CodeNameRefTypeDto typeCode = (CodeNameRefTypeDto) selelection;
-						if (personEmployeeType == 1) {
-							selectionLst = this.selectionRepo
-									.getAllSelectionByHistoryId(typeCode.getTypeCode(), baseDateConvert, 0).stream()
-									.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
-						} else if (personEmployeeType == 2) {
-							selectionLst = this.selectionRepo
-									.getAllSelectionByHistoryId(typeCode.getTypeCode(), baseDateConvert, 1).stream()
-									.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
+						String typeCode = ((CodeNameRefTypeDto) selelection).getTypeCode();
+						GeneralDate baseDateConvert = GeneralDate.today();
+						String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+						String companyId = AppContexts.user().companyId();
+						List<Selection> selectionList = new ArrayList<>();
+						
+						if (personEmployeeType == PersonEmployeeType.PERSON.value) {
+							selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
+									baseDateConvert, 0);
+						} else {
+							selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, typeCode,
+									baseDateConvert, 1);
 						}
+						selectionDtoList = selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection1(c))
+								.collect(Collectors.toList());
+					}
+				}
+			}
+		}
+		
+		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(),
+				itemDefDto.getItemCode(), itemDefDto.getItemName(), itemDefaultName, itemDefDto.getIsAbolition(),
+				itemDefDto.getIsFixed(), itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(),
+				itemDefDto.getRequireChangable(), 0 , itemDefDto.getSelectionItemRefType(),
+				itemDefDto.getItemTypeState(), selectionItemRefTypes,
+				selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
+				// sua loi them sel item lst
+				selectionDtoList);
+		
+	}
 
+	public PerInfoItemChangeDefDto getPerInfoItemDefById(String perInfoItemDefId, int personEmployeeType) {
+		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+
+		Optional<PersonInfoItemDefinition> itemDefinitionOpt = this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode());
+		if (itemDefinitionOpt.isPresent()) {
+
+			List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
+					ukResouce);
+			PerInfoItemDefDto itemDefDto = mappingFromDomaintoDto(itemDefinitionOpt.get(), 0);
+
+			// get selection list
+			List<SelectionInitDto> selectionDtoList = new ArrayList<>();
+			if (itemDefDto.getItemTypeState().getItemType() == 2) {
+				ItemTypeStateDto x = itemDefDto.getItemTypeState();
+				if (x.getItemType() == 2) {
+					SingleItemDto y = (SingleItemDto) x;
+					if (y.getDataTypeState().getDataTypeValue() == 6) {
+						SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
+						if (selelection.getReferenceType().value == 2) {
+							String typeCode = ((CodeNameRefTypeDto) selelection).getTypeCode();
+							GeneralDate today = GeneralDate.today();
+							List<Selection> selectionList = new ArrayList<>();
+							if (personEmployeeType == PersonEmployeeType.PERSON.value) {
+								selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
+										today, 0);
+							} else {
+								selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
+										today, 1);
+							}
+							selectionDtoList = selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection1(c))
+									.collect(Collectors.toList());
+						}
 					}
 				}
 			}
 
+			return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(),
+					itemDefDto.getItemCode(), itemDefDto.getItemName(), "", itemDefDto.getIsAbolition(),
+					itemDefDto.getIsFixed(), itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(),
+					itemDefDto.getRequireChangable(), 0, itemDefDto.getSelectionItemRefType(),
+					itemDefDto.getItemTypeState(), selectionItemRefTypes,
+					selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
+					// sua loi them sel item lst
+					selectionDtoList);
+		} else {
+			return null;
 		}
-
-		PerInfoItemChangeDefDto item = new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(),
-				itemDefDto.getItemCode(), itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(),
-				itemDefDto.getIsFixed(), itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(),
-				itemDefDto.getRequireChangable(), dispOrder, itemDefDto.getSelectionItemRefType(),
-				itemDefDto.getItemTypeState(), selectionItemRefTypes,
-				selectionLst.size() > 0 ? selectionLst.get(0).getSelectionItemName() : " ",
-				// sua loi them sel item lst
-				selectionLst);
-
-		return item;
-	}
-
-	public PerInfoItemChangeDefDto getPerInfoItemDefById(String perInfoItemDefId, int personEmployeeType) {
-		PerInfoItemChangeDefDto itemDto = this.pernfoItemDefRep
-				.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(item -> {
-					return mappingFromDomaintoDto_for_Selection(item, 0, personEmployeeType);
-				}).orElse(null);
-
-		return itemDto;
 	};
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
 		return this.pernfoItemDefRep
-				.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
+				.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode()).stream()
 				.map(item -> {
 					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(item.getPerInfoCategoryId(),
 							item.getPerInfoItemDefId());
@@ -393,43 +433,6 @@ public class PerInfoItemDefFinder {
 				itemDef.getSelectionItemRefType(), itemTypeStateDto, selectionItemRefTypes);
 	}
 
-	private PerInfoItemChangeDefDto mappingFromDomaintoDto_for_Selection(PersonInfoItemDefinition itemDef,
-			int dispOrder, int personEmployeeType) {
-		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
-		PerInfoItemDefDto itemDefDto = mappingFromDomaintoDto(itemDef, 0);
-		List<SelectionInitDto> selectionLst = new ArrayList<>();
-
-		if (itemDefDto.getItemTypeState().getItemType() == 2) {
-			ItemTypeStateDto x = itemDefDto.getItemTypeState();
-			if (x.getItemType() == 2) {
-				SingleItemDto y = (SingleItemDto) x;
-				if (y.getDataTypeState().getDataTypeValue() == 6) {
-					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
-					if (selelection.getReferenceType().value == 2) {
-						CodeNameRefTypeDto typeCode = (CodeNameRefTypeDto) selelection;
-						if (personEmployeeType == 1) {
-							selectionLst = this.selectionRepo
-									.getAllSelectionByHistoryId(typeCode.getTypeCode(), GeneralDate.today(), 0).stream()
-									.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
-						} else if (personEmployeeType == 2) {
-							selectionLst = this.selectionRepo
-									.getAllSelectionByHistoryId(typeCode.getTypeCode(), GeneralDate.today(), 1).stream()
-									.map(c -> SelectionInitDto.fromDomainSelection1(c)).collect(Collectors.toList());
-						}
-					}
-				}
-			}
-		}
-
-		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
-				itemDefDto.getItemName(), "", itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
-				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
-				itemDefDto.getSelectionItemRefType(), itemDefDto.getItemTypeState(), selectionItemRefTypes,
-				selectionLst.size() > 0 ? selectionLst.get(0).getSelectionItemName() : " ",
-				// sua loi them sel item lst
-				selectionLst);
-	}
-
 	public static ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
 		ItemType itemType = itemTypeState.getItemType();
 
@@ -579,7 +582,7 @@ public class PerInfoItemDefFinder {
 	public boolean isCheckData(String itemId) {
 		String contractCd = AppContexts.user().contractCode();
 
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+		List<String> companyIdList = companyRepo.acquireAllCompany();
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep.getPerInfoItemDefById(itemId, contractCd).orElse(null);
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(oldItem.getPerInfoCategoryId(), contractCd)
 				.orElse(null);
@@ -590,13 +593,21 @@ public class PerInfoItemDefFinder {
 
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
 				category.getCategoryCode().v());
-
-		boolean itemAuth = this.itemAuthRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
-				itemInit = this.itemInitRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
-				isEmpData = this.empInfoRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
-				isPerData = this.perItemRepo.hasItemData(perInfoCtgIds, oldItem.getItemCode().v());
-
-		if (itemAuth || itemInit || isEmpData || isPerData) {
+		
+		String itemCode = oldItem.getItemCode().v();
+		
+		if ( itemAuthRepo.hasItemData(itemCode, perInfoCtgIds)) {
+			return true;
+		}
+		if ( itemInitRepo.hasItemData(itemCode, perInfoCtgIds)) {
+			return true;
+		}
+		
+		if ( empInfoRepo.hasItemData(itemCode, perInfoCtgIds)) {
+			return true;
+		}
+		
+		if ( perItemRepo.hasItemData(perInfoCtgIds, itemCode)) {
 			return true;
 		}
 

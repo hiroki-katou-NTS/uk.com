@@ -94,14 +94,14 @@ public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME2")
-	private int startWorkTime2;
+	private Integer startWorkTime2;
 
 	/**
 	 * 時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME2")
-	private int endWorkTime2;
+	private Integer endWorkTime2;
 
 	/**
 	 * 直行

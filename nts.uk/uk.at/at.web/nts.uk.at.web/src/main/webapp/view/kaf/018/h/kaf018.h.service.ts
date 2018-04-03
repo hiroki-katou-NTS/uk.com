@@ -32,7 +32,7 @@ module nts.uk.at.view.kaf018.h {
         }
 
         /**
-         * 
+         * アルゴリズム「承認状況メールテスト送信実行」を実行する
          */
         export function sendTestMail(mailType: number): JQueryPromise<any> {
             let path = format(paths.sendTestMail, mailType);

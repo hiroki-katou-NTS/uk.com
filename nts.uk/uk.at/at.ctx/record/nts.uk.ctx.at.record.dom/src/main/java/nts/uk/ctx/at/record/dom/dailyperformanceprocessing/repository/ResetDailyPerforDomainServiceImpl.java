@@ -36,7 +36,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
-	
+
 	@Inject
 	private AutoCalculationSetService autoCalculationSetService;
 
@@ -54,55 +54,19 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 			if (executionLog.isPresent()) {
 				if (executionLog.get().getDailyCreationSetInfo().isPresent()) {
 					if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().isPresent()) {
-						//計算区分を日別実績に反映する(Reflect 計算区分 in 日別実績)
+						// 計算区分を日別実績に反映する(Reflect 計算区分 in 日別実績)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getCalculationClassificationResetting() == true) {
 
-							BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService
-									.getAutoCalculationSetting(companyID, employeeID, processingDate);
-
-							AutoCalSetting flexExcessTime = new AutoCalSetting(
-									baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getUpLimitORtSet(),
-									baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getCalAtr());
-							AutoCalFlexOvertimeSetting autoCalFlexOvertimeSetting = new AutoCalFlexOvertimeSetting(flexExcessTime);
-							
-							AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
-
-							// number 3
-							AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(
-									new AutoCalSetting(baseAutoCalSetting.getRestTime().getRestTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getRestTime().getRestTime().getCalAtr()),
-									new AutoCalSetting(baseAutoCalSetting.getRestTime().getLateNightTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getRestTime().getLateNightTime().getCalAtr()));
-
-							// number 4
-							AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(
-									new AutoCalSetting(baseAutoCalSetting.getNormalOTTime().getEarlyOtTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getNormalOTTime().getEarlyOtTime().getCalAtr()),
-									new AutoCalSetting(baseAutoCalSetting.getNormalOTTime().getEarlyMidOtTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getNormalOTTime().getEarlyMidOtTime().getCalAtr()),
-									new AutoCalSetting(baseAutoCalSetting.getNormalOTTime().getNormalOtTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getNormalOTTime().getNormalOtTime().getCalAtr()),
-									new AutoCalSetting(baseAutoCalSetting.getNormalOTTime().getNormalMidOtTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getNormalOTTime().getNormalMidOtTime().getCalAtr()),
-									new AutoCalSetting(baseAutoCalSetting.getNormalOTTime().getLegalOtTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getNormalOTTime().getLegalOtTime().getCalAtr()),
-									new AutoCalSetting(baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getUpLimitORtSet(),
-											baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr()));
-							
-							AutoCalOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalOfLeaveEarlySetting(LeaveAttr.NOT_USE, LeaveAttr.NOT_USE);
-							
-							AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.NOT_USE);
-
-							CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(
-									employeeID, processingDate, autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting, autoCalOfLeaveEarlySetting,
-									autoCalcSetOfDivergenceTime);
+							CalAttrOfDailyPerformance calAttrOfDailyPerformance = this.reflectWorkInforDomainService
+									.reflectCalAttOfDaiPer(companyID, employeeID, processingDate);
 
 						}
 						// 特定日を日別実績に反映する(Reflect 日別実績)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getSpecificDateClassificationResetting() == true) {
-//							 reflectWorkInforDomainService.reflectSpecificDate(companyID, employeeID, processingDate, workPlaceID);
+							// reflectWorkInforDomainService.reflectSpecificDate(companyID,
+							// employeeID, processingDate, workPlaceID);
 						}
 						// 所属情報を反映する(Reflect info 所属情報)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()

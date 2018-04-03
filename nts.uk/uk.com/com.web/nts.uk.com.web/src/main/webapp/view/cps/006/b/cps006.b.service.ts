@@ -6,7 +6,7 @@ module nts.uk.com.view.cps006.b.service {
         getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemIdOfOtherCompany/{0}/{1}",
         updateItemChange: "ctx/pereg/person/info/ctgItem/updateItemChange",
         setOrder: "ctx/pereg/person/info/ctgItem/SetOrder",
-        filterHisSel: "ctx/pereg/person/info/setting/selection/findAllByCompanyId/{0}"
+        filterHisSel: "ctx/pereg/person/info/setting/selection/findSelectionInit"
     }
 
     export function getItemInfoDefList(categoryId, isAbolition): JQueryPromise<any> {
@@ -25,8 +25,13 @@ module nts.uk.com.view.cps006.b.service {
         return ajax(paths.setOrder, command);
     }
     
-    export function getAllSelByHistory(selectionItemId: string) {
-        return ajax(format(paths.filterHisSel , selectionItemId));
+    export function getAllSelByHistory(selectionItemId: string, selectionItemClsAtr : number) {
+        let query = {
+            selectionItemId : selectionItemId, 
+            selectionItemClsAtr : selectionItemClsAtr, 
+            cps006 : true
+        }
+        return ajax(paths.filterHisSel, query);
     };
 
 }

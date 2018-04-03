@@ -15,7 +15,7 @@
 				data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_9')}</div>
 			<div data-bind="if: screenModeNew" style="display: inline-block;">
 				<!--A3_4 事前事後スイッチ-->
-				<div tabindex="5" class="cf fix-margin-left-kaf006"
+				<div tabindex="7" class="cf fix-margin-left-kaf006"
 					data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF006_9')}',
 									options:ko.observableArray([
 							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF006_10')}' },
@@ -41,13 +41,13 @@
 				</div>
 				<div class="cell valign-center-kaf006">
 					<!--A3_8 複数日-->
-					<div class="row-cell-margin"
+					<div class="row-cell-margin-kaf006" tabindex="8"
 						data-bind="ntsCheckBox: { checked: displayEndDateFlg, enable: enableDisplayEndDate, text: '#{i18n.getText('KAF006_12')}'},visible: screenModeNew"></div>
 				</div>
 				<div class="cell valign-center-kaf006"
 					data-bind="visible: screenModeNew">
 					<!--A3_9  期間入力-->
-					<div tabindex="6" id="inputdate" class="fix-margin-left-kaf006"
+					<div tabindex="9" id="inputdate" class="fix-margin-left-kaf006"
 						data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',required:true, value: startAppDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
 					<!--A3_10  開始日-->
 					<label data-bind="visible : displayEndDateFlg"
@@ -55,9 +55,9 @@
 				</div>
 				<div class="cell valign-center-kaf006"
 					data-bind="visible : displayEndDateFlg">
-					<div class="row-cell-margin">
+					<div class="row-cell-margin-kaf006">
 						<!--A3_11 終了日-->
-						<div tabindex="9" id="inpAppDate" class="right-content-kaf006"
+						<div tabindex="10" id="inpAppDate" class="right-content-kaf006"
 							data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',required:true, value: endAppDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
 					</div>
 				</div>
@@ -74,7 +74,7 @@
 					<div class="lblTitle-radio-kaf006"
 						style="margin-right: 16px"></div>
 				</div>
-				<div class="cell valign-top-kaf006 cm-column-kaf006">
+				<div class="cell valign-top-kaf006 cm-column-kaf006" tabindex="11">
 					<!--A3_13  終日休暇-->
 					<label class="ntsRadioBox"> <input type="radio"
 						name="textRadio"
@@ -83,7 +83,7 @@
 						data-bind="text: '#{i18n.getText('KAF006_13')}'"></span>
 					</label>
 				</div>
-				<div class="cell valign-top-kaf006 cm-column-kaf006">
+				<div class="cell valign-top-kaf006 cm-column-kaf006" tabindex="11">
 					<!--A3_14  半日休暇-->
 					<label class="ntsRadioBox"> <input type="radio"
 						name="textRadio"
@@ -99,7 +99,7 @@
 			<div class="lblTitle-kaf006 cm-column2-kaf006 control-group-kaf006"
 				data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_15')}</div>
 				<!--A4_2 -> A4_10  休暇種類-->
-				<div tabindex="3"
+				<div tabindex="12"
 					data-bind="ntsSwitchButton: {
 								options: holidayTypes,
 								optionsValue: 'code',
@@ -123,13 +123,13 @@
 								enable: enbWorkType}">
 				</div>
 				<!--A5_3 半日の組み合わせを表示-->
-				<div class=""
+				<div class="" tabindex="14"
 					data-bind="ntsCheckBox: { checked: displayHalfDayValue, enable: enbHalfDayFlg, text: '#{i18n.getText('KAF006_17')}'}"></div>
 			</div>
-			<div data-bind="visible:changeWorkHourValue">
+			<div data-bind="visible:changeWorkHourValueFlg">
 				<div class="valign-center-kaf006 control-group-kaf006">
 					<!--A6_1 就業時間帯を変更する-->
-					<div class=""
+					<div class="" tabindex="21"
 						data-bind="ntsCheckBox: { checked: changeWorkHourValue, enable: enbChangeWorkHourFlg, text: '#{i18n.getText('KAF006_18')}'}"></div>
 					<!--A6_2 罫線-->
 					<HR data-bind="" style="width: 1000px;"></HR>
@@ -149,7 +149,7 @@
 						</div>
 						<div class="cell valign-center-kaf006">
 							<!--A6_5 就業時間帯選択対象-->
-							<label class="row-cell-margin" data-bind="text: displayWorkTimeName"></label>
+							<label class="row-cell-margin-kaf006" data-bind="text: displayWorkTimeName"></label>
 						</div>
 					</div>
 				</div>
@@ -161,11 +161,11 @@
 							<div class="lblTitle-kaf006"
 								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_22')}</div>
 						</div>
-						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+						<div class="cell valign-top-kaf006 cm-column2-kaf006" tabindex="10">
 							<div>
 								<!--A6_7 開始時刻-->
-								<input
-									class="row-cell-margin inputDate-kaf006 right-content-kaf006"
+								<input 
+									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpStartTime2"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
 								<!--A6_8 ～-->
@@ -176,7 +176,7 @@
 							<div>
 								<!--A6_9 終了時刻-->
 								<input tabindex="11"
-									class="row-cell-margin inputDate-kaf006 right-content-kaf006"
+									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpEndTime2"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
 							</div>

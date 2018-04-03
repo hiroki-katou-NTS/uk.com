@@ -1,0 +1,13 @@
+@import url("../cm/common.css");
+
+.div_line_col_1 {
+	width: 150px;
+}
+
+.div_line_col_2 {
+	width: 550px;
+}
+
+button.nts-switch-button {
+	width: 92px;
+}

@@ -17,12 +17,12 @@ public class ScheduleTimeZoneDto {
 	private Integer workNo;
 
 	/** 出勤 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "出勤", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "出勤")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer working;
 
 	/** 退勤 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "退勤", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "退勤")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer leave;
 }

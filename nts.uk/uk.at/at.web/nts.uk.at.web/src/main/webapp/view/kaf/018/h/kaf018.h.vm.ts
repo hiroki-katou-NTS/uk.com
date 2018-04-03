@@ -2,6 +2,8 @@ module nts.uk.at.view.kaf018.h.viewmodel {
     import text = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.alertError;
+    import ntsError = nts.uk.ui.errors;
     import confirm = nts.uk.ui.dialog.confirm;
     import model = kaf018.share.model;
 
@@ -109,6 +111,12 @@ module nts.uk.at.view.kaf018.h.viewmodel {
          */
         private registerApprovalStatusMail(): void {
             var self = this;
+
+            //validate
+            /*if (ntsError.hasError()) {
+                return;
+            }*/
+
             block.invisible();
             let listMail = [
                 self.getMailTempJS(self.appApprovalUnapproved),
@@ -163,6 +171,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                     self.exeTestMail();
                 })
             }).fail(function() {
+                error({ messageId: "Msg_791" });
             }).always(function() {
                 block.clear();
             })
@@ -176,13 +185,12 @@ module nts.uk.at.view.kaf018.h.viewmodel {
             //アルゴリズム「承認状況送信者メール確認」を実行する
             service.getEmpMail().done(function(data: any) {
                 //アルゴリズム「承認状況社員メールアドレス取得」を実行する
-                /*if (data && data.mailAddr != "" && data.mailAddr != null) {
+                if (data && data.mailAddr != "" && data.mailAddr != null) {
                     dfd.resolve(data);
                 }
                 else {
                     dfd.reject();
-                }*/
-                dfd.resolve(data);
+                }
             });
             return dfd.promise();
         }

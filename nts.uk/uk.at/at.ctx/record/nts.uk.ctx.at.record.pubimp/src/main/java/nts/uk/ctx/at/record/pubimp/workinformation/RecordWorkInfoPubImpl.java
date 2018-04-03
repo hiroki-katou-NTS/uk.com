@@ -165,4 +165,12 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private Integer getCalcTime(Finally<TimeDivergenceWithCalculation> calc){
 		return !calc.isPresent() || calc == null || calc.get().getCalcTime() == null ? null : calc.get().getCalcTime().valueAsMinutes();
 	}
+
+	@Override
+	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd) {
+		Optional<WorkInfoOfDailyPerformance> optWorkInfo =  workInformationRepository.find(employeeId, ymd);
+		if(!optWorkInfo.isPresent()) return Optional.ofNullable(null);		
+		return Optional.of(optWorkInfo.get().getRecordInfo().getWorkTypeCode().v());
+	}
+	
 }
