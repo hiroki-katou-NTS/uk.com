@@ -14,8 +14,8 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
-public class UpdateOtherHolidayInfoCommandHandler extends CommandHandler<AddOtherHolidayInfoCommand>
-implements PeregUpdateCommandHandler<AddOtherHolidayInfoCommand> {
+public class UpdateOtherHolidayInfoCommandHandler extends CommandHandler<UpdateOtherHolidayInfoCommand>
+implements PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand> {
 
 	@Inject
 	private PublicHolidayRemainRepository publicHolidayRemainRepository;
@@ -30,11 +30,11 @@ implements PeregUpdateCommandHandler<AddOtherHolidayInfoCommand> {
 
 	@Override
 	public Class<?> commandClass() {
-		return AddOtherHolidayInfoCommand.class;
+		return UpdateOtherHolidayInfoCommand.class;
 	}
 
 	@Override
-	protected void handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
+	protected void handle(CommandHandlerContext<UpdateOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
