@@ -78,6 +78,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
         }
 
+        private scrollIntoSelectedAcceptItem(data: number): void {
+            $("#fixed-table tr[data-id='" + data + "']")[0].scrollIntoView();
+        }
+
         finished(fileInfo: any) {
             var self = this;
             self.fileId(fileInfo.id);
@@ -106,6 +110,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         btnLeftClick() {
             let self = this;
             if (self.selectedAcceptItem() > 0 && self.selectedAcceptItem() <= self.listAcceptItem().length) {
+                let selectedAItemIndex = _.findIndex(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedAItem = _.find(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedCItem = _.find(self.listSelectedCategoryItem(), x => { return x.itemNo == selectedAItem.categoryItemNo(); });
                 if (selectedCItem.required) {
@@ -119,10 +124,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
                         self.listAcceptItem()[i].acceptItemNumber(i + 1);
                     }
-                    if (self.selectedAcceptItem() >= self.listAcceptItem().length)
-                        self.selectedAcceptItem(self.listAcceptItem().length);
-                    else
+                    if (self.selectedAcceptItem() >= self.listAcceptItem().length) {
+                        selectedAItemIndex = self.listAcceptItem().length;
+                        self.selectedAcceptItem(selectedAItemIndex);
+                    } else {
                         self.selectedAcceptItem.valueHasMutated();
+                    }
+                    self.scrollIntoSelectedAcceptItem(selectedAItemIndex);
                 }
             } else {
                 alertError({messageId: "Msg_897"});
@@ -139,10 +147,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
                 self.selectedAcceptItem(self.listAcceptItem().length);
-                if (self.listCategoryItem().length > 0 && selectedIndex >= self.listCategoryItem().length - 1)
-                    self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 2].itemNo);
-                else
-                    self.selectedCategoryItem(self.listCategoryItem()[selectedIndex + 1] ? self.listCategoryItem()[selectedIndex + 1].itemNo : null);
+                self.scrollIntoSelectedAcceptItem(self.listAcceptItem().length);
+                if (self.listCategoryItem().length > 1) {
+                    if (selectedIndex >= self.listCategoryItem().length - 1) {
+                        self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 2].itemNo);
+                    } else {
+                        self.selectedCategoryItem(self.listCategoryItem()[selectedIndex + 1] ? self.listCategoryItem()[selectedIndex + 1].itemNo : null);
+                    }
+                }
                 /* remove after set selected
                    because problem with scroll when remove before set selected */
                 self.listCategoryItem.remove(selectedItem);
