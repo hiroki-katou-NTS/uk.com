@@ -26,7 +26,7 @@ public class UpdateAnnLeaCommandHandler extends AsyncCommandHandler<AnnLeaGrantR
 			throw new BusinessException("Msg_1023");
 		}
 		
-		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(command.getAnnLeavId(),cid, command.getEmployeeId(), 
+		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(command.getAnnLeavID(),cid, command.getEmployeeId(), 
 				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
 				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);

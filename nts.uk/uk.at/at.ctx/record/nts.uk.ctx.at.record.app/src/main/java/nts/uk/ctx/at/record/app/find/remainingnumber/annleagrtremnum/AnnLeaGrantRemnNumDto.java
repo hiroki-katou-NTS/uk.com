@@ -13,6 +13,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 @Getter
 public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 
+	private String annLeavID;
 	/**
 	 * 年休付与日
 	 */
@@ -53,7 +54,7 @@ public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 	 * 付与時間
 	 */
 	@PeregItem("IS00391")
-	private int grantMinutes;
+	private Integer grantMinutes;
 
 	/**
 	 * 使用数
@@ -71,7 +72,7 @@ public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 	 * 使用時間
 	 */
 	@PeregItem("IS00394")
-	private int usedMinutes;
+	private Integer usedMinutes;
 
 	/**
 	 * 残数
@@ -89,22 +90,23 @@ public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 	 * 残時間
 	 */
 	@PeregItem("IS00397")
-	private int remainingMinutes;
+	private Integer remainingMinutes;
 
 	public static AnnLeaGrantRemnNumDto createFromDomain(AnnualLeaveGrantRemainingData domain) {
 		AnnLeaGrantRemnNumDto dto = new AnnLeaGrantRemnNumDto();
+		dto.annLeavID = domain.getAnnLeavID();
 		dto.grantDate = domain.getGrantDate();
 		dto.deadline = domain.getDeadline();
 		dto.expirationStatus = domain.getExpirationStatus().value;
 		dto.grantDays = domain.getDetails().getGrantNumber().getDays().v();
 		dto.grantMinutes = domain.getDetails().getGrantNumber().getMinutes().isPresent()
-				? domain.getDetails().getGrantNumber().getMinutes().get().v() : 0;
+				? domain.getDetails().getGrantNumber().getMinutes().get().v() : null;
 		dto.usedDays = domain.getDetails().getUsedNumber().getDays().v();
 		dto.usedMinutes = domain.getDetails().getUsedNumber().getMinutes().isPresent()
-				? domain.getDetails().getUsedNumber().getMinutes().get().v() : 0;
+				? domain.getDetails().getUsedNumber().getMinutes().get().v() : null;
 		dto.remainingDays = domain.getDetails().getRemainingNumber().getDays().v();
 		dto.remainingMinutes = domain.getDetails().getRemainingNumber().getMinutes().isPresent()
-				? domain.getDetails().getRemainingNumber().getMinutes().get().v() : 0;
+				? domain.getDetails().getRemainingNumber().getMinutes().get().v() : null;
 		return dto;
 	}
 

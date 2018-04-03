@@ -74,8 +74,6 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	 */
 	private BigDecimal selectionItemRefType;
 
-	public static String ROOT_CONTRACT_CODE = "000000000000";
-
 	public PersonInfoItemDefinition() {
 	};
 
