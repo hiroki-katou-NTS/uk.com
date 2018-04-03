@@ -264,7 +264,10 @@ module nts.custombinding {
 
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let self = this,
-                employee: ModelBindings = new ModelBindings();
+                access = valueAccessor(),
+                model: ModelBindings = new ModelBindings(),
+                auth = model.auth,
+                person = model.person;
 
             // add style to <head> on first run
             if (!$('#header_style').length) {
@@ -272,10 +275,22 @@ module nts.custombinding {
             }
 
             $(element)
-                .data("_emp", employee)
+                .data("_emp", model)
                 .append(self.temp);
 
-            ko.applyBindingsToNode($(element).find('.header-info')[0], () => ({ with: employee }));
+            if (_.has(access, "personId") && ko.isObservable(access.personId)) {
+                person.id.subscribe(x => {
+                    access.personId(x);
+                });
+            }
+
+            if (_.has(access, "roleId") && ko.isObservable(access.roleId)) {
+                auth.roleId.subscribe(x => {
+                    access.roleId(x);
+                });
+            }
+
+            ko.applyBindingsToNode($(element).find('.header-info')[0], () => ({ with: model }));
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
@@ -283,9 +298,10 @@ module nts.custombinding {
 
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let access = valueAccessor(),
-                employee: ModelBindings = $(element).data("_emp");
+                model: ModelBindings = $(element).data("_emp"),
+                employee = model.employee;
 
-            employee.id(ko.unwrap(access.id));
+            employee.id(ko.unwrap(access.employeeId));
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
@@ -293,7 +309,6 @@ module nts.custombinding {
     }
 
     class ModelBindings {
-        id = ko.observable('');
         text = nts.uk.resource.getText;
 
         action = {
@@ -312,8 +327,8 @@ module nts.custombinding {
                 let self = this,
                     auth = self.auth,
                     person = self.person,
-                    id = ko.toJS(self.id);
-                    
+                    id = ko.toJS(self.employee.id);
+
                 if (auth.allowAvatarRef) {
                     setShared("CPS001D_PARAMS", {
                         employeeId: id
@@ -331,7 +346,7 @@ module nts.custombinding {
             location: () => {
                 let self = this,
                     auth = self.auth,
-                    id = ko.toJS(self.id);
+                    id = ko.toJS(self.employee.id);
 
                 if (auth.allowMapBrowse) {
                     setShared("CPS001E_PARAMS", {
@@ -351,6 +366,7 @@ module nts.custombinding {
         };
 
         employee = {
+            id: ko.observable(''),
             name: ko.observable(''),
             code: ko.observable(''),
             entire: ko.observable('')
@@ -376,7 +392,8 @@ module nts.custombinding {
         constructor() {
             let self = this,
                 auth = self.auth,
-                person = self.person;
+                person = self.person,
+                employee = self.employee;
 
             fetch.perm().done((data: IPersonAuth) => {
                 if (data) {
@@ -392,12 +409,14 @@ module nts.custombinding {
                 }
             });
 
-            self.id.subscribe(x => {
+            employee.id.subscribe(x => {
                 fetch.employee(x).done((emp: IData) => {
                     if (emp) {
                         fetch.avartar(x).done(avatar => {
                             person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
                         }).fail(msg => person.avatar(DEF_AVATAR));
+
+                        person.id(emp.pid);
 
                         if (!emp.gender) {
                             person.gender('');
@@ -423,13 +442,13 @@ module nts.custombinding {
                             let days = emp.numberOfWork - emp.numberOfTempHist,
                                 duration = moment.duration(days, "days");
 
-                            self.employee.entire(`${duration.years()}${text('CPS001_67')}${duration.months()}${text('CPS001_88')}`);
+                            employee.entire(`${duration.years()}${text('CPS001_67')}${duration.months()}${text('CPS001_88')}`);
                         } else {
-                            self.employee.entire('');
+                            employee.entire('');
                         }
 
-                        self.employee.code(emp.employeeCode);
-                        self.employee.name(emp.employeeName);
+                        employee.code(emp.employeeCode);
+                        employee.name(emp.employeeName);
 
                         self.department.code(emp.departmentCode);
                         self.department.name(emp.departmentName);
@@ -437,13 +456,14 @@ module nts.custombinding {
                         self.constract.position(emp.position);
                         self.constract.contractType(emp.contractCodeType);
                     } else {
+                        person.id('');
                         person.age('');
                         person.gender('');
 
 
-                        self.employee.code('');
-                        self.employee.name('');
-                        self.employee.entire('');
+                        employee.code('');
+                        employee.name('');
+                        employee.entire('');
 
                         self.department.code('');
                         self.department.name('');
@@ -451,7 +471,6 @@ module nts.custombinding {
                         self.constract.position('');
                         self.constract.contractType('');
                     }
-                    console.log(emp);
                 });
             });
         }
