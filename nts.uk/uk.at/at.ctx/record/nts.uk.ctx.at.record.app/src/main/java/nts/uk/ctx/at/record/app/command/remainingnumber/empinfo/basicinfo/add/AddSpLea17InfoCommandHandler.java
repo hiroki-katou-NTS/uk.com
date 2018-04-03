@@ -37,8 +37,8 @@ implements PeregAddCommandHandler<AddSpecialleave17informationCommand>{
 		
 		String cid = AppContexts.user().companyId();
 		
-		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), SpecialLeaveCode.CS00055.value, command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
-				command.getGrantDays(), command.getGrantTable());
+		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid, command.getSID(), SpecialLeaveCode.CS00055.value, command.getUseAtr().intValue(), command.getAppSet().intValue(), command.getGrantDate(),
+				command.getGrantDays() != null ? command.getGrantDays().intValue() : null, command.getGrantTable());
 		return new PeregAddCommandResult(addSpLeaInfoCommandHandler.addHandler(domain));
 	}
 
