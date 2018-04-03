@@ -158,12 +158,13 @@ module nts.uk.com.view.cmf001.share.model {
         acceptMode: KnockoutObservable<number> = ko.observable(null);
         csvDataItemLineNumber: KnockoutObservable<number> = ko.observable(null);
         csvDataStartLine: KnockoutObservable<number> = ko.observable(null);
+        characterCode: KnockoutObservable<number> = ko.observable(null);
         systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
         categoryId: KnockoutObservable<string> = ko.observable(null);
 
-        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number, csvDataItemLineNumber?: number, csvDataStartLine?: number, deleteExistDataMethod?: number, categoryId?: string) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number, csvDataItemLineNumber?: number, csvDataStartLine?: number, characterCode?: number, deleteExistDataMethod?: number, categoryId?: string) {
             this.systemType = ko.observable(systemType);
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
@@ -178,6 +179,8 @@ module nts.uk.com.view.cmf001.share.model {
                 this.csvDataItemLineNumber(csvDataItemLineNumber);
             if (csvDataStartLine)
                 this.csvDataStartLine(csvDataStartLine);
+            if (characterCode)
+                this.characterCode(characterCode);
             if (categoryId) this.categoryId(categoryId); 
         }
     }

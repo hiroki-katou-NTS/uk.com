@@ -35,7 +35,9 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 		StdAcceptCondSet condSet = acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(),
 				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
 		condSet.updateWhenSettingItems(conditionSetting.getCategoryId().get(),
-				conditionSetting.getCsvDataLineNumber().get().v(), conditionSetting.getCsvDataStartLine().get().v());
+				conditionSetting.getCsvDataLineNumber().get().v(), 
+				conditionSetting.getCsvDataStartLine().get().v(),
+				conditionSetting.getCharacterCode().get().value);
 		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
 				conditionSetting.getConditionSetCd().v());
 		acceptItemRepo.addList(listItem);
@@ -48,7 +50,9 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 		StdAcceptCondSet condSet = acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(),
 				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
 		condSet.updateWhenSettingItems(conditionSetting.getCategoryId().get(),
-				conditionSetting.getCsvDataLineNumber().get().v(), conditionSetting.getCsvDataStartLine().get().v());
+				conditionSetting.getCsvDataLineNumber().get().v(), 
+				conditionSetting.getCsvDataStartLine().get().v(),
+				conditionSetting.getCharacterCode().get().value);
 		acceptCondRepo.updateFromD(condSet);
 		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
 				conditionSetting.getConditionSetCd().v());
