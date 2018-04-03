@@ -205,6 +205,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         regAcceptCodeConvert_Click() {
             
             let self = this;
+            nts.uk.ui.errors.clearAll();
             block.invisible();
             for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
                 self.codeConvertData().cdConvertDetails()[i].convertCd(self.codeConvertData().convertCd());
