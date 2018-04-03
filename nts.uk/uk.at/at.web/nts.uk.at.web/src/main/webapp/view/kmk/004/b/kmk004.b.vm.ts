@@ -329,7 +329,7 @@ module nts.uk.at.view.kmk004.b {
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: true,
-                    maxWidth: 550,
+                    maxWidth: 450,
                     maxRows: 15
                 };
             }
