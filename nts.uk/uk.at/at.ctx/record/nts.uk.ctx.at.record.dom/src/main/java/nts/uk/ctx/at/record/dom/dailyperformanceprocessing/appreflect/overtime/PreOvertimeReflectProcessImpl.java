@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,31 +47,32 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	
 	@Override
 	public boolean changeFlg(OvertimeParameter para) {
+		boolean ischeck = false;
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
 				|| para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
-			return false;
+			return ischeck;
 		}
-				
+		
+		//ドメインモデル「日別実績の勤務情報」を取得する
+		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateInfo()).get();
+		//反映前後勤就に変更があるかチェックする
+		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
+		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
+		
+		if(!dailyPerfor.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!dailyPerfor.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+			ischeck = true;
+		} 
 		//勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
 				para.getOvertimePara().getWorkTypeCode()); 
 		workUpdate.updateWorkTimeType(reflectInfo, false);
-		//ドメインモデル「日別実績の勤務情報」を取得する
-		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateInfo()).get();
-		//反映前後勤就に変更があるかチェックする
-		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
-		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
-		if(!dailyPerfor.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||!dailyPerfor.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
-			 return true;
-		}
-		
-		return false;
+		return ischeck;
 		
 	}
 	@Override
@@ -142,16 +144,17 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		if(!para.isTimeReflectFlg()) {
 			return;
 		}
+		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
-			if(entry.getValue() <= 0) {
-				para.getOvertimePara().getMapOvertimeFrame().remove(entry.getKey());
-			}			
+			if(entry.getValue() > 0) {
+				tmp.put(entry.getKey(), entry.getValue());
+			}
 		}
 		
 		//残業時間の反映
-		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getMapOvertimeFrame(), true);
+		workUpdate.reflectOffOvertime(para.getEmployeeId(), para.getDateInfo(), tmp, true);
 	}
 
 	@Override

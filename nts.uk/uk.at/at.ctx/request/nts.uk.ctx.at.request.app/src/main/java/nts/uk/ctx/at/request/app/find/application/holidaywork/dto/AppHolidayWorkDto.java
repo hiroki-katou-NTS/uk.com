@@ -208,6 +208,11 @@ public class AppHolidayWorkDto {
 	 */
 	private AppHolidayWorkPreAndReferDto holidayWorkReferenceDto;
 	
+	/**
+	 * prePostCanChangeFlg
+	 */
+	private boolean prePostCanChangeFlg;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -254,7 +259,7 @@ public class AppHolidayWorkDto {
 				false,
 				false, 
 				null,
-				null);
+				null,false);
 	}
 	
 }
