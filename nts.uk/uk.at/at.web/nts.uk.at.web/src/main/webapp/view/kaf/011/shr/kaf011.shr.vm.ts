@@ -120,8 +120,10 @@ module nts.uk.at.view.kaf011.shr {
         export class DrawalReqSet {
             deferredComment: KnockoutObservable<string> = ko.observable('');
             deferredBold: KnockoutObservable<boolean> = ko.observable(false);
+            deferredLettleColor: KnockoutObservable<string> = ko.observable('');
             pickUpComment: KnockoutObservable<string> = ko.observable('');
             pickUpBold: KnockoutObservable<boolean> = ko.observable(false);
+            pickUpLettleColor: KnockoutObservable<string> = ko.observable('');
             deferredWorkTimeSelect: KnockoutObservable<number> = ko.observable(0);
             simulAppliReq: KnockoutObservable<number> = ko.observable(0);
             permissionDivision: KnockoutObservable<any> = ko.observable(null);
@@ -134,7 +136,8 @@ module nts.uk.at.view.kaf011.shr {
                     this.deferredWorkTimeSelect(drawalReqSet.deferredWorkTimeSelect || 0);
                     this.simulAppliReq(drawalReqSet.simulAppliReq || 0);
                     this.permissionDivision(drawalReqSet.permissionDivision || 1);
-
+                    this.deferredLettleColor(drawalReqSet.deferredLettleColor);
+                    this.pickUpLettleColor(drawalReqSet.pickUpLettleColor);
                     let comItems;
                     if (this.simulAppliReq() == 1) {
                         comItems = [

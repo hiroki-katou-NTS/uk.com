@@ -124,7 +124,7 @@
 					<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
 						<input tabindex="4"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: false ,option: timeOption }" />
+							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: true ,option: timeOption }" />
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
 							options: startTypes ,
@@ -135,7 +135,7 @@
 						<div>#{i18n.getText('KAF011_37')}</div>
 						<input tabindex="4"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: false,option: timeOption }" />
+							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: true ,option: timeOption }" />
 
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
@@ -152,7 +152,7 @@
 					<div class="div_line"
 						data-bind="text:
 					 pickUpComment
-					,css: { 'bold': pickUpBold }"></div>
+					,css: { 'bold': pickUpBold  },style:{color:pickUpLettleColor}"></div>
 				</div>
 
 			</div>
@@ -261,7 +261,7 @@
 					<div class="div_line"
 						data-bind="text:
 					 deferredComment
-					,css: { 'bold': deferredBold }"></div>
+					,css: { 'bold': deferredBold } ,style:{color:deferredLettleColor}"></div>
 
 
 
