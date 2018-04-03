@@ -93,10 +93,10 @@
 									<tr>
 										<!-- Line 5-->
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
-										<td data-itemCode="IS00414 IS00429 IS00444 IS00459 IS00474 IS00489 IS00504 IS00519 IS00534 IS00549 IS00634 IS00649 IS00664 IS00679 IS00694 IS00709 IS00724 IS00739 IS00754 IS00769" class="tdTxt">
+										<td data-itemCode="IS00414 IS00429 IS00444 IS00459 IS00474 IS00489 IS00504 IS00519 IS00534 IS00549 IS00634 IS00649 IS00664 IS00679 IS00694 IS00709 IS00724 IS00739 IS00754 IS00769 dayNumberOfGrants" class="tdTxt">
 											<div></div></td>
 										<td><input  id = "dayNumberOfGrants" tabindex="10" data-bind="ntsNumberEditor: {
-																	name: '付与日数',
+																	name: nameDayNumberOfGrant,
 																	value: dayNumberOfGrants,
 																	constraint: 'DayNumberOfGrant',
 																	required: true,
@@ -125,9 +125,9 @@
 									<tr>
 										
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
-										<td data-itemCode="IS00417 IS00432 IS00447 IS00462 IS00477 IS00492 IS00507 IS00522 IS00537 IS00552 IS00637 IS00652 IS00667 IS00682 IS00697 IS00712 IS00727 IS00742 IS00757 IS00772" class="tdTxt"><div></div></td>
+										<td data-itemCode="IS00417 IS00432 IS00447 IS00462 IS00477 IS00492 IS00507 IS00522 IS00537 IS00552 IS00637 IS00652 IS00667 IS00682 IS00697 IS00712 IS00727 IS00742 IS00757 IS00772 dayNumberOfUse" class="tdTxt"><div></div></td>
 										<td><input id ="dayNumberOfUse" tabindex="12" data-bind="ntsNumberEditor: {
-																	name: '使用日数',
+																	name: nameDayNumberOfUse,
 																	value: dayNumberOfUse,
 																	constraint: 'DayNumberOfUse',
 																	required: true,
@@ -154,11 +154,11 @@
 									<!-- Line 7-->
 									<tr>
 									<td></td>
-										<td data-itemCode="IS00419 IS00434 IS00449 IS00464 IS00479 IS00494 IS00509 IS00524 IS00539 IS00554 IS00639 IS00654 IS00669 IS00684 IS00699 IS00714 IS00729 IS00744 IS00759 IS00744" class="tdTxt">
+										<td data-itemCode="IS00419 IS00434 IS00449 IS00464 IS00479 IS00494 IS00509 IS00524 IS00539 IS00554 IS00639 IS00654 IS00669 IS00684 IS00699 IS00714 IS00729 IS00744 IS00759 IS00744 dayNumberOver" class="tdTxt">
 											<div></div> 
 										</td>
 										<td><input id = "dayNumberOver" tabindex="14" data-bind="ntsNumberEditor: {
-																	name: '上限超過消滅日数',
+																	name: nameDayNumberOver,
 																	value: dayNumberOver,
 																	constraint: 'DayNumberOver',
 																	required: true,
@@ -188,9 +188,9 @@
 									<!-- Line 8-->
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
-										<td data-itemCode="IS00422 IS00437 IS00452 IS00467 IS00482 IS00497 IS00512 IS00527 IS00542 IS00557 IS00642 IS00657 IS00672 IS00687 IS00702 IS00717 IS00732 IS00747 IS00762 IS00777" class="tdTxt"><div></div></td>
+										<td data-itemCode="IS00422 IS00437 IS00452 IS00467 IS00482 IS00497 IS00512 IS00527 IS00542 IS00557 IS00642 IS00657 IS00672 IS00687 IS00702 IS00717 IS00732 IS00747 IS00762 IS00777 dayNumberOfReam" class="tdTxt"><div></div></td>
 										<td><input id = "dayNumberOfReam" tabindex="16" data-bind="ntsNumberEditor: {
-																	name: '残日数',
+																	name: nameDayNumberOfRemain,
 																	value: dayNumberOfReam,
 																	constraint: 'DayNumberOfRemain',
 																	required: true,

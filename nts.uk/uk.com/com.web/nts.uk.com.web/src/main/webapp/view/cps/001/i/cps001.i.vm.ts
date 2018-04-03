@@ -68,6 +68,13 @@ module nts.uk.com.view.cps001.i.vm {
         timeReamH: KnockoutObservable<boolean>;
         grantTimeH: KnockoutObservable<boolean>;
 
+        //
+        nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable(null);
+        nameDayNumberOfUse: KnockoutObservable<string> = ko.observable(null);
+        nameDayNumberOver: KnockoutObservable<string> = ko.observable(null);
+        nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable(null);
+
+
         //data recive from cps001.a
         specialCode: KnockoutObservable<string>;
 
@@ -368,7 +375,20 @@ module nts.uk.com.view.cps001.i.vm {
                                 $(this).parent().css("display", "none");
                             }
                             let timeType = itemCodeArray[itemCodeArray.length - 1];
+                            debugger;
                             switch (timeType) {
+                                case "dayNumberOfGrants":
+                                    self.nameDayNumberOfGrant(itemDef.itemName);
+                                    break;
+                                case "dayNumberOfUse":
+                                    self.nameDayNumberOfUse(itemDef.itemName);
+                                    break;
+                                case "dayNumberOver":
+                                    self.nameDayNumberOver(itemDef.itemName);
+                                    break;
+                                case "dayNumberOfReam":
+                                    self.nameDayNumberOfRemain(itemDef.itemName);
+                                    break;
                                 case "grantTime":
                                     self.grantTimeH = ko.observable(!itemDef.display);
                                     break;
@@ -381,7 +401,10 @@ module nts.uk.com.view.cps001.i.vm {
                                 case "timeReam":
                                     self.timeReamH = ko.observable(!itemDef.display);
                                     break;
+                                    
                             }
+                            
+                            
                         }
                     });
                 }
