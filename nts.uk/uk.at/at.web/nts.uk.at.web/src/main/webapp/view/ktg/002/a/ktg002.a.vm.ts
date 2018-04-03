@@ -19,7 +19,7 @@ module nts.uk.at.view.ktg002.a.viewmodel {
             let dfd = $.Deferred();
             service.getData().done((data) => {
                 //console.log(data);
-                if(true){
+                if(data){
                     self.text = ko.observable(getText('KTG002_4'));
                     self.visible = ko.observable(true);
                 }else{
