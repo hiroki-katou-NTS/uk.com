@@ -62,7 +62,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //Start Date
             self.datePeriod.subscribe(value => {
                 nts.uk.ui.errors.clearAll();
-                $("#daterangepicker").trigger("validate");
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
@@ -205,7 +206,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let self = this,
             workchange = self.appWorkChange().workChange();
             nts.uk.ui.errors.clearAll();
-            $("#daterangepicker").trigger("validate");
+            $(".ntsStartDatePicker").trigger("validate");
+            $(".ntsEndDatePicker").trigger("validate");
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             
@@ -257,15 +259,17 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          */
         private changeApplicationDate(startDate : any, endDate : any){
             let self = this,
+            tmpStartDate : string = moment(startDate).format(self.dateFormat),
+            tmpEndDate : string = moment(endDate).format(self.dateFormat),
             application = self.appWorkChange().application();
             //申請日付開始日を基準に共通アルゴリズム「申請日を変更する」を実行する
             //self.checkChangeAppDate(date);
             //申請日付分　（開始日～終了日）
             //基準日　≦　終了日
-            while(moment(startDate, self.dateFormat).isSameOrBefore(moment(endDate, self.dateFormat))){
-                self.checkChangeAppDate(startDate);
+            while(moment(tmpStartDate, self.dateFormat).isSameOrBefore(moment(tmpEndDate, self.dateFormat))){
+                self.checkChangeAppDate(tmpStartDate);
                 //基準日　＝　基準日　＋　１
-                startDate = moment(startDate).add(1, 'day');
+                tmpStartDate = moment(tmpStartDate).add(1, 'day').format(self.dateFormat);
             }
             //実績の内容
             service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
