@@ -91,17 +91,6 @@ public class ClosureWs {
 	public List<ClosureFindDto> findAll() {
 		return this.finder.findAll();
 	}
-	
-	/**
-	 * Find all closure
-	 * 
-	 * @return the list
-	 */
-	@POST
-	@Path("findAllClosure")
-	public ApprovalComfirmDto findAllClosure() {
-		return this.finder.findAllClosure();
-	}
 
 	/**
 	 * Find all for log

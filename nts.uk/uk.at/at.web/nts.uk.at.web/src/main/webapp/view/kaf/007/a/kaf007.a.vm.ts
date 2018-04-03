@@ -58,10 +58,18 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             // 申請日を変更する          
             //Start Date
             application.startDate.subscribe(value => {
+                $("#inputdatestart").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 self.changeApplicationDate(value, common.AppDateType.StartDate);
             });
             //End Date
             application.endDate.subscribe(value => {
+                $("#inputdateend").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 self.changeApplicationDate(value, common.AppDateType.EndDate);
             });
         }
@@ -117,11 +125,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     self.isMultipleTime(settingData.multipleTime);                    
                 }
                 //Setting default value data work:
-                 self.appWorkChange().dataWork(settingData.dataWorkDto);
-                self.appWorkChange().workChange().workTypeCd(self.appWorkChange().dataWork().selectedWorkTypeCd);
-                self.appWorkChange().workChange().workTypeName(self.appWorkChange().dataWork().selectedWorkTypeName);
-                self.appWorkChange().workChange().workTimeCd(self.appWorkChange().dataWork().selectedWorkTimeCd);
-                self.appWorkChange().workChange().workTimeName(self.appWorkChange().dataWork().selectedWorkTimeName);
+                self.appWorkChange().dataWork(settingData.dataWorkDto);
+                self.appWorkChange().workChange().workTypeCd(settingData.dataWorkDto.selectedWorkTypeCd === null ? '' : settingData.dataWorkDto.selectedWorkTypeCd);
+                self.appWorkChange().workChange().workTypeName(settingData.dataWorkDto.selectedWorkTypeName === null ? '' : settingData.dataWorkDto.selectedWorkTypeName);
+                self.appWorkChange().workChange().workTimeCd(settingData.dataWorkDto.selectedWorkTimeCd === null ? '' : settingData.dataWorkDto.selectedWorkTimeCd);
+                self.appWorkChange().workChange().workTimeName(settingData.dataWorkDto.selectedWorkTimeName === null ? '' : settingData.dataWorkDto.selectedWorkTimeName);
                 //Focus process
                 self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                 //フォーカス制御

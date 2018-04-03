@@ -24,13 +24,20 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
 
+        drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
+
+        showReason: KnockoutObservable<number> = ko.observable(0);
+
+        displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
+
+        appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+
         constructor() {
             let self = this;
             let param = nts.uk.ui.windows.getShared('KAF_011_PARAMS');
             if (param) {
                 self.prePostSelectedCode(param.prePostSelectedCode);
                 self.reason(param.reason);
-                self.appReasons(param.appReasons);
                 self.appReasonSelectedID(param.appReasonSelectedID);
                 self.appDate(param.appDate);
             }
@@ -47,7 +54,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 };
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
-                // self.setDataFromStart(data);
+                self.setDataFromStart(data);
 
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
@@ -57,6 +64,18 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
             });
             return dfd.promise();
+        }
+
+        setDataFromStart(data: common.IHolidayShipment) {
+            let self = this;
+            if (data) {
+                self.prePostSelectedCode(data.preOrPostType);
+                self.appReasons(data.appReasons || []);
+                self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
+                self.showReason(data.applicationSetting.appReasonDispAtr);
+                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+            }
         }
 
         closeDialog() {
