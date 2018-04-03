@@ -27,6 +27,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerf
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandAddHandler;
@@ -177,7 +179,13 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
 	private PCLogInfoOfDailyCommandUpdateHandler pcLogInfoUpdateHandler;
-	
+
+	@Inject
+	@AttendanceItemLayout(layout = "Q", jpPropertyName = "", index = 17)
+	private RemarkOfDailyCommandAddHandler remarksAddHandler;
+	@Inject
+	@AttendanceItemLayout(layout = "Q", jpPropertyName = "", index = 17)
+	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
 	
 	@Inject
 	private CalculateDailyRecordService calcService;
@@ -296,6 +304,9 @@ public class DailyRecordWorkCommandHandler {
 			break;
 		case "P":
 			handler = isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
+			break;
+		case "Q":
+			handler = isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 			break;
 		default:
 			break;

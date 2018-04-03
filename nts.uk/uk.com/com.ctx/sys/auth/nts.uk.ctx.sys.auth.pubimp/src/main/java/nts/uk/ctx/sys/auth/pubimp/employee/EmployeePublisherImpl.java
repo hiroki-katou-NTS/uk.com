@@ -3,13 +3,12 @@ package nts.uk.ctx.sys.auth.pubimp.employee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
@@ -21,11 +20,14 @@ import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
+import nts.uk.ctx.sys.auth.pub.employee.EmpWithRangeLogin;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.auth.dom.algorithm.CanApprovalOnBaseDateService;
+import nts.uk.ctx.sys.auth.dom.algorithm.DetermineEmpCanReferService;
 
 @Stateless
 public class EmployeePublisherImpl implements EmployeePublisher {
@@ -37,13 +39,22 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	private UserPublisher userPublisher;
 
 	@Inject
-	EmpReferenceRangeService empReferenceRangeService;
+	private EmpReferenceRangeService empReferenceRangeService;
 
 	@Inject
-	WorkplaceManagerRepository workplaceManagerRepository;
+	private WorkplaceManagerRepository workplaceManagerRepository;
 
 	@Inject
-	WorkplaceAdapter workplaceAdapter;
+	private WorkplaceAdapter workplaceAdapter;
+
+	@Inject
+	private EmployeeInfoAdapter employeeInfoAdapter;
+
+	@Inject
+	private DetermineEmpCanReferService determineEmpCanRefer;
+
+	@Inject
+	private CanApprovalOnBaseDateService canApprovalOnBaseDateService;
 
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID) {
@@ -105,6 +116,39 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		}
 
 		return Optional.of(new NarrowEmpByReferenceRange(listResultEmployeeID));
+	}
+
+	@Override
+	public Optional<EmpWithRangeLogin> findByCompanyIDAndEmpCD(String companyID, String employeeCD) {
+		// imported（権限管理）「社員」を取得する
+		Optional<EmpInfoImport> empInfor = employeeInfoAdapter.getByComnyIDAndEmployeeCD(companyID, employeeCD);
+		if (empInfor.isPresent()) {
+			// 参照可能な社員かを判定する（職場）
+			List<Integer> param = new ArrayList<>();
+			param.add(RoleType.EMPLOYMENT.value);
+			boolean result = determineEmpCanRefer.checkDetermineEmpCanRefer(GeneralDate.today(), empInfor.get().getEmployeeId(), param);
+			if (result == true) {
+				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
+			} else
+				return Optional.empty();
+		}
+		return this.findByCompanyIDAndEmpCD(companyID, employeeCD);
+	}
+
+	@Override
+	public Optional<EmpWithRangeLogin> getByComIDAndEmpCD(String companyID, String employeeCD) {
+
+		// imported（権限管理）「社員」を取得する Lấy request List No.18
+		Optional<EmpInfoImport> empInfor = employeeInfoAdapter.getByComnyIDAndEmployeeCD(companyID, employeeCD);
+		if (empInfor.isPresent()) {
+			// 指定社員が基準日に承認権限を持っているかチェックする Lay request 305 tu domain service
+			boolean result = canApprovalOnBaseDateService.canApprovalOnBaseDate(empInfor.get().getCompanyId(), empInfor.get().getEmployeeId(), GeneralDate.today());
+			if (result == true) {
+				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
+			} else
+				return Optional.empty();
+		}
+		return this.getByComIDAndEmpCD(companyID, employeeCD);
 	}
 
 }

@@ -1,6 +1,4 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -19,7 +17,7 @@ public class DivergenceReferenceTimeUsageUnit extends AggregateRoot {
 
 	/** The work type use set. */
 	/* Worktype usage */
-	private BigDecimal workTypeUseSet;
+	private boolean workTypeUseSet;
 
 	/**
 	 * Instantiates a new divergence reference time usage unit.
