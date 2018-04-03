@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoByCidSidImport;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
 
@@ -45,6 +46,12 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 		
 		EmpInfoByCidSidImport result = new EmpInfoByCidSidImport(exportData.getSid(), exportData.getPersonName(), exportData.getPid(), exportData.getCid(), exportData.getScd());
 		return Optional.of(result);
+	}
+
+	@Override
+	public Optional<EmpInfoImport> getByComnyIDAndEmployeeCD(String companyID, String employeeCD) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
