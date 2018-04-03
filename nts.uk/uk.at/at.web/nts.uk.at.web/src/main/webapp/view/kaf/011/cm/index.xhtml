@@ -75,7 +75,7 @@
 					</div>
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
-						<div tabindex="4"
+						<div tabindex="4" id="recDatePicker"
 							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false"
@@ -284,6 +284,7 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
+										required:appTypeSet().displayFixedReason !=0,
 										columns: [
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
@@ -299,6 +300,7 @@
 				<textarea style="height: 100px" tabindex="6"
 					data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
+					required:appTypeSet().displayAppReason !=0,
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,

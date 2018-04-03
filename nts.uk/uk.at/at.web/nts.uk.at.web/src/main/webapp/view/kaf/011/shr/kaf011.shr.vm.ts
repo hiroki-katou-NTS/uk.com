@@ -129,8 +129,8 @@ module nts.uk.at.view.kaf011.shr {
                 if (drawalReqSet) {
                     this.deferredComment(drawalReqSet.deferredComment || '');
                     this.deferredBold(drawalReqSet.deferredBold || false);
-                    this.pickUpComment(drawalReqSet.deferredComment || '');
-                    this.pickUpBold(drawalReqSet.deferredBold || false);
+                    this.pickUpComment(drawalReqSet.pickUpComment || '');
+                    this.pickUpBold(drawalReqSet.pickUpBold || false);
                     this.deferredWorkTimeSelect(drawalReqSet.deferredWorkTimeSelect || 0);
                     this.simulAppliReq(drawalReqSet.simulAppliReq || 0);
                     this.permissionDivision(drawalReqSet.permissionDivision || 1);
