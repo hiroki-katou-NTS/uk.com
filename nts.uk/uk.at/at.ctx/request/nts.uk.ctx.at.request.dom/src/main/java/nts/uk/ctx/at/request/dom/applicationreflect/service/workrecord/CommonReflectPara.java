@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AbsenceReflectPara {
+public class CommonReflectPara {
 	/**
 	 * 社員ID
 	 */
@@ -27,9 +27,14 @@ public class AbsenceReflectPara {
 	 */
 	private boolean scheTimeReflectAtr;
 	/**
-	 * 休暇申請．勤務種類コード
+	 *勤務種類コード
 	 */
 	private String workTypeCode;
+	/**
+	 * 就業時間帯コード
+	 */
+	private String workTimeCode;
+	
 	/**
 	 * 反映状態
 	 */
