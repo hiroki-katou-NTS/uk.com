@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.AddSpecialLeaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.DeleteSpecialLeaCommandHandler;
@@ -59,7 +57,8 @@ public class SpecialLeaveGrantRemWebService {
 
 	@POST
 	@Path("save")
-	public void add(SpecialLeaveRemainCommand command) {
+	public void save(SpecialLeaveRemainCommand command) {
+		System.out.println(command);
 		if (command.getSpecialid() == null) {
 			add.handle(command);
 		} else {
@@ -70,6 +69,7 @@ public class SpecialLeaveGrantRemWebService {
 	@POST
 	@Path("delete")
 	public void remove(DeleteSpecialLeaCommand command) {
+		System.out.println(command);
 		delete.handle(command);
 	}
 }

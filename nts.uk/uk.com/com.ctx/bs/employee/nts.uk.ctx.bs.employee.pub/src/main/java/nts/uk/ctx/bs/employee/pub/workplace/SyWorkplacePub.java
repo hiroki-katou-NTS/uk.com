@@ -127,4 +127,14 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList312
 	List<WkpConfigAtTimeExport> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	/**
+	 * ind by sid and basedate
+	 * 
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	// RequestList 227
+	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
 }

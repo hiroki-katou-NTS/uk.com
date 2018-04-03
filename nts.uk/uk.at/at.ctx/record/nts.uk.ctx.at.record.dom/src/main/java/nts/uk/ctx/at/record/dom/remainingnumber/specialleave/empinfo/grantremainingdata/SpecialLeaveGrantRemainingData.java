@@ -44,7 +44,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 			Integer timeOfRemain) {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 		domain.specialId = specialId;
-		domain.specialId = cid;
+		domain.cId = cid;
 		domain.employeeId = employeeId;
 		domain.specialLeaveCode = new SpecialVacationCD(specialLeaveCode);
 		domain.grantDate = grantDate;
