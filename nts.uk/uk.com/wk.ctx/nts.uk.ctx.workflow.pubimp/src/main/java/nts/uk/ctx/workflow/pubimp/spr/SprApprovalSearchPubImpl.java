@@ -53,10 +53,10 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 				.stream().map(x -> new ApprovalComSprExport(
 						companyID, 
 						x.getApprovalId(), 
-						x.getApplicationType().value, 
+						x.getApplicationType() == null ? null : x.getApplicationType().value, 
 						x.getBranchId(), 
 						x.getAnyItemApplicationId(), 
-						x.getConfirmationRootType().value, 
+						confirmRootAtr, 
 						employmentRootAtr))
 				.collect(Collectors.toList());
 	}
@@ -94,9 +94,9 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getWorkplaceId(), 
 						x.getBranchId(), 
 						x.getAnyItemApplicationId(), 
-						x.getConfirmationRootType().value, 
+						confirmRootAtr, 
 						employmentRootAtr, 
-						x.getApplicationType().value))
+						x.getApplicationType() == null ? null : x.getApplicationType().value))
 				.collect(Collectors.toList());
 	}
 
@@ -108,10 +108,10 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getCompanyId(), 
 						x.getApprovalId(), 
 						x.getEmployeeId(), 
-						x.getApplicationType().value, 
+						x.getApplicationType() == null ? null : x.getApplicationType().value, 
 						x.getBranchId(), 
 						x.getAnyItemApplicationId(), 
-						x.getConfirmationRootType().value, 
+						confirmRootAtr, 
 						employmentRootAtr))
 				.collect(Collectors.toList());
 	}
