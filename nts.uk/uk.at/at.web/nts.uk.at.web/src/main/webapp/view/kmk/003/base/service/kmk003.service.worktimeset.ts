@@ -47,6 +47,10 @@ module nts.uk.at.view.kmk003.a {
                     fieldName: string;
                     localizedName: string;
                 }
+                
+                export interface ManageEntryExitDto {
+                    useClassification: number;
+                }
 
                 export interface WorkTimeSettingEnumDto {
                     workTimeDailyAtr: EnumConstantDto[];

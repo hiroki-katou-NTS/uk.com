@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
+import nts.uk.ctx.at.shared.app.find.entranceexit.ManageEntryExitDto;
 import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto.DiffTimeWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.FixedWorkSettingFinder;
@@ -20,6 +21,8 @@ import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayModeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
+import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExit;
+import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitRepository;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -80,6 +83,9 @@ public class WorkTimeSettingInfoFinder {
 	@Inject
 	private FlexWorkSettingFinder flexFinder;
 
+	@Inject
+	private ManageEntryExitRepository manageEntryExitRepository;
+	
 	/**
 	 * Find.
 	 *
@@ -98,6 +104,7 @@ public class WorkTimeSettingInfoFinder {
 		DiffTimeWorkSettingDto diffTimeWorkSettingDto = new DiffTimeWorkSettingDto();
 		FlWorkSettingDto flowWorkSettingDto = new FlWorkSettingDto();
 		FlexWorkSettingDto flexWorkSettingDto = new FlexWorkSettingDto();
+		ManageEntryExitDto manageEntryExitDto = new ManageEntryExitDto();
 
 		Optional<WorkTimeSetting> workTimeSettingOp = workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		if (workTimeSettingOp.isPresent()) {
@@ -107,12 +114,14 @@ public class WorkTimeSettingInfoFinder {
 			// find predetemineTimeSettingRepository
 			PredetemineTimeSetting predetemineTimeSetting = this.predetemineTimeSettingRepository
 					.findByWorkTimeCode(companyId, workTimeCode).get();
+			ManageEntryExit manageEntryExit = this.manageEntryExitRepository.findByID(companyId).get();
 
 			workTimeSetting.saveToMemento(workTimeSettingDto);
 			if (displayMode != null) { 
 				displayMode.saveToMemento(displayModeDto); 
 			}
 			predetemineTimeSetting.saveToMemento(predetemineTimeSettingDto);
+			manageEntryExit.saveToMemento(manageEntryExitDto);
 
 			WorkTimeDivision workTimeDivision = workTimeSetting.getWorkTimeDivision();
 			// check mode of worktime
@@ -147,7 +156,7 @@ public class WorkTimeSettingInfoFinder {
 		}
 
 		return new WorkTimeSettingInfoDto(predetemineTimeSettingDto, workTimeSettingDto, displayModeDto,
-				flexWorkSettingDto, fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto);
+				flexWorkSettingDto, fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto, manageEntryExitDto);
 	}
 
 	/**

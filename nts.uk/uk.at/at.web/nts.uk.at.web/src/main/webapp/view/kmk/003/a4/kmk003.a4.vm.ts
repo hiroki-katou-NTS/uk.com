@@ -131,6 +131,7 @@ module a4 {
             let isFixedAndUseTime2: boolean = _self.mainSettingModel.workTimeSetting.isFixed() && _self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr();          
             // Add common param
             let dataObject: any = {
+                isManageEntryExit: _self.mainSettingModel.manageEntryExit.useClassification(),
                 isFlow: isFlow,
                 isUseTime2: isUseTime2,
                 isFixedAndUseTime2: isFixedAndUseTime2,

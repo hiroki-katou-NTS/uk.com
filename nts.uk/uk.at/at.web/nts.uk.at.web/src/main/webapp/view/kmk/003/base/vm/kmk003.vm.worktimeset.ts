@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimeDivisionDto = service.model.worktimeset.WorkTimeDivisionDto;
     import WorkTimeDisplayNameDto = service.model.worktimeset.WorkTimeDisplayNameDto;
     import WorkTimeDisplayModeDto = service.model.worktimeset.WorkTimeDisplayModeDto;
+    import ManageEntryExitDto = service.model.worktimeset.ManageEntryExitDto;
     
     export module viewmodel {
         export module worktimeset {
@@ -93,6 +94,29 @@ module nts.uk.at.view.kmk003.a {
                 resetData(){
                     this.worktimeCode('');
                     this.displayMode(1); 
+                }
+            }
+            
+            export class ManageEntryExitModel {
+                useClassification: KnockoutObservable<number>;
+                
+                constructor() {
+                    this.useClassification = ko.observable(0);
+                }
+
+                updateData(data: ManageEntryExitDto) {
+                    this.useClassification(data.useClassification);
+                }
+
+                toDto(): ManageEntryExitDto {
+                    var dataDTO: ManageEntryExitDto = {
+                        useClassification: this.useClassification()
+                    };
+                    return dataDTO;
+                }
+                
+                resetData(){
+                    this.useClassification(0); 
                 }
             }
             

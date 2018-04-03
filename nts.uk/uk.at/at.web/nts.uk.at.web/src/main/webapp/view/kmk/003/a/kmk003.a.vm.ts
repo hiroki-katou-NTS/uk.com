@@ -12,6 +12,7 @@ module nts.uk.at.view.kmk003.a {
     
     import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
     import WorkTimeDisplayModeModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeDisplayModeModel;
+    import ManageEntryExitModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.ManageEntryExitModel;
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
@@ -717,6 +718,7 @@ module nts.uk.at.view.kmk003.a {
         export class MainSettingModel {
             workTimeSetting: WorkTimeSettingModel;
             predetemineTimeSetting: PredetemineTimeSettingModel;
+            manageEntryExit: ManageEntryExitModel;
             
             //dientx add for common
             commonSetting: WorkTimezoneCommonSetModel;
@@ -743,6 +745,7 @@ module nts.uk.at.view.kmk003.a {
                 self.addMode = addMode;
                 
                 self.workTimeSetting = new WorkTimeSettingModel();
+                self.manageEntryExit = new ManageEntryExitModel();
                 self.predetemineTimeSetting = new PredetemineTimeSettingModel();
                 self.commonSetting = new WorkTimezoneCommonSetModel();
                 self.fixedWorkSetting = new FixedWorkSettingModel(self.tabMode);
@@ -863,7 +866,8 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 self.isInterlockDialogJ(true);   
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
-                self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);                              
+                self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);    
+                self.manageEntryExit.updateData(worktimeSettingInfo.manageEntryExit);                          
                 self.tabMode(worktimeSettingInfo.displayMode.displayMode);
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);

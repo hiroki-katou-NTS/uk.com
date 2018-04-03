@@ -269,6 +269,7 @@ module nts.uk.at.view.kmk003.a {
                     predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
                     displayMode: worktimeset.WorkTimeDisplayModeDto;
+                    manageEntryExit: worktimeset.ManageEntryExitDto;
                 }
 
                 export interface WorkTimeSettingInfoDto extends WorkTimeCommonDto {

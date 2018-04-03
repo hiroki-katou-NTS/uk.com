@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.find.entranceexit.ManageEntryExitDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimeCommonDto;
 import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto.DiffTimeWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixedWorkSettingDto;
@@ -43,8 +44,8 @@ public class WorkTimeSettingInfoDto extends WorkTimeCommonDto {
 	public WorkTimeSettingInfoDto(PredetemineTimeSettingDto predseting, WorkTimeSettingDto worktimeSetting,
 			WorkTimeDisplayModeDto displayMode, FlexWorkSettingDto flexWorkSetting,
 			FixedWorkSettingDto fixedWorkSetting, FlWorkSettingDto flowWorkSetting,
-			DiffTimeWorkSettingDto diffTimeWorkSetting) {
-		super(predseting, worktimeSetting, displayMode);
+			DiffTimeWorkSettingDto diffTimeWorkSetting, ManageEntryExitDto manageEntryExit) {
+		super(predseting, worktimeSetting, displayMode, manageEntryExit);
 		this.flexWorkSetting = flexWorkSetting;
 		this.fixedWorkSetting = fixedWorkSetting;
 		this.flowWorkSetting = flowWorkSetting;

@@ -12,6 +12,7 @@ module nts.uk.at.view.kmk003.j {
             dataObject: any;
             
             // Is flow mode
+            isManageEntryExit: KnockoutObservable<boolean>;
             isFlow: KnockoutObservable<boolean>;
             isUseTime2: KnockoutObservable<boolean>;
             isFixedAndUseTime2: KnockoutObservable<boolean>;
@@ -53,6 +54,7 @@ module nts.uk.at.view.kmk003.j {
                 }));
                 
                 _self.dataObject = null;
+                _self.isManageEntryExit = ko.observable(null);
                 _self.isFlow = ko.observable(null);
                 _self.isUseTime2 = ko.observable(null);
                 _self.isFixedAndUseTime2 = ko.observable(null);
@@ -130,6 +132,12 @@ module nts.uk.at.view.kmk003.j {
                     return;
                 }
                 _self.dataObject = dataObject;
+                
+                if (dataObject.isManageEntryExit === 1) {
+                    _self.isManageEntryExit(true);
+                } else {
+                    _self.isManageEntryExit(false);
+                }                
                 _self.isFlow(dataObject.isFlow);
                 _self.isUseTime2(dataObject.isUseTime2);
                 _self.isFixedAndUseTime2(dataObject.isFixedAndUseTime2);
