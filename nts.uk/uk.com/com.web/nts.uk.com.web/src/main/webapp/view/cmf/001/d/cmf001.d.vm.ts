@@ -375,6 +375,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 block.invisible();
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
+                self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerDataAndReturn(command).done(() => {
                     self.enableCategory(false);
