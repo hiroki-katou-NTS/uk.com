@@ -103,6 +103,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCa
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodOfHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.AddVacationSet;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
@@ -163,9 +164,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
-	//@Inject
-	//private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
-	
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSetRepository;
 
@@ -204,6 +202,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject
 	private OotsukaProcessService ootsukaProcessService;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -370,7 +372,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//自動計算設定
 		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();
 			
-		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		List<WorkTimezoneOtherSubHolTimeSet> subhol = new ArrayList<>();
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
@@ -565,6 +566,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation() == null || manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo() == null || manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTypeCode() == null)
 			return manageReGetClass.getIntegrationOfDaily();
 		
+		/*計画所定算出のため、計画側の所定時間取得*/
+		val scheWorkTime = workingConditionItemRepository.getBySidAndStandardDate(employeeId, targetDate);
+		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
+		if(scheWorkTime != null && scheWorkTime.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
+			val schePreTime = predetemineTimeSetRepository.findByWorkTimeCode(companyId, scheWorkTime.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().toString());
+			if(schePreTime.isPresent()) {
+				schePreTimeSet = Optional.of(PredetermineTimeSetForCalc.convertMastarToCalc(schePreTime.get()));
+			}
+		}
+		
+		
 		val workType = manageReGetClass.getWorkType();
 		if(!workType.isPresent() || !workTime.isPresent()) return manageReGetClass.getIntegrationOfDaily();
 		//休暇加算時間設定
@@ -609,7 +621,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					attendanceLeave,
 					forCalcDivergenceDto,
 					divergenceTimeList,
-					calculateOfTotalConstraintTime));
+					calculateOfTotalConstraintTime,
+					schePreTimeSet));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		  List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
