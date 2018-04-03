@@ -9,13 +9,18 @@ module nts.uk.at.view.kmw006.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        
+        itemList: KnockoutObservableArray<ItemModel>;
+        selectedCode: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
-
-            
-
+            self.itemList = ko.observableArray([
+                new ItemModel(1, '基本給'),
+                new ItemModel(2, '役職手当'),
+                new ItemModel(3, '基本給ながい文')
+            ]);
+    
+            self.selectedCode = ko.observable(1);
         }
 
         startPage(): JQueryPromise<any> {
@@ -30,7 +35,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
         openKMW006fDialog() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            modal("/view/kmf/006/f/index.xhtml").onClosed(() => {
+            modal("/view/kmw/006/f/index.xhtml").onClosed(() => {
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {
                     
@@ -39,6 +44,16 @@ module nts.uk.at.view.kmw006.a.viewmodel {
         }
 
 
+    }
+    
+    class ItemModel {
+        code: number;
+        name: string;
+    
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
 
 }

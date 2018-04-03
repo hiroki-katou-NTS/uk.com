@@ -4,7 +4,7 @@ module nts.uk.at.view.kmw006.f {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             _.defer(() => {
-                
+                $("#fixed-table").ntsFixedTable({ height: 150 });
             });
         });
     });

@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+                var dialogSize = {
+                    width : 1020,
+                    height : 515
+                };
+            </script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmw006.f.style.css" />
 			<com:scriptfile path="kmw006.f.service.js" />
@@ -15,11 +21,35 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button tabindex="1">#{i18n.getText('KAL003_5')}</button>
+			<div id="functions-area-bottom">
+				<button tabindex="1">#{i18n.getText('KMW006_58')}</button>
 			</div>
 			<div class="contents-area">
-				<h1>KMW006F</h1>
+				<table id="fixed-table">
+					<colgroup>
+						<col width="200px"/>
+						<col width="400px"/>						
+					</colgroup>
+					<tbody>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KMW006_47')}</th>
+							<td>HoangNK</td>
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KMW006_48')}</th>
+							<td>HoangNK</td>
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KMW006_51')}</th>
+							<td>HoangNK</td>
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('KMW006_52')}</th>
+							<td>HoangNK</td>
+						</tr>
+					</tbody>
+				</table>
+				<table id="single-list"></table>
 			</div>
 		</ui:define>
 	</ui:composition>
