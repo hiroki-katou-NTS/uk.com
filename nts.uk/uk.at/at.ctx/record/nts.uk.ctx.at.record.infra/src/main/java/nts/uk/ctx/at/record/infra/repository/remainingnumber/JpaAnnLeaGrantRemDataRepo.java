@@ -25,7 +25,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	private String DELETE_QUERY = "DELETE FROM KRcmtAnnLeaRemain a"
 			+ " WHERE a.sid = :employeeId and a.grantDate = :grantDate";
 	
-	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate";
+	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 0 ORDER BY a.grantDate";
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
@@ -49,13 +49,10 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, Boolean checkState) {
-		if (checkState) {
-			return find(employeeId);
-		}
+	public List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMPID_CHECKSTATE, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId)
-				.setParameter("checkState", 0)
+				.setParameter("checkState", checkState)
 				.getList();
 		return entities.stream()
 				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.annLeavID, ent.cid, ent.sid, ent.grantDate,
