@@ -50,12 +50,9 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, Boolean checkState) {
-		if (checkState) {
-			return find(employeeId);
-		}
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMPID_CHECKSTATE, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId)
-				.setParameter("checkState", 0)
+				.setParameter("checkState", checkState ? 1 : 0)
 				.getList();
 		return entities.stream()
 				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.annLeavID, ent.cid, ent.sid, ent.grantDate,
