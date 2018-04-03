@@ -197,7 +197,7 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery  query) {
 		//return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
 		
-		return this.selecFider.getAllComboxByHistoryId(query, PersonEmployeeType.PERSON);
+		return this.selecFider.getAllComboxByHistoryId(query, PersonEmployeeType.EMPLOYEE);
 	}
 	
 	// Lanlt

@@ -23,7 +23,7 @@ public class FlexibleComboBoxWebService extends WebService{
 	@POST
 	@Path("getFlexComboBox")
 	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam) {
-		return comboBoxFactory.getFlexibleComboBox(comboBoxParam, PersonEmployeeType.PERSON);
+		return comboBoxFactory.getFlexibleComboBox(comboBoxParam, PersonEmployeeType.EMPLOYEE);
 	}
 	
 }
