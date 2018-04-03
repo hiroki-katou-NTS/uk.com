@@ -43,7 +43,6 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -647,7 +646,7 @@ public class AppAbsenceFinder {
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				if(workTimeCode != null && workTimeCode.equals("")){
+				if(workTimeCode != null && !workTimeCode.equals("")){
 					if(this.predTimeRepository
 							.findByWorkTimeCode(companyID, workTimeCode).isPresent()){
 						PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
