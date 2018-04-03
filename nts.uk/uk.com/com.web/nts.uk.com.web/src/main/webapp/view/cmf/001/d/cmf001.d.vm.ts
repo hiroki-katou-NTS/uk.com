@@ -124,8 +124,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                         self.selectedAcceptItem(self.listAcceptItem().length);
                     else
                         self.selectedAcceptItem.valueHasMutated();
-
-                    self.selectedCategoryItem(selectedCItem.itemNo);
                 }
             } else {
                 alertError({messageId: "Msg_897"});
@@ -141,12 +139,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let item = new model.StandardAcceptItem(null, null, 0, i, selectedItem.itemName, self.stdCondSet().systemType(), self.stdCondSet().conditionSettingCode(), selectedItem.itemNo);
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
-                self.listCategoryItem.remove(selectedItem);
                 self.selectedAcceptItem(self.listAcceptItem().length);
-                if (selectedIndex >= self.listCategoryItem().length && self.listCategoryItem().length > 0)
-                    self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 1].itemNo);
+                if (self.listCategoryItem().length > 0 && selectedIndex >= self.listCategoryItem().length - 1)
+                    self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 2].itemNo);
                 else
-                    self.selectedCategoryItem(self.listCategoryItem()[selectedIndex] ? self.listCategoryItem()[selectedIndex].itemNo : null);
+                    self.selectedCategoryItem(self.listCategoryItem()[selectedIndex + 1] ? self.listCategoryItem()[selectedIndex + 1].itemNo : null);
+                /* remove after set selected
+                   because problem with scroll when remove before set selected */
+                self.listCategoryItem.remove(selectedItem);
             } else {
                 alertError({messageId: "Msg_894"});
             }

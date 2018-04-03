@@ -79,9 +79,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         return new AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting, x.cdConvertDetails);
                     });
 
-                    //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
-                    self.codeConvertList(_codeConvertList);
-
                     //F:「コード変換一括登録」ダイアログを更新モードでモーダル表示する
                     self.screenMode(model.SCREEN_MODE.UPDATE);
 
@@ -92,6 +89,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         _codeConvert = _codeConvertList[0].convertCd();
                     }
                     self.selectedConvertCode(_codeConvert);
+                    //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
+                    self.codeConvertList(_codeConvertList);
 
                     //フォーカス制御
                     self.setFocusItem(FOCUS_TYPE.INIT, model.SCREEN_MODE.UPDATE);

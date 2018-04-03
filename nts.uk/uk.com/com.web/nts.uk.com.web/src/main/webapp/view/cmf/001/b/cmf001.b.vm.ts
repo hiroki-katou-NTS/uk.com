@@ -153,7 +153,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                         return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSettingCode, rs.conditionSettingName, rs.deleteExistData);
                     });
 //                    _rsList = _.sortBy(_rsList, ['code']);
-                    self.listStandardImportSetting(_rsList);
                     if (code) {
                         if (code == self.selectedStandardImportSettingCode())
                             self.selectedStandardImportSettingCode.valueHasMutated();
@@ -165,8 +164,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                             self.selectedStandardImportSettingCode(self.transitData.conditionCode);
                             self.init(false);
                         } else
-                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[0].dispConditionSettingCode);
+                            self.selectedStandardImportSettingCode(_rsList[0].dispConditionSettingCode);
                     }
+                    self.listStandardImportSetting(_rsList);
                 } else {
                     self.createNewCondition();
                 }
