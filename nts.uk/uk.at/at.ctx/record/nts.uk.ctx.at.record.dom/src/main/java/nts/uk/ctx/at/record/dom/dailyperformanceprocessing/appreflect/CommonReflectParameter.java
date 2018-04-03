@@ -1,17 +1,14 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class AbsenceReflectParameter {
+public class CommonReflectParameter {
 	/**
 	 * 社員ID
 	 */
@@ -29,9 +26,13 @@ public class AbsenceReflectParameter {
 	 */
 	private boolean scheTimeReflectAtr;
 	/**
-	 * 休暇申請．勤務種類コード
+	 *勤務種類コード
 	 */
 	private String workTypeCode;
+	/**
+	 * 就業時間帯コード 
+	 */
+	private String workTimeCode;
 	/**
 	 * 反映状態
 	 */

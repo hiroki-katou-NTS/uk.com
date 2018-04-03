@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.workrule.closure.dto;
 
+import java.time.YearMonth;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +28,8 @@ public class ApprovalComfirmDto {
 	 * 終了日
 	 */
 	private GeneralDate endDate;
+	
+	private int processingYm;
 	/**
 	 * list employee code
 	 */
