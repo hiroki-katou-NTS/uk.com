@@ -4,17 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.workplace;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 //職場情報
 public class WorkPlaceInfoExport {
