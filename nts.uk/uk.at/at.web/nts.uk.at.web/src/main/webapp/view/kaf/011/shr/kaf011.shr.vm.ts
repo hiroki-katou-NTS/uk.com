@@ -225,7 +225,7 @@ module nts.uk.at.view.kaf011.shr {
                             uiType: 0
 
                         }
-                    if (!vm.screenModeNew() || !newDate) { return; }
+                    if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date") { return; }
                     block.invisible();
                     service.changeDay(changeDateParam).done((data) => {
                         vm.employeeID(data.employeeID);

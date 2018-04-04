@@ -42,7 +42,7 @@
 			</div>
 
 		</div>
-		<div class="div_line" data-bind="if:screenModeNew">
+		<div class="div_line" data-bind="if:screenModeNew()==true">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
@@ -262,20 +262,17 @@
 						data-bind="text:
 					 deferredComment
 					,css: { 'bold': deferredBold } ,style:{color:deferredLettleColor}"></div>
-
-
-
 				</div>
 			</div>
 		</div>
-		<div class="div_line"
-			data-bind="if:appTypeSet().displayFixedReason !=0">
-			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
-			</div>
-			<div class="div_line_col_2">
-				<div tabindex="6" class="combo-box"
-					data-bind="ntsComboBox: {
+		<div data-bind="if:appTypeSet().displayFixedReason() !=0">
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div tabindex="6" class="combo-box"
+						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
 										optionsValue: 'reasonID' ,
@@ -284,21 +281,23 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
-										required:appTypeSet().displayFixedReason !=0,
+										required:appTypeSet().displayFixedReason() !=0,
 										columns: [
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="div_line" data-bind="if:appTypeSet().displayAppReason !=0">
-			<!-- constraint: -->
-			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
-			</div>
-			<div class="div_line_col_2">
-				<textarea style="height: 100px" tabindex="6"
-					data-bind="ntsMultilineEditor: {
+		<div data-bind="if:appTypeSet().displayAppReason() !=0">
+			<div class="div_line">
+				<!-- constraint: -->
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<textarea style="height: 100px" tabindex="6"
+						data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
 					required:appTypeSet().displayAppReason !=0,
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
@@ -307,6 +306,7 @@
 			                    	width: '500'
 			                    	}
 			                   	}" />
+				</div>
 			</div>
 		</div>
 	</div>
