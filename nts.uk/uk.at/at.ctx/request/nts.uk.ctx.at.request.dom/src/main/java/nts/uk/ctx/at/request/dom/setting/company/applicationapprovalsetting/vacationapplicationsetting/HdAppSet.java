@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 /**
  * 休暇申請設定
  * @author yennth
@@ -30,7 +31,7 @@ public class HdAppSet extends AggregateRoot {
 	// 勤務時間を変更できる
 	private UseAtr changeWrkHour;
 	// 半日年休の使用上限チェック
-	private CheckUper ckuperLimit;
+	private AppliedDate ckuperLimit;
 	// 実績表示区分
 	private UseAtr actualDisp;
 	// 就業時間帯利用区分
@@ -54,7 +55,7 @@ public class HdAppSet extends AggregateRoot {
 	// 欠勤名称
 	private ObstacleName absenteeism;
 	// 法内法外の矛盾チェック
-	private AppliedDate concheckOutLegal;
+	private CheckUper concheckOutLegal;
 	// 特別休暇名称
 	private ObstacleName specialVaca;
 	// 申請対象日が振出日の場合の矛盾チェック
@@ -65,6 +66,12 @@ public class HdAppSet extends AggregateRoot {
 	private ObstacleName yearResig;
 	// 積立年休残数不足登録できる
 	private UseAtr regisShortReser;
+	// 休暇種類
+	private HolidayAppType hdType;
+	// 未選択を表示する
+	private int displayUnselect;
+	
+	
 	public static HdAppSet createFromJavaType(String companyId,
 												int use60h, String obstacleName, int regisShortLostHd, 
 												String hdName, int regisLackPubHd, int changeWrkHour, 
@@ -72,7 +79,7 @@ public class HdAppSet extends AggregateRoot {
 												String yearHdName, int regisNumYear, String furikyuName, int regisInsuff, 
 												int useGener, int useYear, String timeDigest, String absenteeism, 
 												int concheckOutLegal, String specialVaca, int concheckDateRelease, 
-												int appDateContra, String yearResig, int regisShortReser){
+												int appDateContra, String yearResig, int regisShortReser, int hdType, int displayUnselect){
 		return new HdAppSet(companyId, 
 				EnumAdaptor.valueOf(use60h, UseAtr.class), 
 				StringUtil.isNullOrEmpty(obstacleName, true) ? null : new ObstacleName(obstacleName), 
@@ -80,7 +87,7 @@ public class HdAppSet extends AggregateRoot {
 				StringUtil.isNullOrEmpty(hdName, true) ? null : new ObstacleName(hdName), 
 				EnumAdaptor.valueOf(regisLackPubHd, UseAtr.class), 
 				EnumAdaptor.valueOf(changeWrkHour, UseAtr.class), 
-				EnumAdaptor.valueOf(ckuperLimit, CheckUper.class), 
+				EnumAdaptor.valueOf(ckuperLimit, AppliedDate.class), 
 				EnumAdaptor.valueOf(actualDisp, UseAtr.class), 
 				EnumAdaptor.valueOf(wrkHours, WorkUse.class), 
 				EnumAdaptor.valueOf(pridigCheck, AppliedDate.class), 
@@ -92,11 +99,13 @@ public class HdAppSet extends AggregateRoot {
 				EnumAdaptor.valueOf(useYear, UseAtr.class), 
 				StringUtil.isNullOrEmpty(timeDigest, true) ? null : new ObstacleName(timeDigest), 
 				StringUtil.isNullOrEmpty(absenteeism, true) ? null : new ObstacleName(absenteeism), 
-				EnumAdaptor.valueOf(concheckOutLegal, AppliedDate.class), 
+				EnumAdaptor.valueOf(concheckOutLegal, CheckUper.class), 
 				StringUtil.isNullOrEmpty(specialVaca, true) ? null : new ObstacleName(specialVaca), 
 				EnumAdaptor.valueOf(concheckDateRelease, AppliedDate.class), 
 				EnumAdaptor.valueOf(appDateContra, AppliedDate.class), 
 				StringUtil.isNullOrEmpty(yearResig, true) ? null : new ObstacleName(yearResig), 
-				EnumAdaptor.valueOf(regisShortReser, UseAtr.class));
+				EnumAdaptor.valueOf(regisShortReser, UseAtr.class),
+				EnumAdaptor.valueOf(hdType, HolidayAppType.class),
+				displayUnselect);
 	}
 }

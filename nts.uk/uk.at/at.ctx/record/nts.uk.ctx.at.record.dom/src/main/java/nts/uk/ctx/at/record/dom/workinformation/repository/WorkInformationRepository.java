@@ -14,6 +14,8 @@ public interface WorkInformationRepository {
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 	
+	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod);
+	
 	List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds);
 	
 	void delete(String employeeId, GeneralDate ymd);
@@ -21,4 +23,6 @@ public interface WorkInformationRepository {
 	void updateByKey(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 	
 	void insert(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
+	
+	void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 }

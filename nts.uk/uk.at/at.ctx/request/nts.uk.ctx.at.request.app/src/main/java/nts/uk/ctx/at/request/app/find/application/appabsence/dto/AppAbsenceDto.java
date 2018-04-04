@@ -2,12 +2,17 @@ package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppAbsenceDto {
 	/**
 	 * version
@@ -127,4 +132,44 @@ public class AppAbsenceDto {
 	 * workTimeCodes
 	 */
 	private List<String> workTimeCodes;
+	
+	private int initMode;
+	/**
+	 * mailFlg
+	 */
+	private boolean mailFlg;
+	
+	public static AppAbsenceDto fromDomain(AppAbsence app){
+		return new AppAbsenceDto(app.getVersion(),
+								ApplicationDto_New.fromDomain(app.getApplication()),
+								app.getCompanyID(),
+								app.getAppID(),
+								app.getApplication().getEmployeeID(),
+								"",
+								app.getHolidayAppType().value,
+								app.getWorkTimeCode().toString(),
+								"",
+								app.getWorkTimeCode().toString(),
+								"",
+								app.isHalfDayFlg(),
+								app.isChangeWorkHour(),
+								app.getAllDayHalfDayLeaveAtr().value,
+								app.getStartTime1() == null ? null :app.getStartTime1().v(),
+								app.getEndTime1() == null ? null :app.getEndTime1().v(),
+								app.getStartTime2() == null ? null :app.getStartTime2().v(),
+								app.getEndTime2() == null ? null :app.getEndTime2().v(),
+								null,
+								null,
+								null,
+								null,
+								false,
+								null,
+								true,
+								null,
+								null,
+								null,
+								0,
+								false);
+	}
 }
+

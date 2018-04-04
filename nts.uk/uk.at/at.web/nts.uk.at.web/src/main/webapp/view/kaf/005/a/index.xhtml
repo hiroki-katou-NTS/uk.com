@@ -29,17 +29,17 @@
 				<!--A1_1 登録ボタン--> 
 				<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick" tabindex="1">#{i18n.getText('KAF005_10')}</button>
 				<!--A1_2 実績参照ボタン--> 				
-				<button tabindex="2" id="btnSpecSetting" data-bind="">#{i18n.getText('KAF005_11')}</button>
+				<button tabindex="2" id="btnSpecSetting" data-bind="visible: false">#{i18n.getText('KAF005_11')}</button>
 				<!--A1_3 承認者変更ボタン--> 				
-				<button tabindex="3" data-bind="click: openCMM018">#{i18n.getText('KAF005_12')}</button>
+				<button tabindex="3" data-bind="click: openCMM018, visible: false">#{i18n.getText('KAF005_12')}</button>
 				<!--A1_4 登録時にメールを送信する--> 				
 				<div class="btnSendMail" tabindex="4"
-					data-bind="ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF005_13')}' }"></div>
+					data-bind="ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF005_13')}'},visible: false"></div>
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->
 				<div style ="background-color: #f8efd4; width :800px; margin-left: -2px; padding-top: 5px">	
-					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin:7px 0px 0px 12px">
+					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin:7px 0px 0px 12px" data-bind = "visible : false">
 						<div class="pull-left">#{i18n.getText('KAF005_20')}</div>
 						<label data-bind="text : instructInfor,visible: instructInforFlag"></label>
 					</div>

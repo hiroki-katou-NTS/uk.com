@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
@@ -88,7 +89,7 @@ public class FlexTime {
 		val flexTimeSrc = targetFlexTime.getFlexTime();
 		targetFlexTime.setFlexTime(
 				new nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime(
-						TimeWithCalculationMinusExist.createTimeWithCalculation(
+						TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
 								flexTimeSrc.getFlexTime().getTime().addMinutes(timeAsMinutes),
 								flexTimeSrc.getFlexTime().getCalcTime().addMinutes(calcTimeAsMinutes)),
 						flexTimeSrc.getBeforeApplicationTime().addMinutes(beforeApplicationTimeAsMinutes)

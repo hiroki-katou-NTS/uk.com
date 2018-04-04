@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingT
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
@@ -139,6 +140,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			+ "AND a.PK.yearMonth = :yearMonth "
 			+ "ORDER BY a.startYmd ";
 
+	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "ORDER BY a.startYmd ";
+
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
@@ -169,6 +176,18 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.getList(c -> toDomain(c));
 	}
 
+	/** 検索　（年月と締めID） */
+	@Override
+	public List<AttendanceTimeOfMonthly> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
+			ClosureId closureId) {
+		
+		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonAttendanceTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.getList(c -> toDomain(c));
+	}
+	
 	/**
 	 * エンティティ→ドメイン
 	 * @param entity エンティティ：月別実績の勤怠時間
@@ -182,6 +201,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				toDomainFlexTimeOfMonthly(entity),
 				new AttendanceTimeMonth(entity.statutoryWorkingTime),
 				toDomainAggregateTotalWorkingTime(entity),
+				new AttendanceTimeMonth(entity.totalWorkingTime),
 				toDomainAggregateTotalTimeSpentAtWork(entity),
 				toDomainAgreementTimeOfMonthly(entity));
 		
@@ -254,7 +274,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(entity.excessFlexAtr, ExcessFlexAtr.class),
 						new AttendanceTimeMonth(entity.principleTime),
-						new AttendanceTimeMonth(entity.forConvenienceTime)));
+						new AttendanceTimeMonth(entity.forConvenienceTime)),
+				FlexShortDeductTime.of(
+						new AttendanceDaysMonth(entity.annualLeaveDeductDays),
+						new AttendanceTimeMonth(entity.absenceDeductTime),
+						new AttendanceTimeMonth(entity.shotTimeBeforeDeduct))
+			);
 		return domain;
 	}
 	
@@ -284,7 +309,6 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				toDomainOverTimeOfMonthly(parentEntity),
 				toDomainHolidayWorkTimeOfMonthly(parentEntity),
 				toDomainVacationUseTimeOfMonthly(parentEntity),
-				new AttendanceTimeMonth(entity.totalWorkingTime),
 				prescribedWorkingTime);
 		return domain;
 	}
@@ -785,6 +809,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entity.endYmd = domain.getDatePeriod().end();
 		entity.aggregateDays = domain.getAggregateDays().v();
 		entity.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
+		entity.totalWorkingTime = monthlyCalculation.getTotalWorkingTime().v();
 
 		// 実働時間：月別実績の通常変形時間　値設定
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
@@ -807,6 +832,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		val flexTime = flexTimeOfMonthly.getFlexTime();
 		val flexCarryForwardTime = flexTimeOfMonthly.getFlexCarryforwardTime();
 		val flexTimeOfExcessOutsideTime = flexTimeOfMonthly.getFlexTimeOfExcessOutsideTime();
+		val flexShortDeductTime = flexTimeOfMonthly.getFlexShortDeductTime();
 		if (entity.krcdtMonFlexTime == null){
 			entity.krcdtMonFlexTime = new KrcdtMonFlexTime();
 			entity.krcdtMonFlexTime.PK = key;
@@ -825,10 +851,13 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entityFlexTime.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
 		entityFlexTime.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
 		entityFlexTime.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
+		entityFlexTime.annualLeaveDeductDays = flexShortDeductTime.getAnnualLeaveDeductDays().v();
+		entityFlexTime.absenceDeductTime = flexShortDeductTime.getAbsenceDeductTime().v();
+		entityFlexTime.shotTimeBeforeDeduct = flexShortDeductTime.getFlexShortTimeBeforeDeduct().v();
 		
-		// 総労働時間：月別実績の休暇使用時間
-		val totalWorkingTime = monthlyCalculation.getTotalWorkingTime();
-		val vacationUseTime = totalWorkingTime.getVacationUseTime();
+		// 集計時間：月別実績の休暇使用時間
+		val aggregateTime = monthlyCalculation.getAggregateTime();
+		val vacationUseTime = aggregateTime.getVacationUseTime();
 		val annualLeaveUseTime = vacationUseTime.getAnnualLeave();
 		val retentionYearlyUseTime = vacationUseTime.getRetentionYearly();
 		val specialHolidayUseTime = vacationUseTime.getSpecialHoliday();
@@ -843,22 +872,21 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entityVactUseTime.specialHolidayUseTime = specialHolidayUseTime.getUseTime().v();
 		entityVactUseTime.compensatoryLeaveUseTime = compensatoryLeaveUseTime.getUseTime().v();
 		
-		// 総労働時間：集計総労働時間
-		val workTime = totalWorkingTime.getWorkTime();
-		val prescribedWorkingTime = totalWorkingTime.getPrescribedWorkingTime();
+		// 集計時間：集計総労働時間
+		val workTime = aggregateTime.getWorkTime();
+		val prescribedWorkingTime = aggregateTime.getPrescribedWorkingTime();
 		if (entity.krcdtMonAggrTotalWrk == null){
 			entity.krcdtMonAggrTotalWrk = new KrcdtMonAggrTotalWrk();
 			entity.krcdtMonAggrTotalWrk.PK = key;
 		}
 		val entityAggrTotalWrk = entity.krcdtMonAggrTotalWrk;
-		entityAggrTotalWrk.totalWorkingTime = totalWorkingTime.getTotalWorkingTime().v();
 		entityAggrTotalWrk.workTime = workTime.getWorkTime().v();
 		entityAggrTotalWrk.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
 		entityAggrTotalWrk.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
 		entityAggrTotalWrk.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();
 		
-		// 総労働時間：残業時間：月別実績の残業時間
-		val overTime = totalWorkingTime.getOverTime();
+		// 集計時間：残業時間：月別実績の残業時間
+		val overTime = aggregateTime.getOverTime();
 		if (entity.krcdtMonOverTime == null){
 			entity.krcdtMonOverTime = new KrcdtMonOverTime();
 			entity.krcdtMonOverTime.PK = key;
@@ -870,7 +898,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entityOverTime.totalTransferOverTime = overTime.getTotalTransferOverTime().getTime().v();
 		entityOverTime.calcTotalTransferOverTime = overTime.getTotalTransferOverTime().getCalcTime().v();
 
-		// 総労働時間：残業時間：集計残業時間
+		// 集計時間：残業時間：集計残業時間
 		val aggrOverTimeMap = overTime.getAggregateOverTimeMap();
 		if (entity.krcdtMonAggrOverTimes == null) entity.krcdtMonAggrOverTimes = new ArrayList<>();
 		val entityAggrOverTimeList = entity.krcdtMonAggrOverTimes;
@@ -904,8 +932,8 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			if (isAddAggrOverTime) entityAggrOverTimeList.add(entityAggrOverTime);
 		}
 		
-		// 総労働時間：休出・代休：月別実績の休出時間
-		val holidayWorkTime = totalWorkingTime.getHolidayWorkTime();
+		// 集計時間：休出・代休：月別実績の休出時間
+		val holidayWorkTime = aggregateTime.getHolidayWorkTime();
 		if (entity.krcdtMonHdwkTime == null){
 			entity.krcdtMonHdwkTime = new KrcdtMonHdwkTime();
 			entity.krcdtMonHdwkTime.PK = key;
@@ -917,7 +945,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entityHdwkTime.totalTransferTime = holidayWorkTime.getTotalTransferTime().getTime().v();
 		entityHdwkTime.calcTotalTransferTime = holidayWorkTime.getTotalTransferTime().getCalcTime().v();
 		
-		// 総労働時間：休出・代休：集計休出時間
+		// 集計時間：休出・代休：集計休出時間
 		val aggrHolidayWorkTimeMap = holidayWorkTime.getAggregateHolidayWorkTimeMap();
 		if (entity.krcdtMonAggrHdwkTimes == null) entity.krcdtMonAggrHdwkTimes = new ArrayList<>();
 		val entityAggrHdwkTimeList = entity.krcdtMonAggrHdwkTimes;

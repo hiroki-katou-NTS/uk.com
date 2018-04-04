@@ -6,15 +6,29 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento;
 
 /**
  * The Class CompensatoryTransferSettingDto.
  */
+
+/**
+ * Gets the transfer division.
+ *
+ * @return the transfer division
+ */
 @Getter
+
+/**
+ * Sets the transfer division.
+ *
+ * @param transferDivision
+ *            the new transfer division
+ */
 @Setter
 public class CompensatoryTransferSettingDto {
 
@@ -36,16 +50,17 @@ public class CompensatoryTransferSettingDto {
 	/**
 	 * To domain.
 	 *
-	 * @return the transfer setting
+	 * @return the sub hol transfer set
 	 */
-	public TransferSetting toDomain() {
-		return new TransferSetting(new TransferSettingGetMementoImpl(this));
+	public SubHolTransferSet toDomain() {
+//		return new SubHolTransferSet(new TransferSettingGetMementoImpl(this));
+		return new SubHolTransferSet(null);
 	}
 
 	/**
 	 * The Class TransferSettingGetMementoImpl.
 	 */
-	public class TransferSettingGetMementoImpl implements TransferSettingGetMemento {
+	public class TransferSettingGetMementoImpl implements SubHolTransferSetGetMemento {
 
 		/** The compensatory transfer setting dto. */
 		private CompensatoryTransferSettingDto compensatoryTransferSettingDto;
@@ -53,50 +68,62 @@ public class CompensatoryTransferSettingDto {
 		/**
 		 * Instantiates a new transfer setting get memento impl.
 		 *
-		 * @param compensatoryTransferSettingDto the compensatory transfer setting dto
+		 * @param compensatoryTransferSettingDto
+		 *            the compensatory transfer setting dto
 		 */
-		public TransferSettingGetMementoImpl(CompensatoryTransferSettingDto compensatoryTransferSettingDto) {
+		public TransferSettingGetMementoImpl(
+				CompensatoryTransferSettingDto compensatoryTransferSettingDto) {
 			this.compensatoryTransferSettingDto = compensatoryTransferSettingDto;
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getCertainTime()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.
+		 * TransferSettingGetMemento#getCertainTime()
 		 */
 		@Override
 		public OneDayTime getCertainTime() {
 			return new OneDayTime(this.compensatoryTransferSettingDto.certainTime);
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#isUseDivision()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento#
+		 * getUseDivision()
 		 */
 		@Override
-		public boolean isUseDivision() {
+		public boolean getUseDivision() {
 			return this.compensatoryTransferSettingDto.useDivision;
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getOneDayTime()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento#
+		 * getDesignatedTime()
 		 */
 		@Override
-		public OneDayTime getOneDayTime() {
-			return new OneDayTime(this.compensatoryTransferSettingDto.oneDayTime);
+		public DesignatedTime getDesignatedTime() {
+			return new DesignatedTime(
+					new OneDayTime(this.compensatoryTransferSettingDto.oneDayTime),
+					new OneDayTime(this.compensatoryTransferSettingDto.halfDayTime));
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getHalfDayTime()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento#
+		 * getSubHolTransferSetAtr()
 		 */
 		@Override
-		public OneDayTime getHalfDayTime() {
-			return new OneDayTime(this.compensatoryTransferSettingDto.halfDayTime);
-		}
-
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getTransferDivision()
-		 */
-		@Override
-		public TransferSettingDivision getTransferDivision() {
-			return TransferSettingDivision.valueOf(this.compensatoryTransferSettingDto.transferDivision);
+		public SubHolTransferSetAtr getSubHolTransferSetAtr() {
+			return SubHolTransferSetAtr
+					.valueOf(this.compensatoryTransferSettingDto.transferDivision);
 		}
 
 	}

@@ -17,8 +17,6 @@ public class ReflectScheDto {
 	private GeneralDate datePara;
 	/**	実行種別 */
 	private ExecutionType executionType;
-	/** 申請内容	 */
-	private Application_New application;
 	/** 振出・休出時反映する区分	 */
 	private boolean reflectAtr;
 	/**	時刻の反映*/

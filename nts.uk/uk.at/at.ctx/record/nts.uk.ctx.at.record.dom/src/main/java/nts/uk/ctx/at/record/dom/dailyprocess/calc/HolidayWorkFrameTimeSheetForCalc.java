@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
@@ -21,10 +22,9 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -121,24 +121,13 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		//休出枠No
 		BreakFrameNo breakFrameNo = holidayWorkFrameTimeSheet.decisionBreakFrameNoByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr());
 		/*加給*/
-		val bonusPayTimeSheet = bonusPaySetting.getLstBonusPayTimesheet().stream().map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
-		val duplibonusPayTimeSheet = bonusPayTimeSheet.stream()
-											 .filter(tc -> tc.getCalcrange().checkDuplication(timeSpan).isDuplicated())
-											 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(timeSpan).get()))
-											 .collect(Collectors.toList());
+		/*加給*/
+		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, holidayWorkFrameTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 											 
 		/*特定日*/
-		val specifiedBonusPayTimeSheet = bonusPaySetting.getLstSpecBonusPayTimesheet().stream().map(tc -> SpecBonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
-		val duplispecifiedBonusPayTimeSheet = specifiedBonusPayTimeSheet.stream()
-											 .filter(tc -> tc.getCalcrange().checkDuplication(timeSpan).isDuplicated())
-				 							 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(timeSpan).get()))
-				 							 .collect(Collectors.toList());
+		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, holidayWorkFrameTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		/*深夜*/
-		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSpan());
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = Optional.empty();
-		if(duplicateMidNightSpan.isPresent()) {
-			duplicatemidNightTimeSheet = Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));
-		}
+		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, holidayWorkFrameTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		
 		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
 													timeSpan,
@@ -148,8 +137,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 													duplispecifiedBonusPayTimeSheet,
 													duplicatemidNightTimeSheet,
 													new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
-										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+										  					Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+										  					Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 										  					Finally.of(new AttendanceTime(0))),
 													false,
 													new EmTimezoneNo(holidayWorkFrameTimeSheet.getWorkTimeNo()),
@@ -160,9 +149,9 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param autoCalcSet 時間外の自動計算区分
 	 * @return 残業時間枠時間帯クラス
 	 */
-	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
+	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalRestTimeSetting autoCalcSet) {
 		AttendanceTime holidayWorkTime;
-		if(autoCalcSet.getLateNightTime().getCalculationClassification().isCalculateEmbossing()) {
+		if(autoCalcSet.getLateNightTime().getCalAtr().isCalculateEmbossing()) {
 			holidayWorkTime = new AttendanceTime(0);
 		}
 		else {
@@ -170,7 +159,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
-				,Finally.of(TimeWithCalculation.sameTime(holidayWorkTime))
+				,Finally.of(TimeDivergenceWithCalculation.sameTime(holidayWorkTime))
 				,this.frameTime.getBeforeApplicationTime());
 	}
 	

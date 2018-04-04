@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.goout.MaxGoOut
+			</com:ValidatorScript>
+		
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kmk013.h.start.js" />
 			<com:scriptfile path="kmk013.h.vm.js" />
@@ -19,31 +23,136 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
-				<button class="proceed save" data-bind="click: saveData">#{i18n.getText('KMK013_225')}</button>
+				<button tabindex="2" class="proceed save" data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area" class="table">
-				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_226')}</div>
-				<div class="row-1">
-					<div class="name-switch">#{i18n.getText('KMK013_227')}</div>
-					<div class="cf"
-						data-bind="ntsSwitchButton: {
-						options: roundingRules1,
-						optionsValue: 'code',
-						name: '#{i18n.getText('KMK013_228')}',
-						optionsText:'name',
-						value: selectedRuleCode1}"></div>
+				<div>
+					<!-- H2_1 -->
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_226')}</div>
+					<div>
+						<!-- H2_2 -->
+						<!-- H2_3 -->
+						<div class="emboss-set">
+							<div class="label">#{i18n.getText('KMK013_227')}</div>
+							<div id="h2_3" tabindex="3" class="cf"
+								data-bind="ntsSwitchButton: {
+								options: itemListH2_3,
+								optionsValue: 'code',
+								name: '#{i18n.getText('KMK013_228')}',
+								optionsText:'name',
+								value: selectedH2_3}"></div>
+						</div>
+					</div>
+					<!-- H6_1 -->
+					<div data-bind="ntsFormLabel: { required: true,name: '#[KMK013_289]'}">#{i18n.getText('KMK013_289')}</div>
+					<div class="out-manage">
+						<!-- H6_2 -->
+						<div class="label">#{i18n.getText('KMK013_290')}</div>
+						<!-- H6_3 -->
+						<div>
+							<input tabindex="4" data-bind="ntsNumberEditor: {
+								value: valueH6_3,
+								constraint: 'MaxGoOut',
+								option: {
+									grouplength: 0,
+			                        decimallength: 0,
+			                        placeholder: '',
+			                        width: '50',
+			                        textalign: 'left'
+								},
+								required: true,
+								name: '#[KMK013_291]'}" />
+						</div>
+					</div>
+					<div class="out-manage">
+						<!-- H6_4 -->
+						<div class="label">#{i18n.getText('KMK013_292')}</div>
+						<!-- H6_5 -->
+						<div tabindex="5" style="width:72px" id="combo-box" data-bind="ntsComboBox: {
+															name: '#[KMK013_293]',
+															options: itemListH6_5,
+															optionsValue: 'code',
+															visibleItemsCount: 4,
+															value: selectedCodeH6_5,
+															optionsText: 'optionText',
+															required: true,
+															columns: [
+																{ prop: 'name', length: 2 }
+															]}"></div>
+					</div>
+					<!-- H3_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_277')}</div>
+					<!-- H3_2 -->
+					<!-- H3_3 -->
+					<!-- H3_4 -->
+					<div class="style-radio" tabindex="6" data-bind="ntsRadioBoxGroup: {
+											options: itemListH3_2,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIdH3_2,
+											enable: enableH3_2}"></div>
+					
+					<!-- H4_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_281')}</div>
+					<!-- H4_2 -->
+					<!-- H4_3 -->
+					<!-- H4_4 -->
+					<div class="style-radio" tabindex="7" data-bind="ntsRadioBoxGroup: {
+											options: itemListH4_2,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIdH4_2,
+											enable: enableH4_2}"></div>
+					
+					<!-- H7_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_294')}</div>
+					<!-- H7_2 -->
+					<!-- H7_3 -->
+					<!-- H7_4 -->
+					<div class="style-radio" tabindex="8" data-bind="ntsRadioBoxGroup: {
+											options: itemListH7_2,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIdH7_2,
+											enable: enableH7_2}"></div>
 				</div>
-				<div class="row-1">
-					<div class="name-switch">#{i18n.getText('KMK013_231')}</div>
-					<div class="cf"
-						data-bind="ntsSwitchButton: {
-						options: roundingRules2,
-						optionsValue: 'code',
-						optionsText: 'name',
-						name:'#{i18n.getText('KMK013_232')}',
-						value: selectedRuleCode2}"></div>
+				<div>
+					<!-- H5_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_285')}</div>
+					<!-- H5_2 -->
+					<!-- H5_3 -->
+					<!-- H5_4 -->
+					<div class="style-radio" tabindex="9" data-bind="ntsRadioBoxGroup: {
+											options: itemListH5_2,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIdH5_2,
+											enable: enableH5_2}"></div>
+											
+					<!-- H8_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_298')}</div>
+					<!-- H8_2 -->
+					<!-- H8_3 -->
+					<!-- H8_4 -->
+					<div class="style-radio" tabindex="10" data-bind="ntsRadioBoxGroup: {
+											options: itemListH8_2,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIdH8_2,
+											enable: enableH8_2}"></div>
+											
+					<!-- H9_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_302')}</div>
+					<!-- H9_2 -->
+					<!-- H9_3 -->
+					<!-- H9_4 -->
+					<div class="style-radio" tabindex="10" data-bind="ntsRadioBoxGroup: {
+											options: itemListH9_2,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIdH9_2,
+											enable: enableH9_2}"></div>
 				</div>
-
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.app.find.remainingnumber.annualleave;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveGrantRule;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.TimeAnnualLeaveMax;
@@ -12,6 +14,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnnualLeaveDto extends PeregDomainDto{
@@ -20,13 +23,13 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 年休残数
 	 */
 	@PeregItem("IS00276")
-	private Double annualLeaveNumber;
+	private String annualLeaveNumber;
 	
 	/**
 	 * 前回年休付与日
 	 */
 	@PeregItem("IS00277")	
-	private GeneralDate lastGrantDate;
+	private String lastGrantDate;
 	
 	/**
 	 * 年休付与
@@ -50,19 +53,19 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 次回年休付与日
 	 */
 	@PeregItem("IS00281")	
-	private GeneralDate nextTimeGrantDate;
+	private String nextTimeGrantDate;
 	
 	/**
 	 * 次回年休付与日数
 	 */
 	@PeregItem("IS00282")	
-	private Double nextTimeGrantDays;
+	private String nextTimeGrantDays;
 	
 	/**
 	 * 次回時間年休付与上限
 	 */
 	@PeregItem("IS00283")	
-	private int nextTimeMaxTime;
+	private String nextTimeMaxTime;
 	
 	/**
 	 * 年間所定労働日数
@@ -128,18 +131,27 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 積立年休残数
 	 */
 	@PeregItem("IS00294")	
-	private int resvLeaRemainNumber;
+	private String resvLeaRemainNumber;
 	
 	public AnnualLeaveDto(String employeeId) {
 		super(employeeId);
 	}
 	
 	public static AnnualLeaveDto createFromDomains(AnnualLeaveEmpBasicInfo basicInfo, AnnualLeaveMaxData maxData) {
-		AnnualLeaveDto dto = new AnnualLeaveDto();
+		
+		AnnualLeaveDto dto = new AnnualLeaveDto(basicInfo.getEmployeeId());
+		
 		dto.standardDate = basicInfo.getGrantRule().getGrantStandardDate();
 		dto.grantTable = basicInfo.getGrantRule().getGrantTableCode().v();
 		dto.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
 		dto.workingDayBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().v();
+		
+		AnnualLeaveGrantRule grantRule = basicInfo.getGrantRule();
+		
+		dto.setNextTimeGrantDate(grantRule.nextTimeGrantDate());
+		dto.setNextTimeGrantDays(grantRule.nextTimeGrantDays());
+		dto.setNextTimeMaxTime(grantRule.nextTimeMaxTime());
+		
 		if ( maxData.getTimeAnnualLeaveMax().isPresent()) {
 			TimeAnnualLeaveMax maxTime = maxData.getTimeAnnualLeaveMax().get();
 			dto.maxMinutes = maxTime.getMaxMinutes().v();

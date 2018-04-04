@@ -1,0 +1,27 @@
+#contents-area{
+	margin: 20px;
+}
+#tbl-control{
+	width: 1000px;
+	margin-bottom: 10px;
+}
+
+.fixed-table thead th{
+	text-align: center;
+}
+
+.fixed-table tbody td{
+	text-align: center;
+}
+
+.fixed-table tbody td:NTH-CHILD(1){
+	text-align: left;
+}
+
+.content-question {
+	width: 60px;	
+}
+
+.btn-question {
+	float: right;
+}

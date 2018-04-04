@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
@@ -40,7 +39,7 @@ public class WorkHolidayTimeDailyPerformDto {
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName="休出枠時間", listMaxLength = 10, indexField = "holidayFrameNo", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "D", jpPropertyName="休出枠時間", listMaxLength = 10, indexField = "holidayFrameNo")
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){
@@ -81,8 +80,8 @@ public class WorkHolidayTimeDailyPerformDto {
 				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 
-	private Finally<TimeWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? Finally.empty() : Finally.of(c.createTimeWithCalc());
+	private Finally<TimeDivergenceWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
+		return c == null ? Finally.empty() : Finally.of(c.createTimeDivWithCalc());
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {

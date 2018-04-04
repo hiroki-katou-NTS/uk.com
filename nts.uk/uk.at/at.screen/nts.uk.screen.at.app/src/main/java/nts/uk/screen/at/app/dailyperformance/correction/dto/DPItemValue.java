@@ -29,4 +29,12 @@ public class DPItemValue {
 		this.date = date;
 		this.itemId = itemId;
 	}
+	
+	public DPItemValue(String rowId, String employeeId, GeneralDate date, int itemId, String value){
+		this.rowId = rowId;
+		this.employeeId = employeeId;
+		this.date = date;
+		this.itemId = itemId;
+		this.value = value;
+	}
 }

@@ -42,7 +42,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		
 		Application_New applicationData = applicationRepository.findByID(companyID, appID).get();
 		// Output variables
-		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false, OutputMode.DISPLAYMODE);
+		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
 		if(applicationData.getEmployeeID().equals(employeeID)||applicationData.getEnteredPersonID().equals(employeeID)) {
 			outputData.setLoginInputOrApproval(true);
 		}
@@ -83,7 +83,6 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			outputData.setApprovalATR(EnumAdaptor.valueOf(approverPersonImport.getApprovalAtr().value, ApprovalAtr.class));
 			outputData.setAlternateExpiration(approverPersonImport.getExpirationAgentFlag());
 		}
-		outputData.setScreenMode(initMode.getDetailScreenInitMode(outputData.getUser(), outputData.getReflectPlanState().value).getOutputMode());
 		return outputData;
 	}
 }

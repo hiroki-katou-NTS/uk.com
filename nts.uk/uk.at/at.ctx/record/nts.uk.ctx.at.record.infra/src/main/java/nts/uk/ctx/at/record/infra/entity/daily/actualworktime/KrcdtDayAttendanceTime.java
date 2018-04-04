@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
@@ -259,7 +260,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 				.addAll(this.krcdtDayHolidyWorkTs != null ? this.krcdtDayHolidyWorkTs.toDomain(): new ArrayList<>());
 		ExcessOfStatutoryTimeOfDaily excess = new ExcessOfStatutoryTimeOfDaily(
 				new ExcessOfStatutoryMidNightTime(
-						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.outPrsMidnTime), new AttendanceTime(this.calcOutPrsMidnTime)),
+						TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.outPrsMidnTime), new AttendanceTime(this.calcOutPrsMidnTime)),
 						new AttendanceTime(this.preOutPrsMidnTime)),
 				Optional.ofNullable(overTime), Optional.ofNullable(holiday));
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();

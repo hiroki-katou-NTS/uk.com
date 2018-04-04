@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
@@ -70,6 +72,12 @@ public interface DailyRecordToAttendanceItemConverter {
 	DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain);
 
 	DailyRecordToAttendanceItemConverter withTemporaryTime(TemporaryTimeOfDailyPerformance domain);
+	
+	DailyRecordToAttendanceItemConverter withPCLogInfo(PCLogOnInfoOfDaily domain);
+	
+	DailyRecordToAttendanceItemConverter withRemark(RemarksOfDailyPerform domain);
+	
+	DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyPerform> domain);
 
 	DailyRecordToAttendanceItemConverter employeeId(String employeeId);
 

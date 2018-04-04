@@ -1,0 +1,21 @@
+#contents-area{
+	margin: 20px;
+}
+#tbl-control{
+	width: 1000px;
+	margin-bottom: 10px;
+}
+#tbl-control td{
+	padding: 5px;
+}
+.fixed-table thead th{
+	text-align: center;
+}
+
+.fixed-table tbody td{
+	text-align: center;
+}
+
+.fixed-table tbody td:NTH-CHILD(1){
+	text-align: left;
+}

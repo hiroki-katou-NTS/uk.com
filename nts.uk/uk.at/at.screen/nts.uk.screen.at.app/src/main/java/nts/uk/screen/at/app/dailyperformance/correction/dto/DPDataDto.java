@@ -9,6 +9,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -22,15 +23,17 @@ public class DPDataDto {
     private String error;
     private GeneralDate date;
     private boolean sign;
+    private boolean approval;
     private String employeeId;
     private String employeeCode;
     private String employeeName;
     private String workplaceId;
     private String employmentCode;
     private String typeGroup;
+    private DatePeriod datePriod;
     private Set<DPCellDataDto> cellDatas;
     
-	public DPDataDto(String id, String state, String error, GeneralDate date, boolean sign, String employeeId,
+	public DPDataDto(String id, String state, String error, GeneralDate date, boolean sign, boolean approval, String employeeId,
 			String employeeCode, String employeeName, String workplaceId, String employmentCode, String typeGroup) {
 		this.id = id;
 		this.state = state;

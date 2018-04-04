@@ -4,7 +4,6 @@
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +20,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -82,7 +82,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
 	}
 	
 	@POST
@@ -125,8 +125,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("addAndUpdate")
 	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		//insert sign
-		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
 		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
@@ -176,13 +174,25 @@ public class DailyPerformanceCorrectionWebService {
 				dailyModifyCommandFacade.handleEditCell(itemValueChild);
 			}else{
 				//resultError.put(1, itemInputErors);
-				return resultError;
+				//return resultError;
 			}
 		}else{
 			resultError.put(0, itemErrors);
-			return resultError;
+			//return resultError;
 		}
-		return Collections.emptyMap();
+		
+		// insert sign
+		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
+		
+		//
+		if(dataParent.getMode() == 0){
+			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
+					dataParent.getDateRange());
+			if (!dataCheck.isEmpty()) {
+				resultError.put(2, dataCheck);
+			}
+		}
+		return resultError;
 	}
 	
 	@POST

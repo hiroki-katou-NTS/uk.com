@@ -34,7 +34,7 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getRequiredIds(String contractCd, String companyId);
 
-	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
+	void removePerInfoItemDef(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
 
 	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId);
 
@@ -59,13 +59,12 @@ public interface PerInfoItemDefRepositoty {
 
 	// Sonnlb Code
 
-	// vinhpx start
 	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
+	
+	int countPerInfoItemDefInCategoryNo812(String perInfoCategoryId, String companyId);
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
-
-	// vinhpx end
 
 	/**
 	 * getNotFixedPerInfoItemDefByCategoryId
@@ -104,5 +103,8 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	List<String> getAllRequiredIdsByCtgId(String contract, String ctgId);
-
+	
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
+	
+	List<String> getAllItemIdsByCtgCode(String cid, String ctgCode);
 }

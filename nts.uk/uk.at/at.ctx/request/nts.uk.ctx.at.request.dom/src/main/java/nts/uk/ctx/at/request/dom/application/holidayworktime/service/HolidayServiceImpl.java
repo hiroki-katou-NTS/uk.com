@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTyp
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -53,7 +54,7 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
-			GeneralDate baseDate,Optional<PersonalLaborCondition> personalLablorCodition) {
+			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition) {
 		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
 		workTypeHolidayWorks = getListWorkType(companyID, employeeID, appEmploymentSettings, baseDate, personalLablorCodition);
 		// 勤務種類初期選択 :4_c.初期選択 : TODO
@@ -65,8 +66,8 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 	// 4_c.初期選択
 	@Override
-	public void getWorkType(String companyID,WorkTypeHolidayWork workTypes, GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition){
-		if(personalLablorCodition.isPresent() && personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
+	public void getWorkType(String companyID,WorkTypeHolidayWork workTypes, GeneralDate appDate, String employeeID,Optional<WorkingConditionItem> personalLablorCodition){
+		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			// 先頭の勤務種類を選択する
 			if(!CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())){
 				workTypes.setWorkTypeCode(workTypes.getWorkTypeCodes().get(0));
@@ -102,6 +103,10 @@ public class HolidayServiceImpl implements HolidayService {
 					}
 				}
 				workTypes.setWorkTypeCode(workTypeCode);
+			}else{
+				if(!CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())){
+					workTypes.setWorkTypeCode(workTypes.getWorkTypeCodes().get(0));
+				}
 			}
 		}
 		
@@ -113,7 +118,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/** 5.就業時間帯を取得する */
 	@Override
 	public WorkTimeHolidayWork getWorkTimeHolidayWork(String companyID, String employeeID,
-			GeneralDate baseDate,Optional<PersonalLaborCondition> personalLablorCodition) {
+			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition) {
 		WorkTimeHolidayWork workTimeHolidayWork = new WorkTimeHolidayWork();
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
@@ -129,7 +134,7 @@ public class HolidayServiceImpl implements HolidayService {
 			}
 		}else{
 			//ドメインモデル「個人勤務日区分別勤務.休日出勤時.就業時間帯コード」を選択する
-			workTimeHolidayWork.setWorkTimeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().toString());
+			workTimeHolidayWork.setWorkTimeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
 		}
 		if(workTimeHolidayWork.getWorkTimeCode() != null){
 			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,workTimeHolidayWork.getWorkTimeCode())
@@ -152,7 +157,7 @@ public class HolidayServiceImpl implements HolidayService {
 	@Override
 	public WorkTypeHolidayWork getListWorkType(String companyID, String employeeID,
 			List<AppEmploymentSetting> appEmploymentSettings, GeneralDate appDate,
-			Optional<PersonalLaborCondition> personalLablorCodition) {
+			Optional<WorkingConditionItem> personalLablorCodition) {
 		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());

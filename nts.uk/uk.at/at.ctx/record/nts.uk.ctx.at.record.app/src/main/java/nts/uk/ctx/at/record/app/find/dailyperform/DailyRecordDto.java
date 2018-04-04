@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerf
 import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforOfDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
@@ -98,6 +100,14 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "日別実績の臨時出退勤", isOptional = true)
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
+	
+	/** PCログオン情報: 日別実績のPCログオン情報 */
+	@AttendanceItemLayout(layout = "P", jpPropertyName = "日別実績のPCログオン情報", isOptional = true)
+	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
+	
+	/** 備考: 日別実績の備考 */
+	@AttendanceItemLayout(layout = "Q", jpPropertyName = "日別実績の備考", listMaxLength = 5, indexField = "remarkNo")
+	private List<RemarksOfDailyDto> remarks = new ArrayList<>();
 
 	public static DailyRecordDto builder() {
 		return new DailyRecordDto();
@@ -207,6 +217,29 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.temporaryTime = Optional.ofNullable(temporaryTime);
 		return this;
 	}
+	
+	public DailyRecordDto pcLogInfo(PCLogOnInforOfDailyPerformDto pcLogInfo) {
+		this.pcLogInfo = Optional.ofNullable(pcLogInfo);
+		return this;
+	}
+	
+	public DailyRecordDto addRemarks(RemarksOfDailyDto remarks) {
+		this.remarks.add(remarks);
+		return this;
+	}
+
+	public DailyRecordDto addRemarks(List<RemarksOfDailyDto> remarks) {
+		if (breakTime == null) {
+			return this;
+		}
+		this.remarks.addAll(remarks);
+		return this;
+	}
+
+	public DailyRecordDto remarks(List<RemarksOfDailyDto> remarks) {
+		this.remarks = remarks == null ? new ArrayList<>() : remarks;
+		return this;
+	}
 
 	public DailyRecordDto workingDate(GeneralDate workingDate) {
 		this.date = workingDate;
@@ -238,7 +271,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
 				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
-				Optional.empty(),
+				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
 				this.errors == null ? null : Arrays.asList(this.errors.toDomain(employeeId, date)),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
@@ -250,8 +283,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
 				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date))
-				);
+				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)));
 	}
 }
 

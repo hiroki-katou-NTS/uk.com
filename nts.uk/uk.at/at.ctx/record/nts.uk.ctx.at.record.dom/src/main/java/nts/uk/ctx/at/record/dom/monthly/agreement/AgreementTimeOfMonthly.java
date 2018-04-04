@@ -108,27 +108,30 @@ public class AgreementTimeOfMonthly {
 		
 		// 特例限度アラーム時間以下
 		if (this.exceptionLimitAlarmTime.isPresent()){
-			if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitAlarmTime.get().v())){
+			if (this.exceptionLimitAlarmTime.get().lessThanOrEqualTo(0)){
 				this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
 				return;
 			}
+			if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitAlarmTime.get().v())){
+				this.status = AgreementTimeStatusOfMonthly.IN_EXCEPTION_LIMIT;
+				return;
+			}
+		}
+		else {
+			this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+			return;
 		}
 		
 		// 特例限度エラー時間以下
 		if (this.exceptionLimitErrorTime.isPresent()){
 			if (this.agreementTime.lessThanOrEqualTo(this.exceptionLimitErrorTime.get().v())){
-				if (this.exceptionLimitAlarmTime.isPresent()){
-					this.status = AgreementTimeStatusOfMonthly.IN_EXCEPTION_LIMIT;
-				}
-				else {
-					this.status = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
-				}
+				this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM;
 				return;
 			}
 		}
 		
 		// 特例限度エラー時間を超える
-		this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT;
+		this.status = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR;
 	}
 	
 	/**

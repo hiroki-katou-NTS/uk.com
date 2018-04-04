@@ -1,0 +1,51 @@
+@import url("common.css");
+
+#ckbSendMail {
+	margin-left: 50px;
+	display: inline-block;
+}
+
+.div_line_col_1 {
+	width: 150px;
+}
+
+.div_line_col_2 {
+	width: 750px;
+}
+
+.app_date {
+	width: 250px;
+}
+
+.div_line_col_3 {
+	width: 350px;
+}
+
+#number_Info tr>* {
+	height: 20px;
+	padding: 5px;
+	border: 1px solid black;
+	text-align: center;
+	width: 100px;
+}
+
+#content_left {
+	width: 1000px;
+	display: inline-block;
+}
+
+.app_header {
+	margin-left: 10px;
+}
+
+.working_hour>* {
+	display: inline-block;
+}
+
+.change_woking_hours {
+	margin-left: 40px;
+}
+
+.nts-switch-button {
+	width: 100px;
+}

@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<script>
-				var dialogSize = { width: 900, height: 650 };
+				var dialogSize = { width: 900, height: 700 };
 			</script>
 			<com:stylefile path="ccg027.a.style.css" />
 			<com:scriptfile path="ccg027.a.service.js" />
@@ -34,6 +34,7 @@
 					</div>
 					<div class="right">
 						<input id="mailAddressCC" data-bind="ntsTextEditor: {value: mailAddressCC, name: '#[CCG027_5]'}" />
+						<div id="wording"><span>#{i18n.getText('CCG027_14')}</span></div>
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetBCC">
@@ -42,6 +43,7 @@
 					</div>
 					<div class="right">
 						<input  id="mailAddressBCC" data-bind="ntsTextEditor: {value: mailAddressBCC, name: '#[CCG027_7]'}" />
+						<div id="wording"><span>#{i18n.getText('CCG027_14')}</span></div>
 					</div>
 				</div>
 				<div class="cf" data-bind="visible: SetReply">
@@ -71,7 +73,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: decision">#{i18n.getText('CCG027_2')}</button>
+				<button class="proceed x-large" data-bind="click: decision, enable: $root.errors.isEmpty()">#{i18n.getText('CCG027_2')}</button>
 				<button data-bind="click: cancel_Dialog">#{i18n.getText('CCG027_3')}</button>
 			</div>
 			<script>

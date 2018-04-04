@@ -48,31 +48,27 @@ public class DataTypeState extends AggregateRoot {
 		return SelectionItem.createFromJavaType(referenceTypeState);
 	}
 
-
-
 	public static DataTypeState createSelectionRadio(ReferenceTypeState referenceTypeState) {
 		return SelectionRadio.createFromJavaType(referenceTypeState);
 	}
 
-
 	public static DataTypeState createSelectionButton(ReferenceTypeState referenceTypeState) {
 		return SelectionButton.createFromJavaType(referenceTypeState);
 	}
-	
-	public static DataTypeState createReadonly( String readText) {
+
+	public static DataTypeState createReadonly(String readText) {
 		return ReadOnly.createFromJavaType(readText);
 	}
-	
+
 	public static DataTypeState createRelatedCategory(String relatedCtgText) {
 		return RelatedCategory.createFromJavaType(relatedCtgText);
 	}
-	
-	public static DataTypeState createNumbericButton(String readText ) {
+
+	public static DataTypeState createNumbericButton(String readText) {
 		return NumericButton.createFromJavaType(readText);
 	}
-	
-	public static DataTypeState createReadonlyButton(String readText ) {
+
+	public static DataTypeState createReadonlyButton(String readText) {
 		return ReadOnlyButton.createFromJavaType(readText);
 	}
-	
 }

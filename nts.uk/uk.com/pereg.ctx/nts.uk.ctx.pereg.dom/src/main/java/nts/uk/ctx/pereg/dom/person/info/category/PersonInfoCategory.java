@@ -68,8 +68,6 @@ public class PersonInfoCategory extends AggregateRoot {
 	 */
 	private AddItemObjCls addItemCls;
 
-	public final static String ROOT_COMPANY_ID = "000000000000-0000";
-
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
 		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();

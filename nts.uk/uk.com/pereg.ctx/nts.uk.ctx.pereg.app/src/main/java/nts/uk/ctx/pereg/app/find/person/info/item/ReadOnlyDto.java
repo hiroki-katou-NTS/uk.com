@@ -9,7 +9,7 @@ public class ReadOnlyDto extends DataTypeStateDto{
 	
 	public ReadOnlyDto( String readText) {
 		super();
-		this.dataTypeValue = DataTypeValue.SELECTION_BUTTON.value;
+		this.dataTypeValue = DataTypeValue.READONLY.value;
 		this.readText = readText;
 	}
 	

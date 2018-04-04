@@ -14,18 +14,18 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
-import nts.uk.ctx.at.record.dom.workrecord.log.CaseSpecExeContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.CaseSpecExeContentRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.PartResetClassification;
-import nts.uk.ctx.at.record.dom.workrecord.log.SetInforReflAprResult;
-import nts.uk.ctx.at.record.dom.workrecord.log.SettingInforForDailyCreation;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContentRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.PartResetClassification;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SettingInforForDailyCreation;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 @Stateless
 public class ExecutionLogAssembler {
@@ -33,13 +33,12 @@ public class ExecutionLogAssembler {
 	@Inject 
 	CaseSpecExeContentRepository caseSpecExeContentRepository;
 	
-	public List<ExecutionLog> fromDTO(AddEmpCalSumAndTargetCommand command) {
-		String empCalAndSumExecLogID = IdentifierUtil.randomUniqueId();
+	public List<ExecutionLog> fromDTO(AddEmpCalSumAndTargetCommand command, String empCalAndSumExecLogID) {
 		
 		List<ExecutionLog> result = Collections.emptyList();
 		
 		if (command.getScreen().equals("B")) {
-			result.addAll(buildExecutionLog(empCalAndSumExecLogID, command));
+			result = buildExecutionLog(empCalAndSumExecLogID, command);
 		} else if (command.getScreen().equals("J")) {
 			CaseSpecExeContent caseSpecExeContent = caseSpecExeContentRepository.getCaseSpecExeContentById(command.getCaseSpecExeContentID()).get();
 			

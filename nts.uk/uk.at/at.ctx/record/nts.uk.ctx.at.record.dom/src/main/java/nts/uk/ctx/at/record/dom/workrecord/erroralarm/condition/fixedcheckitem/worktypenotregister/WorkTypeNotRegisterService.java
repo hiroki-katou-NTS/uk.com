@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.worktypenotregister;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
 /**
@@ -8,5 +10,5 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.c
  *
  */
 public interface WorkTypeNotRegisterService {
-	public ValueExtractAlarmWR  checkWorkTypeNotRegister(String workplaceID,String employeeID,GeneralDate date,String workTypeCD);
+	public Optional<ValueExtractAlarmWR>  checkWorkTypeNotRegister(String workplaceID,String employeeID,GeneralDate date,String workTypeCD);
 }

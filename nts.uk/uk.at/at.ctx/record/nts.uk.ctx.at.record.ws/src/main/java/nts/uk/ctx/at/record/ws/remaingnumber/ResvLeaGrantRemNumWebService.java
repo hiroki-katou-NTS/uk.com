@@ -9,18 +9,23 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
+import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumFinder;
 
-@Path("at/record/remainnumber/resvLea")
+@Path("record/remainnumber/resv-lea")
 @Produces("application/json")
 public class ResvLeaGrantRemNumWebService extends WebService{
 
 	
-	//@Inject
-	//private AnnLeaGrantRemnNumFinder finder;
+	@Inject
+	private ResvLeaGrantRemNumFinder finder;
 	
 	@Inject
 	private AddResvLeaCommandHandler addHandler;
@@ -28,22 +33,45 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	@Inject
 	private UpdateResvLeaCommandHandler updateHandler;
 	
+	@Inject
+	private RemoveResvLeaCommandHandler removeHandler;
+	
 	@POST
-	@Path("getResvLea/{empId}")
-	public List<AnnLeaGrantRemnNumDto> findResvLeaGrantRemnNum(@PathParam("empId") String employeeId) {
-		return null;
+	@Path("get-resv-lea/{empId}/{isall}")
+	public List<ResvLeaGrantRemNumDto> getAll(@PathParam("empId") String empId, @PathParam("isall") boolean isAll){
+		if(!isAll){
+			return finder.findNotExp(empId);
+		}else{
+			return finder.find(empId);
+		}
+	}
+	@POST
+	@Path("get-resv-lea-by-id/{itemId}")
+	public ResvLeaGrantRemNumDto getById(@PathParam("itemId")String id){
+		return finder.getById(id);
+	}
+	
+	@POST
+	@Path("generate-deadline")
+	public GeneralDate getById(GeneralDate grantDate){
+		return finder.generateDeadline(grantDate);
 	}
 	
 	@POST
 	@Path("add")
-	public void add(ResvLeaGrantRemNumCommand command) {
+	public void add(AddResvLeaRemainCommand command) {
 		addHandler.handle(command);
 	}
 	
 	@POST
 	@Path("update")
-	public void update(ResvLeaGrantRemNumCommand command) {
+	public void update(UpdateResvLeaRemainCommand command) {
 		updateHandler.handle(command);
 	}
 	
+	@POST
+	@Path("remove")
+	public void remove(RemoveResvLeaRemainCommand command) {
+		removeHandler.handle(command);
+	}
 }

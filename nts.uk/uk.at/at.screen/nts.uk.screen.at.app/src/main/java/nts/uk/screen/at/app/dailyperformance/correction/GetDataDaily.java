@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -29,6 +30,7 @@ public class GetDataDaily implements Callable<List<DailyModifyResult>> {
 
 	@Override
 	public List<DailyModifyResult> call() throws Exception {
+		if(sids.isEmpty()|| itemIds.isEmpty()) return new ArrayList<>();
 		List<DailyModifyResult> results  = dailyModifyQueryProcessor.initScreen(new DailyMultiQuery(sids, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), itemIds);
 		return results;
 	}

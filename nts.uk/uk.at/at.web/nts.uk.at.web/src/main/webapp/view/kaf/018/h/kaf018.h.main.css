@@ -1,0 +1,20 @@
+#contents-area {
+	height: auto !important;
+}
+
+#btn-close {
+	float: right;
+	margin-right: 15px;
+}
+
+.tbl-control {
+	width: 390px;
+}
+
+.tbl-control td {
+	padding: 5px;
+}
+
+.tbl-control textarea {
+	height: 150px;
+}

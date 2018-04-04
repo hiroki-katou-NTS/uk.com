@@ -21,4 +21,16 @@ public class AnnualLeaveGrantRule {
 	 */
 	private GeneralDate grantStandardDate;
 	
+	public String nextTimeGrantDate() {
+		return GeneralDate.max().toString();
+	}
+	
+	public String nextTimeGrantDays() {
+		return "0";
+	}
+	
+	public String nextTimeMaxTime() {
+		return "0";
+	}
+	
 }

@@ -7,11 +7,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ValidatorDataDaily {
+	
+	@Inject
+	private ErAlWorkRecordCheckService erAlWorkRecordCheckService;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -93,4 +101,19 @@ public class ValidatorDataDaily {
 		}
 		return Collections.emptyList();
 	}
+	
+	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date) {
+		Map<GeneralDate, Integer> result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
+				new DatePeriod(date.getStartDate(), date.getEndDate())).getCheckResult();
+		if (!result.isEmpty()) {
+			return result.entrySet().stream()
+					.map(x -> new DPItemValue("勤務種類", employeeId, x.getKey(), 0, String.valueOf(x.getValue())))
+					.collect(Collectors.toList());
+		} else {
+			List<DPItemValue> list = new ArrayList<>();
+			list.add( new DPItemValue("勤務種類", employeeId, date.getStartDate(), 0, "5"));
+			return Collections.emptyList();
+		}
+	}
+	
 }

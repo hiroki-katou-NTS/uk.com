@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk013.l.main.css" />
+			<com:scriptfile path="kmk013.l.start.js" />
+			<com:scriptfile path="kmk013.l.service.js" />
+			<com:scriptfile path="kmk013.l.vm.js" />
+			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.temporarywork.MaxUsage
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- L1_1 -->
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
+				<!-- L1_2 -->	
+				<button tabindex="2" class="proceed save" data-bind="enable: $root.errors.isEmpty, click: save">#{i18n.getText('KMK013_225')}</button>
+			</div>
+			<div id="contents-area">
+				<div>
+					<!-- L2_1 -->
+					<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KMK013_345')}</div>
+				</div>
+				<div class="temp-work-set">
+					<!-- L2_6 -->
+					<div class="label">#{i18n.getText('KMK013_348')}</div>
+					<!-- L2_7 -->
+					<div>
+						<input id="l2_7" tabindex="3" data-bind="ntsNumberEditor: {
+							value: valueL2_7,
+							constraint: 'MaxUsage',
+							option: {
+								grouplength: 1,
+		                        decimallength: 0,
+		                        placeholder: '',
+		                        width: '50px',
+		                        textalign: 'left'
+							},
+							required: true,
+							enable: true,
+							readonly: false,
+							name: '#[KMK013_423]'}" />
+					</div>
+				</div>
+				<div class="temp-work-set">
+					<!-- L2_8 -->
+					<div class="label" >#{i18n.getText('KMK013_349')}</div>
+					<!-- L2_9 -->
+					<div>
+						<input tabindex="4" data-bind="ntsTimeEditor: {
+							value: valueL2_9,
+							constraint: 'AttendanceTime',
+							option: {
+								placeholder: '',
+								width: '50px',
+								textalign: 'left'
+							},
+							required: true,
+							enable: true,
+							readonly: false,
+							immediate: true,
+							name: '#[KMK013_350]',
+							inputFormat: 'time',
+							mode: 'time'}" />
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

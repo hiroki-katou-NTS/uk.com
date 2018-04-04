@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.KrcmtAnnLeaBasicInfo;
+import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcmtAnnLeaBasicInfo;
 
 @Stateless
 public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEmpBasicInfoRepository {
@@ -17,7 +17,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 		Optional<KrcmtAnnLeaBasicInfo> entityOpt = this.queryProxy().find(employeeId, KrcmtAnnLeaBasicInfo.class);
 		if (entityOpt.isPresent()) {
 			KrcmtAnnLeaBasicInfo ent = entityOpt.get();
-			return Optional.of(AnnualLeaveEmpBasicInfo.createFromJavaType(ent.employeeId, ent.workDaysPerYear,
+			return Optional.of(AnnualLeaveEmpBasicInfo.createFromJavaType(ent.sid, ent.workDaysPerYear,
 					ent.workDaysBeforeIntro, ent.grantTableCode, ent.grantStandardDate));
 		}
 		return Optional.empty();
@@ -26,7 +26,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 	@Override
 	public void add(AnnualLeaveEmpBasicInfo basicInfo) {
 		KrcmtAnnLeaBasicInfo entity = new KrcmtAnnLeaBasicInfo();
-		entity.employeeId = basicInfo.getEmployeeId();
+		entity.sid = basicInfo.getEmployeeId();
 		entity.workDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
 		entity.workDaysBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().v();
 		entity.grantTableCode = basicInfo.getGrantRule().getGrantTableCode().v();

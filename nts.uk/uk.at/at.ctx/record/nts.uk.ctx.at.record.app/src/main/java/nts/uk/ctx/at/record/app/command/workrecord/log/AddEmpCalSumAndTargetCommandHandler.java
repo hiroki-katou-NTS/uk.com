@@ -10,14 +10,14 @@ import javax.transaction.Transactional;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.workrecord.log.ComplStateOfExeContents;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
-import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.EmployeeExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ComplStateOfExeContents;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPerson;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.EmployeeExecutionStatus;
 
 @Stateless
 @Transactional
@@ -47,7 +47,7 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
 		
 		// Insert ExecutionLog
-		List<ExecutionLog> listExecutionLog = executionLogAssembler.fromDTO(command);
+		List<ExecutionLog> listExecutionLog = executionLogAssembler.fromDTO(command, empCalAndSumExeLog.getEmpCalAndSumExecLogID());
 		executionLogRepository.addAllExecutionLog(listExecutionLog);
 
 		// Insert all TargetPersons
