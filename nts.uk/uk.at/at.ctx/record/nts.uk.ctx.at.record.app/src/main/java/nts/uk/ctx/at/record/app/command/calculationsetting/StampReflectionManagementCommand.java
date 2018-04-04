@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.calculationsetting;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
@@ -10,8 +8,20 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
  * @author phongtq
  *
  */
-@Data
+
+/**
+ * Instantiates a new stamp reflection management command.
+ *
+ * @param companyId the company id
+ * @param breakSwitchClass the break switch class
+ * @param autoStampReflectionClass the auto stamp reflection class
+ * @param actualStampOfPriorityClass the actual stamp of priority class
+ * @param reflectWorkingTimeClass the reflect working time class
+ * @param goBackOutCorrectionClass the go back out correction class
+ * @param autoStampForFutureDayClass the auto stamp for future day class
+ */
 @AllArgsConstructor
+@Data
 public class StampReflectionManagementCommand {
 	/** 会社ID */
 	private String companyId;
@@ -31,21 +41,14 @@ public class StampReflectionManagementCommand {
 	/** 直行直帰外出補正区分 */
 	private int goBackOutCorrectionClass;
 
-	/** 入退門の管理をする */
-	private int managementOfEntrance;
-
 	/** 未来日の自動打刻セット区分 */
 	private int autoStampForFutureDayClass;
 
-	/** 休憩として扱う外出区分 */
-	private int outingAtr;
-
-	/** 最大使用回数 */
-	private BigDecimal maxUseCount;
 
 	public StampReflectionManagement toDomain(String companyId) {
 		return StampReflectionManagement.createJavaType(companyId, this.breakSwitchClass, this.autoStampReflectionClass,
 				this.actualStampOfPriorityClass, this.reflectWorkingTimeClass, this.goBackOutCorrectionClass,
-				this.managementOfEntrance, this.autoStampForFutureDayClass, this.outingAtr, this.maxUseCount);
+				this.autoStampForFutureDayClass
+				);
 	}
 }

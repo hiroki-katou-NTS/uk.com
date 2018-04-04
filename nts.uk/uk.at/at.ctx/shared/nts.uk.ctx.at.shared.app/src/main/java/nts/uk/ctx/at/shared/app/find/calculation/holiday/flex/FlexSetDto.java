@@ -21,4 +21,10 @@ public class FlexSetDto {
 
 	/** 割増計算 */
 	public int premiumCalcSubhd;
+	
+	/** 法定労働控除時間計算 */
+	public int flexDeductTimeCalc;
+	
+	/** 非勤務日計算 */
+	public int flexNonworkingDayCalc;
 }

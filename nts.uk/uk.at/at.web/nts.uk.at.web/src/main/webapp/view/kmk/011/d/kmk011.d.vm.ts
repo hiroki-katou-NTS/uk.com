@@ -167,7 +167,7 @@ module nts.uk.at.view.kmk011.d {
              */
             public isDisableAllRow(diverNo: number): boolean {
                 let _self = this;
-                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null) {
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || nts.uk.text.isNullOrEmpty( _self.selectedHist())) {
                     return false;
                 }
                 return true;
@@ -251,7 +251,7 @@ module nts.uk.at.view.kmk011.d {
                 var dfd = $.Deferred<any>();
                 let dto: ComDivergenceTimeSettingDto;
                 service.getAllItemSetting(value).done((response: any) => {
-                    if (response != null) {
+                    if (response != null && response.length > 0) {
                         if (_self.mapObj.size == 0) {
                             response.forEach((item: any) => {
                                 dto = new ComDivergenceTimeSettingDto();
@@ -363,9 +363,10 @@ module nts.uk.at.view.kmk011.d {
                                 alarmTime: ''
                             }
                         };
-                        _self.mapObj.get(i).notUseAtr(item.notUseAtr);
-                        _self.mapObj.get(i).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
-                        _self.mapObj.get(i).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                        _self.mapObj.get(item.divergenceTimeNo).notUseAtr(item.notUseAtr);
+                        _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                        _self.mapObj.get(item.divergenceTimeNo).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                        _self.isDisableAllRow(item.divergenceTimeNo);
                     }
                 }
             }
