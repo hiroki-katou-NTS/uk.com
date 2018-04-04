@@ -24,17 +24,17 @@ module nts.uk.com.view.cps001.g.vm {
         remainingMinutesH: KnockoutObservable<boolean>;
         
         //
-        nameDateGrantInp: KnockoutObservable<string> = ko.observable(null);
-        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable(null);
+        nameDateGrantInp: KnockoutObservable<string> = ko.observable('');
+        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable('');
 
-        nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable(null);
-        namegrantTime: KnockoutObservable<string> = ko.observable(null);
+        nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable('');
+        namegrantTime: KnockoutObservable<string> = ko.observable('');
 
-        nameDayNumberOfUse: KnockoutObservable<string> = ko.observable(null);
-        nameUseTime: KnockoutObservable<string> = ko.observable(null);
+        nameDayNumberOfUse: KnockoutObservable<string> = ko.observable('');
+        nameUseTime: KnockoutObservable<string> = ko.observable('');
 
-        nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable(null);
-        nameTimeReam: KnockoutObservable<string> = ko.observable(null);
+        nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable('');
+        nameTimeReam: KnockoutObservable<string> = ko.observable('');
         
         init: boolean = true;
         itemDefs: any = [];
