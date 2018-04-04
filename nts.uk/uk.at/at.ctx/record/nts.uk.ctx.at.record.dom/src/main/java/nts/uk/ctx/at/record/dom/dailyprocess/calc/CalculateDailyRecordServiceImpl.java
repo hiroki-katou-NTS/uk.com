@@ -495,8 +495,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		
 		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
-		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
- 
+		
+		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = new ArrayList<>();
+		
+		if(compensLeaveComSet!=null) {
+			eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
+		}
+		
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		Optional<WorkTimeDailyAtr> workTime = Optional.empty();
