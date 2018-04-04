@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -106,7 +107,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													int workNo,
 													Optional<CoreTimeSetting> coreTimeSetting,
 													WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,
-													WorkTimezoneLateEarlySet workTimezoneLateEarlySet) {
+													WorkTimezoneLateEarlySet workTimezoneLateEarlySet,DailyUnit dailyUnit) {
 		
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		
@@ -147,7 +148,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 										  leaveEarlyDesClock,
 										  workTimeCalcMethodDetailOfHoliday,
 										  workTimezoneLateEarlySet,
-										  coreTimeSetting);
+										  coreTimeSetting,
+										  dailyUnit);
 		}
 		return new WithinWorkTimeSheet(timeFrames,lateDesClock,leaveEarlyDesClock);
 	}
@@ -176,7 +178,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			LeaveEarlyDecisionClock leaveEarlyDecisionClock,
 			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,
 			WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
-			Optional<CoreTimeSetting> coreTimeSetting
+			Optional<CoreTimeSetting> coreTimeSetting,
+			DailyUnit dailyUnit
 			) {
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
@@ -201,6 +204,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 coreTimeSetting));
 		}
 		/*所定内割増時間の時間帯作成*/
+		//この処理にある「法定労働時間を取得」＝dailyUnitです
 		
 		return timeFrames;
 	}
