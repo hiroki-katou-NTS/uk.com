@@ -2,6 +2,9 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import java.util.Date;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+
 /**
  * The Interface CompanyDivergenceReferenceTimeService.
  */
@@ -16,5 +19,5 @@ public interface CompanyDivergenceReferenceTimeService {
 	 * @param divergenceTimeNo the divergence time no
 	 * @param DivergenceTimeOccurred the divergence time occurred
 	 */
-	public void CheckDivergenceTime(Integer userId, String companyId, Date processDate, Integer divergenceTimeNo, String DivergenceTimeOccurred );
+	public DetermineReferenceTime CheckDivergenceTime(String userId, String companyId, GeneralDate processDate, int divergenceTimeNo, AttendanceTime DivergenceTimeOccurred );
 }
