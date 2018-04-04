@@ -58,7 +58,6 @@ module nts.uk.com.view.cps001.g.vm {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(result));
                             if(_self.itemDefs.length > 0){
                                 _self.setItemDefValue(_self.itemDefs).done(() => {
-                                    console.log('done ---');
                                  });
                             }   
                         }
@@ -87,6 +86,10 @@ module nts.uk.com.view.cps001.g.vm {
                 } else {
                     _self.create();                    
                 }
+                if(_self.itemDefs.length > 0){
+                    _self.setItemDefValue(_self.itemDefs).done(() => {
+                     });
+                }   
             });
 
 
@@ -127,7 +130,6 @@ module nts.uk.com.view.cps001.g.vm {
                  else {
                     if(_self.itemDefs.length > 0){
                     _self.setItemDefValue(_self.itemDefs).done(() => {
-                        console.log('done ---');
                      });
                     }    
                 }
@@ -238,7 +240,6 @@ module nts.uk.com.view.cps001.g.vm {
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
             if(_self.itemDefs.length > 0){
                 _self.setItemDefValue(_self.itemDefs).done(() => {
-                    console.log('done ---');
                  });
             }
             $('#id-grantDate').focus();
