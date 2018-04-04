@@ -5,13 +5,11 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 
 /**
- * 
  * @author dat.lh
- *
  */
 @AllArgsConstructor
 @Value
 public class ApprovalStatusEmpDto {
-	private String empCd;
+	private String sId;
 	private Period closurePeriod;
 }

@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
 public class WkTimeCommand {
-	private int startTime;
-	private int startType;
-	private int endTime;
-	private int endType;
+	private Integer startTime;
+	private Integer startType;
+	private Integer endTime;
+	private Integer endType;
 	private String wkTimeCD;
 }

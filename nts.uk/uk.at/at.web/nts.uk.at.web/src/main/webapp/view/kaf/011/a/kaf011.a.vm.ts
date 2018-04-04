@@ -20,9 +20,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
             { code: 1, text: text('KAF011_20') },
             { code: 2, text: text('KAF011_21') },
         ]);
-        appComSelectedCode: KnockoutObservable<number> = ko.observable(1);
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
-        appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
+        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
@@ -42,15 +42,19 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         manualSendMailAtr: KnockoutObservable<number> = ko.observable(1);
 
-        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+        drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
         showReason: KnockoutObservable<number> = ko.observable(0);
 
+        displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
+
+        appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+
         constructor() {
             let self = this;
-          
+
         }
-       
+
 
         start(): JQueryPromise<any> {
             block.invisible();
@@ -70,15 +74,17 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).always(() => {
                 block.clear();
                 dfd.resolve();
-
+                $("#recDatePicker").focus();
             });
             return dfd.promise();
         }
 
         clearData() {
             let self = this;
-            self.recWk(new common.AppItems());
-            self.absWk(new common.AppItems());
+            self.recWk().wkTime1(new common.WorkingHour());
+            self.recWk().wkTime2(new common.WorkingHour());
+            self.absWk().wkTime1(new common.WorkingHour());
+            self.absWk().wkTime2(new common.WorkingHour());
             self.reason('');
         }
 
@@ -99,13 +105,21 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.appReasons(data.appReasons || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
-                self.comment(data.drawalReqSet || null);
+                self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
+                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
             }
+        }
+        validate() {
+
+            $(".combo-box ,.nts-input").trigger("validate");
+
         }
 
         register() {
-            block.invisible();
+
+
             let self = this,
                 saveCmd: common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
@@ -117,22 +131,24 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
-                        version: 0
+                        appVersion: 0
                         ,
                     }
                 };
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
-
+            self.validate();
+            if (nts.uk.ui.errors.hasError()) { return; }
+            block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
                     self.clearData();
                 });
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
-
+                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
+                $("#recDatePicker").focus();
             });
         }
 
@@ -144,7 +160,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         }
 
-       
+
 
 
     }
