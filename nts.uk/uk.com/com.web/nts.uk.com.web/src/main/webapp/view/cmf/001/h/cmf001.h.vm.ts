@@ -185,6 +185,20 @@ module nts.uk.com.view.cmf001.h.viewmodel {
         */
         checkValidInput() {
             var self = this;
+            if (self.characterDataFormatSetting().fixedValue() == 0) {
+                if (self.characterDataFormatSetting().effectiveDigitLength() == 1) {
+                    $('#H2_5').ntsError('check');
+                    $('#H2_8').ntsError('check');
+                }
+                if (self.characterDataFormatSetting().codeEditing() == 1) {
+                    $('#H3_5').ntsError('check');
+                }
+            } else {
+                $('#H5_5').ntsError('check');
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
             self.characterDataFormatSetting().startDigit(Math.floor(self.characterDataFormatSetting().startDigit()));
             self.characterDataFormatSetting().endDigit(Math.floor(self.characterDataFormatSetting().endDigit()));
             

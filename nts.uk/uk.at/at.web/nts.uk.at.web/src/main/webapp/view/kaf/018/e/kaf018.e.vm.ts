@@ -33,7 +33,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 self.processingYm = params.processingYm;
                 self.startDate = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
                 self.endDate = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
-                self.isConfirmData = params.isDailyComfirm;
+                self.isConfirmData = params.isConfirmData;
                 self.listWorkplaceId = params.listWorkplaceId;
                 self.listEmpCd = params.listEmployeeCode;
 

@@ -91,15 +91,12 @@ module nts.uk.com.view.cmf001.j.viewmodel {
                     params.formatSetting.valueOfFixedValue));
             }
             else {
-                self.setting(new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 1, 0, null));
+                self.setting(new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 1, 1, 0, null));
             }
-
+            
             self.checkRequired1.subscribe(function(data: any) {
                 if (!data) {
                     $('#J2_5').ntsError('clear');
-                }
-                else {
-                    $('#J2_5').ntsError('check');
                 }
             });
 
@@ -107,17 +104,11 @@ module nts.uk.com.view.cmf001.j.viewmodel {
                 if (!data) {
                     $('#J2_8').ntsError('clear');
                 }
-                else {
-                    $('#J2_8').ntsError('check');
-                }
             });
 
             self.checkRequired3.subscribe(function(data: any) {
                 if (!data) {
                     $('#J7_5').ntsError('clear');
-                }
-                else {
-                    $('#J7_5').ntsError('check');
                 }
             });
         }
@@ -194,20 +185,29 @@ module nts.uk.com.view.cmf001.j.viewmodel {
 
         private hasError(): boolean {
             let self = this;
-            self.setting().startDigit(Math.floor(self.setting().startDigit()));
-            self.setting().endDigit(Math.floor(self.setting().endDigit()));
-            $('#J2_5').ntsError('check');
-            $('#J2_8').ntsError('check');
-            $('#J7_5').ntsError('check');
+            if (self.setting().fixedValue() == 0) {
+                if (self.setting().effectiveDigitLength() == self.atrUse) {
+                    $('#J2_5').ntsError('check');
+                    $('#J2_8').ntsError('check');
+                }
+            } else {
+                $('#J7_5').ntsError('check');
+            }
+
             if (nts.uk.ui.errors.hasError()) {
                 return true;
             }
             else {
-                let startDigit: number = +self.setting().startDigit();
-                let endDigit: number = +self.setting().endDigit();
-                if (startDigit > endDigit && self.checkActive6() && self.checkActive1() && self.inputMode) {
-                    alertError({ messageId: "Msg_1119", messageParams: [getText('CMF001_335'), getText('CMF001_338')] });
-                    return true;
+                if (self.setting().fixedValue() == 0 && self.setting().effectiveDigitLength() == self.atrUse) {
+                    self.setting().startDigit(Math.floor(self.setting().startDigit()));
+                    self.setting().endDigit(Math.floor(self.setting().endDigit()));
+
+                    let startDigit: number = +self.setting().startDigit();
+                    let endDigit: number = +self.setting().endDigit();
+                    if (startDigit > endDigit && self.inputMode) {
+                        alertError({ messageId: "Msg_1119", messageParams: [getText('CMF001_335'), getText('CMF001_338')] });
+                        return true;
+                    }
                 }
             }
             return false;

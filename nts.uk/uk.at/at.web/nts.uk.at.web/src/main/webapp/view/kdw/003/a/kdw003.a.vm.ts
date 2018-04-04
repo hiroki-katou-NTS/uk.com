@@ -954,7 +954,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                } else {
+                } else {1
                     lstEmployee = self.lstEmployee();
                 }
                 //  let errorCodes =["0001","0002","003"];      
@@ -1885,10 +1885,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
                     if (header.headerText) {
-                        if (header.group == undefined || header.group == null) {
+                        if (header.group == undefined || header.group == null || header.group.length == 0) {
                             header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                         }else{
-                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length)
+                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                         }
                     }
                     return header;

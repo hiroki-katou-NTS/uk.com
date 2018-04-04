@@ -17,8 +17,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalStatusForEmployee_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
@@ -33,7 +31,6 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * @author Doan Duy Hung
@@ -220,17 +217,5 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	public void doRemandForApplicant(String companyID, String rootStateID) {
 		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID);
 	}
-
-	@Override
-	public List<ApproveRootStatusForEmpImport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
-			String employeeID, String companyID, Integer rootType) {
-		List<ApproveRootStatusForEmpImport> data = approvalRootStatePub
-				.getApprovalByEmplAndDate(startDate, endDate, employeeID, companyID, rootType).stream()
-				.map(x -> new ApproveRootStatusForEmpImport(
-						x.getEmployeeID(), 
-						x.getAppDate(),
-						EnumAdaptor.valueOf(x.getApprovalStatus().value, ApprovalStatusForEmployee_New.class)))
-				.collect(Collectors.toList());
-		return data;
-	}
+	
 }
