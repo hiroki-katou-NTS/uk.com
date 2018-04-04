@@ -63,7 +63,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
 
             self.selectedCategoryItem = ko.observable(1);
-            $("#fixed-table").ntsFixedTable({ height: 540 });
+            $("#fixed-table").ntsFixedTable({ height: 264 });
 
             this.fileId = ko.observable(null);
             this.filename = ko.observable(null);
