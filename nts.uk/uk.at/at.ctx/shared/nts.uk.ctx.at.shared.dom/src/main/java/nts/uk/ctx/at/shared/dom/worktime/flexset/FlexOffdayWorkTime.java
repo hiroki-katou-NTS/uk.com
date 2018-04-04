@@ -121,9 +121,9 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject {
 				resTz -> this.lstWorkTimezone.stream().anyMatch(hdWtz -> resTz.isBetweenOrEqual(hdWtz.getTimezone())));
 	}
 
-	public void restoreData(ScreenMode screenMode, FlexWorkSetting oldDomain) {
+	public void correctData(ScreenMode screenMode, FlexWorkSetting oldDomain) {
 		if (!this.restTimezone.getFlowRestTimezone().isUseHereAfterRestSet()) {
-			this.restTimezone.restoreData(screenMode, oldDomain.getOffdayWorkTime().getRestTimezone());
+			this.restTimezone.correctData(screenMode, oldDomain.getOffdayWorkTime().getRestTimezone());
 		}
 	}
 }

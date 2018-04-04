@@ -48,25 +48,25 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimezoneStampSet oldDomain) {
-		this.prioritySets.forEach(item -> item.restoreData(screenMode, oldDomain.getPrioritySets().stream()
+	public void correctData(ScreenMode screenMode, WorkTimezoneStampSet oldDomain) {
+		this.prioritySets.forEach(item -> item.correctData(screenMode, oldDomain.getPrioritySets().stream()
 				.filter(oldItem -> oldItem.getStampAtr().equals(item.getStampAtr())).findFirst().orElse(null)));
 	}
 
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.prioritySets.forEach(item -> item.restoreDefaultData(screenMode));
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.prioritySets.forEach(item -> item.correctDefaultData(screenMode));
 	}
 }

@@ -167,7 +167,7 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 				this.restTimezone.restoreFixRestTime(oneDay.get().getRestTimezone().isFixRestTime());
 			}
 		} else {
-			this.restTimezone.restoreData(screenMode, oldDomain.getRestTimezone());
+			this.restTimezone.correctData(screenMode, oldDomain.getRestTimezone());
 		}
 	}
 }

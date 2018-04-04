@@ -150,7 +150,7 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
@@ -159,23 +159,29 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
+		// Dialog J: list stamp timezone
+		this.stampReflectTimezone.correctData(screenMode, oldDomain.getStampReflectTimezone());
+		
 		// Tab 8 -> 16
-		this.commonSet.restoreData(screenMode, oldDomain.getCommonSet());
+		this.commonSet.correctData(screenMode, oldDomain.getCommonSet());
 	}
 
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
-	 * @param valueOf
-	 *            the value of
+	 * @param screenMode
+	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		// Tab 2 + 3 + 5: restore 平日勤務時間帯
-		this.halfDayWorkTimezones.forEach(item -> item.restoreDefaultData(screenMode));
+		this.halfDayWorkTimezones.forEach(item -> item.correctDefaultData(screenMode));
 		
+		// Dialog J: list stamp timezone
+		this.stampReflectTimezone.correctDefaultData(screenMode);
+
 		// Tab 8 -> 16
-		this.commonSet.restoreDefaultData(screenMode);
+		this.commonSet.correctDefaultData(screenMode);
 	}
 
 }

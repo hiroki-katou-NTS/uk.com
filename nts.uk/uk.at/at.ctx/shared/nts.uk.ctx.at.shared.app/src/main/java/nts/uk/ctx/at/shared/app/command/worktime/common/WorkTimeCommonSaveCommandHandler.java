@@ -72,7 +72,7 @@ public class WorkTimeCommonSaveCommandHandler {
 		// check is add mode
 		if (command.isAddMode()) {
 			// call repository add predetemine time setting
-			predseting.restoreDefaultData(screenMode, command.getWorktimeSetting().getWorkTimeDivision());
+			predseting.correctDefaultData(screenMode, command.getWorktimeSetting().getWorkTimeDivision());
 
 			// Validate
 			this.validate(command, workTimeSetting, predseting);
@@ -86,7 +86,7 @@ public class WorkTimeCommonSaveCommandHandler {
 			Optional<PredetemineTimeSetting> opPredetemineTimeSetting = this.predetemineTimeSettingRepository
 					.findByWorkTimeCode(companyId, command.getWorktimeSetting().worktimeCode);
 			if (opPredetemineTimeSetting.isPresent()) {
-				predseting.restoreData(screenMode, command.getWorktimeSetting().getWorkTimeDivision(),
+				predseting.correctData(screenMode, command.getWorktimeSetting().getWorkTimeDivision(),
 						opPredetemineTimeSetting.get());
 
 				// Validate

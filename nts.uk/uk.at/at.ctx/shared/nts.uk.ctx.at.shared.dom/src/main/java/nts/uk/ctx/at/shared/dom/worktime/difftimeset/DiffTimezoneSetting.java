@@ -57,7 +57,7 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	 * @param other
 	 *            the other
 	 */
-	public void restoreData(DiffTimezoneSetting other) {
+	public void correctData(DiffTimezoneSetting other) {
 		// restore 就業時間帯
 		Map<EmTimeFrameNo, EmTimeZoneSet> mapEmTimezone = other.getEmploymentTimezones().stream().collect(
 				Collectors.toMap(item -> ((EmTimeZoneSet) item).getEmploymentTimeFrameNo(), Function.identity()));
@@ -72,7 +72,7 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Restore default data.
 	 */
-	public void restoreDefaultData() {
+	public void correctDefaultData() {
 		this.employmentTimezones = new ArrayList<>();
 		this.oTTimezones = new ArrayList<>();
 	}

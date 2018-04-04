@@ -105,10 +105,10 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
-		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
+		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 		
-		this.offdayWorkTime.restoreData(screenMode, other);
+		this.offdayWorkTime.correctData(screenMode, other);
 	}
 	
 	/**
@@ -116,8 +116,8 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 *
 	 * @param screenMode the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.commonSetting.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.commonSetting.correctDefaultData(screenMode);
 	}
 	
 }

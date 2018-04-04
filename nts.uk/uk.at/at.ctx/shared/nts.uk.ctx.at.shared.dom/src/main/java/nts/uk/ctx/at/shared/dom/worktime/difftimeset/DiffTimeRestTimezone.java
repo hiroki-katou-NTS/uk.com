@@ -57,14 +57,14 @@ public class DiffTimeRestTimezone extends WorkTimeDomainObject {
 	 * @param restTimezone
 	 *            the rest timezone
 	 */
-	public void restoreData(DiffTimeRestTimezone restTimezone) {
+	public void correctData(DiffTimeRestTimezone restTimezone) {
 		this.restTimezones = restTimezone.restTimezones;
 	}
 
 	/**
 	 * Restore default data.
 	 */
-	public void restoreDefaultData() {
+	public void correctDefaultData() {
 		this.restTimezones = new ArrayList<>();
 	}
 

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -100,5 +101,38 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 */
 	public boolean isLeaveWork2() {
 		return this.workNo.v() == 2 && GoLeavingWorkAtr.LEAVING_WORK.equals(classification.value);
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param workTimeType
+	 *            the work time type
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, StampReflectTimezone oldDomain) {
+		if (oldDomain == null) {
+			return;
+		}
+		if (ScreenMode.SIMPLE.equals(screenMode)) {
+			this.startTime = oldDomain.getStartTime();
+			this.endTime = oldDomain.getEndTime();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (ScreenMode.SIMPLE.equals(screenMode)) {
+			this.startTime = new TimeWithDayAttr(0);
+			this.endTime = new TimeWithDayAttr(0);
+		}
 	}
 }

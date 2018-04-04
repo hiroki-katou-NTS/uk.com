@@ -103,16 +103,16 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 * @param other
 	 *            the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
 		// Tab 2 + 5 + 7
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
 			// Tab 2: restore 平日勤務時間帯
-			this.flowSetting.restoreData(screenMode, other.getFlowSetting());
+			this.flowSetting.correctData(screenMode, other.getFlowSetting());
 			// Tab 5
-			this.halfDayWorkTimezone.restoreData(screenMode, other.getHalfDayWorkTimezone());
+			this.halfDayWorkTimezone.correctData(screenMode, other.getHalfDayWorkTimezone());
 			// Tab 7
-			this.offdayWorkTimezone.restoreData(screenMode, other.getOffdayWorkTimezone());
+			this.offdayWorkTimezone.correctData(screenMode, other.getOffdayWorkTimezone());
 		} else {
 			// Tab 2
 			this.flowSetting = other.getFlowSetting();
@@ -123,7 +123,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 		}
 		
 		// Tab 8 -> 16
-		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
+		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 	}
 
 	/**
@@ -132,14 +132,14 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		// Tab 2 + 5: restore 平日勤務時間帯
-		this.halfDayWorkTimezone.restoreDefaultData(screenMode);
+		this.halfDayWorkTimezone.correctDefaultData(screenMode);
 		
 		// Tab 7
-		this.offdayWorkTimezone.restoreDefaultData(screenMode);
+		this.offdayWorkTimezone.correctDefaultData(screenMode);
 		
 		// Tab 8 -> 16
-		this.commonSetting.restoreDefaultData(screenMode);
+		this.commonSetting.correctDefaultData(screenMode);
 	}
 }

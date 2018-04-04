@@ -130,7 +130,7 @@ public class FlowRestTimezone extends WorkTimeDomainObject {
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, FlowRestTimezone oldDomain) {
+	public void correctData(ScreenMode screenMode, FlowRestTimezone oldDomain) {
 		if (!this.useHereAfterRestSet) {
 			this.hereAfterRestSet = oldDomain.getHereAfterRestSet();
 		}
@@ -142,7 +142,7 @@ public class FlowRestTimezone extends WorkTimeDomainObject {
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		if (!this.useHereAfterRestSet) {
 			this.hereAfterRestSet = new FlowRestSetting();
 		}

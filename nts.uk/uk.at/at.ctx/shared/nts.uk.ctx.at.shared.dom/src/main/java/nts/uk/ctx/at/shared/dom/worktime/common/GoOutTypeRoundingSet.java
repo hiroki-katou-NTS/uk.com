@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -26,8 +26,10 @@ public class GoOutTypeRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new go out type rounding set.
 	 *
-	 * @param officalUseCompenGoOut the offical use compen go out
-	 * @param privateUnionGoOut the private union go out
+	 * @param officalUseCompenGoOut
+	 *            the offical use compen go out
+	 * @param privateUnionGoOut
+	 *            the private union go out
 	 */
 	public GoOutTypeRoundingSet(DeductGoOutRoundingSet officalUseCompenGoOut,
 			DeductGoOutRoundingSet privateUnionGoOut) {
@@ -39,7 +41,8 @@ public class GoOutTypeRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new go out type rounding set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public GoOutTypeRoundingSet(GoOutTypeRoundingSetGetMemento memento) {
 		this.officalUseCompenGoOut = memento.getOfficalUseCompenGoOut();
@@ -49,7 +52,8 @@ public class GoOutTypeRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(GoOutTypeRoundingSetSetMemento memento) {
 		memento.setOfficalUseCompenGoOut(this.officalUseCompenGoOut);
@@ -57,24 +61,27 @@ public class GoOutTypeRoundingSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, GoOutTypeRoundingSet oldDomain) {
-		this.officalUseCompenGoOut.restoreData(screenMode, oldDomain.getOfficalUseCompenGoOut());
-		this.privateUnionGoOut.restoreData(screenMode, oldDomain.getPrivateUnionGoOut());
+	public void correctData(ScreenMode screenMode, GoOutTypeRoundingSet oldDomain) {
+		this.officalUseCompenGoOut.correctData(screenMode, oldDomain.getOfficalUseCompenGoOut());
+		this.privateUnionGoOut.correctData(screenMode, oldDomain.getPrivateUnionGoOut());
 	}
-	
+
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
-	 * @param screenMode the screen mode
+	 * @param screenMode
+	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.officalUseCompenGoOut.restoreDefaultData(screenMode);
-		this.privateUnionGoOut.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.officalUseCompenGoOut.correctDefaultData(screenMode);
+		this.privateUnionGoOut.correctDefaultData(screenMode);
 	}
 
 }

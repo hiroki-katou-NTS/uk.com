@@ -59,7 +59,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
-			fixedWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			fixedWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, fixedWorkSetting);
 			this.fixedWorkSettingRepository.add(fixedWorkSetting);
@@ -67,7 +67,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 			Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId,
 					command.getWorktimeSetting().worktimeCode);
 			if (opFixedWorkSetting.isPresent()) {
-				fixedWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
+				fixedWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
 						command.getWorktimeSetting().getWorkTimeDivision(), opFixedWorkSetting.get());
 				// Validate + common handler
 				this.validate(command, fixedWorkSetting);

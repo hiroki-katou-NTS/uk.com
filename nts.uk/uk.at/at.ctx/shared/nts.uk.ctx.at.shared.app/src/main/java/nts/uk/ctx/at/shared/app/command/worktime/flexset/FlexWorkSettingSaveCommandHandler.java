@@ -59,7 +59,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 
 		// check is add mode
 		if (command.isAddMode()) {
-			flexWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			flexWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, flexWorkSetting);
 			this.flexWorkSettingRepository.add(flexWorkSetting);
@@ -67,7 +67,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 			Optional<FlexWorkSetting> opFlexWorkSetting = this.flexWorkSettingRepository.find(companyId,
 					command.getWorktimeSetting().worktimeCode);
 			if (opFlexWorkSetting.isPresent()) {
-				flexWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
+				flexWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
 						command.getWorktimeSetting().getWorkTimeDivision(), opFlexWorkSetting.get());
 				// Validate + common handler
 				this.validate(command, flexWorkSetting);

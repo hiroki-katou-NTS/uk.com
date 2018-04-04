@@ -5,12 +5,20 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
@@ -144,7 +152,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
@@ -153,22 +161,33 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {		
+		// Dialog J: list stamp timezone
+		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = this.lstStampReflectTimezone.stream()
+				.collect(Collectors.toMap(
+						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()), 
+						Function.identity()));
+		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
+				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
+		
 		// Tab 8 -> 16
-		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
+		this.commonSetting.correctData(screenMode, oldDomain.getCommonSetting());
 	}
 
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		// Tab 2 + 3 + 5: restore 平日勤務時間帯
-		this.lstHalfDayWorkTimezone.forEach(item -> item.restoreDefaultData(screenMode));
+		this.lstHalfDayWorkTimezone.forEach(item -> item.correctDefaultData(screenMode));
+		
+		// Dialog J: list stamp timezone
+		this.lstStampReflectTimezone.forEach(item -> item.correctDefaultData(screenMode));
 
 		// Tab 8 -> 16
-		this.commonSetting.restoreDefaultData(screenMode);
+		this.commonSetting.correctDefaultData(screenMode);
 	}
 }

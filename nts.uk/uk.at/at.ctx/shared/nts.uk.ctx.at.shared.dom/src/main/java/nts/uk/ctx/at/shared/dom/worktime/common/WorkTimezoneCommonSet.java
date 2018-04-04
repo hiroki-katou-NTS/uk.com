@@ -58,11 +58,11 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	/** The late early set. */
 	// 遅刻・早退設定
 	private WorkTimezoneLateEarlySet lateEarlySet;
-	
+
 	/** The holiday calculation. */
 	// 休暇時の計算
 	private HolidayCalculation holidayCalculation;
-	
+
 	/** The raising salary set. */
 	// 加給設定
 	private Optional<BonusPaySettingCode> raisingSalarySet;
@@ -70,12 +70,13 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new work timezone common set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public WorkTimezoneCommonSet(WorkTimezoneCommonSetGetMemento memento) {
 		this.zeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
 		this.intervalSet = memento.getIntervalSet();
-		this.subHolTimeSet = memento.getSubHolTimeSet();		
+		this.subHolTimeSet = memento.getSubHolTimeSet();
 		this.medicalSets = memento.getMedicalSet();
 		this.goOutSet = memento.getGoOutSet();
 		this.stampSet = memento.getStampSet();
@@ -90,7 +91,8 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(WorkTimezoneCommonSetSetMemento memento) {
 		memento.setZeroHStraddCalculateSet(this.zeroHStraddCalculateSet);
@@ -108,26 +110,29 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimezoneCommonSet oldDomain) {
-		this.goOutSet.restoreData(screenMode, oldDomain.getGoOutSet());
-		this.subHolTimeSet.forEach(item -> item.restoreData(screenMode, oldDomain.getSubHolTimeSet().stream()
+	public void correctData(ScreenMode screenMode, WorkTimezoneCommonSet oldDomain) {
+		this.goOutSet.correctData(screenMode, oldDomain.getGoOutSet());
+		this.subHolTimeSet.forEach(item -> item.correctData(screenMode, oldDomain.getSubHolTimeSet().stream()
 				.filter(oldItem -> oldItem.getOriginAtr().equals(item.getOriginAtr())).findFirst().orElse(null)));
-		this.stampSet.restoreData(screenMode, oldDomain.getStampSet());
+		this.stampSet.correctData(screenMode, oldDomain.getStampSet());
 	}
-	
+
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
-	 * @param screenMode the screen mode
+	 * @param screenMode
+	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.goOutSet.restoreDefaultData(screenMode);
-		this.subHolTimeSet.forEach(item -> item.restoreDefaultData(screenMode));
-		this.stampSet.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.goOutSet.correctDefaultData(screenMode);
+		this.subHolTimeSet.forEach(item -> item.correctDefaultData(screenMode));
+		this.stampSet.correctDefaultData(screenMode);
 	}
 }
