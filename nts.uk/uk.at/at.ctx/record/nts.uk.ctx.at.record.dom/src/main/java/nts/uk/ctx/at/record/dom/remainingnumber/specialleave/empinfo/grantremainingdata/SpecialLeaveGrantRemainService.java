@@ -14,7 +14,7 @@ public class SpecialLeaveGrantRemainService {
 				.filter(i -> i.getDetails().getRemainingNumber().timeOfRemain.isPresent()).mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().minute()).sum();
 		int hours = minutes / 60;
 		int minute = minutes - hours*60;
-		return result.toString() + " 日と " + hours + ":" + minute;
+		return result.toString() + " 日と " + hours + ":" + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
 	}
 
 }
