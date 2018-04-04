@@ -53,5 +53,15 @@ public class EmpTransLaborTime extends AggregateRoot implements StatutoryWorkTim
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setWorkingTimeSet(this.workingTimeSet);
 	}
+	
+	//テスト用に作成
+	public EmpTransLaborTime(CompanyId companyId, EmploymentCode employmentCode, WorkingTimeSetting workingTimeSet) {
+		super();
+		this.companyId = companyId;
+		this.employmentCode = employmentCode;
+		this.workingTimeSet = workingTimeSet;
+	}
+	
+	
 
 }

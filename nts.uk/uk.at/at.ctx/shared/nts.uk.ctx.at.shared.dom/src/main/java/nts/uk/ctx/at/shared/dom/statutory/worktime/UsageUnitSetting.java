@@ -58,12 +58,12 @@ public class UsageUnitSetting extends AggregateRoot {
 	}
 	
 	//テスト用に作成
-//	public UsageUnitSetting(CompanyId companyId,boolean employee,boolean workPlace,boolean employment) {
-//		this.companyId = companyId;
-//		this.employee = employee;
-//		this.workPlace = workPlace;
-//		this.employment = employment;
-//	}
+	public UsageUnitSetting(CompanyId companyId,boolean employee,boolean workPlace,boolean employment) {
+		this.companyId = companyId;
+		this.employee = employee;
+		this.workPlace = workPlace;
+		this.employment = employment;
+	}
 
 	/**
 	 * Save to memento.

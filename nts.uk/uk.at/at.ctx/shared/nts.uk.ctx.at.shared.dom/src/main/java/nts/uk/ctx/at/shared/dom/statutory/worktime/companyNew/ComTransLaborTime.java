@@ -46,5 +46,12 @@ public class ComTransLaborTime extends AggregateRoot implements StatutoryWorkTim
 		memento.setCompanyId(this.companyId);
 		memento.setWorkingTimeSet(this.workingTimeSet);
 	}
+	
+	//テスト用に作成
+	public ComTransLaborTime(CompanyId companyId, WorkingTimeSetting workingTimeSet) {
+		super();
+		this.companyId = companyId;
+		this.workingTimeSet = workingTimeSet;
+	}	
 
 }

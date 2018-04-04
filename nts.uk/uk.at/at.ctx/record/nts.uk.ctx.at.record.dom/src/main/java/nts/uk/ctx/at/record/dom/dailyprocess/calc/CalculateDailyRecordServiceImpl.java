@@ -445,7 +445,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
 			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
-			val flexWork = holidayAddtionRepository.findByCId(employeeId);
+			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			/*大塚モード*/
 //			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 			
@@ -471,15 +471,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												personalInfo.getStatutoryWorkTime(),calcSetinIntegre.getOvertimeSetting(),LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
-												new WorkTimeCalcMethodDetailOfHoliday(flexWork.isPresent()?flexWork.get().getFlexWork().getNotDeductLateleave2():1,
-																					  flexWork.isPresent()?flexWork.get().getFlexWork().getAdditionTime2():1),
+												new WorkTimeCalcMethodDetailOfHoliday(1,1),
+//												new WorkTimeCalcMethodDetailOfHoliday(flexWork.isPresent()?flexWork.get().getFlexWork().getNotDeductLateleave2():1,
+//																					  flexWork.isPresent()?flexWork.get().getFlexWork().getAdditionTime2():1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()));
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
-				val regularWork = holidayAddtionRepository.findByCId(companyId);
+//				val regularWork = holidayAddtionRepository.findByCId(companyId);
 				/*大塚モード*/
 //				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 				
@@ -520,8 +521,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						midNightTimeSheet,
 						personalInfo,
 						Optional.empty(),
-						new WorkTimeCalcMethodDetailOfHoliday(regularWork.isPresent()?regularWork.get().getRegularWork().getNotDeductLateleave2():1,
-															  regularWork.isPresent()?regularWork.get().getRegularWork().getAdditionTime2():1));
+						new WorkTimeCalcMethodDetailOfHoliday(1,1));
+//						new WorkTimeCalcMethodDetailOfHoliday(regularWork.isPresent()?regularWork.get().getRegularWork().getNotDeductLateleave2():1,
+//															  regularWork.isPresent()?regularWork.get().getRegularWork().getAdditionTime2():1));
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */

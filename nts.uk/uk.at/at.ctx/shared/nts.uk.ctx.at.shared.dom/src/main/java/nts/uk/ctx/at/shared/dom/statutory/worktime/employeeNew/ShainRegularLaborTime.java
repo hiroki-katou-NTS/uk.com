@@ -41,6 +41,14 @@ public class ShainRegularLaborTime extends AggregateRoot implements StatutoryWor
 		this.employeeId = memento.getEmployeeId();
 		this.workingTimeSet = memento.getWorkingTimeSet();
 	}
+	
+	//テスト用に作成
+	public ShainRegularLaborTime(CompanyId companyId,EmployeeId employeeId,WorkingTimeSetting workingTimeSet) {
+		this.companyId = companyId;
+		this.employeeId = employeeId;
+		this.workingTimeSet = workingTimeSet;
+	}
+	
 
 	/**
 	 * Save to memento.
