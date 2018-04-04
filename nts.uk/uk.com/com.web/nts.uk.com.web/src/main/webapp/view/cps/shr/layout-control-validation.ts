@@ -14,16 +14,13 @@ module nts.layout {
         removeDoubleLine: (items: Array<any>) => {
             let maps = _(items)
                 .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                .filter(x => x != -1).value();
+                .filter(x => x != -1)
+                .value(),
+                dupl = _(maps)
+                    .filter((x, i) => maps[i + 1] == x + 1)
+                    .value();
 
-            _.each(maps, (t, i) => {
-                if (maps[i + 1] == t + 1) {
-                    _.remove(items, (m: any) => {
-                        let item: any = ko.unwrap(items)[maps[i + 1]];
-                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                    });
-                }
-            });
+            _.remove(items, (m: any, k: number) => dupl.indexOf(k) > -1);
         },
         initCheckError: (items: Array<any>) => {
             // validate button, radio button
