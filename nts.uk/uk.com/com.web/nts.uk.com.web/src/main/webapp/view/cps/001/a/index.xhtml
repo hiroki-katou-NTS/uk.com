@@ -61,14 +61,13 @@
 					}">
 				<div id="ccgcomponent" tabindex="6"></div>
 				<div class="left-area">
-					<div class="bg-green caret-right caret-background"
-						data-bind="let: { emp: employee() }">
+					<div class="bg-green caret-right caret-background">
 						<div
 							data-bind="template: {	
 								name: 'list-data',
 								data: {
 									rows: 10,
-									value: emp.employeeId,
+									value: employee.employeeId,
 									dataSource: employees,
 									primaryKey: 'employeeId',
 									columns: [
@@ -217,18 +216,15 @@
 						</div>
 					</div>
 				</div>
-				<div class="right-area"
-					data-bind="let: {
-							_auth: auth(),
-							_pers: person(), 
-							_emp: employee()
-						}">
+				<div class="right-area">
 					<div class="top-right-area cf" 
-						data-bind="ntsHeaderControl: { 
-							id: _emp.employeeId 
+						data-bind="ntsHeaderControl: {
+							roleId: employee.roleId,
+							personId: employee.personId,
+							employeeId: employee.employeeId
 						}"></div>
 					<div class="bottom-right-area"
-						data-bind="let: { 
+						data-bind="let: {
 								cats: categories,
 								layouts: multipleData 
 							}">

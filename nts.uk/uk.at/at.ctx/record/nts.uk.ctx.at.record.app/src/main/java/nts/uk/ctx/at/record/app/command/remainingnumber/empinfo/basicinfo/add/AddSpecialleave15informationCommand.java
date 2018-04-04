@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.add;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
@@ -17,15 +19,15 @@ public class AddSpecialleave15informationCommand {
 	
 	//	特別休暇管理
 	@PeregItem("IS00588")
-	private int useAtr;
+	private BigDecimal useAtr;
 	
 	//	付与設定
 	@PeregItem("IS00589")
-	private int appSet;
+	private BigDecimal appSet;
 	
 	//	付与日数
 	@PeregItem("IS00590")
-	private Integer grantDays;
+	private BigDecimal grantDays;
 	
 	//	付与テーブル
 	@PeregItem("IS00591")

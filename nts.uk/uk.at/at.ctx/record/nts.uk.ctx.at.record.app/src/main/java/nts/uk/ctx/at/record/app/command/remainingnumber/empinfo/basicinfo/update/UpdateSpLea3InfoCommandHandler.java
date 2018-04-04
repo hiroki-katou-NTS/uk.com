@@ -35,8 +35,8 @@ implements PeregUpdateCommandHandler<UpdateSpecialleave3informationCommand>{
 		val command = context.getCommand();
 		
 		String cid = AppContexts.user().companyId();
-		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid,command.getSID(),SpecialLeaveCode.CS00027.value, command.getUseAtr(), command.getAppSet(), command.getGrantDate(),
-				command.getGrantDays(), command.getGrantTable());
+		SpecialLeaveBasicInfo domain = new SpecialLeaveBasicInfo(cid,command.getSID(),SpecialLeaveCode.CS00027.value, command.getUseAtr().intValue(), command.getAppSet().intValue(), command.getGrantDate(),
+				command.getGrantDays()!=null? command.getGrantDays().intValue() : null, command.getGrantTable());
 		updateSpLeaInfoCommandHandler.updateHandler(domain);
 	}
 

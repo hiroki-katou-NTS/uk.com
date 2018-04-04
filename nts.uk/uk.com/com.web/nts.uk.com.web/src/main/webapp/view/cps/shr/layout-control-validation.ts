@@ -623,11 +623,34 @@ module nts.layout {
                 finder: IFinder = self.finder,
                 buttons: Array<IRelateButton> = [{
                     ctgCode: 'CS00024',
-                    btnCode: 'IS00276'
-                }],
+                    btnCode: 'IS00276',
+                    dialogId: 'i'
+                }, {
+                        ctgCode: 'CS00025',
+                        btnCode: 'IS00301',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00026',
+                        btnCode: 'IS00308',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00024',
+                        btnCode: 'IS00294',
+                        dialogId: 'h'
+                    }],
+
                 validation = (btn: IRelateButton) => {
                     let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
-                    //debugger;
+                    if (button) {
+                        setShared('CPS001GHI_VALUES', {
+                            ctgCode: button.data.categoryCode
+                        });
+                        $(button.id).on('click', () => {
+                            modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
+                                // load lai du lieu
+                              });
+                        });
+                    }
                 };
 
             _(buttons).each(btn => validation(btn));
@@ -776,5 +799,6 @@ module nts.layout {
     interface IRelateButton {
         ctgCode: string;
         btnCode: string;
+        dialogId: string;
     }
 }

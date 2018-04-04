@@ -53,7 +53,8 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	private KrcmtSpecialLeaveInfo toEntity(SpecialLeaveBasicInfo domain){
 		KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
 		entity.cID= domain.getCID();
-		entity.key.employeeId = domain.getSID();
+		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		entity.key = key;
 		entity.key.spLeaveCD = domain.getSpecialLeaveCode().v();
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();

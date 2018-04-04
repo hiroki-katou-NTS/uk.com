@@ -217,7 +217,7 @@ public class RegisterLayoutFinder {
 		item.setType(itemDef.getItemTypeState().getItemType());
 		item.setItemParentCode(itemDef.getItemParentCode());
 		
-		// Get company id
+		// Get contactCD
 		String contactCD = AppContexts.user().contractCode();
 		// Get Command
 		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemDef.getPerInfoCtgId(),contactCD);

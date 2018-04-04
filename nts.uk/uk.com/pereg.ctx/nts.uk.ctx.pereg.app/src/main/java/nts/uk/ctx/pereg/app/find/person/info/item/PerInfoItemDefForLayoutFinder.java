@@ -72,7 +72,7 @@ public class PerInfoItemDefForLayoutFinder {
 		// Get contractcode
 		String contractCD = AppContexts.user().contractCode();
 		// Get perInfoCategory
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemForLayout.getPerInfoCtgId(), contractCD);
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemDef.getPerInfoCategoryId(), contractCD);
 		
 		if (!perInfoCategory.isPresent()){
 			return;

@@ -756,7 +756,7 @@ module nts.uk.com.view.cps005.b {
 
             setShared('CPS005B_PARAMS', params);
             let itemCurrent: string = ko.toJS(__viewContext.screenModelB.currentItemData().currentItemSelected().id);
-            modal('/view/cps/016/a/index.xhtml', { title: '', height: 850, width: 1200 }).onClosed(function(): any {
+            modal('/view/cps/016/a/index.xhtml', { title: '', height: 800, width: 1350 }).onClosed(function(): any {
                 __viewContext['screenModelB'].reloadData().done(() => {
                     __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(itemCurrent);
                     self.selectionItemId(params.selectionItemId);
