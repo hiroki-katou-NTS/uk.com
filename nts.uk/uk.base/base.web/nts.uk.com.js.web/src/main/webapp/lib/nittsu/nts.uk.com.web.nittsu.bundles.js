@@ -3057,9 +3057,7 @@ var nts;
                             dfd.resolve(res);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("request failed");
-                        console.log(arguments);
-                        specials.errorPages.systemError(jqXHR.responseJSON);
+                        AjaxErrorHandlers.main(jqXHR, textStatus, errorThrown);
                     });
                 }
                 if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
@@ -3107,7 +3105,7 @@ var nts;
                             }
                         },
                         error: function (xhr, status, error) {
-                            specials.errorPages.systemError(xhr.responseJSON);
+                            AjaxErrorHandlers.main(xhr, status, error);
                         }
                     });
                 }
@@ -3120,6 +3118,30 @@ var nts;
                 return dfd.promise();
             }
             request.syncAjax = syncAjax;
+            var AjaxErrorHandlers;
+            (function (AjaxErrorHandlers) {
+                function main(xhr, status, error) {
+                    switch (xhr.status) {
+                        case 401:
+                            handle401(xhr);
+                            break;
+                        default:
+                            handleUnknownError(xhr, status, error);
+                            break;
+                    }
+                }
+                AjaxErrorHandlers.main = main;
+                function handle401(xhr) {
+                    var res = xhr.responseJSON;
+                    // res.sessionTimeout || res.csrfError
+                    //specials.errorPages.sessionTimeout();
+                }
+                function handleUnknownError(xhr, status, error) {
+                    console.log("request failed");
+                    console.log(arguments);
+                    specials.errorPages.systemError(xhr.responseJSON);
+                }
+            })(AjaxErrorHandlers || (AjaxErrorHandlers = {}));
             function doTaskShareingSesion(webAppId, task) {
                 login.keepSerializedSession()
                     .then(function () {
@@ -3480,26 +3502,30 @@ var nts;
                 };
                 var startP = function () {
                     _.defer(function () { return _start.call(__viewContext); });
+                    var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
-                    if ($(document).find("#header").length > 0) {
-                        ui.menu.request();
-                    }
-                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
-                        var header = "<div id='header'><div id='menu-header'>"
-                            + "<div id='logo-area' class='cf'>"
-                            + "<div id='logo'>勤次郎</div>"
-                            + "<div id='user-info' class='cf'>"
-                            + "<div id='company' class='cf' />"
-                            + "<div id='user' class='cf' />"
-                            + "</div></div>"
-                            + "<div id='nav-area' class='cf' />"
-                            + "<div id='pg-area' class='cf' />"
-                            + "</div></div>";
-                        $("#master-wrapper").prepend(header);
-                        ui.menu.request();
+                    if (!onSamplePage) {
+                        if ($(document).find("#header").length > 0) {
+                            ui.menu.request();
+                        }
+                        else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                            var header = "<div id='header'><div id='menu-header'>"
+                                + "<div id='logo-area' class='cf'>"
+                                + "<div id='logo'>勤次郎</div>"
+                                + "<div id='user-info' class='cf'>"
+                                + "<div id='company' class='cf' />"
+                                + "<div id='user' class='cf' />"
+                                + "</div></div>"
+                                + "<div id='nav-area' class='cf' />"
+                                + "<div id='pg-area' class='cf' />"
+                                + "</div></div>";
+                            $("#master-wrapper").prepend(header);
+                            ui.menu.request();
+                        }
                     }
                 };
                 $(function () {
+                    __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
                     console.log("call");
                     ui.documentReady.fire();
                     __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
