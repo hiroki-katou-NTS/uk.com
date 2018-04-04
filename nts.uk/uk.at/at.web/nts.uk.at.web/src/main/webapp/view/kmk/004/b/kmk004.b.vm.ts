@@ -125,12 +125,6 @@ module nts.uk.at.view.kmk004.b {
                     self.worktimeVM.isNewMode(true);
                 });
                 
-                self.selectedEmployeeId.subscribe(function(Id) {
-                    if (Id.length > 0) {
-                        self.loadEmployeeSetting();
-                    }
-                });
-                
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
@@ -185,6 +179,17 @@ module nts.uk.at.view.kmk004.b {
                         }
                         
                         self.isLoading(false);
+                        
+                        let empId = self.selectedEmployeeId();
+                        if (empId.length > 0) {
+                            self.loadEmployeeSetting();
+                        }
+                        
+                        self.selectedEmployeeId.subscribe(function(Id) {
+                            if (Id.length > 0) {
+                                self.loadEmployeeSetting();
+                            }
+                        });
                         
                         ko.applyBindingsToNode($('#lblEmployeeCode')[0], { text: self.displayEmployeeCode });
                         ko.applyBindingsToNode($('#lblEmployeeName')[0], { text: self.displayEmployeeName });
@@ -317,12 +322,13 @@ module nts.uk.at.view.kmk004.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
+                self.selectedEmployeeCode(employeeSearchs[0].code);
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: self.selectedEmployeeCode,
                     isDialog: false,
                     isShowNoSelectRow: false,

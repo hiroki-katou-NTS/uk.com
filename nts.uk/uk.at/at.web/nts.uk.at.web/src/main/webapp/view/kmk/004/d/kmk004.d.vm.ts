@@ -62,11 +62,6 @@ module nts.uk.at.view.kmk004.d {
                 self.setWorkplaceComponentOption();
                 self.workplaceCode = ko.observable('');
                 self.workplaceName = ko.observable('');
-                self.selectedWorkplaceId.subscribe(wkpId => {
-                    if (wkpId) {
-                        self.loadWorkplaceSetting();
-                    }
-                });
                 
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
@@ -119,6 +114,16 @@ module nts.uk.at.view.kmk004.d {
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                     
+                    let wkpId = self.selectedWorkplaceId();
+                    if (wkpId) {
+                        self.loadWorkplaceSetting();
+                    }
+                    
+                    self.selectedWorkplaceId.subscribe(wkpId => {
+                        if (wkpId) {
+                            self.loadWorkplaceSetting();
+                        }
+                    });
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
                     ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
                 }).always(() => {
@@ -136,7 +141,7 @@ module nts.uk.at.view.kmk004.d {
                     isMultiSelect: false, // is multiselect.
                     isShowSelectButton: false, // Show button select all and selected sub parent
                     treeType: 1, // workplace tree.
-                    selectType: 2, // select first item.
+                    selectType: 3, // select first item.
                     maxRows: 12, // maximum rows can be displayed.
                     selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
@@ -152,7 +157,7 @@ module nts.uk.at.view.kmk004.d {
             public loadWorkplaceSetting(): void {
                 let self = this;
                 let wpkId = self.selectedWorkplaceId();
-                self.setWorkplaceCodeName($('#list-workplace').getDataList(), wpkId);
+                self.setWorkplaceCodeName( $('#list-workplace').getDataList(), wpkId);
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
                         // Clear Errors

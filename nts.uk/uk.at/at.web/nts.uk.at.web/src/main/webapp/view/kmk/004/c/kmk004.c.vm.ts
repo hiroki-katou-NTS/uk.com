@@ -62,16 +62,6 @@ module nts.uk.at.view.kmk004.c {
                 
                 self.employmentCode = ko.observable('');
                 self.employmentName = ko.observable('');
-                self.selectedEmploymentCode.subscribe(code => {
-                    self.employmentCode(code);
-                    if (code) {
-                        self.loadEmploymentSetting(code);
-                        self.setEmploymentName(code);
-                    } else {
-                        self.employmentName('');
-                    }
-                    
-                });
                 
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
@@ -128,6 +118,23 @@ module nts.uk.at.view.kmk004.c {
                     // Set already setting list.
                     self.setAlreadySettingEmploymentList();
                     self.worktimeVM.worktimeSetting.selectedTab('tab-1');
+                    
+                    
+                    let empCode = self.selectedEmploymentCode();
+                    if (empCode) {
+                        self.loadEmploymentSetting(empCode);
+                    }
+                    
+                    self.selectedEmploymentCode.subscribe(code => {
+                        self.employmentCode(code);
+                        if (code) {
+                            self.loadEmploymentSetting(code);
+                            self.setEmploymentName(code);
+                        } else {
+                            self.employmentName('');
+                        }
+                        
+                    });
                     
                     ko.applyBindingsToNode($('#lblEmploymentCode')[0], { text: self.employmentCode });
                     ko.applyBindingsToNode($('#lblEmploymentName')[0], { text: self.employmentName });
