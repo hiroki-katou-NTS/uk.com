@@ -1,0 +1,28 @@
+.goback {
+	margin-right: 35px;
+}
+
+#contents-area {
+	display: flex;	
+}
+
+.right-content > div {
+	display: flex;
+	align-items:  center;
+}
+
+.right-content {
+	margin-top: 52px;
+}
+
+.right-content > div > * {
+	margin-right: 10px;
+}
+
+.right-content > div > .label {
+	width: auto;
+}
+
+.right-content > div:nth-child(3) {
+	padding-top:3px;
+}
