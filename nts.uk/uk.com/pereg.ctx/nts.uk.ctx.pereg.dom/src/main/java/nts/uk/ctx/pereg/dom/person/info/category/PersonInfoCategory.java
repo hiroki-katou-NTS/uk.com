@@ -101,6 +101,10 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.companyId = companyId;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 	}
+	
+	private PersonInfoCategory(){
+		super();
+	}
 
 	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
 			int categoryType) {
@@ -117,6 +121,22 @@ public class PersonInfoCategory extends AggregateRoot {
 	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,
 			int categoryType) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
+	}
+	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, int isAbolition){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		p.categoryCode = new CategoryCode(ctgCd);
+		return p;
+	}
+	public static PersonInfoCategory createDomainNameAndAbolition(String ctgId, String ctgCd, String name, int isAbolition){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		p.categoryCode = new CategoryCode(ctgCd);
+		p.categoryName = new CategoryName(name);
+		return p;
 	}
 	
 	public static List<PersonInfoCategory> getAllPerInfoCategoryWithCondition(List<PersonInfoCategory> lstObj){
