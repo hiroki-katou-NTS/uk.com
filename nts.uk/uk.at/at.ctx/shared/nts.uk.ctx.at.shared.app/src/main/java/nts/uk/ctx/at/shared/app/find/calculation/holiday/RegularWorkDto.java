@@ -42,4 +42,12 @@ public class RegularWorkDto {
 	
 	/** 加算する */
 	private int additionTimeWork;
+	
+	/*B5_22*/
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour1;
+	
+	/*B5_23*/
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour2;
 }

@@ -2,8 +2,11 @@ module nts.uk.at.view.kmk013.e {
     export module service {
         let paths: any = {
             findByCId : "shared/caculation/holiday/rounding/findByCid",
+            findExcByCId : "shared/caculation/holiday/rounding/findExcByCid",
             save:"shared/caculation/holiday/rounding/add",
+            saveExcOut: "shared/caculation/holiday/rounding/updateExcoutRound",
             getIdMonth:"ctx/at/shared/outsideot/setting/findAll/mothItem",
+            getOTCalc:"ctx/at/shared/outsideot/setting/findById",
             getMontItem: "at/record/divergencetime/AttendanceDivergenceName"
         }
         export function findByCompanyId(): JQueryPromise<any> {
@@ -22,5 +25,18 @@ module nts.uk.at.view.kmk013.e {
             return nts.uk.request.ajax("at", paths.getMontItem, arrPossible);
         }
 
+        /**
+         * save Excess outside time
+         */
+        export function saveExcOut(obj): JQueryPromise<any>  {
+                return nts.uk.request.ajax(paths.saveExcOut,obj);
+        }
+        
+        export function findExcByCompanyId(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findExcByCId);
+        }
+        export function getOTCalc(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getOTCalc);
+        }
     }
 }
