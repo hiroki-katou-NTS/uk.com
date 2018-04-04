@@ -18,7 +18,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private String QUERY_WITH_SPECIALID = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.specialLeaID = :specialLeaId";
 
-	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND e.expStatus = :expStatus order by a.grantDate";
+	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a" + " WHERE a.specialLeaID = :specialid ";
 
