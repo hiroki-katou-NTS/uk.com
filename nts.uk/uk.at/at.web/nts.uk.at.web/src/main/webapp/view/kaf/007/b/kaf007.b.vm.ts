@@ -184,7 +184,7 @@ module nts.uk.at.view.kaf007.b {
                     self.selectedReason(),
                     self.reasonCombo(),
                     self.displayAppReasonContentFlg(),
-                    self.multilContent()
+                    self.multilContent().trim()
                 );
                 if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
                         return;

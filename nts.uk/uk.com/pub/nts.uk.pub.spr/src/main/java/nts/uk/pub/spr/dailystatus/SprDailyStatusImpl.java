@@ -25,6 +25,8 @@ import nts.uk.pub.spr.dailystatus.output.DailyStatusSpr;
 @Stateless
 public class SprDailyStatusImpl implements SprDailyStatusService {
 
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
 	
@@ -45,8 +47,8 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		// アルゴリズム「実績残業報告の有無」を実行する
 		return getEmpDailyStatus(
 				opEmployeeSpr.get().getEmployeeID(), 
-				GeneralDate.fromString(startDate, "yyyy/mm/dd"), 
-				GeneralDate.fromString(endDate, "yyyy/mm/dd"));
+				GeneralDate.fromString(startDate, DATE_FORMAT), 
+				GeneralDate.fromString(endDate, DATE_FORMAT));
 	}
 
 	@Override
@@ -70,7 +72,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		GeneralDate startD;
 		// 取得期間の開始日(startdate)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			startD = GeneralDate.fromString(startDate, "yyyy/mm/dd");
+			startD = GeneralDate.fromString(startDate, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1001", startDate);
 		}
@@ -81,7 +83,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		GeneralDate endD;
 		// 取得期間の終了日(enddate)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			endD = GeneralDate.fromString(endDate, "yyyy/mm/dd");
+			endD = GeneralDate.fromString(endDate, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1002", endDate);
 		}
@@ -96,7 +98,8 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	public List<DailyStatusSpr> getEmpDailyStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<DailyStatusSpr> resultList = new ArrayList<>();
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
-		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate.addDays(1)){
+		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+			GeneralDate loopDate = startDate.addDays(i);
 			// 本人確認状況
 			Integer status1 = this.getEmployeeStatus(loopDate, employeeID);
 			// 上司承認状況

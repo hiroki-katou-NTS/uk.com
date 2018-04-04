@@ -67,19 +67,30 @@ public class SprWebService {
 		paramsMap.put("selecttype", SprStubHelper.formatParam(selectType));
 		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationID));
 		
+		val paramsValue = new LinkedHashMap<String, String>();
+		paramsValue.put("companyID", loginUserContextSpr.getCompanyID());
+		paramsValue.put("loginemployeeID", loginUserContextSpr.getEmployeeID());
+		paramsValue.put("destinationScreen", menuCode);
+		paramsValue.put("starttime", startTime);
+		paramsValue.put("endtime", endTime);
+		paramsValue.put("date", targetDate);
+		
 		val html = new StringBuilder()
 				.append("<!DOCTYPE html>")
 				.append("<html><body>");
 		paramsMap.forEach((name, value) -> {
 			html.append(name + " : " + value + "<br/>");
+			
 		});
+		
+		val paramStringValue = new StringBuilder();
+		paramsValue.forEach((name,value)->{
+			paramStringValue.append(name+":'"+value+"',");
+		});
+		
 		html.append("<script>");
-		html.append("window.location.href = \"http://localhost:8080/nts.uk.at.web/view/kdw/003/a/index.xhtml"
-				+ "?contractCode=000000000000"
-				+ "&password=123456"
-				+ "&companyCode=0001"
-				+ "&employeeCode=000001"
-				+ "$password=0\";");
+		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
+		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");
 		html.append("</body></html>");
 		

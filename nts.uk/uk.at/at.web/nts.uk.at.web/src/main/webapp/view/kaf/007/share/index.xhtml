@@ -33,14 +33,7 @@
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_11')}</div>
 			<!--A4_1 申請日付-->
 			<div data-bind="if: $parent.screenModeNew()" class="mode-style">
-				<!-- 申請開始日  -->
-				<div id="inputdatestart"
-					data-bind="ntsDatePicker: {name: '#[KAF007_12]',required:true, value: application().startDate, dateFormat: $parent.dateFormat}"></div>
-				<!--A4_2 ~-->
-				<label class="valign-center link-app-date-label-kaf007">#{i18n.getText('KAF007_14')}</label>
-				<!-- 申請終了日 -->
-				<div id="inputdateend"
-					data-bind="ntsDatePicker: {name: '#[KAF007_12]',required:true, value: application().endDate, dateFormat: $parent.dateFormat}"></div>
+				<div id="daterangepicker" data-bind="ntsDateRangePicker: { value: $parent.datePeriod, maxRange: 'none', required: true, showNextPrevious: false }" />				
 			</div>
 			<div data-bind="if: !$parent.screenModeNew()" class="mode-style">
 				<span data-bind="text: application().startDate"></span>
@@ -289,7 +282,7 @@
 									                    	width: '450',
 									                    	textalign: 'left'
 									                   	},
-			                   						required : $parent.requiredReason(), 
+			                   						required : false, 
 			                   						name: '#[KAF007_29]',
 			                   						enable: $parent.editable}" />
 			</div>

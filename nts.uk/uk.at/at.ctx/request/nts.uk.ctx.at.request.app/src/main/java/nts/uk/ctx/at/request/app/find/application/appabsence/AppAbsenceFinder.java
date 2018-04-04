@@ -43,7 +43,6 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -641,14 +640,20 @@ public class AppAbsenceFinder {
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
 			WorkStyle workStyle = basicScheduleService.checkWorkDay(WkTypeOpt.get().getWorkTypeCode().toString());
+			if(workStyle == null){
+				return null;
+			}
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				if(workTimeCode != null && workTimeCode.equals("")){
-					PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
-							.findByWorkTimeCode(companyID, workTimeCode).get()
-							.getPrescribedTimezoneSetting();
-					return prescribedTzs;
+				if(workTimeCode != null && !workTimeCode.equals("")){
+					if(this.predTimeRepository
+							.findByWorkTimeCode(companyID, workTimeCode).isPresent()){
+						PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
+								.findByWorkTimeCode(companyID, workTimeCode).get()
+								.getPrescribedTimezoneSetting();
+						return prescribedTzs;
+					}
 				}
 			}
 		}

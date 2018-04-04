@@ -20,7 +20,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
 
-        appDate: KnockoutObservable<String> = ko.observable(formatDate(moment().toDate(), "yyyy/MM/dd").format());
+        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
         kaf000_a = new kaf000.a.viewmodel.ScreenModel();
 
