@@ -30,7 +30,7 @@
 			<com:scriptfile path="cps001.g.vm.js" />
 			<com:scriptfile path="cps001.g.start.js" />
 		</ui:define>
-		
+
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 
@@ -50,8 +50,7 @@
 				<div class="grid-container">
 					<div tabindex="5"
 						data-bind="ntsCheckBox: { checked: checked, enable: true}">#{i18n.getText('CPS001_125')}</div>
-					<div id="tbl">
-					</div>
+					<div id="tbl"></div>
 					<!-- <table tabindex="6" id="single-list"
 						data-bind="ntsGridList: {			
 		 				dataSource: listAnnualLeaveGrantRemainData, 
@@ -63,30 +62,39 @@
 		 				rows:5
 			 		}"></table> -->
 				</div>
-				<table id="tbl-detail" data-bind="with: currentItem">
-					<tr>
-						<td data-itemCode="IS00385"><div
-								data-bind="ntsFormLabel: {required: true }">abc</div></td>
+				<div class='detailContent'
+					data-bind=" let:{gd: ko.toJS(nameDateGrantInp), 
+									dl: ko.toJS(nameDeadlineDateInp),
+									ng: ko.toJS(nameDayNumberOfGrant),
+									ngt: ko.toJS(namegrantTime),
+									nu: ko.toJS(nameDayNumberOfUse),
+									nut: ko.toJS(nameUseTime),
+									nr: ko.toJS(nameDayNumberOfRemain),
+									nrt: ko.toJS(nameTimeReam)}">
+					<table id="tbl-detail" data-bind="with: currentItem">
+						<tr>
+							<td data-itemCode="IS00385"><div
+									data-bind="ntsFormLabel: {required: true }">abc</div></td>
 
-						<td>
-							<div tabindex="7" id="idGrantDate"
-								data-bind="ntsDatePicker: {name : $root.nameDateGrantInp, value: grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
-						</td>
-					</tr>
-					<tr>
-						<td data-itemCode="IS00386"><div
-								data-bind="ntsFormLabel: {required: false }">abc</div></td>
-						<td>
-							<div tabindex="8" id="deadline"
-								data-bind="ntsDatePicker: {name: $root.nameDeadlineDateInp, value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
-						</td>
-					</tr>
-					<tr>
-						<td data-itemCode="IS00387"><div
-								data-bind="ntsFormLabel: {required: true }">abc</div></td>
-						<td>
-							<div class="cf" tabindex="9" id = "expirationStatus"
-								data-bind="ntsSwitchButton: {
+							<td>
+								<div tabindex="7" id="idGrantDate"
+									data-bind="ntsDatePicker: {name : gd, value: grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
+							</td>
+						</tr>
+						<tr>
+							<td data-itemCode="IS00386"><div
+									data-bind="ntsFormLabel: {required: false }">abc</div></td>
+							<td>
+								<div tabindex="8" id="deadline"
+									data-bind="ntsDatePicker: {name: dl, value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+							</td>
+						</tr>
+						<tr>
+							<td data-itemCode="IS00387"><div
+									data-bind="ntsFormLabel: {required: true }">abc</div></td>
+							<td>
+								<div class="cf" tabindex="9" id="expirationStatus"
+									data-bind="ntsSwitchButton: {
 								options: [
 							                 { code: '0', name: '使用可能'},
 							                 { code: '1', name: '期限切れ'}
@@ -96,22 +104,23 @@
 								value: expirationStatus,
 								required: true,
 								enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<!-- 					<div class="div_line"> -->
-						<td class="verTop">
-							<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS002_104')}</div>
-						</td>
-						<td colspan="3">
-							<div class="formularStyle">#{i18n.getText('CPS001_114')}</div>
-							<table id="subContent">
-								<tr>
-									<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
-									<td data-itemCode="IS00390" class="tdTxt"><div>abc</div></td>
-									<td><input class="resize_Edittor" tabindex="10" id = "grantDays"
-										data-bind="ntsNumberEditor: {
-	         							  name: $root.nameDayNumberOfGrant,
+							</td>
+						</tr>
+						<tr>
+							<!-- 					<div class="div_line"> -->
+							<td class="verTop">
+								<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS002_104')}</div>
+							</td>
+							<td colspan="3">
+								<div class="formularStyle">#{i18n.getText('CPS001_114')}</div>
+								<table id="subContent">
+									<tr>
+										<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
+										<td data-itemCode="IS00390" class="tdTxt"><div>abc</div></td>
+										<td><input class="resize_Edittor" tabindex="10"
+											id="grantDays"
+											data-bind="ntsNumberEditor: {
+	         							  name: ng,
 	                                      value: grantDays,
 	                                      constraint: 'AnnualLeaveGrantDayNumber',
 	                                      option: {
@@ -120,13 +129,14 @@
 	                                      enable: true, 
 	                                      required: true,
 	                                      }" />
-									</td>
-									<td><table>
-											<tr>
-												<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div>abc</div></td>
-												<td><input class="resize_Edittor" tabindex="11" id = "grantMinutes"
-													data-bind="ntsTimeEditor: {
-															name: $root.namegrantTime,
+										</td>
+										<td><table>
+												<tr>
+													<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div>abc</div></td>
+													<td><input class="resize_Edittor" tabindex="11"
+														id="grantMinutes"
+														data-bind="ntsTimeEditor: {
+															name: ngt,
 															value: grantMinutes,
 															constraint: 'AnnualLeaveGrantTime',
 															required: false,
@@ -135,18 +145,19 @@
 															inputFormat: 'time',
 															readonly: false,
 															immediate: false}" />
-												</td>
-											</tr>
-										</table></td>
-								</tr>
-								<tr>
-									<td>
-										<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div>
-									</td>
-									<td data-itemCode="IS00393" class="tdTxt"><div>abc</div></td>
-									<td><input tabindex="12" class="resize_Edittor" id = "usedDays"
-										data-bind="ntsNumberEditor: {
-	         							  name: $root.nameDayNumberOfUse,
+													</td>
+												</tr>
+											</table></td>
+									</tr>
+									<tr>
+										<td>
+											<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div>
+										</td>
+										<td data-itemCode="IS00393" class="tdTxt"><div>abc</div></td>
+										<td><input tabindex="12" class="resize_Edittor"
+											id="usedDays"
+											data-bind="ntsNumberEditor: {
+	         							  name: nu,
 	                                      value: usedDays,
 	                                      constraint: 'AnnualLeaveUsedDayNumber',
 	                                      option: {
@@ -155,33 +166,35 @@
 	                                      enable: true, 
 	                                      required: true,
 	                                      }" />
-									</td>
-									<td><table>
-											<tr>
-												<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div>abc</div></td>
-												<td><input class="resize_Edittor" tabindex="13" id = "usedMinutes"
-													data-bind="ntsTimeEditor: {
-										name: $root.nameUseTime,
-										value: usedMinutes,
-										constraint: 'AnnualLeaveUsedTime',
-										required: false,
-										enable: true,
-										mode: 'time',
-										inputFormat: 'time',
-										readonly: false,
-										immediate: false}" />
-												</td>
-											</tr>
-										</table></td>
-								</tr>
-								<tr>
-									<td>
-										<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div>
-									</td>
-									<td data-itemCode="IS00396" class="tdTxt"><div>abc</div></td>
-									<td><input class="resize_Edittor" tabindex="14" id = "remainingDays"
-										data-bind="ntsNumberEditor: {
-	         							  name: $root.nameDayNumberOfRemain,
+										</td>
+										<td><table>
+												<tr>
+													<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div>abc</div></td>
+													<td><input class="resize_Edittor" tabindex="13"
+														id="usedMinutes"
+														data-bind="ntsTimeEditor: {
+															name: nut,
+															value: usedMinutes,
+															constraint: 'AnnualLeaveUsedTime',
+															required: false,
+															enable: true,
+															mode: 'time',
+															inputFormat: 'time',
+															readonly: false,
+															immediate: false}" />
+													</td>
+												</tr>
+											</table></td>
+									</tr>
+									<tr>
+										<td>
+											<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div>
+										</td>
+										<td data-itemCode="IS00396" class="tdTxt"><div>abc</div></td>
+										<td><input class="resize_Edittor" tabindex="14"
+											id="remainingDays"
+											data-bind="ntsNumberEditor: {
+	         							  name: nr,
 	                                      value: remainingDays,
 	                                      constraint: 'AnnualLeaveRemainingDayNumber',
 	                                      option: {
@@ -190,31 +203,33 @@
 	                                      enable: true, 
 	                                      required: true,
 	                                      }" />
-									</td>
-									<td><table>
-											<tr>
-												<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div>abc</div></td>
-												<td><input class="resize_Edittor" tabindex="15" id = "remainingMinutes"
-													data-bind="ntsTimeEditor: {
-										name: $root.nameTimeReam,
-										value: remainingMinutes,
-										constraint: 'AnnualLeaveRemainingTime',
-										required: false,
-										enable: true,
-										readonly: false,
-										mode: 'time',
-										inputFormat: 'time',
-										immediate: false}" />
-												</td>
-											</tr>
-										</table></td>
-								</tr>
+										</td>
+										<td><table>
+												<tr>
+													<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div>abc</div></td>
+													<td><input class="resize_Edittor" tabindex="15"
+														id="remainingMinutes"
+														data-bind="ntsTimeEditor: {
+															name: nrt,
+															value: remainingMinutes,
+															constraint: 'AnnualLeaveRemainingTime',
+															required: false,
+															enable: true,
+															readonly: false,
+															mode: 'time',
+															inputFormat: 'time',
+															immediate: false}" />
+													</td>
+												</tr>
+											</table></td>
+									</tr>
 
-							</table>
-						</td>
-					</tr>
+								</table>
+							</td>
+						</tr>
 
-				</table>
+					</table>
+				</div>
 			</div>
 		</ui:define>
 
