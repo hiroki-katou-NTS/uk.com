@@ -24,10 +24,10 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<DeleteHo
 		employeeID = AppContexts.user().employeeId();
 		version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の取消」を実行する
-		cancelAppForPaidLeave(command);
+		cancelAppForPaidLeave(companyID, command);
 	}
 
-	private void cancelAppForPaidLeave(DeleteHolidayShipmentCommand command) {
+	public void cancelAppForPaidLeave(String companyID, DeleteHolidayShipmentCommand command) {
 		boolean isDeleteRec = command.getRecAppID() != null;
 		boolean isDeleteAbs = command.getAbsAppID() != null;
 
