@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
 import lombok.Data;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -50,4 +51,13 @@ public class FlexWorkCommand {
 
 	/** 加算する */
 	private int additionTimeWork;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour1;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour2;
+	
+	/*月次法定内のみ加算*/
+	private int additionWithinMonthlyStatutory;
 }
