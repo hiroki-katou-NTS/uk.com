@@ -46,12 +46,12 @@
 				<div class='detailContent'>
 					<table data-bind="with: resvLeaGrantRemNum">
 						<tr>
-							<td data-itemCode="IS00398" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
-							<td><div id="grantDate" tabindex='7' data-bind="ntsDatePicker: {value: grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td data-itemCode="IS00398 grantDate" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
+							<td><div id="grantDate" tabindex='7' data-bind="ntsDatePicker: {name: $root.nameGrantDate,value: grantDate,required: true,   dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
-							<td data-itemCode="IS00399"><div data-bind="ntsFormLabel: {required: true }">2</div></td>
-							<td><div id="deadline" tabindex='8' data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td data-itemCode="IS00399 deadline"><div data-bind="ntsFormLabel: {required: true }">2</div></td>
+							<td><div id="deadline" tabindex='8' data-bind="ntsDatePicker: {name : '$root.nameDeadline', value: deadline, required: true, dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
 							<td data-itemCode="IS00400"><div data-bind="ntsFormLabel: {required: true }">3</div></td>
@@ -77,7 +77,7 @@
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_115')}</div></td>
 										<td class='paddingTd'><input class="realTxt" id="grantDays" tabindex='10' data-bind="ntsNumberEditor: {
-											name: '',
+											name: '#{i18n.getText('CPS001_115')}',
 		                                    value: grantDays,
 		                                    option: {
 			                                    decimallength: 1
@@ -89,7 +89,7 @@
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_116')}</div></td>
 										<td class='paddingTd'><input class="realTxt" id="useDays" tabindex='11' data-bind="ntsNumberEditor: {
-											name: '',
+											name: '#{i18n.getText('CPS001_116')}',
 		                                    value: useDays,
 		                                    option: {
 			                                    decimallength: 1
@@ -97,9 +97,9 @@
 		                                    enable: true, 
 		                                    required: true,
 		                                    }"/></td>
-										<td class='paddingTd' data-itemCode="IS00406">
+										<td class='paddingTd' data-itemCode="IS00406 overLimitDays">
 										<span>5</span><span><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
-											name: '',
+											name: '$root.nameOverLimitDays',
 		                                    value: overLimitDays,
 		                                    option: {
 			                                    decimallength: 1
@@ -111,7 +111,7 @@
 									<tr>
 										<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CPS001_117')}</div></td>
 										<td class='paddingTd'><input class="realTxt" id="remainingDays" tabindex='13' data-bind="ntsNumberEditor: {
-											name: '',
+											name: '#{i18n.getText('CPS001_117')}',
 		                                    value: remainingDays,
 		                                    option: {
 			                                    decimallength: 1
