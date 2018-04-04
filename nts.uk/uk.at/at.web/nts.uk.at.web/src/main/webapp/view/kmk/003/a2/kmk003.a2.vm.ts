@@ -373,23 +373,23 @@ module a2 {
         private toModel(dataSourceModel: KnockoutObservableArray<EmTimeZoneSetModel>,
             dataSource: KnockoutObservableArray<TimeZoneModel>) {
             let self = this;
-            
+
             if (nts.uk.util.isNullOrEmpty(dataSourceModel())) {
+                // clear list
+                dataSource([]);
                 return;
             }
 
-            // empty list
-            dataSource([]);
-                    
             // fill data
-            _.forEach(dataSourceModel(), (item: EmTimeZoneSetModel) => {
+            let mappedList = _.map(dataSourceModel(), (item: EmTimeZoneSetModel) => {
                 let timeRange: TimePeriod = {
                     startTime: item.timezone.start(),
                     endTime: item.timezone.end()
                 }
-                dataSource().push(new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime(),
-                    item.timezone.rounding.rounding()));
+                return new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime(),
+                    item.timezone.rounding.rounding());
             });
+            dataSource(mappedList);
         }
         
         //==========================================================================================================

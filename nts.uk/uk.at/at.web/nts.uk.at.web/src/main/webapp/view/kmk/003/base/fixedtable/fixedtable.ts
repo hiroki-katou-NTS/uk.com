@@ -247,9 +247,11 @@ module nts.fixedtable {
                 // update status button
                 self.isEnaleAddButton(newList.length < self.maxRow);
                 self.isEnaleRemoveButton(newList.length > self.minRow);
-                
+
                 if (newList.length <= 0) {
                     self.isSelectAll(false);
+                    // Add default data
+                    self.addMinRows();
                     return;
                 }
                 // add properties isChecked when multiple select
@@ -292,7 +294,7 @@ module nts.fixedtable {
          */
         public addMinRows(): void {
             let self = this;
-            if (self.itemList().length == 0) {
+            if (self.minRow > 0 && self.itemList().length == 0) {
                 for (let i = 0; i < self.minRow; i++) {
                     self.addRowItem();
                 }
@@ -315,10 +317,13 @@ module nts.fixedtable {
                 });
             });
             self.itemList.push(row);
-            self.$element.find('.time-range-editor').ntsError('clear');
-            self.$element.find('.time-range-editor').each((index, element) => {
-                $('#' + element.id).validateTimeRange();
-            });
+            const e = self.$element;
+            if (e) {
+                e.find('.time-range-editor').ntsError('clear');
+                e.find('.time-range-editor').each((index, element) => {
+                    $('#' + element.id).validateTimeRange();
+                });
+            }
         }
         
         /**
@@ -741,9 +746,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     _.defer(() => screenModel.itemList.valueHasMutated());
                 });
                 // Add default data
-                if (screenModel.minRow > 0) {
-                    screenModel.addMinRows();
-                }
+                screenModel.addMinRows();
             });
         });
     }
