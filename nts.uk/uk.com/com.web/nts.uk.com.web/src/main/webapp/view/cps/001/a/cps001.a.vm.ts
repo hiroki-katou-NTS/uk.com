@@ -368,8 +368,7 @@ module cps001.a.vm {
 
         deleteEmployee() {
             let self = this,
-                emp = self.employee(),
-                person = self.person(),
+                emp = self.employee,
                 logInId: string = __viewContext.user.employeeId;
 
             if (emp.employeeId() == logInId) {
@@ -380,7 +379,7 @@ module cps001.a.vm {
 
             setShared('CPS001B_PARAMS', {
                 sid: emp.employeeId(),
-                pid: person.personId()
+                pid: emp.personId()
             });
 
             modal('../b/index.xhtml').onClosed(() => {
@@ -389,9 +388,7 @@ module cps001.a.vm {
         }
 
         unManagerEmployee() {
-            let self = this,
-                employee: Employee = self.employee(),
-                iemp: IEmployee = ko.toJS(employee);
+            let self = this;
 
             modal('../c/index.xhtml').onClosed(() => {
                 self.start();
