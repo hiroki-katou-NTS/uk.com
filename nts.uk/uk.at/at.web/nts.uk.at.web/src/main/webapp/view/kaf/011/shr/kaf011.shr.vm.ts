@@ -216,6 +216,11 @@ module nts.uk.at.view.kaf011.shr {
                     });
 
                 });
+                self.wkTypes.subscribe((item) => {
+                    if (item.length) {
+                        self.wkTypeCD(item[0].workTypeCode);
+                    }
+                });
 
                 self.appDate.subscribe((newDate) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
@@ -228,9 +233,11 @@ module nts.uk.at.view.kaf011.shr {
                         }
                     if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date" || newDate.toString().length != 10) { return; }
                     block.invisible();
-                    service.changeDay(changeDateParam).done((data) => {
-                        vm.employeeID(data.employeeID);
-                        vm.prePostSelectedCode(data.preOrPostType);
+                    service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
+                        vm.recWk().wkTypes(data.recWkTypes || []);
+                        vm.absWk().wkTypes(data.absWkTypes || []);
+                        vm.kaf000_a.start("", 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
+                        });
                     }).always(() => {
                         block.clear();
                     });;
