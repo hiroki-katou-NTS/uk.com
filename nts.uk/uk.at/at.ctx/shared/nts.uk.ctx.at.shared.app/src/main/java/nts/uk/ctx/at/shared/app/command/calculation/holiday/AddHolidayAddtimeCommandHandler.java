@@ -33,7 +33,7 @@ public class AddHolidayAddtimeCommandHandler extends  CommandHandler<AddHolidayA
 			int morning = holidayAddtime.getMorning().intValue();
 			int afternoon = holidayAddtime.getAfternoon().intValue();
 			
-			if(morning + afternoon <=1440){
+			if(morning + afternoon > 1440){
 				throw new BusinessException("Msg_143");
 			}
 		}

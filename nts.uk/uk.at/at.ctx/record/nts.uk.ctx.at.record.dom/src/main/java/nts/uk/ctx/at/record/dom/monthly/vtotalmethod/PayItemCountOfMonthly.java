@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class PayItemCountOfMonthly extends AggregateRoot {
 
 	/** 会社ID */
