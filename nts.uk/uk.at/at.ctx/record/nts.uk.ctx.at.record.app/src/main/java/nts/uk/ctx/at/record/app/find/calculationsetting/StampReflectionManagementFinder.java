@@ -8,17 +8,24 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
+
 /**
- * 
- * @author phongtq
+ * The Class StampReflectionManagementFinder.
  *
+ * @author phongtq
  */
 @Stateless
 public class StampReflectionManagementFinder {
 
+	/** The repository. */
 	@Inject
 	private StampReflectionManagementRepository repository;
 
+	/**
+	 * Find by code.
+	 *
+	 * @return the stamp reflection management dto
+	 */
 	public StampReflectionManagementDto findByCode() {
 		String companyId = AppContexts.user().companyId();
 		Optional<StampReflectionManagement> optional = repository.findByCid(companyId);
@@ -28,9 +35,9 @@ public class StampReflectionManagementFinder {
 		StampReflectionManagementDto managementDto = new StampReflectionManagementDto(optional.get().getCompanyId(),
 				optional.get().getBreakSwitchClass().value, optional.get().getAutoStampReflectionClass().value,
 				optional.get().getActualStampOfPriorityClass().value, optional.get().getReflectWorkingTimeClass().value,
-				optional.get().getGoBackOutCorrectionClass().value, optional.get().getManagementOfEntrance().value,
-				optional.get().getAutoStampForFutureDayClass().value, optional.get().getOutingAtr().value,
-				optional.get().getMaxUseCount());
+				optional.get().getGoBackOutCorrectionClass().value, 
+				optional.get().getAutoStampForFutureDayClass().value
+				);
 		return managementDto;
 	}
 

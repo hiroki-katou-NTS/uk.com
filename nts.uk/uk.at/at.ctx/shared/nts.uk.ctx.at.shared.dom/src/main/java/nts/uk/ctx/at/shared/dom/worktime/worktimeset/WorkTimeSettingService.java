@@ -23,7 +23,7 @@ public interface WorkTimeSettingService {
 	 * @return the holiday work schedule
 	 */
 	// 打刻反映時間帯を取得する
-	List<StampReflectTimezone> getStampReflectTimezone(String companyId,
-			String workTimeCode);
+	List<StampReflectTimezone> getStampReflectTimezone(String companyId, String workTimeCode, Integer start1,
+			Integer start2, Integer end1, Integer end2);
 
 }
