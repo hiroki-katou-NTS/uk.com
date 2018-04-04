@@ -168,6 +168,9 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getDivTimeListByUseSet(java.lang.String)
+	 */
 	@Override
 	public List<DivergenceTime> getDivTimeListByUseSet(String companyId) {
 		
