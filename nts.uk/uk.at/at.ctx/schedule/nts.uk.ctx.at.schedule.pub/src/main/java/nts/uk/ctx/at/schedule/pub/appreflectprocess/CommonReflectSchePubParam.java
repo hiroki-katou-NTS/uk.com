@@ -1,13 +1,14 @@
-package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave;
+package nts.uk.ctx.at.schedule.pub.appreflectprocess;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+
 @AllArgsConstructor
 @Setter
 @Getter
-public class ForleaveReflectParam {
+public class CommonReflectSchePubParam {
 	/**	社員ID */
 	private String employeeId;
 	/**	年月日 */
@@ -16,5 +17,5 @@ public class ForleaveReflectParam {
 	 * 勤務種類コード
 	 */
 	private String worktypeCode;
-
+	private String workTimeCode;
 }
