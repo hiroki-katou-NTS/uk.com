@@ -5,18 +5,22 @@ module cps001.h.service {
     let paths: any = {
             getAll: "get-resv-lea/{0}/{1}",
             getById: "get-resv-lea-by-id/{0}",
+            generateDeadline: "generate-deadline",
             add: "add",
             update: "update",
             remove: "remove"
     };
     
-    export function getAll(isAll: boolean){
-        let employeeId: string = "a";
-        return ajax('at',format(parentPath + paths.getAll, employeeId, isAll));
+    export function getAll(emId: string, isAll: boolean){
+        return ajax('at',format(parentPath + paths.getAll, emId, isAll));
     }
     
     export function getByGrantDate(id: string){
         return ajax('at',format(parentPath + paths.getById, id));
+    }
+    
+    export function generateDeadline(grantDate: Date){
+        return ajax('at',parentPath + paths.generateDeadline,  grantDate);
     }
     
     export function remove(id: string){

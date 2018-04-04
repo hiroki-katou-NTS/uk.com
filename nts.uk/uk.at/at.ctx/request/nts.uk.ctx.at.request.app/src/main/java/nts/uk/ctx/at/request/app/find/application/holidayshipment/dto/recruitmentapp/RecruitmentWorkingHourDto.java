@@ -16,18 +16,18 @@ public class RecruitmentWorkingHourDto {
 	/**
 	 * 開始時刻
 	 */
-	private int startTime;
+	private Integer startTime;
 	/**
 	 * 直行
 	 */
-	private int startUseAtr;
+	private Integer startUseAtr;
 	/**
 	 * 終了時刻
 	 */
-	private int endTime;
+	private Integer endTime;
 	/**
 	 * 直帰
 	 */
-	private int endUseAtr;
+	private Integer endUseAtr;
 
 }

@@ -24,7 +24,6 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeRegisterApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ManagerSettingDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PastHistoryDto;
@@ -168,20 +167,13 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public WorkplaceImport getWpInfo(String workplaceId){
 		return comFinder.getWpInfo(workplaceId);
 	}
-	
-	
+
 	@POST
-	@Path("find/settingOfManager/{employeeId}")
-	public ManagerSettingDto getPsAppRootBySettingOfManager(@PathParam("employeeId") String employeeId ){
-		return comFinder.getPsAppRootBySettingOfManager(employeeId);
+	@Path("find/getEmployeeByCode/{employeeCode}/{hasAuthority}")
+	public PersonImport getEmployeeByCode(@PathParam("employeeCode")String employeeCode, @PathParam("hasAuthority") boolean hasAuthority){
+		return comFinder.getEmployeeInfoByCode(employeeCode, hasAuthority);
 	}
-	
-	@POST
-	@Path("find/getEmployeeByCode/{employeeCode}")
-	public PersonImport getEmployeeByCode(@PathParam("employeeCode")String employeeCode){
-		return employeeAdapter.getEmployeeInformation(employeeCode);
-	}
-	
+
 	@POST
 	@Path("find/settingOfManager/getPastHistory/{employeeId}")
 	public List<PastHistoryDto> getPastHistory(@PathParam("employeeId") String employeeId) {

@@ -53,59 +53,7 @@ public class ClosureFinder {
 
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
-	
-	@Inject
-	private ClosureService closureService;
-	
-	/**
-	 * アルゴリズム「承認状況指定締め日取得」を実行する
-	 * Acquire approval situation designated closing date
-	 * @return approval situation
-	 */
-	public ApprovalComfirmDto findAllClosure() {
-		// Get companyID.
-		String companyId = AppContexts.user().companyId();
-		GeneralDate startDate = null;
-		GeneralDate endDate = null;
-		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
-		//ドメインモデル「就業締め日」を取得する　<shared>
-		List<Closure> closureList = this.repository.findAllUse(companyId);
-		int selectedClosureId = 0;
-		List<ClosuresDto> closureDto = closureList.stream().map(x -> {
-			int closureId = x.getClosureId().value;
-			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
-				return new ClosureHistoryForComDto( x1.getClosureName().v(), x1.getClosureId().value, x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(), x1.getStartYearMonth().v().intValue());
-			}).collect(Collectors.toList());
-			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
-					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
-			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
-		}).collect(Collectors.toList());
-		
-		//ユーザー固有情報「選択中の就業締め」を取得する
-		//TODO neeed to get closureId init
-		
-		
-		//就業締め日（リスト）の先頭の締めIDを選択
-		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
-		if (closure.isPresent()) {
-			val closureId = closure.get().getClosureId();
-			selectedClosureId = closureId;
-			val closureOpt = this.repository.findById(companyId, closureId);
-			if (closureOpt.isPresent()) {
-				val closureItem = closureOpt.get();
-				// 当月の期間を算出する
-				val processingYm = closureItem.getClosureMonth().getProcessingYm();
-				//アルゴリズム「承認状況指定締め期間設定」を実行する
-				//アルゴリズム「当月の期間を算出する」を実行する
-				val closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
-				startDate = closurePeriod.start();
-				endDate = closurePeriod.end();
-				//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
-				listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
-			}
-		}
-		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, listEmployeeCode);
-	}
+
 	/**
 	 * Gets the closure id name.
 	 *

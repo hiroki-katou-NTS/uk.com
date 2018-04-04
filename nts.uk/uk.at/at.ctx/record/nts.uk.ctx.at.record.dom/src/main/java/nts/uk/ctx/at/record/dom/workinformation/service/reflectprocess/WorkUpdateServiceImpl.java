@@ -17,7 +17,9 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
@@ -328,6 +330,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	
 	@Override
 	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre) {
+		if(timeNight < 0) {
+			return;
+		}
 		// 所定外深夜時間を反映する
 		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(employeeId, dateData);
 		if(!optAttendanceTime.isPresent()) {
@@ -402,6 +407,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	}
 	@Override
 	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre) {
+		if(flexTime < 0) {
+			return;
+		}
 		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(employeeId, dateData);
 		if(!optAttendanceTime.isPresent()) {
 			return;
@@ -456,6 +464,96 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		//日別実績の編集状態
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 	}
-
+	@Override
+	public void updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame,
+			boolean isPre) {
+		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(employeeId, dateData);
+		if(!optAttendanceTime.isPresent()) {
+			return;
+		}
+		AttendanceTimeOfDailyPerformance attendanceTimeData = optAttendanceTime.get();
+		
+		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
+		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();		
+		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		//日別実績の休出時間
+		Optional<HolidayWorkTimeOfDaily> optWorkHolidayTime = excessOfStatutory.getWorkHolidayTime();
+		if(!optWorkHolidayTime.isPresent()) {
+			return;
+		}
+		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
+		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
+		if(lstHolidayWorkFrameTime.isEmpty()) {
+			return;
+		}
+		if(isPre) {			
+			lstHolidayWorkFrameTime.stream().forEach(x -> {
+				if(worktimeFrame.containsKey(x.getHolidayFrameNo().v())) {
+					AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(x.getHolidayFrameNo().v()));
+					x.setBeforeApplicationTime(Finally.of(worktimeTmp));
+				}
+			});	
+		} else {
+			lstHolidayWorkFrameTime.stream().forEach(x -> {
+				if(worktimeFrame.containsKey(x.getHolidayFrameNo().v())) {
+					Finally<TimeDivergenceWithCalculation> holidayWorkTime = x.getHolidayWorkTime();
+					if(holidayWorkTime.isPresent()) {
+						TimeDivergenceWithCalculation holidayWorkTimeData = holidayWorkTime.get();
+						holidayWorkTimeData.setTime(new AttendanceTime(worktimeFrame.get(x.getHolidayFrameNo().v())));
+					}
+				}
+			});
+		}
+		attendanceTime.updateFlush(attendanceTimeData);
+		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
+		if(isPre) {
+			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
+			for(int i = 1; i <= 10; i++) {
+				if(!worktimeFrame.containsKey(i)) {
+					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
+					lstWorktimeFrameTemp.remove(item);
+				}
+			}	
+		} else {
+			lstWorktimeFrameTemp = this.lstAfterWorktimeFrameItem();
+			for(int i = 1; i <= 10; i++) {
+				if(!worktimeFrame.containsKey(i)) {
+					Integer item = this.lstAfterWorktimeFrameItem().get(i - 1); 
+					lstWorktimeFrameTemp.remove(item);
+				}
+			}	
+		}
+		
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
+	}
+	
+	private List<Integer> lstPreWorktimeFrameItem(){
+		List<Integer> lstItem = new ArrayList<>();
+		lstItem.add(270);
+		lstItem.add(275);
+		lstItem.add(280);
+		lstItem.add(285);
+		lstItem.add(290);
+		lstItem.add(295);
+		lstItem.add(300);
+		lstItem.add(305);
+		lstItem.add(310);
+		lstItem.add(315);
+		return lstItem;
+	}
+	private List<Integer> lstAfterWorktimeFrameItem(){
+		List<Integer> lstItem = new ArrayList<>();
+		lstItem.add(266);
+		lstItem.add(271);
+		lstItem.add(276);
+		lstItem.add(281);
+		lstItem.add(286);
+		lstItem.add(291);
+		lstItem.add(296);
+		lstItem.add(301);
+		lstItem.add(306);
+		lstItem.add(311);
+		return lstItem;
+	}
 
 }

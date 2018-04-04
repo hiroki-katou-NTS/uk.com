@@ -3,20 +3,35 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalStatusForEmployee_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 /**
@@ -31,9 +46,22 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private EmployeeRequestAdapter employeeRequestAdapter;
+	
+	@Inject 
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
 	@Inject
 	private MailSender mailsender;
+	
+	@Inject
+	private ClosureService closureService;
+	
+	/** The repository. */
+	@Inject
+	private ClosureRepository repository;
+	
+	@Inject
+	ClosureEmploymentRepository closureEmpRepo;
 
 	public ApprovalStatusMailTempDto findByType(int mailType) {
 		// 会社ID
@@ -225,13 +253,13 @@ public class ApprovalStatusFinder {
 		// 社員ID(リスト)
 		for (String sId : listSId) {
 			// imported(就業)「所属雇用履歴」より雇用コードを取得する
-			List<ApprovalStatusEmpDto> listEmpHist = new ArrayList<ApprovalStatusEmpDto>();
+			List<EmploymentDto> listEmpHist = new ArrayList<EmploymentDto>();
 			// Waiting for Q&A
 			Period empPeriod = new Period(GeneralDate.fromString("2018/01/02", "yyyy/MM/dd"),
 					GeneralDate.fromString("2018/02/02", "yyyy/MM/dd"));
 
 			// 雇用（リスト）
-			for (ApprovalStatusEmpDto sttEmp : listEmpHist) {
+			for (EmploymentDto sttEmp : listEmpHist) {
 				// 存在しない場合
 				if (listEmpCd.contains(sttEmp.getEmpCd())) {
 					continue;
@@ -291,9 +319,9 @@ public class ApprovalStatusFinder {
 	}
 
 	/**
-	 * 承認状況取得職場実績確認
+	 * アルゴリズム「承認状況取得職場実績確認」を実行する
 	 * 
-	 * @param listStatusEmp
+	 * @param listEmp
 	 *            社員ID＜社員ID、期間＞(リスト)
 	 * @param wkpId
 	 *            職場ID
@@ -301,14 +329,208 @@ public class ApprovalStatusFinder {
 	 *            月別確認を利用する/上司確認を利用する/本人確認を利用する
 	 * @return
 	 */
-	private List<ApprovalStatusActivityDto> getApprovalSttConfirmWkpResults(List<ApprovalStatusEmpDto> listStatusEmp,
+	private SumCountDto getApprovalSttConfirmWkpResults(List<ApprovalStatusEmpDto> listEmp,
 			String wkpId, UseSetingDto useSeting) {
-		for (ApprovalStatusEmpDto sttEmp : listStatusEmp) {
-			//月別確認を利用する
-			if(useSeting.isMonthlyConfirm()){
-				
+		SumCountDto sumCount = new SumCountDto();
+		// 会社ID
+		String cid = AppContexts.user().companyId();
+		
+		//社員ID(リスト)
+		for (ApprovalStatusEmpDto emp : listEmp) {
+			// 月別確認を利用する
+			if (useSeting.isMonthlyConfirm()) {
+				// imported(申請承認）「上司確認の状況」を取得する
+				List<ApproveRootStatusForEmpImport> listApproval = approvalRootStateAdapter.getApprovalByEmplAndDate(
+						emp.getClosurePeriod().getStartDate(),
+						emp.getClosurePeriod().getEndDate(),
+						emp.getSId(), cid, 2);
+				ApproveRootStatusForEmpImport approval = listApproval.stream().findFirst().get();
+				//承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
+				if (ApprovalStatusForEmployee_New.APPROVED.equals( approval.getApprovalStatus())) {
+					//月別確認件数　＝　＋１
+					sumCount.monthConfirm ++;
+				}
+				//承認状況＝「未承認 」又は「承認中」の場合
+				else{
+					//月別未確認件数　＝　＋１
+					sumCount.monthUnconfirm ++;
+				}
+			}
+
+			// アルゴリズム「承認状況取得日別確認状況」を実行する
+			this.getApprovalSttByDate(emp.getSId(), wkpId, emp.getClosurePeriod(), useSeting.isUseBossConfirm(),
+					useSeting.isUsePersonConfirm(), sumCount);
+			// 各件数を合算する
+		}
+		return sumCount;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況取得日別確認状況」を実行する
+	 * @param sId 社員ID
+	 * @param wkpId 職場ID
+	 * @param period 期間(開始日～終了日)
+	 * @param useBossConfirm 上司確認を利用する
+	 * @param usePersonConfirm 本人確認を利用する
+	 * @param sumCount output
+	 */
+	private void getApprovalSttByDate(String sId, String wkpId, Period period, boolean useBossConfirm,
+			boolean usePersonConfirm, SumCountDto sumCount) {
+		// 期間範囲分の日別確認（リスト）を作成する(Tạo list confirm hàng ngày)
+		List<DailyConfirmDto> listDailyConfirm = new ArrayList<DailyConfirmDto>();
+		
+		// 利用するの場合(use)
+		if (useBossConfirm) {
+			// アルゴリズム「承認状況取得日別上司承認状況」を実行する
+			this.getApprovalSttByDateOfBoss(sId, wkpId, period, listDailyConfirm, sumCount);
+		}
+		// 利用しないの場合
+
+		// 利用するの場合(use)
+		if (usePersonConfirm) {
+			// アルゴリズム「承認状況取得日別本人確認状況」を実行する
+			this.getApprovalSttByDateOfPerson(sId, wkpId, period, listDailyConfirm, sumCount);
+		}
+		// 利用しないの場合
+	}
+
+	/**
+	 * アルゴリズム「承認状況取得日別上司承認状況」を実行する
+	 * @param sId 社員ID
+	 * @param wkpId 職場ID
+	 * @param period 期間(開始日～終了日)
+	 * @param listDailyConfirm output 日別確認（リスト）＜職場ID、社員ID、対象日、本人確認、上司確認＞
+	 * @param sumCount output 上司確認件数,上司未確認件数
+	 */
+	private void getApprovalSttByDateOfBoss(String sId, String wkpId, Period period,
+			List<DailyConfirmDto> listDailyConfirm, SumCountDto sumCount) {
+		// 会社ID
+		String cid = AppContexts.user().companyId();
+		// imported（ワークフロー）「承認ルート状況」を取得する
+		List<ApproveRootStatusForEmpImport> listApproval = approvalRootStateAdapter
+				.getApprovalByEmplAndDate(period.getStartDate(), period.getEndDate(), sId, cid, 0);
+		//承認ルートの状況
+		for (ApproveRootStatusForEmpImport approval : listApproval) {
+			//日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
+			Optional<DailyConfirmDto> confirm = listDailyConfirm.stream().filter(
+					x -> x.getWkpId().equals(wkpId) && x.getSId().equals(sId) && x.getTargetDate().equals(period))
+					.findFirst();
+			//登録されていない場合(Chưa đăng ký
+			if (!confirm.isPresent()) {
+				// 日別確認（リスト）に追加する
+				DailyConfirmDto newDailyConfirm = new DailyConfirmDto(wkpId, sId, period, false, false);
+				listDailyConfirm.add(newDailyConfirm);
+			}
+
+			// 承認ルート状況.承認状況
+			if (ApprovalStatusForEmployee_New.APPROVED.equals(approval.getApprovalStatus())) {
+				// 「承認済」の場合
+				// 上司確認件数 ＝＋１
+				sumCount.bossConfirm ++;
+			}
+			else {
+				// 「未承認」又は「承認中」の場合
+				// 上司未確認件数 ＝＋１
+				sumCount.bossUnconfirm ++;
 			}
 		}
-		return null;
+	}
+
+	/**
+	 * アルゴリズム「承認状況取得日別本人確認状況」を実行する
+	 * @param sId 社員ID
+	 * @param wkpId 職場ID
+	 * @param period 期間(開始日～終了日)
+	 * @param listDailyConfirm output 日別確認（リスト）＜職場ID、社員ID、対象日、本人確認、上司確認＞
+	 * @param sumCount output
+	 */
+	private void getApprovalSttByDateOfPerson(String sId, String wkpId, Period period,
+			List<DailyConfirmDto> listDailyConfirm, SumCountDto sumCount) {
+	}
+	
+	/**
+	 * アルゴリズム「承認状況指定締め日取得」を実行する
+	 * Acquire approval situation designated closing date
+	 * @return approval situation
+	 */
+	public ApprovalComfirmDto findAllClosure() {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		int processingYm = 0;
+		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
+		//ドメインモデル「就業締め日」を取得する　<shared>
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		int selectedClosureId = 0;
+		List<ClosuresDto> closureDto = closureList.stream().map(x -> {
+			int closureId = x.getClosureId().value;
+			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
+				return new ClosureHistoryForComDto( x1.getClosureName().v(), x1.getClosureId().value, x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(), x1.getStartYearMonth().v().intValue());
+			}).collect(Collectors.toList());
+			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
+					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
+			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
+		}).collect(Collectors.toList());
+		
+		//ユーザー固有情報「選択中の就業締め」を取得する
+		//TODO neeed to get closureId init
+		
+		
+		//就業締め日（リスト）の先頭の締めIDを選択
+		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
+		if (closure.isPresent()) {
+			val closureId = closure.get().getClosureId();
+			selectedClosureId = closureId;
+			val closureOpt = this.repository.findById(companyId, closureId);
+			if (closureOpt.isPresent()) {
+				val closureItem = closureOpt.get();
+				// 当月の期間を算出する
+				val yearMonth = closureItem.getClosureMonth().getProcessingYm();
+				processingYm = yearMonth.v();
+				//アルゴリズム「承認状況指定締め期間設定」を実行する
+				//アルゴリズム「当月の期間を算出する」を実行する
+				DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, yearMonth);
+				startDate = closurePeriod.start();
+				endDate = closurePeriod.end();
+				//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+				listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
+			} else {
+				throw new RuntimeException("Could not find closure");
+			}
+		}
+		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmployeeCode);
+	}
+	
+	/**
+	 * アルゴリズム「承認状況指定締め期間設定」を実行する
+	 * @param closureId
+	 * @param closureDate
+	 * @return
+	 */
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId, int closureDate) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		int processingYmNew = 0;
+		// 当月の期間を算出する
+		YearMonth processingYm = new YearMonth(closureDate);
+		
+		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
+		Optional<Closure> closure = repository.findById(companyId, closureId);
+		if(!closure.isPresent()){
+			throw new RuntimeException("Could not find closure");
+		}
+		
+		val yearMonth = closure.get().getClosureMonth().getProcessingYm();
+		processingYmNew = yearMonth.v();
+		//アルゴリズム「当月の期間を算出する」を実行する
+		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
+		startDate = closurePeriod.start();
+		endDate = closurePeriod.end();
+		//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+		listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
+		return new ApprovalStatusPeriorDto(startDate, endDate, listEmployeeCode, processingYmNew);
 	}
 }
