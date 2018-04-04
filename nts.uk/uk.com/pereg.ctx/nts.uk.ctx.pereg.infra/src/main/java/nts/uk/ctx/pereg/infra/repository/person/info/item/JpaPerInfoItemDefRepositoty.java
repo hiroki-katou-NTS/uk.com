@@ -258,11 +258,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"AND c.ppemtPerInfoItemCmPK.contractCd = pc.ppemtPerInfoCtgCmPK.contractCd",
 			"WHERE i.abolitionAtr = 0 AND c.ppemtPerInfoItemCmPK.categoryCd =:ctgCode",
 			"AND p.abolitionAtr = 0 AND p.cid =:cid");
-	
-	private final static String SELECT_ITEM_BY_CTGID_AND_COMID = String.join(" ", 
-			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName, i.itemCd FROM PpemtPerInfoItem i",
-			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
-			"WHERE c.categoryCd = :ctgCd AND c.cid = :cid");
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -893,25 +888,5 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public List<String> getAllItemIdsByCtgCode(String cid, String ctgId) {
 		return this.queryProxy().query(SELECT_ITEMS_ID_BY_CTG_ID, String.class).setParameter("cid", cid)
 				.setParameter("ctgCode", ctgId).getList();
-	}
-
-	@Override
-	public void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId) {
-		lst.forEach(x->{
-			Optional<PpemtPerInfoItem> entityOpt = this.queryProxy().find(x.getPerInfoItemDefId(), PpemtPerInfoItem.class);
-			if(entityOpt.isPresent()){
-				PpemtPerInfoItem entity = entityOpt.get();
-				entity.abolitionAtr = x.getIsAbolition().value;
-				entity.itemName = x.getItemName().v();
-				this.commandProxy().update(entity);
-			}
-		});
-	}
-
-	@Override
-	public List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId) {
-		return this.queryProxy().query("SELECT_ITEM_BY_CTGID_AND_COMID", Object[].class)
-				.setParameter("ctgCd", perInfoCtgCd).setParameter("cid", CompanyId)
-				.getList(x -> PersonInfoItemDefinition.createDomainWithNameAndAbolition(x[0].toString(), x[1].toString(), x[2].toString()));
 	}
 }
