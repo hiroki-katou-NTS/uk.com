@@ -7,7 +7,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -71,6 +73,30 @@ public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializabl
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
 	public KshstWorkDepLaborSet irregularWorkSet;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+	public KshstHourPayAaddSet hourPayAaddSet;
+	
+	/** 加算方法 */
+	@Column(name = "ADDING_METHOD1")
+	public int addingMethod1;
+	
+	/* 勤務区分*/
+	@Column(name = "WORK_CLASS1")
+	public int workClass1;
+	/** 加算方法 */
+	
+	@Column(name = "ADDING_METHOD2")
+	public int addingMethod2;
+	
+	/* 勤務区分*/
+	@Column(name = "WORK_CLASS2")
+	public int workClass2;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+//	@OneToOne
+//	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID")
+	public KshstAddSetManWKHour addSetManWKHour;
 	
 	@Override
 	protected Object getKey() {

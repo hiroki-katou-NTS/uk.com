@@ -1,5 +1,13 @@
 #contents-area {
-	width: 1200px !important;
+	/* width: 1200px !important; */
+	display: flex;
+	flex-direction: column;
+}
+
+#contents-area > div {
+	display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
 }
 
 .boder-style {
@@ -15,14 +23,14 @@
 }
 
 .contents-area-middle {
-	height: 200px;
-	width: 306px;
+	/* height: 200px; */
+	/* width: 306px; */
 	text-align: center;
 }
 
 .contents-area-right {
-    height: 200px;
-    width: 198px;
+    /* height: 200px; */
+    /* width: 198px; */
     text-align: center;
 }
 
@@ -50,7 +58,7 @@
 
 .btn-area-middle, .btn-deformed-labor {
 	margin-top: 10px;
-	width: 175px;
+	width: 200px;
 }
 
 .contents-area-right-caret {
@@ -59,4 +67,19 @@
 
 .lbl-general-labor-explanation-margin-top {
 	margin-top: 30px;
+}
+
+.panel.panel-gray-bg {
+	white-space: nowrap;
+	width: 230px;
+}
+
+.panel.panel-frame {
+	display: flex;
+	flex-direction: column;
+	align-items: left;
+}
+
+#contents-area > div:nth-child(2) {
+	margin-top: 25px
 }
