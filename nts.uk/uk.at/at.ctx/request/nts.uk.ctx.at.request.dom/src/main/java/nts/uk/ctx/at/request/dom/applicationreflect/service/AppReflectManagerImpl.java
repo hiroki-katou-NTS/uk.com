@@ -102,11 +102,17 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		//勤務予定反映
 		ScheReflectedStatesInfo scheRelectStates = scheReflect.workscheReflect(appInfor);
 		appInfor.getReflectionInformation().setStateReflection(scheRelectStates.getReflectedSate());
-		appInfor.getReflectionInformation().setNotReason(scheRelectStates.getNotReflectReson() == null ? null : Optional.of(scheRelectStates.getNotReflectReson()));
+		if(scheRelectStates.getNotReflectReson() != null) {
+			appInfor.getReflectionInformation().setNotReason(Optional.of(scheRelectStates.getNotReflectReson()));
+		}
+		
 		//勤務実績反映
 		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
 		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
-		appInfor.getReflectionInformation().setNotReasonReal(workRecordreflect.getNotReflectReson() == null ? null : Optional.of(workRecordreflect.getNotReflectReson()));
+		if(workRecordreflect.getNotReflectReson() != null) {
+			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
+		}
+		
 		
 		appRepo.updateWithVersion(appInfor);
 	}
