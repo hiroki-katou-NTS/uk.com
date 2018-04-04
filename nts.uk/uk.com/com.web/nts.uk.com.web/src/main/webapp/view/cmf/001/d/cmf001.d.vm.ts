@@ -483,9 +483,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                         self.listAcceptItem(_rsList);
                                         _.each(self.listAcceptItem(), rs => {
                                             let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
-                                            rs.acceptItemName(item.itemName);
-                                            self.listSelectedCategoryItem.push(item);
-                                            self.listCategoryItem.remove(item);
+                                            if (item) {
+                                                rs.acceptItemName(item.itemName);
+                                                self.listSelectedCategoryItem.push(item);
+                                                self.listCategoryItem.remove(item);
+                                            }
                                         });
                                     });
                                 } else {//chua co du lieu, dang ki moi
