@@ -152,6 +152,7 @@ module nts.uk.at.view.kmk004.d {
             public loadWorkplaceSetting(): void {
                 let self = this;
                 let wpkId = self.selectedWorkplaceId();
+                self.setWorkplaceCodeName($('#list-workplace').getDataList(), wpkId);
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
                         // Clear Errors
@@ -174,8 +175,6 @@ module nts.uk.at.view.kmk004.d {
                             // Update Full Data
                             self.worktimeVM.worktimeSetting.updateFullData(resultData);
                             self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
-                            
-                            self.setWorkplaceCodeName($('#list-workplace').getDataList(), wpkId);
                         }
                         else {
                             // new mode.
@@ -185,8 +184,6 @@ module nts.uk.at.view.kmk004.d {
                             newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
                             // Update Full Data
                             self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
-                            
-                            self.setWorkplaceCodeName($('#list-workplace').getDataList(), '');
                         }
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
