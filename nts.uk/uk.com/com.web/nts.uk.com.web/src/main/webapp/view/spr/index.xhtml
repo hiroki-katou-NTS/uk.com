@@ -7,56 +7,7 @@
 <body>
 	<ui:composition template="../../master/freelayout.xhtml">	
 		<ui:define name="content">
-			<script type="">
-			__viewContext.ready(function() {
-				var paramSPR = JSON.parse(window.sessionStorage.getItem("paramSPR"));
-				window.sessionStorage.removeItem("paramSPR");
-				var menuCD = parseInt(paramSPR.destinationScreen);
-				var companyID = parseInt(paramSPR.companyID);
-				var date = parseInt(paramSPR.date);
-				var endtime = parseInt(paramSPR.endtime);
-				var loginemployeeID = parseInt(paramSPR.loginemployeeID);
-				var starttime = parseInt(paramSPR.starttime);
-				switch(menuCD) {
-    			case 1:
-        			break;
-    			case 2:
-        			break;
-				case 3:
-					var shareObject = {
-						changePeriodAtr: true, //期間を変更する có cho thay đổi khoảng thời gian hay không
-        				errorRefStartAtr: true, //エラー参照を起動する có hiện mode lỗi hay ko
-        				initClock: {
-							dateSpr: date,
-        					canEdit: false,
-        					employeeId: loginemployeeID, 
-        					liveTime: endtime,	//退勤打刻
-        					goOut: starttime,  //出勤打刻
-						}, //打刻初期値-社員ID Optional giờ check tay SPR
-        				lstEmployee: loginemployeeID, //社員一覧 社員ID danh sách nhân viên được chọn
-        				screenMode: 0, //画面モード-日別実績の修正の画面モード  mode approval hay ko 
-        				targetClosure: "", //処理締め-締めID targetClosure lấy closureId 
-        				transitionDesScreen: null, //遷移先の画面 - Optional //truyền từ màn hình nào sang
-
-        				dateTarget: date, //日付別で起動- Optional ngày extract mode 2
-        				displayFormat: 0, //表示形式 mode hiển thị 
-        				individualTarget: date, //個人別で起動 ngày bắt đầu
-        				lstExtratedEmployee: loginemployeeID,//抽出した社員一覧
-        				startDate: date,//期間 khoảng thời gian
-        				endDate: date,//期間 khoảng thời gian
-					}
-        			nts.uk.request.jump("at","/view/kdw/003/a/index.xhtml", { ShareObject : shareObject });
-        			break;
-				case 4:
-        			break;
-				case 5:
-        			break;
-				case 6:
-        			break;
-    			default:
-				}
-			})
-			</script>
+			<script src="sprmain.js"></script>
 		</ui:define>
 	</ui:composition>
 </body>
