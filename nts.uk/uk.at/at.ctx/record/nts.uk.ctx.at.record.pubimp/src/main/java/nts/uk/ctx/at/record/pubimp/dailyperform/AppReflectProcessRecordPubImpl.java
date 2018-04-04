@@ -172,9 +172,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isScheReflectFlg(),
 				appPara);
 		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);
-		
+		ReasonNotReflectPubRecord tem = outputData.getReflectedState() == null ? ReasonNotReflectPubRecord.ACTUAL_CONFIRMED : ReasonNotReflectPubRecord.NOT_PROBLEM;
 		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
-				outputData.getReflectedState() == null? null : EnumAdaptor.valueOf(outputData.getReflectedState().value, ReasonNotReflectPubRecord.class));
+				outputData.getReflectedState() == null ? null : EnumAdaptor.valueOf(outputData.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 	}
 
 	@Override
