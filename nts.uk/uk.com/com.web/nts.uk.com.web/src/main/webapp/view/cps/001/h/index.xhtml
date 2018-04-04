@@ -13,6 +13,11 @@
 					height : 795
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps001.h.style.css" />
 			<com:scriptfile path="cps001.h.service.js" />
@@ -79,6 +84,7 @@
 										<td class='paddingTd'><input class="realTxt" id="grantDays" tabindex='10' data-bind="ntsNumberEditor: {
 											name: '#{i18n.getText('CPS001_115')}',
 		                                    value: grantDays,
+		                                    constraint: 'ReserveLeaveGrantDayNumber',
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
@@ -91,6 +97,7 @@
 										<td class='paddingTd'><input class="realTxt" id="useDays" tabindex='11' data-bind="ntsNumberEditor: {
 											name: '#{i18n.getText('CPS001_116')}',
 		                                    value: useDays,
+		                                    constraint:'ReserveLeaveUsedDayNumber',
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
@@ -101,6 +108,7 @@
 										<span>5</span><span><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
 											name: '$root.nameOverLimitDays',
 		                                    value: overLimitDays,
+		                                    constraint:'ReserveLeaveUsedDayNumber',
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
@@ -113,6 +121,7 @@
 										<td class='paddingTd'><input class="realTxt" id="remainingDays" tabindex='13' data-bind="ntsNumberEditor: {
 											name: '#{i18n.getText('CPS001_117')}',
 		                                    value: remainingDays,
+		                                    constraint: 'ReserveLeaveRemainingDayNumber',
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
