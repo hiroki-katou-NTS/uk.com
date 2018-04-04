@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk013.e {
                 self.itemListExcOutRoundingFull = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
                     new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
-                    new ItemModel(2, "要素の丸めに従う")
+                    new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
                 ]);
                 self.currentRounding = ko.observableArray([]);
                 
