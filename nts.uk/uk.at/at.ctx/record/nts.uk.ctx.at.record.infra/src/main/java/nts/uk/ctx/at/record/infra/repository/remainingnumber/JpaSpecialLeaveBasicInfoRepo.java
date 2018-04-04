@@ -35,7 +35,15 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public void update(SpecialLeaveBasicInfo domain) {
-		this.commandProxy().update(toEntity(domain));
+		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		Optional<KrcmtSpecialLeaveInfo> entity = this.queryProxy().find(key, KrcmtSpecialLeaveInfo.class);
+		if (!entity.isPresent()){
+			return;
+		}
+		
+		updateEntity(domain, entity.get());
+		
+		this.commandProxy().update(entity.get());
 		
 	}
 
@@ -43,6 +51,22 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	public void delete(String sID, int spLeavCD) {
 		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(sID,spLeavCD);
 		this.commandProxy().remove(KrcmtSpecialLeaveInfo.class, key);
+	}
+	
+	/**
+	 * Update to entity
+	 * @param domain
+	 * @return
+	 */
+	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtSpecialLeaveInfo entity){
+		entity.appSetting = domain.getApplicationSet().value;
+		entity.grantDate = domain.getGrantSetting().getGrantDate();
+		if (domain.getGrantSetting().getGrantDays().isPresent()){
+			entity.grantNumber = domain.getGrantSetting().getGrantDays().get().v();
+		}
+		if (domain.getGrantSetting().getGrantTable().isPresent()){
+			entity.grantTable = domain.getGrantSetting().getGrantTable().get().v();
+		}
 	}
 	
 	/**
@@ -55,7 +79,6 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		entity.cID= domain.getCID();
 		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		entity.key = key;
-		entity.key.spLeaveCD = domain.getSpecialLeaveCode().v();
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
 		if (domain.getGrantSetting().getGrantDays().isPresent()){

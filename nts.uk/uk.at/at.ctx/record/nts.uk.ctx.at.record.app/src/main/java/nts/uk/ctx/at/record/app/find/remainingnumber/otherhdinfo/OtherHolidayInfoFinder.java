@@ -89,6 +89,7 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 		// ----------------------------
 		
 		// Item IS00374 ---------------
+		// 月初の超過有休残数を取得
 		sumRemain = excessHolidayManaDataRepository.getBySid(cid, query.getEmployeeId()).stream().mapToDouble(i->i.getInfo().getRemainNumer().minute()).sum();
 		dto.setExtraHours(sumRemain.intValue());
 		// ----------------------------	

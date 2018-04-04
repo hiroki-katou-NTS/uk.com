@@ -51,6 +51,7 @@ public class Specialleave1InformationDto extends PeregDomainDto {
 		if (domain.getGrantSetting().getGrantTable().isPresent()){
 			dto.grantTable = domain.getGrantSetting().getGrantTable().get().v();
 		}
+		dto.setRecordId(domain.getSID());
 		return dto;
 	}
 
