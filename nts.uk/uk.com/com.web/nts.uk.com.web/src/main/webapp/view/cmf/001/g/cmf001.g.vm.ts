@@ -188,7 +188,8 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         */
         checkValidInput() {
             var self = this;
-
+            self.numDataFormatSetting().startDigit(Math.floor(self.numDataFormatSetting().startDigit()));
+            self.numDataFormatSetting().endDigit(Math.floor(self.numDataFormatSetting().endDigit()));
             if (self.numDataFormatSetting().fixedValue() == 1) {
                 if (_.isEmpty(self.numDataFormatSetting().valueOfFixedValue())) {
                     alertError({ messageId: "Msg_2" });
