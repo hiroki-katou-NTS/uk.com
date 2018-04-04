@@ -54,12 +54,4 @@ public class WkpRegularLaborTime extends AggregateRoot implements StatutoryWorkT
 		memento.setWorkingTimeSet(this.workingTimeSet);
 	}
 	
-	//テスト用に作成
-	public WkpRegularLaborTime(CompanyId companyId, WorkplaceId workplaceId, WorkingTimeSetting workingTimeSet) {
-		super();
-		this.companyId = companyId;
-		this.workplaceId = workplaceId;
-		this.workingTimeSet = workingTimeSet;
-	}
-	
 }

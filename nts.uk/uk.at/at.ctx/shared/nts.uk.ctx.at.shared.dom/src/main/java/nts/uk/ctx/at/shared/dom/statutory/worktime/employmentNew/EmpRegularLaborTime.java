@@ -52,13 +52,4 @@ public class EmpRegularLaborTime extends AggregateRoot implements StatutoryWorkT
 		memento.setWorkingTimeSet(this.workingTimeSet);	
 	}
 	
-	//テスト用に作成
-	public EmpRegularLaborTime(CompanyId companyId, EmploymentCode employmentCode, WorkingTimeSetting workingTimeSet) {
-		super();
-		this.companyId = companyId;
-		this.employmentCode = employmentCode;
-		this.workingTimeSet = workingTimeSet;
-	}
-	
-	
 }
