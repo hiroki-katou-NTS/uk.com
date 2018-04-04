@@ -48,8 +48,10 @@ public class Kmk004WkpDeleteCommandHandler extends CommandHandler<Kmk004WkpDelet
 		delStatCommand.setWorkplaceId(deleteCommand.getWorkplaceId());
 		delMonthCommand.setWorkplaceId(deleteCommand.getWorkplaceId());
 		
-		this.delStatCommand.handle(delStatCommand);
-		this.delMonthCommand.handle(delMonthCommand);
+		this.delStatCommand.handle(delStatCommand);		
+		if (!delStatCommand.isOverOneYear()) {
+			this.delMonthCommand.handle(delMonthCommand);
+		}
 	}
 
 }

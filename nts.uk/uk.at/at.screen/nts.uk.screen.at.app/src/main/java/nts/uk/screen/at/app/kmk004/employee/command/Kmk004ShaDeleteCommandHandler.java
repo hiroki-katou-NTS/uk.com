@@ -49,7 +49,9 @@ public class Kmk004ShaDeleteCommandHandler extends CommandHandler<Kmk004ShaDelet
 		delMonthCommand.setSid(deleteCommand.getSid());
 		
 		this.delStatCommand.handle(delStatCommand);
-		this.delMonthCommand.handle(delMonthCommand);
+		if (!delStatCommand.isOverOneYear()) {
+			this.delMonthCommand.handle(delMonthCommand);
+		}	
 	}
 
 }

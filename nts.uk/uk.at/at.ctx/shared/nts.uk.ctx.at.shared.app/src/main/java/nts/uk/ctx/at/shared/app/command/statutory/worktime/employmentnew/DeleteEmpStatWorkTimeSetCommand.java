@@ -20,5 +20,8 @@ public class DeleteEmpStatWorkTimeSetCommand {
 	
 	/** The employee id. */
 	private String employmentCode;
+	
+	/** The is over one year. */
+	private boolean isOverOneYear;
 
 }

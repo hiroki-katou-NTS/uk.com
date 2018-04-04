@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.employeenew;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -11,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
@@ -49,16 +52,62 @@ public class DeleteShainStatWorkTimeSetCommandHandler
 	@Override
 	protected void handle(CommandHandlerContext<DeleteShainStatWorkTimeSetCommand> context) {
 		DeleteShainStatWorkTimeSetCommand command = context.getCommand();
+		
+		// set isOverOneYear == false
+		command.setOverOneYear(false);
+		
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
 		String employeeId = command.getEmployeeId();
 		
 		// remove with companyId, employeeId & year
-		this.shainNormalSettingRepository.find(companyId, employeeId, year).ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
-		this.shainFlexSettingRepository.find(companyId, employeeId, year).ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
-		this.shainDeforLaborSettingRepository.find(companyId, employeeId, year).ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
-		this.shainRegularWorkTimeRepository.find(companyId, employeeId).ifPresent((setting) -> this.shainRegularWorkTimeRepository.delete(companyId, employeeId));
-		this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId).ifPresent((setting) -> this.shainSpeDeforLaborTimeRepository.delete(companyId, employeeId));
+		// if isOverOneYearRegister == true, remove only domains belong to year
+		if (this.isOverOneYearRegister(companyId, employeeId)) {
+			this.shainNormalSettingRepository.find(companyId, employeeId, year)
+					.ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
+			this.shainFlexSettingRepository.find(companyId, employeeId, year)
+					.ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
+			this.shainDeforLaborSettingRepository.find(companyId, employeeId, year)
+					.ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
+
+			// set isOverOneYear == true
+			command.setOverOneYear(true);
+
+		} else {
+			this.shainNormalSettingRepository.find(companyId, employeeId, year)
+					.ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
+			this.shainFlexSettingRepository.find(companyId, employeeId, year)
+					.ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
+			this.shainDeforLaborSettingRepository.find(companyId, employeeId, year)
+					.ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
+			this.shainRegularWorkTimeRepository.find(companyId, employeeId)
+					.ifPresent((setting) -> this.shainRegularWorkTimeRepository.delete(companyId, employeeId));
+			this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId)
+					.ifPresent((setting) -> this.shainSpeDeforLaborTimeRepository.delete(companyId, employeeId));
+		}
+		
+		
+		
+	}
+	
+	/**
+	 * Checks if is over one year register.
+	 *
+	 * @param cid the cid
+	 * @param employeeId the employee id
+	 * @return true, if is over one year register
+	 */
+	public boolean isOverOneYearRegister(String cid, String employeeId) {
+
+		// find list sha normal setting register
+		List<ShainNormalSetting> listShainNormalSetting = this.shainNormalSettingRepository.findList(cid, employeeId);
+
+		// check list sha normal setting > 1
+		if (listShainNormalSetting.size() > 1) {
+			return true;
+		}
+		return false;
+
 	}
 
 }
