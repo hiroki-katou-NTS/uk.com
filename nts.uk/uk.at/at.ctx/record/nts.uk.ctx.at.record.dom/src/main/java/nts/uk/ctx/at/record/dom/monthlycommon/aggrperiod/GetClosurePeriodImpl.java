@@ -11,7 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -78,7 +78,7 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 		for (val closureIdHistory: this.closureIdHistories){
 			
 			// 締めID履歴の期間内で締め処理期間を作成
-			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEnd);
+			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEnd.addMonths(1));
 		}
 		
 		for (val aggrPeriod : this.aggrPeriods){

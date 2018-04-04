@@ -141,7 +141,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		Optional<WorkInfoOfDailyPerformance> WorkInfoOfDailyPerformanceOptional = this.workInformationRepo
 				.find(employeeId, date);
 		WorkInfoOfDailyPerformance WorkInfo = WorkInfoOfDailyPerformanceOptional.get();
-		WorkInformation scheduleWorkInformation = WorkInfo.getRecordWorkInformation();
+		WorkInformation scheduleWorkInformation = WorkInfo.getRecordInfo();
 		WorkTypeCode workTypeCode = scheduleWorkInformation.getWorkTypeCode();
 		boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId, workTypeCode.v());
 		if (checkHolidayOrNot) {
@@ -149,7 +149,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		}
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService
-				.checkWorkDay(WorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+				.checkWorkDay(WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		// 1日休日系
 		if (checkWorkDay.value == 0) {
 			return false;

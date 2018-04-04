@@ -29,13 +29,36 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類
 			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
-				return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor());
+				return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), true);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
 				return reflectRecord.gobackReflectRecord(gobackpara, true);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+				//TODO: lam trong lan giao hang tiep theo
+				/*AbsenceReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, true);*/
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
+				HolidayWorkReflectPara holidayworkData = appRecordInfor.getHolidayworkInfor();
+				return reflectRecord.holidayWorkReflectRecord(holidayworkData, true);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
+				CommonReflectPara workChangeData = appRecordInfor.getCommonInfor();
+				return reflectRecord.workChangeReflectRecord(workChangeData, true);
 			}
 		} else {
-			
+			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {		
+				//TODO: chua giao hang lan nay
+				//return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), false);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
+				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
+				return reflectRecord.gobackReflectRecord(gobackpara, false);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+				//TODO: lam trong lan giao hang tiep theo
+				/*AbsenceReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, false);*/
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
+				CommonReflectPara workChangeData = appRecordInfor.getCommonInfor();
+				return reflectRecord.workChangeReflectRecord(workChangeData, false);
+			}
 		}
 		
 		return null;

@@ -63,12 +63,16 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 		if (basicInfoOpt.isPresent() && maxDataOpt.isPresent()) {
 
 			List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(query.getEmployeeId());
-			List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(query.getEmployeeId());
+			List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(query.getEmployeeId(), companyId);
 
 			AnnualLeaveDto dto = AnnualLeaveDto.createFromDomains(basicInfoOpt.get(), maxDataOpt.get());
-
+			
+			//年休残数
 			dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnualLeaveNumber(companyId, annualLeaveDataList));
+			
 			dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(annualLeaveDataList));
+			
+			//積立年休残数
 			dto.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveDataList));
 			
 			return dto;

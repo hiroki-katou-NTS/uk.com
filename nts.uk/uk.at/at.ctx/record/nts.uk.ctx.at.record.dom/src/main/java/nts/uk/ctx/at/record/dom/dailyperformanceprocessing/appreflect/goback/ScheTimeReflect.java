@@ -1,4 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
+
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+
 /**
  * 事前申請の処理: 予定時刻の反映
  * 時刻の反映
@@ -13,13 +16,21 @@ public interface ScheTimeReflect {
 	 * @return
 	 */
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect);
+	
 	/**
-	 * 反映する時刻を求める
-	 * @param para
-	 * @param timeTypeScheReflect
+	 * 
+	 * @param timeTypeScheReflect 勤種・就時の反映できるフラグ
+	 * @param timeData 申請する時刻
+	 * @param applyTimeAtr 申請する時刻区分(開始/終了/開始2/終了2)
+	 * @param workTimeCode 申請する就業時間帯コード
+	 * @param scheTimeReflectAtr 予定時刻反映区分
 	 * @return
 	 */
-	public TimeOfDayReflectOutput getTimeOfDayReflect(GobackReflectParameter para, boolean timeTypeScheReflect, ApplyTimeAtr applyTimeAtr);
+	public TimeOfDayReflectOutput getTimeOfDayReflect(boolean timeTypeScheReflect, 
+			Integer timeData,
+			ApplyTimeAtr applyTimeAtr,
+			String workTimeCode,
+			ScheTimeReflectAtr scheTimeReflectAtr);
 	/**
 	 * 時刻の反映
 	 * @param para
@@ -37,7 +48,17 @@ public interface ScheTimeReflect {
 	 * @param workTimeCode
 	 * @param timeData
 	 * @param frameNo
+	 * @param isPre True:開始時刻, false:退勤時刻
 	 * @return
 	 */
 	public Integer justTimeLateLeave(String workTimeCode, Integer timeData, Integer frameNo, boolean isPre);
+	/**
+	 * 予定時刻反映できるかチェックする
+	 * @param worktimeCode
+	 * @param scheReflectAtr
+	 * @param scheAndRecordSameChangeFlg
+	 * 
+	 * @return
+	 */
+	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
 }

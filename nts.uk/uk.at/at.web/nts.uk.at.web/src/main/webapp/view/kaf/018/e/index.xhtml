@@ -31,7 +31,7 @@
 					<colgroup>
 						<col width="100px" />
 						<col width="300px" />
-						<col width="500px" />
+						<col width="600px" />
 					</colgroup>
 					<tr>
 						<td>
@@ -40,13 +40,16 @@
 						</td>
 						<td>
 							<!-- E2_1 -->
-							<div class="limited-label label" style="width: 290px;">13123
-								21s 12321 312 sad asd q2</div>
+							<div class="limited-label label" style="width: 290px;"
+								data-bind="text: closureName"></div>
 						</td>
 						<td>
 							<!-- E3 --> <!-- E3_1 -->
-							<div class="limited-label label" style="width: 490px;">2017/04(2017/01/01
-								~ 2017/04/30)</div>
+							<div class="limited-label label" style="width: 490px;">
+								<span data-bind="text: processingYm"></span>(<span
+									data-bind="text: startDate"></span> ~ <span
+									data-bind="text: endDate"></span>)
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -76,7 +79,7 @@
 							<th class="ui-widget-header">#{i18n.getText('KAF018_57')}</th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach: tempData">
+					<tbody data-bind="foreach: listWkpStatusConfirm">
 						<tr>
 							<td><a class="hyperlink" href="#" data-bind="text: name">アイコン無し、ただのリンク</a></td>
 							<td data-bind="text: $parent.getRecord(monthConfirm)"></td>

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -25,6 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, String>{
+	
+	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private IFactoryApplication iFactoryApplication;
 	@Inject
@@ -47,10 +47,11 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		// Create Application
-		
-		Application_New appRoot = iFactoryApplication.buildApplication(appID, command.getStartDate(),
+		GeneralDate startDate = command.getStartDate() == null ? null : GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		GeneralDate endDate = command.getEndDate() == null ? null : GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
+		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),
-				ApplicationType.ABSENCE_APPLICATION, command.getStartDate(), command.isDisplayEndDateFlg() ? command.getEndDate() : null,command.getEmployeeID());
+				ApplicationType.ABSENCE_APPLICATION, startDate, command.isDisplayEndDateFlg() ? endDate : null,command.getEmployeeID());
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
 				command.getHolidayAppType(),
@@ -66,7 +67,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(appRoot);
 		// 7.登録時のエラーチェック
-		checkBeforeRegister(command);
+		checkBeforeRegister(command,startDate);
 		// insert
 		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
@@ -75,10 +76,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		return newAfterRegister.processAfterRegister(appRoot);
 
 	}
-	private void checkBeforeRegister(CreatAppAbsenceCommand command){
+	private void checkBeforeRegister(CreatAppAbsenceCommand command,GeneralDate startDate){
 		int countDay = 0;
 		for(int i = 0; command.getStartDate().compareTo(command.getEndDate()) + i <= 0; i++){
-			GeneralDate appDate = command.getStartDate().addDays(i);
+			GeneralDate appDate = startDate.addDays(i);
 			countDay = countDay + 1;
 			// 休暇・振替系申請存在チェック
 			saveHolidayShipmentCommandHandler.vacationTransferCheck(command.getEmployeeID(), appDate, command.getPrePostAtr());

@@ -16,7 +16,7 @@ public interface PreOvertimeReflectService {
 	 * @param param
 	 * @return
 	 */
-	public ApplicationReflectOutput overtimeReflect(PreOvertimeParameter param);
+	public ApplicationReflectOutput overtimeReflect(OvertimeParameter param);
 	/**
 	 * 日別実績の修正からの計算
 	 * @param dailyData
@@ -24,5 +24,5 @@ public interface PreOvertimeReflectService {
 	 * @param dataData
 	 * @return
 	 */
-	public IntegrationOfDaily calculateForAppReflect(WorkInfoOfDailyPerformance workInfo, String employeeId, GeneralDate dataData);
+	public IntegrationOfDaily calculateForAppReflect(String employeeId, GeneralDate dataData);
 }

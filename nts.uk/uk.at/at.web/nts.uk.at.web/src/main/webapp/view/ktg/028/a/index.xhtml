@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 400
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode
+				nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
+				nts.uk.ctx.sys.portal.dom.toppagepart.size.Width
+				nts.uk.ctx.sys.portal.dom.toppagepart.size.Height
+				nts.uk.shr.sample.primitive.ints.SampleIntRange
+			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.WidgetDisplayItemType
+				nts.uk.ctx.at.request.dom.application.ApplicationType
+				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+			</com:EnumScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ktg028.a.main.css" />
+			<com:scriptfile path="ktg028.a.start.js" />
+			<com:scriptfile path="ktg028.a.vm.js" />
+			<com:scriptfile path="ktg028.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button data-bind="click : cleanForm,enable : isEnable">#{i18n.getText('KTG028_2')}</button>
+				<button class="proceed" data-bind="click : saveData, enable: $root.errors.isEmpty">#{i18n.getText('KTG028_3')}</button>
+				<button class="danger" data-bind="click: removeData, enable:!isCreated()">#{i18n.getText('KTG028_4')}</button>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left">
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+								height: 430,
+								dataSource: items_A2,
+								primaryKey: 'topPageCode'	,
+								columns: columns_A2,
+								multiple: false,
+								value: currentCode_A2,
+							}"></table>
+				</div>
+				<div class="fixed-flex-layout-right">
+					<div class="control-group valign-center">
+						<div 
+							data-bind="ntsFormLabel: { constraint: 'TopPagePartCode', required: true }">
+							#{i18n.getText('KTG028_8')}</div>
+						<span data-bind="with: texteditorA3_2"> <input
+							id="code"
+							data-bind="ntsTextEditor: {
+							name:'#{i18n.getText('KTG028_9')}',
+							value: value,
+							constraint: constraint,
+							option: option,
+							required: required,
+							enable: enable,
+							readonly: readonly}" />
+						</span>
+					</div>
+					<div class="control-group valign-center">
+						<div 
+							data-bind="ntsFormLabel: { constraint: 'TopPagePartName', required: true }">
+							#{i18n.getText('KTG028_10')}</div>
+						<span data-bind="with: texteditorA4_2"> <input
+							id="name"
+							data-bind="ntsTextEditor: {
+							name:'#{i18n.getText('KTG028_11')}',
+							value: value,
+							constraint: constraint,
+							option: option,
+							required: required,
+							enable: enable,
+							readonly: readonly}" />
+						</span>
+					</div>
+					<div class="control-group valign-center">
+						<div 
+							data-bind="ntsFormLabel: { constraint: 'Height', required: true }">
+							#{i18n.getText('KTG028_12')}</div>
+						<span class="label" id="widget-height">#{i18n.getText('KTG028_13')}</span> <span
+							data-bind="with: texteditorA5_4"> <input id="height"
+							data-bind="ntsNumberEditor: {
+							name:'#{i18n.getText('KTG028_14')}',
+							value: value,
+							constraint: constraint,
+							option: option,
+							required: required,
+							enable: enable,
+							readonly: readonly}" />
+						</span> <span class="label">#{i18n.getText('KTG028_15')}</span>
+					</div>
+					<div>
+						<span class="label" id="a6">#{i18n.getText('KTG028_16')}</span>
+					</div>
+					<div>
+						<!-- height : 384 (15 thằng) -->
+						<table id="multi-list"
+							data-bind="ntsGridList: {
+							height: 267,
+							options: items_A7,
+							optionsValue: 'value',
+							columns: columns_A7,
+							multiple: true,
+							value: currentCodeList_A7,
+						}"></table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

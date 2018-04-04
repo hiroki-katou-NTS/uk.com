@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -19,6 +21,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItem
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -39,26 +42,32 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String newHistId = IdentifierUtil.randomUniqueId();
 
 		// ドメインモデル「選択肢履歴」のエラーチェッ
-		GeneralDate getStartDate = command.getStartDate();//startDateNew
+		GeneralDate getStartDate = command.getStartDate();// startDateNew
 		String companyId = command.getCompanyId();
-		//check: 最新の履歴の開始日　＞　直前の履歴の開始日
+		// check: 最新の履歴の開始日 ＞ 直前の履歴の開始日
 		GeneralDate endDateLast = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
-		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository.getHistSelByEndDate(command.getSelectionItemId(), companyId, endDateLast);
-		if(!lstHist.isEmpty()){
+		List<PerInfoHistorySelection> lstHist = this.historySelectionRepository
+				.getHistSelByEndDate(command.getSelectionItemId(), companyId, endDateLast);
+		if (!lstHist.isEmpty()) {
 			PerInfoHistorySelection histLast = lstHist.get(0);
-			if(getStartDate.beforeOrEquals(histLast.getPeriod().start())){
+			if (getStartDate.beforeOrEquals(histLast.getPeriod().start())) {
 				throw new BusinessException("Msg_102");
 			}
 		}
 
-		// ログインしているユーザーの権限をチェックする
 		String selectItemID = command.getSelectionItemId();
 		GeneralDate startDate = command.getStartDate();
 		DatePeriod period = new DatePeriod(startDate, endDateLast);
 
-		boolean userLogin = false;
-		if (userLogin == true) {
-			String cid = PersonInfoCategory.ROOT_COMPANY_ID;
+		// get GroupCompaniesAdmin
+		LoginUserContext loginUserContext = AppContexts.user();
+		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
+
+		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+		boolean result = StringUtils.isEmpty(roleID) ? false : true;
+		if (!result) {
+			// 共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する
+			String cid = AppContexts.user().zeroCompanyIdInContract();
 
 			// ドメインモデル「選択肢履歴」を登録する
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, selectItemID,
@@ -75,9 +84,9 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		// if last hist isPresent (not first time create)
 		if (!lstHist.isEmpty()) {
 			PerInfoHistorySelection lastHist = lstHist.get(0);
-			//set end date lastHist = startDate of newHist -1
+			// set end date lastHist = startDate of newHist -1
 			DatePeriod lastHistPeriod = new DatePeriod(lastHist.getPeriod().start(), startDate.addDays(-1));
-			
+
 			lastHist.setPeriod(lastHistPeriod);
 
 			this.historySelectionRepository.update(lastHist);

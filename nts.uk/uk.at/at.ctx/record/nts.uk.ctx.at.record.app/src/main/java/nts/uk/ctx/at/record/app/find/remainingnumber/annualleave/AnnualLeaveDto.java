@@ -53,19 +53,19 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	 * 次回年休付与日
 	 */
 	@PeregItem("IS00281")	
-	private GeneralDate nextTimeGrantDate;
+	private String nextTimeGrantDate;
 	
 	/**
 	 * 次回年休付与日数
 	 */
 	@PeregItem("IS00282")	
-	private Double nextTimeGrantDays;
+	private String nextTimeGrantDays;
 	
 	/**
 	 * 次回時間年休付与上限
 	 */
 	@PeregItem("IS00283")	
-	private int nextTimeMaxTime;
+	private String nextTimeMaxTime;
 	
 	/**
 	 * 年間所定労働日数
@@ -138,7 +138,9 @@ public class AnnualLeaveDto extends PeregDomainDto{
 	}
 	
 	public static AnnualLeaveDto createFromDomains(AnnualLeaveEmpBasicInfo basicInfo, AnnualLeaveMaxData maxData) {
-		AnnualLeaveDto dto = new AnnualLeaveDto();
+		
+		AnnualLeaveDto dto = new AnnualLeaveDto(basicInfo.getEmployeeId());
+		
 		dto.standardDate = basicInfo.getGrantRule().getGrantStandardDate();
 		dto.grantTable = basicInfo.getGrantRule().getGrantTableCode().v();
 		dto.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().v();

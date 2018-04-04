@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,22 +8,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.RemoveResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.UpdateResvLeaRemainCommand;
 import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumDto;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaGrantRemNumFinder;
 
 @Path("record/remainnumber/resv-lea")
 @Produces("application/json")
 public class ResvLeaGrantRemNumWebService extends WebService{
 
 	
-	//@Inject
-	//private AnnLeaGrantRemnNumFinder finder;
+	@Inject
+	private ResvLeaGrantRemNumFinder finder;
 	
 	@Inject
 	private AddResvLeaCommandHandler addHandler;
@@ -32,31 +33,45 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	@Inject
 	private UpdateResvLeaCommandHandler updateHandler;
 	
+	@Inject
+	private RemoveResvLeaCommandHandler removeHandler;
+	
 	@POST
-	@Path("get-resv-lea/{empId}")
-	public List<ResvLeaGrantRemNumDto> getAllOK(@PathParam("empId") String employeeId) {
-		return getData();
+	@Path("get-resv-lea/{empId}/{isall}")
+	public List<ResvLeaGrantRemNumDto> getAll(@PathParam("empId") String empId, @PathParam("isall") boolean isAll){
+		if(!isAll){
+			return finder.findNotExp(empId);
+		}else{
+			return finder.find(empId);
+		}
+	}
+	@POST
+	@Path("get-resv-lea-by-id/{itemId}")
+	public ResvLeaGrantRemNumDto getById(@PathParam("itemId")String id){
+		return finder.getById(id);
+	}
+	
+	@POST
+	@Path("generate-deadline")
+	public GeneralDate getById(GeneralDate grantDate){
+		return finder.generateDeadline(grantDate);
 	}
 	
 	@POST
 	@Path("add")
-	public void add(ResvLeaGrantRemNumCommand command) {
+	public void add(AddResvLeaRemainCommand command) {
 		addHandler.handle(command);
 	}
 	
 	@POST
 	@Path("update")
-	public void update(ResvLeaGrantRemNumCommand command) {
+	public void update(UpdateResvLeaRemainCommand command) {
 		updateHandler.handle(command);
 	}
 	
-	private List<ResvLeaGrantRemNumDto> getData(){
-		List<ResvLeaGrantRemNumDto> lst = new ArrayList<>();
-		for(int i = 1; i < 20; i++) {
-			lst.add(new ResvLeaGrantRemNumDto(GeneralDate.fromString("2018/10/" + i, "YYYY/MM/DD"), GeneralDate.fromString("2018/05/" + i, "YYYY/MM/DD"), 
-					EnumAdaptor.valueOf(i%2==0?1: 0, LeaveExpirationStatus.class), Double.parseDouble(i + ""), Double.parseDouble(i + ""), Double.parseDouble(i + ""), Double.parseDouble(i + "")));
-		}
-		return lst;
+	@POST
+	@Path("remove")
+	public void remove(RemoveResvLeaRemainCommand command) {
+		removeHandler.handle(command);
 	}
-	
 }

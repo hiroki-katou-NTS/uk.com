@@ -865,4 +865,14 @@ public class FlexTimeOfMonthly {
 			this.deductDaysAndTime.minusMinutesToAbsenceDeductTime(subtractTime.v());
 		}
 	}
+	
+	/**
+	 * 総労働対象時間の取得
+	 * @return 総労働対象時間
+	 */
+	public AttendanceTimeMonth getTotalWorkingTargetTime(){
+		
+		return new AttendanceTimeMonth(this.flexExcessTime.v() +
+				this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v());
+	}
 }

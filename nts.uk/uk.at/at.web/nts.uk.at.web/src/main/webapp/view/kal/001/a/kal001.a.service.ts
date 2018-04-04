@@ -38,8 +38,8 @@ module nts.uk.at.view.kal001.a.service {
                 endDate : string; 
                 constructor(p: model.PeriodByCategory){
                     if(p.category==2|| p.category==5){
-                        this.startDate = p.startDate();
-                        this.endDate = p.endDate();
+                        this.startDate =nts.uk.time.parseMoment(p.dateValue().startDate).momentObject.toISOString() ;
+                        this.endDate = nts.uk.time.parseMoment(p.dateValue().endDate).momentObject.toISOString() ;
                     }else if(p.category ==7){
                         this.startDate = null ;
                         this.endDate = null;

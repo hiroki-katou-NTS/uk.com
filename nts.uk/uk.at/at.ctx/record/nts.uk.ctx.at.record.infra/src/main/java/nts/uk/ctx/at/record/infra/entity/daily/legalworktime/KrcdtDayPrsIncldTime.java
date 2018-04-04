@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
@@ -67,7 +68,7 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 			/*所定内割増時間*/
 			this.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime() == null ? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes();
 			if(domain.getWithinStatutoryMidNightTime() != null){
-				TimeWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
+				TimeDivergenceWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
 				/*所定内深夜時間*/
 				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
 						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();	
@@ -81,7 +82,7 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(this.workTime),
 									   									   new AttendanceTime(this.actWorkTime),
 									   									   new AttendanceTime(this.prsIncldPrmimTime),
-									   									   new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(this.prsIncldMidnTime))),
+									   									   new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(this.prsIncldMidnTime))),
 									   									   new AttendanceTime(this.vactnAddTime));
 	}
 	

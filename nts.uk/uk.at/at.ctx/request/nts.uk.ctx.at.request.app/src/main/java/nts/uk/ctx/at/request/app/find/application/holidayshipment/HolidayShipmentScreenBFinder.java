@@ -15,10 +15,12 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmen
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
@@ -33,7 +35,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class HolidayShipmentScreenBFinder {
-
+	@Inject
+	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	@Inject
 	private DetailAppCommonSetService detailService;
 	@Inject
@@ -50,6 +53,8 @@ public class HolidayShipmentScreenBFinder {
 	private ApplicationRepository_New appRepo;
 	@Inject
 	private HolidayShipmentScreenAFinder aFinder;
+	@Inject
+	private EmployeeRequestAdapter empAdaptor;
 
 	/**
 	 * find by Id
@@ -69,13 +74,30 @@ public class HolidayShipmentScreenBFinder {
 		output = new HolidayShipmentDto();
 		companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
+		output.setEmployeeID(employeeID);
 		boolean isRecApp = isRecApp(applicationID);
+		// 1-1.新規画面起動前申請共通設定を取得する
+		int rootAtr = 1;
+		appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID,
+				rootAtr, appType, GeneralDate.today());
+		output.setApplicationSetting(ApplicationSettingDto.convertToDto(appCommonSettingOutput.applicationSetting));
+		// 入力者
 		// 14-1.詳細画面起動前申請共通設定を取得する
 		Optional<Application_New> appOutputOpt = appRepo.findByID(companyID, applicationID);
 		// 14-2.詳細画面起動前モードの判断
 		if (appOutputOpt.isPresent()) {
 			Application_New appOutput = appOutputOpt.get();
+			String employeeName = "";
+			if (appOutput.getEmployeeID().equals(employeeID)) {
+				employeeName = empAdaptor.getEmployeeName(employeeID);
+			} else {
 
+				employeeName = empAdaptor.getEmployeeName(appOutput.getEmployeeID()) + " (入力者 : "
+						+ empAdaptor.getEmployeeName(employeeID) + ")";
+
+			}
+
+			output.setEmployeeName(employeeName);
 			output.setApplication(ApplicationDto_New.fromDomain(appOutput));
 			DetailedScreenPreBootModeOutput bootOutput = bootMode.judgmentDetailScreenMode(companyID, employeeID,
 					applicationID, appOutput.getAppDate());
@@ -107,8 +129,8 @@ public class HolidayShipmentScreenBFinder {
 				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD().v() : null;
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
-				aFinder.commonProcessAtStartup(employeeID, employeeID, refDate, recAppDate, recWorkTypeCD,
-						recWorkTimeCD, absAppDate, absWorkTypeCD, absWorkTimeCD, output);
+				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
+						absAppDate, absWorkTypeCD, absWorkTimeCD, output,appCommonSettingOutput);
 
 			}
 		}
@@ -139,7 +161,7 @@ public class HolidayShipmentScreenBFinder {
 	private SyncState getCompltLeaveSimMngFromAbsID(String applicationID) {
 		// ドメインモデル「振休振出同時申請管理」を1件取得する
 		SyncState result = SyncState.ASYNCHRONOUS;
-		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(applicationID);
 		if (CompltLeaveSimMngOpt.isPresent()) {
 			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
 			result = compltLeaveSimMng.getSyncing();

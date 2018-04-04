@@ -122,6 +122,7 @@ module nts.uk.at.view.kaf009.b {
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(self.displayTypicalReason()||
                         (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false));
+                    self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -179,7 +180,6 @@ module nts.uk.at.view.kaf009.b {
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
                         self.isNewScreen(detailData.outMode==1?true:false);
-                        self.enableReason(self.isNewScreen() && self.requiredReason());
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();

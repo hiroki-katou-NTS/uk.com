@@ -28,24 +28,26 @@ module cps008.b.vm {
                 currentDialog = nts.uk.ui.windows.getSelf();
             // $(currentDialog.parent.globalContext).css("overflow", "hidden");
 
-            if (currentDialog.parent.globalContext.innerWidth <= 1275) {
-                currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
-            } else {
-                currentDialog.setWidth(1275);
-            }
+            if (currentDialog) {
+                if (currentDialog.parent.globalContext.innerWidth <= 1275) {
+                    currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
+                } else {
+                    currentDialog.setWidth(1275);
+                }
 
-            if (currentDialog.parent.globalContext.innerHeight <= 750) {
-                currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 50);
-            } else {
-                currentDialog.setHeight(750);
+                if (currentDialog.parent.globalContext.innerHeight <= 750) {
+                    currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 50);
+                } else {
+                    currentDialog.setHeight(750);
+                }
             }
         }
 
         start() {
             let self = this,
                 layout = self.layout(),
-
                 dto: any = getShared('CPS008B_PARAM');
+
             layout.id = dto.id;
             layout.code = dto.code;
             layout.name = dto.name;
@@ -53,23 +55,6 @@ module cps008.b.vm {
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
 
             let cls: Array<any> = dto.classifications;
-
-            let initData = (arr: Array<any>) => {
-                // remove all sibling sperators
-                let maps = _(arr)
-                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                    .filter(x => x != -1).value();
-
-                _.each(maps, (t, i) => {
-                    if (maps[i + 1] == t + 1) {
-                        _.remove(arr, (m: IItemClassification) => {
-                            let item: IItemClassification = ko.unwrap(arr)[maps[i + 1]];
-                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                        });
-                    }
-                });
-                return arr;
-            };
 
             if (cls && cls.length) {
                 layout.itemsClassification.removeAll();

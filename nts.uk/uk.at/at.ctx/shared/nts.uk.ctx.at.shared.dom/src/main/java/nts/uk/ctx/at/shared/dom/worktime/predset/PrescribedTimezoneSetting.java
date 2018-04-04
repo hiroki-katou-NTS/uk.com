@@ -390,5 +390,22 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 		}
 	}
 
+	/**
+	 * Update morning end time.
+	 *
+	 * @param morningEndTime the morning end time
+	 */
+	public void updateMorningEndTime(TimeWithDayAttr morningEndTime) {
+		this.morningEndTime = morningEndTime;
+	}
 
+	/**
+	 * Update afternoon start time.
+	 *
+	 * @param afternoonStartTime the afternoon start time
+	 */
+	public void updateAfternoonStartTime(TimeWithDayAttr afternoonStartTime) {
+		this.afternoonStartTime = afternoonStartTime;
+	}
+	
 }

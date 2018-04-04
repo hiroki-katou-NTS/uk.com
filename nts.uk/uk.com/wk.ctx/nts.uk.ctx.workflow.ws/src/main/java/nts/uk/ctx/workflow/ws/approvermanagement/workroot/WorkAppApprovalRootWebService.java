@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -13,6 +14,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommandHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateApprovalRootByManagerCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateApprovalRootByManagerCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
@@ -23,6 +26,7 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PastHistoryDto;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
@@ -55,7 +59,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Inject
 	private SyJobTitleAdapter jobTitle;
 	@Inject
-	private EmployeeRegisterApprovalRoot registerApprovalRoot;	
+	private EmployeeRegisterApprovalRoot registerApprovalRoot;
+	@Inject
+	private UpdateApprovalRootByManagerCommandHandler updateByManager;
 	
 	@POST
 	@Path("getbycom")
@@ -160,5 +166,23 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("find/wpInfo")
 	public WorkplaceImport getWpInfo(String workplaceId){
 		return comFinder.getWpInfo(workplaceId);
+	}
+
+	@POST
+	@Path("find/getEmployeeByCode/{employeeCode}/{hasAuthority}")
+	public PersonImport getEmployeeByCode(@PathParam("employeeCode")String employeeCode, @PathParam("hasAuthority") boolean hasAuthority){
+		return comFinder.getEmployeeInfoByCode(employeeCode, hasAuthority);
+	}
+
+	@POST
+	@Path("find/settingOfManager/getPastHistory/{employeeId}")
+	public List<PastHistoryDto> getPastHistory(@PathParam("employeeId") String employeeId) {
+		return comFinder.getPastHistory(employeeId);
+	}
+
+	@POST
+	@Path("updateHistoryByManagerSetting")
+	public void updateHistoryByManagerSetting(UpdateApprovalRootByManagerCommand command) {
+		this.updateByManager.handle(command);
 	}
 }

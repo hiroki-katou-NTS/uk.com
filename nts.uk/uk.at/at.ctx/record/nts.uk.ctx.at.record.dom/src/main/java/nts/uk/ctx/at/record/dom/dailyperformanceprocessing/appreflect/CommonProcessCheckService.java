@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
 import java.util.List;
 
+
 /**
  * 反映状況によるチェック
  * @author do_dt
@@ -13,27 +14,22 @@ public interface CommonProcessCheckService {
 	 * @param para
 	 * @return false: 反映しない, true: 反映する
 	 */
-	public boolean commonProcessCheck(CommonCheckParameter para);
-	/**
-	 * 予定勤務種類の項目ID
-	 * @return
-	 */
-	public List<Integer> lstScheWorkTimeType();
-	/**
-	 * 勤務種類の項目ID
-	 * 就業時間帯の項目ID
-	 * @return
-	 */
-	public  List<Integer> lstItemRecord();
+	public boolean commonProcessCheck(CommonCheckParameter para);	
 	/**
 	 * 予定勤務種類の項目ID
 	 * @return
 	 */
 	public List<Integer> lstScheWorkItem();
+	
 	/**
-	 * 出勤の項目ID
+	 * 予定勤種の反映
+	 * @param absencePara
+	 */
+	public void reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre);
+	/**
+	 * 予定勤種を反映できるかチェックする
+	 * @param absencePara
 	 * @return
 	 */
-	public List<Integer> lstWorkItem();
-
+	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre);
 }

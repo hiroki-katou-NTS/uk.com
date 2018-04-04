@@ -15,7 +15,7 @@ module nts.uk.com.view.cps009.b {
                     { headerText: '', key: 'disabled', dataType: 'boolean', width: '50px', showHeaderCheckbox: true, ntsControl: 'Checkbox'},
                     { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', dataType: 'string', width: '250px' }
                 ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true , tabindex: 2 }],
+                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
                 features: [
                     {
                         name: 'Selection',
@@ -32,11 +32,27 @@ module nts.uk.com.view.cps009.b {
                 }]
             });
             __viewContext.bind(__viewContext["viewModel"]);
-
+            
+            $( document ).ready(function() {
+                $('span.box').attr("tabindex", "2");
+                let beforeIndex = -1;
+                $(window).keyup((e) => {
+                    if (e.which === 9) {
+                        let tabindex = e.target.attributes.tabindex ? e.target.attributes.getNamedItem("tabindex").value : e.target.attributes.getNamedItem("tab-index").value;
+                        if (beforeIndex == 6) {
+                            $("#grid0_disabled > span > div > label > span.box").focus();
+                        }
+                        beforeIndex = parseInt(tabindex);
+                    }
+                });
+            });
         });
-
     });
 }
 
-
-
+$(document).on("click", "#grid0_disabled > span > div > label > input[type='checkbox']", function(evt, ui) {
+    let itemDisable = _.filter(__viewContext["viewModel"].itemInitLst, { itemName: "終了日" });
+    _.each(itemDisable, function(x) {        $("#grid0").ntsGrid("updateRow", x.perInfoItemDefId, { disabled: false });
+    }); 
+ });
+    

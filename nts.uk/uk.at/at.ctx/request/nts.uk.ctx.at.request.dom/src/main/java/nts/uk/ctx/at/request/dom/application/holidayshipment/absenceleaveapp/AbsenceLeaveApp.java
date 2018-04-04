@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -33,10 +32,6 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	 * 就業時間帯変更
 	 */
 	private NotUseAtr changeWorkHoursType;
-	/**
-	 * 勤務場所コード
-	 */
-	private WorkLocationCD workLocationCD;
 	/**
 	 * 就業時間帯
 	 */

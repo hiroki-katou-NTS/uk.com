@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
@@ -14,15 +15,16 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
 @Getter
 public class HolidayWorkFrameTime {
 	private HolidayWorkFrameNo holidayFrameNo;
-	private Finally<TimeWithCalculation> holidayWorkTime;
-	private Finally<TimeWithCalculation> transferTime;
+	private Finally<TimeDivergenceWithCalculation> holidayWorkTime;
+	private Finally<TimeDivergenceWithCalculation> transferTime;
+	@Setter	
 	private Finally<AttendanceTime> beforeApplicationTime;
 	
 	/**
 	 * Constructor 
 	 */
-	public HolidayWorkFrameTime(HolidayWorkFrameNo holidayFrameNo, Finally<TimeWithCalculation> holidayWorkTime,
-			Finally<TimeWithCalculation> transferTime, Finally<AttendanceTime> beforeApplicationTime) {
+	public HolidayWorkFrameTime(HolidayWorkFrameNo holidayFrameNo, Finally<TimeDivergenceWithCalculation> holidayWorkTime,
+			Finally<TimeDivergenceWithCalculation> transferTime, Finally<AttendanceTime> beforeApplicationTime) {
 		super();
 		this.holidayFrameNo = holidayFrameNo;
 		this.holidayWorkTime = holidayWorkTime;
@@ -46,5 +48,59 @@ public class HolidayWorkFrameTime {
 	}
 
 
+	/**
+	 * 残業時間を入れ替えて作り直す
+	 * @return
+	 */
+	public HolidayWorkFrameTime changeOverTime(TimeDivergenceWithCalculation holidayWorkTime) {
+		return new HolidayWorkFrameTime(this.holidayFrameNo,
+				 						Finally.of(holidayWorkTime),
+				 						this.transferTime,
+				 						this.getBeforeApplicationTime());
+	}
+
+	/**
+	 * 振替時間を入れ替えて作り直す
+	 * @return
+	 */
+	public HolidayWorkFrameTime changeTransTime(TimeDivergenceWithCalculation transTime) {
+		return new HolidayWorkFrameTime(this.holidayFrameNo,
+									 this.holidayWorkTime,
+									 Finally.of(transTime),
+									 this.getBeforeApplicationTime());
+	}
+	
+	/**
+	 * 実績超過乖離時間の計算
+	 * @return
+	 */
+	public int calcOverLimitDivergenceTime() {
+		return this.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes() 
+				 + this.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+	}
+
+	/**
+	 * 実績超過乖離時間が発生しているか判定する
+	 * @return 乖離時間が発生している
+	 */
+	public boolean isOverLimitDivergenceTime() {
+		return this.calcOverLimitDivergenceTime() > 0 ? true:false;
+	}
+	
+	/**
+	 * 事前申請超過時間の計算
+	 * @return
+	 */
+	public int calcPreOverLimitDivergenceTime() {
+		return calcOverLimitDivergenceTime() - this.getBeforeApplicationTime().get().valueAsMinutes();
+	}
+
+	/**
+	 * 事前申請超過時間が発生しているか判定する
+	 * @return 乖離時間が発生している
+	 */
+	public boolean isPreOverLimitDivergenceTime() {
+		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
+	}
 	
 }

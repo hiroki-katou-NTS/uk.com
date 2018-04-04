@@ -2,15 +2,18 @@ package nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 
 @Getter
 public class AnnLeaGrantRemnNumCommand {
 	
+	private String annLeavID;
+	
 	/**
 	 * 社員ID
 	 */
+	@PeregEmployeeId
 	private String employeeId;
 	
 	/**
@@ -29,7 +32,7 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 年休期限切れ状態
 	 */
 	@PeregItem("IS00387")
-	private LeaveExpirationStatus expirationStatus;
+	private int expirationStatus;
 
 	/**
 	 * 付与日数
@@ -41,7 +44,7 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 付与時間
 	 */
 	@PeregItem("IS00391")
-	private int grantMinutes;
+	private Integer grantMinutes;
 
 
 	/**
@@ -54,7 +57,7 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 使用時間
 	 */
 	@PeregItem("IS00394")
-	private int usedMinutes;
+	private Integer usedMinutes;
 
 
 	/**
@@ -67,6 +70,6 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 残時間
 	 */
 	@PeregItem("IS00397")
-	private int remainingMinutes;
+	private Integer remainingMinutes;
 
 }

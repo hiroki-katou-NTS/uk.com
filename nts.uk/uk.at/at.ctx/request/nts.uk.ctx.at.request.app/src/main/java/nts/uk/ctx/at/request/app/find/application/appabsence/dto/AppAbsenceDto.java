@@ -133,6 +133,12 @@ public class AppAbsenceDto {
 	 */
 	private List<String> workTimeCodes;
 	
+	private int initMode;
+	/**
+	 * mailFlg
+	 */
+	private boolean mailFlg;
+	
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -161,7 +167,9 @@ public class AppAbsenceDto {
 								true,
 								null,
 								null,
-								null);
+								null,
+								0,
+								false);
 	}
 }
 

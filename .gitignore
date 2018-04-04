@@ -6,6 +6,7 @@
 **/.gradle*
 **/.nb-gradle*
 **/.settings*
+**/.ide*
 
 #ignore sass-cache folder
 **/.sass-cache*
@@ -23,6 +24,9 @@
 
 #ignore all js, map file
 **/*.js*
+
+#ignore all nts.uk*.jar files
+**/nts.uk*.jar
 
 # except all js, map in base.web
 !**/base.web/**/*.js*

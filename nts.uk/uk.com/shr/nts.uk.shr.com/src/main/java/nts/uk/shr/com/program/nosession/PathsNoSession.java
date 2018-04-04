@@ -22,10 +22,12 @@ public class PathsNoSession implements PathsToCheckCsrf {
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
 			"/view/sample/.*",
 			"/view/common/error/.*",
+			"/view/spr/index.xhtml",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
-			ProgramsManager.CCG007D.getPPath()
+			ProgramsManager.CCG007D.getPPath(),
+			ProgramsManager.KDW003A.getPPath()
 			);
 
 	

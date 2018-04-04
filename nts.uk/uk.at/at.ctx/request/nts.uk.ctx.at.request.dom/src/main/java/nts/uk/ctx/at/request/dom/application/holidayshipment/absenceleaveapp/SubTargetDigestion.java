@@ -19,15 +19,9 @@ import nts.arc.time.GeneralDate;
 public class SubTargetDigestion {
 
 	/**
-	 * 振出申請ID
+	 * 申請ID
 	 */
-	private String recAppID;
-
-	/**
-	 * 振休申請ID
-	 */
-	private String absenceLeaveAppID;
-
+	private String appID;
 	/**
 	 * 使用時間数
 	 */
@@ -47,4 +41,8 @@ public class SubTargetDigestion {
 	 */
 	private ManagementDataAtr restState;
 
+	/**
+	 * 日付不明
+	 */
+	private int unknownDate;
 }
