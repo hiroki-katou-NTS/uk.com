@@ -161,4 +161,22 @@ public class TimeZone extends WorkTimeDomainObject {
 		
 		return Optional.of(result);
 	}
+	
+	/**
+	 * Update start.
+	 *
+	 * @param start the start
+	 */
+	public void updateStart(TimeWithDayAttr start) {
+		this.start = start;
+	}
+
+	/**
+	 * Update end.
+	 *
+	 * @param end the end
+	 */
+	public void updateEnd(TimeWithDayAttr end) {
+		this.end = end;
+	}
 }

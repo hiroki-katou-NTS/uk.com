@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -74,7 +75,8 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			endDate = application.getEndDate().get();
 			
 			// 登録する期間のチェック
-			if (endDate.after(startDate.addDays(31))) {
+			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
+			if(ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) > 31){
 				throw new BusinessException("Msg_277");
 			}
 			// 登録可能期間のチェック(１年以内)

@@ -1,5 +1,5 @@
 #contents-area {
-	width: 1200px !important;
+	/* width: 100%; */
 }
 
 .boder-style {
@@ -61,25 +61,59 @@
 	margin-top: 30px;
 }
 
-.row-1 {
-	margin-top: 15px;
-	margin-left: 27px;
-}
-
-.name-switch {
-	display: inline-block;
-	width: 288px;
-	vertical-align: top;
-}
-
-.cf {
-	margin-left: 20px;
-}
-
 .goback {
 	margin-right: 35px;
 }
 
-.cf>button.nts-switch-button {
-	width: 90px;
+#contents-area {
+	display: flex;
+	/* flex-shrink: 3; */
+	flex-wrap: nowrap;
+	white-space: nowrap;
+}
+
+#contents-area > div:nth-child(1) {
+	/* flex: 0.5; */
+	margin-top:10px;
+	margin-left:20px;
+}
+
+#contents-area > div:nth-child(2) {
+	display: flex;
+	flex-direction: column;
+	/* flex: 0.75; */
+	margin-top:10px;
+	margin-left: 100px;
+}
+
+.style-radio {
+	display: flex;
+	flex-direction: column;
+	margin-left: 30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.style-radio label{
+	margin-top: 5px;
+}
+
+.out-manage, .emboss-set {
+	display: flex;
+}
+
+.out-manage .label, .emboss-set .label {
+    width: 180px;
+}
+
+.out-manage, .emboss-set {
+	margin-left: 30px;
+}
+
+.out-manage {
+	margin-top: 6px;
+}
+
+#h2_3 > .nts-switch-button{
+	width: 90px	
 }
