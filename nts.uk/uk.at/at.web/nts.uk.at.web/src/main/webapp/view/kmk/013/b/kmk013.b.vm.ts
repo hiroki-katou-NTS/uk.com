@@ -862,7 +862,35 @@ module nts.uk.at.view.kmk013.b {
                         self.checkedB720(false);
                     }
                 });
+                
+                self.changeTabPanel();
             }
+            
+            changeTabPanel(): void {
+                let self = this;
+                $( document ).keydown(function( event ) {
+                    // catch event press tab button
+                    if (event.which == 9) {
+                       switch(_.toNumber($( "*:focus" ).attr("tabindex"))) { 
+                           case lastTabIndexTabPanel1: { 
+                                self.selectedTab("tab-2");
+                                break; 
+                           } 
+                           case lastTabIndexTabPanel2 : { 
+                                self.selectedTab("tab-3"); 
+                                break; 
+                           }
+                           case lastTabIndexTabPanel3 : { 
+                                self.selectedTab("tab-4"); 
+                              break; 
+                           } 
+                           default: { 
+                           } 
+                        }
+                    }
+                });
+            }
+            
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -1351,10 +1379,12 @@ module nts.uk.at.view.kmk013.b {
                    nts.uk.ui.dialog.alertError(error.message);
                 });
             }
-
-
-
         }
+        
+        const lastTabIndexTabPanel1 = 28;
+        const lastTabIndexTabPanel2 = 41;
+        const lastTabIndexTabPanel3 = 57;
+        
         class BoxModel {
             id: number;
             name: string;
