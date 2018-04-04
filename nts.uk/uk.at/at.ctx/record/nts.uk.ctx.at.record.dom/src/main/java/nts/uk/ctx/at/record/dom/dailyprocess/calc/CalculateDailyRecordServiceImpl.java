@@ -316,34 +316,36 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			oneRange.getPredetermineTimeSetForCalc().endTimeSetStartTime();
 		}
 		
-		/*社員別通常勤務労働時間*/
-		val shainRegularLaborTime = shainRegularWorkTimeRepository.find(companyId, employeeId);
-		/*社員別変形労働労働時間*/
-		val shainTransLaborTime = shainTransLaborTimeRepository.find(companyId, employeeId);
-		/*職場別通常勤務労働時間*/
-		val wkpRegularLaborTime = wkpRegularLaborTimeRepository.find(companyId, employeeId);
-		/*職場別変形労働労働時間*/
-		val wkpTransLaborTime = wkpTransLaborTimeRepository.find(companyId, employeeId);
-		/*雇用別通常勤務労働時間*/
-		val empRegularLaborTime = empRegularWorkTimeRepository.findById(companyId, employeeId);
-		/*雇用別変形労働労働時間*/
-		val empTransLaborTime = empTransWorkTimeRepository.find(companyId, employeeId);
-		/*会社別通常勤務労働時間*/
-		val comRegularLaborTime = comRegularLaborTimeRepository.find(companyId);
-		/*会社別変形労働労働時間*/
-		val comTransLaborTime = comTransLaborTimeRepository.find(companyId);
-		/*労働時間と日数の設定の利用単位の設定*/
-		val usageUnitSetting = usageUnitSettingRepository.findByCompany(companyId);
-		/*法定労働時間(日単位)*/
-		val dailyUnit = usageUnitSetting.isPresent()?usageUnitSetting.get().getDailyUnit(personalInfo.getWorkingSystem(), 
-				 shainRegularLaborTime, 
-				 shainTransLaborTime, 
-				 wkpRegularLaborTime, 
-				 wkpTransLaborTime, 
-				 empRegularLaborTime, 
-				 empTransLaborTime, 
-				 comRegularLaborTime, 
-				 comTransLaborTime):new DailyUnit(new TimeOfDay(0));
+//		/*社員別通常勤務労働時間*/
+//		val shainRegularLaborTime = shainRegularWorkTimeRepository.find(companyId, employeeId);
+//		/*社員別変形労働労働時間*/
+//		val shainTransLaborTime = shainTransLaborTimeRepository.find(companyId, employeeId);
+//		/*職場別通常勤務労働時間*/
+//		val wkpRegularLaborTime = wkpRegularLaborTimeRepository.find(companyId, employeeId);
+//		/*職場別変形労働労働時間*/
+//		val wkpTransLaborTime = wkpTransLaborTimeRepository.find(companyId, employeeId);
+//		/*雇用別通常勤務労働時間*/
+//		val empRegularLaborTime = empRegularWorkTimeRepository.findById(companyId, employeeId);
+//		/*雇用別変形労働労働時間*/
+//		val empTransLaborTime = empTransWorkTimeRepository.find(companyId, employeeId);
+//		/*会社別通常勤務労働時間*/
+//		val comRegularLaborTime = comRegularLaborTimeRepository.find(companyId);
+//		/*会社別変形労働労働時間*/
+//		val comTransLaborTime = comTransLaborTimeRepository.find(companyId);
+//		/*労働時間と日数の設定の利用単位の設定*/
+//		val usageUnitSetting = usageUnitSettingRepository.findByCompany(companyId);
+//		/*法定労働時間(日単位)*/
+//		val dailyUnit = usageUnitSetting.isPresent()?usageUnitSetting.get().getDailyUnit(personalInfo.getWorkingSystem(), 
+//				 shainRegularLaborTime, 
+//				 shainTransLaborTime, 
+//				 wkpRegularLaborTime, 
+//				 wkpTransLaborTime, 
+//				 empRegularLaborTime, 
+//				 empTransLaborTime, 
+//				 comRegularLaborTime, 
+//				 comTransLaborTime):new DailyUnit(new TimeOfDay(0));
+		/*法定労働時間(日単位)_（仮）*/
+		val dailyUnit = new DailyUnit(new TimeOfDay(480));
 		
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
@@ -443,7 +445,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
 			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
-			val flexWork = holidayAddtionRepository.findByCId(employeeId).get().getFlexWork();
+			val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			/*大塚モード*/
 //			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 			
@@ -469,14 +471,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												personalInfo.getStatutoryWorkTime(),calcSetinIntegre.getOvertimeSetting(),LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
-												new WorkTimeCalcMethodDetailOfHoliday(flexWork.getNotDeductLateleave2(),flexWork.getAdditionTime2()),
+												new WorkTimeCalcMethodDetailOfHoliday(flexWork.isPresent()?flexWork.get().getFlexWork().getNotDeductLateleave2():1,
+																					  flexWork.isPresent()?flexWork.get().getFlexWork().getAdditionTime2():1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()));
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
-				val regularWork = holidayAddtionRepository.findByCId(companyId).get().getRegularWork();
+				val regularWork = holidayAddtionRepository.findByCId(companyId);
 				/*大塚モード*/
 //				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 				
@@ -517,7 +520,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						midNightTimeSheet,
 						personalInfo,
 						Optional.empty(),
-						new WorkTimeCalcMethodDetailOfHoliday(regularWork.getNotDeductLateleave2(),regularWork.getAdditionTime2()));
+						new WorkTimeCalcMethodDetailOfHoliday(regularWork.isPresent()?regularWork.get().getRegularWork().getNotDeductLateleave2():1,
+															  regularWork.isPresent()?regularWork.get().getRegularWork().getAdditionTime2():1));
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -687,8 +691,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					attendanceLeave,
 					forCalcDivergenceDto,
 					divergenceTimeList,
-					calculateOfTotalConstraintTime,
-					schePreTimeSet));
+					calculateOfTotalConstraintTime));
+//					schePreTimeSet));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		  List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())
