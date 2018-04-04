@@ -1158,6 +1158,10 @@ module nts.uk.at.view.kmk013.b {
             save(): void {
                 let self = this;
                 let obj :any = {};
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
 
                 obj.referActualWorkHours = self.selectedB23();
                 obj.notReferringAch = self.oldData().notReferringAch;
@@ -1376,7 +1380,7 @@ module nts.uk.at.view.kmk013.b {
                     $( "#b23" ).focus();
                 }
                 ).fail((error) => {
-                   nts.uk.ui.dialog.alertError(error.message);
+                   nts.uk.ui.dialog.alertError(error);
                 });
             }
         }
