@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 
@@ -17,12 +16,12 @@ public interface DivergenceReasonInputMethodService {
 	 * @param processDate the process date
 	 * @param divergenceTimeNo the divergence time no
 	 * @param divergenceReasonCode the divergence reason code
-	 * @param divergenceReason the divergence reason
+	 * @param divergenceReasonContent the divergence reason content
 	 * @param justmentResult the justment result
 	 * @return true, if successful
 	 */
 	//理由漏れがあるか判定する
-	public JudgmentResult DetermineLeakageReason(String employeeId, GeneralDate processDate, 
+	public JudgmentResult determineLeakageReason(String employeeId, GeneralDate processDate, 
 			int divergenceTimeNo,DivergenceReasonCode divergenceReasonCode, DivergenceReasonContent divergenceReasonContent,JudgmentResult justmentResult );
 
 }

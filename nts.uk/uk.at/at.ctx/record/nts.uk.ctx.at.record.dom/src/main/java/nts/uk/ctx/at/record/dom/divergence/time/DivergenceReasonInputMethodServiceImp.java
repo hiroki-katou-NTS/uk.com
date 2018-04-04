@@ -38,7 +38,7 @@ public class DivergenceReasonInputMethodServiceImp implements DivergenceReasonIn
 	 * nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult)
 	 */
 	@Override
-	public JudgmentResult DetermineLeakageReason(String employeeId, GeneralDate processDate, int divergenceTimeNo,
+	public JudgmentResult determineLeakageReason(String employeeId, GeneralDate processDate, int divergenceTimeNo,
 			DivergenceReasonCode divergenceReasonCode, DivergenceReasonContent divergenceReasonContent,
 			JudgmentResult justmentResult) {
 
