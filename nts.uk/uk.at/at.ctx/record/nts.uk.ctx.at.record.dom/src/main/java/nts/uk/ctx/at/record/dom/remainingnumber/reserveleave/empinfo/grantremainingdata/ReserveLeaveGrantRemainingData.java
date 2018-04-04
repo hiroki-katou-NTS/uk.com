@@ -50,6 +50,7 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
 		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
+		domain.rsvLeaID = id;
 		domain.employeeId = employeeId;
 		domain.grantDate = grantDate;
 		domain.deadline = deadline;

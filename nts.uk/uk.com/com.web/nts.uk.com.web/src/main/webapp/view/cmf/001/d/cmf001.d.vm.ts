@@ -36,7 +36,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         onchange: (filename) => void;
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
         
-        selectedEncoding: KnockoutObservable<number>;
+        selectedEncoding: KnockoutObservable<number> = ko.observable(3);
         encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor(data: any) {
@@ -51,7 +51,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
             self.listCategoryItem = ko.observableArray([]);
 
-            self.selectedEncoding = ko.observable(3);
             self.encodingList(model.getEncodingList());
             
             self.selectedCategory.subscribe((data) => {
@@ -77,6 +76,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 $("#fixed-table tr").removeClass("my-active-row");
                 $("#fixed-table tr[data-id='" + data + "']").addClass("my-active-row");
             });
+        }
+
+        private scrollIntoSelectedAcceptItem(data: number): void {
+            $("#fixed-table tr[data-id='" + data + "']")[0].scrollIntoView();
         }
 
         finished(fileInfo: any) {
@@ -107,6 +110,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         btnLeftClick() {
             let self = this;
             if (self.selectedAcceptItem() > 0 && self.selectedAcceptItem() <= self.listAcceptItem().length) {
+                let selectedAItemIndex = _.findIndex(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedAItem = _.find(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedCItem = _.find(self.listSelectedCategoryItem(), x => { return x.itemNo == selectedAItem.categoryItemNo(); });
                 if (selectedCItem.required) {
@@ -120,12 +124,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
                         self.listAcceptItem()[i].acceptItemNumber(i + 1);
                     }
-                    if (self.selectedAcceptItem() >= self.listAcceptItem().length)
-                        self.selectedAcceptItem(self.listAcceptItem().length);
-                    else
+                    if (self.selectedAcceptItem() >= self.listAcceptItem().length) {
+                        selectedAItemIndex = self.listAcceptItem().length;
+                        self.selectedAcceptItem(selectedAItemIndex);
+                    } else {
                         self.selectedAcceptItem.valueHasMutated();
-
-                    self.selectedCategoryItem(selectedCItem.itemNo);
+                    }
+                    self.scrollIntoSelectedAcceptItem(selectedAItemIndex);
                 }
             } else {
                 alertError({messageId: "Msg_897"});
@@ -141,12 +146,18 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let item = new model.StandardAcceptItem(null, null, 0, i, selectedItem.itemName, self.stdCondSet().systemType(), self.stdCondSet().conditionSettingCode(), selectedItem.itemNo);
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
-                self.listCategoryItem.remove(selectedItem);
                 self.selectedAcceptItem(self.listAcceptItem().length);
-                if (selectedIndex >= self.listCategoryItem().length && self.listCategoryItem().length > 0)
-                    self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 1].itemNo);
-                else
-                    self.selectedCategoryItem(self.listCategoryItem()[selectedIndex] ? self.listCategoryItem()[selectedIndex].itemNo : null);
+                self.scrollIntoSelectedAcceptItem(self.listAcceptItem().length);
+                if (self.listCategoryItem().length > 1) {
+                    if (selectedIndex >= self.listCategoryItem().length - 1) {
+                        self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 2].itemNo);
+                    } else {
+                        self.selectedCategoryItem(self.listCategoryItem()[selectedIndex + 1] ? self.listCategoryItem()[selectedIndex + 1].itemNo : null);
+                    }
+                }
+                /* remove after set selected
+                   because problem with scroll when remove before set selected */
+                self.listCategoryItem.remove(selectedItem);
             } else {
                 alertError({messageId: "Msg_894"});
             }
@@ -364,6 +375,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 block.invisible();
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
+                self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerDataAndReturn(command).done(() => {
                     self.enableCategory(false);
@@ -393,7 +405,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                         cond.deleteExistData, cond.acceptMode, 
                                                         cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber, 
                                                         cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine, 
+                                                        cond.characterCode,
                                                         cond.deleteExistDataMethod, cond.categoryId));
+                    if (cond.characterCode == null)
+                        self.selectedEncoding = ko.observable(3);
+                    else
+                        self.selectedEncoding = ko.observable(cond.characterCode);
                     service.getAllCategory().done((rs: Array<any>) => {
                         if (rs && rs.length) {
                             let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
@@ -525,6 +542,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 block.invisible();
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
+                self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerData(command).done(() => {
                     self.enableCategory(false);

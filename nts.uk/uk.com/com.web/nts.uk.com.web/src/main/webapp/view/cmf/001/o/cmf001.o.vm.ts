@@ -30,7 +30,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         totalRecord: KnockoutObservable<number> = ko.observable(0);
         totalLine: KnockoutObservable<number> = ko.observable(0);
         
-        selectedEncoding: KnockoutObservable<number>;
+        selectedEncoding: KnockoutObservable<number> = ko.observable(3);
         encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor() {
@@ -42,7 +42,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 { content: '.step-2' }
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-            self.selectedEncoding = ko.observable(3);
             self.encodingList(model.getEncodingList());
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
@@ -63,12 +62,17 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.selectedConditionName(item.dispConditionSettingName);
                     self.selectedConditionLineNumber(item.csvDataItemLineNumber);
                     self.selectedConditionStartLine(item.csvDataStartLine);
+                    if (item.characterCode == null)
+                        self.selectedEncoding = ko.observable(3);
+                    else
+                        self.selectedEncoding = ko.observable(item.characterCode);
                 }
                 else {
                     self.selectedConditionItem = null;
                     self.selectedConditionName('');
                     self.selectedConditionLineNumber(0);
                     self.selectedConditionStartLine(0);
+                    self.selectedEncoding = ko.observable(3);
                 }
                 //「受入ファイルアップロード」をクリアする
                 self.resetFile();
@@ -180,7 +184,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
                         return new model.StandardAcceptanceConditionSetting(rsp.systemType, rsp.conditionSettingCode,
                             rsp.conditionSettingName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber,
-                            rsp.csvDataStartLine, rsp.deleteExistDataMethod, rsp.categoryId);
+                            rsp.csvDataStartLine, rsp.characterCode, rsp.deleteExistDataMethod, rsp.categoryId);
                     });
                     self.listCondition(_rspList);
 

@@ -6,7 +6,7 @@ public enum ExiCharset {
     Shift_JIS(3, "Shift JIS", "Shift JIS");
 
     /** The value. */
-    public int value;
+    public Integer value;
 
     /** The name id. */
     public String nameId;
@@ -17,7 +17,7 @@ public enum ExiCharset {
     /** The Constant values. */
     private final static ExiCharset[] values = ExiCharset.values();
 
-    private ExiCharset(int value, String nameId, String description) {
+    private ExiCharset(Integer value, String nameId, String description) {
         this.value = value;
         this.nameId = nameId;
         this.description = description;

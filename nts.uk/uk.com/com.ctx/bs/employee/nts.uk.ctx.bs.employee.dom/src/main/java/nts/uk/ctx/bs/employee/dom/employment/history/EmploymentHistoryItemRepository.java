@@ -19,6 +19,14 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	Optional<EmploymentHistoryItem> getByHistoryId(String historyId);
 	
+	
+	/**
+	 * get with historyId
+	 * @param historyId
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds);
+	
 	/**
 	 * Add employment
 	 * @param domain

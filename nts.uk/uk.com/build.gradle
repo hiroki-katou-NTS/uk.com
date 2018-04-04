@@ -697,6 +697,9 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
+		
 		
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
 	 	compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
@@ -704,6 +707,8 @@ project (':com.screen:nts.uk.screen.com.app') {
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
 	}
 }
 
@@ -1066,6 +1071,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.app')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
+		
+		compile(group: 'bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 	}
 }
 

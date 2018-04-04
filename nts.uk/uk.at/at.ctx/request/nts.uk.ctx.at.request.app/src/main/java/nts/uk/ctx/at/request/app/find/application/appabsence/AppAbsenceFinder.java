@@ -43,6 +43,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
@@ -50,6 +51,8 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -99,14 +102,16 @@ public class AppAbsenceFinder {
 	private BeforePreBootMode beforePreBootMode;
 	@Inject 
 	private InitMode initMode;
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	public AppAbsenceDto getAppForLeave(String appDate, String employeeID){
 		
 		AppAbsenceDto result = new AppAbsenceDto();
-		boolean checkCaller = true;
+		boolean checkCaller = false;
 		if(employeeID == null){
 			employeeID = AppContexts.user().employeeId();
-			checkCaller = false;
+			checkCaller = true;
 		}
 		String companyID = AppContexts.user().companyId();
 		// 1-1.新規画面起動前申請共通設定を取得する
@@ -124,19 +129,23 @@ public class AppAbsenceFinder {
 		// アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
 		startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate,
 				ApplicationType.ABSENCE_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
+		if(appCommonSettingOutput.appTypeDiscreteSettings != null){
+			result.setMailFlg(!appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN));
+		}
 		// 1-1.起動時のエラーチェック
 		List<Integer> holidayAppTypes = new ArrayList<>();
 		
 		if(!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)){
 			for(AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType){
 				if(!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6 && appEmploymentSetting.getHolidayOrPauseType() != 5){
-					sortHolidayAppType(holidayAppTypes,appEmploymentSetting.getHolidayOrPauseType());
+					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
 		}
 		if(CollectionUtil.isEmpty(holidayAppTypes)){
 			throw new BusinessException("Msg_473");
 		}
+		holidayAppTypes.sort((a,b) -> a.compareTo(b));
 		result.setHolidayAppTypes(holidayAppTypes);
 		if(appDate != null){
 			 //13.実績の取得
@@ -209,19 +218,26 @@ public class AppAbsenceFinder {
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appAbsence.getApplication().getEmployeeID(),appAbsence.getApplication().getAppDate());
 		result.setWorkTimeCodes(listWorkTimeCodes);
+		if(result.getWorkTimeCode() != null){
+			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,result.getWorkTimeCode()).isPresent() ? workTimeRepository.findByCode(companyID,result.getWorkTimeCode()).get() : null;
+			if(workTime != null){
+				result.setWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
+			}
+		}
 		// 1-1.起動時のエラーチェック
 		List<Integer> holidayAppTypes = new ArrayList<>();
 
 		if (!CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
 			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
 				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6 && appEmploymentSetting.getHolidayOrPauseType() != 5) {
-					sortHolidayAppType(holidayAppTypes,appEmploymentSetting.getHolidayOrPauseType());
+					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
 		}
 		if (CollectionUtil.isEmpty(holidayAppTypes)) {
 			throw new BusinessException("Msg_473");
 		}
+		holidayAppTypes.sort((a,b) -> a.compareTo(b));
 		result.setHolidayAppTypes(holidayAppTypes);
 		getAppReason(result,companyID);
 		// get employeeName, employeeID
@@ -624,48 +640,24 @@ public class AppAbsenceFinder {
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
 			WorkStyle workStyle = basicScheduleService.checkWorkDay(WkTypeOpt.get().getWorkTypeCode().toString());
+			if(workStyle == null){
+				return null;
+			}
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				if(workTimeCode != null && workTimeCode.equals("")){
-					PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
-							.findByWorkTimeCode(companyID, workTimeCode).get()
-							.getPrescribedTimezoneSetting();
-					return prescribedTzs;
+				if(workTimeCode != null && !workTimeCode.equals("")){
+					if(this.predTimeRepository
+							.findByWorkTimeCode(companyID, workTimeCode).isPresent()){
+						PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
+								.findByWorkTimeCode(companyID, workTimeCode).get()
+								.getPrescribedTimezoneSetting();
+						return prescribedTzs;
+					}
 				}
 			}
 		}
 		return null;
-	}
-	private void sortHolidayAppType(List<Integer> holidayAppTypes,Integer holidayAppType){
-		switch (holidayAppType) {
-		case 0:
-			holidayAppTypes.add(0, holidayAppType);
-			break;
-		case 1:
-			holidayAppTypes.add(1, holidayAppType);
-			break;
-		case 7:
-			holidayAppTypes.add(2, holidayAppType);
-			break;
-		case 2:
-			holidayAppTypes.add(3, holidayAppType);
-			break;
-		case 3:
-			holidayAppTypes.add(4, holidayAppType);
-			break;
-		case 4:
-			holidayAppTypes.add(5, holidayAppType);
-			break;
-		case 5:
-			holidayAppTypes.add(6, holidayAppType);
-			break;
-		case 6:
-			holidayAppTypes.add(7, holidayAppType);
-			break;
-		default:
-			break;
-		}
 	}
 
 }

@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         listWorkplaceId: KnockoutObservableArray<string> =  ko.observableArray([]);
         closureId: KnockoutObservable<number> = ko.observable(0);
         closureName: KnockoutObservable<string> = ko.observable('');
-        closureDate: KnockoutObservable<number> = ko.observable(0);
+        processingYm: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
         isDailyComfirm: KnockoutObservable<boolean> = ko.observable(false);
@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.workplaceId = params.workplaceId;
             self.closureId = params.closureId;
             self.closureName = params.closureName;
-            self.closureDate = params.closureDate;
+            self.processingYm = params.processingYm;
             self.startDate = nts.uk.time.formatDate(new Date(params.startDate), 'yyyy/MM/dd');
             self.endDate = nts.uk.time.formatDate(new Date(params.endDate), 'yyyy/MM/dd');
             self.listWorkplaceId = params.listWorkplaceId;
@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         
         private getTargetDate(){
             var self = this;
-            return self.closureDate +"("+ self.startDate +"～"+ self.endDate+")";
+            return self.processingYm +"("+ self.startDate +"～"+ self.endDate+")";
         }
     }
 

@@ -1,9 +1,10 @@
 package nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class EmployeeInfoImport {
 	

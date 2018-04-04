@@ -46,7 +46,7 @@ module nts.uk.at.view.kmk011.d {
                 //divergence time setting
                 _self.roundingRules = ko.observableArray([
                     { code: 1, name: nts.uk.resource.getText('Enum_UseAtr_Use') },
-                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }                    
+                    { code: 0, name: nts.uk.resource.getText('Enum_UseAtr_NotUse') }
                 ]);
                 _self.enable = ko.observable(true);
                 _self.required = ko.observable(true);
@@ -92,10 +92,11 @@ module nts.uk.at.view.kmk011.d {
                         let histId: string = null;
                         _self.histList().length > 0 ? histId = _self.histList()[0].historyId : histId = null;
                         _self.fillListItemSetting(histId).done(() => {
+                            _self.selectedHist(histId);
                             blockUI.clear();
                             dfd.resolve(_self);
-                            $('#list-box-1').focus();  
-                        });    
+                            $('#list-box-1').focus();
+                        });
                     });
                 } else {
                     // Process for screen E (Mother of all screen)
@@ -106,10 +107,10 @@ module nts.uk.at.view.kmk011.d {
                         _self.screenE().histList().length > 0 ? histId = _self.screenE().histList()[0].historyId : histId = null;
                         _self.screenE().selectedHist(histId);
                         dfd.resolve(_self);
-                        if(_self.screenE().histList().length == 0){
+                        if (_self.screenE().histList().length == 0) {
                             $('#save-hist-wkType').focus();
                         } else {
-                            $('#list-box-2').focus();    
+                            $('#list-box-2').focus();
                         }
                         blockUI.clear();
                     });
@@ -126,8 +127,8 @@ module nts.uk.at.view.kmk011.d {
 
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
-                        //                        $('#error_time_' + i).ntsEditor("validate");   
+                        $('#com_alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
+                        //                        $('#com_error_time_' + i).ntsEditor("validate");   
                     }
 
                 }
@@ -166,7 +167,7 @@ module nts.uk.at.view.kmk011.d {
              */
             public isDisableAllRow(diverNo: number): boolean {
                 let _self = this;
-                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null) {
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || nts.uk.text.isNullOrEmpty( _self.selectedHist())) {
                     return false;
                 }
                 return true;
@@ -214,8 +215,8 @@ module nts.uk.at.view.kmk011.d {
                 _self.clearErrors();
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("validate");
-                        $('#error_time_' + i).ntsEditor("validate");
+                        $('#com_alarm_time_' + i).ntsEditor("validate");
+                        $('#com_error_time_' + i).ntsEditor("validate");
                     }
 
                 }
@@ -233,8 +234,8 @@ module nts.uk.at.view.kmk011.d {
                 // Clear errors
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("clear");
-                        $('#error_time_' + i).ntsEditor("clear");
+                        $('#com_alarm_time_' + i).ntsEditor("clear");
+                        $('#com_error_time_' + i).ntsEditor("clear");
                     }
                 }
 
@@ -250,7 +251,7 @@ module nts.uk.at.view.kmk011.d {
                 var dfd = $.Deferred<any>();
                 let dto: ComDivergenceTimeSettingDto;
                 service.getAllItemSetting(value).done((response: any) => {
-                    if (response != null) {
+                    if (response != null && response.length > 0) {
                         if (_self.mapObj.size == 0) {
                             response.forEach((item: any) => {
                                 dto = new ComDivergenceTimeSettingDto();
@@ -320,7 +321,7 @@ module nts.uk.at.view.kmk011.d {
                         _self.fillListItemSettingDefault();
                         _self.histList([]);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" }).then(() => {
-                            $('#save-hist-com').focus();    
+                            $('#save-hist-com').focus();
                         });
                         blockUI.clear();
                         dfd.resolve();
@@ -337,7 +338,7 @@ module nts.uk.at.view.kmk011.d {
                 let _self = this;
 
                 let objTemp1: ComDivergenceTimeSettingDto;
-      
+
                 if (_self.mapObj.size == 0) {
                     for (let i = 1; i <= 10; i++) {
                         let item = {
@@ -362,10 +363,11 @@ module nts.uk.at.view.kmk011.d {
                                 alarmTime: ''
                             }
                         };
-                        _self.mapObj.get(i).notUseAtr(item.notUseAtr);
-                        _self.mapObj.get(i).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
-                        _self.mapObj.get(i).errorTime(item.divergenceReferenceTimeValue.errorTime);
-                   }
+                        _self.mapObj.get(item.divergenceTimeNo).notUseAtr(item.notUseAtr);
+                        _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                        _self.mapObj.get(item.divergenceTimeNo).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                        _self.isDisableAllRow(item.divergenceTimeNo);
+                    }
                 }
             }
 
@@ -373,8 +375,8 @@ module nts.uk.at.view.kmk011.d {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 service.getUseUnitSetting().done((response) => {
-                    if(response.workTypeUseSet == 0){
-                         _self.useUnitSetting(false);
+                    if (response.workTypeUseSet == 0) {
+                        _self.useUnitSetting(false);
                     }
                 });
                 dfd.resolve();
@@ -383,10 +385,10 @@ module nts.uk.at.view.kmk011.d {
 
             private isVisableTab(): boolean {
                 let _self = this;
-                
+
                 if (_self.useUnitSetting() == false)
                     return false;
-                
+
                 return true;
             }
 
@@ -417,17 +419,57 @@ module nts.uk.at.view.kmk011.d {
             // history mode
             public createMode(): void {
                 let _self = this;
-                
+                if(_self.histList().length >0){                    
+                    var histModel: any = _self.histList()[0];
+                    var startDate: string = histModel.textDisplay.substr(0, 10);
+                    nts.uk.ui.windows.setShared('startDateString', startDate);
+                    }
+                else
+                    {
+                        nts.uk.ui.windows.setShared('startDateString', "");
+                    }
                 nts.uk.ui.windows.setShared('listHist', _self.histList());
+                
+                //get old HistModel list
+                var oldHistList: HistModel[] = _self.histList();
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
                     _self.fillListHistory().done(() => {
-                        let histId: string = _self.histList()[_self.histList().length - 1].historyId;
-                        _self.selectedHist(histId);
+                        //get new HistModel list
+                        var newHistList: HistModel[] = _self.histList();
+                        //get HistModel from 2 HistModel list
+                        var hist: HistModel = _self.getDiffHist(oldHistList, newHistList);
+                        //check hist undefine
+                        if (typeof (hist) != "undefined") {
+                            _self.selectedHist(hist.historyId);
+                        }
                         $('#list-box-1').focus();
                     })
                 });
             }
+
+            // get HistModel from 2 HistModel list
+            private getDiffHist(list1: any, list2: any): HistModel {
+                var _self = this;
+                var length: number = list2.length - 1;
+                for (var i = 0; i <= length; i++) {
+                    // Check every Id in list1
+                    if (!_self.isSameId(list2[i].historyId, list1)) {
+                        return list2[i];
+                    }
+                }
+            }
+
+            //Check Id in list
+            private isSameId(histId: string, list: any): boolean {
+                var length: number = list.length - 1;
+                for (var i = 0; i <= length; i++) {
+                    if (histId == list[i].historyId) return true;
+                }
+                return false;
+            }
+
+
             public editMode(): void {
                 let _self = this;
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
@@ -442,10 +484,10 @@ module nts.uk.at.view.kmk011.d {
                 let _self = this;
                 var command: any = {};
                 command.historyId = _self.selectedHist();
-                
+
                 // define next history id
                 var nextHistId: string = _self.getNextHistoryAfterDelete();
-                
+
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.deleteHistory(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -457,38 +499,38 @@ module nts.uk.at.view.kmk011.d {
                     });
                 });
             }
-            private getNextHistoryAfterDelete(): string { 
+            private getNextHistoryAfterDelete(): string {
                 let _self = this;
                 let nextHistId: string = null;
                 var indexOfCurrentHist: number = 0;
                 //find current index
-                for (let index = 0; index < _self.histList().length; index++){
-                    if(_self.histList()[index].historyId == _self.selectedHist()){
+                for (let index = 0; index < _self.histList().length; index++) {
+                    if (_self.histList()[index].historyId == _self.selectedHist()) {
                         indexOfCurrentHist = index;
                     }
                 }
                 //find next histId
-                if (indexOfCurrentHist == 0){
-                    if(_self.histList().length > 1){
-                        nextHistId =  _self.histList()[indexOfCurrentHist + 1].historyId;
+                if (indexOfCurrentHist == 0) {
+                    if (_self.histList().length > 1) {
+                        nextHistId = _self.histList()[indexOfCurrentHist + 1].historyId;
                         return nextHistId
                     }
                     return null;
                 }
-                
-                if((indexOfCurrentHist + 1) == _self.histList().length){
-                      nextHistId =  _self.histList()[indexOfCurrentHist - 1].historyId;
+
+                if ((indexOfCurrentHist + 1) == _self.histList().length) {
+                    nextHistId = _self.histList()[indexOfCurrentHist - 1].historyId;
                 } else {
-                      nextHistId =  _self.histList()[indexOfCurrentHist + 1].historyId;  
+                    nextHistId = _self.histList()[indexOfCurrentHist + 1].historyId;
                 }
-                
+
                 return nextHistId;
             }
-            
+
             public openRegisterErrMsgDialog(): void {
                 nts.uk.ui.windows.setShared('settingMode', viewModelScreenE.HistorySettingMode.COMPANY);
                 nts.uk.ui.windows.sub.modal("/view/kmk/011/i/index.xhtml").onClosed(function() {
-                       
+
                 });
             }
         }

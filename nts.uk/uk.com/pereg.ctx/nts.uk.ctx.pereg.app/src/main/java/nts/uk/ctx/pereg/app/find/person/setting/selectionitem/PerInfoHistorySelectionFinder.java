@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,8 +30,8 @@ public class PerInfoHistorySelectionFinder {
 		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
 		
 		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
-		boolean isSystemAdmin = roleID.isEmpty() ? false : true;
-		if (!isSystemAdmin) {
+		boolean isSystemAdmin = StringUtils.isEmpty(roleID) ? false : true;
+		if (isSystemAdmin) {
 			return null;
 		} else {
 			// 共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する

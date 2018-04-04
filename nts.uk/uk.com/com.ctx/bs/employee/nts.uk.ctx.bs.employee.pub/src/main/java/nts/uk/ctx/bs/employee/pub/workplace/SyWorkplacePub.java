@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * The Interface WorkplacePub.
+ * The Interface SyWorkplacePub.
  */
 public interface SyWorkplacePub {
 
@@ -50,10 +50,9 @@ public interface SyWorkplacePub {
 	/**
 	 * Find by wkp id.
 	 *
-	 * @param companyId the company id
 	 * @param workplaceId the workplace id
 	 * @param baseDate the base date
-	 * @return the list
+	 * @return the optional
 	 */
 	// RequestList66
 	Optional<WkpCdNameExport> findByWkpId(String workplaceId, GeneralDate baseDate);
@@ -67,7 +66,7 @@ public interface SyWorkplacePub {
 	 * @return the list
 	 */
 	// RequestList83
-	// 職場IDと基準日から上位職場を取得する
+	// 職場IDと基準日から上位�場を取得す�
 	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
 
 	/**
@@ -101,19 +100,22 @@ public interface SyWorkplacePub {
 	List<String> findListWorkplaceIdByCidAndWkpIdAndBaseDate(String companyId, String workplaceId, GeneralDate baseDate);
 	
 	/**
-	 * 
-	 * @param workplaceId
-	 * @param period
-	 * @return List EmployeeId
+	 * Find list S id by cid and wkp id and period.
+	 *
+	 * @param workplaceId the workplace id
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 * @return the list
 	 */
 	// RequestList120
 	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
 	
 	/**
-	 * RequestList No 189
-	 * @param sid
-	 * @param baseDate
-	 * @return
+	 * Gets the wpl by list sid and period.
+	 *
+	 * @param sid the sid
+	 * @param datePeriod the date period
+	 * @return the list
 	 */
 	List<WorkPlaceHistExport> GetWplByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 	
@@ -127,4 +129,25 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList312
 	List<WkpConfigAtTimeExport> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	/**
+	 * Find by S id and base date.
+	 *
+	 * @param sids the sids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList 227
+	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	/**
+	 * Find wkp by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpIds the wkp ids
+	 * @return the list
+	 */
+	// RequestList324
+	List<WorkPlaceInfoExport> findWkpByWkpId(String companyId, GeneralDate baseDate, List<String> wkpIds);
 }

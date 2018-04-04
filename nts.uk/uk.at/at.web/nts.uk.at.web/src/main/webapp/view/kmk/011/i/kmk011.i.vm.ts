@@ -19,7 +19,6 @@ module nts.uk.at.view.kmk011.i {
             // Declare text area
             multilineeditorErr: any;
             multilineeditorAlarm: any;
-
             settingMode: KnockoutObservable<boolean>;
 
             constructor() {
@@ -53,7 +52,8 @@ module nts.uk.at.view.kmk011.i {
                         width: "350px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true)
+                    required: ko.observable(true),
+                    enable: ko.observable(true)
                 };
 
 
@@ -64,43 +64,58 @@ module nts.uk.at.view.kmk011.i {
                         width: "350px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true)
+                    required: ko.observable(true),
+                    enable: ko.observable(true)
                 };
 
                 self.itemDivergenceTime = ko.observable(null);
 
                 //subscribe currentCode
                 self.currentCode.subscribe((codeChanged) => {
-                    self.multilineeditorErr.errorMessage("");
-                    self.multilineeditorAlarm.alarmMessage("");
-                    let mode: number = nts.uk.ui.windows.getShared('settingMode');
+                    if (codeChanged != 0) {
+                        self.selectMode = true;
+                        self.wkTypeCode = ko.observable(nts.uk.ui.windows.getShared('wkTypeCode'));
+                        self.wkTypeName = ko.observable(nts.uk.ui.windows.getShared('wkTypeName'));
+                        self.multilineeditorErr.errorMessage("");
+                        self.multilineeditorAlarm.alarmMessage("");
+                        self.multilineeditorErr.enable(true);
+                        self.multilineeditorAlarm.enable(true);
+                        let mode: number = nts.uk.ui.windows.getShared('settingMode');
 
-                    if (mode == SettingMode.COMPANY) {
-                        self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                            if (itemDivTime == null) {
-                                self.multilineeditorErr.errorMessage("");
-                                self.multilineeditorAlarm.alarmMessage("");
-                            } else {
-                                self.itemDivergenceTime(itemDivTime);
-                                self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
-                            }
+                        if (mode == SettingMode.COMPANY) {
+                            self.findByDivTimeNo(self.currentCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
+                                if (itemDivTime == null) {
+                                    self.multilineeditorErr.errorMessage("");
+                                    self.multilineeditorAlarm.alarmMessage("");
+                                } else {
+                                    self.itemDivergenceTime(itemDivTime);
+                                    self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                    self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                                }
 
-                        });
-                    } else {
-                        self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
-                            if (itemDivTime == null) {
-                                self.multilineeditorErr.errorMessage("");
-                                self.multilineeditorAlarm.alarmMessage("");
-                            } else {
-                                self.itemDivergenceTime(itemDivTime);
-                                self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
-                                self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
-                            }
+                            });
+                        } else {
+                            self.findByWorkTypeDivTimeNo(self.currentCode(), self.wkTypeCode()).done((itemDivTime: DivergenceTimeErrAlarmMsg) => {
+                                if (itemDivTime == null) {
+                                    self.multilineeditorErr.errorMessage("");
+                                    self.multilineeditorAlarm.alarmMessage("");
+                                } else {
+                                    self.itemDivergenceTime(itemDivTime);
+                                    self.multilineeditorErr.errorMessage(itemDivTime.errorMessage);
+                                    self.multilineeditorAlarm.alarmMessage(itemDivTime.alarmMessage);
+                                }
 
-                        });
+                            });
+                        }
                     }
-
+                    else {
+                        self.multilineeditorErr.errorMessage("");
+                        self.multilineeditorAlarm.alarmMessage("");
+                        self.multilineeditorErr.enable(false);
+                        self.multilineeditorAlarm.enable(false);
+                        self.wkTypeCode = ko.observable("");
+                        self.wkTypeName = ko.observable("");
+                    }
                 });
             }
 
@@ -149,6 +164,7 @@ module nts.uk.at.view.kmk011.i {
                             });
                         }
                     }
+                    $("#btn_005").focus();
                     dfd.resolve();
                 })
                 return dfd.promise();

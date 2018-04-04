@@ -7,7 +7,9 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHoliday
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 
@@ -25,6 +28,8 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private HolidayShipmentScreenAFinder aFinder;
 	@Inject
+	private HolidayShipmentScreenCFinder cFinder;
+	@Inject
 	private HolidayShipmentScreenBFinder bFinder;
 	@Inject
 	private SaveHolidayShipmentCommandHandler saveHandler;
@@ -34,6 +39,8 @@ public class HolidayShipmentWebService extends WebService {
 	private DeleteHolidayShipmentCommandHandler deleteHanler;
 	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHanler;
+	@Inject
+	private ChangeAbsDateCommandHandler changeAbsHanler;
 
 	@POST
 	@Path("start")
@@ -44,7 +51,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_work_type")
 	public ChangeWorkTypeDto changeWorkType(ChangeWorkTypeParam param) {
-		return this.aFinder.changeWorkType(param.getWorkTypeCD(), param.getWkTimeCD());
+		return this.aFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
 	}
 
 	@POST
@@ -84,12 +91,30 @@ public class HolidayShipmentWebService extends WebService {
 		this.cancelHanler.handle(command);
 	}
 
+	@POST
+	@Path("start_c")
+	public HolidayShipmentDto startPageC(StartAParam param) {
+		return this.cFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
+	}
+
+	@POST
+	@Path("change_date_c")
+	public HolidayShipmentDto changeDateC(String appDate) {
+		return this.cFinder.changeAppDate(appDate);
+	}
+
+	@POST
+	@Path("change_abs_date")
+	public void changeAbsDate(SaveHolidayShipmentCommand command) {
+		this.changeAbsHanler.handle(command);
+	}
+
 }
 
 @Value
 class StartAParam {
 	private String sID;
-	private String appDate;
+	private GeneralDate appDate;
 	private int uiType;
 }
 
@@ -100,16 +125,16 @@ class StartBParam {
 
 @Value
 class ChangeWorkTypeParam {
-	private String workTypeCD;
+	private String wkTypeCD;
 	private String wkTimeCD;
 }
 
 @Value
 class ChangeDateParam {
 
-	private String holidayDate;
+	private GeneralDate holidayDate;
 
-	private String takingOutDate;
+	private GeneralDate takingOutDate;
 
 	/**
 	 * 申請組み合わせ

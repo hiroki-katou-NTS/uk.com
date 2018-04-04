@@ -25,6 +25,7 @@ module nts.uk.at.view.kaf006.b{
         startAppDate: KnockoutObservable<string> = ko.observable('');
          // 申請日付
         endAppDate: KnockoutObservable<string> = ko.observable('');
+        dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
         appDate: KnockoutObservable<string> = ko.observable('');
         selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
         holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);
@@ -33,6 +34,7 @@ module nts.uk.at.view.kaf006.b{
         selectedTypeOfDuty:  KnockoutObservable<number> = ko.observable(null);
         displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
         changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
+        changeWorkHourValueFlg: KnockoutObservable<boolean> = ko.observable(true);
 //        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(false);
         displayStartFlg: KnockoutObservable<boolean> = ko.observable(true);
         contentFlg: KnockoutObservable<boolean> = ko.observable(true);
@@ -228,7 +230,7 @@ module nts.uk.at.view.kaf006.b{
             self.convertListHolidayType(data.holidayAppTypes);
             self.holidayTypeCode(data.holidayAppType);
             self.displayPrePostFlg(data.prePostFlg);
-            self.displayWorkTimeName(data.workTimeCode + data.workTimeName);
+            self.displayWorkTimeName(data.workTimeCode +"　"+ data.workTimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -256,6 +258,8 @@ module nts.uk.at.view.kaf006.b{
                 let appDateAll = data.application.startDate + nts.uk.resource.getText('KAF005_38')　+ data.application.endDate;
                 self.appDate(appDateAll);
             }
+            self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+            self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
             
             if(data.initMode == 0){
                 // display Mode
@@ -401,7 +405,7 @@ module nts.uk.at.view.kaf006.b{
             let self =  this;
             let nameHolidayType  = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
             for(let i = 0; i < data.length ; i++){
-                self.holidayTypes.push(new common.HolidayType(i,nameHolidayType[i]));
+                self.holidayTypes.push(new common.HolidayType(data[i],nameHolidayType[data[i]]));
             }
         }
         

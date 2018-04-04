@@ -6,6 +6,10 @@ import java.util.Optional;
 /**
  * The Interface DivergenceTimeRepository.
  */
+/**
+ * @author NWS_ANHHTH_PC
+ *
+ */
 public interface DivergenceTimeRepository {
 
 	/**
@@ -15,6 +19,15 @@ public interface DivergenceTimeRepository {
 	 * @return the all div time
 	 */
 	List<DivergenceTime> getAllDivTime(String companyId);
+
+	/**
+	 * Gets the div time list by no.
+	 *
+	 * @param company the company
+	 * @param divTimeNo the div time no
+	 * @return the div time list by no
+	 */
+	List<DivergenceTime> getDivTimeListByNo(String companyId,List<Integer> divTimeNo);
 
 	/**
 	 * Gets the div time info.
@@ -40,5 +53,14 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeDomain the div time domain
 	 */
 	void update (DivergenceTime divTimeDomain);
+	
+	/* 使用している乖離時間を取得する */
+	/**
+	 * Get all div time by use classification
+	 * 
+	 * @param companyId
+	 * @return div time list
+	 */
+	List<DivergenceTime> getDivTimeListByUseSet(String companyId);
 
 }

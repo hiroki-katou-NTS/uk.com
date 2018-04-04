@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         employeeName: KnockoutObservable<string> = ko.observable('');
 
-        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+        drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
@@ -45,6 +45,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         version: KnockoutObservable<number> = ko.observable(0);
 
+        displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
+
+        appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+
+
         update() {
             block.invisible();
             let self = this,
@@ -58,8 +63,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
-                        version: self.version()
-                        ,
+                        appVersion: self.version(),
                     }
                 };
 
@@ -103,13 +107,17 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             return dfd.promise();
 
         }
-        setDataFromStart(data) {
+        setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                self.comment(data.drawalReqSet || null);
+                self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);
                 self.employeeID(data.employeeID || null);
                 self.version(data.application.version || 0);
+                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTypes(data.recWkTypes || []);
+                self.absWk().wkTypes(data.absWkTypes || []);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
@@ -138,6 +146,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
+            self.appReasonSelectedID(data.application.applicationReason.split("\r\n")[0]);
 
         }
 
@@ -156,7 +165,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             control.wkTypeCD(data.workTypeCD);
             control.wkTimeCD(data.workTimeCD);
             control.changeWorkHoursType(data.changeWorkHoursType);
-            control.appDate(data.appDate);
+            control.appDate(new Date(data.appDate));
             control.appID(data.appID);
             if (data.wkTime1) {
                 control.wkTime1().startTime(data.wkTime1.startTime);
