@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 
 /**
  * The Interface DivergenceReasonInputMethodService.
@@ -21,7 +22,7 @@ public interface DivergenceReasonInputMethodService {
 	 * @return true, if successful
 	 */
 	//理由漏れがあるか判定する
-	public boolean DetermineLeakageReason(String employeeId, GeneralDate processDate, 
-			Integer divergenceTimeNo,DivergenceReasonCode divergenceReasonCode, DivergenceReason divergenceReason,boolean justmentResult );
+	public JudgmentResult DetermineLeakageReason(String employeeId, GeneralDate processDate, 
+			int divergenceTimeNo,DivergenceReasonCode divergenceReasonCode, DivergenceReasonContent divergenceReasonContent,JudgmentResult justmentResult );
 
 }
