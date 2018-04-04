@@ -165,7 +165,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             control.wkTypeCD(data.workTypeCD);
             control.wkTimeCD(data.workTimeCD);
             control.changeWorkHoursType(data.changeWorkHoursType);
-            control.appDate(data.appDate);
+            control.appDate(new Date(data.appDate));
             control.appID(data.appID);
             if (data.wkTime1) {
                 control.wkTime1().startTime(data.wkTime1.startTime);

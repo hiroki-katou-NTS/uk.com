@@ -19,6 +19,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         { headerText: '', key: "picture-person", dataType: "string", width: '35px', ntsControl: 'Image' }
     ];
     
+    var CHECK_INPUT = {"759" :  "760", "760" :  "759", "761" :  "762", 
+                       "762" :  "761", "763" :  "764", "764" :  "763", 
+                       "765" :  "766", "766" :  "765", "157" :  "159", 
+                       "159" :  "157", "163" :  "165", "165" :  "163",
+                       "169" :  "171", "171" :  "169",
+                       "175" :  "177", "177" :  "175", "181" :  "183", 
+                       "183" :  "181", "187" :  "189", "189" :  "187", 
+                       "193" :  "195", "195" :  "193", "199" :  "201", 
+                       "201" :  "199", "205" :  "207", "207" :  "205",
+                       "211" :  "213", "231" :  "211"        
+    }
     export class ScreenModel {
         fixHeaders: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -533,7 +544,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                                 // check itemCare 
                                 let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
-                                if (groupCare == 0 || groupCare == 1) {
+                                if (groupCare == 0 || groupCare == 1 || groupCare == 2) {
                                     if (self.checkErrorData(groupCare, data, dataSource) == false || self.listCareInputError().length >0) {
                                         checkDataCare = false;
                                     }
@@ -601,10 +612,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             if (data[0] != undefined) {
                                 self.listCareError(data[0])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                            } else if (data[1] != undefined){
+                            } 
+                            if (data[1] != undefined){
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
-                            } else if (data[2] != undefined){
+                            }
+                            if (data[2] != undefined){
                                 self.listCheckHolidays(data[2]);
                                 self.btnExtraction_Click();
                             }
@@ -704,12 +717,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         // check data error group care , child care
         checkErrorData(group : number, data: any, dataSource :any ) : boolean{
             var self = this;
+            data["itemId"] = data.columnKey.substring(1, data.columnKey.length);
+            let rowItemSelect: any = _.find(dataSource, function(value: any) {
+                return value.id == data.rowId;
+            });
+            self.checkInputCare(data, rowItemSelect);
             if (group != 2) {
-                let rowItemSelect: any = _.find(dataSource, function(value: any) {
-                        return value.id == data.rowId;
-                    });
-                data["itemId"] = data.columnKey.substring(1, data.columnKey.length);
-                self.checkInputCare(data, rowItemSelect);
                 if (data.value != "") {
                     if (group == 0) {
                         if ((rowItemSelect.A763 != undefined && rowItemSelect.A763 != "") || (rowItemSelect.A763 != undefined && rowItemSelect.A763 != "")
@@ -736,68 +749,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         checkInputCare(data: any, rowItemSelect : any){
             var self = this;
-            switch(Number(data.itemId)){
-                case 759:
-                    if(!self.isNNUE(rowItemSelect.A760) || data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                       data["group"] = 760;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 760:
-                 if(!self.isNNUE(rowItemSelect.A759)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                     data["group"] = 759;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 761:
-                 if(!self.isNNUE(rowItemSelect.A762)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                       data["group"] = 762;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 762:
-                 if(!self.isNNUE(rowItemSelect.A761)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                     data["group"] = 761;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 763:
-                 if(!self.isNNUE(rowItemSelect.A764)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                       data["group"] = 764;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 764:
-                 if(!self.isNNUE(rowItemSelect.A763)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                       data["group"] = 763;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 765:
-                 if(!self.isNNUE(rowItemSelect.A766)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                       data["group"] = 766;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
-                case 766:
-                 if(!self.isNNUE(rowItemSelect.A765)||data.value ==""){
-                       data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
-                       data["group"] = 765;
-                       self.listCareInputError.push(data); 
-                    }
-                    break;
+            if(CHECK_INPUT[data.itemId] != undefined &&(!self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]]) || data.value =="")){
+                data["itemId"] = data.columnKey.substring(1, data.columnKey.length);
+                data["group"] = Number(CHECK_INPUT[data.itemId]);
+                self.listCareInputError.push(data); 
             }
         }
         
         isNNUE(value : any) : boolean{
-            if(value != undefined && value != "" && value != null) return true;
+            if(value != "") return true;
             else return false;
         }
         
@@ -964,7 +924,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             
             //CheckHolidays
               _.each(self.listCheckHolidays(), value => {
-                  let object = { date: value.date, employeeCode: self.dpData[0].employeeCode, employeeName: self.dpData[0].employeeName, message: "大塚用連続休暇チェック設定.表示するメッセージ", itemName: value.rowId, columnKey: value.itemId };
+                  let object = { date: value.date, employeeCode: self.dpData[0].employeeCode, employeeName: self.dpData[0].employeeName, message: value.valueType, itemName: value.rowId, columnKey: value.itemId };
                    errorValidateScreeen.push(object); 
               });
             if (self.displayFormat() === 0) {
@@ -1352,6 +1312,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         
         totalNumber(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
             let total = 0;
             let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
             let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
@@ -1365,6 +1326,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return total;
         }
         totalTime(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
             let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
             let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
@@ -1383,6 +1345,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         
          totalMoney(data) {
+            if (!$("#dpGrid").data("igGridPaging")) return;
             let total = 0;
             let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
             let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
@@ -1591,7 +1554,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 preventEditInError: false,
                 columns: self.headersGrid(),
                 hidePrimaryKey: true,
-                userId: self.employIdLogin.id,
+                userId: self.employIdLogin,
                 getUserId: function(primaryKey) {
                    let ids =  primaryKey.split("_");
                    return ids[2]+"-"+ ids[3]+"-"+ids[4]+"-"+ids[5]+"-"+ids[6]; 

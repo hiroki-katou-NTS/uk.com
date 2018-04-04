@@ -24,6 +24,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         startAppDate: KnockoutObservable<string> = ko.observable('');
          // 申請日付
         endAppDate: KnockoutObservable<string> = ko.observable('');
+        dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
         appDate: KnockoutObservable<string> = ko.observable('');
         selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
         holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);
@@ -103,10 +104,12 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 appDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
                 employeeID: null        
             }).done((data) => {
+                $("#inputdate").focus();
                 self.initData(data);
                 self.holidayTypeCode.subscribe(function(value) {
-                    if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
-                        if (nts.uk.ui.errors.hasError()) { return; }
+                    self.checkDisplayEndDate(self.displayEndDateFlg());
+                    if(self.checkStartDate()){
+                        return;    
                     }
                     if (!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())) {
                         var dfd = $.Deferred();
@@ -118,6 +121,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             holidayType: value,
                             alldayHalfDay: self.selectedAllDayHalfDayValue()
                         }).done((data) => {
+                            $("#workTypes").focus();
                             self.displayStartFlg(true);
                             self.changeWorkHourValueFlg(data.changeWorkHourFlg);
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
@@ -145,10 +149,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         }
                 });
                
-                // find changeDate
-                self.startAppDate.subscribe(function(value){
-                    self.findChangeAppDate(value);
-                });
+                
                 //find by change AllDayHalfDay
                 self.selectedAllDayHalfDayValue.subscribe((value) =>{
                     self.findChangeAllDayHalfDay(value);
@@ -162,6 +163,24 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 });
                 self.displayWorkTimeName.subscribe((value) =>{
                     self.changeDisplayWorkime();
+                });
+                // find changeDate
+                self.appDate.subscribe(function(value) {
+                    self.findChangeAppDate(value);
+                });
+                self.displayEndDateFlg.subscribe((value) =>{
+                       nts.uk.ui.errors.clearAll();
+                    if(value){
+                        $('.ntsStartDatePicker').focus();
+                        self.dateValue({startDate:self.appDate(), endDate:""});
+                        self.dateValue.subscribe(function(){
+                            self.findChangeAppDate(self.dateValue().startDate);
+                        })
+                    }else{
+                        self.appDate( self.dateValue().startDate);
+                        self.endAppDate('');
+                        $("#inputdate").focus();
+                    }
                 });
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);    
@@ -188,12 +207,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by appDate
         findChangeAppDate(data: any){
             let self = this;
-            if(!nts.uk.util.isNullOrEmpty(self.startAppDate())){
-                if (nts.uk.ui.errors.hasError()){return;} 
+            self.checkDisplayEndDate(self.displayEndDateFlg());
+            if (self.checkStartDate()) {
+                return;
             }
             let dfd = $.Deferred();
             service.findByChangeAppDate({
-                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                startAppDate: nts.uk.util.isNullOrEmpty(data) ? null : moment(data).format(self.DATE_FORMAT),
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                 displayHalfDayValue: self.displayHalfDayValue(),
                 holidayType: self.holidayTypeCode(),
@@ -213,7 +233,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 self.prePostSelected(result.application.prePostAtr);
                 self.displayPrePostFlg(result.prePostFlg);
-                self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false);
+                if(!nts.uk.util.isNullOrEmpty(self.startAppDate())){
+                   self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false); 
+                }
                 dfd.resolve(result);
             }).fail((res) => {
                 dfd.reject(res);
@@ -223,8 +245,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by switch button AllDayHalfDay(A3_12)
         findChangeAllDayHalfDay(value: any){
             let self = this;
-            if(!nts.uk.util.isNullOrEmpty(self.startAppDate())){
-                if (nts.uk.ui.errors.hasError()){return;} 
+            self.checkDisplayEndDate(self.displayEndDateFlg());
+            if (self.checkStartDate()) {
+                return;
             }
             let dfd = $.Deferred();
             service.findChangeAllDayHalfDay({
@@ -259,8 +282,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by switch button DisplayHalfDay(A5_3)
         findChangeDisplayHalfDay(value: any){
             let self = this;
-            if(!nts.uk.util.isNullOrEmpty(self.startAppDate())){
-                if (nts.uk.ui.errors.hasError()){return;} 
+            self.checkDisplayEndDate(self.displayEndDateFlg());
+            if (self.checkStartDate()) {
+                return;
             } 
             let dfd = $.Deferred();
             service.getChangeDisplayHalfDay({
@@ -297,8 +321,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         // change by workType
         findChangeWorkType(value: any){
             let self = this;
-            if(!nts.uk.util.isNullOrEmpty(self.startAppDate())){
-                if (nts.uk.ui.errors.hasError()){return;} 
+            self.checkDisplayEndDate(self.displayEndDateFlg());
+            if (self.checkStartDate()) {
+                return;
             }
             let dfd = $.Deferred();
             service.getChangeWorkType({
@@ -343,7 +368,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
          registerClick(){
              let self = this;
-             $("#inputdate").trigger("validate");
+             self.checkDisplayEndDate(self.displayEndDateFlg());
+             if(self.displayEndDateFlg()){
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
+             }else{
+                $("#inputdate").trigger("validate");
+             }
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
              let appReason: string;
@@ -362,8 +393,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
              }
              let paramInsert = {
                 prePostAtr: self.prePostSelected(),
-                startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : self.startAppDate(),
-                endDate:  nts.uk.util.isNullOrEmpty(self.endAppDate()) ? self.startAppDate() : self.endAppDate(),
+                startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                endDate:  nts.uk.util.isNullOrEmpty(self.endAppDate()) ? moment(self.startAppDate()).format(self.DATE_FORMAT) : moment(self.endAppDate()).format(self.DATE_FORMAT),
                 employeeID: self.employeeID(),
                 applicationReason: appReason,
                 holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
@@ -460,6 +491,28 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             for(let i = 0; i < data.length ; i++){
                 self.holidayTypes.push(new common.HolidayType(data[i],nameHolidayType[data[i]]));
             }
+        }
+        checkStartDate() : boolean{
+            let self = this;
+            if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
+                if (!self.displayEndDateFlg()) {
+                    if (nts.uk.ui.errors.hasError()) { return true; }
+                } else {
+                    nts.uk.ui.errors.clearAll();
+                    $('.ntsStartDatePicker').trigger("validate");
+                    if (nts.uk.ui.errors.hasError()) { return true; }
+                }
+            }
+            return false;
+        }
+        private checkDisplayEndDate(data){
+            let self = this;
+            if(data){
+                self.startAppDate(self.dateValue().startDate);
+                self.endAppDate(self.dateValue().endDate);
+            }else{
+                self.startAppDate(self.appDate());
+            }   
         }
         
         /**

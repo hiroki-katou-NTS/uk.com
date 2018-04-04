@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         ]);
         appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
-        appDate: KnockoutObservable<String> = ko.observable(moment().format('yyyy/MM/dd'));
+        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
@@ -74,15 +74,17 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).always(() => {
                 block.clear();
                 dfd.resolve();
-
+                $("#recDatePicker").focus();
             });
             return dfd.promise();
         }
 
         clearData() {
             let self = this;
-            self.recWk(new common.AppItems());
-            self.absWk(new common.AppItems());
+            self.recWk().wkTime1(new common.WorkingHour());
+            self.recWk().wkTime2(new common.WorkingHour());
+            self.absWk().wkTime1(new common.WorkingHour());
+            self.absWk().wkTime2(new common.WorkingHour());
             self.reason('');
         }
 
@@ -111,7 +113,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
         validate() {
 
-            $(".combo-box").trigger("validate");
+            $(".combo-box ,.nts-input").trigger("validate");
 
         }
 
@@ -144,9 +146,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 });
             }).fail((error) => {
                 dialog({ messageId: error.messageId, messageParams: error.parameterIds });
-
             }).always(() => {
                 block.clear();
+                $("#recDatePicker").focus();
             });
         }
 
