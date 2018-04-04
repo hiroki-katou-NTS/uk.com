@@ -10,19 +10,24 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
+
 /**
- * 
- * @author phongtq
+ * The Class StampReflectionManagementCommandHandler.
  *
+ * @author phongtq
  */
 @Stateless
 public class StampReflectionManagementCommandHandler extends  CommandHandler<StampReflectionManagementCommand>{
-	/** The Repository */
+	
+	/**  The Repository. */
 	@Inject
 	private StampReflectionManagementRepository repository;
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<StampReflectionManagementCommand> context) {
-		// TODO Auto-generated method stub
 		StampReflectionManagementCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		// convert to domain
