@@ -158,6 +158,8 @@ module nts.layout {
             self.relate_radio();
             self.relate_button();
 
+            self.dateTime();
+
             validate.initCheckError(lstCls);
         }
 
@@ -250,7 +252,6 @@ module nts.layout {
                     let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = finder.findChilds(radio.ctgCode, radio.setParentCode);
 
-                    //debugger;
                     if (rd) {
                         rd.data.value.subscribe(x => {
                             _.each(ctrls, c => {
@@ -775,15 +776,20 @@ module nts.layout {
                 CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
 
             if (CS00016_IS00077 && CS00016_IS00079) {
-                debugger;
                 CS00016_IS00077.data.value.subscribe(x => {
-
+                    CS00016_IS00079.data.lstComboBoxValue.push({
+                        optionValue: x,
+                        optionText: x
+                    });
                 });
             }
 
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(x => {
-
+                    CS00017_IS00084.data.lstComboBoxValue.push({
+                        optionValue: x,
+                        optionText: x
+                    });
                 });
             }
         }
@@ -829,7 +835,7 @@ module nts.layout {
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
-        lstComboBoxValue: Array<any>;
+        lstComboBoxValue: KnockoutObservableArray<any>;
         itemParentCode?: string;
     }
 
