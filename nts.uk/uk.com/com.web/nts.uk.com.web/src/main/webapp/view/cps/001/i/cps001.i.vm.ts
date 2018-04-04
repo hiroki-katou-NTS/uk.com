@@ -94,10 +94,8 @@ module nts.uk.com.view.cps001.i.vm {
         categoryCode: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
-            let self = this;
-            let sid = __viewContext.user.employeeId;
-
-            let data: any = getShared('CPS001GHI_VALUES');
+            let self = this,
+                data: any = getShared('CPS001GHI_VALUES');
 
             self.categoryCode(data.ctgCode);
 
@@ -152,8 +150,9 @@ module nts.uk.com.view.cps001.i.vm {
         loadData(index?: number): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             self.checked(false);
+            let ctgCode: IData = self.genSpecialCode(self.categoryCode());
 
-            service.getAllList("1B3D3CC4-90FD-4992-9566-12EC72827E4C", 1).done((data: Array<ISpecialLeaveRemaining>) => {
+            service.getAllList(__viewContext.user.employeeId, ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
@@ -168,6 +167,7 @@ module nts.uk.com.view.cps001.i.vm {
                     }
 
                 } else {
+                    self.listData([]);
                     self.newMode();
                 }
                 unblock();
@@ -240,7 +240,8 @@ module nts.uk.com.view.cps001.i.vm {
         Save() {
             let self = this,
                 grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
-                deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD");
+                deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
+                ctgCode: IData = self.genSpecialCode(self.categoryCode());
             $("#idDateGrantInp").trigger("validate");
             $("#deadlineDateInp").trigger("validate");
             $("#dayNumberOfGrants").trigger("validate");
@@ -268,8 +269,8 @@ module nts.uk.com.view.cps001.i.vm {
             //sid = "1B3D3CC4-90FD-4992-9566-12EC72827E4C" || __viewContext.user.employeeId
             let command = {
                 specialid: currentRow == undefined ? null : currentRow.specialid,
-                sid: "1B3D3CC4-90FD-4992-9566-12EC72827E4C",
-                specialLeaCode: 1,
+                sid: __viewContext.user.employeeId,
+                specialLeaCode: ctgCode.specialCode,
                 grantDate: self.dateGrantInp(), deadlineDate: self.deadlineDateInp(),
                 expStatus: self.selectedRuleCode(), registerType: null,
                 numberDayGrant: self.dayNumberOfGrants(), timeGrant: self.grantTime(),
