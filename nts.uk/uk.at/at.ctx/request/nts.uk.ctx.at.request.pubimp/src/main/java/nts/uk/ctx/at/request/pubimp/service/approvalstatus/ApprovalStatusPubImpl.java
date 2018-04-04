@@ -28,8 +28,8 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 			for (ApprovalStatusEmployeeOutput item : data) {
 				ApprovalStatusEmployeeExport empExport = new ApprovalStatusEmployeeExport();
 				empExport.setSId(item.getSId());
-				empExport.setClosureStart(item.getClosureStart());
-				empExport.setClosureEnd(item.getClosureEnd());
+				empExport.setClosureStart(item.getStartDate());
+				empExport.setClosureEnd(item.getEndDate());
 				result.add(empExport);
 			}
 			return result;
