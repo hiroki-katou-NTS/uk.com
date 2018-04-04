@@ -8,10 +8,8 @@
 	<ui:composition template="/master/dialog.xhtml">	
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
-					width: 700, 
-					height: 400,
-					maxWidth: 850,
-                    maxHeight: 850,
+					width : 650,
+					height : 620
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,7 +21,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" style="width:600px; height:400px;">
+			<div class="contents-area">
 			<!-- B1-1 -->
 				<div><label class="kdm002_2">#{i18n.getText('KDM002_2')}</label></div>
 				<div class="result">
