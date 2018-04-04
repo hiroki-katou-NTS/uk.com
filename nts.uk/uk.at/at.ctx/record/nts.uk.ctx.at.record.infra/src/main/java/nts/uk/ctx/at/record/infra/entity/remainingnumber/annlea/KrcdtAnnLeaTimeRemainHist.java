@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -14,8 +15,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author HungTT - 年休付与時点残数履歴データ
  *
  */
+@NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ANNLEA_REMAIN")
+@Table(name = "KRCDT_ANNLEA_TIME_RM_HIST")
 public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity {
 
 	@Id
