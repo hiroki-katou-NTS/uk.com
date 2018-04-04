@@ -364,7 +364,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		CollectionUtil.split(historyList, MAX_ELEMENTS, (subList) -> {
 			// add where
 			
-			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid)
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId)
 					.in(subList));
 			
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
