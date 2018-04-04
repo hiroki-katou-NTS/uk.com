@@ -32,8 +32,8 @@ public class DisplayAndInputMonthlyDto {
 		return new DisplayAndInputMonthlyDto(
 				domain.getItemMonthlyId(),
 				domain.isToUse(),
-				domain.getInputControlMonthly().isCanBeChangedByOthers(),
-				domain.getInputControlMonthly().isYouCanChangeIt()
+				domain.getInputControlMonthly().isYouCanChangeIt(),
+				domain.getInputControlMonthly().isCanBeChangedByOthers()
 				);
 	}
 	

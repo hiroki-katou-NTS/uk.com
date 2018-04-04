@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.InputControlMonthl
 public class DisplayAndInputMonthlyCmd {
 	private int itemMonthlyId;
 	
-	private String itemDailyName;
+	private String itemMontlyName;
 	
 	private int displayNumber;
 	
@@ -24,10 +24,10 @@ public class DisplayAndInputMonthlyCmd {
 	private boolean youCanChangeIt;
 	/**他人が変更できる*/
 	private boolean canBeChangedByOthers;
-	public DisplayAndInputMonthlyCmd(int itemMonthlyId, String itemDailyName, int displayNumber, int userCanUpdateAtr, boolean toUse, boolean youCanChangeIt, boolean canBeChangedByOthers) {
+	public DisplayAndInputMonthlyCmd(int itemMonthlyId, String itemMontlyName, int displayNumber, int userCanUpdateAtr, boolean toUse, boolean youCanChangeIt, boolean canBeChangedByOthers) {
 		super();
 		this.itemMonthlyId = itemMonthlyId;
-		this.itemDailyName = itemDailyName;
+		this.itemMontlyName = itemMontlyName;
 		this.displayNumber = displayNumber;
 		this.userCanUpdateAtr = userCanUpdateAtr;
 		this.toUse = toUse;

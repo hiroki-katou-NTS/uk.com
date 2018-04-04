@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdw003.a {
     let __viewContext: any = window["__viewContext"] || {};
     __viewContext.ready(function() {
-        let dataShare:any;
+        let dataShare :any;
          this.transferred.ifPresent(data => {
             console.log(data);
              dataShare = data;

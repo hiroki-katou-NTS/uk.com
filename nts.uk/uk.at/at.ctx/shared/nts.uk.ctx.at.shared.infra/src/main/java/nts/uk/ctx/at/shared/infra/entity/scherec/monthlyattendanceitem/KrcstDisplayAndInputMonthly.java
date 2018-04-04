@@ -33,13 +33,6 @@ public class KrcstDisplayAndInputMonthly extends UkJpaEntity implements Serializ
 	@Column(name = "CHANGED_BY_OTHERS")
 	public int canBeChangedByOthers;
 	
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "AUTHORITY_MON_ID", referencedColumnName = "AUTHORITY_MON_ID", insertable = false, updatable = false)
-	})
-	public KrcmtMonthlyItemControlByAuth monthlyattditemauth ;
-	
 	@Override
 	protected Object getKey() {
 		return krcstDisplayAndInputMonthlyPK;

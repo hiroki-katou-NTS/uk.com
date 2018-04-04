@@ -21,6 +21,7 @@ public class UpdateMonthlyItemControlByAuthCmdHandler extends CommandHandler<Mon
 	protected void handle(CommandHandlerContext<MonthlyItemControlByAuthCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		MonthlyItemControlByAuthCmd command = context.getCommand();
+		command.setCompanyId(companyID);
 		Optional<MonthlyItemControlByAuthority> data =repo.getMonthlyAttdItem(companyID, command.getAuthorityMonthlyId());
 		if(data.isPresent()) {
 			repo.updateMonthlyAttdItemAuth(MonthlyItemControlByAuthCmd.fromCommand(command));
