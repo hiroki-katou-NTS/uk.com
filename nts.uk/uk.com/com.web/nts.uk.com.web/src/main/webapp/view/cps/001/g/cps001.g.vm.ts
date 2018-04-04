@@ -22,6 +22,20 @@ module nts.uk.com.view.cps001.g.vm {
         grantMinutesH: KnockoutObservable<boolean>;
         usedMinutesH: KnockoutObservable<boolean>;
         remainingMinutesH: KnockoutObservable<boolean>;
+        
+        //
+        nameDateGrantInp: KnockoutObservable<string> = ko.observable(null);
+        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable(null);
+
+        nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable(null);
+        namegrantTime: KnockoutObservable<string> = ko.observable(null);
+
+        nameDayNumberOfUse: KnockoutObservable<string> = ko.observable(null);
+        nameUseTime: KnockoutObservable<string> = ko.observable(null);
+
+        nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable(null);
+        nameTimeReam: KnockoutObservable<string> = ko.observable(null);
+        
         init: boolean = true;
         itemDefs: any = [];
         constructor() {
@@ -152,17 +166,36 @@ module nts.uk.com.view.cps001.g.vm {
                                     }else{
                                         $(this).parent().css("display", "none");
                                     }
-                                    let timeType = itemCodeArray[itemCodeArray.length - 1];
-                                        switch(timeType){
-                                            case "grantMinutes": 
+                                      let timeType = itemCodeArray[itemCodeArray.length - 1];
+                                        switch (timeType) {
+                                            case "IS00385":
+                                                self.nameDateGrantInp(itemDef.itemName);
+                                                break;
+                                            case "IS00386":
+                                                self.nameDeadlineDateInp(itemDef.itemName);
+                                                break;
+                                            case "IS00390":
+                                                self.nameDayNumberOfGrant(itemDef.itemName);
+                                                break;
+                                            case "IS00393":
+                                                self.nameDayNumberOfUse(itemDef.itemName);
+                                                break;
+                                            case "IS00396":
+                                                self.nameDayNumberOfRemain(itemDef.itemName);
+                                                break;
+                                            case "grantMinutes":
                                                 self.grantMinutesH = ko.observable(!itemDef.display);
+                                                self.namegrantTime(itemDef.itemName);
                                                 break;
                                             case "usedMinutes":
                                                 self.usedMinutesH = ko.observable(!itemDef.display);
+                                                self.nameUseTime(itemDef.itemName);
                                                 break;
                                             case "remainingMinutes":
                                                 self.remainingMinutesH = ko.observable(!itemDef.display);
+                                                self.nameTimeReam(itemDef.itemName);
                                                 break;
+            
                                         }
                                 }
                             });
@@ -222,6 +255,10 @@ module nts.uk.com.view.cps001.g.vm {
             $("#grantDays").trigger("validate");
             $("#usedDays").trigger("validate");
             $("#remainingDays").trigger("validate");
+            
+            if ( nts.uk.ui.errors.hasError()){
+                return;
+            }
             block();
             if (_self.createMode()) {
                 
