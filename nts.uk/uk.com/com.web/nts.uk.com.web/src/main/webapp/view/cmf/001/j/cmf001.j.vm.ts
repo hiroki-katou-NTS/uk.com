@@ -193,6 +193,9 @@ module nts.uk.com.view.cmf001.j.viewmodel {
         }
 
         private hasError(): boolean {
+            let self = this;
+            self.setting().startDigit(Math.floor(self.setting().startDigit()));
+            self.setting().endDigit(Math.floor(self.setting().endDigit()));
             $('#J2_5').ntsError('check');
             $('#J2_8').ntsError('check');
             $('#J7_5').ntsError('check');
@@ -200,7 +203,6 @@ module nts.uk.com.view.cmf001.j.viewmodel {
                 return true;
             }
             else {
-                let self = this;
                 let startDigit: number = +self.setting().startDigit();
                 let endDigit: number = +self.setting().endDigit();
                 if (startDigit > endDigit && self.checkActive6() && self.checkActive1() && self.inputMode) {
