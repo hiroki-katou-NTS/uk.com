@@ -99,14 +99,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
 		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);		
 		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, appGobackTmp, overTimeTmp, commonReflect, holidayworkInfor);
-		//勤務実績反映
+		//勤務予定反映
 		ScheReflectedStatesInfo scheRelectStates = scheReflect.workscheReflect(appInfor);
 		appInfor.getReflectionInformation().setStateReflection(scheRelectStates.getReflectedSate());
-		appInfor.getReflectionInformation().setNotReason(Optional.of(scheRelectStates.getNotReflectReson()));
-		//勤務予定反映
+		appInfor.getReflectionInformation().setNotReason(scheRelectStates.getNotReflectReson() == null ? null : Optional.of(scheRelectStates.getNotReflectReson()));
+		//勤務実績反映
 		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
 		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
-		appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
+		appInfor.getReflectionInformation().setNotReasonReal(workRecordreflect.getNotReflectReson() == null ? null : Optional.of(workRecordreflect.getNotReflectReson()));
 		
 		appRepo.updateWithVersion(appInfor);
 	}
@@ -140,7 +140,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();
 		if(!holidayWorkData.getHolidayWorkInputs().isEmpty()) {
 			holidayWorkData.getHolidayWorkInputs().stream().forEach(x -> {
-				if(x.getAttendanceType() == AttendanceType.RESTTIME) {
+				if(x.getAttendanceType() == AttendanceType.BREAKTIME) {
 					mapOvertimeFrame.put(x.getFrameNo(), x.getApplicationTime().v());
 				}
 			});
@@ -150,7 +150,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				mapOvertimeFrame,
 				holidayWorkData.getHolidayShiftNight(),
 				appInfor.getReflectionInformation().getStateReflectionReal(), 
-				appInfor.getReflectionInformation().getNotReasonReal() == null ? null : appInfor.getReflectionInformation().getNotReasonReal().get()); 
+				!appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? null : appInfor.getReflectionInformation().getNotReasonReal().get()); 
 		holidayPara = new HolidayWorkReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, ScheAndRecordSameChangeFlg.ALWAY, true, appPara);
 		return holidayPara;
 		
