@@ -121,7 +121,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             holidayType: value,
                             alldayHalfDay: self.selectedAllDayHalfDayValue()
                         }).done((data) => {
-                            $("#workTypes").focus();
+                           
                             self.displayStartFlg(true);
                             self.changeWorkHourValueFlg(data.changeWorkHourFlg);
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
@@ -134,6 +134,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
                                 }
                             }
+                             $("#workTypes").find("input:first").focus();
                             dfd.resolve(data);
                         }).fail((res) => {
                             dfd.reject(res);
@@ -221,7 +222,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTypeCode: self.selectedTypeOfDuty(),
                 alldayHalfDay: self.selectedAllDayHalfDayValue()
             }).done((result) => {
-                self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if( !nts.uk.util.isNullOrEmpty(result.workTypes)){
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -375,6 +375,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
              }else{
                 $("#inputdate").trigger("validate");
              }
+             if(!self.validate()){return;}
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
              let appReason: string;
@@ -391,6 +392,14 @@ module nts.uk.at.view.kaf006.a.viewmodel {
              if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
                  return;
              }
+             if(!self.changeWorkHourValueFlg()){
+                 self.changeWorkHourValue(false);
+                 self.timeStart1(null);
+                 self.timeEnd1(null);
+                 self.timeStart2(null);
+                 self.timeEnd2(null);
+                 self.workTimeCode(null);
+             }
              let paramInsert = {
                 prePostAtr: self.prePostSelected(),
                 startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -399,7 +408,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 applicationReason: appReason,
                 holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
                 workTypeCode: self.selectedTypeOfDuty(),
-                workTimeCode: self.workTimeCode(),
+                workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),
                 halfDayFlg: self.displayHalfDayValue(),
                 changeWorkHour: self.changeWorkHourValue(),
                 allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
@@ -513,6 +522,30 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }else{
                 self.startAppDate(self.appDate());
             }   
+        }
+        validate(): boolean{
+            let self = this;            
+            //勤務時間
+            if( !nts.uk.util.isNullOrEmpty(self.timeStart1())){
+                if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
+                    return false;
+                };
+            }
+//            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
+//                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+//                    return false;
+//                };
+//            }   
+            return true;      
+        }
+        //Validate input time
+        validateTime(startTime: number, endTime: number, elementId: string): boolean{            
+            if(startTime >= endTime){
+                dialog.alertError({messageId:"Msg_307"})
+                 $(elementId).focus();
+                return false;
+            }
+            return true;
         }
         
         /**
