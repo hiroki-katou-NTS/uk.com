@@ -395,10 +395,16 @@ module nts.custombinding {
                         position: absolute;
                     }
 
-                    .layout-control .item-classification .relate-button .value-text,
-                    .layout-control .item-classification .readonly-button .value-text,
                     .layout-control .item-classification .numeric-button .nts-editor.nts-input {
                         width: 65px;
+                    }
+
+                    .layout-control .item-classification .value-text.readonly,
+                    .layout-control .item-classification .relate-button .value-text,
+                    .layout-control .item-classification .readonly-button .value-text {
+                        padding: 0;
+                        min-width: 65px;
+                        line-height: 30px;
                     }
 
                     .layout-control .item-classification .ui-igcombo-wrapper {
@@ -1122,7 +1128,7 @@ module nts.custombinding {
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
-                            <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                            <label class="value-text readonly" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.RELATE_CATEGORY -->
                             <div class="relate-button">
