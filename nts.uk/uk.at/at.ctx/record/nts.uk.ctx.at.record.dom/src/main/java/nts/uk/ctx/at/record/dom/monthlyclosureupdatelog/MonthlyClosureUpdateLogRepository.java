@@ -17,4 +17,6 @@ public interface MonthlyClosureUpdateLogRepository {
 	
 	public void add(MonthlyClosureUpdateLog domain);
 	
+	public void updateStatus(MonthlyClosureUpdateLog domain);
+	
 }

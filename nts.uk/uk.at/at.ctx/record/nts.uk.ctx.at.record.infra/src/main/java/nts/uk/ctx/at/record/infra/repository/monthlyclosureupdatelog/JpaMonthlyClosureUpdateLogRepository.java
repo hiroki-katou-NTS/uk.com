@@ -40,4 +40,16 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 			return Optional.empty();
 	}
 
+	@Override
+	public void updateStatus(MonthlyClosureUpdateLog domain) {
+		Optional<KrcdtMclosureUpdLog> opt = this.queryProxy().find(domain.getId(), KrcdtMclosureUpdLog.class);
+		if (opt.isPresent()) {
+			KrcdtMclosureUpdLog entity = opt.get();
+			entity.completeStatus = domain.getCompleteStatus().value;
+			entity.executionStatus = domain.getExecutionStatus().value;
+			this.commandProxy().update(entity);
+		} else
+			throw new RuntimeException("Can not find MonthlyClosureUpdateLog with id=" + domain.getId());
+	}
+
 }
