@@ -22,6 +22,8 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Stateless
 public class LoginParamCheckImpl implements LoginParamCheck {
 
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
 	
@@ -48,7 +50,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		}
 		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			GeneralDate.fromString(date, "yyyy/mm/dd");
+			GeneralDate.fromString(date, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1009", date);
 		}
@@ -90,7 +92,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		}
 		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			GeneralDate.fromString(date, "yyyy/mm/dd");
+			GeneralDate.fromString(date, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1009", date);
 		}
@@ -132,7 +134,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		}
 		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			GeneralDate.fromString(date, "yyyy/mm/dd");
+			GeneralDate.fromString(date, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1009", date);
 		}
@@ -169,7 +171,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		}
 		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			GeneralDate.fromString(date, "yyyy/mm/dd");
+			GeneralDate.fromString(date, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1009", date);
 		}
@@ -192,7 +194,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		}
 		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			GeneralDate.fromString(date, "yyyy/mm/dd");
+			GeneralDate.fromString(date, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1009", date);
 		}
