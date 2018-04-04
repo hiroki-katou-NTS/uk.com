@@ -9,7 +9,7 @@ module a3 {
     import FlowOTTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowOTTimezoneModel;
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
-    import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a3.service.model.OvertimeWorkFrameFindDto;
+    import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a.service.model.OvertimeWorkFrameFindDto;
     import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     class ScreenModel {
 
@@ -82,7 +82,7 @@ module a3 {
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutObservable<boolean>,
-            isUseHalfDay: KnockoutObservable<boolean>, isNewMode: KnockoutObservable<boolean>) {
+            isUseHalfDay: KnockoutObservable<boolean>, isNewMode: KnockoutObservable<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
@@ -142,6 +142,7 @@ module a3 {
             });
 
             self.setDatasource();
+            self.lstOvertimeWorkFrame = lstOvertimeWorkFrame;
         }
 
         /**
@@ -150,12 +151,8 @@ module a3 {
         public startPage(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            nts.uk.at.view.kmk003.a3.service.findAllUsedOvertimeWorkFrame().done(data => {
-                self.lstOvertimeWorkFrame = data;
                 self.setFixedTableOption();
                 dfd.resolve();
-            });
-
             return dfd.promise();
         }
         
@@ -588,7 +585,7 @@ module a3 {
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
             var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
             var isNewMode: KnockoutObservable<boolean> = input.isNewMode;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, useHalfDay,isNewMode);
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, useHalfDay,isNewMode,input.overTimeWorkFrameOptions());
             screenModel.startPage().done(() => {
                 $(element).load(webserviceLocator, function() {
                     ko.cleanNode($(element)[0]);

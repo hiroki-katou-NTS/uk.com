@@ -7,6 +7,7 @@ module a17 {
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
+    import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a.service.model.OvertimeWorkFrameFindDto;
     
     /**
      * Screen Model - Tab 17
@@ -52,11 +53,11 @@ module a17 {
         
         diffIsCalcExceededPredAddVacation: KnockoutObservable<boolean>;
         diffIsCalcNoBreak: KnockoutObservable<boolean>;
-         
+        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
         /**
          * Constructor
          */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstOvertimeWorkFrame:any) {
             let _self = this;
             _self.selectedTab = selectedTab;
             
@@ -88,18 +89,7 @@ module a17 {
                 { value: 1, localizedName: nts.uk.resource.getText("KMK003_142") },
                 { value: 0, localizedName: nts.uk.resource.getText("KMK003_143") }
             ]);            
-            _self.listOtFrameNo = ko.observableArray([
-                { value: 1, localizedName: "1" },
-                { value: 2, localizedName: "2" },
-                { value: 3, localizedName: "3" },
-                { value: 4, localizedName: "4" },
-                { value: 5, localizedName: "5" },
-                { value: 6, localizedName: "6" },
-                { value: 7, localizedName: "7" },
-                { value: 8, localizedName: "8" },
-                { value: 9, localizedName: "9" },
-                { value: 10, localizedName: "10" }
-            ]);             
+            _self.listOtFrameNo = ko.observableArray(lstOvertimeWorkFrame);             
 
             // Detail mode and simple mode is same     
             _self.isDetailMode = ko.observable(null);                         
@@ -260,7 +250,7 @@ module a17 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum,input.overTimeWorkFrameOptions());
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

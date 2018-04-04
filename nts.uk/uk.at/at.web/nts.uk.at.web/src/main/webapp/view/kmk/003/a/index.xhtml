@@ -31,7 +31,6 @@
 			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
 			<com:stylefile path="../a2/kmk003.a2.style.css" /><!-- End tab 02 -->
 			
-			<com:scriptfile path="../a3/kmk003.a3.service.js" />
 			<com:scriptfile path="../a3/kmk003.a3.vm.js" />
 			<com:stylefile path="../a3/kmk003.a3.style.css" />
 			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
@@ -340,7 +339,7 @@
 												</div>
 											</div>
 											<div tabindex="53" class="tab-a3">
-												<div class="tab-outline" data-bind="ntsKMK003A3: {enum: settingEnum, isDetailMode: isDetailMode,
+												<div class="tab-outline" data-bind="ntsKMK003A3: {enum: settingEnum,overTimeWorkFrameOptions:overTimeWorkFrameOptions,isDetailMode: isDetailMode,
 													useHalfDay: useHalfDay, mainModel: mainSettingModel, isLoading: isLoading, isClickSave: isClickSave,isNewMode: isNewMode}">
 												</div>
 											</div>
@@ -458,6 +457,7 @@
 											</div>											
 											<div tabindex="167" class="tab-a17">
 												<div class="tab-outline" data-bind="ntsKMK003A17: {
+													overTimeWorkFrameOptions: overTimeWorkFrameOptions,
 													selectedTab: selectedTab,
 													screenMode: tabMode,
 													model: mainSettingModel,

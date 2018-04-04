@@ -62,7 +62,7 @@ module nts.uk.at.view.kmk003.a {
             isLoading: KnockoutObservable<boolean>;
             isTestMode: KnockoutObservable<boolean>;
             flexWorkManaging: boolean;
-
+            overTimeWorkFrameOptions: KnockoutObservableArray<any>;
             constructor() {
                 let self = this;
                 // initial tab mode
@@ -93,6 +93,9 @@ module nts.uk.at.view.kmk003.a {
                 // Set up test mode
                 self.isTestMode = ko.observable(false);
                 self.setupTestMode();
+                
+                //over time work frame options
+                self.overTimeWorkFrameOptions = ko.observableArray([]);
             }
            
             /**
@@ -102,15 +105,17 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 self.bindFunction();
-                service.findSettingFlexWork().done(vl => {
-                    self.flexWorkManaging = vl.flexWorkManaging;
+                service.findAllUsedOvertimeWorkFrame().done(v => {
+                    self.overTimeWorkFrameOptions(v);
+                    service.findSettingFlexWork().done(vl => {
+                        self.flexWorkManaging = vl.flexWorkManaging;
 
-                    self.getAllEnums().done(() => {
-                        self.setFlexOptionVisibility();
-                        self.loadListWorktime().done(() => dfd.resolve());
+                        self.getAllEnums().done(() => {
+                            self.setFlexOptionVisibility();
+                            self.loadListWorktime().done(() => dfd.resolve());
+                        });
                     });
                 });
-                
                 return dfd.promise();
             }
 
