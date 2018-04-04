@@ -624,8 +624,12 @@ module nts.layout {
                 buttons: Array<IRelateButton> = [{
                     ctgCode: 'CS00024',
                     btnCode: 'IS00276',
-                    dialogId: 'i'
+                    dialogId: 'g'
                 }, {
+                        ctgCode: 'CS00024',
+                        btnCode: 'IS00294',
+                        dialogId: 'h'
+                    }, {
                         ctgCode: 'CS00025',
                         btnCode: 'IS00301',
                         dialogId: 'i'
@@ -633,22 +637,94 @@ module nts.layout {
                         ctgCode: 'CS00026',
                         btnCode: 'IS00308',
                         dialogId: 'i'
+                    }
+                    , {
+                        ctgCode: 'CS00027',
+                        btnCode: 'IS00315',
+                        dialogId: 'i'
+                    }
+                    , {
+                        ctgCode: 'CS00028',
+                        btnCode: 'IS00322',
+                        dialogId: 'i'
                     }, {
-                        ctgCode: 'CS00024',
-                        btnCode: 'IS00294',
-                        dialogId: 'h'
-                    }],
+                        ctgCode: 'CS00029',
+                        btnCode: 'IS00329',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00030',
+                        btnCode: 'IS00336',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00031',
+                        btnCode: 'IS00343',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00032',
+                        btnCode: 'IS00350',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00033',
+                        btnCode: 'IS00357',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00034',
+                        btnCode: 'IS00364',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00049',
+                        btnCode: 'IS00565',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00050',
+                        btnCode: 'IS00572',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00051',
+                        btnCode: 'IS00579',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00052',
+                        btnCode: 'IS00586',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00053',
+                        btnCode: 'IS00593',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00054',
+                        btnCode: 'IS00600',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00055',
+                        btnCode: 'IS00607',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00056',
+                        btnCode: 'IS00614',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00057',
+                        btnCode: 'IS00621',
+                        dialogId: 'i'
+                    }, {
+                        ctgCode: 'CS00058',
+                        btnCode: 'IS00628',
+                        dialogId: 'i'
+                    }
+                ],
 
                 validation = (btn: IRelateButton) => {
                     let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
                     if (button) {
-                        setShared('CPS001GHI_VALUES', {
-                            ctgCode: button.data.categoryCode
-                        });
-                        $(button.id).on('click', () => {
+                        $(document).on('click', button.id, () => {
+                            setShared('CPS001GHI_VALUES', {
+                                ctgCode: button.data.categoryCode
+                            });
+                            
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                              });
+                            });
                         });
                     }
                 };
