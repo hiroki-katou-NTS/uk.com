@@ -52,8 +52,6 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             self.checkRequired1.subscribe(function(data: any) {
                 if (!data) {
                     $('#I4_5').ntsError('clear');
-                } else {
-                    $('#I4_5').ntsError('check');
                 }
             });
         }
