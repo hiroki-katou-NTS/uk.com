@@ -21,33 +21,31 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
 
-		List<ApprovalStatusEmployeeOutput> listSttEmp = new ArrayList<ApprovalStatusEmployeeOutput>();
+		List<ApprovalStatusEmployeeOutput> listSttEmp = new ArrayList<>();
 		// imported(申請承認)「社員ID（リスト）」を取得する
-		PeriodOutput closurePeriod = new PeriodOutput(closureStart, closureEnd);
-		List<String> listSId = employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId, closurePeriod.getStartDate(),
-				closurePeriod.getEndDate());
+		// Requestlist 120-1
 		// Waiting for Q&A
-		PeriodOutput entryLeavePeriod = new PeriodOutput(GeneralDate.fromString("2018/01/01", "yyyy/MM/dd"),
-				GeneralDate.fromString("2018/05/02", "yyyy/MM/dd"));
+		List<ApprovalStatusEmployeeOutput> listEmpInOut = new ArrayList<>();
+		// List<String> listSId =
+		// employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId,
+		// closureStart, closureEnd);
 		// 社員ID(リスト)
-		for (String sId : listSId) {
+		for (ApprovalStatusEmployeeOutput empInOut : listEmpInOut) {
 			// imported(就業)「所属雇用履歴」より雇用コードを取得する
-			List<EmploymentOutput> listEmpHist = new ArrayList<EmploymentOutput>();
 			// Waiting for Q&A
-			PeriodOutput empPeriod = new PeriodOutput(GeneralDate.fromString("2018/01/02", "yyyy/MM/dd"),
-					GeneralDate.fromString("2018/02/02", "yyyy/MM/dd"));
-
+			List<EmploymentOutput> listEmpHist = new ArrayList<>();
 			// 雇用（リスト）
-			for (EmploymentOutput sttEmp : listEmpHist) {
+			for (EmploymentOutput empHist : listEmpHist) {
 				// 存在しない場合
-				if (listEmpCd.contains(sttEmp.getEmpCd())) {
+				if (listEmpCd.contains(empHist.getEmpCd())) {
 					continue;
 				}
 				// 存在する場合
 				// アルゴリズム「承認状況対象期間取得」を実行する
-				PeriodOutput sttPeriod = this.getApprovalSttPeriod(sId, empPeriod, closurePeriod, entryLeavePeriod);
-				listSttEmp
-						.add(new ApprovalStatusEmployeeOutput(sId, sttPeriod.getStartDate(), sttPeriod.getStartDate()));
+				PeriodOutput sttPeriod = this.getApprovalSttPeriod(empInOut.getSId(), empHist.getStartDate(),
+						empHist.getEndDate(), closureStart, closureEnd, empInOut.getStartDate(), empInOut.getEndDate());
+				listSttEmp.add(new ApprovalStatusEmployeeOutput(empInOut.getSId(), sttPeriod.getStartDate(),
+						sttPeriod.getStartDate()));
 			}
 		}
 		return listSttEmp;
@@ -58,43 +56,49 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 
 	 * @param sId
 	 *            社員ID
-	 * @param empPeriod
-	 *            雇用期間（開始日、終了日）
-	 * @param closurePeriod
-	 *            締め期間（開始日、終了日)
-	 * @param inOutPeriod
-	 *            入退社期間（入社年月日、退社年月日
-	 * @return
+	 * @param empStartDate
+	 *            雇用期間（開始日）
+	 * @param empEndDate
+	 *            雇用期間（終了日）
+	 * @param closureStartDate
+	 *            締め期間（開始日）
+	 * @param closureEndDate
+	 *            期間（終了日）
+	 * @param entryDate
+	 *            入退社期間（入社年月日）
+	 * @param leaveDate
+	 *            入退社期間（退社年月日）
+	 * @return 期間（開始日～終了日）
 	 */
-	private PeriodOutput getApprovalSttPeriod(String sId, PeriodOutput empPeriod, PeriodOutput closurePeriod,
-			PeriodOutput inOutPeriod) {
+	private PeriodOutput getApprovalSttPeriod(String sId, GeneralDate empStartDate, GeneralDate empEndDate,
+			GeneralDate closureStartDate, GeneralDate closureEndDate, GeneralDate entryDate, GeneralDate leaveDate) {
 		GeneralDate startDate;
 		GeneralDate endDate;
 		// 雇用期間（開始日）≦締め期間（開始日）
-		if (empPeriod.getStartDate().beforeOrEquals(closurePeriod.getStartDate())) {
+		if (empStartDate.beforeOrEquals(closureStartDate)) {
 			// 対象期間.開始日＝締め期間（開始日）
-			startDate = closurePeriod.getStartDate();
+			startDate = closureStartDate;
 		} else {
 			// 対象期間.開始日＝雇用期間（開始日）
-			startDate = empPeriod.getStartDate();
+			startDate = empStartDate;
 		}
 		// 対象期間.開始日≦入退社期間（入社年月日）
-		if (startDate.beforeOrEquals(inOutPeriod.getStartDate())) {
+		if (startDate.beforeOrEquals(entryDate)) {
 			// 対象期間.開始日＝入退社期間（入社年月日）
-			startDate = inOutPeriod.getStartDate();
+			startDate = entryDate;
 		}
 		// 雇用期間（終了日）≧締め期間（終了日）
-		if (empPeriod.getEndDate().afterOrEquals(closurePeriod.getEndDate())) {
+		if (empEndDate.afterOrEquals(closureEndDate)) {
 			// 対象期間終了日＝締め期間（終了日）
-			endDate = closurePeriod.getEndDate();
+			endDate = closureEndDate;
 		} else {
 			// 対象期間.終了日＝雇用期間（終了日）
-			endDate = empPeriod.getEndDate();
+			endDate = empEndDate;
 		}
 		// 対象期間.開始日≧入退社期間（退社年月日）
-		if (endDate.afterOrEquals(inOutPeriod.getEndDate())) {
+		if (endDate.afterOrEquals(leaveDate)) {
 			// 対象期間.開始日＝入退社期間（退社年月日）
-			endDate = inOutPeriod.getEndDate();
+			endDate = leaveDate;
 		}
 		return new PeriodOutput(startDate, endDate);
 	}

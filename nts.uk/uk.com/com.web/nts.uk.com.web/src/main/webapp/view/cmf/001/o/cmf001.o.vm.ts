@@ -78,7 +78,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 self.resetFile();
             });
 
-            $("#grd_Accept").ntsFixedTable({ height: 373 });
+            $("#grd_Accept").ntsFixedTable({ height: 265 });
         }
         /**
          * start page data    

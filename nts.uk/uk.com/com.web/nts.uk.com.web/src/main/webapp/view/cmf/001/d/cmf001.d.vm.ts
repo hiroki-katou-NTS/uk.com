@@ -63,7 +63,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
 
             self.selectedCategoryItem = ko.observable(1);
-            $("#fixed-table").ntsFixedTable({ height: 540 });
+            $("#fixed-table").ntsFixedTable({ height: 264 });
 
             this.fileId = ko.observable(null);
             this.filename = ko.observable(null);
@@ -483,9 +483,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                         self.listAcceptItem(_rsList);
                                         _.each(self.listAcceptItem(), rs => {
                                             let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
-                                            rs.acceptItemName(item.itemName);
-                                            self.listSelectedCategoryItem.push(item);
-                                            self.listCategoryItem.remove(item);
+                                            if (item) {
+                                                rs.acceptItemName(item.itemName);
+                                                self.listSelectedCategoryItem.push(item);
+                                                self.listCategoryItem.remove(item);
+                                            }
                                         });
                                     });
                                 } else {//chua co du lieu, dang ki moi

@@ -53,7 +53,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERAL_CONDITION")
+@Table(name = "KRCMT_TIME_CHK_MONTHLY")
 public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
