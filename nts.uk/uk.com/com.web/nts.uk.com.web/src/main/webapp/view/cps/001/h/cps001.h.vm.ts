@@ -24,9 +24,9 @@ module cps001.h.vm {
         ckbAll: KnockoutObservable<boolean> = ko.observable(true);
         itemDefs: any = [];
 
-        nameGrantDate: KnockoutObservable<string> = ko.observable(null);
-        nameDeadline: KnockoutObservable<string> = ko.observable(null);
-        nameOverLimitDays: KnockoutObservable<string> = ko.observable(null);
+        nameGrantDate: KnockoutObservable<string> = ko.observable('');
+        nameDeadline: KnockoutObservable<string> = ko.observable('');
+        nameOverLimitDays: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -36,6 +36,7 @@ module cps001.h.vm {
                         self.items(data);
                         self.currentItem(self.items()[0].id);
                     } else {
+                        self.items([]);
                         self.create();
                     }
                 });
@@ -43,6 +44,7 @@ module cps001.h.vm {
             self.currentItem.subscribe((id: string) => {
 
                 service.getByGrantDate(id).done((curItem) => {
+                    self.clearError();
                     self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
                     self.setDef();
                     $("#grantDate").focus();
@@ -70,6 +72,7 @@ module cps001.h.vm {
                 if (data && data.length > 0) {
                     self.items(data);
                 } else {
+                    self.items([]);
                     self.create();
                 }
                 dfd.resolve();
@@ -163,7 +166,14 @@ module cps001.h.vm {
                 });
             });
         }
-
+        clearError(){
+            $("#grantDate").ntsError("clear");
+            $("#deadline").ntsError("clear");
+            $("#grantDays").ntsError("clear");
+            $("#useDays").ntsError("clear");
+            $("#overLimitDays").ntsError("clear");
+            $("#remainingDays").ntsError("clear");
+            }
         register() {
             let self = this;
 
@@ -259,9 +269,11 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
-                    self.deadline(item);
-                });
+                if(data){
+                    service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
+                        self.deadline(item);
+                    });
+                    }
             });
         }
     }
