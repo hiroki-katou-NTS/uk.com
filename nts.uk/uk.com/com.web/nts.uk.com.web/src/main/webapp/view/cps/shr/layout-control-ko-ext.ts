@@ -1076,7 +1076,7 @@ module nts.custombinding {
                         <div data-bind="ntsComboBox: {
                                     name: itemName,
                                     value: value,
-                                    options: ko.observableArray(lstComboBoxValue || []),
+                                    options: lstComboBoxValue,
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
                                     enable: editable,
@@ -1098,7 +1098,7 @@ module nts.custombinding {
                             <div data-bind="ntsRadioBoxGroup: {
                                 name: itemName,
                                 value: value,
-                                options: ko.observableArray(lstComboBoxValue || []),
+                                options: lstComboBoxValue,
                                 optionsText: 'optionText',
                                 optionsValue: 'optionValue',
                                 enable: editable
@@ -1774,6 +1774,11 @@ module nts.custombinding {
                     }
                 },
                 modifitem = (def: any, item?: any) => {
+                    let lstItem = [
+                        { optionValue: '1', optionText: text('CPS001_100') },
+                        { optionValue: '0', optionText: text('CPS001_99') }
+                    ];
+
                     if (!item) {
                         item = {};
                     }
@@ -1787,10 +1792,7 @@ module nts.custombinding {
 
                     def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                        { optionValue: '1', optionText: text('CPS001_100') },
-                        { optionValue: '0', optionText: text('CPS001_99') }
-                    ];
+                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? (ko.isObservable(def.lstComboBoxValue) ? def.lstComboBoxValue : ko.observableArray(def.lstComboBoxValue || lstItem)) : ko.observableArray(lstItem);
 
                     def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                     def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());

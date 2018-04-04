@@ -637,13 +637,11 @@ module nts.layout {
                         ctgCode: 'CS00026',
                         btnCode: 'IS00308',
                         dialogId: 'i'
-                    }
-                    , {
+                    }, {
                         ctgCode: 'CS00027',
                         btnCode: 'IS00315',
                         dialogId: 'i'
-                    }
-                    , {
+                    }, {
                         ctgCode: 'CS00028',
                         btnCode: 'IS00322',
                         dialogId: 'i'
@@ -721,7 +719,7 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-                            
+
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
                             });
@@ -770,7 +768,24 @@ module nts.layout {
 
         dateTime = () => {
             let self = this,
-                finder: IFinder = self.finder;
+                finder: IFinder = self.finder,
+                CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
+                CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
+                CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+
+            if (CS00016_IS00077 && CS00016_IS00079) {
+                debugger;
+                CS00016_IS00077.data.value.subscribe(x => {
+
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00084) {
+                CS00017_IS00082.data.value.subscribe(x => {
+
+                });
+            }
         }
     }
 
