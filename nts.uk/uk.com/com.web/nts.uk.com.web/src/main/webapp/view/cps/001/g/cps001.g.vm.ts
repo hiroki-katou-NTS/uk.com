@@ -56,10 +56,7 @@ module nts.uk.com.view.cps001.g.vm {
                     service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData) => {
                         if (result) {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(result));
-                            if(_self.itemDefs.length > 0){
-                                _self.setItemDefValue(_self.itemDefs).done(() => {
-                                 });
-                            }   
+                            _self.loadItemDef();    
                         }
                          $('#id-grantDate').focus();
                     });
@@ -69,14 +66,9 @@ module nts.uk.com.view.cps001.g.vm {
 
             // Subscribe checkbox
             _self.checked.subscribe(value => {
-                console.log(value);
-                if (value){
-                    _self.listAnnualLeaveGrantRemainData(_self.alllist());
-                } else {
-                    _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(),function(item){
-                        return item.expirationStatus === 0;  
-                    }));
-                }
+                
+               _self.changeFollowExpSta(value);
+                
                 if (_self.listAnnualLeaveGrantRemainData().length) {
                      _self.createMode(false);
                     // Set focus
@@ -86,10 +78,7 @@ module nts.uk.com.view.cps001.g.vm {
                 } else {
                     _self.create();                    
                 }
-                if(_self.itemDefs.length > 0){
-                    _self.setItemDefValue(_self.itemDefs).done(() => {
-                     });
-                }   
+                 _self.loadItemDef();  
             });
 
 
@@ -107,11 +96,13 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.createMode(false);
                     _self.alllist.removeAll();
                     _self.alllist(data);
-                    _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(), function(item){
-                        return  item.expirationStatus === 0;
-                    }));
+                    _self.changeFollowExpSta(_self.checked());
+                    
+                     let currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) { 
+                            return item.annLeavID == annID;
+                     });
                     // Set focus
-                    if (annID) {
+                    if (annID && currentIndex > 0) {
                          _self.currentValue(annID);
                     } else {
                         _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
@@ -128,13 +119,29 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.init = false;
                  }
                  else {
-                    if(_self.itemDefs.length > 0){
-                    _self.setItemDefValue(_self.itemDefs).done(() => {
-                     });
-                    }    
+                    _self.loadItemDef();   
                 }
                 
             });
+        }
+        
+        changeFollowExpSta(value: boolean){
+            let _self = this;
+             if (value){
+                _self.listAnnualLeaveGrantRemainData(_self.alllist());
+            } else {
+                _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(),function(item){
+                    return item.expirationStatus === 0;  
+                }));
+            }
+        }
+        
+        loadItemDef(){
+            let _self = this;
+             if(_self.itemDefs.length > 0){
+                _self.setItemDefValue(_self.itemDefs).done(() => {
+                 });
+             } 
         }
          getItemDef(){
             let self = this;
@@ -238,10 +245,7 @@ module nts.uk.com.view.cps001.g.vm {
             let _self = this;
             _self.createMode(true);
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
-            if(_self.itemDefs.length > 0){
-                _self.setItemDefValue(_self.itemDefs).done(() => {
-                 });
-            }
+            _self.loadItemDef(); 
             $('#id-grantDate').focus();
         }
         /**
