@@ -219,7 +219,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes, ObjectShare objectShare) throws InterruptedException {
+			CorrectionOfDailyPerformance correct, List<String> formatCodes, ObjectShare objectShare) {
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
@@ -296,13 +296,12 @@ public class DailyPerformanceCorrectionProcessor {
 		//List<EmployeeInfoFunAdapterDto> employeeInfoAdapter = changeEmployeeIds.isEmpty() ? Collections.emptyList() :  employeeInfoFunAdapter.getListPersonInfor(changeEmployeeIds);
 		//screenDto.setLstEmployee(converEmployeeList(employeeInfoAdapter));
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
-		if(displayFormat == 0 && !changeEmployeeIds.isEmpty()){
-			val sidShare = changeEmployeeIds.get(0);
-			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : sidShare)).collect(Collectors.toList());
-		}
+//		if(displayFormat == 0 && !changeEmployeeIds.isEmpty()){
+//			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : objectShare.getIndividualTarget())).collect(Collectors.toList());
+//		}
 		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
 		List<WorkPlaceHistImport> wPH = workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
-		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart));
+		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart));//slow
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(initScreen, sId,
 				screenDto.getLstEmployee(), objectShare);
 		
@@ -315,7 +314,7 @@ public class DailyPerformanceCorrectionProcessor {
 		//get employee 
 		System.out.println("time before lay con ty hist:" + (System.currentTimeMillis() - timeStart));
 		List<AffCompanyHistImport> affCompany = employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
-		System.out.println("time before map data wplhis, date:" + (System.currentTimeMillis() - timeStart));
+		System.out.println("time before map data wplhis, date:" + (System.currentTimeMillis() - timeStart)); //slow
 		screenDto.setLstData(setWorkPlace(wPH, affCompany, screenDto.getLstData()));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
 		List<String> listEmployeeId = screenDto.getLstData().stream().map(e -> e.getEmployeeId()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
@@ -369,27 +368,10 @@ public class DailyPerformanceCorrectionProcessor {
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
 
 		List<DailyModifyResult> results = new ArrayList<>();
-		ExecutorService service = Executors.newFixedThreadPool(1);
-
-		CountDownLatch latch = new CountDownLatch(1);
-
-		Future<List<DailyModifyResult>> sResults = service.submit(
-				new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
-
-		try {
-			results = sResults.get();
-			screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-			latch.countDown();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-			Thread.currentThread().interrupt();
-		} catch (ExecutionException e1) {
-			e1.printStackTrace();
-			Thread.currentThread().interrupt();
-		}
-		latch.await();
+		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
 
 		System.out.println("time get data and map name : " + (System.currentTimeMillis() - start));
 		long startTime2 = System.currentTimeMillis();

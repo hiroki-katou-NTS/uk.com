@@ -330,7 +330,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	
 	@Override
 	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre) {
-		if(timeNight <= 0) {
+		if(timeNight < 0) {
 			return;
 		}
 		// 所定外深夜時間を反映する
@@ -407,7 +407,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	}
 	@Override
 	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre) {
-		if(flexTime <= 0) {
+		if(flexTime < 0) {
 			return;
 		}
 		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(employeeId, dateData);

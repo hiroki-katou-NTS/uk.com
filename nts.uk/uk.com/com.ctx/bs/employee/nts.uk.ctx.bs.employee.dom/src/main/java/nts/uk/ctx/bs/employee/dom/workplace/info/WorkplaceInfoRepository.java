@@ -15,10 +15,10 @@ import nts.arc.time.GeneralDate;
 public interface WorkplaceInfoRepository {
 
 	/**
-     * Adds the.
-     *
-     * @param workplaceInfo the workplace info
-     */
+	 * Adds the.
+	 *
+	 * @param workplaceInfo the workplace info
+	 */
     void add(WorkplaceInfo workplaceInfo);
 
 	/**
@@ -29,18 +29,20 @@ public interface WorkplaceInfoRepository {
 	void update(WorkplaceInfo workplaceInfo);
 
 	/**
-     * Removes the.
-     *
-     * @param companyId the company id
-     * @param workplaceId the workplace id
-     * @param historyId the history id
-     */
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @param historyId the history id
+	 */
     void remove(String companyId, String workplaceId, String historyId);
 
 	/**
-	 * Find by wkp id.
+	 * Find.
 	 *
+	 * @param companyId the company id
 	 * @param wkpId the wkp id
+	 * @param historyId the history id
 	 * @return the optional
 	 */
 	Optional<WorkplaceInfo> find(String companyId, String wkpId, String historyId);
@@ -48,8 +50,9 @@ public interface WorkplaceInfoRepository {
 	/**
 	 * Find by wkp cd.
 	 *
+	 * @param companyId the company id
 	 * @param wpkCode the wpk code
-	 * @param date the date
+	 * @param baseDate the base date
 	 * @return the list
 	 */
 	List<WorkplaceInfo> findByWkpCd(String companyId, String wpkCode, GeneralDate baseDate);
@@ -66,19 +69,18 @@ public interface WorkplaceInfoRepository {
 	/**
 	 * Find by wkp id.
 	 *
-	 * @param companyId the company id
-	 * @param wkpId the wpk id
+	 * @param wkpId the wkp id
 	 * @param baseDate the base date
-	 * @return the list
+	 * @return the optional
 	 */
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
 
 	/**
-	 * Checks if is existed.
+	 * Checks if is existed wkp cd.
 	 *
 	 * @param companyId the company id
-	 * @param newWkpCd the new wkp id
-	 * @return true, if is existed
+	 * @param newWkpCd the new wkp cd
+	 * @return true, if is existed wkp cd
 	 */
 	boolean isExistedWkpCd(String companyId, String newWkpCd);
 	
@@ -99,5 +101,13 @@ public interface WorkplaceInfoRepository {
 	 * @return the list
 	 */
 	List<WorkplaceInfo> findByWkpIds(String companyId, List<String> wkpIds);
+	
+	/**
+	 * Find by history id.
+	 *
+	 * @param historyId the history id
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId);
 	
 }

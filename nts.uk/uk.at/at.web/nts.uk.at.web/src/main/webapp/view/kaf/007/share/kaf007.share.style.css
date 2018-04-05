@@ -65,7 +65,9 @@ input.col2.nts-editor.nts-input.reset-element {
 .row-cell-margin {
 	margin: 5px 0px 5px 5px;
 }
-
+#inpReasonTextarea {
+	min-height: 100px;
+}
 .block {
 	display: block;
 	margin: 30px 0px 50px 30px;
@@ -155,4 +157,8 @@ div.form-label.broken {
 .cell.valign-center.colon-margin{
 	margin-right: 5px; 
 	display: inline-block;
+}
+.overlay-reason-kaf007 {
+	position: relative;
+	z-index: 1;
 }

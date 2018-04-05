@@ -136,6 +136,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String SELECT_CAT_ID_BY_CODE = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"FROM PpemtPerInfoCtg c", "WHERE c.categoryCd = :categoryCd AND c.cid = :cId");
+	
+	private final static String SELECT_CTG_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName",
+			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -264,6 +267,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
 
+	}
+	
+	private PersonInfoCategory createDomainWithAbolition(Object[] c){
+		return PersonInfoCategory.createDomainWithAbolition(c[0].toString(), c[1].toString(), c[2].toString());
 	}
 
 	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
@@ -445,5 +452,29 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				.setParameter("categoryCd", categoryCode).getSingle().orElse("");
 
 		return abc;
+	}
+
+	@Override
+	public List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId) {
+		List<PersonInfoCategory> lstEntity = this.queryProxy().query(SELECT_CTG_BY_CTGCD, Object[].class)
+				.setParameter("lstCtgCd", ctgCd)
+				.setParameter("cid", companyId)
+				.getList(x -> createDomainWithAbolition(x));
+		return lstEntity;
+	}
+
+	@Override
+	public void updateAbolition(List<PersonInfoCategory> ctg, String companyId) {
+		ctg.forEach(x -> {
+			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy().find(new PpemtPerInfoCtgPK(x.getPersonInfoCategoryId()), PpemtPerInfoCtg.class);
+			if(entityOpt.isPresent())
+			{
+				PpemtPerInfoCtg entity = entityOpt.get();
+				entity.categoryName = x.getCategoryName() == null ? null : x.getCategoryName().v();
+				entity.abolitionAtr = x.getIsAbolition().value;
+				//this.commandProxy().update(entity);
+			}
+		});
+		
 	}
 }

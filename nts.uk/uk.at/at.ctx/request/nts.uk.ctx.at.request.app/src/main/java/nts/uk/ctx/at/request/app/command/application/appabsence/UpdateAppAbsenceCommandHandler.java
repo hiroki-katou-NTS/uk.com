@@ -24,6 +24,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<UpdateAppAbsenceCommand, List<String>>{
+	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject

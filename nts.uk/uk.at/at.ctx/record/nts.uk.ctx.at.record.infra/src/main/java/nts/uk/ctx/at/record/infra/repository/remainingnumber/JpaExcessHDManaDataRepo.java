@@ -16,7 +16,7 @@ public class JpaExcessHDManaDataRepo extends JpaRepository implements ExcessHoli
 	private String QUERY_BYSID = "SELECT e FROM KrcmtExcessHDManaData e WHERE e.cID =:cid AND e.sID =:sid AND e.expiredState = 1 ";
 	
 	@Override
-	public List<ExcessHolidayManagementData> getBySid(String cid, String sid) {
+	public List<ExcessHolidayManagementData> getBySidNotExp(String cid, String sid) {
 		List<KrcmtExcessHDManaData> list = this.queryProxy().query(QUERY_BYSID,KrcmtExcessHDManaData.class)
 				.setParameter("sid", sid)
 				.setParameter("cid", cid)

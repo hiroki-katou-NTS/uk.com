@@ -5,25 +5,25 @@ module nts.layout {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    import parseTime = nts.uk.time.parseTime;
+
     let rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
-        clearError = window['nts']['uk']['ui']['errors']['clearAll'];
+        clearError = window['nts']['uk']['ui']['errors']['clearAll'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
             let maps = _(items)
                 .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                .filter(x => x != -1).value();
+                .filter(x => x != -1)
+                .value(),
+                dupl = _(maps)
+                    .filter((x, i) => maps[i + 1] == x + 1)
+                    .value();
 
-            _.each(maps, (t, i) => {
-                if (maps[i + 1] == t + 1) {
-                    _.remove(items, (m: any) => {
-                        let item: any = ko.unwrap(items)[maps[i + 1]];
-                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                    });
-                }
-            });
+            _.remove(items, (m: any, k: number) => dupl.indexOf(k) > -1);
         },
         initCheckError: (items: Array<any>) => {
             // validate button, radio button
@@ -141,6 +141,7 @@ module nts.layout {
     }
 
     const fetch = {
+        get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param)
     }
@@ -157,6 +158,9 @@ module nts.layout {
             self.combobox();
             self.relate_radio();
             self.relate_button();
+
+            self.dateTime();
+            self.setTable();
 
             validate.initCheckError(lstCls);
         }
@@ -250,7 +254,6 @@ module nts.layout {
                     let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = finder.findChilds(radio.ctgCode, radio.setParentCode);
 
-                    //debugger;
                     if (rd) {
                         rd.data.value.subscribe(x => {
                             _.each(ctrls, c => {
@@ -637,13 +640,11 @@ module nts.layout {
                         ctgCode: 'CS00026',
                         btnCode: 'IS00308',
                         dialogId: 'i'
-                    }
-                    , {
+                    }, {
                         ctgCode: 'CS00027',
                         btnCode: 'IS00315',
                         dialogId: 'i'
-                    }
-                    , {
+                    }, {
                         ctgCode: 'CS00028',
                         btnCode: 'IS00322',
                         dialogId: 'i'
@@ -721,9 +722,10 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-                            
+
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
+                                button.data.value('SAMPLE_DATA');
                             });
                         });
                     }
@@ -768,10 +770,127 @@ module nts.layout {
             }
         }
 
+        setTable = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                times: Array<ITimeTable> = [{
+                    ctgCode: 'CS00024',
+                    firstCode: 'IS00287',
+                    secondCode: 'IS00288',
+                    resultCode: 'IS00289'
+                }, {
+                        ctgCode: 'CS00024',
+                        firstCode: 'IS00291',
+                        secondCode: 'IS00292',
+                        resultCode: 'IS00293'
+                    }],
+                calc = (time: ITimeTable) => {
+                    let first: IFindData = finder.find(time.ctgCode, time.firstCode),
+                        second: IFindData = finder.find(time.ctgCode, time.secondCode),
+                        result: IFindData = finder.find(time.ctgCode, time.resultCode);
+
+                    if (first && second && result) {
+                        first.data.value.subscribe(x => {
+                            let vnb1 = ko.toJS(first.data.value),
+                                vnb2 = ko.toJS(second.data.value),
+                                nb1 = typeof vnb1 == 'number',
+                                nb2 = typeof vnb2 == 'number';
+
+                            if (ITEM_SINGLE_TYPE.TIME == first.data.item.dataTypeValue) {
+                                if (nb1 && nb2) {
+                                    result.data.value(parseTime(vnb1 - vnb2, true).format());
+                                } else {
+                                    result.data.value(undefined);
+                                }
+                            } else if (ITEM_SINGLE_TYPE.TIMEPOINT == first.data.item.dataTypeValue) {
+                                if (nb1 && nb2) {
+                                    result.data.value(parseTimeWidthDay(vnb1 - vnb2).shortText);
+                                } else {
+                                    result.data.value(undefined);
+                                }
+                            }
+                            else if (vnb1 || vnb2) {
+                                result.data.value(Number(vnb1) - Number(vnb2));
+                            } else {
+                                result.data.value(undefined);
+                            }
+                        });
+
+                        second.data.value.subscribe(x => first.data.value.valueHasMutated());
+                        second.data.value.valueHasMutated();
+                    }
+                };
+
+            _(times).each(time => calc(time));
+        }
+
         dateTime = () => {
             let self = this,
-                finder: IFinder = self.finder;
+                finder: IFinder = self.finder,
+                CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
+                CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
+                CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+
+            if (CS00016_IS00077 && CS00016_IS00079) {
+                CS00016_IS00077.data.value.subscribe(_date => {
+                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                        data = ko.toJS(CS00016_IS00077.data),
+                        comboData = ko.toJS(CS00016_IS00079.data);
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: _date,
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00016_IS00079.data.lstComboBoxValue(cbx);
+                    });
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00084) {
+                CS00017_IS00082.data.value.subscribe(_date => {
+                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                        data = ko.toJS(CS00017_IS00082.data),
+                        comboData = ko.toJS(CS00017_IS00084.data);
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: _date,
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00017_IS00084.data.lstComboBoxValue(cbx);
+                    });
+                });
+            }
         }
+    }
+
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        RELATE_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
     }
 
     // define ITEM_CLASSIFICATION_TYPE
@@ -809,12 +928,12 @@ module nts.layout {
         required: boolean;
         value: KnockoutObservable<any>;
         textValue: KnockoutObservable<any>;
-        items: KnockoutObservableArray<any>;
+        item: any;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
-        lstComboBoxValue: Array<any>;
+        lstComboBoxValue: KnockoutObservableArray<any>;
         itemParentCode?: string;
     }
 
@@ -848,6 +967,18 @@ module nts.layout {
         workTimeCode?: string;
     }
 
+    interface IComboParam {
+        comboBoxType: string;
+        categoryId: string;
+        required: boolean;
+        standardDate: Date;
+        typeCode: String;
+        masterType: String;
+        employeeId: string;
+        cps002?: boolean;
+        workplaceId: string;
+    }
+
     interface IGroupControl {
         ctgCode: string;
         workType?: string;
@@ -876,5 +1007,12 @@ module nts.layout {
         ctgCode: string;
         btnCode: string;
         dialogId: string;
+    }
+
+    interface ITimeTable {
+        ctgCode: string;
+        firstCode: string;
+        secondCode: string;
+        resultCode: string;
     }
 }

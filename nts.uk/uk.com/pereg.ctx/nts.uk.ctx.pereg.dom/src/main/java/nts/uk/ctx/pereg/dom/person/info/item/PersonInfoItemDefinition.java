@@ -211,4 +211,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	public void setItemName(String name) {
 		this.itemName = new ItemName(name);
 	}
+	
+	public static PersonInfoItemDefinition createDomainWithNameAndAbolition(String id, String itemName, String itemCode){
+		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
+		item.setPerInfoItemDefId(id);
+		item.setItemName(itemName);
+		item.setItemCode(new ItemCode(itemCode));
+		return item;
+	}
 }

@@ -294,6 +294,11 @@ module nts.custombinding {
                         border-radius: 0;
                     }
 
+                    .layout-control .item-control td .ntsControl.error input,
+                    .layout-control .item-control td .ntsControl.error textarea{
+                        border-style: dashed;
+                    }
+
                     .layout-control .item-control td input:focus,
                     .layout-control .item-control td textarea:focus,
                     .layout-control .item-controls td input:focus,
@@ -395,10 +400,21 @@ module nts.custombinding {
                         position: absolute;
                     }
 
-                    .layout-control .item-classification .relate-button .value-text,
-                    .layout-control .item-classification .readonly-button .value-text,
                     .layout-control .item-classification .numeric-button .nts-editor.nts-input {
                         width: 65px;
+                    }
+
+                    .layout-control .item-classification .value-text.readonly,
+                    .layout-control .item-classification .relate-button .value-text,
+                    .layout-control .item-classification .readonly-button .value-text {
+                        padding: 0;
+                        min-width: 65px;
+                        line-height: 30px;
+                    }
+
+                    .layout-control .item-classification .set-table-items .value-text.readonly {
+                        padding-left: 15px;
+                        width: 100%;
                     }
 
                     .layout-control .item-classification .ui-igcombo-wrapper {
@@ -1076,7 +1092,7 @@ module nts.custombinding {
                         <div data-bind="ntsComboBox: {
                                     name: itemName,
                                     value: value,
-                                    options: ko.observableArray(lstComboBoxValue || []),
+                                    options: lstComboBoxValue,
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
                                     enable: editable,
@@ -1098,7 +1114,7 @@ module nts.custombinding {
                             <div data-bind="ntsRadioBoxGroup: {
                                 name: itemName,
                                 value: value,
-                                options: ko.observableArray(lstComboBoxValue || []),
+                                options: lstComboBoxValue,
                                 optionsText: 'optionText',
                                 optionsValue: 'optionValue',
                                 enable: editable
@@ -1122,7 +1138,7 @@ module nts.custombinding {
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
-                            <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                            <label class="value-text readonly" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.RELATE_CATEGORY -->
                             <div class="relate-button">
@@ -1774,6 +1790,11 @@ module nts.custombinding {
                     }
                 },
                 modifitem = (def: any, item?: any) => {
+                    let lstItem = [
+                        { optionValue: '1', optionText: text('CPS001_100') },
+                        { optionValue: '0', optionText: text('CPS001_99') }
+                    ];
+
                     if (!item) {
                         item = {};
                     }
@@ -1787,10 +1808,7 @@ module nts.custombinding {
 
                     def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                        { optionValue: '1', optionText: text('CPS001_100') },
-                        { optionValue: '0', optionText: text('CPS001_99') }
-                    ];
+                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? (ko.isObservable(def.lstComboBoxValue) ? def.lstComboBoxValue : ko.observableArray(def.lstComboBoxValue || lstItem)) : ko.observableArray(lstItem);
 
                     def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                     def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());

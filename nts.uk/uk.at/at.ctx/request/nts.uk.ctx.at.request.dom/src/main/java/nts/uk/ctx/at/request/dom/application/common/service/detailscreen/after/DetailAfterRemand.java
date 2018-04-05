@@ -20,7 +20,7 @@ public interface DetailAfterRemand {
 	 * @param returnReason
 	 * @return
 	 */
-	public String doRemand(String companyID, String appID, Long version, Integer order, String returnReason);
+	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason);
 	
 	/**
 	 * 差し戻しメール送信

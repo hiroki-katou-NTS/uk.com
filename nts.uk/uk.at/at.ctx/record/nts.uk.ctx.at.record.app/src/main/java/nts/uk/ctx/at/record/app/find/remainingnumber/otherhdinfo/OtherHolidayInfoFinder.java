@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessHolidayManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemain;
@@ -47,6 +48,9 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 	@Inject 
 	private ExcessHolidayManaDataRepository excessHolidayManaDataRepository;
 	
+	@Inject 
+	private OtherHolidayInfoService otherHolidayInfoService;
+	
 	@Override
 	public String targetCategoryCode() {
 		return "CS00035";
@@ -76,7 +80,7 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 		// 取得した「休出管理データ」の未使用日数を合計
 		Double sumUnUsedDay = leaveManaDataRepository.getBySidWithsubHDAtr(cid, query.getEmployeeId()).stream().mapToDouble(i->i.getUnUsedDays().v()).sum();
 		// 取得した「代休管理データ」の未相殺日数を合計
-		Double sumRemain = comDayOffManaDataRepository.getBySidWithReDay(query.getEmployeeId()).stream().mapToDouble(i->i.getRemainDays().v()).sum();
+		Double sumRemain = comDayOffManaDataRepository.getBySidWithReDay(cid,query.getEmployeeId()).stream().mapToDouble(i->i.getRemainDays().v()).sum();
 		dto.setRemainNumber(new BigDecimal(sumUnUsedDay - sumRemain));
 		// ----------------------------
 		
@@ -84,18 +88,19 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 		// 取得した「振出管理データ」の未使用日数を合計 
 		sumUnUsedDay = payoutManagementDataRepository.getSidWithCod(cid, query.getEmployeeId()).stream().mapToDouble(i->i.getUnUsedDays().v()).sum();
 		// 取得した「振休管理データ」の未相殺日数を合計
-		sumRemain = substitutionOfHDManaDataRepository.getBysiDRemCod(query.getEmployeeId()).stream().mapToDouble(i->i.getRemainDays().v()).sum();
+		sumRemain = substitutionOfHDManaDataRepository.getBysiDRemCod(cid,query.getEmployeeId()).stream().mapToDouble(i->i.getRemainDays().v()).sum();
 		dto.setRemainsLeft(new BigDecimal(sumUnUsedDay-sumRemain));
 		// ----------------------------
 		
 		// Item IS00374 ---------------
-		sumRemain = excessHolidayManaDataRepository.getBySid(cid, query.getEmployeeId()).stream().mapToDouble(i->i.getInfo().getRemainNumer().minute()).sum();
+		// 月初の超過有休残数を取得
+		sumRemain = excessHolidayManaDataRepository.getBySidNotExp(cid, query.getEmployeeId()).stream().mapToDouble(i->i.getInfo().getRemainNumer().minute()).sum();
 		dto.setExtraHours(sumRemain.intValue());
 		// ----------------------------	
 		
 		return dto;
 	}
-
+	
 	@Override
 	public List<PeregDomainDto> getListData(PeregQuery query) {
 		// TODO Auto-generated method stub
