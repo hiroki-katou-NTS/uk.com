@@ -228,7 +228,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		mapICd.put("IS00719", 8);mapICd.put("IS00720", 9);mapICd.put("IS00721", 10);mapICd.put("IS00722", 11);
 		
 		mapICd.put("IS00608", 1);mapICd.put("IS00609", 2);mapICd.put("IS00610", 3);mapICd.put("IS00611", 4);mapICd.put("IS00612", 5);mapICd.put("IS00613", 6);mapICd.put("IS00614", 7);
-		mapICd.put("IS00719", 8);mapICd.put("IS00720", 9);mapICd.put("IS00721", 10);mapICd.put("IS00722", 11);
+		mapICd.put("IS00734", 8);mapICd.put("IS00735", 9);mapICd.put("IS00736", 10);mapICd.put("IS00737", 11);
 		
 		mapICd.put("IS00615", 1);mapICd.put("IS00616", 2);mapICd.put("IS00617", 3);mapICd.put("IS00618", 4);mapICd.put("IS00619", 5);mapICd.put("IS00620", 6);mapICd.put("IS00621", 7);
 		mapICd.put("IS00749", 8);mapICd.put("IS00750", 9);mapICd.put("IS00751", 10);mapICd.put("IS00752", 11);
