@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * 
- * @author nampt
  * 実打刻と申請の優先区分
  */
 @AllArgsConstructor

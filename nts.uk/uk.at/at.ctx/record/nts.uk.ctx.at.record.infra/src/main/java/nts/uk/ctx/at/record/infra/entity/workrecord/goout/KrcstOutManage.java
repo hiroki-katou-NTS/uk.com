@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.workrecord.goout;
 
 import java.io.Serializable;
@@ -14,8 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The persistent class for the KRCST_OUT_MANAGE database table.
- * 
+ * The Class KrcstOutManage.
  */
 
 @Getter

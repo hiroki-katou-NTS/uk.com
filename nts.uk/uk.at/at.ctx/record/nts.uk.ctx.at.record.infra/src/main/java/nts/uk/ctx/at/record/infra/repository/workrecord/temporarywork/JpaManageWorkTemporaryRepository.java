@@ -1,6 +1,7 @@
-/**
- * 
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.temporarywork;
 
 import java.util.Optional;
@@ -13,8 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepo
 import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWorkTemp;
 
 /**
- * @author hoangdd
- *
+ * The Class JpaManageWorkTemporaryRepository.
  */
 @Stateless
 public class JpaManageWorkTemporaryRepository extends JpaRepository implements ManageWorkTemporaryRepository{
@@ -45,12 +45,24 @@ public class JpaManageWorkTemporaryRepository extends JpaRepository implements M
 		this.commandProxy().insert(toEntity(manageWorkTemporary));
 	}
 	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the krcst manage work temp
+	 */
 	private KrcstManageWorkTemp toEntity(ManageWorkTemporary domain) {
 		KrcstManageWorkTemp entity = new KrcstManageWorkTemp();
 		domain.saveToMemento(new JpaManageWorkTemporarySetMemento(entity));
 		return entity;
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the manage work temporary
+	 */
 	private ManageWorkTemporary toDomain(KrcstManageWorkTemp entity) {
 		ManageWorkTemporary domain = new ManageWorkTemporary(new JpaManageWorkTemporaryGetMemento(entity));
 		return domain;

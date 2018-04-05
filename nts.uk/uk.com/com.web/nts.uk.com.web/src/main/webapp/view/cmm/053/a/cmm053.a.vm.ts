@@ -100,7 +100,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             //社員コードを入力する
             self.settingManager().departmentCode.subscribe(value => {
                 if (value) {
-                    if (!self.isInitDepartment) {
+                    if (!self.isInitDepartment && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }
                     self.isInitDepartment = false;
@@ -110,7 +110,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             //社員コードを入力する
             self.settingManager().dailyApprovalCode.subscribe(value => {
                 if (value) {
-                    if (!self.isInitdailyApproval) {
+                    if (!self.isInitdailyApproval && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     }
                     self.isInitdailyApproval = false;
@@ -191,20 +191,24 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     dialog.alertError({ messageId: "Msg_1072", messageParams: [closingStartDate] });
                     block.clear();
                 } else {
-                    self.settingManager().executeMode(self.screenMode());
-                    let settingManager = ko.toJS(self.settingManager());
-                    settingManager.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
-                    settingManager.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
-                    service.updateHistoryByManagerSetting(settingManager).done(result => {
-                        //情報メッセージMsg_15
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.initScreen();
-                        });
-                    }).fail(error => {
-                        dialog.alertError({ messageId: error.messageId });
-                    }).always(function() {
-                        block.clear();
-                    });
+                    let command = ko.toJS(self.settingManager());
+                    command.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
+                    command.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
+
+                    if(self.screenMode() == EXECUTE_MODE.NEW_MODE){
+                        self.callUpdateHistoryService(command);
+                        return;
+                    }
+
+                    if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && self.settingManager().hasHistory()) {
+                        self.callUpdateHistoryService(command);
+                        return;
+                    }
+
+                    if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && !self.settingManager().hasHistory()) {
+                        self.callInsertHistoryService(command);
+                        return;
+                    }
                 }
             }
         }
@@ -216,12 +220,11 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             block.invisible();
             //確認メッセージ（Msg_18）を表示する
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                self.settingManager().executeMode(EXECUTE_MODE.DELETE_MODE);
                 self.settingManager().employeeId(self.selectedItem());
                 let settingManager = ko.toJS(self.settingManager());
                 settingManager.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
                 settingManager.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
-                service.updateHistoryByManagerSetting(settingManager).done(result => {
+                service.deleteHistoryByManagerSetting(settingManager).done(result => {
                     //情報メッセージ　Msg-16を表示する
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         self.initScreen();
@@ -230,6 +233,34 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     block.clear();
                 });
             }).then(() => {
+                block.clear();
+            });
+        }
+
+        callInsertHistoryService(command) {
+            let self = this;
+            service.insertHistoryByManagerSetting(command).done(result => {
+                //情報メッセージMsg_15
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.initScreen();
+                });
+            }).fail(error => {
+                dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                block.clear();
+            });
+        }
+
+        callUpdateHistoryService(command) {
+            let self = this;
+            service.updateHistoryByManagerSetting(command).done(result => {
+                //情報メッセージMsg_15
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.initScreen();
+                });
+            }).fail(error => {
+                dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
                 block.clear();
             });
         }
@@ -286,8 +317,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.screenMode(EXECUTE_MODE.NEW_MODE);
             //フォーカス制御
             $('#A2_3').focus();
-
-            
         }
 
         initKCP009() {
@@ -365,7 +394,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         dailyApprovalName    :KnockoutObservable<string>  = ko.observable('');
         hasAuthority         :KnockoutObservable<boolean> = ko.observable(false);
         closingStartDate     :KnockoutObservable<string>  = ko.observable('');
-        executeMode          :KnockoutObservable<number>  = ko.observable(0);
         employeeId           :KnockoutObservable<string>  = ko.observable('');
         hasHistory           :KnockoutObservable<boolean> = ko.observable(false);
         constructor(param: ISettingManager) {

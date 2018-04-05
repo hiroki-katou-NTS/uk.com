@@ -4,7 +4,10 @@ module nts.uk.at.view.kmk013.q {
     import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
+        const lastTabIndexTabPanel1 = 6;
+        
         export class ScreenModel {
+            
             
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
@@ -50,11 +53,27 @@ module nts.uk.at.view.kmk013.q {
                 self.dataRoleOfOpenPeriod = ko.observable();
                 self.dataRoleOTWork = ko.observable();
                 
+                self.changeTabPanel();
+            }
+            
+            changeTabPanel(): void {
+                let self = this;
+                $( document ).keydown(function( event ) {
+                    // catch event press tab button
+                    if (event.which == 9) {
+                        if (lastTabIndexTabPanel1 == _.toNumber($( "*:focus" ).attr("tabindex"))) {
+                            if (9 == _.toNumber($( "*:focus" ).attr("posTab"))) {
+                                self.selectedTab("tab-2");
+                            }
+                        }
+                    }
+                });
             }
             
             loadDataFirst(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
+                // get data from service
                 $.when(service.findAllRoleOfOpenPeriod(), service.findAllRoleOvertimeWork(), 
                         service.getEnumRoleOfOpenPeriod(), service.getEnumRoleOvertimeWork(),
                         service.findOvertimeworkframe(), service.findWorkdayoffframe()).done(function(dataRoleOpenPeriod: any, dataRoleOTWork: any, 
