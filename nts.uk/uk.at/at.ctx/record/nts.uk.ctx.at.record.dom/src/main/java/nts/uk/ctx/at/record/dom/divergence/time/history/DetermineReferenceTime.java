@@ -1,41 +1,35 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 /**
  * The Class DetermineReferenceTime.
  */
-//基準時間の判定内容
+// 基準時間の判定内容
 public class DetermineReferenceTime {
-	
+
 	/** The reference time. */
-	//判定した基準時間
+	// 判定した基準時間
 	ReferenceTime referenceTime;
-	//閾値
+	// 閾値
 	/** The threshold. */
 	int threshold;
 
 	/**
 	 * Instantiates a new determine reference time.
-	 *
-	 * @param memento the memento
 	 */
-	public DetermineReferenceTime(DetermineReferrenceTimeGetMemento memento) {
-
-		this.referenceTime = memento.getRefergenceTime();
-		this.threshold = memento.getThreshold();
+	public DetermineReferenceTime() {
+		super();
 	}
 
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(DetermineReferrenceTimeSetMemento memento) {
-
-		memento.setReferenceTime(this.referenceTime);
-		memento.setThreshold(this.threshold);
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -47,7 +41,9 @@ public class DetermineReferenceTime {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
