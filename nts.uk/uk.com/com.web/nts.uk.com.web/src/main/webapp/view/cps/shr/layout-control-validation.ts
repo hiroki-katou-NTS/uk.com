@@ -722,10 +722,29 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-
+                            
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                button.data.value('SAMPLE_DATA');
+                                let sid = __viewContext.user.employeeId;
+                                switch (btn.dialogId) {
+                                    case "g":
+                                    let empId  = __viewContext.user.employeeId;
+                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getAnnLeaNumber/{0}", empId)).done(data => {
+                                            button.data.value(data);
+                                        });
+                                        break;
+                                    case "h":
+                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getResvLeaNumber/{0}", empId)).done(data => {
+                                            button.data.value(data);
+                                        });
+                                        break;
+                                    case "i":
+                                         let   specialCD: number = self.genSpecialCode(btn.ctgCode).specialCode;
+                                        debugger;
+                                        ajax('com', nts.uk.text.format("ctx/pereg/layout/calDayTime/{0}/{1}", sid, specialCD)).done(data => {
+                                            button.data.value(data);
+                                        });
+                                }
                             });
                         });
                     }
@@ -874,6 +893,92 @@ module nts.layout {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
                 });
+            }
+        }
+        
+        genSpecialCode(categoryCode: string): any {
+
+            switch (categoryCode) {
+                case 'CS00025':
+                    return {
+                        specialCode: 1
+                    };
+                case 'CS00026':
+                    return {
+                        specialCode: 2
+                    };
+                case 'CS00027':
+                    return {
+                        specialCode: 3
+                    };
+                case 'CS00028':
+                    return {
+                        specialCode: 4
+                    };
+                case 'CS00029':
+                    return {
+                        specialCode: 5
+                    };
+                case 'CS00030':
+                    return {
+                        specialCode: 6
+                    };
+                case 'CS00031':
+                    return {
+                        specialCode: 7
+                    };
+                case 'CS00032':
+                    return {
+                        specialCode: 8
+                    };
+                case 'CS00033':
+                    return {
+                        specialCode: 9
+                    };
+                case 'CS00034':
+                    return {
+                        specialCode: 10
+                    };
+                case 'CS00049':
+                    return {
+                        specialCode: 11
+                    };
+                case 'CS00050':
+                    return {
+                        specialCode: 12
+                    };
+                case 'CS00051':
+                    return {
+                        specialCode: 13
+                    };
+                case 'CS00052':
+                    return {
+                        specialCode: 14
+                    };
+                case 'CS00053':
+                    return {
+                        specialCode: 15
+                    };
+                case 'CS00054':
+                    return {
+                        specialCode: 16
+                    };
+                case 'CS00055':
+                    return {
+                        specialCode: 17
+                    };
+                case 'CS00056':
+                    return {
+                        specialCode: 18
+                    };
+                case 'CS00057':
+                    return {
+                        specialCode: 19
+                    };
+                case 'CS00058':
+                    return {
+                        specialCode: 20
+                    };
             }
         }
     }

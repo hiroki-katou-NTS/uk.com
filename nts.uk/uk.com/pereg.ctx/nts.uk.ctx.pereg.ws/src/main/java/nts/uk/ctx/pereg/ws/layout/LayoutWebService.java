@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoFinder;
 import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
@@ -85,9 +84,9 @@ public class LayoutWebService extends WebService {
 		return this.layoutProcessor.getSubDetailInCtgChild(query);
 	}
 	
-	@Path("calDayTime")
+	@Path("calDayTime/{sid}/{specialCD}")
 	@POST
-	public Object calDayTime(String sid, int specialCD){
+	public Object calDayTime(@PathParam("sid")String sid , @PathParam("specialCD")int specialCD){
 		String dayTime = specialLeaveGrantRemainService.calDayTime(sid, specialCD);
 		return new Object[] {dayTime};
 	}

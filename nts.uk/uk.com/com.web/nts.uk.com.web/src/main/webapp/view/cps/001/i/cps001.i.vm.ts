@@ -251,16 +251,7 @@ module nts.uk.com.view.cps001.i.vm {
                 grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
                 deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
                 ctgCode: IData = self.genSpecialCode(self.categoryCode());
-            $("#idDateGrantInp").trigger("validate");
-            $("#deadlineDateInp").trigger("validate");
-            $("#dayNumberOfGrants").trigger("validate");
-            $("#grantTime").trigger("validate");
-            $("#dayNumberOfUse").trigger("validate");
-            $("#useTime").trigger("validate");
-            $("#dayNumberOver").trigger("validate");
-            $("#timeOver").trigger("validate");
-            $("#dayNumberOfReam").trigger("validate");
-            $("#timeReam").trigger("validate");
+            
 
             if (self.dateGrantInp() == null || self.deadlineDateInp() == null
                 || self.dayNumberOfGrants() == null || self.dayNumberOfUse() == null
