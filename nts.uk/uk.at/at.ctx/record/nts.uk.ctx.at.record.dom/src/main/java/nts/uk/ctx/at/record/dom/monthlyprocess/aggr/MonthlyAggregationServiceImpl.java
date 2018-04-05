@@ -112,6 +112,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			if (status == ProcessState.INTERRUPTION){
 				
 				// 中断時
+				dataSetter.updateData("monthlyAggregateHasError", "中断");
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
 				break;
 			}
@@ -121,6 +122,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 処理を完了する
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.DONE.value);
+		dataSetter.updateData("monthlyAggregateHasError", "エラーなし");
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		
 		return status;
