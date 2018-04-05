@@ -21,14 +21,11 @@
 			<div id="contents-area">
 				<table class="widget-table">     
 					<tr>
-						<td>#{i18n.getText('KTG001_2')}</td>
-					</tr>
-					<tr>
 						<td>#{i18n.getText('KTG001_3')}</td>
 					</tr>
 					<tr>
 						<td>#{i18n.getText('KTG001_5')}</td>
-						<td class="go-button"><button data-bind = " click : dailyPerformanceConfirm">
+						<td class="go-button"  data-bind="visible: visible"><button data-bind = " click : dailyPerformanceConfirm">
 								<i data-bind="ntsIcon: { no: 144 }"></i>
 							</button></td>
 					</tr>
