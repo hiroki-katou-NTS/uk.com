@@ -1,7 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.flex;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * The Enum CalcMethodOfNoWorkingDay.
+ */
 @AllArgsConstructor
 public enum CalcMethodOfNoWorkingDay {
 	

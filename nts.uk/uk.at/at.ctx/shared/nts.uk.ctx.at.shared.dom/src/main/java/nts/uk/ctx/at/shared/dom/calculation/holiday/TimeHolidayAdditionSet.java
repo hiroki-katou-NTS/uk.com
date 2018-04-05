@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.Builder;
@@ -5,6 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
+/**
+ * The Class TimeHolidayAdditionSet.
+ */
 @Getter
 @Setter
 @Builder
