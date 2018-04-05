@@ -294,6 +294,11 @@ module nts.custombinding {
                         border-radius: 0;
                     }
 
+                    .layout-control .item-control td .ntsControl.error input,
+                    .layout-control .item-control td .ntsControl.error textarea{
+                        border-style: dashed;
+                    }
+
                     .layout-control .item-control td input:focus,
                     .layout-control .item-control td textarea:focus,
                     .layout-control .item-controls td input:focus,
@@ -405,6 +410,11 @@ module nts.custombinding {
                         padding: 0;
                         min-width: 65px;
                         line-height: 30px;
+                    }
+
+                    .layout-control .item-classification .set-table-items .value-text.readonly {
+                        padding-left: 15px;
+                        width: 100%;
                     }
 
                     .layout-control .item-classification .ui-igcombo-wrapper {
