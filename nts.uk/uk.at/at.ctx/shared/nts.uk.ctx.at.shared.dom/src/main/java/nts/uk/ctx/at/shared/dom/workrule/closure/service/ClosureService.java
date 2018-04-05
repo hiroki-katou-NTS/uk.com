@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
-import java.util.Optional;
+import java.util.List;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -25,4 +23,7 @@ public interface ClosureService {
 	 */
 	// 当月の期間を算出する
 	public DatePeriod getClosurePeriod(int closureId, YearMonth processingYm);
+	
+	//全締めの当月と期間を取得する
+	public List<ClosureInfor> getClosureInfo();
 }
