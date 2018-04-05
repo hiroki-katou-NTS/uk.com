@@ -25,7 +25,7 @@
 					</div>
 					<div data-bind="if: !screenModeNew()"
 						style="display: inline-block;">
-						<span
+						<span style ="margin-left: -3px;"
 							data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF006_10')}' : '#{i18n.getText('KAF006_11')}'"></span>
 					</div></td>
 			</tr>
@@ -37,7 +37,7 @@
 						data-bind="ntsCheckBox: { checked: displayEndDateFlg, enable: enableDisplayEndDate, text: '#{i18n.getText('KAF006_12')}'},visible: screenModeNew">
 					</div>
 					<div
-						data-bind="visible: screenModeNew">
+						data-bind="if: screenModeNew()">
 						<!--A3_9  期間入力-->
 						<div tabindex="9" id="inputdate"
 							data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true,visible: !displayEndDateFlg()"></div>
@@ -45,7 +45,7 @@
 							data-bind="ntsDateRangePicker: { name: '#{i18n.getText('KAF006_8')}',startName:'#{i18n.getText('KAF006_8')}',endName: '#{i18n.getText('KAF006_8')}',required:true, enable: true, showNextPrevious: false, value: dateValue, maxRange: 'none'},visible: displayEndDateFlg()" />
 					</div>
 					<div data-bind="if: !screenModeNew()">
-						<span
+						<span style ="margin-left: 6px;"
 							data-bind="text: appDate"></span>
 					</div>
 					<div style="clear: both"></div>
@@ -245,7 +245,7 @@
 								<!--A6_7 開始時刻-->
 								<input
 									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
-									id="inpStartTime2"
+									id="inpStartTime1"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
 								<!--A6_8 ～-->
 								<label class="valign-center-kaf006 link-label-kaf006">#{i18n.getText('KAF005_39')}</label>
@@ -256,7 +256,7 @@
 								<!--A6_9 終了時刻-->
 								<input tabindex="11"
 									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
-									id="inpEndTime2"
+									id="inpEndTime1"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
 							</div>
 						</div>
