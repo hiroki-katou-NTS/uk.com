@@ -174,6 +174,7 @@ public class AppAbsenceFinder {
 	public AppAbsenceDto getByAppID(String appID) {
 		AppAbsenceDto result = new AppAbsenceDto();
 		String companyID = AppContexts.user().companyId();
+		String employeeIDLogin = AppContexts.user().employeeId();
 		// 14-1.詳細画面起動前申請共通設定を取得する
 
 		Optional<AppAbsence> opAppAbsence = this.appAbsenceRepository.getAbsenceByAppId(companyID, appID);
@@ -184,7 +185,7 @@ public class AppAbsenceFinder {
 		result = AppAbsenceDto.fromDomain(appAbsence);
 		// アルゴリズム「14-2.詳細画面起動前申請共通設定を取得する」を実行する
 		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID,
-				appAbsence.getApplication().getEmployeeID(), appID, appAbsence.getApplication().getAppDate());
+				employeeIDLogin, appID, appAbsence.getApplication().getAppDate());
 		DetailScreenInitModeOutput detail = initMode.getDetailScreenInitMode(preBootOuput.getUser(),
 				preBootOuput.getReflectPlanState().value);
 		// init Mode
