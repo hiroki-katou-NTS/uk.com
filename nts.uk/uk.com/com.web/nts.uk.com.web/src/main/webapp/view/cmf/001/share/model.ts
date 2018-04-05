@@ -142,6 +142,12 @@ module nts.uk.com.view.cmf001.share.model {
         ];
     }
     
+   export function getEncodingList(): Array<EncodingModel> {
+        return [
+            new model.EncodingModel(3, 'Shift JIS')
+        ];
+    }
+    
     export class StandardAcceptanceConditionSetting {
         conditionSettingCode: KnockoutObservable<string>;
         dispConditionSettingCode: string;
@@ -149,15 +155,16 @@ module nts.uk.com.view.cmf001.share.model {
         dispConditionSettingName: string;
         deleteExistData: KnockoutObservable<number>;
         deleteExistDataMethod: KnockoutObservable<number> = ko.observable(null);
-        acceptMode: KnockoutObservable<number> = ko.observable(null);
+        acceptMode: KnockoutObservable<number> = ko.observable(0);
         csvDataItemLineNumber: KnockoutObservable<number> = ko.observable(null);
         csvDataStartLine: KnockoutObservable<number> = ko.observable(null);
+        characterCode: KnockoutObservable<number> = ko.observable(null);
         systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
         categoryId: KnockoutObservable<string> = ko.observable(null);
 
-        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number, csvDataItemLineNumber?: number, csvDataStartLine?: number, deleteExistDataMethod?: number, categoryId?: string) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number, csvDataItemLineNumber?: number, csvDataStartLine?: number, characterCode?: number, deleteExistDataMethod?: number, categoryId?: string) {
             this.systemType = ko.observable(systemType);
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
@@ -168,15 +175,29 @@ module nts.uk.com.view.cmf001.share.model {
                 this.deleteExistDataMethod(deleteExistDataMethod);
             if (!nts.uk.util.isNullOrUndefined(acceptMode))
                 this.acceptMode(acceptMode);
+            else
+                this.acceptMode(0);
             if (csvDataItemLineNumber)
                 this.csvDataItemLineNumber(csvDataItemLineNumber);
             if (csvDataStartLine)
                 this.csvDataStartLine(csvDataStartLine);
+            if (characterCode)
+                this.characterCode(characterCode);
             if (categoryId) this.categoryId(categoryId); 
         }
     }
 
     export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    
+    export class EncodingModel {
         code: number;
         name: string;
 
@@ -389,7 +410,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
             this.decimalSelect = ko.observable(decimalSelect);
-            this.hourMinSelect = ko.observable(hourMinSelect);
+            this.hourMinSelect = ko.observable(hourMinSelect || 0);
             this.delimiterSet = ko.observable(delimiterSet);
             this.roundProc = ko.observable(roundProc);
             this.roundProcCls = ko.observable(roundProcCls);
@@ -417,7 +438,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
             this.decimalSelect = ko.observable(decimalSelect);
-            this.hourMinSelect = ko.observable(hourMinSelect);
+            this.hourMinSelect = ko.observable(hourMinSelect || 0);
             this.delimiterSet = ko.observable(delimiterSet);
             this.roundProc = ko.observable(roundProc);
             this.roundProcCls = ko.observable(roundProcCls);

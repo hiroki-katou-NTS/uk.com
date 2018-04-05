@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -25,9 +24,6 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 	
 	@Inject
 	private ApprovalRootStateService approvalRootStateService;
-	
-	@Inject
-	private JudgmentApprovalStatusService judgmentApprovalStatusService;
 	
 	@Override
 	public List<ApprovalRootStateStatus> getStatusByEmpAndDate(String employeeID, GeneralDate startDate, GeneralDate endDate,
@@ -54,20 +50,19 @@ public class ApprovalRootStateStatusImpl implements ApprovalRootStateStatusServi
 
 	@Override
 	public DailyConfirmAtr determineDailyConfirm(ApprovalRootState approvalRootState) {
+		// ステータス＝未承認, 未承認フェーズあり＝false
 		DailyConfirmAtr dailyConfirmAtr = DailyConfirmAtr.UNAPPROVED;
 		Boolean currentPhaseUnapproved = false;
+		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-			List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
-			if(CollectionUtil.isEmpty(approvers)){
-				continue;
-			}
-			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+			// ループ中のドメインモデル「承認フェーズインスタンス」．承認区分をチェックする
+			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				currentPhaseUnapproved = true;
+				// ループ中の承認フェーズの承認枠をチェックする
 				Optional<ApprovalFrame> anyAppovedFrame = approvalPhaseState.getListApprovalFrame()
 						.stream().filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
 				if(anyAppovedFrame.isPresent()){
-					dailyConfirmAtr = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED) 
-							? DailyConfirmAtr.UNAPPROVED : DailyConfirmAtr.ON_APPROVED;
+					dailyConfirmAtr = DailyConfirmAtr.ON_APPROVED;
 					break;
 				}
 				continue;

@@ -8,7 +8,7 @@ public interface OvertimeInstructRepository {
 	public OverTimeInstruct getOvertimeInstruct(GeneralDate instructDate,String targetPerson);
 	
 	/**
-	 * For request list 230
+	 * For RequestList230
 	 * @param sId
 	 * @return
 	 */
