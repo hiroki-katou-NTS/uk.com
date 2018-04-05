@@ -1,6 +1,7 @@
-/**
- * 
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.temporarywork;
 
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryGetMemento;
@@ -9,11 +10,11 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWor
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
- * @author hoangdd
- *
+ * The Class JpaManageWorkTemporaryGetMemento.
  */
 public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetMemento{
 
+	/** The krcst manage work temp. */
 	private KrcstManageWorkTemp krcstManageWorkTemp;
 	
 	
