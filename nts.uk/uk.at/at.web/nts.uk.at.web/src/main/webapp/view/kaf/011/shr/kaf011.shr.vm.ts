@@ -372,6 +372,8 @@ module nts.uk.at.view.kaf011.shr {
                     if (childData) {
                         self.wkTimeCD(childData.selectedWorkTimeCode);
                         if (childData.first) {
+                            $("#recTime1Start").ntsError("clear");
+                            $("#recTime1End").ntsError("clear");
                             self.wkTypeCD(childData.selectedWorkTypeCode);
                             self.wkTime1().startTime(childData.first.start);
                             self.wkTime1().endTime(childData.first.end);
