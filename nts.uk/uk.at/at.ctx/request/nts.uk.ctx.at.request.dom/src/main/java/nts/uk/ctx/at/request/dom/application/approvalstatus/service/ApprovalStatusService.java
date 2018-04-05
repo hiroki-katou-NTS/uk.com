@@ -4,6 +4,8 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 
 public interface ApprovalStatusService {
 	/**
@@ -19,4 +21,18 @@ public interface ApprovalStatusService {
 	 */
 	List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd);
+	
+	/**
+	 * アルゴリズム「承認状況取得申請承認」を実行する
+	 * @param wkpInfoDto
+	 * @return ApprovalSttAppDto
+	 */
+	ApprovalSttAppOutput getApprovalSttApp(String wkpId, List<ApprovalStatusEmployeeOutput> listAppStatusEmp);
+	
+	/**
+	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
+	 * 
+	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
+	 */
+	EmployeeEmailOutput findEmpMailAddr();
 }

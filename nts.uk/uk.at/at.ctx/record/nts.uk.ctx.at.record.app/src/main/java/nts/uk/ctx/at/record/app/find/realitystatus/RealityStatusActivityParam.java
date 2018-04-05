@@ -10,7 +10,7 @@ import lombok.Value;
  *
  */
 @Value
-public class RealityStatusActivityData {
+public class RealityStatusActivityParam {
 	private String startDate;
 	private String endDate;
 	private boolean isConfirmData;

@@ -148,12 +148,15 @@ module nts.uk.at.view.kaf006.b{
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes.removeAll();
                     self.workTimeCodes(result.workTimeCodes);
                 }
                  dfd.resolve(result);
@@ -180,6 +183,8 @@ module nts.uk.at.view.kaf006.b{
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
@@ -187,6 +192,7 @@ module nts.uk.at.view.kaf006.b{
                     self.selectedTypeOfDuty(result.workTypeCode);
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes.removeAll();
                     self.workTimeCodes(result.workTimeCodes);
                 }
                  dfd.resolve(result);
@@ -309,14 +315,7 @@ module nts.uk.at.view.kaf006.b{
              if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
                  return;
              }
-             if(!self.changeWorkHourValueFlg()){
-                 self.changeWorkHourValue(false);
-                 self.timeStart1(null);
-                 self.timeEnd1(null);
-                 self.timeStart2(null);
-                 self.timeEnd2(null);
-                 self.workTimeCode(null);
-             }
+             
              let paramInsert = {
                 version: self.version,
                 appID: self.appID(),

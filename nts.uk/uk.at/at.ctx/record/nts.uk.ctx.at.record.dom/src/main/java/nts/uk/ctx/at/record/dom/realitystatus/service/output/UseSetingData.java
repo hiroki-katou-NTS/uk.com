@@ -5,7 +5,7 @@ import lombok.Value;
 
 @AllArgsConstructor
 @Value
-public class UseSetingOutput {
+public class UseSetingData {
 	/**
 	 * 月別確認を利用する
 	 */
