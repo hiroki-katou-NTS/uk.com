@@ -200,6 +200,6 @@
 	float: left;
 }
 
-/* .checkbox_float_left>div:FIRST-CHILD {
-	float: left;
-} */
+#item_role_table_body_isChecked > span > div > label > span.box {
+	margin-left: 6px !important;
+}
