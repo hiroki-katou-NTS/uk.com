@@ -14,9 +14,7 @@ module a10 {
      * WorkTimeCommonSet -> BonusPaySettingCode
      */
     class ScreenModel {
-        
-        selectedTab: KnockoutObservable<string>;
-        
+             
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -34,9 +32,8 @@ module a10 {
         /**
          * Constructor
          */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto, lstPaySetting:any) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto, lstPaySetting:any) {
             let _self = this;          
-            _self.selectedTab = selectedTab;
             
             _self.lstBonusPaysetting = ko.observableArray(lstPaySetting);
             // Check exist
@@ -150,7 +147,7 @@ module a10 {
             let settingEnum = input.enum;
 
             nts.uk.at.view.kmk003.a10.service.findAllBonusPaySetting().done(function(lstPaySetting:any) {
-                let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum,lstPaySetting);
+                let screenModel = new ScreenModel(screenMode, model, settingEnum,lstPaySetting);
 
                 $(element).load(webserviceLocator, () => {
                     ko.cleanNode($(element)[0]);

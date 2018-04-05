@@ -18,7 +18,7 @@ module a9 {
      */
     class ScreenModel {
 
-        selectedTab: KnockoutObservable<string>;
+        isNewMode: KnockoutObservable<boolean>;
 
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
@@ -47,9 +47,18 @@ module a9 {
         /**
          * Constructor
          */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
-            _self.selectedTab = selectedTab;
+            _self.isNewMode = isNewMode;
+            _self.isNewMode.subscribe((v) => {
+                // Set default value for switch button
+                if (v) {
+                    if (!nts.uk.util.isNullOrUndefined(_self.recordLateSettingRounding)) _self.recordLateSettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.recordLeaveEarlySettingRounding)) _self.recordLeaveEarlySettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.deductionLateSettingRounding)) _self.deductionLateSettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.deductionLeaveEarlySettingRounding)) _self.deductionLeaveEarlySettingRounding(1);
+                }    
+            });
 
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -168,7 +177,7 @@ module a9 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

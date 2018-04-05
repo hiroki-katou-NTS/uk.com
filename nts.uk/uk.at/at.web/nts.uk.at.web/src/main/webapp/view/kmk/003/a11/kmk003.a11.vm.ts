@@ -18,8 +18,6 @@ module a11 {
      * WorkTimeCommonSet -> subHolTimeSet (SubstitutionWorkTimeSetting)
      */
     class ScreenModel {
-
-        selectedTab: KnockoutObservable<string>;
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
@@ -55,9 +53,8 @@ module a11 {
         /**
         * Constructor.
         */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;           
-            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -203,7 +200,7 @@ module a11 {
             let model = input.model;
             let settingEnum = input.enum;
     
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

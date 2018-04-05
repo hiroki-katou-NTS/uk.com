@@ -15,8 +15,6 @@ module a17 {
      */
     class ScreenModel {
         
-        selectedTab: KnockoutObservable<string>;
-        
         // Screen mode
         selectedCode: KnockoutObservable<any>;
         isDetailMode: KnockoutObservable<boolean>;
@@ -57,9 +55,8 @@ module a17 {
         /**
          * Constructor
          */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstOvertimeWorkFrame:any) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstOvertimeWorkFrame:any) {
             let _self = this;
-            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -211,15 +208,6 @@ module a17 {
             }); 
         }
         
-        /**
-         * Handle when using tab button
-         */
-        public changeTab(data: any, e: any) {
-            let _self = this;
-            if (e.which == 9) {
-                _self.selectedTab('tab-1');        
-            }
-        }
     }
     
     /**
@@ -250,7 +238,7 @@ module a17 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum,input.overTimeWorkFrameOptions());
+            let screenModel = new ScreenModel(screenMode, model, settingEnum,input.overTimeWorkFrameOptions());
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
