@@ -22,6 +22,20 @@ module nts.uk.com.view.cps001.g.vm {
         grantMinutesH: KnockoutObservable<boolean>;
         usedMinutesH: KnockoutObservable<boolean>;
         remainingMinutesH: KnockoutObservable<boolean>;
+        
+        //
+        nameDateGrantInp: KnockoutObservable<string> = ko.observable('');
+        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable('');
+
+        nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable('');
+        namegrantTime: KnockoutObservable<string> = ko.observable('');
+
+        nameDayNumberOfUse: KnockoutObservable<string> = ko.observable('');
+        nameUseTime: KnockoutObservable<string> = ko.observable('');
+
+        nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable('');
+        nameTimeReam: KnockoutObservable<string> = ko.observable('');
+        
         init: boolean = true;
         itemDefs: any = [];
         constructor() {
@@ -42,11 +56,7 @@ module nts.uk.com.view.cps001.g.vm {
                     service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData) => {
                         if (result) {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(result));
-                            if(_self.itemDefs.length > 0){
-                                _self.setItemDefValue(_self.itemDefs).done(() => {
-                                    console.log('done ---');
-                                 });
-                            }   
+                            _self.loadItemDef();    
                         }
                          $('#id-grantDate').focus();
                     });
@@ -56,14 +66,9 @@ module nts.uk.com.view.cps001.g.vm {
 
             // Subscribe checkbox
             _self.checked.subscribe(value => {
-                console.log(value);
-                if (value){
-                    _self.listAnnualLeaveGrantRemainData(_self.alllist());
-                } else {
-                    _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(),function(item){
-                        return item.expirationStatus === 0;  
-                    }));
-                }
+                
+               _self.changeFollowExpSta(value);
+                
                 if (_self.listAnnualLeaveGrantRemainData().length) {
                      _self.createMode(false);
                     // Set focus
@@ -73,6 +78,7 @@ module nts.uk.com.view.cps001.g.vm {
                 } else {
                     _self.create();                    
                 }
+                 _self.loadItemDef();  
             });
 
 
@@ -90,11 +96,13 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.createMode(false);
                     _self.alllist.removeAll();
                     _self.alllist(data);
-                    _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(), function(item){
-                        return  item.expirationStatus === 0;
-                    }));
+                    _self.changeFollowExpSta(_self.checked());
+                    
+                     let currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) { 
+                            return item.annLeavID == annID;
+                     });
                     // Set focus
-                    if (annID) {
+                    if (annID && currentIndex > 0) {
                          _self.currentValue(annID);
                     } else {
                         _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
@@ -111,14 +119,29 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.init = false;
                  }
                  else {
-                    if(_self.itemDefs.length > 0){
-                    _self.setItemDefValue(_self.itemDefs).done(() => {
-                        console.log('done ---');
-                     });
-                    }    
+                    _self.loadItemDef();   
                 }
                 
             });
+        }
+        
+        changeFollowExpSta(value: boolean){
+            let _self = this;
+             if (value){
+                _self.listAnnualLeaveGrantRemainData(_self.alllist());
+            } else {
+                _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(),function(item){
+                    return item.expirationStatus === 0;  
+                }));
+            }
+        }
+        
+        loadItemDef(){
+            let _self = this;
+             if(_self.itemDefs.length > 0){
+                _self.setItemDefValue(_self.itemDefs).done(() => {
+                 });
+             } 
         }
          getItemDef(){
             let self = this;
@@ -152,17 +175,36 @@ module nts.uk.com.view.cps001.g.vm {
                                     }else{
                                         $(this).parent().css("display", "none");
                                     }
-                                    let timeType = itemCodeArray[itemCodeArray.length - 1];
-                                        switch(timeType){
-                                            case "grantMinutes": 
+                                      let timeType = itemCodeArray[itemCodeArray.length - 1];
+                                        switch (timeType) {
+                                            case "IS00385":
+                                                self.nameDateGrantInp(itemDef.itemName);
+                                                break;
+                                            case "IS00386":
+                                                self.nameDeadlineDateInp(itemDef.itemName);
+                                                break;
+                                            case "IS00390":
+                                                self.nameDayNumberOfGrant(itemDef.itemName);
+                                                break;
+                                            case "IS00393":
+                                                self.nameDayNumberOfUse(itemDef.itemName);
+                                                break;
+                                            case "IS00396":
+                                                self.nameDayNumberOfRemain(itemDef.itemName);
+                                                break;
+                                            case "grantMinutes":
                                                 self.grantMinutesH = ko.observable(!itemDef.display);
+                                                self.namegrantTime(itemDef.itemName);
                                                 break;
                                             case "usedMinutes":
                                                 self.usedMinutesH = ko.observable(!itemDef.display);
+                                                self.nameUseTime(itemDef.itemName);
                                                 break;
                                             case "remainingMinutes":
                                                 self.remainingMinutesH = ko.observable(!itemDef.display);
+                                                self.nameTimeReam(itemDef.itemName);
                                                 break;
+            
                                         }
                                 }
                             });
@@ -203,11 +245,7 @@ module nts.uk.com.view.cps001.g.vm {
             let _self = this;
             _self.createMode(true);
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
-            if(_self.itemDefs.length > 0){
-                _self.setItemDefValue(_self.itemDefs).done(() => {
-                    console.log('done ---');
-                 });
-            }
+            _self.loadItemDef(); 
             $('#id-grantDate').focus();
         }
         /**
@@ -222,6 +260,10 @@ module nts.uk.com.view.cps001.g.vm {
             $("#grantDays").trigger("validate");
             $("#usedDays").trigger("validate");
             $("#remainingDays").trigger("validate");
+            
+            if ( nts.uk.ui.errors.hasError()){
+                return;
+            }
             block();
             if (_self.createMode()) {
                 

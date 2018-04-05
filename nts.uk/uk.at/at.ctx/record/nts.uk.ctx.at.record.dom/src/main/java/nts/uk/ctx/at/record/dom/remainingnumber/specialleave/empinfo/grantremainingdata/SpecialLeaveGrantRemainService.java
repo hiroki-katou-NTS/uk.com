@@ -13,8 +13,8 @@ public class SpecialLeaveGrantRemainService {
 		int minutes = grantRemains.stream()
 				.filter(i -> i.getDetails().getRemainingNumber().timeOfRemain.isPresent()).mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().minute()).sum();
 		int hours = minutes / 60;
-		int minute = minutes % 60 *60;
-		return result.toString() + "日と " + hours + " : " + minute;
+		int minute = minutes - hours*60;
+		return result.toString() + " 日と " + hours + ":" + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
 	}
 
 }

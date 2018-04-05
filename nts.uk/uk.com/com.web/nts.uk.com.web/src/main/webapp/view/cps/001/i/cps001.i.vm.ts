@@ -4,6 +4,7 @@ module nts.uk.com.view.cps001.i.vm {
     import info = nts.uk.ui.dialog.info;
     import showDialog = nts.uk.ui.dialog;
     import alert = nts.uk.ui.dialog.alert;
+    import error = nts.uk.ui.dialog.alertError;
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
@@ -69,27 +70,39 @@ module nts.uk.com.view.cps001.i.vm {
         grantTimeH: KnockoutObservable<boolean>;
 
         //
+        nameDateGrantInp: KnockoutObservable<string> = ko.observable(null);
+        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable(null);
+
         nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable(null);
+        namegrantTime: KnockoutObservable<string> = ko.observable(null);
+
         nameDayNumberOfUse: KnockoutObservable<string> = ko.observable(null);
+        nameUseTime: KnockoutObservable<string> = ko.observable(null);
+
         nameDayNumberOver: KnockoutObservable<string> = ko.observable(null);
+        nameTimeOver: KnockoutObservable<string> = ko.observable(null);
+
         nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable(null);
+        nameTimeReam: KnockoutObservable<string> = ko.observable(null);
+
+
+
+
 
 
         //data recive from cps001.a
         categoryCode: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
-            let self = this;
-            let sid = __viewContext.user.employeeId;
-            
-            let data : any = getShared('CPS001GHI_VALUES');
+            let self = this,
+                data: any = getShared('CPS001GHI_VALUES');
 
             self.categoryCode(data.ctgCode);
 
             self.expStateTitle = ko.observable('expDateTitle');
             self.roundingRules = ko.observableArray([
-                { code: 0, name: '四捨五入' },
-                { code: 1, name: '切り上げ' }
+                { code: 0, name: '使用可能' },
+                { code: 1, name: '期限切れ' }
             ]);
             self.selectedRuleCode = ko.observable(0);
 
@@ -112,7 +125,7 @@ module nts.uk.com.view.cps001.i.vm {
                 let self = this;
                 self.activeBtn();
                 let sID = __viewContext.user.employeeId;
-                console.log(value);
+                console.log(sID);
                 if (value) {
                     self.listData(self.convertData(self.listFullData()));
                     self.currentValue(self.listData()[0].specialid);
@@ -137,8 +150,9 @@ module nts.uk.com.view.cps001.i.vm {
         loadData(index?: number): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             self.checked(false);
-            
-            service.getAllList("1B3D3CC4-90FD-4992-9566-12EC72827E4C", 1).done((data: Array<ISpecialLeaveRemaining>) => {
+            let ctgCode: IData = self.genSpecialCode(self.categoryCode());
+
+            service.getAllList(__viewContext.user.employeeId, ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
@@ -153,6 +167,7 @@ module nts.uk.com.view.cps001.i.vm {
                     }
 
                 } else {
+                    self.listData([]);
                     self.newMode();
                 }
                 unblock();
@@ -223,7 +238,10 @@ module nts.uk.com.view.cps001.i.vm {
         }
 
         Save() {
-            let self = this;
+            let self = this,
+                grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
+                deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
+                ctgCode: IData = self.genSpecialCode(self.categoryCode());
             $("#idDateGrantInp").trigger("validate");
             $("#deadlineDateInp").trigger("validate");
             $("#dayNumberOfGrants").trigger("validate");
@@ -241,12 +259,18 @@ module nts.uk.com.view.cps001.i.vm {
                 return;
             }
 
+            if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
+                error({ messageId: "Msg_1023" });
+                $('#idDateGrantInp').focus();
+                return;
+            }
+
             let currentRow: ISpecialLeaveRemaining = _.find(ko.toJS(self.listData), function(item: any) { return item.specialid == self.currentValue(); });
             //sid = "1B3D3CC4-90FD-4992-9566-12EC72827E4C" || __viewContext.user.employeeId
             let command = {
                 specialid: currentRow == undefined ? null : currentRow.specialid,
-                sid: "1B3D3CC4-90FD-4992-9566-12EC72827E4C",
-                specialLeaCode: 1,
+                sid: __viewContext.user.employeeId,
+                specialLeaCode: ctgCode.specialCode,
                 grantDate: self.dateGrantInp(), deadlineDate: self.deadlineDateInp(),
                 expStatus: self.selectedRuleCode(), registerType: null,
                 numberDayGrant: self.dayNumberOfGrants(), timeGrant: self.grantTime(),
@@ -353,6 +377,7 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
+                console.log(data);
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });
@@ -378,6 +403,12 @@ module nts.uk.com.view.cps001.i.vm {
                             }
                             let timeType = itemCodeArray[itemCodeArray.length - 1];
                             switch (timeType) {
+                                case "grantDate":
+                                    self.nameDateGrantInp(itemDef.itemName);
+                                    break;
+                                case "deadlineDate":
+                                    self.nameDeadlineDateInp(itemDef.itemName);
+                                    break;
                                 case "dayNumberOfGrants":
                                     self.nameDayNumberOfGrant(itemDef.itemName);
                                     break;
@@ -392,15 +423,19 @@ module nts.uk.com.view.cps001.i.vm {
                                     break;
                                 case "grantTime":
                                     self.grantTimeH = ko.observable(!itemDef.display);
+                                    self.namegrantTime(itemDef.itemName);
                                     break;
                                 case "useTime":
                                     self.useTimeH = ko.observable(!itemDef.display);
+                                    self.nameUseTime(itemDef.itemName);
                                     break;
                                 case "timeOver":
                                     self.timeExeededH = ko.observable(!itemDef.display);
+                                    self.nameTimeOver(itemDef.itemName);
                                     break;
                                 case "timeReam":
                                     self.timeReamH = ko.observable(!itemDef.display);
+                                    self.nameTimeReam(itemDef.itemName);
                                     break;
 
                             }

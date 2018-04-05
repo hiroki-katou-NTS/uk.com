@@ -14,16 +14,13 @@ module nts.layout {
         removeDoubleLine: (items: Array<any>) => {
             let maps = _(items)
                 .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                .filter(x => x != -1).value();
+                .filter(x => x != -1)
+                .value(),
+                dupl = _(maps)
+                    .filter((x, i) => maps[i + 1] == x + 1)
+                    .value();
 
-            _.each(maps, (t, i) => {
-                if (maps[i + 1] == t + 1) {
-                    _.remove(items, (m: any) => {
-                        let item: any = ko.unwrap(items)[maps[i + 1]];
-                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                    });
-                }
-            });
+            _.remove(items, (m: any, k: number) => dupl.indexOf(k) > -1);
         },
         initCheckError: (items: Array<any>) => {
             // validate button, radio button
@@ -158,6 +155,8 @@ module nts.layout {
             self.relate_radio();
             self.relate_button();
 
+            self.dateTime();
+
             validate.initCheckError(lstCls);
         }
 
@@ -250,7 +249,6 @@ module nts.layout {
                     let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = finder.findChilds(radio.ctgCode, radio.setParentCode);
 
-                    //debugger;
                     if (rd) {
                         rd.data.value.subscribe(x => {
                             _.each(ctrls, c => {
@@ -637,13 +635,11 @@ module nts.layout {
                         ctgCode: 'CS00026',
                         btnCode: 'IS00308',
                         dialogId: 'i'
-                    }
-                    , {
+                    }, {
                         ctgCode: 'CS00027',
                         btnCode: 'IS00315',
                         dialogId: 'i'
-                    }
-                    , {
+                    }, {
                         ctgCode: 'CS00028',
                         btnCode: 'IS00322',
                         dialogId: 'i'
@@ -721,7 +717,7 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-                            
+
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
                             });
@@ -770,7 +766,29 @@ module nts.layout {
 
         dateTime = () => {
             let self = this,
-                finder: IFinder = self.finder;
+                finder: IFinder = self.finder,
+                CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
+                CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
+                CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+
+            if (CS00016_IS00077 && CS00016_IS00079) {
+                CS00016_IS00077.data.value.subscribe(x => {
+                    CS00016_IS00079.data.lstComboBoxValue.push({
+                        optionValue: x,
+                        optionText: x
+                    });
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00084) {
+                CS00017_IS00082.data.value.subscribe(x => {
+                    CS00017_IS00084.data.lstComboBoxValue.push({
+                        optionValue: x,
+                        optionText: x
+                    });
+                });
+            }
         }
     }
 
@@ -814,7 +832,7 @@ module nts.layout {
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
-        lstComboBoxValue: Array<any>;
+        lstComboBoxValue: KnockoutObservableArray<any>;
         itemParentCode?: string;
     }
 

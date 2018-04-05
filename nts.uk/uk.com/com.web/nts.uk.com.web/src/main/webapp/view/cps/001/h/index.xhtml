@@ -13,6 +13,11 @@
 					height : 795
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps001.h.style.css" />
 			<com:scriptfile path="cps001.h.service.js" />
@@ -46,8 +51,8 @@
 				<div class='detailContent'>
 					<table data-bind="with: resvLeaGrantRemNum">
 						<tr>
-							<td data-itemCode="IS00398" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
-							<td><div id="grantDate" tabindex='7' data-bind="ntsDatePicker: {value: grantDate,  dateFormat: 'YYYY/MM/DD'}"></div></td>
+							<td data-itemCode="IS00398 grantDate" class="test"><div data-bind="ntsFormLabel: {required: true }">1</div></td>
+							<td><div id="grantDate" tabindex='7' data-bind="ntsDatePicker: {name: gd, value: grantDate,required: true,   dateFormat: 'YYYY/MM/DD'}"></div></td>
 						</tr>
 						<tr>
 							<td data-itemCode="IS00399"><div data-bind="ntsFormLabel: {required: true }">2</div></td>
