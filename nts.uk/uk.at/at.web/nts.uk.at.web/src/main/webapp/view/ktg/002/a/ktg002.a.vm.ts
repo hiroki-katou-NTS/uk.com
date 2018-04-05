@@ -27,6 +27,8 @@ module nts.uk.at.view.ktg002.a.viewmodel {
                     self.visible = ko.observable(false);
                 }
             dfd.resolve();
+            }).always(function () {
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
