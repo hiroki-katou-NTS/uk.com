@@ -704,7 +704,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					attendanceLeave,
 					forCalcDivergenceDto,
 					divergenceTimeList,
-					calculateOfTotalConstraintTime));
+					calculateOfTotalConstraintTime, schePreTimeSet));
 //					schePreTimeSet));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
