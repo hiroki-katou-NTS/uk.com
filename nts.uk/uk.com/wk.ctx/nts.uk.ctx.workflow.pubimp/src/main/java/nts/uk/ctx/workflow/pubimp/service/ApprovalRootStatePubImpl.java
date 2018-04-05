@@ -446,6 +446,12 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByEmployeeIDRecordDate(startDate, endDate, employeeID, rootType);
 		
 		//承認ルート状況を取得する
+		result = this.getApproveRootStatusForEmpExport(approvalRootSates);
+		return result;
+	}
+	//承認ルート状況を取得する
+	private List<ApproveRootStatusForEmpExport> getApproveRootStatusForEmpExport(List<ApprovalRootState> approvalRootSates){
+		List<ApproveRootStatusForEmpExport> result = new ArrayList<>();
 		for(ApprovalRootState approvalRoot : approvalRootSates){
 			ApproveRootStatusForEmpExport approveRootStatusForEmpExport = new ApproveRootStatusForEmpExport();
 			int status = ApprovalStatusForEmployee.UNAPPROVED.value;
@@ -478,7 +484,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				}
 			}
 			approveRootStatusForEmpExport.setAppDate(approvalRoot.getApprovalRecordDate());
-			approveRootStatusForEmpExport.setEmployeeID(employeeID);
+			approveRootStatusForEmpExport.setEmployeeID(approvalRoot.getEmployeeID());
 			approveRootStatusForEmpExport.setApprovalStatus(EnumAdaptor.valueOf(status, ApprovalStatusForEmployee.class));
 			result.add(approveRootStatusForEmpExport);
 		}
@@ -540,6 +546,18 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		
 		
 		
+		return result;
+	}
+	@Override
+	// RequestList229
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndDate(GeneralDate startDate, GeneralDate endDate,
+			List<String> employeeIDs, String companyID, Integer rootType) {
+		List<ApproveRootStatusForEmpExport> result = new ArrayList<>();
+		// 対象者と期間から承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDRecordDate(startDate, endDate, employeeIDs, rootType);
+		
+		//承認ルート状況を取得する
+		result = this.getApproveRootStatusForEmpExport(approvalRootSates);
 		return result;
 	}
 
