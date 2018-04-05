@@ -117,8 +117,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     alertError({messageId: "Msg_898"});
                 } else {
                     self.listAcceptItem.remove(selectedAItem);
-                    self.listCategoryItem.push(selectedCItem);
-                    self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['itemNo']));
                     self.listSelectedCategoryItem.remove(selectedCItem);
                     self.selectedCategoryItem(selectedCItem.itemNo);
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
@@ -130,6 +128,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     } else {
                         self.selectedAcceptItem.valueHasMutated();
                     }
+                    self.listCategoryItem.push(selectedCItem);
+                    self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['itemNo']));
                     self.scrollIntoSelectedAcceptItem(selectedAItemIndex);
                 }
             } else {
