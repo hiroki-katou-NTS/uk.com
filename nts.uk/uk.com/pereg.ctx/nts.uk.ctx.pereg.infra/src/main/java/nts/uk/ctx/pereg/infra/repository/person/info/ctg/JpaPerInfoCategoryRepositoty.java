@@ -472,7 +472,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				PpemtPerInfoCtg entity = entityOpt.get();
 				entity.categoryName = x.getCategoryName() == null ? null : x.getCategoryName().v();
 				entity.abolitionAtr = x.getIsAbolition().value;
-				this.commandProxy().update(entity);
+				//this.commandProxy().update(entity);
 			}
 		});
 		
