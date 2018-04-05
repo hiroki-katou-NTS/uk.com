@@ -43,7 +43,7 @@
 										options: transAttendMethod,
 										optionsValue: 'id',
 										optionsText: 'name',
-										value:selectedItem}"></div>
+										value:selectedItem}, hasFocus: true"></div>
 							</td>
 						</tr>
 						
@@ -68,9 +68,9 @@
 	                                         value: workTypeNames,
 	                                         required: true,
 	                                         enable: true,
-	                                         readonly:true}" />
+	                                         readonly:true}, hasFocus: $parent.j45focus" />
 								</span>
-								
+<!-- 								<span class="tooltiptext" data-bind="text: workTypeNames"></span></div> -->
 							</td>
 						</tr>
 						
