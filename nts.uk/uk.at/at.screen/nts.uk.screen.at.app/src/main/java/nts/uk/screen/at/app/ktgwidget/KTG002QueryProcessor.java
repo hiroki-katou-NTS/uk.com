@@ -62,8 +62,8 @@ public class KTG002QueryProcessor {
 		GeneralDate startDate = presentClosingPeriod.get().getClosureStartDate();
 		GeneralDate endDate = presentClosingPeriod.get().getClosureEndDate();
 		
-		// RoleType.EMPLOYMENT = 3
-		boolean checkDateApproved = dailyPerformanceAdapter.checkDataApproveed(startDate, endDate.addMonths(11), employeeID, 3, cid);
+		// RootType(就業日別確認) = 1
+		boolean checkDateApproved = dailyPerformanceAdapter.checkDataApproveed(startDate, endDate.addMonths(11), employeeID, 1, cid);
 
 		return checkDateApproved;
 	}
