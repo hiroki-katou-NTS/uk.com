@@ -962,6 +962,25 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return new DatePeriod(minDate,end);
 	}
 	/**
+	 * 12.1 - 申請一覧初期日付期間_申請
+	 * @param companyId
+	 * @return
+	 */
+	@Override
+	public DatePeriod getInitPeriodApp(String companyId) {
+		//imported(就業)「所属雇用履歴」より雇用コードを取得する - request list 264
+		// TODO Auto-generated method stub
+		//imported（就業.shared）「雇用に紐づく就業締め」を取得する
+		Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, "");
+		//アルゴリズム「処理年月と締め期間を取得する」を実行する
+		Optional<PresentClosingPeriodImport> closure = closureAdapter.getClosureById(companyId, closureEmp.get().getClosureId());
+		//締め開始日を開始日付とする
+		GeneralDate startDate = closure.get().getClosureStartDate();
+		//締め終了日付の３か月後を終了日付として取得
+		GeneralDate endDate = closure.get().getClosureEndDate().addMonths(3);
+		return new DatePeriod(startDate, endDate);
+	}
+	/**
 	 * find closure history min
 	 * @param lstClosureHist
 	 * @return
