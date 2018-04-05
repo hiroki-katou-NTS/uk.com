@@ -287,6 +287,11 @@ module nts.uk.com.view.cps001.i.vm {
 
             service.saveData(command).done((_data: any) => {
                 info({ messageId: "Msg_15" }).then(function() {
+                    if (command.specialid){ 
+                    
+                    } else { 
+                    
+                    }
                     self.loadData(0);
                 });
                 unblock();
