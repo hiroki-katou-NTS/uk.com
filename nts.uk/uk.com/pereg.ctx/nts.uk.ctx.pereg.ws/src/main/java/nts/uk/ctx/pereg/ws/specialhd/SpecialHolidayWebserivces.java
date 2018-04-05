@@ -21,6 +21,7 @@ public class SpecialHolidayWebserivces extends WebService{
 	@Path("test")
 	@POST
 	public void getByCreateType(SpecialHolidayTestDto obj) {
+		obj.setEffective(true);
 		handler.handler(obj);
 	}
 }

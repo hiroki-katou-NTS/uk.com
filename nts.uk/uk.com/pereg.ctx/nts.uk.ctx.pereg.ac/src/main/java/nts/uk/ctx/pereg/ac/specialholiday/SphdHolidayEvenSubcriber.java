@@ -76,7 +76,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				}
 				x.setDomainNameAndAbolition(new CategoryName(name), 0);
 				ctgUpdateList.add(x);
-				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getPersonInfoCategoryId(), contractCd, true, loginCompanyId));
+				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getCategoryCode().v(), contractCd, true, loginCompanyId));
 			}
 		}else{
 			String updateCompanyId = AppContexts.user().zeroCompanyIdInContract();
@@ -88,7 +88,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				}).collect(Collectors.toList()).get(0);
 				x.setDomainNameAndAbolition(ctgInComZero.getCategoryName(), 1);
 				ctgUpdateList.add(x);
-				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getPersonInfoCategoryId(), contractCd, true, loginCompanyId, updateCompanyId));
+				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getCategoryCode().v(), contractCd, true, loginCompanyId, updateCompanyId));
 			}
 			
 		}
@@ -98,26 +98,29 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 	
 	private List<PersonInfoItemDefinition> getUpdateItems(String spHDName, String ctgId, String contractCode, boolean isEffective, String... companyId){
 		List<PersonInfoItemDefinition> lstItem = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]);
+		List<PersonInfoItemDefinition> lstReturn = new ArrayList<>();
 		if(isEffective){
-			lstItem.forEach(x -> {
+			for( PersonInfoItemDefinition x : lstItem) {
 				Optional<String> newItemName = getNewItemName(x.getItemCode().v(), spHDName);
 				if(newItemName.isPresent()){
 					x.setIsAbolition(EnumAdaptor.valueOf(0, IsAbolition.class));
-					x.setItemName(newItemName.get());				
+					x.setItemName(newItemName.get());	
+					lstReturn.add(x);
 				}				
-			});
+			}
 		}else{
 			Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1])
 					.stream().collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
-			lstItem.forEach(x -> {
+			for( PersonInfoItemDefinition x : lstItem) {
 				String itemCode = x.getItemCode().v();
 				if(mapItemNameInZeroCom.containsKey(itemCode)){
 					x.setIsAbolition(EnumAdaptor.valueOf(1, IsAbolition.class));
-					x.setItemName(mapItemNameInZeroCom.get(itemCode));				
+					x.setItemName(mapItemNameInZeroCom.get(itemCode));	
+					lstReturn.add(x);
 				}				
-			});
+			}
 		}
-		return lstItem;
+		return lstReturn;
 	}
 
 	private List<String> getCtgCds(int spcHdCode){
@@ -174,7 +177,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 	static {
 		Map<String, Integer> mapICd = new HashMap<>();
 		mapICd.put("IS00295", 1);mapICd.put("IS00296", 2);mapICd.put("IS00297", 3);mapICd.put("IS00298", 4);mapICd.put("IS00299", 5);mapICd.put("IS00300", 6);mapICd.put("IS00301", 7);
-		mapICd.put("IS00409", 8);mapICd.put("IS00410", 9);mapICd.put("IS00411", 10);mapICd.put("IS00410", 11);
+		mapICd.put("IS00409", 8);mapICd.put("IS00410", 9);mapICd.put("IS00411", 10);mapICd.put("IS00412", 11);
 		
 		mapICd.put("IS00302", 1);mapICd.put("IS00303", 2);mapICd.put("IS00304", 3);mapICd.put("IS00305", 4);mapICd.put("IS00306", 5);mapICd.put("IS00307", 6);mapICd.put("IS00308", 7);
 		mapICd.put("IS00424", 8);mapICd.put("IS00425", 9);mapICd.put("IS00426", 10);mapICd.put("IS00427", 11);
