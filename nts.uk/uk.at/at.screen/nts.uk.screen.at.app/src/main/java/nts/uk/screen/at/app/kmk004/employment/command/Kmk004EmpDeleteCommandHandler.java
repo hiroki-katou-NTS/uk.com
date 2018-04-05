@@ -44,6 +44,7 @@ public class Kmk004EmpDeleteCommandHandler extends CommandHandler<Kmk004EmpDelet
 		DeleteEmpStatWorkTimeSetCommand delStatCommand = new DeleteEmpStatWorkTimeSetCommand();
 		DelEmpMonthCalSetCommand delMonthCommand = new DelEmpMonthCalSetCommand();
 		
+		deleteCommand.setWTSettingCommonRemove(false);
 		delStatCommand.setYear(deleteCommand.getYear());
 		delStatCommand.setEmploymentCode(deleteCommand.getEmploymentCode());
 		delMonthCommand.setEmpCode(deleteCommand.getEmploymentCode());
@@ -51,6 +52,7 @@ public class Kmk004EmpDeleteCommandHandler extends CommandHandler<Kmk004EmpDelet
 		this.delStatCommand.handle(delStatCommand);
 		if (!delStatCommand.isOverOneYear()) {
 			this.delMonthCommand.handle(delMonthCommand);
+			deleteCommand.setWTSettingCommonRemove(true);
 		}		
 	}
 

@@ -21,4 +21,8 @@ public class Kmk004WkpDeleteCommand {
 	
 	/** The wkp id. */
 	private String workplaceId;
+	
+	/** The is WT setting common remove. */
+	private boolean isWTSettingCommonRemove;
+	
 }

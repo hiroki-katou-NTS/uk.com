@@ -409,9 +409,11 @@ module nts.uk.at.view.kmk004.b {
                 
                 let sid = self.selectedEmployeeId();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    service.removeEmployeeSetting({ year: self.worktimeVM.worktimeSetting.normalSetting().year(), sid: sid }).done(() => {
-                        self.removeAlreadySettingPersonal(self.displayEmployeeCode());
-                        
+                    service.removeEmployeeSetting({ year: self.worktimeVM.worktimeSetting.normalSetting().year(), sid: sid }).done((res) => {
+                        //check common is remove
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingPersonal(self.displayEmployeeCode());
+                        }
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();
@@ -489,7 +491,7 @@ module nts.uk.at.view.kmk004.b {
             static SELECT_FIRST_ITEM = 3;
             static NO_SELECT = 4;
         }
-        
+ 
         class EmployeeStatutoryWorktimeSettingDto extends StatutoryWorktimeSettingDto {
             employeeId: string;
         }

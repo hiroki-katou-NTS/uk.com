@@ -206,8 +206,11 @@ module nts.uk.at.view.kmk004.d {
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), workplaceId: self.selectedWorkplaceId() }
-                    service.removeWorkplaceSetting(command).done(() => {
-                        self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
+                    service.removeWorkplaceSetting(command).done((res) => {
+                        
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
+                        }
                         
                         // new mode.
                         self.worktimeVM.isNewMode(true);

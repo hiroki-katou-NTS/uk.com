@@ -23,83 +23,80 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class DeleteShainStatWorkTimeSetCommandHandler.
  */
 @Stateless
-public class DeleteEmpStatWorkTimeSetCommandHandler
-		extends CommandHandler<DeleteEmpStatWorkTimeSetCommand> {
+public class DeleteEmpStatWorkTimeSetCommandHandler extends CommandHandler<DeleteEmpStatWorkTimeSetCommand> {
 
 	/** The emp normal setting repository. */
 	@Inject
 	private EmpNormalSettingRepository empNormalSettingRepository;
-	
+
 	/** The emp flex setting repository. */
 	@Inject
 	private EmpFlexSettingRepository empFlexSettingRepository;
-	
+
 	/** The emp defor labor setting repository. */
 	@Inject
 	private EmpDeforLaborSettingRepository empDeforLaborSettingRepository;
-	
+
 	/** The emp regular work time repository. */
 	@Inject
 	private EmpRegularWorkTimeRepository empRegularWorkTimeRepository;
-	
+
 	/** The emp spe defor labor time repository. */
 	@Inject
 	private EmpTransWorkTimeRepository empTransWorkTimeRepository;
-	
-	/* 
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DeleteEmpStatWorkTimeSetCommand> context) {
+		
 		DeleteEmpStatWorkTimeSetCommand command = context.getCommand();
-		
-		// set isOverOneYear == false
-		command.setOverOneYear(false);
-		
+
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
 		String emplCode = command.getEmploymentCode();
+
+		// remove domains belong to year
+		this.empNormalSettingRepository.find(companyId, emplCode, year)
+				.ifPresent((setting -> this.empNormalSettingRepository.delete(companyId, emplCode, year)));
+		this.empFlexSettingRepository.find(companyId, emplCode, year)
+				.ifPresent((setting -> this.empFlexSettingRepository.delete(companyId, emplCode, year)));
+		this.empDeforLaborSettingRepository.find(companyId, emplCode, year)
+				.ifPresent((setting -> this.empDeforLaborSettingRepository.delete(companyId, emplCode, year)));
+
+		// set isOverOneYear == true
+		command.setOverOneYear(true);
 		
-		// remove with companyId, employmentCode & year if present
-		// if isOverOneYearRegister == true, remove only domains belong to year 
-		if (this.isOverOneYearRegister(companyId, emplCode)) {
-			this.empNormalSettingRepository.find(companyId, emplCode, year)
-					.ifPresent((setting -> this.empNormalSettingRepository.delete(companyId, emplCode, year)));
-			this.empFlexSettingRepository.find(companyId, emplCode, year)
-					.ifPresent((setting -> this.empFlexSettingRepository.delete(companyId, emplCode, year)));
-			this.empDeforLaborSettingRepository.find(companyId, emplCode, year)
-					.ifPresent((setting -> this.empDeforLaborSettingRepository.delete(companyId, emplCode, year)));
-			
-			// set isOverOneYear == true
-			command.setOverOneYear(true);
-			
-		} else {
-			this.empNormalSettingRepository.find(companyId, emplCode, year)
-					.ifPresent((setting -> this.empNormalSettingRepository.delete(companyId, emplCode, year)));
-			this.empFlexSettingRepository.find(companyId, emplCode, year)
-					.ifPresent((setting -> this.empFlexSettingRepository.delete(companyId, emplCode, year)));
-			this.empDeforLaborSettingRepository.find(companyId, emplCode, year)
-					.ifPresent((setting -> this.empDeforLaborSettingRepository.delete(companyId, emplCode, year)));
+		// if isOverOneYearRegister == false, remove remain domains
+		if (!this.isOverOneYearRegister(companyId, emplCode)) {
 			this.empRegularWorkTimeRepository.findById(companyId, emplCode)
 					.ifPresent((setting -> this.empRegularWorkTimeRepository.delete(companyId, emplCode)));
 			this.empTransWorkTimeRepository.find(companyId, emplCode)
 					.ifPresent((setting -> this.empTransWorkTimeRepository.delete(companyId, emplCode)));
+
+			// set isOverOneYear == false
+			command.setOverOneYear(false);
 		}
-				
+
 	}
-	
+
 	/**
 	 * Checks if is over one year register.
 	 *
-	 * @param cid the cid
-	 * @param emplCode the empl code
+	 * @param cid
+	 *            the cid
+	 * @param emplCode
+	 *            the empl code
 	 * @return true, if is over one year register
 	 */
 	public boolean isOverOneYearRegister(String cid, String emplCode) {
-		
-		//find list emp normal setting register
+
+		// find list emp normal setting register
 		List<EmpNormalSetting> listEmpNormalSetting = this.empNormalSettingRepository.findList(cid, emplCode);
-		
+
 		// check list emp normal setting > 1
 		if (listEmpNormalSetting.size() > 1) {
 			return true;

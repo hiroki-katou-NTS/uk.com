@@ -44,14 +44,16 @@ public class Kmk004WkpDeleteCommandHandler extends CommandHandler<Kmk004WkpDelet
 		DeleteWkpStatWorkTimeSetCommand delStatCommand = new DeleteWkpStatWorkTimeSetCommand();
 		DelWkpMonthCalSetCommand delMonthCommand = new DelWkpMonthCalSetCommand();
 		
+		deleteCommand.setWTSettingCommonRemove(false);
 		delStatCommand.setYear(deleteCommand.getYear());
 		delStatCommand.setWorkplaceId(deleteCommand.getWorkplaceId());
 		delMonthCommand.setWorkplaceId(deleteCommand.getWorkplaceId());
 		
-		this.delStatCommand.handle(delStatCommand);		
+		this.delStatCommand.handle(delStatCommand);
 		if (!delStatCommand.isOverOneYear()) {
 			this.delMonthCommand.handle(delMonthCommand);
-		}
+			deleteCommand.setWTSettingCommonRemove(true);
+		}		
 	}
-
+	
 }

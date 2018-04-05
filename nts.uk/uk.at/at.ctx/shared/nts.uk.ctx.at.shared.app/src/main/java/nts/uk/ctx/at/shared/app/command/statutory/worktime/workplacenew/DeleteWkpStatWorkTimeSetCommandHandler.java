@@ -54,39 +54,31 @@ public class DeleteWkpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 	protected void handle(CommandHandlerContext<DeleteWkpStatWorkTimeSetCommand> context) {
 		DeleteWkpStatWorkTimeSetCommand command = context.getCommand();
 
-		// set isOverOneYear == false
-		command.setOverOneYear(false);
-
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
 		String wkpId = command.getWorkplaceId();
 
-		// remove with companyId, employmentCode & year if present
-		// if isOverOneYearRegister == true, remove only domains belong to year
-		if (this.isOverOneYearRegister(companyId, wkpId)) {
-			this.wkpNormalSettingRepository.find(companyId, wkpId, year)
-					.ifPresent((setting) -> this.wkpNormalSettingRepository.remove(companyId, wkpId, year));
-			this.wkpFlexSettingRepository.find(companyId, wkpId, year)
-					.ifPresent((setting) -> this.wkpFlexSettingRepository.remove(companyId, wkpId, year));
-			this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year)
-					.ifPresent((setting) -> this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year));
+		// remove domains belong to year
+		this.wkpNormalSettingRepository.find(companyId, wkpId, year)
+				.ifPresent((setting) -> this.wkpNormalSettingRepository.remove(companyId, wkpId, year));
+		this.wkpFlexSettingRepository.find(companyId, wkpId, year)
+				.ifPresent((setting) -> this.wkpFlexSettingRepository.remove(companyId, wkpId, year));
+		this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year)
+				.ifPresent((setting) -> this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year));
 
-			// set isOverOneYear == true
-			command.setOverOneYear(true);
-
-		} else {
-			this.wkpNormalSettingRepository.find(companyId, wkpId, year)
-					.ifPresent((setting) -> this.wkpNormalSettingRepository.remove(companyId, wkpId, year));
-			this.wkpFlexSettingRepository.find(companyId, wkpId, year)
-					.ifPresent((setting) -> this.wkpFlexSettingRepository.remove(companyId, wkpId, year));
-			this.wkpDeforLaborSettingRepository.find(companyId, wkpId, year)
-					.ifPresent((setting) -> this.wkpDeforLaborSettingRepository.remove(companyId, wkpId, year));
+		// set isOverOneYear == true
+		command.setOverOneYear(true);
+		
+		// if isOverOneYearRegister == false, remove remain domains
+		if (!this.isOverOneYearRegister(companyId, wkpId)) {
 			this.wkpRegularWorkTimeRepository.find(companyId, wkpId)
 					.ifPresent((setting) -> this.wkpRegularWorkTimeRepository.remove(companyId, wkpId));
 			this.wkpTransLaborTimeRepository.find(companyId, wkpId)
 					.ifPresent((setting) -> this.wkpTransLaborTimeRepository.remove(companyId, wkpId));
 
-		}
+			// set isOverOneYear == false
+			command.setOverOneYear(false);
+		}		
 	}
 
 	/**

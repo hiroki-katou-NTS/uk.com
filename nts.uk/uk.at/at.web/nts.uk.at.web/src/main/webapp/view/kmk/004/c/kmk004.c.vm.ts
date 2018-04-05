@@ -253,9 +253,10 @@ module nts.uk.at.view.kmk004.c {
                 let emplCode = self.selectedEmploymentCode();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), employmentCode: emplCode }
-                    service.removeEmploymentSetting(command).done(() => {
-                        self.removeAlreadySettingEmployment(emplCode);
-                        
+                    service.removeEmploymentSetting(command).done((res) => {
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingEmployment(emplCode);
+                        }
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();

@@ -23,78 +23,72 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class DeleteShainStatWorkTimeSetCommandHandler.
  */
 @Stateless
-public class DeleteShainStatWorkTimeSetCommandHandler
-		extends CommandHandler<DeleteShainStatWorkTimeSetCommand> {
+public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<DeleteShainStatWorkTimeSetCommand> {
 
 	/** The shain normal setting repository. */
 	@Inject
 	private ShainNormalSettingRepository shainNormalSettingRepository;
-	
+
 	/** The shain flex setting repository. */
 	@Inject
 	private ShainFlexSettingRepository shainFlexSettingRepository;
-	
+
 	/** The shain defor labor setting repository. */
 	@Inject
 	private ShainDeforLaborSettingRepository shainDeforLaborSettingRepository;
-	
+
 	/** The shain regular work time repository. */
 	@Inject
 	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
-	
+
 	/** The shain spe defor labor time repository. */
 	@Inject
 	private ShainTransLaborTimeRepository shainSpeDeforLaborTimeRepository;
-	
-	/* 
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DeleteShainStatWorkTimeSetCommand> context) {
 		DeleteShainStatWorkTimeSetCommand command = context.getCommand();
-		
-		// set isOverOneYear == false
-		command.setOverOneYear(false);
-		
+
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
 		String employeeId = command.getEmployeeId();
-		
-		// remove with companyId, employeeId & year
-		// if isOverOneYearRegister == true, remove only domains belong to year
-		if (this.isOverOneYearRegister(companyId, employeeId)) {
-			this.shainNormalSettingRepository.find(companyId, employeeId, year)
-					.ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
-			this.shainFlexSettingRepository.find(companyId, employeeId, year)
-					.ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
-			this.shainDeforLaborSettingRepository.find(companyId, employeeId, year)
-					.ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
 
-			// set isOverOneYear == true
-			command.setOverOneYear(true);
+		this.shainNormalSettingRepository.find(companyId, employeeId, year)
+				.ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
+		this.shainFlexSettingRepository.find(companyId, employeeId, year)
+				.ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
+		this.shainDeforLaborSettingRepository.find(companyId, employeeId, year)
+				.ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
 
-		} else {
-			this.shainNormalSettingRepository.find(companyId, employeeId, year)
-					.ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
-			this.shainFlexSettingRepository.find(companyId, employeeId, year)
-					.ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
-			this.shainDeforLaborSettingRepository.find(companyId, employeeId, year)
-					.ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
+		// set isOverOneYear == true
+		command.setOverOneYear(true);
+
+		// if isOverOneYearRegister == false, remove remain domains
+		if (!this.isOverOneYearRegister(companyId, employeeId)) {
+
 			this.shainRegularWorkTimeRepository.find(companyId, employeeId)
 					.ifPresent((setting) -> this.shainRegularWorkTimeRepository.delete(companyId, employeeId));
 			this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId)
 					.ifPresent((setting) -> this.shainSpeDeforLaborTimeRepository.delete(companyId, employeeId));
+
+			// set isOverOneYear == false
+			command.setOverOneYear(false);
 		}
-		
-		
-		
+
 	}
-	
+
 	/**
 	 * Checks if is over one year register.
 	 *
-	 * @param cid the cid
-	 * @param employeeId the employee id
+	 * @param cid
+	 *            the cid
+	 * @param employeeId
+	 *            the employee id
 	 * @return true, if is over one year register
 	 */
 	public boolean isOverOneYearRegister(String cid, String employeeId) {
