@@ -116,7 +116,8 @@ public class KrcdtDayBreakTime extends UkJpaEntity implements Serializable{
 		if(attendanceTime != null) {
 			if(attendanceTime.getActualWorkingTimeOfDaily() != null) {
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+					//if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
 						val recordTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime();
 						val dedTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getDeductionTotalTime();
 						val duringTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime();
