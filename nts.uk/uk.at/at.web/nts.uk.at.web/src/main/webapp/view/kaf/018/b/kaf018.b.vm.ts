@@ -3,18 +3,18 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 
     export class ScreenModel {
         tempData: Array<model.ConfirmationStatus> = [
-                new model.ConfirmationStatus("01", 1,12, true, null, 8, 3),
-                new model.ConfirmationStatus("01", 2, 23, false, 4, 5, 6),
-                new model.ConfirmationStatus("01", 3, 23, true, 5, 6, 8),
-                new model.ConfirmationStatus("01", 4, 23, true, null,null, 4),
-                new model.ConfirmationStatus("01", 4, 23, true, 1, null, 3),
+                new model.ConfirmationStatus("01", "Anh1", 1, 12, true, null, 8, 3, false),
+                new model.ConfirmationStatus("01", "Anh2", 2, 23, false, 4, 5, 6, true),
+                new model.ConfirmationStatus("01", "Anh3", 3, 23, true, 5, 6, 8, false),
+                new model.ConfirmationStatus("01", "Anh4", 4, 23, true, null,null, 4, true),
+                new model.ConfirmationStatus("01", "Anh5", 4, 23, true, 1, null, 3, true),
             ];
-        confirmStatus: KnockoutObservable<model.ConfirmationStatus> = ko.observable(new model.ConfirmationStatus(null, null,null, null,null, null,null));
-        enable: KnockoutObservable<boolean> = ko.observable(false);
+        confirmStatus: KnockoutObservable<model.ConfirmationStatus> = ko.observable(new model.ConfirmationStatus(null, null, null, false, null, null,null, false));
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         listWorkplaceId: KnockoutObservableArray<string> =  ko.observableArray([]);
         closureId: KnockoutObservable<number> = ko.observable(0);
         closureName: KnockoutObservable<string> = ko.observable('');
-        closureDate: KnockoutObservable<number> = ko.observable(0);
+        processingYm: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
         isDailyComfirm: KnockoutObservable<boolean> = ko.observable(false);
@@ -22,9 +22,18 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
-            if(self.confirmStatus().unapproved != null){
-                self.enable(true);    
-            }
+            
+            let obj = {
+                startDate: self.startDate,
+                endDate: self.endDate,
+                isConfirmData: self.isDailyComfirm(),
+                listWorkplaceId: self.listWorkplaceId,
+                listEmpCd: self.listEmployeeCode
+                };
+                service.getAppSttByWorkpace(obj).done(function(data: any) {
+                    console.log(data);
+                    dfd.resolve();
+                })
             
         }
         
@@ -37,17 +46,23 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.workplaceId = params.workplaceId;
             self.closureId = params.closureId;
             self.closureName = params.closureName;
-            self.closureDate = params.closureDate;
+            self.processingYm = params.processingYm;
             self.startDate = nts.uk.time.formatDate(new Date(params.startDate), 'yyyy/MM/dd');
             self.endDate = nts.uk.time.formatDate(new Date(params.endDate), 'yyyy/MM/dd');
             self.listWorkplaceId = params.listWorkplaceId;
             self.listEmployeeCode = params.listEmployeeCode;
+            self.isDailyComfirm = params.isConfirmData;
             dfd.resolve();
             return dfd.promise();
         }
 
 
-        sendMails() {
+        private sendMails(value: model.ConfirmationStatus) {
+            var self = this;
+            let listWsp: [];
+            _.forEach(self.tempData, function(item) {
+                listWsp.push([workPlaceId: item.workPlaceId, isChecked: item.isSendMail()]);   
+            });
         }
 
         private getRecord1(value1: number, value2: number) : string {
@@ -60,7 +75,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         
         private getTargetDate(){
             var self = this;
-            return self.closureDate +"("+ self.startDate +"～"+ self.endDate+")";
+            return self.processingYm +"("+ self.startDate +"～"+ self.endDate+")";
         }
     }
 
@@ -68,9 +83,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         
         export class IParam {
            closureId: number;
-                       /** The closure name. */
-            closureName: string;
-            /** The start date. */
+            
+           /** The closure name. */
+           closureName: string;
+            
+           /** The start date. */
            startDate: string;
             
             /** The end date. */
@@ -87,22 +104,26 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             listWorkplaceId: Array<string>;
         }
         export class ConfirmationStatus {
-            workSpaceName: string;
+            workPlaceId: string;
+            workPlaceName: string;
             totalNotReflected: number;
             notReflected: number;
             unapproved: number;
             approved: number;
             denail: number;
-            sendMail: KnockoutObservable<boolean>;
+            isSendMail: KnockoutObservable<boolean>;
+            enable:  KnockoutObservable<boolean>;
 
-            constructor(workSpaceName: string, notReflected?: number, totalNotReflected?: number, sendMail: boolean, unapproved?: number, approved?: number, denail?: number) {
+            constructor(workPlaceId: string, workSpaceName: string, notReflected?: number, totalNotReflected?: number, isSendMail: boolean, unapproved?: number, approved?: number, denail?: number, enable: boolean) {
+                this.workPlaceId = workPlaceId;
                 this.workSpaceName = workSpaceName;
                 this.notReflected = notReflected? notReflected: null;
                 this.totalNotReflected = totalNotReflected?  totalNotReflected : null;
-                this.sendMail = ko.observable(sendMail);
+                this.isSendMail = ko.observable(isSendMail);
                 this.unapproved = unapproved ? unapproved : null;
                 this.approved = approved ? approved : null;
                 this.denail = denail ? denail : null;
+                this.enable = ko.observable(enable);
             }
         }
 

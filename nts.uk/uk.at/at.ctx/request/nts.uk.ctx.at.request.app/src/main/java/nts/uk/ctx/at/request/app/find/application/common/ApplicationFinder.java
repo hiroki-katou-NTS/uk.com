@@ -59,28 +59,34 @@ public class ApplicationFinder {
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
 		String applicantPosition = "Employee";
 		List<ApprovalFrameForRemandDto> listApprovalFrame = new ArrayList<ApprovalFrameForRemandDto>();
-		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().get(0).getListApprovalFrame()
-				.forEach(x -> {
-					List<DetailApproverDto> listApprover = new ArrayList<DetailApproverDto>();
-					x.getListApprover().forEach(y -> {
-						listApprover.add(new DetailApproverDto(y.getApproverID(), y.getApproverName(), y.getRepresenterID(), y.getRepresenterName(), "Chef"));
-					});
-					listApprovalFrame.add(new ApprovalFrameForRemandDto(x.getPhaseOrder(), x.getApprovalReason(), listApprover));
+		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> { 
+			x.getListApprovalFrame().forEach(y -> {
+				List<DetailApproverDto> listApprover = new ArrayList<DetailApproverDto>();
+				y.getListApprover().forEach(z -> {
+					listApprover.add(new DetailApproverDto(z.getApproverID(), z.getApproverName(), z.getRepresenterID(), z.getRepresenterName(), "Chef"));
 				});
+				listApprovalFrame.add(new ApprovalFrameForRemandDto(y.getPhaseOrder(), y.getApprovalReason(), listApprover));
+			});
+		});
 		return ApplicationRemandDto.fromDomain(appID, application_New.get().getVersion(), approvalRootContentImport.getErrorFlag().value, applicantPosition,  application_New.isPresent() ? employeeRequestAdapter.getEmployeeInfor(application_New.map(Application_New::getEmployeeID).orElse("")) : null , listApprovalFrame);
 	}
 	public ApplicationSendDto getAppByIdForSend(String appID){
 		String companyID = AppContexts.user().companyId();
+		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
 		ApprovalTempDto approvalTemplate = approvalTempFinder.findByComId();
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
 		List<PesionInforImport> listApproverDetail = new ArrayList<PesionInforImport>();
-		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().get(0).getListApprovalFrame()
-		.forEach(x -> {
-			x.getListApprover().forEach(y -> {
-				listApproverDetail.add(employeeRequestAdapter.getEmployeeInfor(y.getApproverID()));
+		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> { 
+			x.getListApprovalFrame().forEach(y -> {
+				y.getListApprover().forEach(z -> {
+					listApproverDetail.add(employeeRequestAdapter.getEmployeeInfor(z.getApproverID()));
+				});
 			});
 		});
-		return new ApplicationSendDto(approvalTemplate, approvalRootContentImport, listApproverDetail);
+		if (application_New.isPresent()){
+			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(application_New.get()), approvalTemplate, approvalRootContentImport, listApproverDetail, application_New.isPresent() ? employeeRequestAdapter.getEmployeeInfor(application_New.map(Application_New::getEmployeeID).orElse("")) : null );
+		}
+		return null;
 	}
 	public ApplicationMetaDto getAppByID(String appID){
 		String companyID = AppContexts.user().companyId();

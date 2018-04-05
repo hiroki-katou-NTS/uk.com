@@ -2,21 +2,38 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 /**
@@ -31,9 +48,25 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private EmployeeRequestAdapter employeeRequestAdapter;
+	
+	@Inject 
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
 	@Inject
 	private MailSender mailsender;
+	
+	@Inject
+	private ClosureService closureService;
+	
+	/** The repository. */
+	@Inject
+	private ClosureRepository repository;
+	
+	@Inject
+	ClosureEmploymentRepository closureEmpRepo;
+	
+	@Inject
+	private ApprovalStatusService appSttService;
 
 	public ApprovalStatusMailTempDto findByType(int mailType) {
 		// 会社ID
@@ -83,20 +116,6 @@ public class ApprovalStatusFinder {
 		Optional<ApprovalStatusMailTemp> domain = finder.getApprovalStatusMailTempById(cid, mailType);
 		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get())
 				: new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
-	}
-
-	/**
-	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
-	 * 
-	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
-	 */
-	public EmployeeEmailDto findEmpMailAddr() {
-		String cId = AppContexts.user().employeeId();
-		List<String> listCId = new ArrayList<String>();
-		listCId.add(cId);
-		Optional<EmployeeEmailImport> employee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listCId).stream()
-				.findFirst();
-		return employee.isPresent() ? EmployeeEmailDto.fromImport(employee.get()) : null;
 	}
 
 	/**
@@ -189,126 +208,151 @@ public class ApprovalStatusFinder {
 	}
 
 	public List<ApprovalStatusActivityDto> getStatusActivity(ApprovalStatusActivityData wkpInfoDto) {
-		UseSetingDto useSeting = this.getUseSeting();
-		List<String> listWorkplaceId = wkpInfoDto.getListWorkplaceId();
-		for (String wkpId : listWorkplaceId) {
-			GeneralDate startDate = GeneralDate.fromString(wkpInfoDto.getStartDate(), "yyyy/MM/dd");
-			GeneralDate endDate = GeneralDate.fromString(wkpInfoDto.getEndDate(), "yyyy/MM/dd");
-			// アルゴリズム「承認状況取得社員」を実行する
-			List<ApprovalStatusEmpDto> listStatusEmp = this.getApprovalSttEmp(wkpId, new Period(startDate, endDate),
-					wkpInfoDto.getListEmpCd());
-			// アルゴリズム「承認状況取得職場実績確認」を実行する
-			this.getApprovalSttConfirmWkpResults(listStatusEmp, wkpId, useSeting);
-		}
 		return null;
 	}
 
 	/**
-	 * アルゴリズム「承認状況取得社員」を実行する
-	 * 
-	 * @param wkpId
-	 *            職場ID
-	 * @param closurePeriod
-	 *            期間(開始日～終了日)
-	 * @param listEmpCd
-	 *            雇用コード(リスト)
-	 * @return 社員ID＜社員ID、期間＞(リスト)
+	 * アルゴリズム「承認状況指定締め日取得」を実行する
+	 * Acquire approval situation designated closing date
+	 * @return approval situation
 	 */
-	private List<ApprovalStatusEmpDto> getApprovalSttEmp(String wkpId, Period closurePeriod, List<String> listEmpCd) {
-		List<ApprovalStatusEmpDto> listSttEmp = new ArrayList<ApprovalStatusEmpDto>();
-		// imported(申請承認)「社員ID（リスト）」を取得する
-		List<String> listSId = employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId, closurePeriod.getStartDate(),
-				closurePeriod.getEndDate());
-		// Waiting for Q&A
-		Period entryLeavePeriod = new Period(GeneralDate.fromString("2018/01/01", "yyyy/MM/dd"),
-				GeneralDate.fromString("2018/05/02", "yyyy/MM/dd"));
-		// 社員ID(リスト)
-		for (String sId : listSId) {
-			// imported(就業)「所属雇用履歴」より雇用コードを取得する
-			List<ApprovalStatusEmpDto> listEmpHist = new ArrayList<ApprovalStatusEmpDto>();
-			// Waiting for Q&A
-			Period empPeriod = new Period(GeneralDate.fromString("2018/01/02", "yyyy/MM/dd"),
-					GeneralDate.fromString("2018/02/02", "yyyy/MM/dd"));
-
-			// 雇用（リスト）
-			for (ApprovalStatusEmpDto sttEmp : listEmpHist) {
-				// 存在しない場合
-				if (listEmpCd.contains(sttEmp.getEmpCd())) {
-					continue;
+	public ApprovalComfirmDto findAllClosure() {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		int processingYm = 0;
+		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
+		//ドメインモデル「就業締め日」を取得する　<shared>
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		int selectedClosureId = 0;
+		List<ClosuresDto> closureDto = closureList.stream().map(x -> {
+			int closureId = x.getClosureId().value;
+			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
+				return new ClosureHistoryForComDto( x1.getClosureName().v(), x1.getClosureId().value, x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(), x1.getStartYearMonth().v().intValue());
+			}).collect(Collectors.toList());
+			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
+					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
+			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
+		}).collect(Collectors.toList());
+		
+		//ユーザー固有情報「選択中の就業締め」を取得する
+		//TODO neeed to get closureId init
+		
+		
+		//就業締め日（リスト）の先頭の締めIDを選択
+		List<String> listEmpCode = new ArrayList<>();
+		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
+		if (closure.isPresent()) {
+			val closureId = closure.get().getClosureId();
+			selectedClosureId = closureId;
+			val closureOpt = this.repository.findById(companyId, closureId);
+			if (closureOpt.isPresent()) {
+				val closureItem = closureOpt.get();
+				// 当月の期間を算出する
+				val yearMonth = closureItem.getClosureMonth().getProcessingYm();
+				processingYm = yearMonth.v();
+				//アルゴリズム「承認状況指定締め期間設定」を実行する
+				//アルゴリズム「当月の期間を算出する」を実行する
+				DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, yearMonth);
+				startDate = closurePeriod.start();
+				endDate = closurePeriod.end();
+				//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+				List<ClosureEmployment> listEmployee = closureEmpRepo.findByClosureId(companyId, closureId);
+				for(ClosureEmployment emp: listEmployee) {
+					listEmpCode.add(emp.getEmploymentCD());
 				}
-				// 存在する場合
-				// アルゴリズム「承認状況対象期間取得」を実行する
-				Period sttPeriod = this.getApprovalSttPeriod(sId, empPeriod, closurePeriod, entryLeavePeriod);
-				listSttEmp.add(new ApprovalStatusEmpDto(sId, sttPeriod));
+			} else {
+				throw new RuntimeException("Could not find closure");
 			}
 		}
-		return listSttEmp;
+		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmpCode);
 	}
-
+	
 	/**
-	 * アルゴリズム「承認状況対象期間取得」を実行する
-	 * 
-	 * @param sId
-	 *            社員ID
-	 * @param empPeriod
-	 *            雇用期間（開始日、終了日）
-	 * @param closurePeriod
-	 *            締め期間（開始日、終了日)
-	 * @param inOutPeriod
-	 *            入退社期間（入社年月日、退社年月日
+	 * アルゴリズム「承認状況指定締め期間設定」を実行する
+	 * @param closureId
+	 * @param closureDate
 	 * @return
 	 */
-	private Period getApprovalSttPeriod(String sId, Period empPeriod, Period closurePeriod, Period inOutPeriod) {
-		GeneralDate startDate;
-		GeneralDate endDate;
-		// 雇用期間（開始日）≦締め期間（開始日）
-		if (empPeriod.getStartDate().beforeOrEquals(closurePeriod.getStartDate())) {
-			// 対象期間.開始日＝締め期間（開始日）
-			startDate = closurePeriod.getStartDate();
-		} else {
-			// 対象期間.開始日＝雇用期間（開始日）
-			startDate = empPeriod.getStartDate();
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId, int closureDate) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		GeneralDate startDate = null;
+		GeneralDate endDate = null;
+		int processingYmNew = 0;
+		// 当月の期間を算出する
+		YearMonth processingYm = new YearMonth(closureDate);
+		
+		List<ClosureEmployment> listEmployee = new ArrayList<>();
+		Optional<Closure> closure = repository.findById(companyId, closureId);
+		if(!closure.isPresent()){
+			throw new RuntimeException("Could not find closure");
 		}
-		// 対象期間.開始日≦入退社期間（入社年月日）
-		if (startDate.beforeOrEquals(inOutPeriod.getStartDate())) {
-			// 対象期間.開始日＝入退社期間（入社年月日）
-			startDate = inOutPeriod.getStartDate();
+		
+		val yearMonth = closure.get().getClosureMonth().getProcessingYm();
+		processingYmNew = yearMonth.v();
+		//アルゴリズム「当月の期間を算出する」を実行する
+		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
+		startDate = closurePeriod.start();
+		endDate = closurePeriod.end();
+		//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+		listEmployee = closureEmpRepo.findByClosureId(companyId, closureId);
+		List<String> listEmpCode = new ArrayList<>();
+		for(ClosureEmployment emp: listEmployee) {
+			listEmpCode.add(emp.getEmploymentCD());
 		}
-		// 雇用期間（終了日）≧締め期間（終了日）
-		if (empPeriod.getEndDate().afterOrEquals(closurePeriod.getEndDate())) {
-			// 対象期間終了日＝締め期間（終了日）
-			endDate = closurePeriod.getEndDate();
-		} else {
-			// 対象期間.終了日＝雇用期間（終了日）
-			endDate = empPeriod.getEndDate();
-		}
-		// 対象期間.開始日≧入退社期間（退社年月日）
-		if (endDate.afterOrEquals(inOutPeriod.getEndDate())) {
-			// 対象期間.開始日＝入退社期間（退社年月日）
-			endDate = inOutPeriod.getEndDate();
-		}
-		return new Period(startDate, endDate);
+		return new ApprovalStatusPeriorDto(startDate, endDate, listEmpCode, processingYmNew);
 	}
-
+	
 	/**
-	 * 承認状況取得職場実績確認
-	 * 
-	 * @param listStatusEmp
-	 *            社員ID＜社員ID、期間＞(リスト)
-	 * @param wkpId
-	 *            職場ID
-	 * @param useSeting
-	 *            月別確認を利用する/上司確認を利用する/本人確認を利用する
-	 * @return
+	 * アルゴリズム「承認状況職場別起動」を実行する
+	 * @param appStatus
 	 */
-	private List<ApprovalStatusActivityDto> getApprovalSttConfirmWkpResults(List<ApprovalStatusEmpDto> listStatusEmp,
-			String wkpId, UseSetingDto useSeting) {
-		for (ApprovalStatusEmpDto sttEmp : listStatusEmp) {
-			//月別確認を利用する
-			if(useSeting.isMonthlyConfirm()){
-				
+	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData appStatus) {
+		List<ApprovalSttAppOutput> listAppSttApp = new ArrayList<>();
+		ApprovalSttAppOutput approvalSttApp = null;
+		GeneralDate startDate = GeneralDate.fromString(appStatus.getStartDate(), "yyyy/MM/dd");
+		GeneralDate endDate = GeneralDate.fromString(appStatus.getEndDate(), "yyyy/MM/dd");
+		for (String wkpId : appStatus.getListWorkplaceId()) {
+			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService.getApprovalStatusEmployee(wkpId, startDate, endDate, appStatus.getListEmpCd());
+			 approvalSttApp = appSttService.getApprovalSttApp(wkpId, listAppStatusEmp);
+			 listAppSttApp.add(approvalSttApp);
+		}
+		return listAppSttApp;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況未承認メール送信」を実行する
+	 */
+	public List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp) {
+		List<String> listWorksp = new ArrayList<>();
+		if(this.IsAppSttSenderEmailConfirm()) {
+			//職場一覧のメール送信欄のチェックがONの件数
+			int countOnChecked = 0;
+			for(ApprovalSttAppOutput app: listAppSttApp){
+				if(app.isChecked()) countOnChecked ++;
+				listWorksp.add(app.getWorkplaceId());
+			}
+			if(countOnChecked <= 0) {
+				throw new BusinessException("Msg_794");
+			}
+		} else {
+			
+		}
+		return listWorksp;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況送信者メール確認」を実行する
+	 */
+	private boolean IsAppSttSenderEmailConfirm() {
+		EmployeeEmailOutput empEmail =  appSttService.findEmpMailAddr();
+		if(!Objects.isNull(empEmail)) {
+			if(Objects.isNull(empEmail.getMailAddr()) || empEmail.getMailAddr().isEmpty()){
+				throw new BusinessException("Msg_791");
 			}
 		}
-		return null;
+		return true;
 	}
 }

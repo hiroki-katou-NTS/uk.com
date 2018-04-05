@@ -122,6 +122,13 @@ public class RegisterIdentityConfirmDay {
 									identificationRepository.remove(companyId, employeeId, data.getDate());
 								}
 							}
+						}else{
+							if (data.getValue()) {
+								identificationRepository.insert(
+										new Identification(companyId, employeeId, data.getDate(), processingYmd));
+							} else {
+								identificationRepository.remove(companyId, employeeId, data.getDate());
+							}
 						}
 					}
 				}

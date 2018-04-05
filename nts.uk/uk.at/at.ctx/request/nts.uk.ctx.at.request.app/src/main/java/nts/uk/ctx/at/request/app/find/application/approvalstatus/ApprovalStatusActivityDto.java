@@ -10,7 +10,6 @@ import lombok.Value;
 @Value
 public class ApprovalStatusActivityDto {
 	private String wkpId;
-	private String wkpName;
 	private int monthConfirm;
 	private int monthUnconfirm;
 	private int personConfirm;
