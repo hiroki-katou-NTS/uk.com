@@ -297,10 +297,9 @@
 					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<textarea style="height: 100px" tabindex="6"
+					<textarea style="height: 100px" tabindex="6" id="appReason"
 						data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
-					required:appTypeSet().displayAppReason() !=0,
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
