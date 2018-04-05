@@ -318,7 +318,7 @@ module nts.uk.at.view.kmk004.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
-                self.selectedEmployeeCode(employeeSearchs[0].code);
+                if (employeeSearchs.length > 0) self.selectedEmployeeCode(employeeSearchs[0].code);
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
