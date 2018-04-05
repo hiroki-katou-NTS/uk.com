@@ -93,8 +93,8 @@ public class DeleteWkpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 		// find list wkp normal setting register
 		List<WkpNormalSetting> listWkpNormalSetting = this.wkpNormalSettingRepository.findList(cid, wkpId);
 
-		// check list wkp normal setting > 1
-		if (listWkpNormalSetting.size() > 1) {
+		// check list wkp normal setting > 0
+		if (!listWkpNormalSetting.isEmpty() && listWkpNormalSetting.size() > 0) {
 			return true;
 		}
 		return false;

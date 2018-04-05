@@ -96,8 +96,8 @@ public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<Del
 		// find list sha normal setting register
 		List<ShainNormalSetting> listShainNormalSetting = this.shainNormalSettingRepository.findList(cid, employeeId);
 
-		// check list sha normal setting > 1
-		if (listShainNormalSetting.size() > 1) {
+		// check list sha normal setting > 0
+		if (!listShainNormalSetting.isEmpty() && listShainNormalSetting.size() > 0) {
 			return true;
 		}
 		return false;

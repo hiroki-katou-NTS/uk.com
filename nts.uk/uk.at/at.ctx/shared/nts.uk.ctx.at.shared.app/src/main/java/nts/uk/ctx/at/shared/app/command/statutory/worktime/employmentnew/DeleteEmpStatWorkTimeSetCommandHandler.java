@@ -97,8 +97,8 @@ public class DeleteEmpStatWorkTimeSetCommandHandler extends CommandHandler<Delet
 		// find list emp normal setting register
 		List<EmpNormalSetting> listEmpNormalSetting = this.empNormalSettingRepository.findList(cid, emplCode);
 
-		// check list emp normal setting > 1
-		if (listEmpNormalSetting.size() > 1) {
+		// check list emp normal setting > 0
+		if (!listEmpNormalSetting.isEmpty() && listEmpNormalSetting.size() > 0) {
 			return true;
 		}
 		return false;
