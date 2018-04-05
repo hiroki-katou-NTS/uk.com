@@ -1,21 +1,24 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+
 /**
- * @author phongtq
- * フレックス勤務の加算設定
+ * The Class WorkFlexAdditionSet.
  */
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
-public class FlexWork extends DomainObject{
+// フレックス勤務の加算設定
+public class WorkFlexAdditionSet extends AggregateRoot{
 
 	/** 会社ID */
 	private String companyId;
@@ -71,7 +74,7 @@ public class FlexWork extends DomainObject{
 	/*月次法定内のみ加算*/
 	private NotUseAtr additionWithinMonthlyStatutory;
 
-	public static FlexWork createFromJavaType(String companyId,
+	public static WorkFlexAdditionSet createFromJavaType(String companyId,
 			int calcActualOperation1, int exemptTaxTime1, int incChildNursingCare1, 
 			int predeterminedOvertime1,
 			int additionTime1, int notDeductLateleave1, int exemptTaxTime2,
@@ -80,7 +83,7 @@ public class FlexWork extends DomainObject{
 			int predeterminDeficiency2,int additionTime2, 
 			int enableSetPerWorkHour1, int enableSetPerWorkHour2,
 			int additionWithinMonthlyStatutory) {
-		return new FlexWork(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class),
+		return new WorkFlexAdditionSet(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class),
 				exemptTaxTime1, incChildNursingCare1, EnumAdaptor.valueOf(predeterminedOvertime1,PredExcessTimeflexAtr.class) , additionTime1, notDeductLateleave1
 				, exemptTaxTime2, minusAbsenceTime2, EnumAdaptor.valueOf(calcActualOperation2, CalcActualOperationAtr.class),
 				incChildNursingCare2, notDeductLateleave2, EnumAdaptor.valueOf(predeterminDeficiency2,PredExcessTimeflexAtr.class), additionTime2,

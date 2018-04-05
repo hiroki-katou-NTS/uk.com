@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.app.command.flex;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.flex.FlexWorkSet;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 
 /**
  * Add フレックス勤務の設定 data command

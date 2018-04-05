@@ -548,10 +548,12 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedB215.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB217(false);
+                        nts.uk.ui.errors.clearAll();
                     } else {
                         if(self.enableB215()==true){
-                             self.enableB217(true);
-                          }
+                            self.enableB217(true);
+                        }
+                        $('.input-time').ntsError('check');
                     }
                 });
                 //B5
@@ -862,7 +864,35 @@ module nts.uk.at.view.kmk013.b {
                         self.checkedB720(false);
                     }
                 });
+                
+                self.changeTabPanel();
             }
+            
+            changeTabPanel(): void {
+                let self = this;
+                $( document ).keydown(function( event ) {
+                    // catch event press tab button
+                    if (event.which == 9) {
+                       switch(_.toNumber($( "*:focus" ).attr("tabindex"))) { 
+                           case lastTabIndexTabPanel1: { 
+                                self.selectedTab("tab-2");
+                                break; 
+                           } 
+                           case lastTabIndexTabPanel2 : { 
+                                self.selectedTab("tab-3"); 
+                                break; 
+                           }
+                           case lastTabIndexTabPanel3 : { 
+                                self.selectedTab("tab-4"); 
+                              break; 
+                           } 
+                           default: { 
+                           } 
+                        }
+                    }
+                });
+            }
+            
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -1130,6 +1160,10 @@ module nts.uk.at.view.kmk013.b {
             save(): void {
                 let self = this;
                 let obj :any = {};
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
 
                 obj.referActualWorkHours = self.selectedB23();
                 obj.notReferringAch = self.oldData().notReferringAch;
@@ -1348,13 +1382,15 @@ module nts.uk.at.view.kmk013.b {
                     $( "#b23" ).focus();
                 }
                 ).fail((error) => {
-                   nts.uk.ui.dialog.alertError(error.message);
+                   nts.uk.ui.dialog.alertError(error);
                 });
             }
-
-
-
         }
+        
+        const lastTabIndexTabPanel1 = 28;
+        const lastTabIndexTabPanel2 = 41;
+        const lastTabIndexTabPanel3 = 57;
+        
         class BoxModel {
             id: number;
             name: string;
