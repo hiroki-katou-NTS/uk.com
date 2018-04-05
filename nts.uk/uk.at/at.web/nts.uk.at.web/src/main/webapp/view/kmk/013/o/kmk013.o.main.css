@@ -6,7 +6,7 @@
 
 #grid-data_headers_v {
 	position: relative;
-	width: 210px !important;
+	width: 227px !important;
 }
 
 #grid-data_headers {
@@ -39,10 +39,12 @@
 
 #grid-up-down .upDown-container #grid-up-down-up {
 	margin-top: 6px;
+	margin-left: 17px;
 }
 
 #grid-up-down .upDown-container #grid-up-down-down {
 	margin-top: 13px;
+	margin-left: 17px;
 }
 
 
