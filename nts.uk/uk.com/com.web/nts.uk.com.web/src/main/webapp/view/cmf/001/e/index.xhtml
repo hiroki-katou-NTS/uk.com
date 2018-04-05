@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 620 };</script>
+			<script>var dialogSize = { width: 480, height: 510 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.e.vm.js" />
@@ -42,8 +42,7 @@
 				            ],
 				            showNumbering: true,
 							multiple: false,
-							value: selectedCsvItemNumber,
-							rows: 10,
+							value: selectedCsvItemNumber
 						}">
 					</table>
 				</div>
