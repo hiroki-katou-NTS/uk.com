@@ -7,9 +7,8 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemain;
-import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -18,10 +17,7 @@ public class UpdateOtherHolidayInfoCommandHandler extends CommandHandler<UpdateO
 implements PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand> {
 
 	@Inject
-	private PublicHolidayRemainRepository publicHolidayRemainRepository;
-	
-	@Inject 
-	private ExcessLeaveInfoRepository excessLeaveInfoRepository;
+	private OtherHolidayInfoService otherHolidayInfoService;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -38,10 +34,8 @@ implements PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand> {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
-		publicHolidayRemainRepository.update(pubHD);
-		
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
-		excessLeaveInfoRepository.update(exLeav);
+		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr().intValue(), command.getOccurrenceUnit().intValue(), command.getPaymentMethod().intValue());
+		otherHolidayInfoService.updateOtherHolidayInfo(cid, pubHD, exLeav, command.getRemainNumber(), command.getRemainsLeft());
 	}
 
 }
