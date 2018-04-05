@@ -27,12 +27,12 @@ public class CreatAppAbsenceCommand {
 	/**
 	 * 申請.申請日
 	 */
-	private GeneralDate startDate;
+	private String startDate;
 	
 	/**
 	 * 申請.申請日
 	 */
-	private GeneralDate endDate;
+	private String endDate;
 
 	/**
 	 * 申請.申請者

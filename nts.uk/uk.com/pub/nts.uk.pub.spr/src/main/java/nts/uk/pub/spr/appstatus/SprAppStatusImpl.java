@@ -26,6 +26,8 @@ import nts.uk.pub.spr.appstatus.output.AppStatusSpr;
 @Stateless
 public class SprAppStatusImpl implements SprAppStatusService {
 	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
 	
@@ -45,8 +47,8 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		// アルゴリズム「事前残業申請の有無」を実行する
 		return this.getOverTimeAppStatus(
 				opEmployeeSpr.get().getEmployeeID(), 
-				GeneralDate.fromString(startDate, "yyyy/mm/dd"), 
-				GeneralDate.fromString(endDate, "yyyy/mm/dd"));
+				GeneralDate.fromString(startDate, DATE_FORMAT), 
+				GeneralDate.fromString(endDate, DATE_FORMAT));
 		
 	}
 
@@ -71,7 +73,7 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		GeneralDate startD;
 		// 取得期間の開始日(startdate)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			startD = GeneralDate.fromString(startDate, "yyyy/mm/dd");
+			startD = GeneralDate.fromString(startDate, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1001", startDate);
 		}
@@ -82,7 +84,7 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		GeneralDate endD;
 		// 取得期間の終了日(enddate)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			endD = GeneralDate.fromString(endDate, "yyyy/mm/dd");
+			endD = GeneralDate.fromString(endDate, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1002", endDate);
 		}
@@ -96,7 +98,8 @@ public class SprAppStatusImpl implements SprAppStatusService {
 	public List<AppStatusSpr> getOverTimeAppStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<AppStatusSpr> appOvertimeStatusSprList = new ArrayList<>();
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
-		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate.addDays(1)){
+		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+			GeneralDate loopDate = startDate.addDays(i);
 			// 早出残業申請状況確認
 			AppOvertimeStatusSprExport appOvertimeStatusSpr1 = this.getOverTimeAppInfo(loopDate, employeeID, 0);
 			// 通常残業申請状況確認

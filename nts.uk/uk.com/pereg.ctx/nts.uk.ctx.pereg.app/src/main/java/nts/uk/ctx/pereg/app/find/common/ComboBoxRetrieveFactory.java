@@ -186,7 +186,7 @@ public class ComboBoxRetrieveFactory {
 		default:
 			break;
 		}
-		return getComboBox(refType, refCode, GeneralDate.legacyDate(comboBoxParam.getStandardDate()),
+		return getComboBox(refType, refCode, comboBoxParam.getStandardDate(),
 				comboBoxParam.getEmployeeId(), comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(),
 				comboBoxParam.isRequired(), comboBoxParam.getPersonEmployeeType());
 

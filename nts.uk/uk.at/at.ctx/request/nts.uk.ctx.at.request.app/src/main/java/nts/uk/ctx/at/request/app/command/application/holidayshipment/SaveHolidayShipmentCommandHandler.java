@@ -115,8 +115,6 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
-	final static String DATE_FORMAT = "yyyy/MM/dd";
-
 	String sID;
 	GeneralDate absDate;
 	GeneralDate recDate;
@@ -129,16 +127,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		SaveHolidayShipmentCommand command = context.getCommand();
 		sID = command.getAppCmd().getEnteredPersonSID();
-		absDate = convertDate(command.getAbsCmd().getAppDate());
-		recDate = GeneralDate.fromString(command.getRecCmd().getAppDate(), DATE_FORMAT);
+		absDate = command.getAbsCmd().getAppDate();
+		recDate = command.getRecCmd().getAppDate();
 		comType = command.getComType();
 		// アルゴリズム「振休振出申請の新規登録」を実行する
 		createNewForHolidayBreakge(command);
 
-	}
-
-	private GeneralDate convertDate(String appDate) {
-		return GeneralDate.fromString(appDate.substring(0, 10), DATE_FORMAT);
 	}
 
 	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command) {
@@ -460,9 +454,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 			// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
 			BigDecimal holidayBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
 					WorkTypeClassification.Shooting);
-			if (takingoutBrkDownDay != BigDecimal.valueOf(0) && holidayBrkDownDay != BigDecimal.valueOf(0)) {
+			if (!(BigDecimal.valueOf(0).compareTo(takingoutBrkDownDay) == 0)
+					&& !(BigDecimal.valueOf(0).compareTo(holidayBrkDownDay) == 0)) {
 				if (!(takingoutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
-					// TODO param msg
 					throw new BusinessException("Msg_698", "");
 				}
 			}

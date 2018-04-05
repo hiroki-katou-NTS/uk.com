@@ -69,7 +69,7 @@ public class AttendanceItemUtil {
 				return mapByPath(c.getValue(),
 								x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 							).entrySet().stream().map(idx -> {
-									T idxValue = list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
+									T idxValue = list.size() <= idx.getKey() ? null : list.get(idx.getKey() - 1);
 									return getItemValues(
 												fieldValue(className, idxValue),  layoutIdx + 1,
 												layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 

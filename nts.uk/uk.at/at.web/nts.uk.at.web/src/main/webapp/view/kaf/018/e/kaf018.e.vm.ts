@@ -8,7 +8,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
         closureId: string;
         closureName: string;
-        closureDate: string;
+        processingYm: string;
         startDate: string;
         endDate: string;
         isConfirmData: boolean
@@ -30,12 +30,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             if (params) {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
-                self.closureDate = params.closureDate;
+                self.processingYm = params.processingYm;
                 self.startDate = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
                 self.endDate = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
-                self.isConfirmData = params.isConfirmData;
+                self.isConfirmData = params.isDailyComfirm;
                 self.listWorkplaceId = params.listWorkplaceId;
-                self.listEmpCd = params.listEmpCd;
+                self.listEmpCd = params.listEmployeeCode;
 
                 self.listWkpStatusConfirm = [
                     new model.ApprovalStatusActivity("01", "123", true, 1, null, 6, 8, 3),
@@ -52,10 +52,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     endDate: self.endDate,
                     isConfirmData: self.isConfirmData,
                     listWorkplaceId: self.listWorkplaceId,
-                    listEmpCd: self.listEmpCd
+                   // listEmpCd: self.listEmpCd
                 };
-                service.getStatusActivity(obj).done(function() {
-
+                service.getStatusActivity(obj).done(function(data: any) {
+                    console.log(data);
                     dfd.resolve();
                 })
             }
