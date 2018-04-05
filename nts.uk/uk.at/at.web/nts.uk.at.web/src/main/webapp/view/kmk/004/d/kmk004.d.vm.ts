@@ -157,6 +157,7 @@ module nts.uk.at.view.kmk004.d {
             public loadWorkplaceSetting(): void {
                 let self = this;
                 let wpkId = self.selectedWorkplaceId();
+                if (nts.uk.text.isNullOrEmpty(wpkId)) return;
                 self.setWorkplaceCodeName( $('#list-workplace').getDataList(), wpkId);
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
