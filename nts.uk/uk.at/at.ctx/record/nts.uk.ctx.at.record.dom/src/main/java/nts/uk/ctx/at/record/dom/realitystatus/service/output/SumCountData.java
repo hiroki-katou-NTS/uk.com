@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.realitystatus.service.output;
 /**
  * @author dat.lh
  */
-public class SumCountOutput {
+public class SumCountData {
 	/**
 	 * 月別確認件数
 	 */
