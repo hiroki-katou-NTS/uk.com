@@ -121,6 +121,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 				kshstRegularWorkSet.incChildNursingCare2 = regularWork.getIncChildNursingCare2();
 				kshstRegularWorkSet.notDeductLateleave2 = regularWork.getNotDeductLateleave2();
 				kshstRegularWorkSet.additionTime2 = regularWork.getAdditionTime2();
+				kshstRegularWorkSet.enableSetPerWorkHour1 = regularWork.isEnableSetPerWorkHour1() == true ? 1: 0;
+				kshstRegularWorkSet.enableSetPerWorkHour2 = regularWork.isEnableSetPerWorkHour2() == true ? 1: 0;
 				kshstRegularWorkSet.kshstRegularWorkSetPK = kshstRegularWorkSetPK;
 		return kshstRegularWorkSet;
 	}
@@ -309,6 +311,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 				kshstWorkDepLaborSet.incChildNursingCare2 = irregularWork.getIncChildNursingCare2();
 				kshstWorkDepLaborSet.notDeductLateleave2 = irregularWork.getNotDeductLateleave2();
 				kshstWorkDepLaborSet.additionTime2 = irregularWork.getAdditionTime2();
+				kshstWorkDepLaborSet.enableSetPerWorkHour1 = irregularWork.isEnableSetPerWorkHour1() == true ? 1 : 0;
+				kshstWorkDepLaborSet.enableSetPerWorkHour2 = irregularWork.isEnableSetPerWorkHour2() == true ? 1 : 0;
 				kshstWorkDepLaborSet.kshstWorkDepLaborSetPK = kshstWorkDepLaborSetPK;
 		return kshstWorkDepLaborSet;
 	}
@@ -367,6 +371,9 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 				kshstFlexWorkSet.notDeductLateleave2 = flexWork.getNotDeductLateleave2();
 				kshstFlexWorkSet.predeterminDeficiency2 = flexWork.getPredeterminDeficiency2().value;
 				kshstFlexWorkSet.additionTime2 = flexWork.getAdditionTime2();
+				kshstFlexWorkSet.enableSetPerWorkHour1 = flexWork.isEnableSetPerWorkHour1() == true ? 1 : 0;
+				kshstFlexWorkSet.enableSetPerWorkHour2 = flexWork.isEnableSetPerWorkHour2() == true ? 1 : 0;
+				kshstFlexWorkSet.additionWithinMonthlyStatutory = flexWork.getAdditionWithinMonthlyStatutory().value;
 				kshstFlexWorkSet.kshstFlexWorkSetPK = kshstFlexWorkSetPK;
 		return kshstFlexWorkSet;
 	}
