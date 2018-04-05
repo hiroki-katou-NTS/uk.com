@@ -64,7 +64,7 @@ public class KrcdtDayBreakTime extends UkJpaEntity implements Serializable{
 	public Integer calDeductionOutTime;
 	
 	@Column(name ="DURINGWORK_TIME")
-	public Integer duringworkTime;
+	public int duringworkTime;
 	
 	@Column(name ="COUNT")
 	public Integer count;
@@ -110,6 +110,8 @@ public class KrcdtDayBreakTime extends UkJpaEntity implements Serializable{
 		
 		this.deductionOutTime = 0;
 		this.calDeductionOutTime = 0;
+		
+		this.duringworkTime = 0;
 		
 		this.count = 0;
 		
