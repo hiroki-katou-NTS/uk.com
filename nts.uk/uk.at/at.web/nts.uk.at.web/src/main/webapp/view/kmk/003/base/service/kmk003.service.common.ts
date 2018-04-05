@@ -5,7 +5,7 @@ module nts.uk.at.view.kmk003.a {
             export module common {
 
                 export interface SettingFlexWorkDto {
-                    flexWorkManaging: boolean;
+                    flexWorkManaging: number;
                 }
 
                 export interface CommonRestSettingDto {
