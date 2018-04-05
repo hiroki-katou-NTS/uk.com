@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave.AppForLeaveScheInfor;
 
 /**
  * 直行直帰申請申請反映パラメータ

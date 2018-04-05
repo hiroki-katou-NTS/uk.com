@@ -188,7 +188,7 @@ public class HolidayShipmentScreenAFinder {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
-
+		// アルゴリズム「実績の取得」を実行する
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
@@ -207,16 +207,22 @@ public class HolidayShipmentScreenAFinder {
 				employeeID, rootAtr, ApplicationType.BREAK_TIME_APPLICATION, baseDate);
 
 		ApplicationSetting appSet = appCommonSet.applicationSetting;
-
+		// 承認ルート基準日をチェックする
+		GeneralDate inputDate;
 		if (appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
 			// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
+			inputDate = baseDate;
+
 			List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
 					rootAtr, appType.value, baseDate);
 
 			// アルゴリズム「基準日別設定の取得」を実行する
-			getDateSpecificSetting(companyID, employeeID, baseDate, true, null, null, null, null, appCommonSet, output);
-
+			getDateSpecificSetting(companyID, employeeID, inputDate, true, null, null, null, null, appCommonSet,
+					output);
+		} else {
+			inputDate = GeneralDate.today();
 		}
+
 		// アルゴリズム「事前事後区分の最新化」を実行する
 		output.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, baseDate, uiType == 0 ? true : false).value);

@@ -19,7 +19,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist_;
@@ -341,8 +340,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByHistory(java.util.List)
 	 */
 	@Override
-	public List<WorkplaceInfo> findByHistory(List<Workplace> workplace) {
-		if (CollectionUtil.isEmpty(workplace)) {
+	public List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId) {
+		if (CollectionUtil.isEmpty(historyList)) {
 			return null;
 		}
 		// get entity manager
@@ -356,21 +355,18 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		cq.select(root);
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
-
-		workplace.forEach(item -> {
-
+		
+		CollectionUtil.split(historyList, MAX_ELEMENTS, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid)
-					.in(item.getWorkplaceId()));
+			
 			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid)
-					.in(item.getCompanyId()));
-			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
-					.get(BsymtWorkplaceInfoPK_.historyId).in(item.getWkpHistoryLatest().identifier()));
-
+					.in(companyId));
+			
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId)
+					.in(subList));
+			
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-//			cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceInfoPK_.historyId)));
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});

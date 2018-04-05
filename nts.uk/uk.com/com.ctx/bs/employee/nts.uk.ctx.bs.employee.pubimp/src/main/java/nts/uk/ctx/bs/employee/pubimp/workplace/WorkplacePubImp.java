@@ -480,8 +480,14 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			return m.getCompanyId().equals(companyId) && m.getWkpHistoryLatest().start().afterOrEquals(baseDate)
 					&& m.getWkpHistoryLatest().end().beforeOrEquals(baseDate);
 		}).collect(Collectors.toList());
+		
+		List<String> historyList = new ArrayList<>();
+		
+		workplaceList.forEach(item -> {
+			historyList.add(item.getWkpHistoryLatest().identifier());
+		});
 
-		List<WorkplaceInfo> wkpInfors = workplaceInfoRepo.findByHistory(workplaceList);
+		List<WorkplaceInfo> wkpInfors = workplaceInfoRepo.findByHistory(historyList, companyId);
 
 		return wkpInfors.stream().map(item -> WorkPlaceInfoExport.builder().workplaceId(item.getWorkplaceId())
 				.workPlaceName(item.getWorkplaceName().v()).build()).collect(Collectors.toList());
