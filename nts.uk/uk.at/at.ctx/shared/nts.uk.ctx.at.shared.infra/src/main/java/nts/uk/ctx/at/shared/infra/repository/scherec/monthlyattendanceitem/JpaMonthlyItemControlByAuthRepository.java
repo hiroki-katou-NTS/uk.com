@@ -46,9 +46,18 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 						monthlyItemControlByAuthority.getCompanyId(),
 						monthlyItemControlByAuthority.getAuthorityMonthlyId(), c))
 				.collect(Collectors.toList());
+		List<KrcstDisplayAndInputMonthly> updateEntity = this.queryProxy().query(SELECT_BY_AUTHORITY_MONTHLY_ID,KrcstDisplayAndInputMonthly.class)
+				.setParameter("companyID", monthlyItemControlByAuthority.getCompanyId())
+				.setParameter("authorityMonthlyID", monthlyItemControlByAuthority.getAuthorityMonthlyId())
+				.getList();
+		for(int i=0;i<updateEntity.size();i++) {
+			updateEntity.get(i).toUse = newEntity.get(i).toUse;
+			if(newEntity.get(i).toUse == 1) {
+				updateEntity.get(i).canBeChangedByOthers = newEntity.get(i).canBeChangedByOthers;
+				updateEntity.get(i).youCanChangeIt = newEntity.get(i).youCanChangeIt;
+			}
 			
-		for(int i=0;i<newEntity.size();i++) {
-			this.commandProxy().update(newEntity.get(i));
+			this.commandProxy().update(updateEntity.get(i));
 		}
 		
 	}

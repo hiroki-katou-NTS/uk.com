@@ -46,7 +46,7 @@ module nts.uk.at.view.kdw006 {
             }
 
             openKDW002(){
-                let isDaily = true;
+                let isDaily = false;
                 nts.uk.request.jump("/view/kdw/002/c/index.xhtml",{ShareObject : isDaily });
             }
 

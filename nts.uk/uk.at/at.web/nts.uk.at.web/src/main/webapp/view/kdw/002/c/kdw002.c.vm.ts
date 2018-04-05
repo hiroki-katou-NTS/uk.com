@@ -22,7 +22,7 @@ module nts.uk.at.view.kdw002.c {
                 self.bussinessCodeItems = ko.observableArray([]);
                 self.listAttdItem = [];
                 self.dailyServiceTypeControl = ko.observable(null);
-                self.isDaily = true;
+                self.isDaily = dataShare.ShareObject;
                 
                 //monthly
                 self.listAttdMonthlyItem = [];

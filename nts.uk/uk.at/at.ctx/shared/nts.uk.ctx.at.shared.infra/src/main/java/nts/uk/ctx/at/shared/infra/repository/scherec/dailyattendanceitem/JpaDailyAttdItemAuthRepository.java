@@ -44,13 +44,13 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 					.setParameter("authorityDailyID", dailyAttendanceItemAuthority.getAuthorityDailyId())
 					.getList();
 				
-			for(int i=0;i<newEntity.size();i++) {
+			for(int i=0;i<updateEntity.size();i++) {
 				updateEntity.get(i).toUse = newEntity.get(i).toUse;
-				if(newEntity.get(i).toUse == 0) {
+				if(newEntity.get(i).toUse == 1) {
 					updateEntity.get(i).canBeChangedByOthers = newEntity.get(i).canBeChangedByOthers;
 					updateEntity.get(i).youCanChangeIt = newEntity.get(i).youCanChangeIt;
 				}
-				this.commandProxy().update(newEntity.get(i));
+				this.commandProxy().update(updateEntity.get(i));
 			}
 		}
 	@Override
