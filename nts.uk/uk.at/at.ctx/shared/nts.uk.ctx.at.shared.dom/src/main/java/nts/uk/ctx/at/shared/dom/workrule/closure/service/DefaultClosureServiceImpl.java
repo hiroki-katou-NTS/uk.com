@@ -178,10 +178,6 @@ public class DefaultClosureServiceImpl implements ClosureService {
 			});
 		});
 		
-		if (CollectionUtil.isEmpty(closureInfor)){
-			return null;
-		}
-		
 		//return List ClosureList
 		return closureInfor;
 	}
