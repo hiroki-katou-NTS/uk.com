@@ -17,16 +17,21 @@
 }
 
 #fixed-table > tbody > tr > td{
-	padding-top: 3px;
+	padding-top: 0px;
 }
 #fixed-table > tbody > tr > td.csvItemName {
 	padding: 0 2px;
 }
 .csvItemName div {
 	display: inline-block;
-	width: 70%;
+	width: 75%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	vertical-align: middle;
+}
+
+#fixed-table .img-icon {
+    display: block;
+    margin: auto;
 }

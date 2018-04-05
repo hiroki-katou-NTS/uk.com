@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
@@ -45,6 +46,8 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 
 	@Override
 	public void add(AcceptCdConvert domain) {
+		Optional<AcceptCdConvert> duplicateDomain = getAcceptCdConvertById(domain.getCid(), domain.getConvertCd().toString());
+		if(duplicateDomain.isPresent()) throw new BusinessException("Msg_3");
 		this.commandProxy().insert(toEntity(domain));
 	}
 

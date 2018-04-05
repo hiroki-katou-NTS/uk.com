@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
@@ -103,7 +104,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 			// 本人確認状況
 			Integer status1 = this.getEmployeeStatus(loopDate, employeeID);
 			// 上司承認状況
-			Integer status2 = this.getEmployeeStatus(loopDate, employeeID);
+			Integer status2 = this.getManagerStatus(loopDate, employeeID);
 			resultList.add(new DailyStatusSpr(loopDate, status1, status2));
 		}
 		return resultList;
@@ -112,18 +113,27 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	@Override
 	public Integer getEmployeeStatus(GeneralDate appDate, String employeeID) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
 	public Integer getManagerStatus(GeneralDate appDate, String employeeID) {
+		// （ワークフローExport）アルゴリズム「承認対象者と期間から承認状況を取得する」を実行する
 		List<AppRootStateStatusSprExport> appRootStateStatusSprList = sprAppRootStateService.getStatusByEmpAndDate(
 				employeeID, 
 				appDate, 
 				appDate,
 				1);
-		
-		return null;
+		if(CollectionUtil.isEmpty(appRootStateStatusSprList)){
+			return 0;
+		}
+		if(appRootStateStatusSprList.get(0).getDailyConfirmAtr()==2){
+			// 承認済」の場合
+			return 1;
+		} else {
+			// 未承認」又は「承認中」の場合
+			return 0;
+		}
 	}
 
 }

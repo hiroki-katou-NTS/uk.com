@@ -1,5 +1,12 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+/**
+ * The Enum WorkClassOfTimeHolidaySet.
+ */
 // 時間休暇加算設定用勤務区分
 public enum WorkClassOfTimeHolidaySet {
 	// 流動勤務

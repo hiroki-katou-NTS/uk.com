@@ -7,7 +7,9 @@ module nts.uk.com.view.cmm053.a.service {
         getWpName: "screen/com/kcp010/getLoginWkp",
         getEmployeeByCode: "workflow/approvermanagement/workroot/find/getEmployeeByCode/{0}/{1}",
         getPastHistory: "workflow/approvermanagement/workroot/find/settingOfManager/getPastHistory/{0}",
-        updateHistoryByManagerSetting: "workflow/approvermanagement/workroot/updateHistoryByManagerSetting"
+        insertHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/insert",
+        updateHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/update",
+        deleteHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/delete"
     }
 
     export function getSettingManager(employeeId: string): JQueryPromise<any> {
@@ -32,5 +34,13 @@ module nts.uk.com.view.cmm053.a.service {
 
     export function updateHistoryByManagerSetting(command): JQueryPromise<any> {
         return ajax(paths.updateHistoryByManagerSetting, command);
+    }
+
+    export function insertHistoryByManagerSetting(command): JQueryPromise<any> {
+        return ajax(paths.insertHistoryByManagerSetting, command);
+    }
+
+    export function deleteHistoryByManagerSetting(command): JQueryPromise<any> {
+        return ajax(paths.deleteHistoryByManagerSetting, command);
     }
 }

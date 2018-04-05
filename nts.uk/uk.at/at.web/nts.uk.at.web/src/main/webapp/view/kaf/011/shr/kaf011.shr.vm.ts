@@ -34,10 +34,22 @@ module nts.uk.at.view.kaf011.shr {
             });
             constructor(IWorkingHour?) {
                 if (IWorkingHour) {
-                    this.startTime = ko.observable(IWorkingHour.startTime || null);
-                    this.endTime = ko.observable(IWorkingHour.endTime || null);
-                    this.startType = ko.observable(IWorkingHour.startType || 1);
-                    this.endType = ko.observable(IWorkingHour.endType || 1);
+                    this.startTime(IWorkingHour.startTime || null);
+                    this.endTime(IWorkingHour.endTime || null);
+                    this.startType(IWorkingHour.startType != undefined ? IWorkingHour.startType : 1);
+                    this.endType(IWorkingHour.endType != undefined ? IWorkingHour.endType : 1);
+                }
+            }
+            clearData() {
+                this.startTime(null);
+                this.endTime(null);
+            }
+            updateData(param) {
+                if (param) {
+                    this.startTime(param.startTime || null);
+                    this.endTime(param.endTime || null);
+                    this.startType(param.startType != undefined ? param.startType : 1);
+                    this.endType(param.endType != undefined ? param.endType : 1);
                 }
             }
         }
@@ -170,7 +182,7 @@ module nts.uk.at.view.kaf011.shr {
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
             appDate: KnockoutObservable<Date> = ko.observable(null);
-            changeWorkHoursType: KnockoutObservable<any> = ko.observable(null);
+            changeWorkHoursType: KnockoutObservable<any> = ko.observable(false);
 
             constructor() {
                 let self = this;
@@ -188,33 +200,37 @@ module nts.uk.at.view.kaf011.shr {
                             if (data.timezoneUseDtos) {
                                 let timeZone1 = data.timezoneUseDtos[0];
                                 let timeZone2 = data.timezoneUseDtos[1];
-                                if (timeZone1) {
-                                    self.wkTime1().startTime(timeZone1.start);
-                                    self.wkTime1().endTime(timeZone1.end);
-                                    self.wkTime1().startType(timeZone1.useAtr);
-                                    self.wkTime1().endType(timeZone1.useAtr);
-                                } else {
-                                    self.wkTime1(new WorkingHour());
-                                }
-                                if (timeZone2) {
-                                    self.wkTime2().startTime(timeZone2.start);
-                                    self.wkTime2().endTime(timeZone2.end);
-                                    self.wkTime2().startType(timeZone2.useAtr);
-                                    self.wkTime2().startType(timeZone2.useAtr);
-                                } else {
-                                    self.wkTime2(new WorkingHour());
-                                }
+
+                                timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
+
+                                timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
+
                             } else {
-                                self.wkTime1(new WorkingHour());
-                                self.wkTime2(new WorkingHour());
+                                self.wkTime1().clearData();
+                                self.wkTime2().clearData();
                             }
-                            self.updateWorkingText();
+
                             self.wkType().workAtr(data.wkType.workAtr);
+                            self.wkType().morningCls(data.wkType.morningCls);
+                            self.wkType().afternoonCls(data.wkType.afternoonCls);
                         }
                     }).always(() => {
                         block.clear();
                     });
 
+                });
+
+                self.wkTime1().startTime.subscribe((newValue) => {
+                    self.updateWorkingText();
+                });
+                self.wkTime1().endTime.subscribe((newValue) => {
+
+                    self.updateWorkingText();
+                });
+                self.wkTypes.subscribe((item) => {
+                    if (item.length) {
+                        self.wkTypeCD(item[0].workTypeCode);
+                    }
                 });
 
                 self.appDate.subscribe((newDate) => {
@@ -228,9 +244,11 @@ module nts.uk.at.view.kaf011.shr {
                         }
                     if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date" || newDate.toString().length != 10) { return; }
                     block.invisible();
-                    service.changeDay(changeDateParam).done((data) => {
-                        vm.employeeID(data.employeeID);
-                        vm.prePostSelectedCode(data.preOrPostType);
+                    service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
+                        vm.recWk().wkTypes(data.recWkTypes || []);
+                        vm.absWk().wkTypes(data.absWkTypes || []);
+                        vm.kaf000_a.start("", 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
+                        });
                     }).always(() => {
                         block.clear();
                     });;
@@ -246,10 +264,13 @@ module nts.uk.at.view.kaf011.shr {
                 return true;
 
             }
+            showAbsWorkTimeZone() {
+                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                    workAtr = self.wkType().workAtr(),
+                    wkTimeSelect = vm.drawalReqSet().deferredWorkTimeSelect();
 
-            showWorkTimeZone() {
-                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                if (self.wkType().workAtr() == 0 || vm.drawalReqSet().deferredWorkTimeSelect() == 0) {
+                //利用しない
+                if (workAtr == 0 || wkTimeSelect == 0) {
                     return false;
                 }
 
@@ -257,9 +278,9 @@ module nts.uk.at.view.kaf011.shr {
                     afternoonType = self.wkType().afternoonCls(),
                     Pause = 8,
                     Attendance = 0;
-
-                if (self.wkType().workAtr() == 1) {
-                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 1) {
+                //利用する
+                if (wkTimeSelect == 1) {
+                    if (workAtr == 1) {
                         if ((afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance)) {
                             return true;
                         } else {
@@ -273,12 +294,14 @@ module nts.uk.at.view.kaf011.shr {
                         }
                     }
                 }
-
-                if (self.wkType().workAtr() == 2) {
-                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 1) {
+                //半休時のみ利用する
+                if (wkTimeSelect == 2) {
+                    if (workAtr == 1) {
                         if (afternoonType != 0 && morningType != 0) {
                             return false;
                         }
+                    } else {
+                        return false;
                     }
 
                 }
@@ -286,25 +309,26 @@ module nts.uk.at.view.kaf011.shr {
             }
 
             showWorkingTime1() {
-                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                if (self.wkType().workAtr() == 0) {
+                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                    workAtr = self.wkType().workAtr(),
+                    wkTimeSelect = vm.drawalReqSet().deferredWorkTimeSelect();
+                ////利用しない
+                if (workAtr == 0 || wkTimeSelect == 0) {
                     return false;
                 }
-                if (self.wkType().workAtr() == 1) {
-                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 0) {
+                let morningType = self.wkType().morningCls(),
+                    afternoonType = self.wkType().afternoonCls(),
+                    Pause = 8,
+                    Attendance = 0;
+                //半休時のみ利用する
+                //利用する
+                if (wkTimeSelect == 1 || wkTimeSelect == 2) {
+                    if (workAtr == 1) {
+                        if (afternoonType != 0 && morningType != 0) {
+                            return false;
+                        }
+                    } else {
                         return false;
-                    }
-                    if (vm.drawalReqSet().deferredWorkTimeSelect() != 1) {
-                        return true;
-                    }
-
-                }
-                if (self.wkType().workAtr() == 2) {
-                    if (vm.drawalReqSet().deferredWorkTimeSelect() == 0) {
-                        return false;
-                    }
-                    if (vm.drawalReqSet().deferredWorkTimeSelect() != 1) {
-                        return true;
                     }
                 }
                 return true;
@@ -365,6 +389,8 @@ module nts.uk.at.view.kaf011.shr {
                     if (childData) {
                         self.wkTimeCD(childData.selectedWorkTimeCode);
                         if (childData.first) {
+                            $("#recTime1Start").ntsError("clear");
+                            $("#recTime1End").ntsError("clear");
                             self.wkTypeCD(childData.selectedWorkTypeCode);
                             self.wkTime1().startTime(childData.first.start);
                             self.wkTime1().endTime(childData.first.end);

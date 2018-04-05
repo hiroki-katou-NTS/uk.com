@@ -29,10 +29,10 @@ public interface ClosureRepository {
 	void update(Closure closure);
 
 	/**
-	 * Gets the all closure.
+	 * Find all.
 	 *
 	 * @param companyId the company id
-	 * @return the all closure
+	 * @return the list
 	 */
 	List<Closure> findAll(String companyId);
 	
@@ -63,7 +63,7 @@ public interface ClosureRepository {
 	List<Closure> findByListId(String companyId, List<Integer> closureIds);
 
 	/**
-	 * Find all.
+	 * Find all active.
 	 *
 	 * @param companyId the company id
 	 * @param useAtr the use atr
@@ -92,12 +92,12 @@ public interface ClosureRepository {
 	List<ClosureHistory> findByCompanyId(String companyId);
 	
 	/**
-	 * Find by company id.
+	 * Find by id.
 	 *
 	 * @param companyId the company id
 	 * @param closureId the closure id
-	 * @param historyId the history id
-	 * @return the list
+	 * @param startYM the start YM
+	 * @return the optional
 	 */
 	Optional<ClosureHistory> findById(String companyId, int closureId, int startYM);
 	
@@ -141,10 +141,10 @@ public interface ClosureRepository {
 	Optional<ClosureHistory> findByClosureIdAndCurrentMonth(Integer closureId, Integer closureMonth);
 	
 	/**
-	 * Find by start date and end date.
+	 * Find by current month.
 	 *
-	 * @param startDate the start date
-	 * @param endDate the end date
+	 * @param companyId the company id
+	 * @param currentMonth the current month
 	 * @return the list
 	 */
 	List<ClosureHistory> findByCurrentMonth(String companyId, YearMonth currentMonth);
@@ -174,5 +174,13 @@ public interface ClosureRepository {
 	 * @return the list
 	 */
 	List<ClosureHistory> findHistoryByIdAndCurrentMonth(List<Integer> closureIds , List<Integer> closureMonths);
+	
+	/**
+	 * Gets the closure list.
+	 *
+	 * @param companyId the company id
+	 * @return the closure list
+	 */
+	List<Closure> getClosureList(String companyId);
 
 }
