@@ -157,7 +157,10 @@ module nts.uk.at.view.kmk004.d {
             public loadWorkplaceSetting(): void {
                 let self = this;
                 let wpkId = self.selectedWorkplaceId();
-                if (nts.uk.text.isNullOrEmpty(wpkId)) return;
+                if (nts.uk.text.isNullOrEmpty(wpkId)) {
+                    self.resetFieldsToNewMode();
+                    return;
+                }
                 self.setWorkplaceCodeName( $('#list-workplace').getDataList(), wpkId);
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
@@ -181,19 +184,29 @@ module nts.uk.at.view.kmk004.d {
                             // Update Full Data
                             self.worktimeVM.worktimeSetting.updateFullData(resultData);
                             self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
+                            
+                            // Sort month.
+                            self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         }
                         else {
-                            // new mode.
-                            self.worktimeVM.isNewMode(true);
-                            let newSetting = new WorktimeSettingDto();
-                            // Reserve selected year.
-                            newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                            // Update Full Data
-                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                            self.resetFieldsToNewMode();
                         }
-                        // Sort month.
-                        self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                     });
+            }
+            
+            private resetFieldsToNewMode(): void {
+                let self = this;
+    
+                // new mode.
+                self.worktimeVM.isNewMode(true);
+                let newSetting = new WorktimeSettingDto();
+                // Reserve selected year.
+                newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
+                // Update Full Data
+                self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                
+                // Sort month.
+                self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
             }
             
             /**
