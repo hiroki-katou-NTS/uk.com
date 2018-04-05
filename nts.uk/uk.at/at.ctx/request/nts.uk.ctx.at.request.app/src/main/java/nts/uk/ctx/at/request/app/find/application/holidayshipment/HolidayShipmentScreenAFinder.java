@@ -212,20 +212,19 @@ public class HolidayShipmentScreenAFinder {
 		if (appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
 			// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
 			inputDate = baseDate;
-
-			List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
-					rootAtr, appType.value, baseDate);
-
-			// アルゴリズム「基準日別設定の取得」を実行する
-			getDateSpecificSetting(companyID, employeeID, inputDate, true, null, null, null, null, appCommonSet,
-					output);
 		} else {
 			inputDate = GeneralDate.today();
 		}
+		List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
+				rootAtr, appType.value, baseDate);
 
+		// アルゴリズム「基準日別設定の取得」を実行する
+		getDateSpecificSetting(companyID, employeeID, inputDate, true, null, null, null, null, appCommonSet, output);
 		// アルゴリズム「事前事後区分の最新化」を実行する
 		output.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, baseDate, uiType == 0 ? true : false).value);
+
+		output.setRefDate(inputDate);
 
 	}
 
@@ -354,8 +353,15 @@ public class HolidayShipmentScreenAFinder {
 				Optional<AppEmploymentSetting> appEmploymentSettingOpt = appCommonSet.appEmploymentWorkType.stream()
 						.filter(x -> x.getEmploymentCode().equals(employmentCD)).findFirst();
 				if (appEmploymentSettingOpt.isPresent()) {
-					output.getAppEmploymentSettings()
-							.add(AppEmploymentSettingDto.fromDomain(appEmploymentSettingOpt.get()));
+					if (!CollectionUtil.isEmpty(output.getAppEmploymentSettings())) {
+						output.getAppEmploymentSettings()
+								.add(AppEmploymentSettingDto.fromDomain(appEmploymentSettingOpt.get()));
+					} else {
+						List<AppEmploymentSettingDto> appEmploymentSettings = new ArrayList<AppEmploymentSettingDto>();
+						appEmploymentSettings.add(AppEmploymentSettingDto.fromDomain(appEmploymentSettingOpt.get()));
+						output.setAppEmploymentSettings(appEmploymentSettings);
+
+					}
 				}
 				// アルゴリズム「申請承認機能設定の取得」を実行する
 				if (!CollectionUtil.isEmpty(wpkIds)) {
