@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.CalcActualOperationAtr;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -20,7 +20,7 @@ public class GetAddSet {
 	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @return 加算設定
 	 */
-	public static AddSet get(WorkingSystem workingsystem, PremiumAtr premiumAtr, Optional<HolidayAddtion> holidayAdditionOpt){
+	public static AddSet get(WorkingSystem workingsystem, PremiumAtr premiumAtr, Optional<HolidayAddtionSet> holidayAdditionOpt){
 		
 		AddSet returnAddSet = new AddSet();
 
