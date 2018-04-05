@@ -79,6 +79,8 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = IsFixed.NOT_FIXED;
+		this.initValMasterCls = InitValMasterObjCls.INIT;
+		this.addItemCls = AddItemObjCls.ENABLE;
 	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,

@@ -5,10 +5,13 @@ module nts.layout {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    import parseTime = nts.uk.time.parseTime;
+
     let rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
-        clearError = window['nts']['uk']['ui']['errors']['clearAll'];
+        clearError = window['nts']['uk']['ui']['errors']['clearAll'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
@@ -157,6 +160,7 @@ module nts.layout {
             self.relate_button();
 
             self.dateTime();
+            self.setTable();
 
             validate.initCheckError(lstCls);
         }
@@ -766,6 +770,60 @@ module nts.layout {
             }
         }
 
+        setTable = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                times: Array<ITimeTable> = [{
+                    ctgCode: 'CS00024',
+                    firstCode: 'IS00287',
+                    secondCode: 'IS00288',
+                    resultCode: 'IS00289'
+                }, {
+                        ctgCode: 'CS00024',
+                        firstCode: 'IS00291',
+                        secondCode: 'IS00292',
+                        resultCode: 'IS00293'
+                    }],
+                calc = (time: ITimeTable) => {
+                    let first: IFindData = finder.find(time.ctgCode, time.firstCode),
+                        second: IFindData = finder.find(time.ctgCode, time.secondCode),
+                        result: IFindData = finder.find(time.ctgCode, time.resultCode);
+
+                    if (first && second && result) {
+                        first.data.value.subscribe(x => {
+                            let vnb1 = ko.toJS(first.data.value),
+                                vnb2 = ko.toJS(second.data.value),
+                                nb1 = typeof vnb1 == 'number',
+                                nb2 = typeof vnb2 == 'number';
+
+                            if (ITEM_SINGLE_TYPE.TIME == first.data.item.dataTypeValue) {
+                                if (nb1 && nb2) {
+                                    result.data.value(parseTime(vnb1 - vnb2, true).format());
+                                } else {
+                                    result.data.value(undefined);
+                                }
+                            } else if (ITEM_SINGLE_TYPE.TIMEPOINT == first.data.item.dataTypeValue) {
+                                if (nb1 && nb2) {
+                                    result.data.value(parseTimeWidthDay(vnb1 - vnb2).shortText);
+                                } else {
+                                    result.data.value(undefined);
+                                }
+                            }
+                            else if (vnb1 || vnb2) {
+                                result.data.value(Number(vnb1) - Number(vnb2));
+                            } else {
+                                result.data.value(undefined);
+                            }
+                        });
+
+                        second.data.value.subscribe(x => first.data.value.valueHasMutated());
+                        second.data.value.valueHasMutated();
+                    }
+                };
+
+            _(times).each(time => calc(time));
+        }
+
         dateTime = () => {
             let self = this,
                 finder: IFinder = self.finder,
@@ -820,6 +878,21 @@ module nts.layout {
         }
     }
 
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        RELATE_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
+    }
+
     // define ITEM_CLASSIFICATION_TYPE
     enum IT_CLA_TYPE {
         ITEM = <any>"ITEM", // single item
@@ -855,7 +928,7 @@ module nts.layout {
         required: boolean;
         value: KnockoutObservable<any>;
         textValue: KnockoutObservable<any>;
-        items: KnockoutObservableArray<any>;
+        item: any;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
@@ -934,5 +1007,12 @@ module nts.layout {
         ctgCode: string;
         btnCode: string;
         dialogId: string;
+    }
+
+    interface ITimeTable {
+        ctgCode: string;
+        firstCode: string;
+        secondCode: string;
+        resultCode: string;
     }
 }
