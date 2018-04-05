@@ -9,9 +9,6 @@ module nts.uk.at.view.kdm002.a {
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
                     $('#dateRangePickerPeriod').find('input').first().focus();
-                    if(self.employeeList().length <= 0){
-                        $('#ccg001-btn-search-drawer').trigger('click');  
-                    }
                 });
             });
             //Load ScheduleBatchCorrect
