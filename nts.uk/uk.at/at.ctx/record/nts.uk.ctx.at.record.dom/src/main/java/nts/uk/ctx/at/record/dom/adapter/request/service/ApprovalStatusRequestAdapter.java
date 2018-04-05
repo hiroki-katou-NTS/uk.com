@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
-public interface ApprovalStatusAdapter {
+public interface ApprovalStatusRequestAdapter {
 	/**
 	 * アルゴリズム「承認状況取得職場社員」を実行する
 	 * 
@@ -18,6 +18,6 @@ public interface ApprovalStatusAdapter {
 	 *            雇用コード(リスト)
 	 * @return
 	 */
-	public List<ApprovalStatusEmployeeImport> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
+	public List<RealityStatusEmployeeImport> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd);
 }
