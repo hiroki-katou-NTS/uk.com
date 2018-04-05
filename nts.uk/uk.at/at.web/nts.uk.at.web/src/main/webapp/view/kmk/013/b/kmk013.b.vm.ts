@@ -525,6 +525,7 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB29(false);
                         self.enableB215(false);
                         self.enableB217(false);
+                        nts.uk.ui.errors.clearAll();
                     } else {
                         self.enableB29(true);
                         if (self.selectedB29() == 0) {
@@ -533,16 +534,23 @@ module nts.uk.at.view.kmk013.b {
                                 self.enableB217(true);
                             }
                         }
+                        if (self.enableB215() == true && self.selectedB215() == 0) {
+                            $('.input-time').ntsError('check');    
+                        }
                     }
                 });
                 self.selectedB29.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB215(false);
                         self.enableB217(false);
+                        nts.uk.ui.errors.clearAll();
                     } else {
                         if(self.enableB29()==true){
-                             self.enableB215(true);
-                          }
+                            self.enableB215(true);
+                        }
+                        if (self.enableB215() == true && self.selectedB215() == 0) {
+                            $('.input-time').ntsError('check');    
+                        }
                     }
                 });
                 self.selectedB215.subscribe((newValue) => {
