@@ -6,7 +6,6 @@ module nts.uk.at.view.kaf011.a.start {
         __viewContext['viewModel'].start().done(() => {
             __viewContext.bind(__viewContext['viewModel']);
             __viewContext['viewModel'].kaf000_a.start("", 1, 10, moment(new Date()).format("YYYY/MM/DD")).done(() => {
-
             });
         });
     });

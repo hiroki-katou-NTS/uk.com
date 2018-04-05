@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 @AllArgsConstructor
-public class ApprovalStatusEmployeeImport {
+public class RealityStatusEmployeeImport {
 	/**
 	 * 社員ID
 	 */

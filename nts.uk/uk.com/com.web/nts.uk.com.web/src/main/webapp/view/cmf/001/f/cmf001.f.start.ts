@@ -12,5 +12,12 @@ module nts.uk.com.view.cmf001.f {
             });
             _.defer(() => {nts.uk.ui.errors.clearAll()});
         });
+        
+        let browser = window.navigator.userAgent;
+        if(browser.indexOf("Edge") > -1 || browser.indexOf("Trident") > -1){
+            $('#F3_1_displayContainer, #F3_1_scrollContainer').height(365);
+        }else{
+            $('#F3_1_displayContainer, #F3_1_scrollContainer').height(360);
+        }
     });
 }
