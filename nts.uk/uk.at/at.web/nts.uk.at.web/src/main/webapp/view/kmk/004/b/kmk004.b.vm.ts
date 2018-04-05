@@ -45,7 +45,7 @@ module nts.uk.at.view.kmk004.b {
             
             // Employee tab
             lstPersonComponentOption: any;
-            selectedEmployeeCode: KnockoutObservableArray<string>;
+            selectedEmployeeCode: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
             employeeList: KnockoutObservableArray<UnitModel>;
             alreadySettingPersonal: KnockoutObservableArray<any>;
@@ -95,7 +95,7 @@ module nts.uk.at.view.kmk004.b {
                 
                 self.worktimeVM = new WorktimeSettingVM.ScreenModel();
                 self.selectedEmployee = ko.observableArray([]);
-                self.selectedEmployeeCode = ko.observableArray([]);
+                self.selectedEmployeeCode = ko.observable('');
                 self.alreadySettingPersonal = ko.observableArray([]);
                 
                 self.selectedEmployeeId = ko.observable('');
@@ -322,7 +322,7 @@ module nts.uk.at.view.kmk004.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
-                self.selectedEmployeeCode(employeeSearchs[0].code);
+                self.selectedEmployeeCode(employeeSearchs.length > 0 ? employeeSearchs[0].code : '');
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
