@@ -22,7 +22,6 @@ public class CodeConvertValue extends StringPrimitiveValue<PrimitiveValue<String
 	 */
 	public CodeConvertValue(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

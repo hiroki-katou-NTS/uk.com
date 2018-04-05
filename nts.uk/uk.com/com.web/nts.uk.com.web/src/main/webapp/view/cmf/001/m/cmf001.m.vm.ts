@@ -61,7 +61,7 @@ module nts.uk.com.view.cmf001.m.viewmodel {
                             checked: self.checked(),
                             code: self.newCondCode(),
                             name: self.newCondName()
-                        }, true);  
+                        });  
                         nts.uk.ui.windows.close();
                     }
                 }).fail(function(error) {

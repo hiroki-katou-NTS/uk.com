@@ -11,7 +11,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
-public class GetDataDaily implements Callable<List<DailyModifyResult>> {
+public class GetDataDaily {
 
 	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
 
@@ -28,8 +28,7 @@ public class GetDataDaily implements Callable<List<DailyModifyResult>> {
 		this.dailyModifyQueryProcessor = dailyModifyQueryProcessor;
 	}
 
-	@Override
-	public List<DailyModifyResult> call() throws Exception {
+	public List<DailyModifyResult> call() {
 		if(sids.isEmpty()|| itemIds.isEmpty()) return new ArrayList<>();
 		List<DailyModifyResult> results  = dailyModifyQueryProcessor.initScreen(new DailyMultiQuery(sids, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())), itemIds);
 		return results;

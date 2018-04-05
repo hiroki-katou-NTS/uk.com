@@ -33,5 +33,5 @@ public class ApprovalComfirmDto {
 	/**
 	 * list employee code
 	 */
-	private List<ClosureEmployment> employeesCode;
+	private List<String> employeesCode;
 }

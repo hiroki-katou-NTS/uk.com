@@ -50,7 +50,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		GeneralDate startDate = command.getStartDate() == null ? null : GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate endDate = command.getEndDate() == null ? null : GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()),
 				ApplicationType.ABSENCE_APPLICATION, startDate, command.isDisplayEndDateFlg() ? endDate : null,command.getEmployeeID());
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
@@ -67,7 +67,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(appRoot);
 		// 7.登録時のエラーチェック
-		checkBeforeRegister(command,startDate);
+		checkBeforeRegister(command,startDate,endDate);
 		// insert
 		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
@@ -76,9 +76,9 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		return newAfterRegister.processAfterRegister(appRoot);
 
 	}
-	private void checkBeforeRegister(CreatAppAbsenceCommand command,GeneralDate startDate){
+	public void checkBeforeRegister(CreatAppAbsenceCommand command,GeneralDate startDate,GeneralDate endDate){
 		int countDay = 0;
-		for(int i = 0; command.getStartDate().compareTo(command.getEndDate()) + i <= 0; i++){
+		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
 			GeneralDate appDate = startDate.addDays(i);
 			countDay = countDay + 1;
 			// 休暇・振替系申請存在チェック
