@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.command.scherec.dailyattendanceitem;
 
-import java.util.Optional;
-
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
@@ -18,17 +16,17 @@ public class ControlOfAttendanceItemsCmd {
 	private int itemDailyID;
 	
 	/**日別実績のヘッダ背景色*/
-	private Optional<String> headerBgColorOfDailyPer;
+	private String headerBgColorOfDailyPer;
 
 	/**時間項目の入力単位*/
-	private Optional<Integer> inputUnitOfTimeItem;
+	private Integer inputUnitOfTimeItem;
 	
 	public static ControlOfAttendanceItems fromDomain(ControlOfAttendanceItemsCmd command) {
 		return new ControlOfAttendanceItems(
 				command.getCompanyID(),
 				command.getItemDailyID(),
-				command.getHeaderBgColorOfDailyPer()==null?null: new HeaderBackgroundColor(command.getHeaderBgColorOfDailyPer().get()),
-				command.getInputUnitOfTimeItem()==null?null:EnumAdaptor.valueOf(command.getInputUnitOfTimeItem().get(), TimeInputUnit.class) 
+				command.getHeaderBgColorOfDailyPer()==""?null: new HeaderBackgroundColor(command.getHeaderBgColorOfDailyPer()),
+				command.getInputUnitOfTimeItem()==null?null:EnumAdaptor.valueOf(command.getInputUnitOfTimeItem(), TimeInputUnit.class) 
 				);
 	}
 }

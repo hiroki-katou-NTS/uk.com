@@ -28,7 +28,7 @@ public class ControlOfMonthlyCmd {
 		return new ControlOfMonthlyItems(
 				command.getCompanyID(),
 				command.getItemMonthlyID(),
-				command.getHeaderBgColorOfMonthlyPer()==null?null: new HeaderBackgroundColor(command.getHeaderBgColorOfMonthlyPer()),
+				command.getHeaderBgColorOfMonthlyPer()==""?null: new HeaderBackgroundColor(command.getHeaderBgColorOfMonthlyPer()),
 				command.getInputUnitOfTimeItem()==null?null:EnumAdaptor.valueOf(command.getInputUnitOfTimeItem(), TimeInputUnit.class) 
 				);
 	}

@@ -22,6 +22,8 @@ public class UpdateControlOfAttendanceItemsCmdHandler extends CommandHandler<Con
 		Optional<ControlOfAttendanceItems> data = repo.getControlOfAttendanceItem(companyID, command.getItemDailyID());
 		if(data.isPresent()) {
 			repo.updateControlOfAttendanceItem(ControlOfAttendanceItemsCmd.fromDomain(command));
+		}else {
+			repo.insertControlOfAttendanceItem(ControlOfAttendanceItemsCmd.fromDomain(command));
 		}
 		
 		
