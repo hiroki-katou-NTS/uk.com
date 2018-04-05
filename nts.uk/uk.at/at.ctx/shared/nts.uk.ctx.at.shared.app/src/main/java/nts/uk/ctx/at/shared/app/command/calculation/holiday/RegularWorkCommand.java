@@ -44,4 +44,10 @@ public class RegularWorkCommand {
 
 	/** 加算する */
 	private int additionTimeWork;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour1;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour2;
 }

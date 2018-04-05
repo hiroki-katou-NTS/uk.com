@@ -7,16 +7,17 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class DivergenceReferenceTimeUsageUnit.
  */
+//乖離基準時間利用単位
 @Getter
 @Setter
 public class DivergenceReferenceTimeUsageUnit extends AggregateRoot {
 
 	/** The c id. */
-	/* Company Id */
+	/* 会社ID */
 	private String cId;
 
 	/** The work type use set. */
-	/* Worktype usage */
+	/* 勤務種別ごとに乖離基準時間を設定する */
 	private boolean workTypeUseSet;
 
 	/**

@@ -68,4 +68,15 @@ public interface WorkTypeDivergenceReferenceTimeRepository {
 	 *            the dest hist id
 	 */
 	void copyDataFromLatestHistory(String targetHistId, String destHistId);
+
+	/**
+	 * Find by history id and divergence time nos.
+	 *
+	 * @param worktypeCode the worktype code
+	 * @param historyId the history id
+	 * @param divTimeNos the div time nos
+	 * @return the company divergence reference time
+	 */
+	List<WorkTypeDivergenceReferenceTime> findByHistoryIdAndDivergenceTimeNos(BusinessTypeCode worktypeCode,
+			String historyId, List<Integer> divTimeNos);
 }

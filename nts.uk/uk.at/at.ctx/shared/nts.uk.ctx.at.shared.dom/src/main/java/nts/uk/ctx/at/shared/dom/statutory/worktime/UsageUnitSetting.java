@@ -58,12 +58,12 @@ public class UsageUnitSetting extends AggregateRoot {
 	}
 	
 	//テスト用に作成
-//	public UsageUnitSetting(CompanyId companyId,boolean employee,boolean workPlace,boolean employment) {
-//		this.companyId = companyId;
-//		this.employee = employee;
-//		this.workPlace = workPlace;
-//		this.employment = employment;
-//	}
+	public UsageUnitSetting(CompanyId companyId,boolean employee,boolean workPlace,boolean employment) {
+		this.companyId = companyId;
+		this.employee = employee;
+		this.workPlace = workPlace;
+		this.employment = employment;
+	}
 
 	/**
 	 * Save to memento.
@@ -145,7 +145,8 @@ public class UsageUnitSetting extends AggregateRoot {
 																					comRegularLaborTime,
 																					comTransLaborTime);
 			if(workingTimeSetting.isPresent()) {
-				return workingTimeSetting.get().getDailyTime();
+				DailyUnit calced = workingTimeSetting.get().getDailyTime();
+				return calced.getDailyTime()!=null?calced:result;
 			}
 		}
 		return result;
@@ -187,7 +188,7 @@ public class UsageUnitSetting extends AggregateRoot {
 					}
 				}
 			}
-			return Optional.of(result);
+			return Optional.ofNullable(result);
 		}
 		if(this.workPlace) {
 			result = getWkpWorkingTimeSetting(workingSystem,wkpRegularLaborTime,wkpTransLaborTime);
@@ -197,17 +198,17 @@ public class UsageUnitSetting extends AggregateRoot {
 					result = getComWorkingTimeSetting(workingSystem,comRegularLaborTime,comTransLaborTime);
 				}
 			}
-			return Optional.of(result);
+			return Optional.ofNullable(result);
 		}
 		if(this.employment) {
 			result = getEmpWorkingTimeSetting(workingSystem,empRegularLaborTime,empTransLaborTime);
 			if(result==null) {//取得できない場合　会社別設定の取得
 				result = getComWorkingTimeSetting(workingSystem,comRegularLaborTime,comTransLaborTime);
 			}
-			return Optional.of(result);
+			return Optional.ofNullable(result);
 		}
 		result = getComWorkingTimeSetting(workingSystem,comRegularLaborTime,comTransLaborTime);
-		return Optional.of(result);
+		return Optional.ofNullable(result);
 	}
 	
 	
