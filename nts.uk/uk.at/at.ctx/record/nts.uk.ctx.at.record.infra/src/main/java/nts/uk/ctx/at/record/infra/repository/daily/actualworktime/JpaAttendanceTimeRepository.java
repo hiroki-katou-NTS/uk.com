@@ -314,7 +314,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 																	  KrcdtDayDivergenceTime.class);
 				if(krcdtDayDivergenceTime.isPresent()) {
 					krcdtDayDivergenceTime.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getDivTime());
-					this.commandProxy().update(krcdtDayDivergenceTime);
+					this.commandProxy().update(krcdtDayDivergenceTime.get());
 				}
 				else {
 					this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
