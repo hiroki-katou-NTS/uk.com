@@ -5,11 +5,10 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.security.auth.x500.X500Principal;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.dom.application.common.service.mail.after.CheckTransmission;
+import nts.uk.ctx.at.request.dom.mail.service.after.CheckTransmission;
 
 @Stateless
 public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCommand, List<Integer>>{

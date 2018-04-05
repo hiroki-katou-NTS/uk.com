@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.service.mail;
+package nts.uk.ctx.at.request.dom.mail.service;
 
 import lombok.Getter;
 
