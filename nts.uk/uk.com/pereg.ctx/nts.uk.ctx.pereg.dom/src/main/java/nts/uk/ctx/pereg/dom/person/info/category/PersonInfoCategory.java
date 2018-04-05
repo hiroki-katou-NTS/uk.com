@@ -123,20 +123,16 @@ public class PersonInfoCategory extends AggregateRoot {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
 	}
 	
-	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, int isAbolition){
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name){
 		PersonInfoCategory p = new PersonInfoCategory();
 		p.personInfoCategoryId = ctgId;
-		p.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		p.categoryName = new CategoryName(name);
 		p.categoryCode = new CategoryCode(ctgCd);
 		return p;
 	}
-	public static PersonInfoCategory createDomainNameAndAbolition(String ctgId, String ctgCd, String name, int isAbolition){
-		PersonInfoCategory p = new PersonInfoCategory();
-		p.personInfoCategoryId = ctgId;
-		p.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
-		p.categoryCode = new CategoryCode(ctgCd);
-		p.categoryName = new CategoryName(name);
-		return p;
+	public void setDomainNameAndAbolition(CategoryName name, int isAbolition){
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryName = name;
 	}
 	
 	public static List<PersonInfoCategory> getAllPerInfoCategoryWithCondition(List<PersonInfoCategory> lstObj){

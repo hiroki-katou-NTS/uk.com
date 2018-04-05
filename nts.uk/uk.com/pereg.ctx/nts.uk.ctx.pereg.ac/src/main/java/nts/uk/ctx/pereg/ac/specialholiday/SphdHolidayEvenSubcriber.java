@@ -18,6 +18,7 @@ import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName;
 import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayEvent;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryName;
 import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -73,21 +74,26 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				}else if(lstCtgCd2.contains(x.getCategoryCode().v())){
 					name = domainEvent.getSpecialHolidayName().v() + resources.localize("CPS001_134").get();
 				}
-				ctgUpdateList.add(PersonInfoCategory.createDomainNameAndAbolition(x.getPersonInfoCategoryId(), x.getCategoryCode().v(), name, 0));
+				x.setDomainNameAndAbolition(new CategoryName(name), 0);
+				ctgUpdateList.add(x);
 				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getPersonInfoCategoryId(), contractCd, true, loginCompanyId));
 			}
 		}else{
 			String updateCompanyId = AppContexts.user().zeroCompanyIdInContract();
-			ctgLst = ctgRepo.getPerCtgByListCtgCd(ctgCds, updateCompanyId);
+			List<PersonInfoCategory> ctgLstComZero = ctgRepo.getPerCtgByListCtgCd(ctgCds, updateCompanyId);
 			
 			for(PersonInfoCategory x : ctgLst){
-				ctgUpdateList.add(PersonInfoCategory.createDomainNameAndAbolition(x.getPersonInfoCategoryId(), x.getCategoryCode().v(), x.getCategoryName().v(), 1));
+				PersonInfoCategory ctgInComZero = ctgLstComZero.stream().filter(c -> {
+					return c.getCategoryCode().v().equals(x.getCategoryCode().v());
+				}).collect(Collectors.toList()).get(0);
+				x.setDomainNameAndAbolition(ctgInComZero.getCategoryName(), 1);
+				ctgUpdateList.add(x);
 				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getPersonInfoCategoryId(), contractCd, true, loginCompanyId, updateCompanyId));
 			}
 			
 		}
-		//ctgRepo.updateAbolition(ctgUpdateList, loginCompanyId);
-		//itemRepo.updateItemDefNameAndAbolition(updateItems, loginCompanyId);
+		ctgRepo.updateAbolition(ctgUpdateList, loginCompanyId);
+		itemRepo.updateItemDefNameAndAbolition(updateItems, loginCompanyId);
 	}
 	
 	private List<PersonInfoItemDefinition> getUpdateItems(String spHDName, String ctgId, String contractCode, boolean isEffective, String... companyId){
@@ -101,13 +107,13 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				}				
 			});
 		}else{
-			Map<String, String> mapItemInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1])
+			Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1])
 					.stream().collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
 			lstItem.forEach(x -> {
 				String itemCode = x.getItemCode().v();
-				if(mapItemInZeroCom.containsKey(itemCode)){
+				if(mapItemNameInZeroCom.containsKey(itemCode)){
 					x.setIsAbolition(EnumAdaptor.valueOf(1, IsAbolition.class));
-					x.setItemName(mapItemInZeroCom.get(itemCode));				
+					x.setItemName(mapItemNameInZeroCom.get(itemCode));				
 				}				
 			});
 		}

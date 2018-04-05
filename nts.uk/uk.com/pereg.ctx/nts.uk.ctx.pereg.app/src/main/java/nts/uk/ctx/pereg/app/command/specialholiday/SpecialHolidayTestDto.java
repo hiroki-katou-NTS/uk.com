@@ -1,8 +1,14 @@
 package nts.uk.ctx.pereg.app.command.specialholiday;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Value
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class SpecialHolidayTestDto {
 	private boolean isEffective;
 	private String name;
