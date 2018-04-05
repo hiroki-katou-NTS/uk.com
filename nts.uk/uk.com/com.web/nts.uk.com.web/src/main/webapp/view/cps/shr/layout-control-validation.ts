@@ -809,7 +809,7 @@ module nts.layout {
                                     result.data.value(undefined);
                                 }
                             }
-                            else if (vnb1) {
+                            else if (vnb1 || vnb2) {
                                 result.data.value(Number(vnb1) - Number(vnb2));
                             } else {
                                 result.data.value(undefined);
