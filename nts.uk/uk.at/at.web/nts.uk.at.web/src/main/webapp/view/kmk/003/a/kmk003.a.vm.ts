@@ -108,7 +108,7 @@ module nts.uk.at.view.kmk003.a {
                 service.findAllUsedOvertimeWorkFrame().done(v => {
                     self.overTimeWorkFrameOptions(v);
                     service.findSettingFlexWork().done(vl => {
-                        self.flexWorkManaging = vl.flexWorkManaging;
+                        self.flexWorkManaging = vl.flexWorkManaging == 1 ? true : false;
 
                         self.getAllEnums().done(() => {
                             self.setFlexOptionVisibility();

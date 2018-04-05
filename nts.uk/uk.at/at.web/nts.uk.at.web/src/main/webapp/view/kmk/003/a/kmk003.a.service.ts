@@ -16,7 +16,7 @@ module nts.uk.at.view.kmk003.a {
             saveFlowWorkSetting: "at/shared/worktimesetting/flowset/save",
             saveDiffTimeWorkSetting: "at/shared/worktimesetting/difftimeset/save",
             removeWorkTimeByCode: "at/shared/worktimesetting/remove",
-            findSettingFlexWork: "ctx/at/shared/workingform/settingflexwork/find",
+            findSettingFlexWork: "shared/selection/func/settingflexwork/get",
             findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used"
         };
 
