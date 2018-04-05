@@ -200,6 +200,6 @@
 	float: left;
 }
 
-.checkbox_float_left>div:FIRST-CHILD {
+/* .checkbox_float_left>div:FIRST-CHILD {
 	float: left;
-}
+} */
