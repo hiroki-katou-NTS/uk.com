@@ -132,14 +132,22 @@ class ChangeWorkTypeParam {
 @Value
 class ChangeDateParam {
 
-	private GeneralDate holidayDate;
+	private String holidayDate;
 
-	private GeneralDate takingOutDate;
+	private String takingOutDate;
 
 	/**
 	 * 申請組み合わせ
 	 */
 	private int comType;
 	private int uiType;
+
+	public GeneralDate getHolidayDate() {
+		return holidayDate != null ? GeneralDate.fromString(holidayDate, "yyyy/MM/dd") : null;
+	}
+
+	public GeneralDate getTakingOutDate() {
+		return takingOutDate != null ? GeneralDate.fromString(takingOutDate, "yyyy/MM/dd") : null;
+	}
 
 }

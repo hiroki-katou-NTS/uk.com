@@ -76,7 +76,7 @@
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
 						<div tabindex="4" id="recDatePicker"
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+							data-bind="ntsDatePicker: {value: appDate ,valueFormat:'YYYY/MM/DD',required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
@@ -122,9 +122,9 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
-						<input tabindex="4"
+						<input tabindex="4" id="recTime1Start"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: true ,option: timeOption }" />
+							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision()!=0 , readonly: false , required: true ,option: timeOption }" />
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
 							options: startTypes ,
@@ -133,9 +133,9 @@
 							value: startType ,
 							enable: true }"></div>
 						<div>#{i18n.getText('KAF011_37')}</div>
-						<input tabindex="4"
+						<input tabindex="4" id="recTime1End"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: true ,option: timeOption }" />
+							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision()!=0 , readonly: false , required: true ,option: timeOption }" />
 
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
@@ -175,8 +175,8 @@
 
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
-						<div tabindex="5"
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+						<div tabindex="5" id="absDatePinker"
+							data-bind="ntsDatePicker: {value: appDate ,valueFormat:'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 
 					<div data-bind="if:$parent.screenModeNew() ==false"
@@ -299,7 +299,7 @@
 					<textarea style="height: 100px" tabindex="6"
 						data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
-					required:appTypeSet().displayAppReason !=0,
+					required:appTypeSet().displayAppReason() !=0,
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,

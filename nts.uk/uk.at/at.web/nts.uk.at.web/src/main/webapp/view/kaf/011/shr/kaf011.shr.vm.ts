@@ -135,7 +135,7 @@ module nts.uk.at.view.kaf011.shr {
                     this.pickUpBold(drawalReqSet.pickUpBold || false);
                     this.deferredWorkTimeSelect(drawalReqSet.deferredWorkTimeSelect || 0);
                     this.simulAppliReq(drawalReqSet.simulAppliReq || 0);
-                    this.permissionDivision(drawalReqSet.permissionDivision || 1);
+                    this.permissionDivision(drawalReqSet.permissionDivision != undefined ? drawalReqSet.permissionDivision : 1);
                     this.deferredLettleColor(drawalReqSet.deferredLettleColor);
                     this.pickUpLettleColor(drawalReqSet.pickUpLettleColor);
                     let comItems;
@@ -169,7 +169,7 @@ module nts.uk.at.view.kaf011.shr {
             wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkText: KnockoutObservable<string> = ko.observable('');
-            appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
+            appDate: KnockoutObservable<Date> = ko.observable(null);
             changeWorkHoursType: KnockoutObservable<any> = ko.observable(null);
 
             constructor() {
@@ -181,6 +181,7 @@ module nts.uk.at.view.kaf011.shr {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
                     };
+
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         if (data) {
@@ -215,6 +216,11 @@ module nts.uk.at.view.kaf011.shr {
                     });
 
                 });
+                self.wkTypes.subscribe((item) => {
+                    if (item.length) {
+                        self.wkTypeCD(item[0].workTypeCode);
+                    }
+                });
 
                 self.appDate.subscribe((newDate) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
@@ -225,11 +231,13 @@ module nts.uk.at.view.kaf011.shr {
                             uiType: 0
 
                         }
-                    if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date") { return; }
+                    if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date" || newDate.toString().length != 10) { return; }
                     block.invisible();
-                    service.changeDay(changeDateParam).done((data) => {
-                        vm.employeeID(data.employeeID);
-                        vm.prePostSelectedCode(data.preOrPostType);
+                    service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
+                        vm.recWk().wkTypes(data.recWkTypes || []);
+                        vm.absWk().wkTypes(data.absWkTypes || []);
+                        vm.kaf000_a.start("", 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
+                        });
                     }).always(() => {
                         block.clear();
                     });;
@@ -238,7 +246,7 @@ module nts.uk.at.view.kaf011.shr {
 
             enableWkTime() {
                 let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                if (self.changeWorkHoursType() == 0 || vm.drawalReqSet().permissionDivision() == 0) {
+                if (!self.changeWorkHoursType() || vm.drawalReqSet().permissionDivision() == 0) {
                     return false;
                 }
 
@@ -364,6 +372,8 @@ module nts.uk.at.view.kaf011.shr {
                     if (childData) {
                         self.wkTimeCD(childData.selectedWorkTimeCode);
                         if (childData.first) {
+                            $("#recTime1Start").ntsError("clear");
+                            $("#recTime1End").ntsError("clear");
                             self.wkTypeCD(childData.selectedWorkTypeCode);
                             self.wkTime1().startTime(childData.first.start);
                             self.wkTime1().endTime(childData.first.end);
@@ -424,7 +434,7 @@ module nts.uk.at.view.kaf011.shr {
         }
 
         export interface IApplicationCommand {
-            appReasonID: string;
+            appReasonText: string;
             applicationReason: string;
             prePostAtr: number;
             enteredPersonSID: string;
