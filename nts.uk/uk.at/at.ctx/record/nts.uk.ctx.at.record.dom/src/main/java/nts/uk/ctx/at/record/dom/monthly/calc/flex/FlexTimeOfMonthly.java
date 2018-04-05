@@ -23,8 +23,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -200,7 +200,7 @@ public class FlexTimeOfMonthly {
 			FlexAggregateMethod flexAggregateMethod,
 			String workplaceId, String employmentCd,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
@@ -352,7 +352,7 @@ public class FlexTimeOfMonthly {
 			String employmentCd,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -369,7 +369,7 @@ public class FlexTimeOfMonthly {
 		val addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, holidayAdditionOpt);
 		
 		// フレックス勤務の加算設定　取得
-		Optional<FlexWork> flexWorkSetOpt = Optional.empty();
+		Optional<WorkFlexAdditionSet> flexWorkSetOpt = Optional.empty();
 		if (holidayAdditionOpt.isPresent()){
 			flexWorkSetOpt = Optional.of(holidayAdditionOpt.get().getFlexWork());
 		}
@@ -491,7 +491,7 @@ public class FlexTimeOfMonthly {
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
 			AddSet addSet,
-			Optional<FlexWork> addSetOfFlexOpt,
+			Optional<WorkFlexAdditionSet> addSetOfFlexOpt,
 			AttendanceTimeMonth statutoryWorkingTimeMonth){
 
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
@@ -586,7 +586,7 @@ public class FlexTimeOfMonthly {
 			AttendanceTimeMonthWithMinus compensatoryLeaveAfterDudection,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AddSet addSet,
-			Optional<FlexWork> addSetOfFlexOpt){
+			Optional<WorkFlexAdditionSet> addSetOfFlexOpt){
 		
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
 		

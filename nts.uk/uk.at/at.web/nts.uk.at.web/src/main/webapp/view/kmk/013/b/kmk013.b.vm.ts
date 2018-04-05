@@ -548,10 +548,12 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedB215.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB217(false);
+                        nts.uk.ui.errors.clearAll();
                     } else {
                         if(self.enableB215()==true){
-                             self.enableB217(true);
-                          }
+                            self.enableB217(true);
+                        }
+                        $('.input-time').ntsError('check');
                     }
                 });
                 //B5
