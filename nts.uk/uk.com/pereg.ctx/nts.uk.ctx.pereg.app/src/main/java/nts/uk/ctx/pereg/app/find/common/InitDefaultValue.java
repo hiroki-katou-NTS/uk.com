@@ -72,6 +72,26 @@ public class InitDefaultValue {
 					case "IS00248":
 					case "IS00247":
 					case "IS00258":
+					case "IS00296":
+					case "IS00303":
+					case "IS00310":
+					case "IS00317":
+					case "IS00324":
+					case "IS00331":
+					case "IS00338":
+					case "IS00345":
+					case "IS00352":
+					case "IS00359":
+					case "IS00560":
+					case "IS00567":
+					case "IS00574":
+					case "IS00581":
+					case "IS00588":
+					case "IS00595":
+					case "IS00602":
+					case "IS00609":
+					case "IS00616":
+					case "IS00623":
 						valueItem.setValue("0");
 						break;
 					case "IS00121":

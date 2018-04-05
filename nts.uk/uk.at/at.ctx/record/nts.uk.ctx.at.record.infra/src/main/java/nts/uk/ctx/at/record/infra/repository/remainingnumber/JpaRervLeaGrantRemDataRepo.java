@@ -17,7 +17,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId ORDER BY a.grantDate desc";
 
-	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate desc";
+	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 0 ORDER BY a.grantDate desc";
 
 	@Override
 	public List<ReserveLeaveGrantRemainingData> find(String employeeId, String cId) {

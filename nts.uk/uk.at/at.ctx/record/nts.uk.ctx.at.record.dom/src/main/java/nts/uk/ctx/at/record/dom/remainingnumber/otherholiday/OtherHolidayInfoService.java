@@ -248,4 +248,23 @@ public class OtherHolidayInfoService {
 			}
 		}
 	}
+	
+	
+	public void updateOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav, BigDecimal remainNumber, BigDecimal remainLeft){
+		
+		publicHolidayRemainRepository.update(pubHD);
+		excessLeaveInfoRepository.update(exLeav);
+		
+		String sid = pubHD.getSID();
+		// Item IS00366
+		if (comDayOffManaDataRepository.getBySid(sid).stream().count() == 0L && leaveManaDataRepository.getBySid(cid, sid).stream().count() == 0L){
+			setRemainNumber(cid,sid,remainNumber);
+		}
+		
+		// Item IS00368
+		if (substitutionOfHDManaDataRepository.getBysiD(sid).stream().count() == 0L && payoutManagementDataRepository.getSidWithCod(cid,sid).stream().count() == 0L){
+			setRemainLeftItem(cid,sid,remainLeft);
+		}
+		
+	}
 }
