@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -34,10 +36,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -110,6 +114,9 @@ public class ActualWorkingTimeOfDaily {
     
 	/**
 	 * 日別実績の実働時間の計算
+	 * @param breakTimeCount 
+	 * @param schePreTimeSet 
+	 * @param schePreTimeSet 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -132,7 +139,7 @@ public class ActualWorkingTimeOfDaily {
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTime> divergenceTimeList
+			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -156,9 +163,12 @@ public class ActualWorkingTimeOfDaily {
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
 					eachWorkTimeSet,
-					eachCompanyTimeSet
+					eachCompanyTimeSet,
+					breakTimeCount
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
+		
+		//val calcResultOotsuka = calcOotsuka(workingSystem,totalWorkingTime);
 		
 		/*拘束差異時間*/
 		val constraintDifferenceTime = new AttendanceTime(0);
@@ -284,22 +294,42 @@ public class ActualWorkingTimeOfDaily {
 		return returnList;
 	}
 
-	public Optional<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
-			   													GeneralDate targetDate,
-			   													ErrorAlarmWorkRecordCode errorCode,
-			   													CheckExcessAtr checkAtr) {
-		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
-		if(this.getTotalWorkingTime() != null ) {
-			switch(checkAtr) {
-				//乖離時間
-				case ALARM_OF_DIVERGENCE_TIME:
-				case ERROR_OF_DIVERGENCE_TIME:
-					break;
-				default:
-					this.getTotalWorkingTime().checkOverTimeExcess(employeeId, targetDate, errorCode, checkAtr);
+	/**
+	 * エラーチェックの指示メソッド 
+	 * @param attendanceItemConverter 
+	 * @return 社員のエラーチェック一覧
+	 */
+	public List<EmployeeDailyPerError> requestCheckError(String employeeId,GeneralDate targetDate,
+			   											 SystemFixedErrorAlarm fixedErrorAlarmCode,
+			   											 CheckExcessAtr checkAtr) {
+		return this.getTotalWorkingTime().checkOverTimeExcess(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
+	}
+	
+	/**
+	 * 大塚モードの計算(休憩未取得)
+	 * @param workingSystem 
+	 * @param totalWorkingTime
+	 * @param fixRestTimeSetting 固定休憩時間の時間帯設定
+	 * @param predetermineTime 所定時間
+	 * @return
+	 */
+	private static void calcOotsuka(WorkingSystem workingSystem, TotalWorkingTime totalWorkingTime,
+									TimezoneOfFixedRestTimeSet fixRestTimeSetting,
+									AttendanceTime predetermineTime) {
+		if(workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork()) {
+			//休憩未取得時間の計算
+			val unUseBreakTime = totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting);
+			//残業時間
+			if(totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+				//休憩未取得時間から残業時間計算
+				totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcOotsukaOverTime(
+						totalWorkingTime.getWithinStatutoryTimeOfDaily().getActualWorkTime(),
+						unUseBreakTime,
+						/*休暇加算時間*/
+						predetermineTime
+						);
 			}
 			
 		}
-		return returnErrorItem;
 	}
 }

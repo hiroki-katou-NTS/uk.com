@@ -56,6 +56,7 @@ import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -244,6 +245,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private UsageUnitSettingRepository usageUnitSettingRepository;
 	
+	@Inject
+	private CalculationErrorCheckService calculationErrorCheckService;
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @param placeId 職場ID
@@ -259,7 +263,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		val copyIntegrationOfDaily = integrationOfDaily;
 		if (integrationOfDaily.getAffiliationInfor() == null) return integrationOfDaily;
 		// 実績データの計算
-		return this.calcDailyAttendancePerformance(integrationOfDaily);		
+		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily);
+		//エラーチェック
+		return calculationErrorCheckService.errorCheck(afterCalcResult);
 	}
 
 	
@@ -618,8 +624,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//総拘束時間の計算
 		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = new CalculateOfTotalConstraintTime(new CompanyId(companyId),CalculationMethodOfConstraintTime.REQUEST_FROM_ENTRANCE_EXIT);
 		
+		//会社別代休設定取得
 		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
-		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
+		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = new ArrayList<>();
+		if(compensLeaveComSet != null)
+			eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
  
 		//-------------------------計算用一時的クラス作成----------------------------
 		

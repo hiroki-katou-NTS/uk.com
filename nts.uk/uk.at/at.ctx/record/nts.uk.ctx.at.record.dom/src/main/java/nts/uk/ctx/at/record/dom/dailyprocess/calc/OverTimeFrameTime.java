@@ -16,6 +16,7 @@ public class OverTimeFrameTime {
 	/** 残業枠NO: 残業枠NO */
 	private OverTimeFrameNo OverWorkFrameNo;
 	/** 残業時間: 計算付き時間 */
+	@Setter
 	private TimeDivergenceWithCalculation OverTimeWork;
 	/** 振替時間: 計算付き時間 */
 	private TimeDivergenceWithCalculation TransferTime;

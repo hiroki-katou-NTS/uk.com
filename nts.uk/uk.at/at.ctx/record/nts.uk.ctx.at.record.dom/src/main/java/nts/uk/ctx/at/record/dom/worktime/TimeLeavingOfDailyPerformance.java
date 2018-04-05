@@ -58,6 +58,18 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 //		}
 //	}
 	
+	/**
+	 * 打刻漏れであるか判定する
+	 * @return　打刻漏れである
+	 */
+	public boolean isLeakageStamp(){
+		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
+			//打刻漏れを起こしている(計算できる状態でない)
+			if(!timeLeavingWork.checkLeakageStamp())
+				return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * 指定した勤怠Noのデータを取得する

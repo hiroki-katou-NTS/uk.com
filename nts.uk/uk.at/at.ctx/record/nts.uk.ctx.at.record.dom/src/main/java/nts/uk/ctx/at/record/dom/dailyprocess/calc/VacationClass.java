@@ -4,7 +4,12 @@ import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
@@ -32,6 +37,71 @@ public class VacationClass {
 	private HolidayOfDaily holidayOfDaily;
 	
 	/**
+	 * 休暇使用時間の計算
+	 * @return
+	 */
+	public void calcUseRestTime(WorkType workType,
+			 							  PredetermineTimeSetForCalc predetermineTimeSet,
+			 							  Optional<WorkTimeCode> siftCode,
+			 							  Optional<PersonalLaborCondition> personalCondition,
+			 							  VacationAddTimeSet vacationAddTimeSet,
+			 							  OutingTimeOfDaily goOutTimeOfDaily,
+			 							  LateTimeOfDaily lateTimeOfDaily,
+			 							  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily) {
+//		//代休
+//		AttendanceTime substituUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.SubstituteHoliday,
+//																 predetermineTimeSet,siftCode,
+//																 personalCondition,vacationAddTimeSet);
+//		int sumSubTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().valueAsMinutes()
+//						+ lateTimeOfDaily.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes()
+//						+ leaveEarlyTimeOfDaily.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+//		substituUseTime = substituUseTime.addMinutes(sumSubTime);
+//		
+//		val substituteHoliday = new SubstituteHolidayOfDaily(substituUseTime, );
+//		
+//		//振休
+//		AttendanceTime pauseUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.Pause,
+//				 											  predetermineTimeSet,siftCode,
+//				 											  personalCondition,vacationAddTimeSet);
+//		//年休
+//		AttendanceTime annualUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.AnnualHoliday,
+//				 												 predetermineTimeSet,siftCode,
+//				 												 personalCondition,vacationAddTimeSet);
+//		int sumAnnTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().valueAsMinutes()
+//						+ lateTimeOfDaily.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes()
+//						+ leaveEarlyTimeOfDaily.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes();
+//		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
+//
+//		val annualHoliday = new SubstituteHolidayOfDaily(annualUseTime, );
+//		
+//		//超過有休
+//		int sumExcessTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().valueAsMinutes()
+//					  + lateTimeOfDaily.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes()
+//					  + leaveEarlyTimeOfDaily.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes();
+//		val overSalary = new OverSalaryOfDaily(sumExcessTime, );
+//		//特別休暇
+//		AttendanceTime specHolidayTime = vacationTimeOfcalcDaily(workType,VacationCategory.SpecialHoliday,
+//				 											  	 predetermineTimeSet,siftCode,
+//				 											  	 personalCondition,vacationAddTimeSet);
+//		int sumSpecTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes()
+//							+ lateTimeOfDaily.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()
+//							+ leaveEarlyTimeOfDaily.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes();
+//		specHolidayTime = specHolidayTime.addMinutes(sumSpecTime);
+//		
+//		val specHoliday = new SubstituteHolidayOfDaily(specHolidayTime, );
+//		
+//		//欠勤使用時間
+//		AttendanceTime absenceUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.Absence,
+//				  											    predetermineTimeSet,siftCode,
+//				  											    personalCondition,vacationAddTimeSet);
+//		//積立年休使用時間
+//		AttendanceTime yearlyReservedTime = vacationTimeOfcalcDaily(workType,VacationCategory.YearlyReserved,
+//				  											  		predetermineTimeSet,siftCode,
+//				  											  		personalCondition,vacationAddTimeSet);
+	}
+	
+	
+	/**
 	 * 日数単位の休暇時間計算
 	 * @return　1日の時間内訳時間
 	 */
@@ -41,7 +111,8 @@ public class VacationClass {
 														 Optional<WorkTimeCode> siftCode,
 			 											 Optional<PersonalLaborCondition> personalCondition,
 			 											 VacationAddTimeSet vacationAddTimeSet) {
-		BreakDownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition, vacationAddTimeSet);
+		//referenceAtr 実績の就業時間帯を参照する(休暇加算時間設定クラスのメンバ)
+		BreakDownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, true);
 		switch(workType.getDailyWork().decisionMatchWorkType(vacationCategory.convertWorkTypeClassification())) {
 			case FULL_TIME:
 				return breakDownTimeDay.getOneDay();
@@ -56,21 +127,30 @@ public class VacationClass {
 	
 	/**
 	 * 休暇加算設定の取得
+	 * @param referenceAtr 実績の就業時間帯を参照する(休暇加算時間設定クラスのメンバ)
 	 * @return
 	 */
 	private static BreakDownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<WorkTimeCode> siftCode
-											 ,Optional<PersonalLaborCondition> personalCondition
-											 ,VacationAddTimeSet vacationAddTimeSet) {
-		if(siftCode.isPresent()) {
-			return predetermineTimeSet.getAdditionSet().getAddTime();
-		}
-		else {
-			if(personalCondition.isPresent()) {
-				return personalCondition.get().getHolidayAddTimeSet().getAddTime();
+											 ,boolean referenceAtr) {
+		//参照する
+		if(referenceAtr) {
+			if(siftCode.isPresent()) {
+				return predetermineTimeSet.getAdditionSet().getAddTime();
 			}
 			else {
-				return vacationAddTimeSet.getAdditionTime();
+				if(true/*ここには就業時間帯が存在しない場合の参照先(フィールド)が実装されてきたら、そこを見るようにする*/) {
+					/****ここには「勤務実績を参照する」クラスが実装されたら、会社一律設定を返すようにする*****/
+					return predetermineTimeSet.getAdditionSet().getAddTime();
+				}
+				else {
+					return predetermineTimeSet.getAdditionSet().getAddTime();
+				}
 			}
+		}
+		//社員設定から取得
+		else {
+			//**時間がある時にちゃんと実装する(今は仮置き↓)**//
+			return predetermineTimeSet.getAdditionSet().getAddTime();
 		}
 	}
 
@@ -105,7 +185,8 @@ public class VacationClass {
 		if (getCalculationByActualTimeAtr(workingSystem, statutoryDivision, addSettingOfRegularWork,
 				addSettingOfIrregularWork, addSettingOfFlexWork).isCalclationByActualTime()) {// 実働時間以外も含めて計算する 場合
 			// 加算時間の設定を取得
-			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition,vacationAddTimeSet);
+			//referenceAtr 実績の就業時間帯を参照する(休暇加算時間設定クラスのメン)　VN待ちのため、仮でtrueを置く
+			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode,true);
 			// 休暇加算時間を加算するかどうか判断
 			vacationAddTime = judgeVacationAddTime(breakdownTimeDay, workingSystem, statutoryDivision,
 					addSettingOfRegularWork, vacationAddTimeSet, workType, addSettingOfIrregularWork,

@@ -144,15 +144,17 @@ public class PredetermineTimeSetForCalc {
 	 * @return
 	 */
 	public AttendanceTime getpredetermineTime(DailyWork dailyWork) {
-		switch(dailyWork.getAttendanceHolidayAttr()) {
-		case FULL_TIME:
+		switch(dailyWork.decisionWorkTypeRange()) {
+		case ONEDAY:
 			return additionSet.getPredTime().getOneDay();
 		case MORNING:
 			return additionSet.getPredTime().getMorning();
 		case AFTERNOON:
 			return additionSet.getPredTime().getAfternoon();
-		default:
+		case NOTHING:
 			return new AttendanceTime(0);
+		default:
+			throw new RuntimeException("unknown workTypeRange");
 		}
 	}
 	

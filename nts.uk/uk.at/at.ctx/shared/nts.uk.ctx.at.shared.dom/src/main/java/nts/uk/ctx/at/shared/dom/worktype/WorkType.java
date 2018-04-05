@@ -269,4 +269,13 @@ public class WorkType extends AggregateRoot {
 	public boolean isDeprecated() {
 		return DeprecateClassification.Deprecated == this.deprecate;
 	}
+	
+	/**
+	 * 勤務種類設定の編集(一時的なSetter)
+	 * @param workTypeSet
+	 */
+	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
+		this.workTypeSetList.add(workTypeSet);
+							
+	}
 }

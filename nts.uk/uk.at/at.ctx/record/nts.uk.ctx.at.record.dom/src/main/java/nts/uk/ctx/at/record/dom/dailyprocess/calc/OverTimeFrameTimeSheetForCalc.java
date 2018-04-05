@@ -422,31 +422,14 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public AttendanceTime overTimeCalculationByAdjustTime(DeductionAtr dedAtr) {
 		//調整時間を加算
 		this.calcrange.getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes());
-		//休憩時間
-		AttendanceTime calcBreakTime = calcDedTimeByAtr(dedAtr,ConditionAtr.BREAK);
-		//組合外出時間
-		AttendanceTime calcUnionGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.UnionGoOut);
-		//私用外出時間
-		AttendanceTime calcPrivateGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.PrivateGoOut);
-		//介護
-		AttendanceTime calcCareTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Care);
-		//育児時間
-		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
-		
-		//計算処理
-		AttendanceTime time = new AttendanceTime(this.calcrange.lengthAsMinutes()
-								 -calcBreakTime.valueAsMinutes()
-								 -calcUnionGoOutTime.valueAsMinutes()
-								 -calcPrivateGoOutTime.valueAsMinutes()
-								 -calcCareTime.valueAsMinutes()
-								 -calcChildTime.valueAsMinutes());
+		AttendanceTime time = this.afterMinusDeductionTime(dedAtr);
 		//調整時間を減算(元に戻す)
 		this.calcrange.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes());
 		
 		return time;
 		
 	}
-	
+
 	/**
 	 *　指定条件の控除項目だけの控除時間
 	 * @param forcsList
