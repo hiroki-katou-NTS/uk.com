@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import java.util.Date;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -23,6 +20,15 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 	/** The div reference time usage unit repo. */
 	@Inject
 	DivergenceReferenceTimeUsageUnitRepository divReferenceTimeUsageUnitRepo;
+
+	/** The company divergence reference time history repo. */
+	@Inject
+	CompanyDivergenceReferenceTimeHistoryRepository companyDivergenceReferenceTimeHistoryRepo;
+
+	/** The company divergence reference time repo. */
+	@Inject
+	CompanyDivergenceReferenceTimeRepository companyDivergenceReferenceTimeRepo;
+	
 
 	/** The work type divergence ref time hist repo. */
 	@Inject
@@ -52,16 +58,18 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 			int divergenceTimeNo, AttendanceTime DivergenceTimeOccurred) {
 
 		JudgmentResultDetermineRefTime judgmentResultDetermineRefTime = new JudgmentResultDetermineRefTime();
-
+		DetermineReferenceTime determineRefTime = new DetermineReferenceTime();
+		JudgmentResult result = JudgmentResult.ERROR;
+		
 		//get DivergenceReferenceTimeUsageUnit
 		Optional<DivergenceReferenceTimeUsageUnit> optionalDivReferenceTimeUsageUnit = divReferenceTimeUsageUnitRepo
 				.findByCompanyId(companyId);
 		if (optionalDivReferenceTimeUsageUnit.isPresent()
 				&& optionalDivReferenceTimeUsageUnit.get().isWorkTypeUseSet()) {
 
-			DetermineReferenceTime determineRefTime = new DetermineReferenceTime();
+			
 			determineRefTime.setReferenceTime(ReferenceTime.WORKTYPE);
-			JudgmentResult result = JudgmentResult.ERROR;
+			
 			
 			//get BusinessTypeOfEmployee
 			BusinessTypeOfEmployee typeofEmployee = typeEmService.getData(userId, processDate).get(0);
@@ -180,11 +188,50 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 			judgmentResultDetermineRefTime.setDetermineReafTime(determineRefTime);
 			
 		}
-		if (!optionalDivReferenceTimeUsageUnit.isPresent()
-				|| !optionalDivReferenceTimeUsageUnit.get().isWorkTypeUseSet()) {
+		else{
 			// Incase false or domain is not exist
+			// get company's history items
+			CompanyDivergenceReferenceTimeHistory companyDivergenceReferenceTimeHistory = companyDivergenceReferenceTimeHistoryRepo
+					.findByDate(companyId, processDate);
+			// get history item
+			Optional<DateHistoryItem> dateHisItem = companyDivergenceReferenceTimeHistory.getHistoryItems().stream()
+					.filter(item -> item.start().after(processDate) && item.end().before(processDate)).findFirst();
+			if (dateHisItem.isPresent()) {
+				// get company's deviation reference time based on NO
+				Optional<CompanyDivergenceReferenceTime> companyDivRefTime = companyDivergenceReferenceTimeRepo
+						.findByKey(dateHisItem.get().identifier(), divergenceTimeNo);
+				if (companyDivRefTime.isPresent() && companyDivRefTime.get().getNotUseAtr().equals(NotUseAtr.USE)) {
+					// determine divergence time
+					// check error time
+					if (DivergenceTimeOccurred.lessThan(
+							companyDivRefTime.get().getDivergenceReferenceTimeValue().get().getErrorTime().get())) {
+						// check alarm time
+						if (DivergenceTimeOccurred.greaterThanOrEqualTo(
+								companyDivRefTime.get().getDivergenceReferenceTimeValue().get().getAlarmTime().get())) {
+							Optional<DivergenceReferenceTime> alarmTime = companyDivRefTime.get()
+									.getDivergenceReferenceTimeValue().get().getAlarmTime();
+							determineRefTime.setThreshold(alarmTime.get());
+							result = JudgmentResult.ALARM;
+						} else {
+							result = JudgmentResult.NORMAL;
+						}
+					} else {
+						Optional<DivergenceReferenceTime> errorTime = companyDivRefTime.get()
+								.getDivergenceReferenceTimeValue().get().getErrorTime();
+						determineRefTime.setThreshold(errorTime.get());
+						result = JudgmentResult.ERROR;
+					}
+				} else {
+					result = JudgmentResult.NORMAL;
+				}
+			}
+			// set reference time type
+			determineRefTime.setReferenceTime(ReferenceTime.COMPANY);
+			//set judgmentResultDetermineRefTime
+			judgmentResultDetermineRefTime.setDetermineReafTime(determineRefTime);
+			judgmentResultDetermineRefTime.setJudgmentResult(result);
 		}
-		return new JudgmentResultDetermineRefTime();
+		return judgmentResultDetermineRefTime;
 	}
 
 }
