@@ -309,14 +309,7 @@ module nts.uk.at.view.kaf006.b{
              if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
                  return;
              }
-             if(!self.changeWorkHourValueFlg()){
-                 self.changeWorkHourValue(false);
-                 self.timeStart1(null);
-                 self.timeEnd1(null);
-                 self.timeStart2(null);
-                 self.timeEnd2(null);
-                 self.workTimeCode(null);
-             }
+             
              let paramInsert = {
                 version: self.version,
                 appID: self.appID(),
