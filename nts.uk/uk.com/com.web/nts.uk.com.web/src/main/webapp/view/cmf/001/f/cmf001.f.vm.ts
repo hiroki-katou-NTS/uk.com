@@ -236,10 +236,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
             let _lineError: Array<any> = [];
             let _codeDuplicate: Array<any> = [];
+            let _emptyData: Boolean = true;
             for (let detail of currentAcceptCodeConvert().cdConvertDetails()) {
                 if (_.isEmpty(detail.outputItem()) && _.isEmpty(detail.systemCd())) {
                     continue;
                 }
+                 _emptyData = false;
                 if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCd())) {
                     _lineError.push(detail.lineNumber());
                 }
@@ -247,6 +249,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                 if (data.length >= 2) {
                     _codeDuplicate.push(detail);
                 }
+            }
+            
+            if(_emptyData){
+                dialog.alertError({ messageId: "Msg_906" });
+                block.clear();
+                return;
             }
 
             if (!_.isEmpty(_lineError)) {

@@ -10,5 +10,4 @@ public class WkTimeCommand {
 	private Integer startType;
 	private Integer endTime;
 	private Integer endType;
-	private String wkTimeCD;
 }

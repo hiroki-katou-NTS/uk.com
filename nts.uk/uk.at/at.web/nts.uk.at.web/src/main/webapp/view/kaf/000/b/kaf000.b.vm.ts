@@ -384,7 +384,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     });
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("../test/index.xhtml");
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
                 });
             }).ifNo(function() {
