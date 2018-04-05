@@ -14,11 +14,13 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         employmentList: KnockoutObservableArray<UnitModel>;
 
+        listSetting: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
             self.fullWorkTypeList = ko.observableArray([]);
             self.groups1 = ko.observableArray([]);
             self.groups2 = ko.observableArray([]);
+            self.listSetting = ko.observableArray([]);
             // template
             self.selectedCode = ko.observable('01');
             self.alreadySettingList = ko.observableArray([
@@ -50,6 +52,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 self.employmentList($('#empt-list-setting').getDataList());
                 if (self.employmentList().length > 0) {
                     self.selectedCode(self.employmentList()[0].code);
+                } else {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_146" });
                 }
                 dfd.resolve();
             });
@@ -88,8 +92,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let dfd = $.Deferred();
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
             service.getWorkTypes(self.selectedCode()).done(function(res) {
-            self.groups1.removeAll();
-            self.groups2.removeAll();
+                self.groups1.removeAll();
+                self.groups2.removeAll();
                 _.forEach(res, function(item) {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
@@ -102,7 +106,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     if (item.no == 4) {
                         comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
                     }
-                    let group = new WorkTypeGroup(item.no, item.name === "　"? '' : item.name, item.workTypeList, names.join("、　"),
+                    let group = new WorkTypeGroup(item.no, item.name === "　" ? '' : item.name, item.workTypeList, names.join("、　"),
                         fullWorkTypeCodes, comment);
                     if (group.no < 5) {
                         self.groups1.push(group);
@@ -121,6 +125,11 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
+                if (self.groups1.length > 0 || self.groups2.length > 0) {
+                    self.listSetting.push(self.selectedCode());
+                } else {
+                    self.listSetting.remove(self.selectedCode());
+                }
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -129,6 +138,62 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
+        }
+
+        copyData() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            let employmentName: string;
+            employmentName = _.find(self.employmentList(), function(m) {
+                return m.code === self.selectedCode();
+            });
+            let listCode = _.map(self.employmentList(), 'code');
+
+            service.checkSetting(listCode).done(function(res) {
+                self.listSetting(res);
+                let param = {
+                    code: self.selectedCode(),
+                    name: employmentName,
+                    targetType: 1,// 雇用
+                    itemListSetting: self.listSetting(),
+                };
+                nts.uk.ui.windows.setShared("CDL023Input", param);
+                nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                    nts.uk.ui.block.invisible();
+                    let isOveride: boolean = false;
+                    let data = nts.uk.ui.windows.getShared("CDL023Output");
+                    for (let i = 0; i < data.length; i++) {
+                        _.find(self.listSetting(), data[i]);
+                        isOveride = true;
+                        break;
+                    }
+
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        let command = {
+                            targetEmploymentCodes: data,
+                            overide: isOveride,
+                            employmentCode: self.selectedCode()
+                        };
+                        service.copy(command).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.start();
+                                nts.uk.ui.block.clear();
+                            });
+                        }).fail(function(res: any) {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                                nts.uk.ui.block.clear();
+                            });
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }
+                });
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });;
+
+
+
         }
 
     }

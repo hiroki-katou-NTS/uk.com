@@ -9,7 +9,7 @@ module nts.uk.at.view.kdw006.d.service {
         return nts.uk.request.ajax(paths.getRoles);
     }
 
-    export function findFuncRest(roleId: number): JQueryPromise<Array<any>> {
+    export function findFuncRest(roleId: String): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax(paths.findFuncRest + roleId);
     }
 

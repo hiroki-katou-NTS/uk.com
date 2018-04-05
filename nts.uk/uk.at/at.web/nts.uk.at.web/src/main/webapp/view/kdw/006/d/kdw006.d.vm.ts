@@ -22,7 +22,6 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             self.selectedItem.subscribe(function(newValue) {
                 self.getFuncRest(newValue);
             });
-
         }
 
         initGrid() {
@@ -34,7 +33,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                 dataSource: self.functionalRestriction(),
                 primaryKey: 'functionNo',
                 virtualization: true,
-                virtualizationMode: 'continuous',  
+                virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
                 columns: [
                     { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px' },
@@ -61,17 +60,25 @@ module nts.uk.at.view.kdw006.d.viewmodel {
 
         start(): JQueryPromise<any> {
             let self = this;
+            nts.uk.ui.block.grayout();
             let dfd = $.Deferred();
             service.getRoleList().done(function(res: Array<RoleItem>) {
                 self.roleItems(_.sortBy(res, ['roleCode']));
                 self.selectedItem(self.roleItems()[0].roleId);
-                self.initGrid();
                 self.getFuncRest(self.selectedItem()).done(function() {
+                    if (self.functionalRestriction().length == 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_398" });
+                    }
+                    self.initGrid();
+                    $("#grid2").igGrid("option", "dataSource", self.functionalRestriction());
                     dfd.resolve();
                 });
 
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
+            }).always(() => {
+                nts.uk.ui.errors.clearAll();
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
@@ -81,7 +88,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             let dfd = $.Deferred();
             service.findFuncRest(roleId).done(function(res: Array<FuncRestItem>) {
                 self.functionalRestriction(res);
-                $("#grid2").igGrid("option", "dataSource", self.functionalRestriction());
+                self.initGrid();
                 dfd.resolve();
             }).fail(function(res) {
 
