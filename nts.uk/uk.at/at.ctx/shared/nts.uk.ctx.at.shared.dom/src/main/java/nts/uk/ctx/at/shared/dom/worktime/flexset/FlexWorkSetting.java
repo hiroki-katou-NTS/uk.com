@@ -109,6 +109,8 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 		
 		this.offdayWorkTime.correctData(screenMode, other);
+		
+		this.coreTimeSetting.correctData(screenMode, other.getCoreTimeSetting());
 	}
 	
 	/**
@@ -118,6 +120,8 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
 		this.commonSetting.correctDefaultData(screenMode);
+		
+		this.coreTimeSetting.correctDefaultData(screenMode);
 	}
 	
 }

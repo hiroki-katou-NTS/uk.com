@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class CoreTimeSetting.
@@ -84,5 +85,35 @@ public class CoreTimeSetting extends WorkTimeDomainObject {
 	 */
 	public boolean isUseTimeSheet() {
 		return this.timesheet == ApplyAtr.USE;
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, CoreTimeSetting oldDomain) {
+		if (ApplyAtr.NOT_USE.equals(this.timesheet)) {
+			this.coreTimeSheet = oldDomain.getCoreTimeSheet();
+		} else {
+			this.minWorkTime = oldDomain.getMinWorkTime();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (ApplyAtr.NOT_USE.equals(this.timesheet)) {
+			this.coreTimeSheet = TimeSheet.createDefault();
+		} else {
+			this.minWorkTime = new AttendanceTime(ZERO_MINUTES);
+		}
 	}
 }
