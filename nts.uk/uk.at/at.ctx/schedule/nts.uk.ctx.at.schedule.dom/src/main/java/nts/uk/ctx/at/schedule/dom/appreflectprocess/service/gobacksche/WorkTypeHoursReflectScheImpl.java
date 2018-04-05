@@ -29,19 +29,15 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	@Override
 	public boolean isReflectFlag(GobackReflectParam gobackPara) {
 		//ドメインモデル「勤務予定基本情報」を取得する
+		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(gobackPara.getEmployeeId(), gobackPara.getDatePara());		
 		if(!optBasicScheOpt.isPresent()) {
 			return false;
 		}
 		BasicSchedule basicScheOpt = optBasicScheOpt.get();
 		if(this.isCheckReflect(gobackPara, basicScheOpt)) {
-			//ドメインモデル「勤務予定基本情報」を編集する
-			BasicSchedule dataUpdate = new BasicSchedule(gobackPara.getEmployeeId(), 
-					gobackPara.getDatePara(), 
-					gobackPara.getAppInfor().getWorkType(), 
-					gobackPara.getAppInfor().getWorkTime(), 
-					basicScheOpt.getConfirmedAtr());
-			basicSche.update(dataUpdate);
+			//ドメインモデル「勤務予定基本情報」を編集する			
+			basicSche.changeWorkTypeTime(gobackPara.getEmployeeId(), gobackPara.getDatePara(), gobackPara.getAppInfor().getWorkType(), gobackPara.getAppInfor().getWorkTime());
 			//ドメインモデル「勤務予定項目状態」を編集する id = 1
 			WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
 					1,
