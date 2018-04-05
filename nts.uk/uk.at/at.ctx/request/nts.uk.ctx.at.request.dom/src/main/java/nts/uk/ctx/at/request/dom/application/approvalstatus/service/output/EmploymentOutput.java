@@ -11,6 +11,6 @@ import nts.arc.time.GeneralDate;
 @Value
 public class EmploymentOutput {
 	private String empCd;
-	private GeneralDate closureStart;
-	private GeneralDate closureEnd;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 }

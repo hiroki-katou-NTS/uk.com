@@ -107,6 +107,9 @@ public class Closure extends AggregateRoot {
 		
 		ClosurePeriod closurePeriod = null;
 		
+		YearMonth minYearMonth = YearMonth.of(GeneralDate.min().year(), GeneralDate.min().month());
+		YearMonth maxYearMonth = YearMonth.of(GeneralDate.max().year(), GeneralDate.max().month());
+		
 		// パラメータ「年月日」を年月に変換
 		YearMonth yearMonth = YearMonth.of(ymd.year(), ymd.month());
 		while (true){
@@ -124,12 +127,12 @@ public class Closure extends AggregateRoot {
 					endState = -1;
 				}
 				else if (periodBeforeChange.contains(ymd)){
-					val closureHistoryOpt = this.getHistoryByYearMonth(yearMonth);
+					val closureHistoryOpt = this.getHistoryByYearMonth(yearMonth.addMonths(-1));
 					if (!closureHistoryOpt.isPresent()) return Optional.empty();
 					closurePeriod = ClosurePeriod.of(
 							this.closureId,
 							closureHistoryOpt.get().getClosureDate(),
-							yearMonth,
+							yearMonth.addMonths(-1),
 							periodBeforeChange);
 					endState = 0;
 				}
@@ -168,8 +171,14 @@ public class Closure extends AggregateRoot {
 				}
 			}
 			if (endState == 0) break;
-			if (endState < 0) yearMonth = yearMonth.previousMonth();
-			if (endState > 0) yearMonth = yearMonth.nextMonth();
+			if (endState < 0){
+				if (yearMonth.lessThanOrEqualTo(minYearMonth)) break;
+				yearMonth = yearMonth.previousMonth();
+			}
+			if (endState > 0){
+				if (yearMonth.greaterThanOrEqualTo(maxYearMonth)) break;
+				yearMonth = yearMonth.nextMonth();
+			}
 		}
 		return Optional.ofNullable(closurePeriod);
 	}

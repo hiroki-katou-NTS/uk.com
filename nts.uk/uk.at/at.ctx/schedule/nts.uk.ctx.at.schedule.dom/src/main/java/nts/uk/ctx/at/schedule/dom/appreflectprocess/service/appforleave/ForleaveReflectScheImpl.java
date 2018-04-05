@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackReflectParam;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
@@ -20,7 +21,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
 	@Override
-	public void forlearveReflectSche(ForleaveReflectParam reflectParam) {
+	public void forlearveReflectSche(CommonReflectParamSche reflectParam) {
 		//勤務種類を反映する
 		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(reflectParam.getEmployeeId(), reflectParam.getDatePara());		
