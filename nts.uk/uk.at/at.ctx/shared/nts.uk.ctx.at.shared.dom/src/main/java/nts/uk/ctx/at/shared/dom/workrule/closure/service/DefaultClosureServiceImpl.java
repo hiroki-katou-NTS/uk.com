@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -160,7 +159,7 @@ public class DefaultClosureServiceImpl implements ClosureService {
 				break;
 			case ClassificationClosingAfter:
 				item.setClosureHistories(item.getClosureHistories().stream()
-						.filter(i -> item.getClosureMonth().getProcessingYm().v() == i.getStartYearMonth().v() - 1)
+						.filter(i -> item.getClosureMonth().getProcessingYm().equals(i.getStartYearMonth().previousMonth()))
 						.collect(Collectors.toList()));
 				break;
 			default:
