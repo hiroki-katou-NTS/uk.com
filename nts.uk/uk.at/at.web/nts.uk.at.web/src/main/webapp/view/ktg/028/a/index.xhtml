@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
@@ -42,7 +42,7 @@
 				<div class="fixed-flex-layout-left">
 					<table id="single-list"
 						data-bind="ntsGridList: {								
-								height: 550,
+								height: 430,
 								dataSource: items_A2,
 								primaryKey: 'topPageCode'	,
 								columns: columns_A2,
@@ -103,10 +103,10 @@
 						<span class="label" id="a6">#{i18n.getText('KTG028_16')}</span>
 					</div>
 					<div>
-						<!-- height : 267 (10 thằng) -->
+						<!-- height : 384 (15 thằng) -->
 						<table id="multi-list"
 							data-bind="ntsGridList: {
-							height: 384,
+							height: 267,
 							options: items_A7,
 							optionsValue: 'value',
 							columns: columns_A7,
