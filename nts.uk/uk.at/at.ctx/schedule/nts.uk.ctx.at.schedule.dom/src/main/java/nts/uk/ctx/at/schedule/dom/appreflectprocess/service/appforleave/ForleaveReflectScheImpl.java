@@ -24,18 +24,8 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	public void forlearveReflectSche(CommonReflectParamSche reflectParam) {
 		//勤務種類を反映する
 		//ドメインモデル「勤務予定基本情報」を取得する
-		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(reflectParam.getEmployeeId(), reflectParam.getDatePara());		
-		if(!optBasicScheOpt.isPresent()) {
-			return;
-		}
-		BasicSchedule basicScheOpt = optBasicScheOpt.get();
-		//ドメインモデル「勤務予定基本情報」を編集する
-		BasicSchedule dataUpdate = new BasicSchedule(basicScheOpt.getEmployeeId(), 
-				basicScheOpt.getDate(), 
-				reflectParam.getWorktypeCode(), 
-				basicScheOpt.getWorkTimeCode(),
-				basicScheOpt.getConfirmedAtr());
-		basicSche.update(dataUpdate);
+		
+		basicSche.changeWorkTypeTime(reflectParam.getEmployeeId(), reflectParam.getDatePara(), reflectParam.getWorktypeCode(), reflectParam.getWorkTimeCode());
 		//勤務種類の編集状態を更新する
 		getListItem().stream().forEach(x ->{
 			WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
