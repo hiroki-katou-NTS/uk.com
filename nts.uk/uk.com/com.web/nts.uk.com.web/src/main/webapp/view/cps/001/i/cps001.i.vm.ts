@@ -70,8 +70,8 @@ module nts.uk.com.view.cps001.i.vm {
         grantTimeH: KnockoutObservable<boolean>;
 
         //
-        nameDateGrantInp: KnockoutObservable<string> = ko.observable(null);
-        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable(null);
+        nameDateGrantInp: KnockoutObservable<string> = ko.observable('');
+        nameDeadlineDateInp: KnockoutObservable<string> = ko.observable('');
 
         nameDayNumberOfGrant: KnockoutObservable<string> = ko.observable(null);
         namegrantTime: KnockoutObservable<string> = ko.observable(null);
@@ -287,6 +287,11 @@ module nts.uk.com.view.cps001.i.vm {
 
             service.saveData(command).done((_data: any) => {
                 info({ messageId: "Msg_15" }).then(function() {
+                    if (command.specialid){ 
+                    
+                    } else { 
+                    
+                    }
                     self.loadData(0);
                 });
                 unblock();
@@ -405,15 +410,19 @@ module nts.uk.com.view.cps001.i.vm {
                             switch (timeType) {
                                 case "grantDate":
                                     self.nameDateGrantInp(itemDef.itemName);
+                                    console.log(self.nameDateGrantInp());
                                     break;
                                 case "deadlineDate":
                                     self.nameDeadlineDateInp(itemDef.itemName);
+                                    console.log(self.nameDeadlineDateInp());
                                     break;
                                 case "dayNumberOfGrants":
                                     self.nameDayNumberOfGrant(itemDef.itemName);
+                                    console.log(self.nameDayNumberOfGrant());
                                     break;
                                 case "dayNumberOfUse":
                                     self.nameDayNumberOfUse(itemDef.itemName);
+                                    console.log(self.nameDayNumberOfUse());
                                     break;
                                 case "dayNumberOver":
                                     self.nameDayNumberOver(itemDef.itemName);
@@ -449,6 +458,7 @@ module nts.uk.com.view.cps001.i.vm {
 
             return dfd.promise();
         }
+
         setGridList() {
             let self = this;
             self.columns = ko.observableArray([

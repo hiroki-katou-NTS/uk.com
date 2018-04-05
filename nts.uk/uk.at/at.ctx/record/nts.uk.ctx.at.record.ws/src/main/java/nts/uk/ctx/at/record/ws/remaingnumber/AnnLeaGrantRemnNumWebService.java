@@ -17,6 +17,8 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.DeleteLe
 import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.UpdateAnnLeaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnualLeaveNumberFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
 
 @Path("at/record/remainnumber/annlea")
 @Produces("application/json")
@@ -34,10 +36,28 @@ public class AnnLeaGrantRemnNumWebService extends WebService{
 	
 	@Inject DeleteAnnLeaCommandHandler deleteHandler;
 	
+	@Inject
+	private AnnualLeaveNumberFinder annLeaNumberFinder;
+	
+	@Inject
+	private ResvLeaRemainNumberFinder resvLeaNumberFinder;
+	
 	@POST
 	@Path("getAnnLea/{empId}")
 	public List<AnnLeaGrantRemnNumDto> findAnnLeaGrantRemnNum(@PathParam("empId") String employeeId) {
 		return finder.getListData(employeeId);
+	}
+	
+	@POST
+	@Path("getAnnLeaNumber/{empId}")
+	public String getAnnLeaNum(@PathParam("empId") String employeeId) {
+		return annLeaNumberFinder.getAnnualLeaveNumber(employeeId);
+	}
+	
+	@POST
+	@Path("getResvLeaNumber/{empId}")
+	public String getResvLeaNumber(@PathParam("empId") String employeeId) {
+		return resvLeaNumberFinder.getResvLeaRemainNumber(employeeId);
 	}
 	
 	@POST

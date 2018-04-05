@@ -42,7 +42,7 @@
 			</div>
 
 		</div>
-		<div class="div_line" data-bind="if:screenModeNew">
+		<div class="div_line" data-bind="if:screenModeNew()==true">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
@@ -75,8 +75,8 @@
 					</div>
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
-						<div tabindex="4"
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+						<div tabindex="4" id="recDatePicker"
+							data-bind="ntsDatePicker: {value: appDate ,valueFormat:'YYYY/MM/DD',required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
@@ -124,7 +124,7 @@
 					<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
 						<input tabindex="4"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: false ,option: timeOption }" />
+							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision()!=0 , readonly: false , required: true ,option: timeOption }" />
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
 							options: startTypes ,
@@ -135,7 +135,7 @@
 						<div>#{i18n.getText('KAF011_37')}</div>
 						<input tabindex="4"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: false,option: timeOption }" />
+							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision()!=0 , readonly: false , required: true ,option: timeOption }" />
 
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
@@ -152,7 +152,7 @@
 					<div class="div_line"
 						data-bind="text:
 					 pickUpComment
-					,css: { 'bold': pickUpBold }"></div>
+					,css: { 'bold': pickUpBold  },style:{color:pickUpLettleColor}"></div>
 				</div>
 
 			</div>
@@ -175,8 +175,8 @@
 
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
-						<div tabindex="5"
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+						<div tabindex="5" id="absDatePinker"
+							data-bind="ntsDatePicker: {value: appDate ,valueFormat:'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 
 					<div data-bind="if:$parent.screenModeNew() ==false"
@@ -261,21 +261,18 @@
 					<div class="div_line"
 						data-bind="text:
 					 deferredComment
-					,css: { 'bold': deferredBold }"></div>
-
-
-
+					,css: { 'bold': deferredBold } ,style:{color:deferredLettleColor}"></div>
 				</div>
 			</div>
 		</div>
-		<div class="div_line"
-			data-bind="if:appTypeSet().displayFixedReason !=0">
-			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
-			</div>
-			<div class="div_line_col_2">
-				<div tabindex="6" class="combo-box"
-					data-bind="ntsComboBox: {
+		<div data-bind="if:appTypeSet().displayFixedReason() !=0">
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div tabindex="6" class="combo-box"
+						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
 										optionsValue: 'reasonID' ,
@@ -284,27 +281,32 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
+										required:appTypeSet().displayFixedReason() !=0,
 										columns: [
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="div_line" data-bind="if:appTypeSet().displayAppReason !=0">
-			<!-- constraint: -->
-			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
-			</div>
-			<div class="div_line_col_2">
-				<textarea style="height: 100px" tabindex="6"
-					data-bind="ntsMultilineEditor: {
+		<div data-bind="if:appTypeSet().displayAppReason() !=0">
+			<div class="div_line">
+				<!-- constraint: -->
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<textarea style="height: 100px" tabindex="6"
+						data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
+					required:appTypeSet().displayAppReason() !=0,
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'
 			                    	}
 			                   	}" />
+				</div>
 			</div>
 		</div>
 	</div>

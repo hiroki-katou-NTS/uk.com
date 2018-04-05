@@ -15,6 +15,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         checkCreate: KnockoutObservable<boolean>;
         closeUp: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean> = ko.observable(false);
+        isMaCoLog: KnockoutObservable<boolean> = ko.observable(false);
         param: any = getShared('CPS005B_PARAMS');
 
         constructor() {
@@ -279,6 +280,10 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+        masterCorrLog() {
+            //chua phat trien:    
         }
 
     }

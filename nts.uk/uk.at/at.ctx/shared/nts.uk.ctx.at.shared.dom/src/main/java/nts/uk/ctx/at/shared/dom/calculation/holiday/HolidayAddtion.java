@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,7 +53,17 @@ public class HolidayAddtion extends AggregateRoot {
 
 	/**変形労働勤務の加算設定*/
 	private WorkDepLabor irregularWork;
-
+	
+	/*B3_8*/
+	/*就業時間の加算設定管理*/
+	private AddSetManageWorkHour additionSettingOfOvertime;
+	
+	/*時給者の加算設定*/
+	private HourlyPaymentAdditionSet hourPaymentAddition;
+	
+	/*時間休暇加算*/
+	private List<TimeHolidayAdditionSet> timeHolidayAddition;
+	
 	@Override
 	public void validate() {
 		super.validate();
@@ -61,9 +72,11 @@ public class HolidayAddtion extends AggregateRoot {
 	public static HolidayAddtion createFromJavaType(String companyId, int referComHolidayTime, BigDecimal oneDay,
 			BigDecimal morning, BigDecimal afternoon, int referActualWorkHours, int notReferringAch, int annualHoliday,
 			int specialHoliday, int yearlyReserved, RegularWork regularWork, FlexWork flexWork,
-			WorkDepLabor irregularWork) {
+			WorkDepLabor irregularWork, AddSetManageWorkHour additionSettingOfOvertime, HourlyPaymentAdditionSet hourPaymentAddSet,
+			List<TimeHolidayAdditionSet> timeHolidayAddition) {
 		return new HolidayAddtion(companyId, referComHolidayTime, oneDay, morning, afternoon, referActualWorkHours,
 				EnumAdaptor.valueOf(notReferringAch, NotReferringAchAtr.class), annualHoliday, specialHoliday,
-				yearlyReserved, regularWork, flexWork, irregularWork);
+				yearlyReserved, regularWork, flexWork, irregularWork, 
+				additionSettingOfOvertime, hourPaymentAddSet, timeHolidayAddition);
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK_;
@@ -164,6 +166,20 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		return KrcstDvgcAttendance.isEmpty() ? new ArrayList<Integer>()
 				: KrcstDvgcAttendance.stream().map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getDivTimeListByUseSet(java.lang.String)
+	 */
+	@Override
+	public List<DivergenceTime> getDivTimeListByUseSet(String companyId) {
+		
+		// get all div time by logined company
+		List<DivergenceTime> divTimeList = this.findByCompanyId(companyId);
+		
+		// filter the div time list by use classification is USE and sort by div time NO
+		return divTimeList.stream().filter(item -> item.getDivTimeUseSet().equals(DivergenceTimeUseSet.USE))
+				.sorted(Comparator.comparing(DivergenceTime::getDivergenceTimeNo)).collect(Collectors.toList());
 	}
 
 	/**

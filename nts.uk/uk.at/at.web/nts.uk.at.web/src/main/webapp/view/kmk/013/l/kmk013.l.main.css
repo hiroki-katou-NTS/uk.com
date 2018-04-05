@@ -1,0 +1,27 @@
+#functions-area > button {
+	margin-left: 40px
+}
+
+#contents-area {
+    display: flex;
+    flex-direction: column;
+    margin-left: 30px;
+    margin-top: 20px;
+    height: calc(100% - 161px) !important;
+}
+
+#contents-area > div {
+	margin-bottom: 10px;
+}
+.temp-work-set {
+	display: flex;
+	margin-left: 15px
+}
+
+.temp-work-set > div:nth-child(1) {
+	width: 200px
+}
+
+.temp-work-set > div:nth-child(1) {
+	margin-left: 15px;
+}

@@ -21,9 +21,9 @@ public class AppReflectRecordPara {
 	 */
 	private OvertimeReflectPara overtimeInfor;
 	/**
-	 * 休暇申請
+	 * 休暇申請, 勤務変更
 	 */
-	private AbsenceReflectPara absenceInfor;
+	private CommonReflectPara commonInfor;
 	/**
 	 * 休日出勤申請
 	 */
