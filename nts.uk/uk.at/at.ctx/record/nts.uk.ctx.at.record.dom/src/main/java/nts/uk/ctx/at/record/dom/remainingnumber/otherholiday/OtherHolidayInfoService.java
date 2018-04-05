@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
@@ -70,12 +71,12 @@ public class OtherHolidayInfoService {
 		excessLeaveInfoRepository.add(exLeav);
 		
 		String sid = pubHD.getSID();
-		if (checkEnableLeaveMan(cid,sid)){
+		if (checkEnableLeaveMan(sid)){
 			setRemainNumber(cid,sid,remainNumber);
 		}
 		
 		// Item IS00368
-		if (checkEnablePayout(cid,sid)){
+		if (checkEnablePayout(sid)){
 			setRemainLeftItem(cid,sid,remainLeft);
 		}
 		
@@ -256,12 +257,12 @@ public class OtherHolidayInfoService {
 		
 		String sid = pubHD.getSID();
 		// Item IS00366
-		if (checkEnableLeaveMan(cid,sid)){
+		if (checkEnableLeaveMan(sid)){
 			setRemainNumber(cid,sid,remainNumber);
 		}
 		
 		// Item IS00368
-		if (checkEnablePayout(cid,sid)){
+		if (checkEnablePayout(sid)){
 			setRemainLeftItem(cid,sid,remainLeft);
 		}
 		
@@ -273,15 +274,17 @@ public class OtherHolidayInfoService {
 	 * @param sid
 	 * @return
 	 */
-	public boolean checkEnableLeaveMan(String cid, String sid){
-		if (comDayOffManaDataRepository.getBySid(cid,sid).stream().count() == 0L && leaveManaDataRepository.getBySid(cid, sid).stream().count() == 0L){
+	public boolean checkEnableLeaveMan(String sid){
+		String cid = AppContexts.user().companyId();
+		if (comDayOffManaDataRepository.getBySid(cid,sid).isEmpty() && leaveManaDataRepository.getBySid(cid, sid).isEmpty()){
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean checkEnablePayout(String cid, String sid){
-		if (substitutionOfHDManaDataRepository.getBysiD(cid,sid).stream().count() == 0L && payoutManagementDataRepository.getSid(cid,sid).stream().count() == 0L){
+	public boolean checkEnablePayout(String sid){
+		String cid = AppContexts.user().companyId();
+		if (substitutionOfHDManaDataRepository.getBysiD(cid,sid).isEmpty() && payoutManagementDataRepository.getSid(cid,sid).isEmpty()){
 			return true;
 		}
 		return false;

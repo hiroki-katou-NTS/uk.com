@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoFinder;
+import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
@@ -35,6 +37,9 @@ public class LayoutWebService extends WebService {
 
 	@Inject 
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
+	
+	@Inject
+	private OtherHolidayInfoService otherHolidayInfoService;
 	
 	@Path("getByCreateType")
 	@POST
@@ -82,8 +87,22 @@ public class LayoutWebService extends WebService {
 	
 	@Path("calDayTime")
 	@POST
-	public String calDayTime(String sid, int specialCD){
-		return specialLeaveGrantRemainService.calDayTime(sid, specialCD);
+	public Object calDayTime(String sid, int specialCD){
+		String dayTime = specialLeaveGrantRemainService.calDayTime(sid, specialCD);
+		return new Object[] {dayTime};
 	}
 	
+	@Path("checkEnableRemainDays")
+	@POST
+	public Object checkEnableRemainDays(String sid){
+		boolean result = otherHolidayInfoService.checkEnableLeaveMan(sid);
+		return new Object[] {result};
+	}
+	
+	@Path("checkEnableRemainLeft")
+	@POST
+	public Object checkEnableRemainLeft(String sid, int specialCD){
+		boolean result = otherHolidayInfoService.checkEnablePayout(sid);
+		return new Object[] {result};
+	}
 }
