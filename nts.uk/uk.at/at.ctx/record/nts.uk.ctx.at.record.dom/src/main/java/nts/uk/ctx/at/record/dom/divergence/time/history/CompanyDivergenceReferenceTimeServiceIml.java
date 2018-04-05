@@ -104,7 +104,7 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 							result = JudgmentResult.NORMAL;
 						} else {
 							//set judgment result
-							result = JudgmentResult.ERROR;
+							result = JudgmentResult.ALARM;
 							//set determineRefTime.Threshold
 							determineRefTime.setThreshold(
 									workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime().get());
@@ -156,7 +156,7 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 											.getAlarmTime().get() == new DivergenceReferenceTime(0)) {
 								result = JudgmentResult.NORMAL;
 							} else {
-								result = JudgmentResult.ERROR;
+								result = JudgmentResult.ALARM;
 								determineRefTime.setThreshold(companyDivergenceReferenceTime
 										.getDivergenceReferenceTimeValue().get().getAlarmTime().get());
 							}
