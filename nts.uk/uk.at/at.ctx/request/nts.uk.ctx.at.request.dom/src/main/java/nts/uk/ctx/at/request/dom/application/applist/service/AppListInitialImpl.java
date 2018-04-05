@@ -32,6 +32,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeI
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -67,6 +69,8 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepositor
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
@@ -117,6 +121,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AtEmployeeAdapter employeeAdapter;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepo;
+	@Inject
+	private RqClosureAdapter closureAdapter;
 	
 	/**
 	 * 0 - 申請一覧事前必須チェック
