@@ -1,38 +1,45 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import java.util.List;
 import java.util.Optional;
+
 /**
- * 
- * @author phongtq
- *
+ * The Interface HolidayAddtionRepository.
  */
 public interface HolidayAddtionRepository {
 
 	/**
-	 * Find Holiday Addtime by CID
-	 * @param companyId
-	 * @return
+	 * Find by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
 	 */
-	List<HolidayAddtion> findByCompanyId(String companyId);
+	List<HolidayAddtionSet> findByCompanyId(String companyId);
 	
 	/**
-	 * Check by CID
-	 * @param companyId
-	 * @return
+	 * Find by C id.
+	 *
+	 * @param companyId the company id
+	 * @return the optional
 	 */
-	Optional<HolidayAddtion >findByCId(String companyId);
+	Optional<HolidayAddtionSet >findByCId(String companyId);
 	
 	/**
-	 * Add Holiday Addtime
-	 * @param holidayAddtime
+	 * Adds the.
+	 *
+	 * @param holidayAddtime the holiday addtime
 	 */
-	void add(HolidayAddtion holidayAddtime);
+	void add(HolidayAddtionSet holidayAddtime);
 
 	/**
-	 * Update Holiday Addtime
-	 * @param holidayAddtime
+	 * Update.
+	 *
+	 * @param holidayAddtime the holiday addtime
 	 */
-	void update(HolidayAddtion holidayAddtime);
+	void update(HolidayAddtionSet holidayAddtime);
 
 }
