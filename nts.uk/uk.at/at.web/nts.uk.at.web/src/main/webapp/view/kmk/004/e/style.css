@@ -20,3 +20,6 @@
 	margin-left: 30px;
 	height: 150px;
 }
+#master-wrapper {
+	overflow: hidden !important;
+}
