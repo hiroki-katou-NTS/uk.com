@@ -267,17 +267,23 @@ module nts.uk.at.view.kmk004.c {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), employmentCode: emplCode }
                     service.removeEmploymentSetting(command).done((res) => {
-                        if (res.wtsettingCommonRemove) {
-                            self.removeAlreadySettingEmployment(emplCode);
-                        }
+                    
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();
-                        // Reserve selected year.
-                        newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                        // Update Full Data
-                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
                         
+                        // Reserve selected year.
+                        newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year()); 
+                        
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingEmployment(emplCode);
+                            //Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        } else {
+                            newSetting.statWorkTimeSetDto.regularLaborTime.updateData(self.worktimeVM.worktimeSetting.normalWorktime());
+                            newSetting.statWorkTimeSetDto.transLaborTime.updateData(self.worktimeVM.worktimeSetting.deformLaborWorktime());
+                            self.worktimeVM.worktimeSetting.updateDataDependOnYear(newSetting.statWorkTimeSetDto);
+                        }
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {

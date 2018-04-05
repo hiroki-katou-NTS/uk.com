@@ -216,21 +216,25 @@ module nts.uk.at.view.kmk004.d {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), workplaceId: self.selectedWorkplaceId() }
                     service.removeWorkplaceSetting(command).done((res) => {
-                        
-                        if (res.wtsettingCommonRemove) {
-                            self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
-                        }
-                        
+
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();
                         // Reserve selected year.
                         newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                        // Update Full Data
-                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
-                        
+
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
+
+                            // Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        } else {
+                            newSetting.statWorkTimeSetDto.regularLaborTime.updateData(self.worktimeVM.worktimeSetting.normalWorktime());
+                            newSetting.statWorkTimeSetDto.transLaborTime.updateData(self.worktimeVM.worktimeSetting.deformLaborWorktime());
+                            self.worktimeVM.worktimeSetting.updateDataDependOnYear(newSetting.statWorkTimeSetDto);
+                        }
                         self.setWorkplaceCodeName($('#list-workplace').getDataList(), '');
-                        
+
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });

@@ -422,17 +422,24 @@ module nts.uk.at.view.kmk004.b {
                 let sid = self.selectedEmployeeId();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.removeEmployeeSetting({ year: self.worktimeVM.worktimeSetting.normalSetting().year(), sid: sid }).done((res) => {
-                        //check common is remove
-                        if (res.wtsettingCommonRemove) {
-                            self.removeAlreadySettingPersonal(self.displayEmployeeCode());
-                        }
+                        
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();
                         // Reserve selected year.
                         newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                        // Update Full Data
-                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        
+                        //check common is remove
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingPersonal(self.displayEmployeeCode());
+                            
+                            // Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        } else {
+                            newSetting.statWorkTimeSetDto.regularLaborTime.updateData(self.worktimeVM.worktimeSetting.normalWorktime());
+                            newSetting.statWorkTimeSetDto.transLaborTime.updateData(self.worktimeVM.worktimeSetting.deformLaborWorktime());
+                            self.worktimeVM.worktimeSetting.updateDataDependOnYear(newSetting.statWorkTimeSetDto);
+                        }
                         
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
