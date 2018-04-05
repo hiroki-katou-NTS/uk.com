@@ -180,15 +180,11 @@ module nts.uk.at.view.kmk004.b {
                         
                         self.isLoading(false);
                         
-                        let empId = self.selectedEmployeeId();
-                        if (empId.length > 0) {
-                            self.loadEmployeeSetting();
-                        }
+                        self.loadEmployeeSetting(); // load setting for initial selection
                         
+                        // subscribe to furture selection
                         self.selectedEmployeeId.subscribe(function(Id) {
-                            if (Id.length > 0) {
-                                self.loadEmployeeSetting();
-                            }
+                            self.loadEmployeeSetting();
                         });
                         
                         ko.applyBindingsToNode($('#lblEmployeeCode')[0], { text: self.displayEmployeeCode });
@@ -344,6 +340,7 @@ module nts.uk.at.view.kmk004.b {
                 let self = this;
                 
                 let empId = self.selectedEmployeeId();
+                if (nts.uk.text.isNullOrEmpty(empId)) return;
                 
                 nts.uk.ui.block.invisible();
                 service.findEmployeeSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), empId).done((data) => {

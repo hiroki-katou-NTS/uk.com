@@ -63,6 +63,11 @@ module nts.uk.at.view.kmk004.c {
                 self.employmentCode = ko.observable('');
                 self.employmentName = ko.observable('');
                 
+                let year = nts.uk.sessionStorage.nativeStorage.getItem("nts-uk-" + __viewContext.user.employeeId + "-kmk004-worktime-year-selection");
+                if (year && nts.uk.ntsNumber.isNumber(year)) {
+                    self.worktimeVM.worktimeSetting.normalSetting().year(parseInt(year));
+                }
+                
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
@@ -120,20 +125,12 @@ module nts.uk.at.view.kmk004.c {
                     self.worktimeVM.worktimeSetting.selectedTab('tab-1');
                     
                     
-                    let empCode = self.selectedEmploymentCode();
-                    if (empCode) {
-                        self.loadEmploymentSetting(empCode);
-                    }
+                    self.loadEmploymentSetting(self.selectedEmploymentCode()); // load setting for initial selection
                     
+                    // subscribe to furture selection
                     self.selectedEmploymentCode.subscribe(code => {
-                        self.employmentCode(code);
-                        if (code) {
-                            self.loadEmploymentSetting(code);
-                            self.setEmploymentName(code);
-                        } else {
-                            self.employmentName('');
-                        }
-                        
+                        self.loadEmploymentSetting(code);
+                        self.setEmploymentName(code);
                     });
                     
                     ko.applyBindingsToNode($('#lblEmploymentCode')[0], { text: self.employmentCode });
@@ -148,6 +145,7 @@ module nts.uk.at.view.kmk004.c {
              */
             public loadEmploymentSetting(code?: string): void {
                 let self = this;
+                if (nts.uk.text.isNullOrEmpty(code)) return;
                 service.findEmploymentSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), code)
                     .done(function(data) {
                         // Clear Errors
@@ -192,7 +190,7 @@ module nts.uk.at.view.kmk004.c {
             private setEmploymentName(code: string): void {
                 let self = this;
                 let list = $('#list-employment').getDataList();
-                if (list && code.length > 0) {
+                if (list && code && code.length > 0) {
                     let empt = _.find(list, item => item.code == code);
                     self.employmentName(empt.name);
                     self.employmentCode(empt.code);
