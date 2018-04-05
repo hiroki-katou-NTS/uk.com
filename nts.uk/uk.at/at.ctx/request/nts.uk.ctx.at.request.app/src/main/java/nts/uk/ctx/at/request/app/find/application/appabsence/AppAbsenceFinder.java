@@ -206,7 +206,7 @@ public class AppAbsenceFinder {
 		if (!CollectionUtil.isEmpty(workTypes)) {
 			if (appAbsence.getWorkTypeCode() != null) {
 				List<WorkType> workTypeCodeInWorkTypes = workTypes.stream()
-						.filter(x -> x.getWorkTypeCode().toString().equals(appAbsence.getWorkTypeCode()))
+						.filter(x -> x.getWorkTypeCode().toString().equals(appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().toString()))
 						.collect(Collectors.toList());
 				if (!CollectionUtil.isEmpty(workTypeCodeInWorkTypes)) {
 					result.setWorkTypeCode(appAbsence.getWorkTypeCode().toString());

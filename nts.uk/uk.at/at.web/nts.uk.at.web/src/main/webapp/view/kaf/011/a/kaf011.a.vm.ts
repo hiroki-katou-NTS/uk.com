@@ -54,13 +54,18 @@ module nts.uk.at.view.kaf011.a.screenModel {
         constructor() {
             let self = this;
             self.appComSelectedCode.subscribe((newCode) => {
-                if (newCode == 0) { return; }
+
+                if ($("#recTime1Start ,#recTime1End").length) {
+                    $("#recTime1Start ,#recTime1End").ntsError("clear");
+                }
                 if (!$("#absDatePinker").length) {
                     $("#recDatePicker").ntsError("clear");
                 }
                 if (!$("#recDatePicker").length) {
                     $("#absDatePinker").ntsError("clear");
                 }
+
+
             });
         }
 
@@ -150,12 +155,26 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appVersion: 0
                         ,
                     }
-                };
-            let selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() });
+                },
+                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() });
+            //            ,
+            //                appReason = self.getReason(self.appReasonSelectedID(),
+            //                    self.appReasons(),,
+            //                appReason = self.getReason(self.appReasonSelectedID(),
+            //                    self.appReasons(),
+            //                    self.reason());
+            //                    self.reason());
+
             if (selectedReason) {
                 saveCmd.appCmd.appReasonText = selectedReason.reasonTemp
             }
+
+            //            if (!nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason")) {
+            //                return;
+            //            }
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+
+
             self.validate();
             if (nts.uk.ui.errors.hasError()) { return; }
             block.invisible();
@@ -169,6 +188,22 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 block.clear();
                 $("#recDatePicker").focus();
             });
+        }
+
+        getReason(inputReasonID: string, inputReasonList: Array<any>, detailReason: string): string {
+            let appReason = '';
+            let inputReason: string = '';
+            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
+                inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;
+            }
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }
+            return appReason;
         }
 
         openKDL009() {

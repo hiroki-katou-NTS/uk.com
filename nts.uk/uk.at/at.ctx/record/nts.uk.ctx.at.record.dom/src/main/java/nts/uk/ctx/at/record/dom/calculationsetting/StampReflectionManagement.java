@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.dom.calculationsetting;
 
 import lombok.Getter;
@@ -11,9 +15,8 @@ import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClas
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.ReflectWorkingTimeClass;
 
 /**
- * 
- * @author nampt 打刻反映管理 - root
- *
+ * The Class StampReflectionManagement.
+ * 打刻反映管理
  */
 @Getter
 public class StampReflectionManagement extends AggregateRoot {
@@ -40,6 +43,18 @@ public class StampReflectionManagement extends AggregateRoot {
 	private AutoStampForFutureDayClass autoStampForFutureDayClass;
 	
 
+	/**
+	 * Creates the java type.
+	 *
+	 * @param companyId the company id
+	 * @param breakSwitchClass the break switch class
+	 * @param autoStampReflectionClass the auto stamp reflection class
+	 * @param actualStampOfPriorityClass the actual stamp of priority class
+	 * @param reflectWorkingTimeClass the reflect working time class
+	 * @param goBackOutCorrectionClass the go back out correction class
+	 * @param autoStampForFutureDayClass the auto stamp for future day class
+	 * @return the stamp reflection management
+	 */
 	public static StampReflectionManagement createJavaType(String companyId, int breakSwitchClass,
 			int autoStampReflectionClass, int actualStampOfPriorityClass,
 			int reflectWorkingTimeClass, int goBackOutCorrectionClass,
@@ -55,6 +70,17 @@ public class StampReflectionManagement extends AggregateRoot {
 				);
 	}
 
+	/**
+	 * Instantiates a new stamp reflection management.
+	 *
+	 * @param companyId the company id
+	 * @param breakSwitchClass the break switch class
+	 * @param autoStampReflectionClass the auto stamp reflection class
+	 * @param actualStampOfPriorityClass the actual stamp of priority class
+	 * @param reflectWorkingTimeClass the reflect working time class
+	 * @param goBackOutCorrectionClass the go back out correction class
+	 * @param autoStampForFutureDayClass the auto stamp for future day class
+	 */
 	public StampReflectionManagement(String companyId, BreakSwitchClass breakSwitchClass,
 			AutoStampReflectionClass autoStampReflectionClass, ActualStampOfPriorityClass actualStampOfPriorityClass,
 			ReflectWorkingTimeClass reflectWorkingTimeClass, GoBackOutCorrectionClass goBackOutCorrectionClass,

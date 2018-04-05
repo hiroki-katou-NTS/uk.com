@@ -35,6 +35,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         fileDataTotalLine: KnockoutObservable<number> = ko.observable(null);
         onchange: (filename) => void;
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
+        
+        selectedEncoding: KnockoutObservable<number> = ko.observable(3);
+        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
 
         constructor(data: any) {
             var self = this;
@@ -48,6 +51,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
             self.listCategoryItem = ko.observableArray([]);
 
+            self.encodingList(model.getEncodingList());
+            
             self.selectedCategory.subscribe((data) => {
                 if (data) {
                     self.loadCategoryItemData(data);
@@ -58,7 +63,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
 
             self.selectedCategoryItem = ko.observable(1);
-            $("#fixed-table").ntsFixedTable({ height: 540 });
+            $("#fixed-table").ntsFixedTable({ height: 264 });
 
             this.fileId = ko.observable(null);
             this.filename = ko.observable(null);
@@ -73,12 +78,16 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
         }
 
+        private scrollIntoSelectedAcceptItem(data: number): void {
+            $("#fixed-table tr[data-id='" + data + "']")[0].scrollIntoView();
+        }
+
         finished(fileInfo: any) {
             var self = this;
             self.fileId(fileInfo.id);
             console.log(fileInfo);
             block.invisible();
-            service.getNumberOfLine(self.fileId()).done(function(totalLine: any) {
+            service.getNumberOfLine(self.fileId(),self.selectedEncoding()).done(function(totalLine: any) {
                 self.fileDataTotalLine(totalLine);
                 self.setListMappingData(() => {
                     if (self.listAcceptItem().length > 0) {
@@ -101,22 +110,27 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         btnLeftClick() {
             let self = this;
             if (self.selectedAcceptItem() > 0 && self.selectedAcceptItem() <= self.listAcceptItem().length) {
+                let selectedAItemIndex = _.findIndex(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedAItem = _.find(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedCItem = _.find(self.listSelectedCategoryItem(), x => { return x.itemNo == selectedAItem.categoryItemNo(); });
                 if (selectedCItem.required) {
                     alertError({messageId: "Msg_898"});
                 } else {
                     self.listAcceptItem.remove(selectedAItem);
-                    self.listCategoryItem.push(selectedCItem);
-                    self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['itemNo']));
                     self.listSelectedCategoryItem.remove(selectedCItem);
+                    self.selectedCategoryItem(selectedCItem.itemNo);
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
                         self.listAcceptItem()[i].acceptItemNumber(i + 1);
                     }
-                    if (self.selectedAcceptItem() >= self.listAcceptItem().length)
-                        self.selectedAcceptItem(self.listAcceptItem().length);
-                    else
+                    if (self.selectedAcceptItem() >= self.listAcceptItem().length) {
+                        selectedAItemIndex = self.listAcceptItem().length;
+                        self.selectedAcceptItem(selectedAItemIndex);
+                    } else {
                         self.selectedAcceptItem.valueHasMutated();
+                    }
+                    self.listCategoryItem.push(selectedCItem);
+                    self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['itemNo']));
+                    self.scrollIntoSelectedAcceptItem(selectedAItemIndex);
                 }
             } else {
                 alertError({messageId: "Msg_897"});
@@ -132,11 +146,18 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let item = new model.StandardAcceptItem(null, null, 0, i, selectedItem.itemName, self.stdCondSet().systemType(), self.stdCondSet().conditionSettingCode(), selectedItem.itemNo);
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
+                self.selectedAcceptItem(self.listAcceptItem().length);
+                self.scrollIntoSelectedAcceptItem(self.listAcceptItem().length);
+                if (self.listCategoryItem().length > 1) {
+                    if (selectedIndex >= self.listCategoryItem().length - 1) {
+                        self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 2].itemNo);
+                    } else {
+                        self.selectedCategoryItem(self.listCategoryItem()[selectedIndex + 1] ? self.listCategoryItem()[selectedIndex + 1].itemNo : null);
+                    }
+                }
+                /* remove after set selected
+                   because problem with scroll when remove before set selected */
                 self.listCategoryItem.remove(selectedItem);
-                if (selectedIndex >= self.listCategoryItem().length && self.listCategoryItem().length > 0)
-                    self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 1].itemNo);
-                else
-                    self.selectedCategoryItem(self.listCategoryItem()[selectedIndex] ? self.listCategoryItem()[selectedIndex].itemNo : null);
             } else {
                 alertError({messageId: "Msg_894"});
             }
@@ -354,6 +375,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 block.invisible();
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
+                self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerDataAndReturn(command).done(() => {
                     self.enableCategory(false);
@@ -364,6 +386,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                         });
                     });
                 }).fail(function(error) {
+                    if (!error.messageId) error.messageId = "Msg_904"; //エラーリストにエラーメッセージがある場合
                     alertError(error);
                 }).always(() => {
                     block.clear();
@@ -382,7 +405,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                         cond.deleteExistData, cond.acceptMode, 
                                                         cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber, 
                                                         cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine, 
+                                                        cond.characterCode,
                                                         cond.deleteExistDataMethod, cond.categoryId));
+                    if (cond.characterCode == null)
+                        self.selectedEncoding = ko.observable(3);
+                    else
+                        self.selectedEncoding = ko.observable(cond.characterCode);
                     service.getAllCategory().done((rs: Array<any>) => {
                         if (rs && rs.length) {
                             let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
@@ -455,9 +483,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                         self.listAcceptItem(_rsList);
                                         _.each(self.listAcceptItem(), rs => {
                                             let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
-                                            rs.acceptItemName(item.itemName);
-                                            self.listSelectedCategoryItem.push(item);
-                                            self.listCategoryItem.remove(item);
+                                            if (item) {
+                                                rs.acceptItemName(item.itemName);
+                                                self.listSelectedCategoryItem.push(item);
+                                                self.listCategoryItem.remove(item);
+                                            }
                                         });
                                     });
                                 } else {//chua co du lieu, dang ki moi
@@ -514,6 +544,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 block.invisible();
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
+                self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
                 service.registerData(command).done(() => {
                     self.enableCategory(false);
@@ -563,13 +594,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             if (self.screenFileCheck()) {
                 //write data mapping
                 block.invisible();
-                service.getRecord(self.fileId(), self.stdCondSet().csvDataItemLineNumber(), self.stdCondSet().csvDataStartLine()).done((rs: Array<any>) => {
+                service.getRecord(self.fileId(), self.stdCondSet().csvDataItemLineNumber(), self.stdCondSet().csvDataStartLine(), self.selectedEncoding()).done((rs: Array<any>) => {
                     let _rsList: Array<model.MappingListData> = _.map(rs, x => {
                         return new model.MappingListData(x.colNum, x.colName, x.sampleData);
                     });
                     self.listMappingData(_rsList);
                     refreshListAcceptItem();
-                }).fail(function(err) {
+                }).fail(function(error) {
                     //Clear "CSV data item name" and "sample data" on the screen
                     for (var i = 0; i < self.listAcceptItem().length; i++) {
                         self.listAcceptItem()[i].csvItemNumber(null);
@@ -578,16 +609,28 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                     $('#file-upload').find('.filenamelabel').text('');
                     $('#file-upload').find("input").val('');
-                    $('#file-upload').find("input").change();
+                    if (self.isIE()) { //Internet Explorer 6-11 not fire event change
+                        $('#file-upload').find("input").change();
+                    }
                     self.listMappingData([]);
                     self.fileId(null);
-                    alertError(err);
+                    if (!error.messageId) error.messageId = "Msg_1158"; //RawErrorMessage
+                    alertError(error);
                 }).always(() => {
                     block.clear();
                 });
             } else {
                 return;
             }
+        }
+
+        /**
+         * is Internet Explorer 6-11
+         */
+        private isIE(): boolean {
+            // Internet Explorer 6-11
+            let _document: any = document;
+            return /*@cc_on!@*/false || !!_document.documentMode;
         }
     }
 }
