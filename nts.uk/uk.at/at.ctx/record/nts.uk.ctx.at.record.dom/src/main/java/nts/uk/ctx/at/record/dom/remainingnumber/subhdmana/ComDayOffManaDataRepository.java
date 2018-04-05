@@ -11,9 +11,9 @@ public interface ComDayOffManaDataRepository {
 	 */
 	// 社員ID=パラメータ「社員ID」
 	// 未相殺日数>0.0
-	List<CompensatoryDayOffManaData> getBySidWithReDay(String sid);
+	List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid);
 	
-	List<CompensatoryDayOffManaData> getBySid(String sid);
+	List<CompensatoryDayOffManaData> getBySid(String cid, String sid);
 	
 	void create(CompensatoryDayOffManaData domain);
 }

@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
@@ -32,6 +33,9 @@ public class LayoutWebService extends WebService {
 	@Inject
 	private PeregProcessor layoutProcessor;
 
+	@Inject 
+	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
+	
 	@Path("getByCreateType")
 	@POST
 	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
@@ -76,5 +80,10 @@ public class LayoutWebService extends WebService {
 		return this.layoutProcessor.getSubDetailInCtgChild(query);
 	}
 	
+	@Path("calDayTime")
+	@POST
+	public String calDayTime(String sid, int specialCD){
+		return specialLeaveGrantRemainService.calDayTime(sid, specialCD);
+	}
 	
 }

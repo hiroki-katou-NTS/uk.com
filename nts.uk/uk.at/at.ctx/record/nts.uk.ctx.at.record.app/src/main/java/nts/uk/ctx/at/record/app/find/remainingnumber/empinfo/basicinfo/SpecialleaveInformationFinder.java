@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -8,12 +7,9 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.SpecialLeaveCode;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -21,9 +17,6 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class SpecialleaveInformationFinder {
 	@Inject 
 	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepository;
-	
-	@Inject 
-	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 	
 	@Inject
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
@@ -34,8 +27,7 @@ public class SpecialleaveInformationFinder {
 			return null;
 		}
 		
-		List<SpecialLeaveGrantRemainingData> grantRemain = specialLeaveGrantRepo.getAllByExpStatus(query.getEmployeeId(), specialLeaveCD, LeaveExpirationStatus.AVAILABLE.value);
-		String dayTime = specialLeaveGrantRemainService.calDayTime(grantRemain);
+		String dayTime = specialLeaveGrantRemainService.calDayTime(query.getEmployeeId(),specialLeaveCD);
 		
 		// TODO Item IS00300 QA 111
 		String grantDate = null;

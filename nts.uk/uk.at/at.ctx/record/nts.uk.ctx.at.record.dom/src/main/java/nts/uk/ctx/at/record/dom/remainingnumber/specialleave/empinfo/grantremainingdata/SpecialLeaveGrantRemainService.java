@@ -3,17 +3,24 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremai
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
 
 @Stateless
 public class SpecialLeaveGrantRemainService {
+	@Inject 
+	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 	
-	public String calDayTime(List<SpecialLeaveGrantRemainingData> grantRemains){
+	public String calDayTime(String sid, int specialCD){
+		List<SpecialLeaveGrantRemainingData> grantRemains = specialLeaveGrantRepo.getAllByExpStatus(sid, specialCD, LeaveExpirationStatus.AVAILABLE.value);
+		
 		Double result = grantRemains.stream().mapToDouble(item->item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
 		
-		int minutes = grantRemains.stream()
+		int hours = grantRemains.stream()
+				.filter(i -> i.getDetails().getRemainingNumber().timeOfRemain.isPresent()).mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().hour()).sum();
+		int minute = grantRemains.stream()
 				.filter(i -> i.getDetails().getRemainingNumber().timeOfRemain.isPresent()).mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().minute()).sum();
-		int hours = minutes / 60;
-		int minute = minutes - hours*60;
 		return result.toString() + " 日と " + hours + ":" + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
 	}
 

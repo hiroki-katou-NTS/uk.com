@@ -70,13 +70,12 @@ public class OtherHolidayInfoService {
 		excessLeaveInfoRepository.add(exLeav);
 		
 		String sid = pubHD.getSID();
-		// Item IS00366
-		if (comDayOffManaDataRepository.getBySid(sid).stream().count() == 0L && leaveManaDataRepository.getBySid(cid, sid).stream().count() == 0L){
+		if (checkEnableLeaveMan(cid,sid)){
 			setRemainNumber(cid,sid,remainNumber);
 		}
 		
 		// Item IS00368
-		if (substitutionOfHDManaDataRepository.getBysiD(sid).stream().count() == 0L && payoutManagementDataRepository.getSidWithCod(cid,sid).stream().count() == 0L){
+		if (checkEnablePayout(cid,sid)){
 			setRemainLeftItem(cid,sid,remainLeft);
 		}
 		
@@ -257,14 +256,34 @@ public class OtherHolidayInfoService {
 		
 		String sid = pubHD.getSID();
 		// Item IS00366
-		if (comDayOffManaDataRepository.getBySid(sid).stream().count() == 0L && leaveManaDataRepository.getBySid(cid, sid).stream().count() == 0L){
+		if (checkEnableLeaveMan(cid,sid)){
 			setRemainNumber(cid,sid,remainNumber);
 		}
 		
 		// Item IS00368
-		if (substitutionOfHDManaDataRepository.getBysiD(sid).stream().count() == 0L && payoutManagementDataRepository.getSidWithCod(cid,sid).stream().count() == 0L){
+		if (checkEnablePayout(cid,sid)){
 			setRemainLeftItem(cid,sid,remainLeft);
 		}
 		
+	}
+	
+	/**
+	 * IS00366 check Enable
+	 * @param cid
+	 * @param sid
+	 * @return
+	 */
+	public boolean checkEnableLeaveMan(String cid, String sid){
+		if (comDayOffManaDataRepository.getBySid(cid,sid).stream().count() == 0L && leaveManaDataRepository.getBySid(cid, sid).stream().count() == 0L){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean checkEnablePayout(String cid, String sid){
+		if (substitutionOfHDManaDataRepository.getBysiD(cid,sid).stream().count() == 0L && payoutManagementDataRepository.getSid(cid,sid).stream().count() == 0L){
+			return true;
+		}
+		return false;
 	}
 }
