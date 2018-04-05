@@ -8,12 +8,13 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class ExceededPredAddVacationCalc.
  */
 @Getter
-//休暇加算時間が所定を超過した場合の計算
+// 休暇加算時間が所定を超過した場合の計算
 public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 
 	/** The calc method. */
@@ -24,6 +25,12 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 	// 残業枠
 	private OTFrameNo otFrameNo;
 
+	/**
+	 * Instantiates a new exceeded pred add vacation calc.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
 	public ExceededPredAddVacationCalc(ExceededPredAddVacationCalcGetMemento memento) {
 		this.calcMethod = memento.getCalcMethod();
 		this.otFrameNo = memento.getOtFrameNo();
@@ -57,5 +64,31 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 		}
 
 		super.validate();
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, ExceededPredAddVacationCalc oldDomain) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+			this.otFrameNo = oldDomain.getOtFrameNo();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+			this.otFrameNo = new OTFrameNo(1);
+		}
 	}
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class OverTimeCalcNoBreak.
@@ -69,5 +70,33 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 		}
 
 		super.validate();
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, OverTimeCalcNoBreak oldDomain) {
+		if (CalcMethodNoBreak.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+			this.inLawOT = oldDomain.getInLawOT();
+			this.notInLawOT = oldDomain.getNotInLawOT();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (CalcMethodNoBreak.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+			this.inLawOT = new OTFrameNo(1);
+			this.notInLawOT = new OTFrameNo(1);
+		}
 	}
 }

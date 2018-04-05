@@ -165,6 +165,11 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 		
 		// Tab 8 -> 16
 		this.commonSet.correctData(screenMode, oldDomain.getCommonSet());
+		
+		// Tab 17
+		if (this.calculationSetting.isPresent()) {
+			this.calculationSetting.get().correctData(screenMode, oldDomain.getCalculationSetting());
+		}
 	}
 
 	/**
@@ -182,6 +187,11 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 
 		// Tab 8 -> 16
 		this.commonSet.correctDefaultData(screenMode);
+		
+		// Tab 17
+		if (this.calculationSetting.isPresent()) {
+			this.calculationSetting.get().correctDefaultData(screenMode);
+		}	
 	}
 
 }

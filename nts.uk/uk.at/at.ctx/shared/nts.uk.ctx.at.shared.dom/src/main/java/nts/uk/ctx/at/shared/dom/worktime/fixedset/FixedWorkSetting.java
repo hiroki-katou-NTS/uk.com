@@ -172,6 +172,11 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 		
 		// Tab 8 -> 16
 		this.commonSetting.correctData(screenMode, oldDomain.getCommonSetting());
+		
+		// Tab 17
+		if (this.calculationSetting.isPresent()) {
+			this.calculationSetting.get().correctData(screenMode, oldDomain.getCalculationSetting());
+		}		
 	}
 
 	/**
@@ -189,5 +194,10 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 
 		// Tab 8 -> 16
 		this.commonSetting.correctDefaultData(screenMode);
+		
+		// Tab 17
+		if (this.calculationSetting.isPresent()) {
+			this.calculationSetting.get().correctDefaultData(screenMode);
+		}	
 	}
 }
