@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.service.mail.after;
+package nts.uk.ctx.at.request.dom.mail.service.after;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.request.dom.application.common.service.mail.RegisterEmbededURL;
+import nts.uk.ctx.at.request.dom.mail.service.RegisterEmbededURL;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 /**
