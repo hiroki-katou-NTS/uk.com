@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk003.g {
 
                 self.switchValue = ko.observable(1);
                 self.unitValue = ko.observable(1);
-                self.roundingValue = ko.observable(1);
+                self.roundingValue = ko.observable(0);
 
                 self.lstRest = ko.observableArray([
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
