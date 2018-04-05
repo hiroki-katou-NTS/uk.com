@@ -51,7 +51,7 @@ module nts.uk.at.view.kdw002.c {
                         { headerText: getText('KDW002_4'), key: 'itemDailyName', width: 220 },
                         { headerText: useHeader + getText('KDW002_5'), key: 'toUse', width: 120, template: useTemplate },
                         { headerText: youCanChangeItHeader + getText('KDW002_6'), key: 'youCanChangeIt', width: 120, template: youCanChangeItTemplate },
-                        { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 120, template: canBeChangedByOthersTemplate },
+                        { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 165, template: canBeChangedByOthersTemplate },
                         { headerText: '', key: 'userCanUpdateAtr', width: 1, hidden: true },
 
                     ]);
@@ -180,6 +180,7 @@ module nts.uk.at.view.kdw002.c {
                 $.when(dfdGetListDailyAttdItem,dfdGetListMonthlyAttdItem).done(function(dfdGetListDailyAttdItemData,dfdGetListMonthlyAttdItemData){
                     self.currentRoleId.valueHasMutated();
                     dfd.resolve();
+                    $("#submitDataId").focus();
                 });
                 return dfd.promise();
             }
