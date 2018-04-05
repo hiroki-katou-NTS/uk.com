@@ -9,4 +9,6 @@ public class GettingCsvDataDto {
 	private int[] columns;
 
 	private int index;
+	
+	private int endCoding; 
 }

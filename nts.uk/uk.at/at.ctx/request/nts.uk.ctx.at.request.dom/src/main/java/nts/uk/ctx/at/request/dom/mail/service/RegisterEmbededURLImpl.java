@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.service.mail;
+package nts.uk.ctx.at.request.dom.mail.service;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.service.mail.after.PeriodClassification;
+import nts.uk.ctx.at.request.dom.mail.service.after.PeriodClassification;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.shr.com.context.AppContexts;
 

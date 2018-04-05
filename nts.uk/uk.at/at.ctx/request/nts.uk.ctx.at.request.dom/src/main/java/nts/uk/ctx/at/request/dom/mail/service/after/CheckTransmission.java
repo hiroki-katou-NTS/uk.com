@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.service.mail.after;
+package nts.uk.ctx.at.request.dom.mail.service.after;
 
 import java.util.List;
 
