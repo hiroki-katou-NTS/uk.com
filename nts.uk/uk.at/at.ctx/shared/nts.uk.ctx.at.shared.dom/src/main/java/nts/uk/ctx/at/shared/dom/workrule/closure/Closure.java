@@ -284,4 +284,40 @@ public class Closure extends AggregateRoot {
 		}
 		return returnPeriod;
 	}
+	
+	/**
+	 * 当月の締め日を取得する
+	 * @return 締め日（日付）
+	 */
+	// 2018.4.5 add shuichu_ishida
+	public Optional<ClosureDate> getClosureDateOfCurrentMonth(){
+		
+		val currentYm = this.closureMonth.getProcessingYm();
+		val closureClassOpt = this.closureMonth.getClosureClassification();
+		val maxYm = YearMonth.of(GeneralDate.max().year(), GeneralDate.max().month());
+		
+		// 「締め日変更区分」をチェック　→　締め変更履歴を取得
+		ClosureHistory closureHistory = null;
+		if (!closureClassOpt.isPresent()){
+			val currentHistoryOpt = this.getHistoryByYearMonth(currentYm);
+			if (currentHistoryOpt.isPresent()) closureHistory = currentHistoryOpt.get();
+		}
+		else {
+			val closureClass = closureClassOpt.get();
+			if (closureClass == ClosureClassification.ClassificationClosingBefore){
+				val currentHistoryOpt = this.getHistoryByYearMonth(currentYm);
+				if (currentHistoryOpt.isPresent()) closureHistory = currentHistoryOpt.get();
+			}
+			else {
+				if (currentYm.lessThan(maxYm)){
+					val nextHistoryOpt = this.getHistoryByYearMonth(currentYm.addMonths(1));
+					if (nextHistoryOpt.isPresent()) closureHistory = nextHistoryOpt.get();
+				}
+			}
+		}
+		if (closureHistory == null) return Optional.empty();
+
+		// 締め変更履歴．日付を返す
+		return Optional.of(closureHistory.getClosureDate());
+	}
 }
