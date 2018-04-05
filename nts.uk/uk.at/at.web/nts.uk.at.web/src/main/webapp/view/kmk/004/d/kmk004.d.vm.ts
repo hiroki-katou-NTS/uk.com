@@ -115,14 +115,10 @@ module nts.uk.at.view.kmk004.d {
                     self.setAlreadySettingWorkplaceList();
                     
                     let wkpId = self.selectedWorkplaceId();
-                    if (wkpId) {
-                        self.loadWorkplaceSetting();
-                    }
+                    self.loadWorkplaceSetting();
                     
                     self.selectedWorkplaceId.subscribe(wkpId => {
-                        if (wkpId) {
-                            self.loadWorkplaceSetting();
-                        }
+                        self.loadWorkplaceSetting();
                     });
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
                     ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
