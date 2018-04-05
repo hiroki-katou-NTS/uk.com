@@ -9,7 +9,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         application: any = ko.observable(null);
         mailContent: KnockoutObservable<String> = ko.observable(null);
         approvalRootState: KnockoutObservableArray<ApprovalPhaseState> = ko.observableArray([]);
-        appID: string = "03d4c33f-a20a-4002-8d0e-f5af490f4924";
+        appID: string = "0b5dc40d-37a6-43cc-b6af-e8fdeece973e";
         optionList: KnockoutObservableArray<any> = ko.observableArray([]);
         isSendToApplicant: KnockoutObservable<boolean> = ko.observable(true);
         appType: number = 1;
@@ -32,6 +32,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 if (result) {
                     let listApprovalPhase: any = result.approvalRoot.approvalRootState.listApprovalPhaseState;
                     let index = 0;
+                    self.mailContent(result.approvalTemplate.content);
                     self.applicant(ko.toJS(result.applicant));
                     self.application(ko.toJS(result.application));
                     for (let i = 0; i < listApprovalPhase.length; i++) {
@@ -69,9 +70,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             _.forEach(listApprovalPhase, x => {
                 _.forEach(x.listApprovalFrame, y => {
                     _.forEach(y.listApprover, z => {
-                        if (z.isSend == 1) {
-                            listSendMail.push(new SendMailOption(z.approverID, z.approverName, z.sMail));
-                        }
+                        listSendMail.push(new SendMailOption(z.approverID, z.approverName, z.sMail));
                     });
                 });
             });
@@ -127,15 +126,13 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                     successListAsStr += employeeName + "\n";
                 });
                 dialog.info({message:successListAsStr, messageId: "Msg_207" });
-            } else {
-                if (numOfFailed != 0){
-                    let failedListAsStr = "";
-                    _.forEach(failedList, employeeName =>{
-                        failedListAsStr += employeeName + "\n";
-                    });
-                    dialog.alertError({message:failedListAsStr, messageId: "Msg_657" });
-                }
-                
+            }
+            if (numOfFailed != 0){
+                let failedListAsStr = "";
+                _.forEach(failedList, employeeName =>{
+                    failedListAsStr += employeeName + "\n";
+                });
+                dialog.alertError({message:failedListAsStr, messageId: "Msg_657" });
             }
         }
     }
