@@ -1,8 +1,7 @@
 package nts.uk.ctx.pereg.app.find.common;
 
-import java.util.Date;
-
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 
@@ -15,7 +14,7 @@ public class ComboBoxParam {
 	
 	private boolean required;
 	
-	private Date standardDate;
+	private GeneralDate standardDate;
 	
 	// code-name
 	
