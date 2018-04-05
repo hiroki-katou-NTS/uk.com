@@ -489,6 +489,22 @@ module cmm045.shr {
                 this.mournerFlag = mournerFlag;    
             }
         }
+        export class AppCompltLeaveFull {
+            /**申請ID*/
+            appID: string;
+            /**勤務種類*/
+            workTypeCD: string;
+            /**勤務時間1.開始時刻*/
+            startTime: string;
+            /**勤務時間1.終了時刻*/
+            endTime: string;
+            constructor(appID: string, workTypeCD: string, startTime: string, endTime: string){
+                this.appID = appID;
+                this.workTypeCD = workTypeCD;
+                this.startTime = startTime;
+                this.endTime = endTime;
+            }
+        }
         export class HdAppSet{
             // 代表者名 - 1
             obstacleName: string;
@@ -537,7 +553,7 @@ module cmm045.shr {
                 this.columnKey = columnKey;
                 this.color = color;
             } 
-        }      
+        }
         export class ProcessHandler {
             /**
              * sort by appType and appDate
