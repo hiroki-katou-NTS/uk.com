@@ -344,7 +344,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 								toAttendanceTime(this.krcdtDayBreakTime.deductionOutTime), 
 								toAttendanceTime(this.krcdtDayBreakTime.calDeductionOutTime))), 
 				this.krcdtDayBreakTime.count == null ? null : new BreakTimeGoOutTimes(this.krcdtDayBreakTime.count), 
-				this.krcdtDayBreakTime.duringworkTime == null ? null : new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
+				new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
 				new ArrayList<>());
 	}
 

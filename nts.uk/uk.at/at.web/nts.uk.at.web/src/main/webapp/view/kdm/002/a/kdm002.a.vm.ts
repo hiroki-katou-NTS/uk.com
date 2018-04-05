@@ -153,7 +153,7 @@ module nts.uk.at.view.kdm002.a {
              */
             public setDefaultCcg001Option(): void {
                 let self = this;
-                self.isQuickSearchTab = ko.observable(true);
+                self.isQuickSearchTab = ko.observable(false);
                 self.isAdvancedSearchTab = ko.observable(true);
                 self.isAllReferableEmployee = ko.observable(true);
                 self.isOnlyMe = ko.observable(true);
@@ -170,14 +170,14 @@ module nts.uk.at.view.kdm002.a {
                 self.showJobTitle = ko.observable(true); // 職位条件
                 self.showWorktype = ko.observable(true); // 勤種条件
                 self.inService = ko.observable(true); // 在職区分
-                self.leaveOfAbsence = ko.observable(true); // 休職区分
-                self.closed = ko.observable(true); // 休業区分
-                self.retirement = ko.observable(true); // 退職区分
-                self.systemType = ko.observable(1);
-                self.showClosure = ko.observable(true); // 就業締め日利用
+                self.leaveOfAbsence = ko.observable(false); // 休職区分
+                self.closed = ko.observable(false); // 休業区分
+                self.retirement = ko.observable(false); // 退職区分
+                self.systemType = ko.observable(2);
+                self.showClosure = ko.observable(false); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
-                self.showAllClosure = ko.observable(true); // 全締め表示
-                self.showPeriod = ko.observable(true); // 対象期間利用
+                self.showAllClosure = ko.observable(false); // 全締め表示
+                self.showPeriod = ko.observable(false); // 対象期間利用
                 self.periodFormatYM = ko.observable(false); // 対象期間精度
             }
 

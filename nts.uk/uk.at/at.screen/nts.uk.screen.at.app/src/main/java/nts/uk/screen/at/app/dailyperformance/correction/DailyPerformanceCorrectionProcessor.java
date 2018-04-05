@@ -696,9 +696,9 @@ public class DailyPerformanceCorrectionProcessor {
 					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
 					// lock sign
 					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-						if (data.getError().contains("ER")) {
+						if (data.getError().contains("ER") && data.isSign()) {
 							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
-						} else {
+						} else if(data.getError().contains("ER") && !data.isSign()){
 							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 						}
 						// thieu check khi co data
