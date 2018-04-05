@@ -137,8 +137,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_CAT_ID_BY_CODE = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"FROM PpemtPerInfoCtg c", "WHERE c.categoryCd = :categoryCd AND c.cid = :cId");
 	
-	private final static String SELECT_CTG_BY_CTGCD = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.abolitionAtr "
-			+ "FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid";
+	private final static String SELECT_CTG_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName",
+			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -270,7 +270,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 	
 	private PersonInfoCategory createDomainWithAbolition(Object[] c){
-		return PersonInfoCategory.createDomainWithAbolition(c[0].toString(), c[1].toString(), Integer.parseInt(c[2].toString()));
+		return PersonInfoCategory.createDomainWithAbolition(c[0].toString(), c[1].toString(), c[2].toString());
 	}
 
 	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
@@ -466,11 +466,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public void updateAbolition(List<PersonInfoCategory> ctg, String companyId) {
 		ctg.forEach(x -> {
-			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy().find(x.getPersonInfoCategoryId(), PpemtPerInfoCtg.class);
+			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy().find(new PpemtPerInfoCtgPK(x.getPersonInfoCategoryId()), PpemtPerInfoCtg.class);
 			if(entityOpt.isPresent())
 			{
 				PpemtPerInfoCtg entity = entityOpt.get();
-				entity.categoryName = x.getCategoryName().v();
+				entity.categoryName = x.getCategoryName() == null ? null : x.getCategoryName().v();
 				entity.abolitionAtr = x.getIsAbolition().value;
 				this.commandProxy().update(entity);
 			}

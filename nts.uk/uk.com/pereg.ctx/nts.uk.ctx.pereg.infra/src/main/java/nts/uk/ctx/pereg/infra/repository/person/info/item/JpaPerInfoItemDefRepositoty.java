@@ -898,11 +898,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId) {
 		lst.forEach(x->{
-			Optional<PpemtPerInfoItem> entityOpt = this.queryProxy().find(x.getPerInfoItemDefId(), PpemtPerInfoItem.class);
+			Optional<PpemtPerInfoItem> entityOpt = this.queryProxy().find(new PpemtPerInfoItemPK(x.getPerInfoItemDefId()), PpemtPerInfoItem.class);
 			if(entityOpt.isPresent()){
 				PpemtPerInfoItem entity = entityOpt.get();
 				entity.abolitionAtr = x.getIsAbolition().value;
-				entity.itemName = x.getItemName().v();
+				entity.itemName = x.getItemName() == null ? null : x.getItemName().v();
 				this.commandProxy().update(entity);
 			}
 		});
@@ -910,7 +910,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId) {
-		return this.queryProxy().query("SELECT_ITEM_BY_CTGID_AND_COMID", Object[].class)
+		return this.queryProxy().query(SELECT_ITEM_BY_CTGID_AND_COMID, Object[].class)
 				.setParameter("ctgCd", perInfoCtgCd).setParameter("cid", CompanyId)
 				.getList(x -> PersonInfoItemDefinition.createDomainWithNameAndAbolition(x[0].toString(), x[1].toString(), x[2].toString()));
 	}
