@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -47,6 +48,11 @@ public class StdAcceptCondSet extends AggregateRoot {
 	 * CSVデータの取込開始行
 	 */
 	private Optional<AcceptanceLineNumber> csvDataStartLine;
+	
+	/**
+	 * 文字コード
+	 */
+	private Optional<ExiCharset> characterCode;
 
 	/**
 	 * 受入モード
@@ -75,6 +81,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 			SystemType systemType, 
 			NotUseAtr deleteExistData,
 			Optional<AcceptanceLineNumber> csvDataStartLine, 
+			Optional<ExiCharset> characterCode, 
 			Optional<AcceptMode> acceptMode,
 			AcceptanceConditionName conditionSetName, 
 			Optional<NotUseAtr> checkCompleted,
@@ -87,6 +94,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 		this.systemType = systemType;
 		this.deleteExistData = deleteExistData;
 		this.csvDataStartLine = csvDataStartLine;
+		this.characterCode = characterCode;
 		this.acceptMode = acceptMode;
 		this.conditionSetName = conditionSetName;
 		this.checkCompleted = checkCompleted;
@@ -95,7 +103,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	
 	public StdAcceptCondSet(String cid, int systemType, String conditionSetCd, String conditionSetName,
 			int deleteExistData, Integer acceptMode, Integer checkCompleted, String categoryId, Integer csvDataLineNumber,
-			Integer csvDataStartLine, Integer deleteExtDataMethod) {
+			Integer csvDataStartLine, Integer characterCode, Integer deleteExtDataMethod) {
 		super();
 		this.cid = cid;
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
@@ -119,6 +127,10 @@ public class StdAcceptCondSet extends AggregateRoot {
 			this.csvDataStartLine = Optional.empty();
 		else
 			this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
+		if (characterCode == null)
+			this.characterCode = Optional.empty();
+		else
+			this.characterCode = Optional.of(ExiCharset.valueOf(characterCode));
 		if (deleteExtDataMethod == null)
 			this.deleteExtDataMethod = Optional.empty();
 		else
@@ -126,10 +138,11 @@ public class StdAcceptCondSet extends AggregateRoot {
 					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
-	public void updateWhenSettingItems(String categoryId, Integer csvDataLineNumber, Integer csvDataStartLine) {
+	public void updateWhenSettingItems(String categoryId, Integer csvDataLineNumber, Integer csvDataStartLine, Integer characterCode) {
 		this.categoryId = Optional.of(categoryId);
 		this.csvDataLineNumber = Optional.of(new AcceptanceLineNumber(csvDataLineNumber));
 		this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
+		this.characterCode = Optional.of(ExiCharset.valueOf(characterCode));
 	}
 	
 	public void updateCheckComplete(Integer check) {
