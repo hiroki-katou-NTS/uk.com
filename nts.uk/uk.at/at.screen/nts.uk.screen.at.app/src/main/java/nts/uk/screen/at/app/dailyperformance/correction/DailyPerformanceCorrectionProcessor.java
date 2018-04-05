@@ -368,33 +368,10 @@ public class DailyPerformanceCorrectionProcessor {
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
 
 		List<DailyModifyResult> results = new ArrayList<>();
-		ExecutorService service = Executors.newFixedThreadPool(1);
-
-		CountDownLatch latch = new CountDownLatch(1);
-
-		Future<List<DailyModifyResult>> sResults = service.submit(
-				new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
-
-		try {
-			results = sResults.get();
-			screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-			latch.countDown();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-			latch.countDown();
-			Thread.currentThread().interrupt();
-		} catch (ExecutionException e1) {
-			e1.printStackTrace();
-			latch.countDown();
-			Thread.currentThread().interrupt();
-		}
-		try {
-			latch.await();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
+		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
 
 		System.out.println("time get data and map name : " + (System.currentTimeMillis() - start));
 		long startTime2 = System.currentTimeMillis();
