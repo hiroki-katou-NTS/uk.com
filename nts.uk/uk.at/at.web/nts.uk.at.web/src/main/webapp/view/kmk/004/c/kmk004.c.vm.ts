@@ -63,11 +63,6 @@ module nts.uk.at.view.kmk004.c {
                 self.employmentCode = ko.observable('');
                 self.employmentName = ko.observable('');
                 
-                let year = nts.uk.sessionStorage.nativeStorage.getItem("nts-uk-" + __viewContext.user.employeeId + "-kmk004-worktime-year-selection");
-                if (year && nts.uk.ntsNumber.isNumber(year)) {
-                    self.worktimeVM.worktimeSetting.normalSetting().year(parseInt(year));
-                }
-                
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {

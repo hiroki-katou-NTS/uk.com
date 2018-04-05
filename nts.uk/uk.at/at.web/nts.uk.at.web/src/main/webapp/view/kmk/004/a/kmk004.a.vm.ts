@@ -71,14 +71,6 @@ module nts.uk.at.view.kmk004.a {
                 return dfd.promise();
             }
             
-            public postBindingProcess(): void {
-                let self = this;
-                
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe((v) => {
-                    nts.uk.sessionStorage.nativeStorage.setItem("nts-uk-" + __viewContext.user.employeeId + "-kmk004-worktime-year-selection", v);
-                });
-            }
-            
             private loadUsageUnitSetting(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
