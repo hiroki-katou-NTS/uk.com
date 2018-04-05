@@ -33,6 +33,8 @@ import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialle
 import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave7informationDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave8informationDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.nursingcareleave.info.CareLeaveInfoDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
@@ -45,7 +47,6 @@ import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -103,6 +104,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			new TypeLiteral<PeregFinder<Specialleave9informationDto>>(){},
 			// CS00034
 			new TypeLiteral<PeregFinder<Specialleave10informationDto>>(){},
+			
+			// CS00036 子の看護・介護休暇管理
+			new TypeLiteral<PeregFinder<CareLeaveInfoDto>>(){},
 			// CS00049
 			new TypeLiteral<PeregFinder<Specialleave11informationDto>>(){},
 			// CS00050

@@ -138,6 +138,7 @@ module nts.layout {
     }
 
     const fetch = {
+        get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param)
     }
@@ -720,6 +721,7 @@ module nts.layout {
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
+                                button.data.value('SAMPLE_DATA');
                             });
                         });
                     }
@@ -773,19 +775,45 @@ module nts.layout {
                 CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
 
             if (CS00016_IS00077 && CS00016_IS00079) {
-                CS00016_IS00077.data.value.subscribe(x => {
-                    CS00016_IS00079.data.lstComboBoxValue.push({
-                        optionValue: x,
-                        optionText: x
+                CS00016_IS00077.data.value.subscribe(_date => {
+                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                        data = ko.toJS(CS00016_IS00077.data),
+                        comboData = ko.toJS(CS00016_IS00079.data);
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: _date,
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00016_IS00079.data.lstComboBoxValue(cbx);
                     });
                 });
             }
 
             if (CS00017_IS00082 && CS00017_IS00084) {
-                CS00017_IS00082.data.value.subscribe(x => {
-                    CS00017_IS00084.data.lstComboBoxValue.push({
-                        optionValue: x,
-                        optionText: x
+                CS00017_IS00082.data.value.subscribe(_date => {
+                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                        data = ko.toJS(CS00017_IS00082.data),
+                        comboData = ko.toJS(CS00017_IS00084.data);
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: _date,
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
                 });
             }
@@ -864,6 +892,18 @@ module nts.layout {
 
     interface ICheckParam {
         workTimeCode?: string;
+    }
+
+    interface IComboParam {
+        comboBoxType: string;
+        categoryId: string;
+        required: boolean;
+        standardDate: Date;
+        typeCode: String;
+        masterType: String;
+        employeeId: string;
+        cps002?: boolean;
+        workplaceId: string;
     }
 
     interface IGroupControl {

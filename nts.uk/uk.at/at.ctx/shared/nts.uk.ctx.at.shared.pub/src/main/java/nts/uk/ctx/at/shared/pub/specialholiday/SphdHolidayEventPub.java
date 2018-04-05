@@ -9,6 +9,7 @@ import nts.arc.layer.dom.event.DomainEvent;
 @EqualsAndHashCode(callSuper=false)
 @AllArgsConstructor
 public class SphdHolidayEventPub extends DomainEvent {
+	
 	/** 譛牙柑縺ｨ縺吶ｋ */
 	private boolean isEffective;
 
