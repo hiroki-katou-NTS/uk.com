@@ -4,11 +4,7 @@ import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 @Value
-public class UpdateApprovalRootByManagerCommand {
-	/** */
-	private int executeMode;
-	/** */
-	private boolean hasHistory;
+public class HistoryCmm053Command {
 	/** */
 	private String employeeId;
 	/** 開始日 */

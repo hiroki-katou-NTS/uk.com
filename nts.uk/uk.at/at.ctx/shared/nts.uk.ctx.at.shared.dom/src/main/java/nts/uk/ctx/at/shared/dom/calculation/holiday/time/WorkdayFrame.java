@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 
 import lombok.AllArgsConstructor;
@@ -5,6 +9,9 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.TransferFrameName;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkdayFrameName;
 
+/**
+ * The Class WorkdayFrame.
+ */
 @AllArgsConstructor
 @Getter
 public class WorkdayFrame {
