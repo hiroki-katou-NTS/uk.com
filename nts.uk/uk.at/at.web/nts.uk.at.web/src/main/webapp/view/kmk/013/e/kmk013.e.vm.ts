@@ -123,8 +123,8 @@ module nts.uk.at.view.kmk013.e {
                 blockUI.invisible();
                 service.save(ko.toJS(self.listData())).done(() => {
                     let data = {};
-                    data.roundingUnit = self.excData().unit();
-                    data.roundingProcess = self.excData().rounding();
+                    data.roundingUnit = self.excRoundingUnit();
+                    data.roundingProcess = self.excRoundingProc();
                     service.saveExcOut(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         blockUI.clear();
