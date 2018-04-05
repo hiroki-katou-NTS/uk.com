@@ -18,6 +18,17 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  */
 public interface ApprovalRootStatePub {
 	/**
+	 * RequestList229
+	 * 承認対象者（複数）と期間から承認状況を取得する
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndDate(GeneralDate startDate, GeneralDate endDate, List<String> employeeID,String companyID,Integer rootType);
+	/**
 	 * 承認すべきデータ有無を取得する
 	 * RequestList190 - 191
 	 * @param startDate
@@ -30,6 +41,7 @@ public interface ApprovalRootStatePub {
 	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID,Integer rootType,String companyID);
 	
 	/**
+	 * 承認対象者と期間から承認状況を取得する
 	 * RequestList113
 	 * @param startDate
 	 * @param endDate
