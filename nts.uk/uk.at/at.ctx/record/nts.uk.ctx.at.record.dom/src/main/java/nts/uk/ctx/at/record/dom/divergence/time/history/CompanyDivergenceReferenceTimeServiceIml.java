@@ -50,9 +50,11 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 	@Inject
 	CompanyDivergenceReferenceTimeRepository comDivRefTimeRepo;
 
+	//乖離時間をチェックする
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeService#CheckDivergenceTime(java.lang.String, java.lang.String, nts.arc.time.GeneralDate, int, nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
 	 */
+	
 	@Override
 	public JudgmentResultDetermineRefTime CheckDivergenceTime(String userId, String companyId, GeneralDate processDate,
 			int divergenceTimeNo, AttendanceTime DivergenceTimeOccurred) {
