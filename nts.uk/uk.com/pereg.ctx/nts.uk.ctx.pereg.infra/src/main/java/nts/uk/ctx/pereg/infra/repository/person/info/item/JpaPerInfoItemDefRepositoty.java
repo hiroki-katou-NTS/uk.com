@@ -542,7 +542,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				dataTypeState = DataTypeState.createRelatedCategory(relatedCategoryCode);
 				break;
 			case 11:
-				dataTypeState = DataTypeState.createNumbericButton(selectionItemRefCode);
+				dataTypeState = DataTypeState.createNumbericButton(numericItemMinus.intValue(),
+						numericItemAmount.intValue(), numericItemIntegerPart.intValue(),
+						numericItemDecimalPart.intValue(), numericItemMin, numericItemMax);
 				break;
 			case 12:
 				dataTypeState = DataTypeState.createReadonlyButton(selectionItemRefCode);
@@ -703,8 +705,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				selectionItemRefCode = relatedCtg.getRelatedCtgCode().v();
 				break;
 			case 11:
-				NumericButton numbericButton = (NumericButton) dataTypeState;
-				selectionItemRefCode = numbericButton.getReadText().v();
+				NumericButton numericButton = (NumericButton) dataTypeState;
+				numericItemMin = numericButton.getNumericItemMin() != null ? numericButton.getNumericItemMin().v() : null;
+				numericItemMax = numericButton.getNumericItemMax() != null ? numericButton.getNumericItemMax().v() : null;
+				numericItemAmountAtr = new BigDecimal(numericButton.getNumericItemAmount().value);
+				numericItemMinusAtr = new BigDecimal(numericButton.getNumericItemMinus().value);
+				numericItemDecimalPart = new BigDecimal(numericButton.getDecimalPart().v());
+				numericItemIntegerPart = new BigDecimal(numericButton.getIntegerPart().v());
 				break;
 			case 12:
 				ReadOnlyButton readOnlyButton = (ReadOnlyButton) dataTypeState;
@@ -903,7 +910,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				PpemtPerInfoItem entity = entityOpt.get();
 				entity.abolitionAtr = x.getIsAbolition().value;
 				entity.itemName = x.getItemName() == null ? null : x.getItemName().v();
-				//this.commandProxy().update(entity);
+				this.commandProxy().update(entity);
 			}
 		});
 	}

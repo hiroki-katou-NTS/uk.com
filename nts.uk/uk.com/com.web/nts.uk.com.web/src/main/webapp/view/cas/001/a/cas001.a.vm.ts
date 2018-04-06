@@ -794,16 +794,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
             this.otherAllowAddMulti = param.otherAllowAddMulti();
             //add parrent item
 
-            let cellsUpdated = _.remove($("#item_role_table_body").ntsGrid("updatedCells"), function(c) { return c.columnKey == "isChecked" }),
-                itemGroup = _.groupBy($("#item_role_table_body").ntsGrid("updatedCells"), 'rowId'),
+            let cellsUpdated = $("#item_role_table_body").ntsGrid("updatedCells"),
+                dataSource = $("#item_role_table_body").igGrid("option", "dataSource"),
+                itemGroup = _.groupBy(cellsUpdated, 'rowId'),
                 itemLst: Array<any> = [];
 
 
-            itemLst = _.map($("#item_role_table_body").igGrid("option", "dataSource"), function(c) {
-                c.personItemDefId = c.personItemDefId.search("COM") > -1 ? c.personItemDefId : _.replace(c.personItemDefId, new RegExp("_", "g"), "-") : '';
+            itemLst = _.map( dataSource, function(c: any) {
+                c.personItemDefId = c.personItemDefId.search("COM") > -1 ? c.personItemDefId : _.replace(c.personItemDefId, new RegExp("_", "g"), "-");
                 _.each(itemGroup, function(i) {
                     if (i.length > 0) {
-                        let personItemDefId = i[0].rowId.search("COM") > -1 ? i[0].rowId : _.replace(i[0].rowId, new RegExp("_", "g"), "-") : '';
+                        let personItemDefId: string = i[0].rowId.search("COM") > -1 ? i[0].rowId : _.replace(i[0].rowId, new RegExp("_", "g"), "-");
                     }
                     if (c.personItemDefId === personItemDefId) {
                         _.each(i, function(x) {

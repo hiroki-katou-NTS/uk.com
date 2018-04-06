@@ -56,6 +56,10 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		int spcHdCode = domainEvent.getSpecialHolidayCode().v();
 		List<String> ctgCds = getCtgCds(spcHdCode);
 		String loginCompanyId = AppContexts.user().companyId();
+		/**
+		 * アルゴリズム「個人情報カテゴリを取得する」を実行する
+		 * get List<PersonInfoCategory> by CategoryCodes and login CompanyId
+		 */
 		List<PersonInfoCategory> ctgLst = ctgRepo.getPerCtgByListCtgCd(ctgCds, loginCompanyId);
 		if(ctgLst.size() > 0){
 			updateCtg(domainEvent, ctgLst, loginCompanyId, ctgCds);		
@@ -67,32 +71,61 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		List<PersonInfoItemDefinition> updateItems = new ArrayList<>();
 		String contractCd = AppContexts.user().contractCode();
 		if(domainEvent.isEffective()){
+			/**
+			 *  【更新内容】
+				廃止区分　＝　廃止しない
+				カテゴリ名称　＝　パラメータ．特別休暇名称 + #CPS001_133（○○情報） or カテゴリ名称　＝　パラメータ．特別休暇名称 + #CPS001_134（○○付与残数）
+			 */
 			for(PersonInfoCategory x : ctgLst){
+				String domainEventName = domainEvent.getSpecialHolidayName() == null ? "" : domainEvent.getSpecialHolidayName().v();
 				String name = "";
 				if(lstCtgCd1.contains(x.getCategoryCode().v())){
-					name = domainEvent.getSpecialHolidayName().v() + resources.localize("CPS001_133").get();
+					name = domainEventName + resources.localize("CPS001_133").get();
 				}else if(lstCtgCd2.contains(x.getCategoryCode().v())){
-					name = domainEvent.getSpecialHolidayName().v() + resources.localize("CPS001_134").get();
+					name = domainEventName + resources.localize("CPS001_134").get();
 				}
 				x.setDomainNameAndAbolition(new CategoryName(name), 0);
 				ctgUpdateList.add(x);
-				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getCategoryCode().v(), contractCd, true, loginCompanyId));
+				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, true, loginCompanyId));
 			}
 		}else{
+			/**
+			 * 共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する
+			 */
 			String updateCompanyId = AppContexts.user().zeroCompanyIdInContract();
+			
+			/**
+			 * アルゴリズム「個人情報カテゴリを取得する」を実行する
+			 * get List<PersonInfoCategory> by CategoryCodes and zero CompanyId
+			 */
 			List<PersonInfoCategory> ctgLstComZero = ctgRepo.getPerCtgByListCtgCd(ctgCds, updateCompanyId);
 			
+			/**
+			 * 【更新内容】
+				廃止区分　＝　廃止する
+				カテゴリ名称　＝　取得したゼロ会社の「個人情報カテゴリ」．カテゴリ名
+
+			 */
 			for(PersonInfoCategory x : ctgLst){
 				PersonInfoCategory ctgInComZero = ctgLstComZero.stream().filter(c -> {
 					return c.getCategoryCode().v().equals(x.getCategoryCode().v());
 				}).collect(Collectors.toList()).get(0);
 				x.setDomainNameAndAbolition(ctgInComZero.getCategoryName(), 1);
 				ctgUpdateList.add(x);
-				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getCategoryCode().v(), contractCd, true, loginCompanyId, updateCompanyId));
+				String domainEventName = domainEvent.getSpecialHolidayName() == null ? "" : domainEvent.getSpecialHolidayName().v();
+				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, false, loginCompanyId, updateCompanyId));
 			}
 			
 		}
+		/**
+		 * アルゴリズム「個人情報カテゴリを更新する」を実行する
+		 * update PersonInfoCategory
+		 */
 		ctgRepo.updateAbolition(ctgUpdateList, loginCompanyId);
+		/**
+		 * アルゴリズム「個人情報項目定義を更新する」を実行する
+		 * update PersonInfoItemDefinition
+		 */
 		itemRepo.updateItemDefNameAndAbolition(updateItems, loginCompanyId);
 	}
 	
@@ -100,6 +133,11 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		List<PersonInfoItemDefinition> lstItem = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]);
 		List<PersonInfoItemDefinition> lstReturn = new ArrayList<>();
 		if(isEffective){
+			/**
+			 * 【更新内容】
+				廃止区分　＝　廃止しない
+				項目名称　＝　
+			 */
 			for( PersonInfoItemDefinition x : lstItem) {
 				Optional<String> newItemName = getNewItemName(x.getItemCode().v(), spHDName);
 				if(newItemName.isPresent()){
@@ -111,6 +149,12 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		}else{
 			Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1])
 					.stream().collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
+			
+			/**
+			 * 【更新内容】
+			 * 廃止区分　＝　廃止する
+				項目名　＝　取得したゼロ会社の「個人情報項目定義」．項目名
+			 */
 			for( PersonInfoItemDefinition x : lstItem) {
 				String itemCode = x.getItemCode().v();
 				if(mapItemNameInZeroCom.containsKey(itemCode)){

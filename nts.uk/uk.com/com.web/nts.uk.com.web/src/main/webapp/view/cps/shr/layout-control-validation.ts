@@ -10,6 +10,7 @@ module nts.layout {
     let rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
+        removeErrorByElement = window['nts']['uk']['ui']['errors']["removeByElement"],
         clearError = window['nts']['uk']['ui']['errors']['clearAll'],
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
@@ -128,7 +129,13 @@ module nts.layout {
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
-                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode);
+                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode),
+                childset: Array<string> = _(subscribes).filter(x => [ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(x.type) > -1).map(x => x.itemCode).value();
+
+            _.each(childset, code => {
+                let child = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == code);
+                subscribes = _.concat(subscribes, child);
+            });
 
             return subscribes.map(x => {
                 return <IFindData>{
@@ -143,7 +150,8 @@ module nts.layout {
     const fetch = {
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
-        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param)
+        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
+        get_ro_data: (param: INextTimeParam) => ajax(`at/record/remainnumber/annlea/event/nextTime`, param)
     }
 
     export class validation {
@@ -248,6 +256,57 @@ module nts.layout {
                         ctgCode: 'CS00024',
                         radioCode: 'IS00387',
                         setParentCode: 'IS00388'
+                    },
+                    {
+                        ctgCode: 'CS00024',
+                        radioCode: 'IS00400',
+                        setParentCode: 'IS00401'
+                    },
+                    {
+                        ctgCode: 'CS00025',
+                        radioCode: 'IS00411',
+                        setParentCode: 'IS00412'
+                    },
+                    {
+                        ctgCode: 'CS00026',
+                        radioCode: 'IS00426',
+                        setParentCode: 'IS00427'
+                    }, {
+                        ctgCode: 'CS00027',
+                        radioCode: 'IS00441',
+                        setParentCode: 'IS00442'
+                    }, {
+                        ctgCode: 'CS00028',
+                        radioCode: 'IS00456',
+                        setParentCode: 'IS00457'
+                    }, {
+                        ctgCode: 'CS00027',
+                        radioCode: 'IS00441',
+                        setParentCode: 'IS00442'
+                    }, {
+                        ctgCode: 'CS00029',
+                        radioCode: 'IS00471',
+                        setParentCode: 'IS00472'
+                    }, {
+                        ctgCode: 'CS00030',
+                        radioCode: 'IS00486',
+                        setParentCode: 'IS00487'
+                    }, {
+                        ctgCode: 'CS00031',
+                        radioCode: 'IS00501',
+                        setParentCode: 'IS00502'
+                    }, {
+                        ctgCode: 'CS00032',
+                        radioCode: 'IS00516',
+                        setParentCode: 'IS00517'
+                    }, {
+                        ctgCode: 'CS00033',
+                        radioCode: 'IS00531',
+                        setParentCode: 'IS00532'
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        setParentCode: ''
                     }
                 ],
                 validation = (radio: IRelateRadio) => {
@@ -258,6 +317,7 @@ module nts.layout {
                         rd.data.value.subscribe(x => {
                             _.each(ctrls, c => {
                                 c.data.editable(x == 1);
+                                removeErrorByElement($(c.id));
                             });
                         });
 
@@ -635,83 +695,103 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00025',
                         btnCode: 'IS00301',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 1
                     }, {
                         ctgCode: 'CS00026',
                         btnCode: 'IS00308',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 2
                     }, {
                         ctgCode: 'CS00027',
                         btnCode: 'IS00315',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 3
                     }, {
                         ctgCode: 'CS00028',
                         btnCode: 'IS00322',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 4
                     }, {
                         ctgCode: 'CS00029',
                         btnCode: 'IS00329',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 5
                     }, {
                         ctgCode: 'CS00030',
                         btnCode: 'IS00336',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 6
                     }, {
                         ctgCode: 'CS00031',
                         btnCode: 'IS00343',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 7
                     }, {
                         ctgCode: 'CS00032',
                         btnCode: 'IS00350',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 8
                     }, {
                         ctgCode: 'CS00033',
                         btnCode: 'IS00357',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 9
                     }, {
                         ctgCode: 'CS00034',
                         btnCode: 'IS00364',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 10
                     }, {
                         ctgCode: 'CS00049',
                         btnCode: 'IS00565',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 11
                     }, {
                         ctgCode: 'CS00050',
                         btnCode: 'IS00572',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 12
                     }, {
                         ctgCode: 'CS00051',
                         btnCode: 'IS00579',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 13
                     }, {
                         ctgCode: 'CS00052',
                         btnCode: 'IS00586',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 14
                     }, {
                         ctgCode: 'CS00053',
                         btnCode: 'IS00593',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 15
                     }, {
                         ctgCode: 'CS00054',
                         btnCode: 'IS00600',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 16
                     }, {
                         ctgCode: 'CS00055',
                         btnCode: 'IS00607',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 17
                     }, {
                         ctgCode: 'CS00056',
                         btnCode: 'IS00614',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 18
                     }, {
                         ctgCode: 'CS00057',
                         btnCode: 'IS00621',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 19
                     }, {
                         ctgCode: 'CS00058',
                         btnCode: 'IS00628',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 20
                     }
                 ],
 
@@ -722,26 +802,24 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-                            
+
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                let sid = __viewContext.user.employeeId;
+                                let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
                                 switch (btn.dialogId) {
                                     case "g":
-                                    let empId  = __viewContext.user.employeeId;
-                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getAnnLeaNumber/{0}", empId)).done(data => {
+                                        let empId = __viewContext.user.employeeId;
+                                        ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${empId}"`).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "h":
-                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getResvLeaNumber/{0}", empId)).done(data => {
+                                        ajax('at', `at/record/remainnumber/annlea/getResvLeaNumber/${empId}"`).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "i":
-                                         let   specialCD: number = self.genSpecialCode(btn.ctgCode).specialCode;
-                                        debugger;
-                                        ajax('com', nts.uk.text.format("ctx/pereg/layout/calDayTime/{0}/{1}", sid, specialCD)).done(data => {
+                                        ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${btn.specialCd}`).done(data => {
                                             button.data.value(data);
                                         });
                                 }
@@ -789,6 +867,7 @@ module nts.layout {
             }
         }
 
+        // validate set table control
         setTable = () => {
             let self = this,
                 finder: IFinder = self.finder,
@@ -843,6 +922,7 @@ module nts.layout {
             _(times).each(time => calc(time));
         }
 
+        // validate datetime control
         dateTime = () => {
             let self = this,
                 finder: IFinder = self.finder,
@@ -895,91 +975,10 @@ module nts.layout {
                 });
             }
         }
-        
-        genSpecialCode(categoryCode: string): any {
 
-            switch (categoryCode) {
-                case 'CS00025':
-                    return {
-                        specialCode: 1
-                    };
-                case 'CS00026':
-                    return {
-                        specialCode: 2
-                    };
-                case 'CS00027':
-                    return {
-                        specialCode: 3
-                    };
-                case 'CS00028':
-                    return {
-                        specialCode: 4
-                    };
-                case 'CS00029':
-                    return {
-                        specialCode: 5
-                    };
-                case 'CS00030':
-                    return {
-                        specialCode: 6
-                    };
-                case 'CS00031':
-                    return {
-                        specialCode: 7
-                    };
-                case 'CS00032':
-                    return {
-                        specialCode: 8
-                    };
-                case 'CS00033':
-                    return {
-                        specialCode: 9
-                    };
-                case 'CS00034':
-                    return {
-                        specialCode: 10
-                    };
-                case 'CS00049':
-                    return {
-                        specialCode: 11
-                    };
-                case 'CS00050':
-                    return {
-                        specialCode: 12
-                    };
-                case 'CS00051':
-                    return {
-                        specialCode: 13
-                    };
-                case 'CS00052':
-                    return {
-                        specialCode: 14
-                    };
-                case 'CS00053':
-                    return {
-                        specialCode: 15
-                    };
-                case 'CS00054':
-                    return {
-                        specialCode: 16
-                    };
-                case 'CS00055':
-                    return {
-                        specialCode: 17
-                    };
-                case 'CS00056':
-                    return {
-                        specialCode: 18
-                    };
-                case 'CS00057':
-                    return {
-                        specialCode: 19
-                    };
-                case 'CS00058':
-                    return {
-                        specialCode: 20
-                    };
-            }
+        // 次回年休付与情報を取得する
+        grantInformation = () => {
+
         }
     }
 
@@ -1007,7 +1006,8 @@ module nts.layout {
 
     enum ITEM_TYPE {
         SET = 1,
-        SINGLE = 2
+        SINGLE = 2,
+        SET_TABLE = 3
     }
 
     interface IValidation {
@@ -1084,6 +1084,12 @@ module nts.layout {
         workplaceId: string;
     }
 
+    interface INextTimeParam {
+        employeeId: string;
+        standardDate: Date;
+        grantTable: string;
+    }
+
     interface IGroupControl {
         ctgCode: string;
         workType?: string;
@@ -1112,6 +1118,7 @@ module nts.layout {
         ctgCode: string;
         btnCode: string;
         dialogId: string;
+        specialCd?: number;
     }
 
     interface ITimeTable {

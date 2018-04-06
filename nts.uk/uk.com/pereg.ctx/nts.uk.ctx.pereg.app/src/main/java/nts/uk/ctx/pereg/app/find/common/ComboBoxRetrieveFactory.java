@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
@@ -113,6 +114,9 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private PerInfoCategoryRepositoty categoryRepo;
+	
+	@Inject
+	private YearHolidayRepository yearHolidayRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -324,6 +328,11 @@ public class ComboBoxRetrieveFactory {
 			// 加給時間帯マスタ
 			return bPSettingRepo.getAllBonusPaySetting(companyId).stream()
 					.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + JP_SPACE + x.getName().v()))
+					.collect(Collectors.toList());
+		case "M00016":
+			return yearHolidayRepo.findAll(companyId).stream()
+					.map(grantTable -> new ComboBoxObject(grantTable.getYearHolidayCode().v(),
+							grantTable.getYearHolidayName().v()))
 					.collect(Collectors.toList());
 		default:
 			break;
