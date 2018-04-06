@@ -903,7 +903,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				PpemtPerInfoItem entity = entityOpt.get();
 				entity.abolitionAtr = x.getIsAbolition().value;
 				entity.itemName = x.getItemName() == null ? null : x.getItemName().v();
-				//this.commandProxy().update(entity);
+				this.commandProxy().update(entity);
 			}
 		});
 	}
