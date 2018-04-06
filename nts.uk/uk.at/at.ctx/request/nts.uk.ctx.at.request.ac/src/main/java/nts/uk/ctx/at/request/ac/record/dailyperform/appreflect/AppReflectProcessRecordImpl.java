@@ -75,7 +75,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 		
 		
 		WorkReflectedStatesInfo preGobackData = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(gobackReflect.getReflectedState().value, ReflectedState_New.class), 
-				EnumAdaptor.valueOf(gobackReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
+				gobackReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(gobackReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
 		return preGobackData;
 	}
 

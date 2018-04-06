@@ -2,12 +2,23 @@ __viewContext.ready(function() {
 	debugger;
 	var paramSPR = JSON.parse(window.sessionStorage.getItem("paramSPR"));
 	window.sessionStorage.removeItem("paramSPR");
-	var menuCD = parseInt(paramSPR.destinationScreen);
-	var companyID = paramSPR.companyID;
-	var date = paramSPR.date;
-	var endtime = paramSPR.endtime;
-	var loginemployeeID = paramSPR.loginemployeeID;
-	var starttime = paramSPR.starttime;
+    var menuCD = parseInt(paramSPR.menu);
+    var loginemployeeCD = paramSPR.loginemployeeCode;
+    var employeeCode = paramSPR.employeeCode;
+    var starttime = parseInt(paramSPR.starttime);
+    var endtime = parseInt(paramSPR.endtime);
+    var date = paramSPR.date;
+    var selecttype = parseInt(paramSPR.selecttype);
+    var applicationID = paramSPR.applicationID;
+    var reason = paramSPR.reason;
+    var userID = paramSPR.userID;
+    var contractCD = paramSPR.contractCD;
+    var companyID = paramSPR.companyID;
+    var companyCD = paramSPR.companyCD;
+    var personID = paramSPR.personID;
+    var loginEmployeeID = paramSPR.loginEmployeeID;
+    var roleID = paramSPR.roleID;
+    var employeeID = paramSPR.employeeID;
 	switch(menuCD) {
 	case 1:
 		break;
@@ -18,7 +29,7 @@ __viewContext.ready(function() {
 			//画面モード
 			screenMode: 0,
 			//社員一覧
-			lstEmployee: [loginemployeeID],
+			lstEmployee: [employeeID],
 			//エラー参照を起動する
 			errorRefStartAtr: true,
 			//期間を変更する
@@ -30,7 +41,7 @@ __viewContext.ready(function() {
 			initClock: {
 				dateSpr: date,
 				canEdit: false,
-				employeeId: loginemployeeID, 
+				employeeId: employeeID, 
 				liveTime: endtime,	//退勤打刻
 				goOut: starttime,  //出勤打刻
 			},
@@ -45,11 +56,11 @@ __viewContext.ready(function() {
 			startDate: date,
 			endDate: date,
 			//抽出した社員一覧
-			lstExtractedEmployee: loginemployeeID,
+			lstExtractedEmployee: employeeID,
 			//Optional
 			//日付別で起動
 			dateTarget: date,
-			individualTarget: loginemployeeID,
+			individualTarget: employeeID,
 		}
 		nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;

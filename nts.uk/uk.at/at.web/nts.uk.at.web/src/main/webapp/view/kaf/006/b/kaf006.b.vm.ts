@@ -110,6 +110,9 @@ module nts.uk.at.view.kaf006.b{
                     self.selectedTypeOfDuty.subscribe((value) => {
                         self.findChangeWorkType(value);
                     });
+                    self.displayWorkTimeName.subscribe((value) => {
+                        self.changeDisplayWorkime();
+                    });
                     dfd.resolve(); 
                 })
                 .fail(function(res) {
@@ -285,13 +288,15 @@ module nts.uk.at.view.kaf006.b{
                 self.enbWorkType(true);
                 self.enbHalfDayFlg(true);
                 self.enbChangeWorkHourFlg(true);
-                self.enbbtnWorkTime(true);
+                
                 if(data.changeWorkHourFlg && !nts.uk.util.isNullOrEmpty(data.workTimeCode)){
                      self.eblTimeStart1(true);
                      self.eblTimeEnd1(true);
+                    self.enbbtnWorkTime(true);
                 }else{
                     self.eblTimeStart1(false);
                      self.eblTimeEnd1(false);
+                    self.enbbtnWorkTime(false);
                 }
                 self.enbReasonCombo(true);
                 self.enbContentReason(true);
@@ -391,7 +396,9 @@ module nts.uk.at.view.kaf006.b{
                     }
                 });
             });
-            
+        }
+        changeDisplayWorkime() {
+            let self = this;
             self.eblTimeStart1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
             self.eblTimeEnd1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
         }
