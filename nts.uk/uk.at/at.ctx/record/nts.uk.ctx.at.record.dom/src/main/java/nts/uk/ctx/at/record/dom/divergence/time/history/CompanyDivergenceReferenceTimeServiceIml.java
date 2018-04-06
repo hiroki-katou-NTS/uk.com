@@ -7,8 +7,12 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpService;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
+import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -28,7 +32,6 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 	/** The company divergence reference time repo. */
 	@Inject
 	CompanyDivergenceReferenceTimeRepository companyDivergenceReferenceTimeRepo;
-	
 
 	/** The work type divergence ref time hist repo. */
 	@Inject
@@ -50,108 +53,111 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 	@Inject
 	CompanyDivergenceReferenceTimeRepository comDivRefTimeRepo;
 
-	//乖離時間をチェックする
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeService#CheckDivergenceTime(java.lang.String, java.lang.String, nts.arc.time.GeneralDate, int, nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
+	// 乖離時間をチェックする
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * CompanyDivergenceReferenceTimeService#CheckDivergenceTime(java.lang.
+	 * String, java.lang.String, nts.arc.time.GeneralDate, int,
+	 * nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
 	 */
-	
+
 	@Override
-	public JudgmentResultDetermineRefTime CheckDivergenceTime(String userId, String companyId, GeneralDate processDate,
-			int divergenceTimeNo, AttendanceTime DivergenceTimeOccurred) {
+	public JudgmentResultDetermineRefTime CheckDivergenceTime(String userId, GeneralDate processDate, int divergenceTimeNo, JudgmentResult checkCategory, AttendanceTime DivergenceTimeOccurred, DiverdenceReasonCode divReasonCode, DivergenceReason divReason, DivergenceTimeErrorCancelMethod divTimeErrotCancelMethod) {
 
 		JudgmentResultDetermineRefTime judgmentResultDetermineRefTime = new JudgmentResultDetermineRefTime();
 		DetermineReferenceTime determineRefTime = new DetermineReferenceTime();
 		JudgmentResult result = JudgmentResult.ERROR;
-		
-		//get DivergenceReferenceTimeUsageUnit
+		String companyId = AppContexts.user().companyId();
+
+		// get DivergenceReferenceTimeUsageUnit
 		Optional<DivergenceReferenceTimeUsageUnit> optionalDivReferenceTimeUsageUnit = divReferenceTimeUsageUnitRepo
 				.findByCompanyId(companyId);
 		if (optionalDivReferenceTimeUsageUnit.isPresent()
 				&& optionalDivReferenceTimeUsageUnit.get().isWorkTypeUseSet()) {
 
-			
 			determineRefTime.setReferenceTime(ReferenceTime.WORKTYPE);
-			
-			
-			//get BusinessTypeOfEmployee
+
+			// get BusinessTypeOfEmployee
 			BusinessTypeOfEmployee typeofEmployee = typeEmService.getData(userId, processDate).get(0);
 
-			//get workTypeDivRefTimeHist
+			// get workTypeDivRefTimeHist
 			WorkTypeDivergenceReferenceTimeHistory workTypeDivRefTimeHist = workTypeDivergenceRefTimeHistRepo
 					.findByKey(typeofEmployee.getHistoryId());
 
-			//get DateHistoryItem
+			// get DateHistoryItem
 			DateHistoryItem dateHistItem = workTypeDivRefTimeHist.getHistoryItems().stream()
 					.filter(item -> item.start().before(processDate) && item.end().after(processDate)).findFirst()
 					.get();
 
-			//check DateHistoryItem is null
+			// check DateHistoryItem is null
 			if (dateHistItem != null) {
-				//get optionalWorkTypeDivRefTime
+				// get optionalWorkTypeDivRefTime
 				Optional<WorkTypeDivergenceReferenceTime> optionalWorkTypeDivRefTime = workTypeDivRefTimeRepo.findByKey(
 						typeofEmployee.getHistoryId(), workTypeDivRefTimeHist.getWorkTypeCode(), divergenceTimeNo);
-				
+
 				if (optionalWorkTypeDivRefTime.isPresent()) {
 					WorkTypeDivergenceReferenceTime workTypeDivRefTime = optionalWorkTypeDivRefTime.get();
-					
-					//check getNotUseAtr
+
+					// check getNotUseAtr
 					if (workTypeDivRefTime.getNotUseAtr() == NotUseAtr.USE) {
 
-						//check AlarmTime
+						// check AlarmTime
 						if (workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime().get()
 								.greaterThan(DivergenceTimeOccurred)
 								|| workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime()
 										.get() == new DivergenceReferenceTime(0)) {
-							//set judgment result
+							// set judgment result
 							result = JudgmentResult.NORMAL;
 						} else {
-							//set judgment result
+							// set judgment result
 							result = JudgmentResult.ALARM;
-							//set determineRefTime.Threshold
+							// set determineRefTime.Threshold
 							determineRefTime.setThreshold(
 									workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime().get());
 						}
-						
-						//check ErrorTime
+
+						// check ErrorTime
 						if (workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime().get()
 								.greaterThan(DivergenceTimeOccurred)
 								|| workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime()
 										.get() == new DivergenceReferenceTime(0)) {
-							//set judgment result
+							// set judgment result
 							result = JudgmentResult.NORMAL;
 						} else {
-							//set judgment result
+							// set judgment result
 							result = JudgmentResult.ERROR;
-							//set determineRefTime.Threshold
+							// set determineRefTime.Threshold
 							determineRefTime.setThreshold(
 									workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime().get());
 						}
 
 					} else {
-						//set judgment result
+						// set judgment result
 						result = JudgmentResult.NORMAL;
 					}
 				}
 
 			} else {
-				//get companyDivergenceReferenceTimeHistory
+				// get companyDivergenceReferenceTimeHistory
 				CompanyDivergenceReferenceTimeHistory companyDivergenceReferenceTimeHistory = comDivRefTimeHistRepo
 						.findByHistId(typeofEmployee.getHistoryId());
-				//get dateHistItemcom
+				// get dateHistItemcom
 				DateHistoryItem dateHistItemcom = companyDivergenceReferenceTimeHistory.getHistoryItems().stream()
 						.filter(item -> item.start().before(processDate) && item.end().after(processDate)).findFirst()
 						.get();
-				//check dateHistItemcom
+				// check dateHistItemcom
 				if (dateHistItemcom != null) {
-					//get CompanyDivergenceReferenceTime
+					// get CompanyDivergenceReferenceTime
 					Optional<CompanyDivergenceReferenceTime> optionalComDivRefTime = comDivRefTimeRepo
 							.findByKey(typeofEmployee.getHistoryId(), divergenceTimeNo);
 
 					if (optionalComDivRefTime.isPresent()) {
 						CompanyDivergenceReferenceTime companyDivergenceReferenceTime = optionalComDivRefTime.get();
-						//check NotUseAtr
+						// check NotUseAtr
 						if (companyDivergenceReferenceTime.getNotUseAtr() == NotUseAtr.USE) {
-							//check AlarmTime
+							// check AlarmTime
 							if (companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get().getAlarmTime()
 									.get().greaterThan(DivergenceTimeOccurred)
 									|| companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
@@ -162,35 +168,34 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 								determineRefTime.setThreshold(companyDivergenceReferenceTime
 										.getDivergenceReferenceTimeValue().get().getAlarmTime().get());
 							}
-							//check ErrorTime
+							// check ErrorTime
 							if (companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get().getErrorTime()
 									.get().greaterThan(DivergenceTimeOccurred)
 									|| companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
 											.getErrorTime().get() == new DivergenceReferenceTime(0)) {
-								//set Judgment result
+								// set Judgment result
 								result = JudgmentResult.NORMAL;
 							} else {
-								//set Judgment result
+								// set Judgment result
 								result = JudgmentResult.ERROR;
-								//set determineRefTime.Threshold
+								// set determineRefTime.Threshold
 								determineRefTime.setThreshold(companyDivergenceReferenceTime
 										.getDivergenceReferenceTimeValue().get().getErrorTime().get());
 							}
 
 						} else {
-							//set Judgment result
+							// set Judgment result
 							result = JudgmentResult.NORMAL;
 						}
 					}
 				}
 
 			}
-			//set judgmentResultDetermineRefTime
+			// set judgmentResultDetermineRefTime
 			judgmentResultDetermineRefTime.setJudgmentResult(result);
 			judgmentResultDetermineRefTime.setDetermineReafTime(determineRefTime);
-			
-		}
-		else{
+
+		} else {
 			// Incase false or domain is not exist
 			// get company's history items
 			CompanyDivergenceReferenceTimeHistory companyDivergenceReferenceTimeHistory = companyDivergenceReferenceTimeHistoryRepo
@@ -229,7 +234,7 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 			}
 			// set reference time type
 			determineRefTime.setReferenceTime(ReferenceTime.COMPANY);
-			//set judgmentResultDetermineRefTime
+			// set judgmentResultDetermineRefTime
 			judgmentResultDetermineRefTime.setDetermineReafTime(determineRefTime);
 			judgmentResultDetermineRefTime.setJudgmentResult(result);
 		}
