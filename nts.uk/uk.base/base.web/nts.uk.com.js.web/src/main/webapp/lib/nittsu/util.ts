@@ -859,6 +859,10 @@
             return util.optional.of(value);
         }
         
+        export function remove(name: string, attr: any) {
+            document.cookie = name + "=; path=" + attr.path + "; max-age=0";
+        }
+        
         export function asMap(): any {
             let map = {};
             document.cookie.split(";")
@@ -872,3 +876,4 @@
         }
     }
 }
+
