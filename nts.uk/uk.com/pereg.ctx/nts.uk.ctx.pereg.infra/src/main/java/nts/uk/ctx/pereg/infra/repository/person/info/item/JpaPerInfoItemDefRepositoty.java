@@ -542,7 +542,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				dataTypeState = DataTypeState.createRelatedCategory(relatedCategoryCode);
 				break;
 			case 11:
-				dataTypeState = DataTypeState.createNumericItem(numericItemMinus.intValue(),
+				dataTypeState = DataTypeState.createNumbericButton(numericItemMinus.intValue(),
 						numericItemAmount.intValue(), numericItemIntegerPart.intValue(),
 						numericItemDecimalPart.intValue(), numericItemMin, numericItemMax);
 				break;
