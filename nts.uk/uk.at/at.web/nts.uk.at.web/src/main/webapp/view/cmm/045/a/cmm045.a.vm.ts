@@ -1107,8 +1107,8 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.denialNumber));
                     }
                     let colorBackGr = self.fillColorbackGr();
-//                    let colorsText = self.fillColorText();
-                    let colorsText = [];
+                    let colorsText = self.fillColorText();
+//                    let colorsText = [];
                     if (self.mode() == 1) {
                         $("#grid1").ntsGrid("destroy");
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
@@ -1203,8 +1203,8 @@ module cmm045.a.viewmodel {
                 self.items(lstAppFitler);
             }
             let colorBackGr = self.fillColorbackGr();
-//            let colorsText = self.fillColorText();
-            let colorsText = [];
+            let colorsText = self.fillColorText();
+//            let colorsText = [];
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
                 if($("#grid1").data("igGrid") !== undefined){

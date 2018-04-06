@@ -418,7 +418,7 @@ module nts.uk.at.view.kaf006.b{
         }
         convertListHolidayType(data: any){
             let self =  this;
-            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "振休",3: "欠勤",4: "特別休暇",5: "積立年休",6: "休日",7: "時間消化"};
+            let nameHolidayType  = { 0: "年次有休",1: "代休",2: "欠勤",3: "特別休暇",4: "積立年休",5: "休日",6: "時間消化",7: "振休"};
             for(let i = 0; i < data.length ; i++){
                 self.holidayTypes.push(new common.HolidayType(data[i],nameHolidayType[data[i]]));
             }
