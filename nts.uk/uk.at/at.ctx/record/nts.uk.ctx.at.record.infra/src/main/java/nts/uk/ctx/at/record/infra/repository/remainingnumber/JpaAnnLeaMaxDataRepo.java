@@ -20,7 +20,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 		if (entityOpt.isPresent()) {
 			KrcmtAnnLeaMax ent = entityOpt.get();
 			return Optional.of(AnnualLeaveMaxData.createFromJavaType(ent.sid, ent.maxTimes, ent.usedTimes,
-					ent.remainingTimes, ent.maxMinutes, ent.usedMinutes, ent.remainingMinutes));
+					ent.maxMinutes, ent.usedMinutes));
 		}
 		return Optional.empty();
 	}

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -17,26 +20,38 @@ public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
 	/**
 	 * 年間所定労働日数
 	 */
-	private WorkingDayPerYear workingDaysPerYear;
+	private Optional<WorkingDayPerYear> workingDaysPerYear;
 
 	/**
 	 * 導入前労働日数
 	 */
-	private WorkingDayBeforeIntro workingDayBeforeIntroduction;
+	private Optional<WorkingDayBeforeIntro> workingDayBeforeIntroduction;
 
 	/**
 	 * 付与ルール
 	 */
 	private AnnualLeaveGrantRule grantRule;
 
-	public static AnnualLeaveEmpBasicInfo createFromJavaType(String employeeId, int workingDaysPerYear,
-			int workingDayBeforeIntro, String grantTableCode, GeneralDate grantStandardDate) {
+	public static AnnualLeaveEmpBasicInfo createFromJavaType(String employeeId, Integer workingDaysPerYear,
+			Integer workingDayBeforeIntro, String grantTableCode, GeneralDate grantStandardDate) {
 		AnnualLeaveEmpBasicInfo domain = new AnnualLeaveEmpBasicInfo();
 		domain.employeeId = employeeId;
-		domain.workingDaysPerYear = new WorkingDayPerYear(workingDaysPerYear);
-		domain.workingDayBeforeIntroduction = new WorkingDayBeforeIntro(workingDayBeforeIntro);
+		domain.workingDaysPerYear = workingDaysPerYear != null ? Optional.of(new WorkingDayPerYear(workingDaysPerYear))
+				: Optional.empty();
+		domain.workingDayBeforeIntroduction = workingDayBeforeIntro != null
+				? Optional.of(new WorkingDayBeforeIntro(workingDayBeforeIntro)) : Optional.empty();
 		domain.grantRule = new AnnualLeaveGrantRule(new PerServiceLengthTableCD(grantTableCode), grantStandardDate);
 		return domain;
+	}
+	
+	public static AnnualLeaveEmpBasicInfo createFromJavaType(String employeeId, BigDecimal workingDaysPerYear,
+			BigDecimal workingDayBeforeIntro, String grantTableCode, GeneralDate grantStandardDate) {
+		return createFromJavaType(employeeId, toInteger(workingDaysPerYear), toInteger(workingDayBeforeIntro),
+				grantTableCode, grantStandardDate);
+	}
+	
+	private static Integer toInteger(BigDecimal bigNumber) {
+		return bigNumber != null ? bigNumber.intValue() : null;
 	}
 
 }
