@@ -60,7 +60,6 @@ module a2 {
         selectedCodeSetting: KnockoutObservable<any>;
         dataModelOneDay: EmTimeZoneSetModel[];
         
-        
         // Defined variable Screen model
         tabMode: KnockoutObservable<number>
         isSimpleMode: KnockoutObservable<boolean>;
@@ -129,6 +128,8 @@ module a2 {
             self.dataSourceMorningFlex = flex.getHDWtzMorning().workTimezone.convertedList2;
             self.dataSourceAfternoonFlex = flex.getHDWtzAfternoon().workTimezone.convertedList2;
 
+            self.dataSourceOneDaySimpleMode = ko.observableArray([]);
+
         }
 
         private setFixedTableOptions(): void {
@@ -137,7 +138,6 @@ module a2 {
             const TABINDEX_MORNING = 47;
             const TABINDEX_AFTERNOON = 48;
 
-            self.dataSourceOneDaySimpleMode = ko.observableArray([]);
             self.fixTableOptionOneDaySimpleMode = self.getDefaultFixedTableOption();
             self.fixTableOptionOneDaySimpleMode.maxRow = 1;
             self.fixTableOptionOneDaySimpleMode.maxRowDisplay = 1;
@@ -288,10 +288,9 @@ module a2 {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a2/index.xhtml').serialize();
-            //get data
-            let input = valueAccessor();
-            
-            let screenModel = new ScreenModel(input);
+
+            let screenModel = new ScreenModel(valueAccessor());
+
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

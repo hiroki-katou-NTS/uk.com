@@ -824,7 +824,7 @@ module nts.uk.at.view.kmk003.a {
 
                     self.originalList2.subscribe(newList => {
                         // set new original list temp
-                        self.originalListTemp2 = self.toListOriginalDto2(newList);
+                        self.originalListTemp2 = self.toListOriginalDto(newList);
 
                         // check new converted list vs converted list temp
                         const newConverted = self.fromOriginalListToConvertedList2();
@@ -854,7 +854,7 @@ module nts.uk.at.view.kmk003.a {
                 /**
                  * To original list temp
                  */
-                toListOriginalDto(list: Array<Original>): Array<any> {
+                toListOriginalDto(list: Array<any>): Array<any> {
                     return _.map(list, item => {
                         return item.toDto();
                     });
@@ -910,11 +910,6 @@ module nts.uk.at.view.kmk003.a {
                         let vl = this.createOriginal2();
                         vl.updateData(self.toOriginalDto2(newVl));
                         return vl;
-                    });
-                }
-                toListOriginalDto2(list: Array<any>): Array<any> {
-                    return _.map(list, item => {
-                        return item.toDto();
                     });
                 }
                 toListConvertedModel2(originalList: Array<any>): Array<any> {

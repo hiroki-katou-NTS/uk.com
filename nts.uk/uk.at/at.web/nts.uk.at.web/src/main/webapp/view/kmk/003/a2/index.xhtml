@@ -24,15 +24,15 @@
 				</h3>
 				<div class="accordion-content">
 					<com:ko tag="if" bind="isFixedMode">
-						<div class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+						<div id="fixedtable-tab2-oneday-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 								option: fixTableOptionOneDayFixed}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isFlexMode">
-						<div class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+						<div id="fixedtable-tab2-oneday-flex" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 								option: fixTableOptionOneDayFlex}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDiffTimeMode">
-						<div class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+						<div id="fixedtable-tab2-oneday-difftime" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 								option: fixTableOptionOneDayDifftime}"></div>
 					</com:ko>
 				</div>
@@ -47,15 +47,15 @@
 					</h3>
 					<div class ="accordion-content">
 						<com:ko tag="if" bind="isFixedMode">
-							<div tabindex ="47" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							<div id="fixedtable-tab2-morning-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 								option: fixTableOptionMorningFixed}"></div>
 						</com:ko>
 						<com:ko tag="if" bind="isFlexMode">
-							<div tabindex ="47" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							<div id="fixedtable-tab2-morning-flex" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 								option: fixTableOptionMorningFlex}"></div>
 						</com:ko>
 						<com:ko tag="if" bind="isDiffTimeMode">
-							<div tabindex ="47" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							<div id="fixedtable-tab2-morning-difftime" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 								option: fixTableOptionMorningDifftime}"></div>
 						</com:ko>
 					</div>
@@ -67,15 +67,15 @@
 					</h3>
 					<div class ="accordion-content">
 						<com:ko tag="if" bind="isFixedMode">
-							<div tabindex ="48" class="tab-2-table-width"
+							<div id="fixedtable-tab2-afternoon-fixed" class="tab-2-table-width"
 								data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixed}"></div>
 						</com:ko>
 						<com:ko tag="if" bind="isFlexMode">
-							<div tabindex ="48" class="tab-2-table-width"
+							<div id="fixedtable-tab2-afternoon-flex" class="tab-2-table-width"
 								data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFlex}"></div>
 						</com:ko>
 						<com:ko tag="if" bind="isDiffTimeMode">
-							<div tabindex ="48" class="tab-2-table-width"
+							<div id="fixedtable-tab2-afternoon-difftime" class="tab-2-table-width"
 								data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonDifftime}"></div>
 						</com:ko>
 					</div>
