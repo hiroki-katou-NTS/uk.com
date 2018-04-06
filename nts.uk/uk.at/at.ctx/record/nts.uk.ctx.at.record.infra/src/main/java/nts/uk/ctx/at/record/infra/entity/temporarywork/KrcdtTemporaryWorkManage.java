@@ -9,12 +9,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.temporarywork.TemporaryWorkManage;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author nampt 日別実績の勤務情報
+ * @author nampt
  *
  */
 @AllArgsConstructor
@@ -41,9 +40,9 @@ public class KrcdtTemporaryWorkManage extends UkJpaEntity implements Serializabl
 		return this.krcdtTemporaryWorkManagePK;
 	}
 
-	public TemporaryWorkManage toDomain() {
-		TemporaryWorkManage temporaryWorkManage = new TemporaryWorkManage(this.krcdtTemporaryWorkManagePK.companyId,
-				this.maxUseCount, this.temporatyStampTime);
-		return temporaryWorkManage;
-	}
+//	public TemporaryWorkManage toDomain() {
+//		TemporaryWorkManage temporaryWorkManage = new TemporaryWorkManage(this.krcdtTemporaryWorkManagePK.companyId,
+//				this.maxUseCount, this.temporatyStampTime);
+//		return temporaryWorkManage;
+//	}
 }
