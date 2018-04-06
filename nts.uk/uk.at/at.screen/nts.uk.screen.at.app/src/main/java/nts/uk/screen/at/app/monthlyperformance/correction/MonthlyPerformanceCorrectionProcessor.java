@@ -79,6 +79,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private MonthlyPerformanceCheck monthlyCheck;
 	@Inject
 	private DailyPerformanceScreenRepo repo;
+	
+	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
+	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_ERROR ="ntsgrid-error";
+	private static final String STATE_ALARM ="ntsgrid-alarm";
 	/**
 	 * @return TODO
 	 */
@@ -150,7 +157,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			DisplayItem dispItem = monthlyDisplay.getDisplayFormat(employeeIds, dateRange, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType(), screenDto);
 			
 			//TODO アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
+			this.displayMonthlyResult(screenDto, dispItem);
 			
+			//画面項目の非活制御をする
 			//アルゴリズム「実績の時系列をチェックする」を実行する (Check actual time)
 			screenDto.setActualTimeState(monthlyCheck.checkActualTime(closureId, yearMonth, screenDto.getSelectedActualTime()).value);
 			
@@ -176,17 +185,24 @@ public class MonthlyPerformanceCorrectionProcessor {
 			//
 			//setting data
 			List<MPDataDto> lstData = new ArrayList<>();
-			for (int i = 1; i < 100; i++) {				
-				MPDataDto mpdata = new MPDataDto("id"+i, 
-						false, "",
-						"employeeId" + i, "employeeCode" + i, 
-						"employeeName" + i, 
-						"", "", "", true, true, true, "");
-				mpdata.addCellData(new MPCellDataDto("time", "11:" + i, "String", ""));
-				mpdata.addCellData(new MPCellDataDto("alert", "", "String", ""));
-				lstData.add(mpdata);
+			boolean stateLock = false;
+			String empId;
+			for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
+				empId = screenDto.getLstEmployee().get(i).getId();
+				if(i % 2 == 0){
+					lstCellState.add(new MPCellStateDto("_" + empId, "dailyperformace", Arrays.asList(STATE_DISABLE)));
+					lstCellState.add(new MPCellStateDto("_" + empId, "identify", Arrays.asList(HAND_CORRECTION_MYSELF, STATE_DISABLE)));
+					stateLock = true;
+				}else{
+					stateLock = false;
+				}
 				
-				lstCellState.add(new MPCellStateDto("id"+i, "time", Arrays.asList("ntsgrid-alarm")));
+				lstCellState.add(new MPCellStateDto("_" + empId, "time", Arrays.asList(STATE_ALARM, STATE_DISABLE)));
+				
+				MPDataDto mpdata = new MPDataDto(empId,
+						"stateLock", "", screenDto.getLstEmployee().get(i).getCode(),screenDto.getLstEmployee().get(i).getBusinessName(), "", stateLock, stateLock, stateLock, "");
+				mpdata.addCellData(new MPCellDataDto("time", "11:" + i, "String", ""));
+				lstData.add(mpdata);
 			}			
 			screenDto.setLstCellState(lstCellState);
 			screenDto.setLstData(lstData);			
@@ -290,7 +306,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	/**
 	 * 月別実績を表示する
 	 */
-	private void displayMonthlyResult(MonthlyPerformanceCorrectionDto screenDto){
+	private void displayMonthlyResult(MonthlyPerformanceCorrectionDto screenDto, DisplayItem dataItem){
 		//社員ID（List）から社員コードと表示名を取得
 		//Lấy employee code và tên hiển thị từ list employeeID
 		//TODO Get data from 社員データ管理情報(Employee data management information) 

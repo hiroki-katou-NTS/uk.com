@@ -641,36 +641,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 if (header.constraint == null || header.constraint == undefined) {
                     delete header.constraint;
                 }else{
-                    header.constraint["cDisplayType"] = header.constraint.cdisplayType;
-                    if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
-                        if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
-                            if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
-                                header["columnCssClass"] = "currency-symbol";
-                                header.constraint["min"] = "0";
-                                header.constraint["max"] = "9999999999"
-                            } else if (header.constraint.cDisplayType == "Clock") {
-                                header["columnCssClass"] = "right-align";
-                                header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "100:30"
-                            } else if (header.constraint.cDisplayType == "Integer") {
-                                header["columnCssClass"] = "right-align";
-                            }
-                            delete header.constraint.primitiveValue;
-                        } else {
-                           
-                            if (header.constraint.cDisplayType == "Primitive") {
-                                delete header.group[0].constraint.cDisplayType
-                            } else if (header.constraint.cDisplayType == "Combo") {
-                                    header.group[0].constraint["min"] = 0;
-                                    header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
-                                    header.group[0].constraint["cDisplayType"] =  header.group[0].constraint.cdisplayType;
-                                   delete header.group[0].constraint.cdisplayType
-                                   delete header.group[0].constraint.primitiveValue;
-                            }
-                            delete header.constraint;
-                            delete header.group[1].constraint;
-                        }
-                    }
+                    
                     if(header.constraint != undefined) delete header.constraint.cdisplayType;
                 }
                 if (header.group != null && header.group != undefined) {
@@ -924,6 +895,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         enable_multiActualTime: KnockoutObservable<boolean> = ko.observable(false);
         enable_A5_4: KnockoutObservable<boolean> = ko.observable(false);
         enable_A1_5: KnockoutObservable<boolean> = ko.observable(true);
+        
+        prevData: Array<DailyPerformanceAuthorityDto> = null;
+        prevInitMode: number = 0;
         /**
          * formatPerformance: 権限 = 0, 勤務種別 = 1
          * initMode: 修正モード  = 0,  ロック解除モード    = 1  
@@ -932,29 +906,31 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         constructor(data: Array<DailyPerformanceAuthorityDto>, actualTimeState : number, initMode : number, formatPerformance : number) {
             let self = this;
             if (!data) return;
-            this.available_A1_1(self.checkAvailable(data, 32));            
-            this.available_A1_2(self.checkAvailable(data, 33));                       
-            this.available_A1_4(self.checkAvailable(data, 34));   
-            this.available_A5_4(self.checkAvailable(data, 11));
+            self.available_A1_1(self.checkAvailable(data, 32));            
+            self.available_A1_2(self.checkAvailable(data, 33));                       
+            self.available_A1_4(self.checkAvailable(data, 34));   
+            self.available_A5_4(self.checkAvailable(data, 11));
             if(initMode == 0){ //修正モード
                 if (formatPerformance == 0) { //権限
-                    this.enable_A1_1(actualTimeState == 1 || actualTimeState == 2);
-                    this.enable_A1_2(actualTimeState == 1 || actualTimeState == 2);
-                    this.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
+                    self.enable_A1_1(actualTimeState == 1 || actualTimeState == 2);
+                    self.enable_A1_2(actualTimeState == 1 || actualTimeState == 2);
+                    self.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
                 } else if (formatPerformance == 1) { //勤務種別
-                    this.enable_A1_1(actualTimeState == 1 || actualTimeState == 2);
-                    this.enable_A1_2(actualTimeState == 1 || actualTimeState == 2);
-                    this.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
-                    this.enable_A1_5(false);
+                    self.enable_A1_1(actualTimeState == 1 || actualTimeState == 2);
+                    self.enable_A1_2(actualTimeState == 1 || actualTimeState == 2);
+                    self.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
+                    self.enable_A1_5(false);
                 }
-                this.available_A1_8(self.checkAvailable(data, 12));
+                self.available_A1_8(self.checkAvailable(data, 12));
             }else if(initMode == 1){ //ロック解除モード 
                 if (formatPerformance == 1) { //勤務種別
-                    this.enable_A1_5(false);
+                    self.enable_A1_5(false);
                 }
-                this.available_A1_9(self.checkAvailable(data, 12));
-                this.available_A1_11(self.checkAvailable(data, 12)); 
-            }            
+                self.available_A1_9(self.checkAvailable(data, 12));
+                self.available_A1_11(self.checkAvailable(data, 12)); 
+            }         
+            self.prevData = data;   
+            self.prevInitMode = initMode;
         }
         checkAvailable(data: Array<DailyPerformanceAuthorityDto>, value: number): boolean {
             let self = this;
@@ -964,6 +940,16 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             if (check == null) return false;
             else return check.availability;
         };
+        
+        public changeLockStatus(){
+            let self = this;
+            if(self.prevInitMode == 0){ //修正モード                
+                self.available_A1_8(self.checkAvailable(self.prevData, 12));
+            }else if(self.prevInitMode == 1){ //ロック解除モード 
+                this.available_A1_9(self.checkAvailable(self.prevData, 12));
+                this.available_A1_11(self.checkAvailable(self.prevData, 12)); 
+            }         
+        }
     }
     class ItemModel {
         code: string;

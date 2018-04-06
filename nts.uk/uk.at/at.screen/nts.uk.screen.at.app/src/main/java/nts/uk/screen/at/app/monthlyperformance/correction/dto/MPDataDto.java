@@ -10,13 +10,10 @@ import lombok.Setter;
 @Setter
 public class MPDataDto {
     private String id;
-	private boolean state;
+	private String state;
     private String error;
-    private String employeeId;
     private String employeeCode;
     private String employeeName;
-    private String workplaceId;
-    private String employmentCode;
     private String typeGroup;
     private boolean identify;
     private boolean approval;
@@ -24,18 +21,14 @@ public class MPDataDto {
     private String dailyCorrectPerformance;
     private Set<MPCellDataDto> cellDatas;
     
-    public MPDataDto(String id, boolean state, String error, String employeeId, String employeeCode, String employeeName,
-			String workplaceId, String employmentCode, String typeGroup, boolean identify, boolean approval,
+    public MPDataDto(String id, String state, String error, String employeeCode, String employeeName, String typeGroup, boolean identify, boolean approval,
 			boolean dailyConfirm, String dailyCorrectPerformance) {
     	
 		this.id = id;
 		this.state = state;
 		this.error = error;
-		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.employeeName = employeeName;
-		this.workplaceId = workplaceId;
-		this.employmentCode = employmentCode;
 		this.typeGroup = typeGroup;
 		this.identify = identify;
 		this.approval = approval;

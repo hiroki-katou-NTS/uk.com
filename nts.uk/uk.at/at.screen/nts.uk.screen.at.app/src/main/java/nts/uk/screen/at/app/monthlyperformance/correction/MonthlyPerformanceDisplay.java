@@ -70,6 +70,7 @@ public class MonthlyPerformanceDisplay {
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByRoleID(employmentRoleID);
+		//TODO check null monthlyItemAuthDto
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
 		Set<Integer> acceptableAttendanceId = monthlyItemAuthDto.getListDisplayAndInputMonthly().stream()
