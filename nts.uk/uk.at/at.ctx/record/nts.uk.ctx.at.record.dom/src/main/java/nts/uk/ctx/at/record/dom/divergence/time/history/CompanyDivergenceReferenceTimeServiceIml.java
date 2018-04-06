@@ -72,6 +72,7 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 		JudgmentResultDetermineRefTime judgmentResultDetermineRefTime = new JudgmentResultDetermineRefTime();
 		DetermineReferenceTime determineRefTime = new DetermineReferenceTime();
 		JudgmentResult result = JudgmentResult.ERROR;
+		final DivergenceReferenceTime zeroTime = new DivergenceReferenceTime(0);
 		String companyId = AppContexts.user().companyId();
 
 		// get DivergenceReferenceTimeUsageUnit
@@ -111,33 +112,25 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 						if (checkCategory == JudgmentResult.ALARM) {
 							referenceTime = workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime()
 									.get();
-							// set judgment result
-							result = JudgmentResult.ALARM;
 						} else {
 							referenceTime = workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime()
 									.get();
-							// set judgment result
-							result = JudgmentResult.ERROR;
 						}
-
 						// check reference Time
-						if (referenceTime.greaterThan(DivergenceTimeOccurred)
-								|| referenceTime == new DivergenceReferenceTime(0)) {
+						if (referenceTime.greaterThan(DivergenceTimeOccurred) || referenceTime.equals(zeroTime)) {
 							// set judgment result
 							result = JudgmentResult.NORMAL;
 						} else { // set determineRefTime.Threshold
 
 							if ((divTimeErrotCancelMethod.isReasonSelected() && divReasonCode != null)
-									|| (divTimeErrotCancelMethod.isReasonInputed() && divReasonCode != null)) {
+									|| (divTimeErrotCancelMethod.isReasonInputed() && divReason != null)) {
 								// set judgment result
 								result = JudgmentResult.NORMAL;
 							} else {
-								//case ReasonSelected=false and ReasonInputed=false
-								if (!divTimeErrotCancelMethod.isReasonSelected()
-										&& !divTimeErrotCancelMethod.isReasonInputed())
-									determineRefTime.setThreshold(referenceTime);
+								// case ReasonSelected=false and ReasonInputed=false
+								result = checkCategory;
+								determineRefTime.setThreshold(referenceTime);
 							}
-
 						}
 
 					} else {
@@ -159,91 +152,30 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 					// get CompanyDivergenceReferenceTime
 					Optional<CompanyDivergenceReferenceTime> optionalComDivRefTime = comDivRefTimeRepo
 							.findByKey(typeofEmployee.getHistoryId(), divergenceTimeNo);
-
-					if (optionalComDivRefTime.isPresent()) {
-						CompanyDivergenceReferenceTime companyDivergenceReferenceTime = optionalComDivRefTime.get();
-						// check NotUseAtr
-						if (companyDivergenceReferenceTime.getNotUseAtr() == NotUseAtr.USE) {
-
-							DivergenceReferenceTime referenceTime = new DivergenceReferenceTime(0);
-
-							if (checkCategory == JudgmentResult.ALARM) {
-								referenceTime = companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
-										.getAlarmTime().get();
-								// set judgment result
-								result = JudgmentResult.ALARM;
-							} else {
-								referenceTime = companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
-										.getErrorTime().get();
-								// set judgment result
-								result = JudgmentResult.ERROR;
-							}
-
-							// check reference Time
-							if (referenceTime.greaterThan(DivergenceTimeOccurred)
-									|| referenceTime == new DivergenceReferenceTime(0)) {
-								// set judgment result
-								result = JudgmentResult.NORMAL;
-							} else { // set determineRefTime.Threshold
-
-								if (divTimeErrotCancelMethod.isReasonSelected()
-										|| divTimeErrotCancelMethod.isReasonInputed()) {
-									// set judgment result
-									result = JudgmentResult.NORMAL;
-								} else {
-									determineRefTime.setThreshold(referenceTime);
-								}
-
-							}
-
-						} else {
-							// set Judgment result
-							result = JudgmentResult.NORMAL;
-						}
-					}
+					// determine divergence time
+					determineDivergenceTime(result, optionalComDivRefTime, checkCategory, DivergenceTimeOccurred, divReasonCode, divReason, divTimeErrotCancelMethod, determineRefTime);
 				}
-
 			}
 			// set judgmentResultDetermineRefTime
 			judgmentResultDetermineRefTime.setJudgmentResult(result);
 			judgmentResultDetermineRefTime.setDetermineReafTime(determineRefTime);
 
-		} else {
-			// Incase false or domain is not exist
+		} else { // Incase false or domain is not exist
 			// get company's history items
 			CompanyDivergenceReferenceTimeHistory companyDivergenceReferenceTimeHistory = companyDivergenceReferenceTimeHistoryRepo
 					.findByDate(companyId, processDate);
-			// get history item
-			Optional<DateHistoryItem> dateHisItem = companyDivergenceReferenceTimeHistory.getHistoryItems().stream()
-					.filter(item -> item.start().after(processDate) && item.end().before(processDate)).findFirst();
-			if (dateHisItem.isPresent()) {
-				// get company's deviation reference time based on NO
-				Optional<CompanyDivergenceReferenceTime> companyDivRefTime = companyDivergenceReferenceTimeRepo
-						.findByKey(dateHisItem.get().identifier(), divergenceTimeNo);
-				if (companyDivRefTime.isPresent() && companyDivRefTime.get().getNotUseAtr().equals(NotUseAtr.USE)) {
-					// determine divergence time
-					// check error time
-					if (DivergenceTimeOccurred.lessThan(
-							companyDivRefTime.get().getDivergenceReferenceTimeValue().get().getErrorTime().get())) {
-						// check alarm time
-						if (DivergenceTimeOccurred.greaterThanOrEqualTo(
-								companyDivRefTime.get().getDivergenceReferenceTimeValue().get().getAlarmTime().get())) {
-							Optional<DivergenceReferenceTime> alarmTime = companyDivRefTime.get()
-									.getDivergenceReferenceTimeValue().get().getAlarmTime();
-							determineRefTime.setThreshold(alarmTime.get());
-							result = JudgmentResult.ALARM;
-						} else {
-							result = JudgmentResult.NORMAL;
-						}
-					} else {
-						Optional<DivergenceReferenceTime> errorTime = companyDivRefTime.get()
-								.getDivergenceReferenceTimeValue().get().getErrorTime();
-						determineRefTime.setThreshold(errorTime.get());
-						result = JudgmentResult.ERROR;
-					}
-				} else {
-					result = JudgmentResult.NORMAL;
-				}
+			// get dateHistItemcom
+			DateHistoryItem dateHistItemcom = companyDivergenceReferenceTimeHistory.getHistoryItems().stream()
+					.filter(item -> item.start().before(processDate) && item.end().after(processDate)).findFirst()
+					.get();
+			// check dateHistItemcom
+			if (dateHistItemcom != null) {
+				// get CompanyDivergenceReferenceTime
+				Optional<CompanyDivergenceReferenceTime> optionalComDivRefTime = comDivRefTimeRepo
+						.findByKey(dateHistItemcom.identifier(), divergenceTimeNo);
+				// determine divergence time
+				determineDivergenceTime(result, optionalComDivRefTime, checkCategory, DivergenceTimeOccurred, divReasonCode, divReason, divTimeErrotCancelMethod, determineRefTime);
+
 			}
 			// set reference time type
 			determineRefTime.setReferenceTime(ReferenceTime.COMPANY);
@@ -254,4 +186,42 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 		return judgmentResultDetermineRefTime;
 	}
 
+	private void determineDivergenceTime(JudgmentResult result, Optional<CompanyDivergenceReferenceTime> optionalComDivRefTime, JudgmentResult checkCategory, AttendanceTime DivergenceTimeOccurred,
+			DiverdenceReasonCode divReasonCode, DivergenceReason divReason,DivergenceTimeErrorCancelMethod divTimeErrotCancelMethod, DetermineReferenceTime determineRefTime) {
+		
+		final DivergenceReferenceTime zeroTime = new DivergenceReferenceTime(0);
+		// check NotUseAtr
+		if (optionalComDivRefTime.isPresent() && optionalComDivRefTime.get().getNotUseAtr() == NotUseAtr.USE) {
+			
+			CompanyDivergenceReferenceTime companyDivergenceReferenceTime = optionalComDivRefTime.get();
+			DivergenceReferenceTime referenceTime = new DivergenceReferenceTime(0);
+			
+			// check category
+			if (checkCategory == JudgmentResult.ALARM) {
+				referenceTime = companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
+						.getAlarmTime().get();
+			} else {
+				referenceTime = companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
+						.getErrorTime().get();
+			}
+			// check reference Time
+			if (referenceTime.greaterThan(DivergenceTimeOccurred) || referenceTime.equals(zeroTime)) {
+				// set judgment result
+				result = JudgmentResult.NORMAL;
+			} else { // set determineRefTime.Threshold
+				if ((divTimeErrotCancelMethod.isReasonSelected() && divReasonCode != null)
+						|| (divTimeErrotCancelMethod.isReasonInputed() && divReason != null)) {
+					// set judgment result
+					result = JudgmentResult.NORMAL;
+				} else {
+					// case ReasonSelected=false and ReasonInputed=false
+					result = checkCategory;
+					determineRefTime.setThreshold(referenceTime);
+				}
+			}
+		} else {
+			// set Judgment result
+			result = JudgmentResult.NORMAL;
+		}
+	}
 }
