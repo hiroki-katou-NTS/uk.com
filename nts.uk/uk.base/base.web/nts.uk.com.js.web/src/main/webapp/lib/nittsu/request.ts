@@ -1,4 +1,17 @@
 module nts.uk.request {
+    
+    module csrf {
+        let STORAGE_KEY_CSRF_TOKEN = "nts.uk.request.csrf.STORAGE_KEY_CSRF_TOKEN";
+        
+        cookie.get("nts.arc.CSRF_TOKEN")
+            .ifPresent(csrfToken => {
+                uk.sessionStorage.setItem(STORAGE_KEY_CSRF_TOKEN, csrfToken);
+            });
+        
+        export function getToken() {
+            return uk.sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN).orElse("");
+        }
+    }
 
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
@@ -181,7 +194,8 @@ module nts.uk.request {
                 dataType: options.dataType || 'json',
                 data: data,
                 headers: {
-                    'PG-Path': location.current.serialize()
+                    'PG-Path': location.current.serialize(),
+                    "X-CSRF-TOKEN": csrf.getToken()
                 }
             }).done(function(res) {
                 if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -232,7 +246,8 @@ module nts.uk.request {
                 data: data,
                 async: false,
                 headers: {
-                    'PG-Path': location.current.serialize()
+                    'PG-Path': location.current.serialize(),
+                    "X-CSRF-TOKEN": csrf.getToken()
                 },
                 success: function(res) {
                     if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -548,17 +563,22 @@ module nts.uk.request {
         
         export function keepSerializedSession() {
             let dfd = $.Deferred();
-            request.ajax("/shr/web/session/serialize").done(res => {
-                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
-                dfd.resolve();
-            });
-            
+            dfd.resolve();
+//            request.ajax("/shr/web/session/serialize").done(res => {
+//                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+//                dfd.resolve();
+//            });
+//            
             return dfd.promise();
         }
         
         export function restoreSessionTo(webAppId: WebAppId) {
-            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
+            let dfd = $.Deferred();
+            dfd.resolve();
+            return dfd.promise();
+            
+//            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+//            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
     }
     
