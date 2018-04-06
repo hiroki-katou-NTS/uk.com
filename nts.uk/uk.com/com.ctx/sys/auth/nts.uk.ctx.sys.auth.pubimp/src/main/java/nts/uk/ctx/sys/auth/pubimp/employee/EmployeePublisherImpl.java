@@ -124,9 +124,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		Optional<EmpInfoImport> empInfor = employeeInfoAdapter.getByComnyIDAndEmployeeCD(companyID, employeeCD);
 		if (empInfor.isPresent()) {
 			// 参照可能な社員かを判定する（職場）
-			List<Integer> param = new ArrayList<>();
-			param.add(RoleType.EMPLOYMENT.value);
-			boolean result = determineEmpCanRefer.checkDetermineEmpCanRefer(GeneralDate.today(), empInfor.get().getEmployeeId(), param);
+			boolean result = determineEmpCanRefer.checkDetermineEmpCanRefer(GeneralDate.today(), empInfor.get().getEmployeeId(), RoleType.EMPLOYMENT.value);
 			if (result == true) {
 				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
 			} else

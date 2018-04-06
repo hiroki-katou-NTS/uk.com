@@ -1,5 +1,10 @@
 @CHARSET "UTF-8";
 
+#func-notifier-errors {
+	top: 135px;
+    left: 125px;
+}
+
 .border-all td {
 	border: solid grey 1px;
 	text-align: center;
@@ -24,7 +29,6 @@
 	background-color: #C7F391;
 }
 .right-content {
-	margin-left: 25px;
 }
 #list-workplace {
 	width: 480px;
@@ -89,3 +93,18 @@
 #tab-panel .ui-widget-content:not(.disappear) {
 	min-height: 630px;
 }
+
+#tab-2 .tbl-monthly tr td:nth-child(1) {
+	min-width: 50px;
+	max-width: 60px;
+}
+
+#tab-2 .tbl-monthly tr td:nth-child(2), 
+#tab-2 .tbl-monthly tr td:nth-child(3) {
+	max-width: 85px;
+}
+
+	#tab-2 .tbl-monthly tr td:nth-child(2) input, 
+	#tab-2 .tbl-monthly tr td:nth-child(3) input {
+		width: 60px;
+	}
