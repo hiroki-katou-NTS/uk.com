@@ -270,12 +270,12 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 //			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
 		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String endTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
-				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String startTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
-				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String endTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
-				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
+		String endTime1 = appAbsence.getEndTime1() == null ? "" : appAbsence.getEndTime1().getDayDivision().description 
+				+ appAbsence.getEndTime1().getInDayTimeWithFormat();
+		String startTime2 = appAbsence.getStartTime2() == null ? "" : appAbsence.getStartTime2().getDayDivision().description 
+				+ appAbsence.getStartTime2().getInDayTimeWithFormat();
+		String endTime2 = appAbsence.getEndTime2() == null ? "" : appAbsence.getEndTime2().getDayDivision().description 
+				+ appAbsence.getEndTime2().getInDayTimeWithFormat();
 		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
 		String relaCode = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = relaCode.equals("") ? "" : repoRelationship.findByCode(companyId, relaCode).get().getRelationshipName().v();
