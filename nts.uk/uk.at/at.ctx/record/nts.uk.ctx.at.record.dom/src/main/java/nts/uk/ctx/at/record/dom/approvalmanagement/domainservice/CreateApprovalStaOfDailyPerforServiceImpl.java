@@ -15,13 +15,13 @@ public class CreateApprovalStaOfDailyPerforServiceImpl implements CreateApproval
 
 	@Override
 	public void createApprovalStaOfDailyPerforService(String employeeID, GeneralDate processingDate) {
-		// ワークフロー．アルゴリズム「承認ルートインスタンスを生成する」を実行する
-		
-		if (1 == 2) {
-			String approvalRouteID = "";
-			ApprovalStatusOfDailyPerfor approvalStatusOfDailyPerfor = new ApprovalStatusOfDailyPerfor(employeeID, processingDate, approvalRouteID);
-			this.approvalStatusOfDailyPerforRepository.insert(approvalStatusOfDailyPerfor);
-		}		
+//		// ワークフロー．アルゴリズム「承認ルートインスタンスを生成する」を実行する
+//		
+//		if (1 == 2) {
+//			String approvalRouteID = "";
+//			ApprovalStatusOfDailyPerfor approvalStatusOfDailyPerfor = new ApprovalStatusOfDailyPerfor(employeeID, processingDate, approvalRouteID);
+//			this.approvalStatusOfDailyPerforRepository.insert(approvalStatusOfDailyPerfor);
+//		}		
 	}
 
 }
