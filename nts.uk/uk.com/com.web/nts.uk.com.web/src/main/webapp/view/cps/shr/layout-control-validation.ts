@@ -10,6 +10,7 @@ module nts.layout {
     let rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
+        removeErrorByElement = window['nts']['uk']['ui']['errors']["removeByElement"],
         clearError = window['nts']['uk']['ui']['errors']['clearAll'],
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
@@ -128,7 +129,13 @@ module nts.layout {
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
-                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode);
+                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode),
+                childset: Array<string> = _(subscribes).filter(x => [ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(x.type) > -1).map(x => x.itemCode).value();
+
+            _.each(childset, code => {
+                let child = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == code);
+                subscribes = _.concat(subscribes, child);
+            });
 
             return subscribes.map(x => {
                 return <IFindData>{
@@ -249,6 +256,21 @@ module nts.layout {
                         ctgCode: 'CS00024',
                         radioCode: 'IS00387',
                         setParentCode: 'IS00388'
+                    },
+                    {
+                        ctgCode: 'CS00024',
+                        radioCode: 'IS00400',
+                        setParentCode: 'IS00401'
+                    },
+                    {
+                        ctgCode: 'CS00025',
+                        radioCode: 'IS00411',
+                        setParentCode: 'IS00412'
+                    },
+                    {
+                        ctgCode: 'CS00026',
+                        radioCode: 'IS00426',
+                        setParentCode: 'IS00427'
                     }
                 ],
                 validation = (radio: IRelateRadio) => {
@@ -259,6 +281,7 @@ module nts.layout {
                         rd.data.value.subscribe(x => {
                             _.each(ctrls, c => {
                                 c.data.editable(x == 1);
+                                removeErrorByElement($(c.id));
                             });
                         });
 
@@ -947,7 +970,8 @@ module nts.layout {
 
     enum ITEM_TYPE {
         SET = 1,
-        SINGLE = 2
+        SINGLE = 2,
+        SET_TABLE = 3
     }
 
     interface IValidation {
