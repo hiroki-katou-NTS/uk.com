@@ -31,6 +31,7 @@ public class AggregatePremiumTimeDto {
 		}
 		return dto;
 	}
+	
 	public AggregatePremiumTime toDomain(){
 		return AggregatePremiumTime.of(premiumTimeItemNo, time == null ? null : new AttendanceTimeMonth(time));
 	}

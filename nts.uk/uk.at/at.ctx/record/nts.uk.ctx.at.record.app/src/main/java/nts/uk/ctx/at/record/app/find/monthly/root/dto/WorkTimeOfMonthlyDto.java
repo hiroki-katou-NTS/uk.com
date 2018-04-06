@@ -12,6 +12,9 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTi
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -115,8 +118,8 @@ public class WorkTimeOfMonthlyDto {
 	private HolidayTimeOfMonthly toHolTime() {
 		return holidayTime == null ? null : holidayTime.toDomain();
 	}
-
-	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
+	
+	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time){
 		return time == null ? null : new AttendanceTimeMonth(time);
 	}
 }

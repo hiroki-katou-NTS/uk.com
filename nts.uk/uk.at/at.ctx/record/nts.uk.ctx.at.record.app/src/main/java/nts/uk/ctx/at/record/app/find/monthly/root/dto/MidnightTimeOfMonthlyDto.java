@@ -48,6 +48,7 @@ public class MidnightTimeOfMonthlyDto {
 		}
 		return dto;
 	}
+	
 	public MidnightTimeOfMonthly toDomain() {
 		return MidnightTimeOfMonthly.of(overWorkMidnightTime == null ? null : overWorkMidnightTime.toDomain(), 
 										legalMidnightTime == null ? null : legalMidnightTime.toDomain(),  

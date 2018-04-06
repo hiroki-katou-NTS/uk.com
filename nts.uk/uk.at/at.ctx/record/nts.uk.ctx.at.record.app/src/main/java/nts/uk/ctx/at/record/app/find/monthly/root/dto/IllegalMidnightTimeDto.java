@@ -32,6 +32,7 @@ public class IllegalMidnightTimeDto {
 		}
 		return dto;
 	}
+	
 	public IllegalMidnightTime toDomain(){
 		return IllegalMidnightTime.of(time == null ? null : time.toDomain(), beforeTime == null ? null : new AttendanceTimeMonth(beforeTime));
 	}
