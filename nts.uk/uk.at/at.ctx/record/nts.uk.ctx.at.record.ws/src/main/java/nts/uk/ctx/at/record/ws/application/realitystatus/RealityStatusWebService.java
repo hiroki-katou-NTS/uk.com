@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.realitystatus;
+package nts.uk.ctx.at.record.ws.application.realitystatus;
 
 import java.util.List;
 
@@ -12,10 +12,11 @@ import nts.uk.ctx.at.record.app.find.realitystatus.ExeSendUnconfirmMailParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusFinder;
 import nts.uk.ctx.at.record.app.find.realitystatus.SendMailResultDto;
+import nts.uk.ctx.at.record.app.find.realitystatus.UseSetingDto;
 import nts.uk.ctx.at.record.app.find.realitystatus.WkpIdMailCheckParam;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 
-@Path("at/record/realitystatus")
+@Path("at/record/application/realitystatus")
 @Produces("application/json")
 public class RealityStatusWebService extends WebService {
 	@Inject
@@ -37,5 +38,11 @@ public class RealityStatusWebService extends WebService {
 	@Path("exeSendUnconfirmedMail")
 	public SendMailResultDto exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
 		return realityStatusFinder.exeSendUnconfirmMail(obj);
+	}
+	
+	@POST
+	@Path("getUseSetting")
+	public UseSetingDto getUseSetting() {
+		return realityStatusFinder.getUseSetting();
 	}
 }

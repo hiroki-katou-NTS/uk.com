@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultIm
 import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.TransmissionAttr;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 承認状況メールテンプレート
@@ -55,5 +57,11 @@ public class RealityStatusFinder {
 			listWkp.add(wkp);
 		}
 		return listWkp;
+	}
+	
+	public UseSetingDto getUseSetting(){
+		String cid = AppContexts.user().companyId();
+		UseSetingOutput setting = realityStatusService.getUseSetting(cid);
+		return new UseSetingDto(setting.isMonthlyConfirm(), setting.isUseBossConfirm(), setting.isUsePersonConfirm());
 	}
 }

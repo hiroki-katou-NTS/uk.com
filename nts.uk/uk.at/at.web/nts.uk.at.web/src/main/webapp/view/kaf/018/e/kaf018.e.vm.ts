@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
     export class ScreenModel {
         listWkpStatusConfirm: Array<model.ApprovalStatusActivity>;
-
+        useSetting: UseSetting;
         closureId: string;
         closureName: string;
         processingYm: string;
@@ -58,14 +58,19 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     listEmpCd: self.listEmpCd
                 };
 
-                service.getStatusActivity(obj).done(function(data: any) {
-                    console.log(data);
-                    _.each(data, function(item) {
-                        self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, item.wkpId, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
-                        console.log(item)
+                service.getUseSetting().done(function(setting) {
+                    self.useSetting = setting;
+                    console.log(self.useSetting);
+                    service.getStatusActivity(obj).done(function(data: any) {
+                        _.each(data, function(item) {
+                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, item.wkpId, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                        })
+                        dfd.resolve();
+                    }).always(function() {
+                        block.clear();
                     })
+                }).fail(function() {
                     block.clear();
-                    dfd.resolve();
                 })
             }
             else {
@@ -94,10 +99,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         listEmpCd: self.listEmpCd
                     };
                     service.exeSendUnconfirmedMail(obj).done(function(result: any) {
-                        if(result.ok){
+                        if (result.ok) {
                             info({ messageId: "Msg_792" });
                         }
-                        else{
+                        else {
                             error({ messageId: "Msg_793" });
                         }
                     }).fail(function(err) {
@@ -161,6 +166,15 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             DAILY = 2,
             //月次
             MONTHLY = 3
+        }
+
+        export class UseSetting {
+            //月別確認を利用する
+            monthlyConfirm: boolean;
+            //上司確認を利用する
+            useBossConfirm: boolean;
+            //本人確認を利用する
+            usePersonConfirm: boolean;
         }
     }
 }
