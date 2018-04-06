@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import java.util.Date;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult;
