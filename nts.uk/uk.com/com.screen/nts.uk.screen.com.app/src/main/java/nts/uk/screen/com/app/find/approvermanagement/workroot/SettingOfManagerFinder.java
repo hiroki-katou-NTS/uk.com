@@ -150,8 +150,10 @@ public class SettingOfManagerFinder {
 			closingStartDate = closureStartDate.get();
 		}
 
+		// 履歴の開始日がないの場合基準日は締めの開始日です。
+		GeneralDate baseDate = isNewMode ? closingStartDate : startDate;
+
 		// ログイン者の承認権限を取得する
-		GeneralDate baseDate = Objects.isNull(startDate) ? closingStartDate : startDate;
 		hasAuthority         = this.employeeAdapter.canApprovalOnBaseDate(companyId, loginId, baseDate);
 
 		return new ManagerSettingDto(startDate, endDate, isNewMode, departmentCode, departmentApproverId,

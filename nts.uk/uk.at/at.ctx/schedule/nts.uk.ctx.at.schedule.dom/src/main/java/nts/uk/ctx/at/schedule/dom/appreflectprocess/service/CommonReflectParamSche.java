@@ -20,5 +20,13 @@ public class CommonReflectParamSche {
 	 * 就業時間帯コード
 	 */
 	private String workTimeCode;
+	/**
+	 * 開始日
+	 */	
+	private GeneralDate startDate;
+	/**
+	 * 終了日	
+	 */
+	private GeneralDate endDate;
 
 }

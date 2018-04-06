@@ -8,11 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityParam;
-import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityDto;
-import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusFinder;
 import nts.uk.ctx.at.record.app.find.realitystatus.ExeSendUnconfirmMailParam;
+import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityParam;
+import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusFinder;
 import nts.uk.ctx.at.record.app.find.realitystatus.WkpIdMailCheckParam;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 
 @Path("at/record/realitystatus")
 @Produces("application/json")
@@ -22,8 +22,8 @@ public class RealityStatusWebService extends WebService {
 
 	@POST
 	@Path("getStatusActivity")
-	public List<RealityStatusActivityDto> getStatusActivity(RealityStatusActivityParam wkpInfoDto) {
-		return realityStatusFinder.getStatusActivity(wkpInfoDto);
+	public List<StatusWkpActivityOutput> getStatusActivity(RealityStatusActivityParam wkpInfoDto) {
+		return realityStatusFinder.getStatusWkpActivity(wkpInfoDto);
 	}
 
 	@POST

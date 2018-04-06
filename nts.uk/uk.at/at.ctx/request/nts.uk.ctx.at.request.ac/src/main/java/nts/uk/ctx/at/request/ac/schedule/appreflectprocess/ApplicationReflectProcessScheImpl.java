@@ -40,7 +40,9 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 		CommonReflectSchePubParam leavePra = new CommonReflectSchePubParam(reflectSche.getEmployeeId(),
 				reflectSche.getDatePara(),
 				reflectSche.getForLeave().getWorkTypeCode().v(),
-				reflectSche.getForLeave().getWorkTimeCode().v());
+				reflectSche.getForLeave().getWorkTimeCode().v(),
+				null,
+				null);
 		appReflectSchePub.appForLeaveSche(leavePra);
 	}
 
@@ -49,7 +51,9 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 		CommonReflectSchePubParam workChangePara = new CommonReflectSchePubParam(reflectSche.getEmployeeId(), 
 				reflectSche.getDatePara(), 
 				reflectSche.getWorkChange().getWorkTypeCd(), 
-				reflectSche.getWorkChange().getWorkTimeCd());
+				reflectSche.getWorkChange().getWorkTimeCd(),
+				reflectSche.getAppInfor().getStartDate() == null ? null : reflectSche.getAppInfor().getStartDate().get(),
+				reflectSche.getAppInfor().getEndDate() == null ? null : reflectSche.getAppInfor().getEndDate().get());
 		
 		return appReflectSchePub.appWorkChangeReflect(workChangePara);
 	}
