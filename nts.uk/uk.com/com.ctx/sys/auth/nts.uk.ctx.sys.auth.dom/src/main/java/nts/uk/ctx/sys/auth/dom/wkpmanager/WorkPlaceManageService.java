@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WorkPlaceService.
  */
 @Stateless
-public class WorkPlaceService {
+public class WorkPlaceManageService {
 
 	/** The workplace adapter. */
 	@Inject
