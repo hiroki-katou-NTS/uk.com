@@ -5,9 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -31,13 +28,6 @@ public class KshstDailyServiceTypeControl extends UkJpaEntity implements Seriali
 	
 	@Column(name = "CHANGED_BY_YOU")
 	public int youCanChangeIt;
-	
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "AUTHORITY_DAILY_ID", referencedColumnName = "AUTHORITY_DAILY_ID", insertable = false, updatable = false)
-	})
-	public KshstDailyAttdItemAuth dailyattditemauth;
 	
 	@Override
 	protected Object getKey() {
@@ -66,8 +56,8 @@ public class KshstDailyServiceTypeControl extends UkJpaEntity implements Seriali
 				this.kshstDailyServiceTypeControlPK.itemDailyID,
 				this.toUse==1?true:false,
 				new InputControlOfAttendanceItem(
-						this.youCanChangeIt==1?true:false, 
-						this.canBeChangedByOthers==1?true:false)
+					this.canBeChangedByOthers==1?true:false,
+					this.youCanChangeIt==1?true:false)
 				); 
 	}
 	
