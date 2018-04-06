@@ -513,7 +513,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
                 if (!self.displayEndDateFlg()) {
                     nts.uk.ui.errors.clearAll();
-                    $('.ntsStartDatePicker').trigger("validate");
+                    $('#inputdate').trigger("validate");
                     if (nts.uk.ui.errors.hasError()) { return true; }
                 } else {
                     nts.uk.ui.errors.clearAll();
