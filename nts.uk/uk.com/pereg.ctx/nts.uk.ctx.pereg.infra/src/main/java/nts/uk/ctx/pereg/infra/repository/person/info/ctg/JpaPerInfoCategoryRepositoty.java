@@ -123,11 +123,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
 			+ "	JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId "
 			+ " AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND iau.ppemtPersonItemAuthPk.roleId = :roleId)"
-			+ " AND (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId) "
-			+ " != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
-			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or c.otherPersonAuthType = 1) "
-			+ " AND (0 = :selfAuth or c.selfAuthType = 1))";
+			+ " AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) "
+			+ " AND (0 = :selfAuth or (1 = :selfAuth and iau.selfAuthType != 1)))"
+			+ " AND 0 != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
+			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType = 1)) "
+			+ " AND (0 = :selfAuth or (1 = :selfAuth and c.selfAuthType = 1)))";
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
