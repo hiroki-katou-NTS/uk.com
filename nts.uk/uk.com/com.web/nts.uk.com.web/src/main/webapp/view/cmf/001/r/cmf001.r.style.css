@@ -67,17 +67,8 @@ table, th, td {
 	margin-right: 0 !important;
 }
 td {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-#grd_Accept, #single-list {
-	counter-reset: rowNumber;
-}
-
-#grd_Accept .increment-col::before, #single-list th.ui-iggrid-rowselector-class::before
-	{
-	counter-increment: rowNumber;
-	content: counter(rowNumber);
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 #grd_Accept .increment-col, #single-list th.ui-iggrid-rowselector-class
