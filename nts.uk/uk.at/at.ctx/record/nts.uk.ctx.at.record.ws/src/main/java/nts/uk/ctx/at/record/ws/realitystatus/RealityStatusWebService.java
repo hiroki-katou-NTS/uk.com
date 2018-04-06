@@ -11,6 +11,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.realitystatus.ExeSendUnconfirmMailParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusFinder;
+import nts.uk.ctx.at.record.app.find.realitystatus.SendMailResultDto;
 import nts.uk.ctx.at.record.app.find.realitystatus.WkpIdMailCheckParam;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 
@@ -28,13 +29,13 @@ public class RealityStatusWebService extends WebService {
 
 	@POST
 	@Path("checkSendUnconfirmedMail")
-	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
-		realityStatusFinder.checkSendUnconfirmedMail(listWkp);
+	public String checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
+		return realityStatusFinder.checkSendUnconfirmedMail(listWkp);
 	}
 	
 	@POST
 	@Path("exeSendUnconfirmedMail")
-	public void exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
-		realityStatusFinder.exeSendUnconfirmMail(obj);
+	public SendMailResultDto exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
+		return realityStatusFinder.exeSendUnconfirmMail(obj);
 	}
 }

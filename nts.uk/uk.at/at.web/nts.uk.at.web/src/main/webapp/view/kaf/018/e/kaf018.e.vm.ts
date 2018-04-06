@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.alertError;
+    import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
@@ -21,7 +22,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         person: number;
         daily: number;
         monthly: number;
-        
+
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 186 });
@@ -80,20 +81,36 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             _.each(self.listWkpStatusConfirm, function(item) {
                 listWkp.push({ wkpId: item.code, isCheckOn: item.check() ? 1 : 0 })
             })
+            //アルゴリズム「承認状況未確認メール送信」を実行する
             service.checkSendUnconfirmedMail(listWkp).done(function() {
-                switch(value){
-                    case model.TransmissionAttr.PERSON:
-                        break;
-                    case model.TransmissionAttr.DAILY:
-                        break;
-                    case model.TransmissionAttr.MONTHLY:
-                        break;
-                }
-                block.clear();
+                confirm({ messageId: "Msg_797" }).ifYes(() => {
+                    block.invisible();
+                    // アルゴリズム「承認状況未確認メール送信実行」を実行する
+                    let obj = {
+                        "type": value,
+                        listWkp: listWkp,
+                        startDate: self.startDate,
+                        endDate: self.endDate,
+                        listEmpCd: self.listEmpCd
+                    };
+                    service.exeSendUnconfirmedMail(obj).done(function(result: any) {
+                        if(result.ok){
+                            info({ messageId: "Msg_792" });
+                        }
+                        else{
+                            error({ messageId: "Msg_793" });
+                        }
+                    }).fail(function(err) {
+                        error({ messageId: err.messageId });
+                    }).always(function() {
+                        block.clear();
+                    });
+                })
             }).fail(function(err) {
-                block.clear();
                 error({ messageId: err.messageId });
-            })
+            }).always(function() {
+                block.clear();
+            });
         }
 
         private getRecord(value?: number) {
@@ -123,8 +140,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
                 this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
                 this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
-                if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {                    
-                    this.enable = false;
+                if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
+                    //this.enable = false;
+                    this.enable = true;
                     this.check = ko.observable(this.enable);
                 }
                 else {
