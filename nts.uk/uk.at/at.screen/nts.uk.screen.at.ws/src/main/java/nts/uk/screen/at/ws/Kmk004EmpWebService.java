@@ -72,8 +72,9 @@ public class Kmk004EmpWebService {
 	 */
 	@POST
 	@Path("delete")
-	public void delete(Kmk004EmpDeleteCommand cm) {
+	public Kmk004EmpDeleteCommand delete(Kmk004EmpDeleteCommand cm) {
 		this.delete.handle(cm);
+		return cm;
 	}
 	
 	/**
