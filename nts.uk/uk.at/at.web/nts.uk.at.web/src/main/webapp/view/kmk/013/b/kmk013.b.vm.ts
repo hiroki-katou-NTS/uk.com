@@ -893,7 +893,11 @@ module nts.uk.at.view.kmk013.b {
                            case lastTabIndexTabPanel3 : { 
                                 self.selectedTab("tab-4"); 
                               break; 
-                           } 
+                           }
+                           case lastTabIndexBeforeTabPanel1 : { 
+                                self.selectedTab("tab-1"); 
+                                break; 
+                           }
                            default: { 
                            } 
                         }
@@ -1398,6 +1402,7 @@ module nts.uk.at.view.kmk013.b {
         const lastTabIndexTabPanel1 = 28;
         const lastTabIndexTabPanel2 = 41;
         const lastTabIndexTabPanel3 = 57;
+        const lastTabIndexBeforeTabPanel1  = 14;
         
         class BoxModel {
             id: number;

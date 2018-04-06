@@ -70,11 +70,11 @@ table.table-right th, table.table-right td {
 	border-top: 1px solid #000 ;
 }
 
-#b5_8, #b7_23, #b7_24, #b7_8, #b7_9, #b7_23, #b7_24 {
+#b5_8, #b7_8 {
 	padding-left: 90px;
 }
 
-#b5_9, #b5_22, #b5_23 {
+#b5_9, #b5_22, #b5_23, #b7_9, #b7_23, #b7_24 {
 	margin-left: 80px;
 }
 
