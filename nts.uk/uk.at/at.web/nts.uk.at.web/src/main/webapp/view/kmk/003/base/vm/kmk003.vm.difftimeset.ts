@@ -203,16 +203,16 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class DiffTimeOTTimezoneSetModel extends OverTimeOfTimeZoneSetModel {
-                isUpdateStartTime: KnockoutObservable<boolean>;
+                updateStartTime: KnockoutObservable<boolean>;
 
                 constructor() {
                     super();
-                    this.isUpdateStartTime = ko.observable(false);
+                    this.updateStartTime = ko.observable(false);
                 }
 
                 updateData(data: DiffTimeOTTimezoneSetDto) {
                     super.updateData(data);
-                    this.isUpdateStartTime(data.isUpdateStartTime);
+                    this.updateStartTime(data.updateStartTime);
                 }
 
                 toDto(): DiffTimeOTTimezoneSetDto {
@@ -224,7 +224,7 @@ module nts.uk.at.view.kmk003.a {
                         otFrameNo: this.otFrameNo(),
                         legalOTframeNo: this.legalOTframeNo(),
                         settlementOrder: this.settlementOrder(),
-                        isUpdateStartTime: this.isUpdateStartTime()
+                        updateStartTime: this.updateStartTime()
                     };
                     return dataDTO;
                 }
@@ -255,7 +255,7 @@ module nts.uk.at.view.kmk003.a {
                     this.earlyOTUse = ko.observable(otModel.earlyOTUse());
                     this.legalOTframeNo = ko.observable(otModel.legalOTframeNo());
                     this.settlementOrder = ko.observable(otModel.settlementOrder());
-                    this.isUpdateStartTime = ko.observable(otModel.isUpdateStartTime());
+                    this.isUpdateStartTime = ko.observable(otModel.updateStartTime());
                 }
             }
 
@@ -275,7 +275,7 @@ module nts.uk.at.view.kmk003.a {
                         timezone: {
                             rounding: {
                                 roundingTime: convertedItem.roundingTime(),
-                                rounding: convertedItem.roundingTime()
+                                rounding: convertedItem.rounding()
                             },
                             start: convertedItem.timezone().startTime,
                             end: convertedItem.timezone().endTime
@@ -285,7 +285,7 @@ module nts.uk.at.view.kmk003.a {
                         otFrameNo: convertedItem.otFrameNo(),
                         legalOTframeNo: convertedItem.legalOTframeNo ? convertedItem.legalOTframeNo() : 1,
                         settlementOrder: convertedItem.settlementOrder ? convertedItem.settlementOrder() : 1,
-                        isUpdateStartTime: convertedItem.isUpdateStartTime ? convertedItem.isUpdateStartTime() : false
+                        updateStartTime: convertedItem.isUpdateStartTime ? convertedItem.isUpdateStartTime() : false
                     };
                 }
 

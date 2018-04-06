@@ -2001,7 +2001,7 @@ module nts.uk.at.view.kmk003.a {
                         timezone: {
                             rounding: {
                                 roundingTime: convertedItem.roundingTime(),
-                                rounding: convertedItem.roundingTime()
+                                rounding: convertedItem.rounding()
                             },
                             start: convertedItem.timezone().startTime,
                             end: convertedItem.timezone().endTime

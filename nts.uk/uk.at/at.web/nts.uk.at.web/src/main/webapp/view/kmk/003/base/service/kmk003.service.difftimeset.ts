@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface DiffTimeOTTimezoneSetDto extends OverTimeOfTimeZoneSetDto {
-                    isUpdateStartTime: boolean;
+                    updateStartTime: boolean;
                 }
 
                 export interface DiffTimezoneSettingDto {
