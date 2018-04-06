@@ -220,9 +220,9 @@
 							<div class="lblTitle-kaf006"
 								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_19')}</div>
 						</div>
-						<div class="cell valign-top-kaf006 cm-column2-kaf006" tabindex="19">
+						<div class="cell valign-top-kaf006 cm-column2-kaf006" >
 							<!--A6_4 就業時間帯選択-->
-							<button class="proceed"
+							<button class="proceed" tabindex="19"
 								data-bind="click: btnSelectWorkTimeZone, enable : enbbtnWorkTime() &amp; changeWorkHourValue()">#{i18n.getText('KAF006_20')}</button>
 						</div>
 						<div class="cell valign-center-kaf006">
@@ -240,11 +240,10 @@
 							<div class="lblTitle-kaf006"
 								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_22')}</div>
 						</div>
-						<div class="cell valign-top-kaf006 cm-column2-kaf006"
-							tabindex="20">
-							<div>
+						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+							<div >
 								<!--A6_7 開始時刻-->
-								<input
+								<input tabindex="20"
 									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpStartTime1"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
@@ -253,7 +252,7 @@
 							</div>
 						</div>
 						<div class="cell valign-center-kaf006">
-							<div>
+							<div >
 								<!--A6_9 終了時刻-->
 								<input tabindex="21"
 									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
@@ -288,8 +287,8 @@
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel: {}">#{i18n.getText('KAF006_26')}</div>
 				<!--A7_4 申請理由-->
-				<div id="multiline">
-					<textarea tabindex="30" id="appReason" class="textarea-kaf006"
+				<div id="multiline" >
+					<textarea  tabindex="30" id="appReason" class="textarea-kaf006"
 						data-bind="ntsMultilineEditor: {name: '#[KAF006_26]', 
 								value: multilContent,
 								enable: enbContentReason,
