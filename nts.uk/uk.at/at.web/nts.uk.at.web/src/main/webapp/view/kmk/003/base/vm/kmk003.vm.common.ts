@@ -728,11 +728,24 @@ module nts.uk.at.view.kmk003.a {
                 abstract toDto(): any;
             }
 
+            /**
+             * Data converter for fixed table component
+             * @sample uses: FlowWorkTzSettingModel, DiffTimeRestTimezoneModel
+             * @Note:
+             * In case there are 2 list need to be in FixedTable component in the same original class,
+             * you need to implements the methods for second list.
+             */
             export abstract class FixedTableDataConverter<Converted, Original extends BaseDataModel> {
                 convertedList: KnockoutObservableArray<Converted>;
                 originalList: KnockoutObservableArray<Original>;
                 originalListTemp: Array<any>;
                 convertedListTemp: Array<any>;
+
+                // These attributes are used for second list
+                convertedList2: KnockoutObservableArray<any>;
+                originalList2: KnockoutObservableArray<any>;
+                originalListTemp2: Array<any>;
+                convertedListTemp2: Array<any>;
 
                 constructor() {
                     let self = this;
@@ -740,6 +753,10 @@ module nts.uk.at.view.kmk003.a {
                     self.originalList = ko.observableArray([]);
                     self.originalListTemp = [];
                     self.convertedListTemp = [];
+                    self.convertedList2 = ko.observableArray([]);
+                    self.originalList2 = ko.observableArray([]);
+                    self.originalListTemp2 = [];
+                    self.convertedListTemp2 = [];
 
                     self.originalList.subscribe(newList => {
                         // set new original list temp
@@ -778,6 +795,45 @@ module nts.uk.at.view.kmk003.a {
                             }
                         }
                     });
+
+                    // For second list on fixed table
+                    self.convertedList2.subscribe(newList => {
+                        const firstItemSize = _.size(newList[0]);
+                        const newOriginal = self.toListOriginalModel2(newList);
+
+                        // convert all rows to full columns
+                        if (self.convertedListTemp2.length == 0 || _.some(newList, i => _.size(i) != firstItemSize)) {
+                            // update convertedListTemp length
+                            self.convertedListTemp2.push("");
+
+                            // update converted list with full columns
+                            self.convertedList2(self.toListConvertedModel2(newOriginal));
+                        }
+                        else {
+                            // set new converted list temp
+                            self.convertedListTemp2 = self.fromListConvertedToListOriginalDto2(newList);
+
+                            // check new original list vs original list temp
+                            let newOriginalTemp = _.cloneDeep(self.convertedListTemp2);
+                            if (self.isNotEqual(newOriginalTemp, self.originalListTemp2)) {
+                                // update new original list
+                                self.originalList2(newOriginal);
+                            }
+                        }
+                    });
+
+                    self.originalList2.subscribe(newList => {
+                        // set new original list temp
+                        self.originalListTemp2 = self.toListOriginalDto(newList);
+
+                        // check new converted list vs converted list temp
+                        const newConverted = self.fromOriginalListToConvertedList2();
+                        const newConvertedTemp = _.cloneDeep(self.originalListTemp2);
+                        if (self.isNotEqual(newConvertedTemp, self.convertedListTemp2)) {
+                            // update new converted list
+                            self.convertedList2(newConverted);
+                        }
+                    });
                 }
 
                 fromOriginalListToConvertedList(): Array<Converted> {
@@ -798,7 +854,7 @@ module nts.uk.at.view.kmk003.a {
                 /**
                  * To original list temp
                  */
-                toListOriginalDto(list: Array<Original>): Array<any> {
+                toListOriginalDto(list: Array<any>): Array<any> {
                     return _.map(list, item => {
                         return item.toDto();
                     });
@@ -818,7 +874,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 /**
-                 * Override if needed
+                 * Override this method if the list need special processing
+                 * @sample: FlowWorkTzSettingModel
                  */
                 optionalProcessing(list: Array<Converted>): Array<Converted> {
                     return list;
@@ -838,6 +895,35 @@ module nts.uk.at.view.kmk003.a {
                  * Create new Converted model
                  */
                 abstract createConverted(original: Original): Converted;
+
+                // These methods below are optional and only used for second list.
+                // Implement these methods if second list is used
+                toOriginalDto2(convertedItem: any): any { return null; }
+                createOriginal2(): any { return null; }
+                createConverted2(original: any): any { return null; }
+                optionalProcessing2(list: Array<any>): Array<any> { return list; }
+
+                toListOriginalModel2(newList: Array<any>): Array<any> {
+                    let self = this;
+                    let processed = self.optionalProcessing2(newList);
+                    return _.map(processed, newVl => {
+                        let vl = this.createOriginal2();
+                        vl.updateData(self.toOriginalDto2(newVl));
+                        return vl;
+                    });
+                }
+                toListConvertedModel2(originalList: Array<any>): Array<any> {
+                    let self = this;
+                    return _.map(originalList, o => self.createConverted2(o));
+                }
+                fromListConvertedToListOriginalDto2(list: Array<any>): Array<any> {
+                    let self = this;
+                    return _.map(list, item => self.toOriginalDto2(item));
+                }
+                fromOriginalListToConvertedList2(): Array<Converted> {
+                    let self = this;
+                    return self.toListConvertedModel2(self.originalList2());
+                }
 
                 /**
                  * Evaluate 2 arrays
@@ -1822,11 +1908,12 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class EmTimeZoneSetModel {
+            export class EmTimeZoneSetModel extends BaseDataModel {
                 employmentTimeFrameNo: KnockoutObservable<number>;
                 timezone: TimeZoneRoundingModel;
 
                 constructor() {
+                    super();
                     this.employmentTimeFrameNo = ko.observable(0);
                     this.timezone = new TimeZoneRoundingModel();
                 }
@@ -1843,6 +1930,29 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+            }
+
+            export class EmTimeZoneSetFixedTableModel {
+                employmentTimeFrameNo: number;
+                timeRange: KnockoutObservable<TimePeriod>;
+                roundingTime: KnockoutObservable<number>;
+                rounding: KnockoutObservable<number>;
+
+                constructor(original: EmTimeZoneSetModel) {
+                    let self = this;
+                    self.employmentTimeFrameNo = original.employmentTimeFrameNo();
+                    self.timeRange = ko.observable({
+                        startTime: original.timezone.start(),
+                        endTime: original.timezone.end(),
+                    });
+                    self.roundingTime = ko.observable(original.timezone.rounding.roundingTime());
+                    self.rounding = ko.observable(original.timezone.rounding.rounding());
+                }
+            }
+
+            export interface TimePeriod {
+                startTime: number;
+                endTime: number;
             }
 
             export class OverTimeOfTimeZoneSetModel extends BaseDataModel {
@@ -1991,7 +2101,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     super();
-                    this.lstWorkingTimezone = ko.observableArray([]);
+                    this.lstWorkingTimezone = this.originalList2;
                     this.lstOTTimezone = this.originalList;
                 }
 
@@ -2020,6 +2130,38 @@ module nts.uk.at.view.kmk003.a {
 
                 createConverted(original: OverTimeOfTimeZoneSetModel): OverTimeFixedTableModel {
                     return new OverTimeFixedTableModel(original);
+                }
+
+                optionalProcessing(list: Array<OverTimeFixedTableModel>): Array<OverTimeFixedTableModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.workTimezoneNo = ++count);
+                }
+
+                optionalProcessing2(list: Array<EmTimeZoneSetFixedTableModel>): Array<EmTimeZoneSetFixedTableModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.employmentTimeFrameNo = ++count);
+                }
+
+                toOriginalDto2(convertedItem: EmTimeZoneSetFixedTableModel): EmTimeZoneSetDto {
+                    return {
+                        employmentTimeFrameNo: convertedItem.employmentTimeFrameNo ? convertedItem.employmentTimeFrameNo : 0,
+                        timezone: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.rounding()
+                            },
+                            start: convertedItem.timeRange().startTime,
+                            end: convertedItem.timeRange().endTime
+                        }
+                    };
+                }
+
+                createOriginal2(): EmTimeZoneSetModel {
+                    return new EmTimeZoneSetModel();
+                }
+
+                createConverted2(original: EmTimeZoneSetModel): EmTimeZoneSetFixedTableModel {
+                    return new EmTimeZoneSetFixedTableModel(original);
                 }
 
                 updateData(data: FixedWorkTimezoneSetDto) {

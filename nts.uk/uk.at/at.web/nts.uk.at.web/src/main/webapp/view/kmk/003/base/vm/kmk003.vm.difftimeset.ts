@@ -26,6 +26,7 @@ module nts.uk.at.view.kmk003.a {
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     import TimeRange = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRange;
+    import EmTimeZoneSetFixedTableModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetFixedTableModel;
 
     import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
     export module viewmodel {
@@ -265,7 +266,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     super();
-                    this.employmentTimezones = ko.observableArray([]);
+                    this.employmentTimezones = this.originalList2;
                     this.lstOtTimezone = this.originalList;
                 }
 
@@ -295,6 +296,38 @@ module nts.uk.at.view.kmk003.a {
 
                 createConverted(original: DiffTimeOTTimezoneSetModel): DiffOverTimeFixedTableModel {
                     return new DiffOverTimeFixedTableModel(original);
+                }
+
+                optionalProcessing(list: Array<DiffOverTimeFixedTableModel>): Array<DiffOverTimeFixedTableModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.workTimezoneNo = ++count);
+                }
+
+                optionalProcessing2(list: Array<EmTimeZoneSetFixedTableModel>): Array<EmTimeZoneSetFixedTableModel> {
+                    let count = 0;
+                    return _.forEach(list, item => item.employmentTimeFrameNo = ++count);
+                }
+
+                toOriginalDto2(convertedItem: EmTimeZoneSetFixedTableModel): EmTimeZoneSetDto {
+                    return {
+                        employmentTimeFrameNo: convertedItem.employmentTimeFrameNo ? convertedItem.employmentTimeFrameNo : 0,
+                        timezone: {
+                            rounding: {
+                                roundingTime: convertedItem.roundingTime(),
+                                rounding: convertedItem.rounding()
+                            },
+                            start: convertedItem.timeRange().startTime,
+                            end: convertedItem.timeRange().endTime
+                        }
+                    };
+                }
+
+                createOriginal2(): EmTimeZoneSetModel {
+                    return new EmTimeZoneSetModel();
+                }
+
+                createConverted2(original: EmTimeZoneSetModel): EmTimeZoneSetFixedTableModel {
+                    return new EmTimeZoneSetFixedTableModel(original);
                 }
 
                 updateData(data: DiffTimezoneSettingDto) {
