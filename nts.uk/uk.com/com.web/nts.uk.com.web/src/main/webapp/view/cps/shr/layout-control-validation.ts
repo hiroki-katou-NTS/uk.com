@@ -143,7 +143,8 @@ module nts.layout {
     const fetch = {
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
-        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param)
+        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
+        get_ro_data: (param: INextTimeParam) => ajax(`at/record/remainnumber/annlea/event/nextTime`, param)
     }
 
     export class validation {
@@ -722,13 +723,13 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-                            
+
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
                                 let sid = __viewContext.user.employeeId;
                                 switch (btn.dialogId) {
                                     case "g":
-                                    let empId  = __viewContext.user.employeeId;
+                                        let empId = __viewContext.user.employeeId;
                                         ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getAnnLeaNumber/{0}", empId)).done(data => {
                                             button.data.value(data);
                                         });
@@ -739,7 +740,7 @@ module nts.layout {
                                         });
                                         break;
                                     case "i":
-                                         let   specialCD: number = self.genSpecialCode(btn.ctgCode).specialCode;
+                                        let specialCD: number = self.genSpecialCode(btn.ctgCode).specialCode;
                                         debugger;
                                         ajax('com', nts.uk.text.format("ctx/pereg/layout/calDayTime/{0}/{1}", sid, specialCD)).done(data => {
                                             button.data.value(data);
@@ -789,6 +790,7 @@ module nts.layout {
             }
         }
 
+        // validate set table control
         setTable = () => {
             let self = this,
                 finder: IFinder = self.finder,
@@ -843,6 +845,7 @@ module nts.layout {
             _(times).each(time => calc(time));
         }
 
+        // validate datetime control
         dateTime = () => {
             let self = this,
                 finder: IFinder = self.finder,
@@ -895,7 +898,12 @@ module nts.layout {
                 });
             }
         }
-        
+
+        // 次回年休付与情報を取得する
+        grantInformation = () => {
+            
+        }
+
         genSpecialCode(categoryCode: string): any {
 
             switch (categoryCode) {
@@ -1082,6 +1090,12 @@ module nts.layout {
         employeeId: string;
         cps002?: boolean;
         workplaceId: string;
+    }
+
+    interface INextTimeParam {
+        employeeId: string;
+        standardDate: Date;
+        grantTable: string;
     }
 
     interface IGroupControl {
