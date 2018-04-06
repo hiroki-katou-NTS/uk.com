@@ -113,7 +113,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				x.setDomainNameAndAbolition(ctgInComZero.getCategoryName(), 1);
 				ctgUpdateList.add(x);
 				String domainEventName = domainEvent.getSpecialHolidayName() == null ? "" : domainEvent.getSpecialHolidayName().v();
-				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, true, loginCompanyId, updateCompanyId));
+				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, false, loginCompanyId, updateCompanyId));
 			}
 			
 		}
