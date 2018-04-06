@@ -31,6 +31,8 @@ public class WebApiLoginSessionValidator implements Filter {
 			this.buildResponseError((HttpServletResponse) response);
             return;
 		}
+		
+		chain.doFilter(request, response);
 	}
 
 	@Override
