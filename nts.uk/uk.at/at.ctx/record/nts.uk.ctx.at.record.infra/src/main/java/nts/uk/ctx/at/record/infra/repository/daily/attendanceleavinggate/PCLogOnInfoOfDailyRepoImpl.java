@@ -17,6 +17,17 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
 
+	private static final String REMOVE_BY_KEY;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDayPcLogonInfo a ");
+		builderString.append("WHERE a.id.sid = :employeeId ");
+		builderString.append("AND a.id.ymd = :ymd ");
+		REMOVE_BY_KEY = builderString.toString();
+	}
+
 	@Override
 	public Optional<PCLogOnInfoOfDaily> find(String employeeId, GeneralDate baseDate) {
 		return this.queryProxy().find(new KrcdtDayPcLogonInfoPK(employeeId, baseDate), KrcdtDayPcLogonInfo.class)
@@ -75,6 +86,13 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 				.ifPresent(entity -> {
 					this.commandProxy().remove(entity);
 				});
+	}
+
+	@Override
+	public void removeByKey(String employeeId, GeneralDate baseDate) {
+		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
+				.setParameter("ymd", baseDate).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 }

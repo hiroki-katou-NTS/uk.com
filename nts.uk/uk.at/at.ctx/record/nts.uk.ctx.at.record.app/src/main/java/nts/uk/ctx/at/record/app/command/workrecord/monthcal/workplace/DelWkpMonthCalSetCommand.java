@@ -15,6 +15,6 @@ import lombok.Setter;
 public class DelWkpMonthCalSetCommand {
 
 	/** The wkp id. */
-	private String wkpId;
+	private String workplaceId;
 
 }

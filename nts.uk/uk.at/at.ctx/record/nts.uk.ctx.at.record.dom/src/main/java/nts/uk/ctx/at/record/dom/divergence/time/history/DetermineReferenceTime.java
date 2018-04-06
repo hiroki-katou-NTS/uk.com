@@ -4,8 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Gets the threshold.
+ *
+ * @return the threshold
+ */
 @Getter
+
+/**
+ * Sets the threshold.
+ *
+ * @param threshold the new threshold
+ */
 @Setter
+
+/**
+ * Instantiates a new determine reference time.
+ *
+ * @param referenceTime the reference time
+ * @param threshold the threshold
+ */
 @AllArgsConstructor
 /**
  * The Class DetermineReferenceTime.
@@ -18,7 +36,7 @@ public class DetermineReferenceTime {
 	ReferenceTime referenceTime;
 	// 閾値
 	/** The threshold. */
-	int threshold;
+	DivergenceReferenceTime threshold;
 
 	/**
 	 * Instantiates a new determine reference time.
@@ -32,18 +50,17 @@ public class DetermineReferenceTime {
 	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((referenceTime == null) ? 0 : referenceTime.hashCode());
-		result = prime * result + threshold;
+		result = prime * result + ((threshold == null) ? 0 : threshold.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -57,7 +74,10 @@ public class DetermineReferenceTime {
 		DetermineReferenceTime other = (DetermineReferenceTime) obj;
 		if (referenceTime != other.referenceTime)
 			return false;
-		if (threshold != other.threshold)
+		if (threshold == null) {
+			if (other.threshold != null)
+				return false;
+		} else if (!threshold.equals(other.threshold))
 			return false;
 		return true;
 	}

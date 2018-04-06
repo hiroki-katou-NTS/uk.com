@@ -83,7 +83,7 @@ public class JpaWkpNormalSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String cid, String wkpId, int year) {
-		this.commandProxy().remove(KshstWkpNormalSetPK.class,
+		this.commandProxy().remove(KshstWkpNormalSet.class,
 				new KshstWkpNormalSetPK(cid, wkpId, year));
 	}
 

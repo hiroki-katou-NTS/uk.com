@@ -19,6 +19,6 @@ public class DeleteWkpStatWorkTimeSetCommand {
 	private Integer year;
 	
 	/** The employee id. */
-	private String wkpId;
+	private String workplaceId;
 
 }
