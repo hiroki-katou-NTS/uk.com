@@ -58,10 +58,8 @@ module nts.uk.at.view.kdm002.a {
             workTypeCode: KnockoutObservable<string>;
             workTimeInfo: KnockoutObservable<string>;
             workTimeCode: KnockoutObservable<string>;
-            scheduleBatchCorrectSettingInfo: KnockoutObservable<ScheduleBatchCorrectSetting>;
             
             periodDate: KnockoutObservable<any>;
-            copyStartDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
 
@@ -129,9 +127,7 @@ module nts.uk.at.view.kdm002.a {
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
-                self.copyStartDate = ko.observable(new Date());
                 
-                self.scheduleBatchCorrectSettingInfo = ko.observable(new ScheduleBatchCorrectSetting());
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
@@ -244,38 +240,6 @@ module nts.uk.at.view.kdm002.a {
             }
             
             /**
-             * save to client service ScheduleBatchCorrectSetting by employeeId
-            */
-            private saveScheduleBatchCorrectSettingByEmployeeId(employeeId: string, data: ScheduleBatchCorrectSetting): void {
-                nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
-            }
-            
-            /**
-             * save to client service ScheduleBatchCorrectSetting
-            */
-            private saveScheduleBatchCorrectSetting(data: ScheduleBatchCorrectSetting): void {
-                var self = this;
-                var user: any = __viewContext.user;
-                self.saveScheduleBatchCorrectSettingByEmployeeId(user.employeeId, data);
-            }
-
-            /**
-             * find by client service ScheduleBatchCorrectSetting by employee
-            */
-            private findScheduleBatchCorrectSettingByEmployeeId(employeeId: string): JQueryPromise<ScheduleBatchCorrectSetting> {
-                return nts.uk.characteristics.restore("PersonalSchedule_" + employeeId);
-            }
-
-            /**
-             * find by client service ScheduleBatchCorrectSetting
-            */
-            private findScheduleBatchCorrectSetting(): JQueryPromise<ScheduleBatchCorrectSetting> {
-                var self = this;
-                var user: any = __viewContext.user;
-                return self.findScheduleBatchCorrectSettingByEmployeeId(user.employeeId);
-            }
-            
-            /**
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
@@ -354,132 +318,8 @@ module nts.uk.at.view.kdm002.a {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
             
-            /**
-             * function collect data 
-             */
-            private collecData(): ScheduleBatchCorrectSettingSave {
-                var self = this;
-                var user: any = __viewContext.user;
-                var dto: ScheduleBatchCorrectSettingSave = {
-                    worktypeCode: self.workTypeCode(),
-                    employeeId: user.employeeId,
-                    endDate: self.toDate(self.periodDate().endDate),
-                    startDate: self.toDate(self.periodDate().startDate),
-                    worktimeCode: self.workTimeCode(),
-                    employeeIds: self.findEmployeeIdsByCodes(self.selectedEmployeeCode())
-                };
-                return dto;
-            }
-            /**
-             * function open dialog KDL003
-             */
-            private openDialogKDL003(): void {
-                var self = this;
-                // set update data input open dialog kdl003
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: [],
-                    selectedWorkTypeCode: self.scheduleBatchCorrectSettingInfo().worktypeCode,
-                    workTimeCodes: [],
-                    selectedWorkTimeCode: self.scheduleBatchCorrectSettingInfo().worktimeCode
-                }, true);
-
-                nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
-                    //view all code of selected item 
-                    var childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-                        self.workTypeInfo(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
-                        self.workTypeCode(childData.selectedWorkTypeCode);
-                        self.workTimeCode(childData.selectedWorkTimeCode);
-                        self.workTimeInfo(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    }            
-                });
-            }
-            
-            /**
-             * update selected employee kcp005 => detail
-             */
-            private findByCodeEmployee(employeeCode: string): UnitModel {
-                var employee: UnitModel;
-                var self = this;
-                for (var employeeSelect of self.employeeList()) {
-                    if (employeeSelect.code === employeeCode) {
-                        employee = employeeSelect;
-                        break;
-                    }
-                }
-                return employee;
-            }
-            
-            /**
-             * find employee id in selected
-             */
-            private findEmployeeIdByCode(employeeCode: string): string {
-                var self = this;
-                var employeeId = '';
-                for (var employee of self.selectedEmployee()) {
-                    if (employee.employeeCode === employeeCode) {
-                        employeeId = employee.employeeId;
-                    }
-                }
-                return employeeId;
-            }
-            /**
-             * find employee code in selected
-             */
-            private findEmployeeCodeById(employeeId: string): string {
-                var self = this;
-                var employeeCode = '';
-                for (var employee of self.selectedEmployee()) {
-                    if (employee.employeeId === employeeId) {
-                        employeeCode = employee.employeeCode;
-                    }
-                }
-                return employeeCode;
-            }
-            
-            /**
-             * find employee id in selected
-             */
-            private findEmployeeIdsByCodes(employeeCodes: string[]): string[] {
-                var self = this;
-                var employeeIds: string[] = [];
-                for (var employeeCode of employeeCodes) {
-                    employeeIds.push(self.findEmployeeIdByCode(employeeCode));
-                }
-                return employeeIds;
-            }
-
         }
         
-
-        // スケジュール一括修正設定
-        export class ScheduleBatchCorrectSetting {
-            // 勤務種類
-            worktypeCode: string;
-
-            // 社員ID
-            employeeId: string;
-
-            // 終了日
-            endDate: string;
-
-            // 開始日
-            startDate: string;
-
-            // 就業時間帯
-            worktimeCode: string;
-
-            constructor() {
-                var self = this;
-                self.worktypeCode = '';
-                self.employeeId = '';
-                self.endDate = '';
-                self.startDate = '';
-                self.worktimeCode = '';
-            }
-        }
-        
-
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;

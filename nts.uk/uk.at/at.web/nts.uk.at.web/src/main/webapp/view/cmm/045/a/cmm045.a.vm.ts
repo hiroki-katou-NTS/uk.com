@@ -337,7 +337,7 @@ module cmm045.a.viewmodel {
         reloadGridApproval(lstHidden: Array<any>, colorBackGr: any, colorsText: any) {
             var self = this;
             $("#grid1").ntsGrid({
-                width: '1320px',
+                width: '1175px',
                 height: '530px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
@@ -347,17 +347,17 @@ module cmm045.a.viewmodel {
                 rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '90px', 
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '80px', 
                             showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '60px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '90px' },
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px'},
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '100px' },
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px' },
+                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '130px'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px'},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px', ntsControl: 'Label'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px', ntsControl: 'Label' },
-                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '120px' },
+                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '165px', ntsControl: 'Label'},
+                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '83px', ntsControl: 'Label' },
+                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '105px' },
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', ntsControl: 'Label', hidden: true }
                 ],
                 features: [{ name: 'Resizing' },

@@ -15,12 +15,12 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	@Override
 	public WorkReflectedStatesInfo workRecordreflect(AppReflectRecordPara appRecordInfor) {
 		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
-		WorkReflectedStatesInfo statesInfor = new WorkReflectedStatesInfo(recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),
-				recordInfor.getAppInfor().getReflectionInformation().getNotReason().isPresent() ? recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().get() : ReasonNotReflectDaily_New.NOT_PROBLEM);
+		/*WorkReflectedStatesInfo statesInfor = new WorkReflectedStatesInfo(recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal(),
+				recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().isPresent() ? recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().get() : null);
 		AppReflectInfor reflectInfor = new AppReflectInfor(recordInfor.getDegressAtr(),
 				recordInfor.getExecutiontype(),
 				recordInfor.getAppInfor().getReflectionInformation().getStateReflection(),
-				recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal());
+				recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal());*/
 		/*boolean checkReflect = reflectRecord.appReflectProcessRecord(reflectInfor);
 		if (!checkReflect) {
 			return statesInfor;

@@ -8,17 +8,29 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmbeddedUrlOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmploymentOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PeriodOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class ApprovalStatusServiceImpl implements ApprovalStatusService {
@@ -28,16 +40,22 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private ApplicationRepository_New appRepoNew;
 	
+	@Inject 
+	private ApprovalStatusMailTempRepository approvalStatusMailTempRepo;
+	
+	@Inject
+	private MailSender mailsender;
+	
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
 
 		List<ApprovalStatusEmployeeOutput> listSttEmp = new ArrayList<>();
 		// imported(申請承認)「社員ID（リスト）」を取得する
-		// Requestlist 120-1
+		// TODO Requestlist 120-1
 		// Waiting for Q&A
 		List<ApprovalStatusEmployeeOutput> listEmpInOut = new ArrayList<>();
-		// List<String> listSId =
+		// TODO List<String> listSId =
 		// employeeRequestAdapter.getListSIdByWkpIdAndPeriod(wkpId,
 		// closureStart, closureEnd);
 		// 社員ID(リスト)
@@ -212,12 +230,79 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */
 	@Override
-	public EmployeeEmailOutput findEmpMailAddr() {
-		String cId = AppContexts.user().employeeId();
-		List<String> listCId = new ArrayList<String>();
-		listCId.add(cId);
-		Optional<EmployeeEmailImport> employee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listCId).stream()
-				.findFirst();
-		return employee.isPresent() ? EmployeeEmailOutput.fromImport(employee.get()) : null;
+	public List<EmployeeEmailImport> findEmpMailAddr(List<String> listsId) {
+		List<EmployeeEmailImport> employee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listsId);
+		return employee;
+	}
+
+	@Override
+	public ApprovalStatusMailTemp getApprovalStatusMailTemp(int type) {
+		String cId = AppContexts.user().companyId();
+		Optional<ApprovalStatusMailTemp> data = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cId, type);
+		return data.isPresent() ? data.get() : null;
+	}
+
+	@Override
+	public SendMailResultOutput sendTestMail(int mailType) {
+		// 会社ID
+		String cid = AppContexts.user().companyId();
+		// ドメインモデル「承認状況メールテンプレート」を取得する
+		ApprovalStatusMailTemp domain = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cid, mailType).get();
+		// 社員ID
+		String sid = AppContexts.user().employeeId();
+		// 社員名
+		String sName = employeeRequestAdapter.getEmployeeName(sid);
+		// メールアドレス
+		String mailAddr = employeeRequestAdapter.empEmail(sid);
+		// 件名
+		String subject = domain.getMailSubject().v();
+		// 送信本文
+		String text = domain.getMailContent().v();
+
+		// ログイン者よりメール送信内容を作成する(create nội dung send mail theo người login)
+		List<MailTransmissionContentOutput> listMailContent = new ArrayList<MailTransmissionContentOutput>();
+		listMailContent.add(new MailTransmissionContentOutput(sid, sName, mailAddr, subject, text));
+		//UseSetingDto transmissionAttr = this.getUseSeting();
+		// アルゴリズム「承認状況メール送信実行」を実行する
+		return this.exeApprovalStatusMailTransmission(listMailContent, domain);
+	}
+
+	@Override
+	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
+			ApprovalStatusMailTemp domain) {
+		List<String> listError = new ArrayList<>();
+		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
+			// アルゴリズム「承認状況メール埋込URL取得」を実行する
+			EmbeddedUrlOutput embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain);
+			try {
+				// アルゴリズム「メールを送信する」を実行する
+				mailsender.send("nts", mailTransmission.getMailAddr(),
+						new MailContents(mailTransmission.getSubject(), mailTransmission.getText()));
+			} catch (SendMailFailedException e) {
+				// 送信エラー社員(リスト)と社員名、エラー内容を追加する
+				listError.add(e.getMessage());
+			}
+		}
+		SendMailResultOutput result = new SendMailResultOutput();
+		if (listError.size() == 0) {
+			result.setOK(false);
+			result.setListError(listError);
+		}
+		result.setOK(true);
+		return result;
+	}
+
+	/**
+	 * アルゴリズム「承認状況メール埋込URL取得」を実行する
+	 * 
+	 * @param eid
+	 * @param domain
+	 * @param transmissionAttr
+	 */
+	private EmbeddedUrlOutput getEmbeddedURL(String eid, ApprovalStatusMailTemp domain) {
+		// TODO waiting for Hiệp
+		String url1 = "123123123";
+		String url2 = "1231ád23123";
+		return new EmbeddedUrlOutput(url1, url2);
 	}
 }

@@ -115,15 +115,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 
 	@Override
 	public WorkReflectedStatesInfo absenceReflectRecor(CommonReflectPara para, boolean isPre) {
-		CommonReflectPubParameter absenceReflect = new CommonReflectPubParameter(para.getEmployeeId(),
-				para.getBaseDate(), 
-				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class),
-				para.isScheTimeReflectAtr(),
-				para.getWorkTypeCode(), 
-				para.getWorkTimeCode(),
-				EnumAdaptor.valueOf(para.getReflectState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(para.getReasoNotReflect().value, ReasonNotReflectPubRecord.class));
-		AppReflectPubOutput dataReflect = recordPub.absenceReflect(absenceReflect, isPre);
+		AppReflectPubOutput dataReflect = recordPub.absenceReflect(this.toPubPara(para), isPre);
 		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
 				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
 		return dataOutput;
@@ -151,20 +143,26 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 
 	@Override
 	public WorkReflectedStatesInfo workChangeReflectRecord(CommonReflectPara para, boolean isPre) {
-		CommonReflectPubParameter workChangePara = new CommonReflectPubParameter(para.getEmployeeId(),
+		
+		AppReflectPubOutput dataReflect = recordPub.workChangeReflect(this.toPubPara(para), isPre);
+		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
+				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
+		return dataOutput;
+	}
+	
+	private CommonReflectPubParameter toPubPara(CommonReflectPara para) {
+		CommonReflectPubParameter pubPara = new CommonReflectPubParameter(para.getEmployeeId(),
 				para.getBaseDate(), 
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class),
 				para.isScheTimeReflectAtr(),
 				para.getWorkTypeCode(), 
 				para.getWorkTimeCode(),
 				EnumAdaptor.valueOf(para.getReflectState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(para.getReasoNotReflect().value, ReasonNotReflectPubRecord.class));
-		AppReflectPubOutput dataReflect = recordPub.workChangeReflect(workChangePara, isPre);
-		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
-				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
-		return dataOutput;
+				para.getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(para.getReasoNotReflect().value, ReasonNotReflectPubRecord.class),
+				para.getStartDate(),
+				para.getEndDate());
+		return pubPara;
 	}
-	
 	
 
 }
