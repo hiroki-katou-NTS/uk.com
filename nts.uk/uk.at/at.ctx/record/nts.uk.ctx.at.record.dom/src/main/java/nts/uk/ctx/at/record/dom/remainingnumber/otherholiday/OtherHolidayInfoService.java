@@ -105,7 +105,7 @@ public class OtherHolidayInfoService {
 		String newID = null;
 		PayoutManagementData payout = null;
 		
-		while (remainLeftTpm.compareTo(ONE) >0){
+		while (remainLeftTpm.compareTo(ZERO) >0){
 			newID = IdentifierUtil.randomUniqueId();
 			if (remainLeftTpm.compareTo(ONE) >= 0){
 				/**
@@ -138,7 +138,7 @@ public class OtherHolidayInfoService {
 		// 振休作成数=-1*パラメータ「振休残数」
 		BigDecimal remainLeftTpm = remainLeft.multiply(new BigDecimal(-1));
 		SubstitutionOfHDManagementData subOfHD = null;
-		while (remainLeftTpm.compareTo(ONE) >0){
+		while (remainLeftTpm.compareTo(ZERO) >0){
 			newID = IdentifierUtil.randomUniqueId();
 			if (remainLeftTpm.compareTo(ONE) >= 0){
 				/**
@@ -184,7 +184,7 @@ public class OtherHolidayInfoService {
 		CompensatoryLeaveComSetting leaveSet = compensLeaveComSetRepository.find(cid);
 		int aDay = leaveSet.getCompensatoryOccurrenceSetting().get(0).getTransferSetting().getDesignatedTime().getOneDayTime().v();
 		int aHalf = leaveSet.getCompensatoryOccurrenceSetting().get(0).getTransferSetting().getDesignatedTime().getHalfDayTime().v();
-		while (remainNumberTpm.compareTo(ONE) >0){
+		while (remainNumberTpm.compareTo(ZERO) >0){
 			newID = IdentifierUtil.randomUniqueId();
 			if (remainNumberTpm.compareTo(ONE) >= 0){
 				leaveMana = new LeaveManagementData(newID, cid, sid, true, null, GeneralDate.max(), 1d, 0, 1d, 0, DigestionAtr.UNUSED.value, aDay, aHalf);
@@ -210,7 +210,7 @@ public class OtherHolidayInfoService {
 		BigDecimal remainNumberTpm = remainNumber.multiply(new BigDecimal(-1));
 		CompensatoryDayOffManaData comDayOff = null;
 		
-		while (remainNumberTpm.compareTo(ONE) >0){
+		while (remainNumberTpm.compareTo(ZERO) >0){
 			newID = IdentifierUtil.randomUniqueId();
 			if (remainNumberTpm.compareTo(ONE) >= 0){
 				/**

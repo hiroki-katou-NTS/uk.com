@@ -19,9 +19,14 @@ public class SpecialLeaveGrantRemainService {
 		Double result = grantRemains.stream().mapToDouble(item->item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
 		List<SpecialLeaveGrantRemainingData> grantRemainsTemp = grantRemains.stream()
 				.filter(i -> i.getDetails().getRemainingNumber().timeOfRemain.isPresent()).collect(Collectors.toList());
-		int hours = grantRemainsTemp.stream().mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().hour()).sum();
+		
 		int minute = grantRemainsTemp.stream().mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().minute()).sum();
-		return result.toString() + " 日と " + hours + ":" + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
+		
+		int hours = grantRemainsTemp.stream().mapToInt(i->i.getDetails().getRemainingNumber().getTimeOfRemain().get().hour()).sum();
+		hours = Math.abs(minute) / 60 + hours;
+		minute = Math.abs(minute) % 60;
+		
+		return result.toString() + " 日と " + (hours) + ":" + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
 	}
 
 }
