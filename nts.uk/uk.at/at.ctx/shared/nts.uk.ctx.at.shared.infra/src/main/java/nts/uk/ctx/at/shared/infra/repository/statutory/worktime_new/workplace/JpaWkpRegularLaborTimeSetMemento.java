@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpRegLaborTimePK;
 
 /**
  * The Class JpaWkpRegularLaborTimeSetMemento.
@@ -25,7 +26,10 @@ public class JpaWkpRegularLaborTimeSetMemento implements WkpRegularLaborTimeSetM
 	 *            the entity
 	 */
 	public JpaWkpRegularLaborTimeSetMemento(KshstWkpRegLaborTime entity) {
-		super();
+		super();		
+		if(entity.getKshstWkpRegLaborTimePK() == null){				
+		}
+		entity.setKshstWkpRegLaborTimePK(new KshstWkpRegLaborTimePK());
 		this.entity = entity;
 	}
 
@@ -48,7 +52,7 @@ public class JpaWkpRegularLaborTimeSetMemento implements WkpRegularLaborTimeSetM
 	 */
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.entity.getKshstWkpRegLaborTimePK().setCid(workplaceId.v());
+		this.entity.getKshstWkpRegLaborTimePK().setWkpId(workplaceId.v());
 	}
 
 	/*

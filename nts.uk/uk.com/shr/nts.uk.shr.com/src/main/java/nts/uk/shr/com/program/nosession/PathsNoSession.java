@@ -6,15 +6,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nts.arc.security.csrf.PathsToCheckCsrf;
 import nts.uk.shr.com.program.ProgramsManager;
 
-public class PathsNoSession {
+public class PathsNoSession implements PathsToCheckCsrf {
 
 	public static PathsNoSession WEB_APIS = PathsNoSession.define(
 			"/sample/.*",
 			"/public/.*",
 			"/ntscommons/arc/task/async/.*",
-			"/shr/infra/file/storage/.*"
+			"/shr/infra/file/storage/.*",
+			"/i18n/.*",
+			"/ctx/sys/gateway/login/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
@@ -62,4 +65,9 @@ public class PathsNoSession {
                 	return p.matcher(pathToBeChecked).matches();
                 });
     }
+
+	@Override
+	public Set<Pattern> patternsPathNoCheck() {
+		return this.patterns;
+	}
 }

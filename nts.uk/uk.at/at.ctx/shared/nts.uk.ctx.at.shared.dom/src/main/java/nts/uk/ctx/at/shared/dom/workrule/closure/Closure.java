@@ -19,7 +19,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class Closure.
  */
-// 締め
+//締め
 @Getter
 public class Closure extends AggregateRoot {
 

@@ -130,7 +130,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				true, 
 				workChange.getWorkTypeCd(), 
 				workChange.getWorkTimeCd(), appInfor.getReflectionInformation().getStateReflectionReal(), 
-				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
+				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
+				appInfor.getStartDate().get(),
+				appInfor.getEndDate().get());
 		
 		 
 		return workchangeInfor;		
@@ -176,7 +178,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				absenceAppData.getWorkTypeCode().v(), 
 				"",
 				appInfor.getReflectionInformation().getStateReflectionReal(), 
-				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
+				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
+				null,
+				null);
 		return absenceInfor;
 	}
 	

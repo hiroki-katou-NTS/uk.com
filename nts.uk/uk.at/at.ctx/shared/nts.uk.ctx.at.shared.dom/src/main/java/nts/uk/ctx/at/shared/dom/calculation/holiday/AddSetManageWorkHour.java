@@ -1,12 +1,18 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * The Class AddSetManageWorkHour.
+ */
 @Getter
 @Setter
 @Builder

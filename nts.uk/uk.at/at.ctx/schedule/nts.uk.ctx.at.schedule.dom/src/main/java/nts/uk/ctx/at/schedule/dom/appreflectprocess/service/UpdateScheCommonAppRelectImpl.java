@@ -19,28 +19,17 @@ public class UpdateScheCommonAppRelectImpl implements UpdateScheCommonAppRelect{
 	private WorkScheduleStateRepository workScheReposi;
 	@Override
 	public void updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
-			String workTimeCode) {
-		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(employeeId, baseDate);		
-		if(!optBasicScheOpt.isPresent()) {
-			return;
-		}
-		BasicSchedule basicScheOpt = optBasicScheOpt.get();
-		//ドメインモデル「勤務予定基本情報」を編集する
-		BasicSchedule dataUpdate = new BasicSchedule(employeeId, 
-				baseDate, 
-				workTypeCode, 
-				workTimeCode, 
-				basicScheOpt.getConfirmedAtr());
-		basicSche.update(dataUpdate);
+			String workTimeCode) {		
+		basicSche.changeWorkTypeTime(employeeId, baseDate, workTypeCode, workTimeCode);
 		//ドメインモデル「勤務予定項目状態」を編集する id = 1
 		WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
-				1,
+				3,
 				baseDate,
 				employeeId);
 		workScheReposi.updateScheduleEditState(scheData);
 		//就業時間帯の編集状態を更新する
 		WorkScheduleState scheDataTime = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
-				2,
+				4,
 				baseDate,
 				employeeId);
 		workScheReposi.updateScheduleEditState(scheDataTime);

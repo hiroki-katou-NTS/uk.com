@@ -48,6 +48,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 				ExecutionType.NORMALECECUTION, 
 				true, 
 				ApplyTimeRequestAtr.START, 
+				application,
 				null, 
 				null, 
 				null);
@@ -58,7 +59,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			return reflectedStatesInfo;
 		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT){
-			Optional<GoBackDirectly> optGobackData = gobackRepository.findByApplicationID(application.getEmployeeID(), application.getAppID());
+			Optional<GoBackDirectly> optGobackData = gobackRepository.findByApplicationID(application.getCompanyID(), application.getAppID());
 			if(!optGobackData.isPresent()) {
 				return reflectedStatesInfo;
 			}
@@ -67,7 +68,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			isReflect = processScheReflect.goBackDirectlyReflect(reflectSchePara);
 		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
-			Optional<AppWorkChange> getAppworkChangeById = workchangeRepo.getAppworkChangeById(application.getEmployeeID(), application.getAppID());
+			Optional<AppWorkChange> getAppworkChangeById = workchangeRepo.getAppworkChangeById(application.getCompanyID(), application.getAppID());
 			if(!getAppworkChangeById.isPresent()) {
 				return reflectedStatesInfo;
 			}

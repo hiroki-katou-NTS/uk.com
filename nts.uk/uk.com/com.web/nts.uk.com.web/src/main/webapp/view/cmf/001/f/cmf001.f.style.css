@@ -26,15 +26,6 @@
 	margin-right: auto;
 }
 
-.auto-increment {
-    counter-reset: tableCount;     
-}
-
-.auto-increment th[role="rowheader"]:before {              
-    content: counter(tableCount); 
-    counter-increment: tableCount;
-}
-
 .auto-increment th[role="rowheader"] {
 	text-align: right !important;
 	background-color: #CFF1A5;

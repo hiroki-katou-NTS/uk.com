@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk013.e {
                 self.itemListExcOutRoundingFull = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
                     new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
-                    new ItemModel(2, "要素の丸めに従う")
+                    new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
                 ]);
                 self.currentRounding = ko.observableArray([]);
                 
@@ -123,8 +123,8 @@ module nts.uk.at.view.kmk013.e {
                 blockUI.invisible();
                 service.save(ko.toJS(self.listData())).done(() => {
                     let data = {};
-                    data.roundingUnit = self.excData().unit();
-                    data.roundingProcess = self.excData().rounding();
+                    data.roundingUnit = self.excRoundingUnit();
+                    data.roundingProcess = self.excRoundingProc();
                     service.saveExcOut(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         blockUI.clear();

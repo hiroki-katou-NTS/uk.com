@@ -45,8 +45,8 @@ public class Kmk004EmpDeleteCommandHandler extends CommandHandler<Kmk004EmpDelet
 		DelEmpMonthCalSetCommand delMonthCommand = new DelEmpMonthCalSetCommand();
 		
 		delStatCommand.setYear(deleteCommand.getYear());
-		delStatCommand.setEmploymentCode(deleteCommand.getEmpCode());
-		delMonthCommand.setEmpCode(deleteCommand.getEmpCode());
+		delStatCommand.setEmploymentCode(deleteCommand.getEmploymentCode());
+		delMonthCommand.setEmpCode(deleteCommand.getEmploymentCode());
 		
 		this.delStatCommand.handle(delStatCommand);
 		this.delMonthCommand.handle(delMonthCommand);

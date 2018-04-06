@@ -71,6 +71,10 @@
 	margin-top: 40px;
 	margin-left: 20px;
 }
+	#aggr-setting-content .setting-panel:nth-child(2) {
+		height: 170px;
+	}
+	
 .open-Detail {
 	float: right;
 	margin-bottom: 20px;
@@ -81,4 +85,8 @@
 }
 #radio-box-content .ntsRadioBox {
 	height: 40px;
+}
+
+#tab-panel .ui-widget-content:not(.disappear) {
+	min-height: 630px;
 }

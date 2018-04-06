@@ -9,12 +9,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author nampt
- * 日別実績の承認状況
+ * @author nampt 日別実績の承認状況
  *
  */
 @AllArgsConstructor
@@ -34,5 +34,10 @@ public class KrcdtDaiApprovalStatus extends UkJpaEntity implements Serializable 
 	@Override
 	protected Object getKey() {
 		return this.krcdtDaiApprovalPK;
+	}
+
+	public static KrcdtDaiApprovalStatus toEntity(ApprovalStatusOfDailyPerfor approvalStatusOfDailyPerfor) {
+		return new KrcdtDaiApprovalStatus(new KrcdtDaiApprovalStatusPK(approvalStatusOfDailyPerfor.getEmployeeId(),
+				approvalStatusOfDailyPerfor.getYmd()), approvalStatusOfDailyPerfor.getRootInstanceID());
 	}
 }
