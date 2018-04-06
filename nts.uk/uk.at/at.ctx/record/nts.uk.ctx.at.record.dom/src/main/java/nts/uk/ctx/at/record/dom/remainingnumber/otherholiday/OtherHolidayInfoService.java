@@ -25,8 +25,24 @@ import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -60,6 +76,21 @@ public class OtherHolidayInfoService {
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
 	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject 
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	
+	@Inject
+	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
+	
 	// Constants
 	private final BigDecimal ZERO = new BigDecimal(0);
 	private final BigDecimal ONE = new BigDecimal(1);
@@ -89,7 +120,7 @@ public class OtherHolidayInfoService {
 		// IS00368
 		if (remainLeft.compareTo(ZERO) > 0) {
 			remainLeftIsBiggerThanZero(cid, sid, remainLeft);
-		} else if (remainLeft.compareTo(new BigDecimal(0)) <0){
+		} else if (remainLeft.compareTo(ZERO) <0){
 			remainLeftIsSmallerThanZero(cid, sid, remainLeft);
 		}
 	}
@@ -163,7 +194,7 @@ public class OtherHolidayInfoService {
 		// IS00368
 		if (remainNumber.compareTo(ZERO) > 0) {
 			remainNumberIsMoreThanZero(cid,sid,remainNumber);
-		} else if (remainNumber.compareTo(new BigDecimal(0)) <0){
+		} else if (remainNumber.compareTo(ZERO) <0){
 			remainNumberIsSmallerThanZero(cid, sid, remainNumber);
 		}
 	}
@@ -181,9 +212,9 @@ public class OtherHolidayInfoService {
 		// 1日相当時間←指定時間．1日の時間
 		// 半日相当時間←指定時間．半日の時間
 		// TODO QA
-		CompensatoryLeaveComSetting leaveSet = compensLeaveComSetRepository.find(cid);
-		int aDay = leaveSet.getCompensatoryOccurrenceSetting().get(0).getTransferSetting().getDesignatedTime().getOneDayTime().v();
-		int aHalf = leaveSet.getCompensatoryOccurrenceSetting().get(0).getTransferSetting().getDesignatedTime().getHalfDayTime().v();
+		DesignatedTime commonSet = getWorkTimeSetting(cid, sid);
+		int aDay = commonSet.getOneDayTime().v();
+		int aHalf = commonSet.getHalfDayTime().v();
 		while (remainNumberTpm.compareTo(ZERO) >0){
 			newID = IdentifierUtil.randomUniqueId();
 			if (remainNumberTpm.compareTo(ONE) >= 0){
@@ -234,21 +265,160 @@ public class OtherHolidayInfoService {
 	 * For Item IS00366
 	 * LeaveManagementData
 	 * @param sid
+	 * @return 指定時間
 	 */
 	// TODO Pending QA
-	private void getWorkTimeSetting(String cid, String sid){
+	private DesignatedTime getWorkTimeSetting(String cid, String sid){
+		
+		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		
 		Optional<WorkingCondition> workingCond = workingConditionRepository.getBySid(cid, sid);
-		if (workingCond.isPresent()){
-			DateHistoryItem histItem = workingCond.get().getDateHistoryItem().stream().reduce((first, second) -> second)
-					  .orElse(null);
-			if (histItem != null){
-				String histId = histItem.identifier();
-				
-				workingConditionItemRepository.getBySidAndHistId(sid, histId);
-			}
+		if (!workingCond.isPresent() || workingCond.get().getDateHistoryItem().isEmpty()){
+			return result;
 		}
+		DateHistoryItem histItem = workingCond.get().getDateHistoryItem().get(workingCond.get().getDateHistoryItem().size()-1);
+		Optional<WorkingConditionItem> workingCondItem = workingConditionItemRepository.getBySidAndHistId(sid, histItem.identifier());
+		if (!workingCondItem.isPresent()){
+			return result;
+		}
+		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode();
+		
+		if (!workTimeCD.isPresent()){
+			return getCompanySet(cid);
+		}
+		Optional<WorkTimeSetting> workTimeSet = workTimeSettingRepository.findByCode(cid, workTimeCD.get().v());
+		
+		if (!workTimeSet.isPresent()){
+			return getCompanySet(cid);
+		}
+		
+		// Flexible time
+		if (workTimeSet.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()){
+			getFlexTime(cid,workTimeCD.get().v());
+		} else {
+			switch (workTimeSet.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
+			case FIXED_WORK:
+				return getFixedWork(cid,workTimeCD.get().v());
+			case FLOW_WORK:
+				return getFlowWork(cid, workTimeCD.get().v());
+			case DIFFTIME_WORK:
+				return getDiffTimeWork(cid, workTimeCD.get().v());
+			default:
+				break;
+			}
+			
+		}
+		
+		return result;
 	}
 	
+	/**
+	 * Get flexible time
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private DesignatedTime getFlexTime(String cid, String workTimeCD){
+		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		Optional<FlexWorkSetting> flexWork = flexWorkSettingRepository.find(cid, workTimeCD);
+		if (!flexWork.isPresent()){
+			return result;
+		}
+		Optional<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet = flexWork.get().getCommonSetting().getSubHolTimeSet().stream().filter(i->i.getOriginAtr() == CompensatoryOccurrenceDivision.WorkDayOffTime && i.getSubHolTimeSet().isUseDivision()).findFirst();
+		if (subHolTimeSet.isPresent()){
+			return subHolTimeSet.get().getSubHolTimeSet().getDesignatedTime();
+		}
+		return getCompanySet(cid);
+	}
+	/**
+	 * 会社別代休時間設定
+	 * @param cid
+	 * @return
+	 */
+	private DesignatedTime getCompanySet(String cid){
+		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		
+		CompensatoryLeaveComSetting comSet = compensLeaveComSetRepository.find(cid);
+		Optional<DesignatedTime>  designTime = comSet.getCompensatoryOccurrenceSetting().stream()
+				.filter(i -> i.getOccurrenceType().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value)
+				.findFirst().map(i -> i.getTransferSetting().getDesignatedTime());
+		if (!designTime.isPresent()){
+			return result;
+		}
+		return designTime.get();
+	}
+	
+	/**
+	 * ドメインモデル「固定勤務設定」を取得
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private DesignatedTime getFixedWork(String cid, String workTimeCD){
+		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		Optional<FixedWorkSetting> fixedWork = fixedWorkSettingRepository.findByKey(cid, workTimeCD);
+		if (!fixedWork.isPresent()){
+			return result;
+		}
+		Optional<DesignatedTime> designTime = fixedWork.get().getCommonSetting().getSubHolTimeSet()
+				.stream()
+				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& i.getSubHolTimeSet().isUseDivision())
+				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
+		
+		if (!designTime.isPresent()){
+			return getCompanySet(cid);
+		}
+		return designTime.get();
+	}
+	
+	/**
+	 * ドメインモデル「流動勤務設定」を取得
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private DesignatedTime getFlowWork(String cid, String workTimeCD){
+		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		Optional<FlowWorkSetting> flowWork = flowWorkSettingRepository.find(cid, workTimeCD);
+		if (!flowWork.isPresent()){
+			return result;
+		}
+		Optional<DesignatedTime> designTime = flowWork.get().getCommonSetting().getSubHolTimeSet()
+				.stream()
+				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& i.getSubHolTimeSet().isUseDivision())
+				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
+		
+		if (!designTime.isPresent()){
+			return getCompanySet(cid);
+		}
+		return designTime.get();
+	}
+	
+	/**
+	 * ドメインモデル「時差勤務設定」を取得
+	 * @param cid
+	 * @param workTimeCD
+	 * @return
+	 */
+	private DesignatedTime getDiffTimeWork(String cid, String workTimeCD){
+		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
+		Optional<DiffTimeWorkSetting> diffTime = diffTimeWorkSettingRepository.find(cid, workTimeCD);
+		if (!diffTime.isPresent()){
+			return result;
+		}
+		Optional<DesignatedTime> designTime = diffTime.get().getCommonSet().getSubHolTimeSet()
+				.stream()
+				.filter(i -> i.getOriginAtr().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value
+						&& i.getSubHolTimeSet().isUseDivision())
+				.findFirst().map(i -> i.getSubHolTimeSet().getDesignatedTime());
+		
+		if (!designTime.isPresent()){
+			return getCompanySet(cid);
+		}
+		return designTime.get();
+	}
 	
 	public void updateOtherHolidayInfo(String cid, PublicHolidayRemain pubHD, ExcessLeaveInfo exLeav, BigDecimal remainNumber, BigDecimal remainLeft){
 		
@@ -282,6 +452,11 @@ public class OtherHolidayInfoService {
 		return false;
 	}
 	
+	/**
+	 * IS00368 check Enable
+	 * @param sid
+	 * @return
+	 */
 	public boolean checkEnablePayout(String sid){
 		String cid = AppContexts.user().companyId();
 		if (substitutionOfHDManaDataRepository.getBysiD(cid,sid).isEmpty() && payoutManagementDataRepository.getSid(cid,sid).isEmpty()){

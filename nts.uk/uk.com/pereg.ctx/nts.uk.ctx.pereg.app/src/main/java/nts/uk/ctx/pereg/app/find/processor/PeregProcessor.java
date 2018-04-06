@@ -104,7 +104,7 @@ public class PeregProcessor {
 	
 	private static List<String> listCategorys = Arrays.asList("CS00020","CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
 			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
-			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058");
+			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00035");
 	
 	/**
 	 * get person information category and it's children (Hiển thị category và
