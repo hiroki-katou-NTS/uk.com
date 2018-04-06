@@ -921,6 +921,10 @@ var nts;
                 return util.optional.of(value);
             }
             cookie.get = get;
+            function remove(name, attr) {
+                document.cookie = name + "=; path=" + attr.path + "; max-age=0";
+            }
+            cookie.remove = remove;
             function asMap() {
                 var map = {};
                 document.cookie.split(";")
@@ -3783,6 +3787,7 @@ var nts;
                                 $li.on(constants.CLICK, function () {
                                     // TODO: Jump to login screen and request logout to server
                                     nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                        nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
                                         nts.uk.request.login.jumpToUsedLoginPage();
                                     });
                                 });
