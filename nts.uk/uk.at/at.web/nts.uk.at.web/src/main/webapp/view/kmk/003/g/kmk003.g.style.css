@@ -6,6 +6,11 @@
 	margin: 20px;
 }
 
+.radio-group-block{
+	margin: 20px;
+	width:400px;
+}
+
 .dialog-rows {
 	margin-top: 10px;
 	width: 100%;
@@ -28,7 +33,6 @@
 
 .control-warp {
 	margin-left: 10px;
-	margin-right: 10px;
 }
 
 .cf .nts-switch-button {

@@ -11,7 +11,7 @@
 		
 			<script>
 				var dialogSize = {
-					width : 500,
+					width : 550,
 					height : 500
 				};
 			</script>
@@ -37,7 +37,7 @@
 					<!-- END form label -  -->
 					
 					<!-- START setting items -  -->
-					<div class="dialog-block">
+					<div class="radio-group-block">
 						<div class="dialog-rows">
 							<div tabindex ="2" data-bind="ntsRadioBoxGroup: {
 										options: lstRest,
@@ -72,8 +72,8 @@
 									optionsText: 'name',
 									value: switchValue,
 									enable: true }"></div>
-							<div class="control-warp" style="width: 100px;">
-								<div tabindex="4" style="width: 100px;" data-bind="ntsComboBox: {
+							<div class="control-warp" style="width: 70px;">
+								<div tabindex="4" style="width: 70px;" data-bind="ntsComboBox: {
 										options: unitComboBoxOptions,
 										name: '#[KMK003_232]',
 										optionsValue: 'code',
@@ -85,8 +85,8 @@
 										enable: true }"></div>
 							</div>
 							<com:ko tag="if" bind="updateRounding">
-								<div class="control-warp" style="width: 100px;">
-									<div tabindex="5" style="width: 100px;"
+								<div class="control-warp" style="width: 170px;">
+									<div tabindex="5" style="width: 170px;"
 										data-bind="ntsComboBox: {
 										options: roundingComboBoxOptions,
 										name: '#[KMK003_233]',
