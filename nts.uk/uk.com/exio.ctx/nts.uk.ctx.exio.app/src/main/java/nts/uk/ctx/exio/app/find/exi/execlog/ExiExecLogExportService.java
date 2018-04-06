@@ -17,7 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
-public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>> {
+public class ExiExecLogExportService extends ExportService<ErrorContentDto> {
 
 	/** The generator. */
     @Inject
@@ -30,9 +30,9 @@ public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>
     private static final String FILE_NAME = "エラー一覧.csv";
     
     @Override
-	protected void handle(ExportServiceContext<List<ErrorContentDto>> context) {
-    	List<ErrorContentDto> lstError = context.getQuery();
-    	if (CollectionUtil.isEmpty(lstError)) {
+	protected void handle(ExportServiceContext<ErrorContentDto> context) {
+    	ErrorContentDto lstError = context.getQuery();
+    	if (lstError == null) {
     		return;
     	}
     	List<String> header = this.getTextHeader();  
@@ -44,37 +44,35 @@ public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>
 		List<String> errorCount = new ArrayList<>();
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		
-    	for (ErrorContentDto errorContentDto : lstError) {
-    		nameSetting = errorContentDto.getNameSetting();
-    		condImport.add("受入する条件");
-    		condImport.add(errorContentDto.getResultLog().getExternalProcessId() + "	"+ nameSetting);
-    		dateTime.add("受入開始日時");
-    		dateTime.add(errorContentDto.getResultLog().getProcessStartDatetime().toString());
-    		totalCount.add("トータル件数");
-    		totalCount.add(errorContentDto.getResultLog().getTargetCount()+"");
-    		totalCount.add("件");
-    		normalCount.add("正常件数");
-    		normalCount.add(errorContentDto.getResultLog().getTargetCount() - errorContentDto.getResultLog().getErrorCount() + "" );
-    		normalCount.add("件");
-    		errorCount.add("エラー件数");
-    		errorCount.add(errorContentDto.getResultLog().getErrorCount() + "" );
-    		errorCount.add("件");
-    		 
-    		for (int i=0; i< errorContentDto.getErrorLog().length; i++) {
-    			ExacErrorLogDto errorContentList = errorContentDto.getErrorLog()[i];
-    			Map<String, Object> errorItem = new HashMap<>();
-    			errorItem.put(header.get(0), i);
-    			errorItem.put(header.get(1), errorContentList.getRecordNumber());
-    			errorItem.put(header.get(2), errorContentList.getCsvErrorItemName());
-    			errorItem.put(header.get(3), errorContentList.getItemName());
-    			errorItem.put(header.get(4), errorContentList.getCsvAcceptedValue());
-    			errorItem.put(header.get(5), errorContentList.getErrorContents());
-    			
-    			dataSource.add(errorItem);
+		nameSetting = lstError.getNameSetting();
+		condImport.add("受入する条件");
+		condImport.add(lstError.getResultLog().getConditionSetCd() + "	"+ nameSetting);
+		dateTime.add("受入開始日時");
+		dateTime.add(lstError.getResultLog().getProcessStartDatetime().toString());
+		totalCount.add("トータル件数");
+		totalCount.add(lstError.getResultLog().getTargetCount()+"");
+		totalCount.add("件");
+		normalCount.add("正常件数");
+		normalCount.add(lstError.getResultLog().getTargetCount() - lstError.getResultLog().getErrorCount() + "" );
+		normalCount.add("件");
+		errorCount.add("エラー件数");
+		errorCount.add(lstError.getResultLog().getErrorCount() + "" );
+		errorCount.add("件");
+		if (lstError.getErrorLog() != null) { 
+			for (int i=0; i< lstError.getErrorLog().length; i++) {
+				ExacErrorLogDto errorContentList = lstError.getErrorLog()[i];
+				Map<String, Object> errorItem = new HashMap<>();
+				errorItem.put(header.get(0), i);
+				errorItem.put(header.get(1), errorContentList.getRecordNumber());
+				errorItem.put(header.get(2), errorContentList.getCsvErrorItemName());
+				errorItem.put(header.get(3), errorContentList.getItemName());
+				errorItem.put(header.get(4), errorContentList.getCsvAcceptedValue());
+				errorItem.put(header.get(5), errorContentList.getErrorContents());
+				
+				dataSource.add(errorItem);
 			}
-    		
 		}
-    	
+    		
     	ExecLogCSVFileData dataExport = new ExecLogCSVFileData(FILE_NAME, condImport, dateTime, totalCount, normalCount, errorCount, header, dataSource);
         // generate file
         this.generator.generate(context.getGeneratorContext(), dataExport);		

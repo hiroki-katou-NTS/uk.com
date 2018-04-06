@@ -40,6 +40,14 @@ public class KshstFlexSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "PREMIUM_CALC_SUBHD")
 	public int premiumCalcSubhd;
 	
+	/** 法定労働控除時間計算 */
+	@Column(name="FLEX_DEDUCT_CALC")
+	public int flexDeductCalc;
+
+	/** 非勤務日計算 */
+	@Column(name="FLEX_NONWKING_CALC")
+	public int flexNonwkingCalc;
+	
 	@Override
 	protected Object getKey() {
 		return kshstFlexSetPK;

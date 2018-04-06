@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 350,
+					height : 350
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk013.o.main.css" />
+			<com:scriptfile path="kmk013.o.start.js" />
+			<com:scriptfile path="kmk013.o.service.js" />
+			<com:scriptfile path="kmk013.o.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="guide-message">
+					#{i18n.getText('KMK013_368')}
+				</div>
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<div class="order-table">
+									<table id="grid-data" tabindex="1" data-bind="ntsGridList: {								
+												height: 360,
+												dataSource: vacationSortingOrderDisp,
+												optionsValue: 'id',
+												primaryKey: 'name',
+												columns: columns,
+												multiple: false,
+												value: currentVacation,
+												rows: 4
+											}">
+										
+									</table>
+								</div>
+							</td>
+							<td>
+								<div id="grid-up-down" tabindex="2"
+								data-bind="ntsUpDown: {
+										targetSource: vacationSortingOrderDisp,
+										primaryKey: 'id',
+										comId: '#grid-data',
+										type: 'grid'
+									}"
+								class="ntsComponent" style="height:150px; display:inline-block;"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="functions-area-bottom" >
+				<div id="process">
+					<button id="btnSetting" class="x-large proceed" style="margin-left: 0px;"
+						data-bind="click: register" tabindex="4">#{i18n.getText('KMK013_380')}</button>
+					<button id="btnCancel" class="large" data-bind="click: close" style="margin-left: 40px;"
+						tabindex="5">#{i18n.getText('KMK013_381')}</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

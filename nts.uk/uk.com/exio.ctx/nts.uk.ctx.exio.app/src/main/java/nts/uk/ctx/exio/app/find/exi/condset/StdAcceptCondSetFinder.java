@@ -77,8 +77,7 @@ public class StdAcceptCondSetFinder {
 	}
 
 	/**
-	 * Dummies Data category
-	 * 
+	 * TODO: Dummies Data category => update after domain of category complete.
 	 * @return
 	 */
 	public List<ExAcpCategoryDto> getAllCategory() {
@@ -89,7 +88,10 @@ public class StdAcceptCondSetFinder {
 		}
 		return lstDataCategory;
 	}
-
+	/**
+	 * TODO: Dummies Data category => update after domain of category complete.
+	 * @return
+	 */
 	public List<ExAcpCtgItemDatDto> getCategoryItemData(String categoryId) {
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
 		for (int i = 1; i <= 4; i++) {

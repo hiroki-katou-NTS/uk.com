@@ -12,8 +12,13 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddFlexSetCommand;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddFlexSetCommandHandler;
+import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddInsufficientFlexHolidayMntCommand;
+import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddInsufficientFlexHolidayMntCommandHandler;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetFinder;
+import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.InsufficientFlexHolidayMntDto;
+import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.InsufficientFlexHolidayMntFinder;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 
 @Path("shared/caculation/holiday/flex")
 @Produces("application/json")
@@ -22,6 +27,11 @@ public class FlexSetWebService extends WebService{
 	private FlexSetFinder finder;
 	@Inject
 	private AddFlexSetCommandHandler handler;
+	@Inject 
+	InsufficientFlexHolidayMntFinder insuffFinder;
+	@Inject
+	private AddInsufficientFlexHolidayMntCommandHandler insuffHandler;
+	
 	
 	@Path("findByCid")
 	@POST
@@ -39,5 +49,17 @@ public class FlexSetWebService extends WebService{
 	@POST
 	public void update(AddFlexSetCommand command) {
 		this.handler.handle(command);
+	}
+	
+	@Path("addInsuff")
+	@POST
+	public void add(AddInsufficientFlexHolidayMntCommand command) {
+		this.insuffHandler.handle(command);
+	}
+	
+	@Path("findInsuffByCid")
+	@POST
+	public List<InsufficientFlexHolidayMntDto> findInsuffByCid() {
+		return insuffFinder.findAllInsufficientFlexHolidayMnt();
 	}
 }

@@ -20,11 +20,14 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">振込元銀行の登録へ</a>
 				<!-- E1_2 -->
-				<button tabindex="1" class="proceed" data-bind="click: sendMail">#{i18n.getText('KAF018_49')}</button>
+				<button tabindex="1" class="proceed"
+					data-bind="click: function(){sendMail(person)}">#{i18n.getText('KAF018_49')}</button>
 				<!-- E1_3 -->
-				<button tabindex="2" class="proceed" data-bind="click: sendMail">#{i18n.getText('KAF018_50')}</button>
+				<button tabindex="2" class="proceed"
+					data-bind="click: function(){sendMail(daily)}">#{i18n.getText('KAF018_50')}</button>
 				<!-- E1_4 -->
-				<button tabindex="3" class="proceed" data-bind="click: sendMail">#{i18n.getText('KAF018_51')}</button>
+				<button tabindex="3" class="proceed"
+					data-bind="click: function(){sendMail(monthly)}">#{i18n.getText('KAF018_51')}</button>
 			</div>
 			<div id="contents-area">
 				<table id="tbl-control">
@@ -46,7 +49,7 @@
 						<td>
 							<!-- E3 --> <!-- E3_1 -->
 							<div class="limited-label label" style="width: 490px;">
-								<span data-bind="text: closureDate"></span>(<span
+								<span data-bind="text: processingYm"></span>(<span
 									data-bind="text: startDate"></span> ~ <span
 									data-bind="text: endDate"></span>)
 							</div>
@@ -87,7 +90,7 @@
 							<td data-bind="text: $parent.getRecord(dayBossConfirm)"></td>
 							<td data-bind="text: $parent.getRecord(dayPrincipalUnconfirm)"></td>
 							<td data-bind="text: $parent.getRecord(dayPrincipalConfirm)"></td>
-							<td><div data-bind="ntsCheckBox: { checked: check }" /></td>
+							<td><div data-bind="ntsCheckBox: { checked: check, enable: enable }" /></td>
 						</tr>
 					</tbody>
 				</table>

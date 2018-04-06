@@ -11,6 +11,8 @@ module nts.uk.at.view.kmk011.c.viewmodel {
         divReasonCode: KnockoutObservable<string>; // show value divergenceReasonCode in C3_2
         divReasonContent: KnockoutObservable<string>; //show value C3_3 input tex
         enableCode: KnockoutObservable<boolean>; //define for enable code (=true with NEW_MODE)
+        enableContent: KnockoutObservable<boolean>; //define for enable content
+        enableMode: KnockoutObservable<boolean>;//define for enable content mode for switchButton
         itemDivReason: KnockoutObservable<model.DivergenceReason>;
         divTimeId: KnockoutObservable<number>;
         index_of_itemDelete: any;
@@ -41,26 +43,48 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             self.divTimeId = ko.observable(null);
             self.enableDel = ko.observable(true);
             self.checkModel = ko.observable(true);
+            self.enableContent = ko.observable(true);
+            self.enableMode = ko.observable(true);
             //subscribe currentCode
-            self.currentCode.subscribe(function(codeChanged) {
-                // var t0 = performance.now();
-                self.clearError();
-                self.itemDivReason(self.findItemDivTime(codeChanged));
-                if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
-                    return;
-                }
-                // self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
-                self.enableCode(false);
-                self.divReasonCode(self.itemDivReason().divergenceReasonCode);
-                self.divReasonContent(self.itemDivReason().reason);
-                self.requiredAtr(self.itemDivReason().reasonRequired);
-                if (self.dataSource().length > 1) {
-                    self.enableDel(true);
-                }
-                else self.enableDel(false);
+            self.currentCode.subscribe((codeChanged) => {
+                if (codeChanged != "") {
+                    self.clearError();
+                    //get data
+                    self.itemDivReason(self.findItemDivTime(codeChanged));
 
-                $("#inpReason").focus();
-                // var t1 = performance.now();
+                    //check null data
+                    if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
+                        return;
+                    }
+
+                    //fill data
+                    self.enableCode(false);
+                    self.enableContent(true);
+                    self.divReasonCode(self.itemDivReason().divergenceReasonCode);
+                    self.divReasonContent(self.itemDivReason().reason);
+                    self.requiredAtr(self.itemDivReason().reasonRequired);
+                    if (self.dataSource().length > 1) {
+                        self.enableDel(true);
+                    }
+                    else self.enableDel(false);
+
+                    if (self.mode) {
+                        self.enableMode(true);
+                    }
+                    else
+                        self.enableMode(false);
+
+                    $("#inpReason").focus();
+                }
+                else {
+                    //Disable and blank content
+                    self.divReasonCode("");
+                    self.divReasonContent("");
+                    self.enableCode(false);
+                    self.enableContent(false);
+                    self.enableDel(false);
+                    self.enableMode(false);
+                }
             });
 
             var notice = nts.uk.resource.getText("KMK011_78");
@@ -117,6 +141,11 @@ module nts.uk.at.view.kmk011.c.viewmodel {
 
                     $("#inpReason").focus();
                 }
+                if (self.mode) {
+                    self.enableMode(true);
+                }
+                else
+                    self.enableMode(false);
 
             })
             return dfd.promise();
@@ -137,9 +166,15 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             self.divReasonContent("");
             self.requiredAtr(0);
             self.enableCode(true);
+            self.enableContent(true);
             self.clearError();
             self.enableDel(false);
             self.currentCode(null);
+            if (self.mode) {
+                self.enableMode(true);
+            }
+            else
+                self.enableMode(false);
             $("#inpCode").focus();
 
         }
@@ -163,15 +198,17 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                         if (self.enableCode() == false) {
                             self.convertCode(self.divReasonCode());
                             self.updateDivReason();
-                        } else
+                        } else {
                             if (self.enableCode() == true) {//add divergence
                                 self.addDivReason();
                             }
+                        }
                     }
                 }
             });
 
             blockUI.clear();
+            $("#inpReason").focus();
         }
 
         addDivReason() {
@@ -187,10 +224,12 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             }
             var divReason = new model.DivergenceReason(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.addDivReason(divReason).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getAllDivReasonNew();
-                $("#inpReason").focus();
-                blockUI.clear();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.getAllDivReasonNew(divReason.divergenceReasonCode).done(function() {
+                        $("#inpReason").focus();
+                    })
+                    blockUI.clear();
+                });
             }).fail(function(error) {
                 blockUI.clear();
                 $('#inpCode').ntsError('set', error);
@@ -210,9 +249,11 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             var divReason = new model.DivergenceReason(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.updateDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.getAllDivReasonNew();
+                    self.getAllDivReasonNew(divReason.divergenceReasonCode).done(function() {
+                        $("#inpReason").focus();
+                    })
                     blockUI.clear();
-                });;
+                });
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
@@ -220,21 +261,20 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             });
         }
         //get all divergence reason new
-        getAllDivReasonNew() {
+        getAllDivReasonNew(code: string) {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
             service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.DivergenceReason>) {
-                self.currentCode('');
                 self.dataSource(lstDivReason);
                 self.enableCode(false);
-                self.currentCode(self.divReasonCode());
+                self.currentCode(code);
+                $("#inpReason").focus();
                 if (self.dataSource().length > 1) {
                     self.enableDel(true);
                 }
                 else self.enableDel(false);
                 dfd.resolve();
-                $("#inpReason").focus();
             }).fail(function(error) {
                 nts.uk.ui.dialog.alert(error.message);
             })

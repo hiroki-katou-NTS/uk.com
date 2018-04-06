@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
@@ -48,6 +49,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
+	int comType;
+
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
@@ -57,6 +60,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		companyID = AppContexts.user().companyId();
 		employeeID = AppContexts.user().employeeId();
 		appReason = command.getAppCmd().getApplicationReason();
+		comType = command.getComType();
 		// アルゴリズム「振休振出申請の更新登録」を実行する
 		updateApp(command);
 
@@ -151,17 +155,30 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	}
 
+	public boolean isSaveRec() {
+		if (comType == ApplicationCombination.RecAndAbs.value || comType == ApplicationCombination.Rec.value) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSaveAbs() {
+		if (comType == ApplicationCombination.RecAndAbs.value || comType == ApplicationCombination.Abs.value) {
+			return true;
+		}
+		return false;
+	}
+
 	private void updateApp(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「登録前エラーチェック（更新）」を実行する
 		errorCheckBeforeRegister(command);
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		RecruitmentAppCommand recCmd = command.getRecCmd();
-		if (saveHanler.isSaveRec(command.getComType())) {
+		if (isSaveRec()) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
-			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(),
-					GeneralDate.fromString(recCmd.getAppDate(), DATE_FORMAT), EmploymentRootAtr.APPLICATION.value,
-					appType, command.getAppCmd().getPrePostAtr(), recCmd.getAppID(),
-					command.getAppCmd().getAppVersion());
+			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(), recCmd.getAppDate(),
+					EmploymentRootAtr.APPLICATION.value, appType, command.getAppCmd().getPrePostAtr(),
+					recCmd.getAppID(), command.getAppCmd().getAppVersion());
 
 			// ドメイン「振出申請」を1件更新する
 			Application_New recApp = updateRecDomain(command);
@@ -171,12 +188,11 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 			}
 		}
 
-		if (saveHanler.isSaveAbs(command.getComType())) {
+		if (isSaveAbs()) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
-			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(),
-					GeneralDate.fromString(absCmd.getAppDate(), DATE_FORMAT), EmploymentRootAtr.APPLICATION.value,
-					appType, command.getAppCmd().getPrePostAtr(), absCmd.getAppID(),
-					command.getAppCmd().getAppVersion());
+			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(), absCmd.getAppDate(),
+					EmploymentRootAtr.APPLICATION.value, appType, command.getAppCmd().getPrePostAtr(),
+					absCmd.getAppID(), command.getAppCmd().getAppVersion());
 			// ドメイン「振休申請」を1件更新する
 			Application_New absApp = updateAbsDomain(command);
 			// アルゴリズム「詳細画面登録後の処理」を実行する
@@ -189,7 +205,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = saveHanler.preconditionCheck(command);
+		appReason = saveHanler.preconditionCheck(command, companyID, appType);
 
 	}
 

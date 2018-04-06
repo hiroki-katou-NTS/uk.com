@@ -179,6 +179,9 @@ module nts.uk.ui {
 
             onClosed(callback: () => void) {
                 this.onClosedHandler = function() {
+                    var dataModel = ko.dataFor(this.$dialog[0]);
+                    dataModel.kiban.errorDialogViewModel.errors([]);
+                    //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                     callback();
                     container.localShared = {};
                 };

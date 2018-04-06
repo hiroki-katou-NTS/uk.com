@@ -27,13 +27,13 @@
 .format-selected {
 	float: left;
 	padding: 11px;
-	width: 120px;	
+	width: 140px;	
 	font-size: 12px;
 }
 
 .format-checkbox {
 	float: left;
-	margin-left: 35px;
+	margin-left: 25px;
 }
 
 .btn-excute {

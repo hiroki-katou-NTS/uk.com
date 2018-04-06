@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -7,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterRemand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -14,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCommand, String>{
+public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCommand, MailSenderResult>{
 	
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
@@ -23,7 +26,7 @@ public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCom
 	private DetailAfterRemand detailAfterRemand;
 	
 	@Override
-	protected String handle(CommandHandlerContext<RemandCommand> context) {
+	protected MailSenderResult handle(CommandHandlerContext<RemandCommand> context) {
 		String companyID =  AppContexts.user().companyId();
 		RemandCommand remandCommand = context.getCommand();
 		
@@ -32,5 +35,4 @@ public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCom
 		
 		return detailAfterRemand.doRemand(companyID, remandCommand.getAppID(), remandCommand.getVersion(), remandCommand.getOrder(), remandCommand.getReturnReason());
 	}
-
 }

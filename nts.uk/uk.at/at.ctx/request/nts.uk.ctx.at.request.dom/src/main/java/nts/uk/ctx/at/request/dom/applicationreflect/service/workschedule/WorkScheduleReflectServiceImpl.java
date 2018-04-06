@@ -15,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppDegreeReflectionAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppExecutionType;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectInfor;
@@ -29,6 +31,8 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 	private ApplicationReflectProcessSche processScheReflect;
 	@Inject
 	private GoBackDirectlyRepository gobackRepository;
+	@Inject
+	private IAppWorkChangeRepository workchangeRepo;
 
 	@Override
 	public ScheReflectedStatesInfo workscheReflect(Application_New application) {
@@ -39,30 +43,44 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		/*if(!this.checkBeforeReflected(application)) {
 			return reflectedStatesInfo;
 		}*/
+		ReflectScheDto reflectSchePara = new ReflectScheDto(application.getEmployeeID(),
+				application.getAppDate(),
+				ExecutionType.NORMALECECUTION, 
+				true, 
+				ApplyTimeRequestAtr.START, 
+				application,
+				null, 
+				null, 
+				null);
+		boolean isReflect = false;
 		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
 			reflectedStatesInfo = new ScheReflectedStatesInfo(application.getReflectionInformation().getStateReflection(),
 					application.getReflectionInformation().getNotReason().isPresent() ? application.getReflectionInformation().getNotReason().get() : null);
 			return reflectedStatesInfo;
 		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT){
-			Optional<GoBackDirectly> optGobackData = gobackRepository.findByApplicationID(application.getEmployeeID(), application.getAppID());
+			Optional<GoBackDirectly> optGobackData = gobackRepository.findByApplicationID(application.getCompanyID(), application.getAppID());
 			if(!optGobackData.isPresent()) {
 				return reflectedStatesInfo;
 			}
-			GoBackDirectly gobackData = optGobackData.get();
-			
-			ReflectScheDto gobackPara = new ReflectScheDto(application.getEmployeeID(), 
-					application.getAppDate(),
-					ExecutionType.NORMALECECUTION, 
-					true, 
-					ApplyTimeRequestAtr.START, 
-					gobackData, null);
-			if(processScheReflect.goBackDirectlyReflect(gobackPara)) {
-				reflectedStatesInfo.setReflectedSate(ReflectedState_New.REFLECTED);
-				reflectedStatesInfo.setNotReflectReson(ReasonNotReflect_New.WORK_FIXED);
+			GoBackDirectly gobackData = optGobackData.get();			
+			reflectSchePara.setGoBackDirectly(gobackData);
+			isReflect = processScheReflect.goBackDirectlyReflect(reflectSchePara);
+		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
+				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
+			Optional<AppWorkChange> getAppworkChangeById = workchangeRepo.getAppworkChangeById(application.getCompanyID(), application.getAppID());
+			if(!getAppworkChangeById.isPresent()) {
+				return reflectedStatesInfo;
 			}
+			AppWorkChange appWorkChangeData = getAppworkChangeById.get();
+			reflectSchePara.setWorkChange(appWorkChangeData);
+			isReflect = processScheReflect.workChangeReflect(reflectSchePara);
 		}
-		return null;
+		if(isReflect){
+			reflectedStatesInfo.setReflectedSate(ReflectedState_New.REFLECTED);
+			reflectedStatesInfo.setNotReflectReson(ReasonNotReflect_New.WORK_FIXED);
+		}
+		return reflectedStatesInfo;
 	}
 
 	@Override

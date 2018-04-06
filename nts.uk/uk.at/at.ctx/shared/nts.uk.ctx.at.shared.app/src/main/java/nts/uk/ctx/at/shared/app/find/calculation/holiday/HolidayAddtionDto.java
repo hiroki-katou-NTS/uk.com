@@ -46,4 +46,27 @@ public class HolidayAddtionDto {
 
 	/**変形労働勤務の加算設定*/
 	private WorkDepLaborDto irregularWork;
+	
+	/*時給者の加算設定*/
+	private HourlyPaymentAdditionSetDto hourlyPaymentAdditionSet;
+	
+	/*就業時間の加算設定管理*/
+	private int addSetManageWorkHour;
+	
+	/*B2_28*/
+	/*加算方法*/
+	private int addingMethod1;
+	
+	/*B2_28*/
+	/*勤務区分*/
+	private int workClass1;
+	
+	/*B2_33*/
+	/*加算方法*/
+	private int addingMethod2;
+	
+	/*B2_33*/
+	/*勤務区分*/
+	private int workClass2;	
+	
 }
