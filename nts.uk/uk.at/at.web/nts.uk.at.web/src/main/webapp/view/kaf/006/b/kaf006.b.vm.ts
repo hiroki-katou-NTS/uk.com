@@ -150,6 +150,8 @@ module nts.uk.at.view.kaf006.b{
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
+                    self.workTypecodes(null);
+                    self.selectedTypeOfDuty(null);
                 }else{
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -185,6 +187,8 @@ module nts.uk.at.view.kaf006.b{
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
+                    self.workTypecodes(null);
+                    self.selectedTypeOfDuty(null);
                 }else{
                     self.typeOfDutys.removeAll();
                     self.workTypecodes.removeAll();
@@ -304,6 +308,7 @@ module nts.uk.at.view.kaf006.b{
         }
          update(): JQueryPromise<any> {
              let self = this;
+             $("#workTypes").trigger('validate');
              if (nts.uk.ui.errors.hasError()){return;} 
              nts.uk.ui.block.invisible();
              let appReason: string;
