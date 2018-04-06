@@ -706,7 +706,7 @@ module cmm045.a.viewmodel {
         //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
         convertAbsenceAllDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]);
+            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)]);
         }
         //※特別休暇申請.続柄コード　＝　入力ありの場合
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
