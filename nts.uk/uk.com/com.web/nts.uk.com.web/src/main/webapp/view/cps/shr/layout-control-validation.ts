@@ -304,6 +304,38 @@ module nts.layout {
                         radioCode: 'IS00531',
                         setParentCode: 'IS00532'
                     }, {
+                        ctgCode: 'CS00034',
+                        radioCode: 'IS00546',
+                        setParentCode: 'IS00547'
+                    }, {
+                        ctgCode: 'CS00049',
+                        radioCode: 'IS00631',
+                        setParentCode: 'IS00632'
+                    }, {
+                        ctgCode: 'CS00049',
+                        radioCode: 'IS00646',
+                        setParentCode: 'IS00647'
+                    }, {
+                        ctgCode: 'CS00050',
+                        radioCode: 'IS00646',
+                        setParentCode: 'IS00647'
+                    }, {
+                        ctgCode: 'CS00051',
+                        radioCode: 'IS00661',
+                        setParentCode: 'IS00662'
+                    }, {
+                        ctgCode: 'CS00052',
+                        radioCode: 'IS00676',
+                        setParentCode: 'IS00677'
+                    }, {
+                        ctgCode: 'CS00053',
+                        radioCode: 'IS00691',
+                        setParentCode: 'IS00692'
+                    }, {
+                        ctgCode: 'CS00055',
+                        radioCode: 'IS00721',
+                        setParentCode: 'IS00722'
+                    }, {
                         ctgCode: '',
                         radioCode: '',
                         setParentCode: ''
