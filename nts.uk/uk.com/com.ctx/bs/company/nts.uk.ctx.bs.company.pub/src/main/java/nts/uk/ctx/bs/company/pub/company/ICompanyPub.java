@@ -29,7 +29,7 @@ public interface ICompanyPub {
 	CompanyExport getCompanyByCid(String cid);
 	
 	/**
-	 * For request list No.289
+	 * For RequestList289
 	 * 
 	 * @param companyId
 	 * @param contractCd

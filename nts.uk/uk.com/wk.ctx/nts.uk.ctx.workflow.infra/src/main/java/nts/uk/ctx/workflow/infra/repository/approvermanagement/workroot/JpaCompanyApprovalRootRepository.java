@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRoot;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRootPK;
@@ -74,6 +75,12 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr";
+	
+	private final String FIND_BY_EMP_CONFIRM = FIND_BY_CID
+			 + " AND c.startDate <= :baseDate"
+			 + " AND c.endDate >= :baseDate"
+			 + " AND c.confirmationRootType = :confirmationRootType"
+			 + " AND c.employmentRootAtr = 2";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -332,6 +339,14 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("baseDate", date)
 				.setParameter("confirmationRootType", confirmRootAtr)
 				.setParameter("employmentRootAtr", employmentRootAtr)
+				.getList(c->toDomainComApR(c));
+	}
+	@Override
+	public List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmType.value)
 				.getList(c->toDomainComApR(c));
 	}
 }

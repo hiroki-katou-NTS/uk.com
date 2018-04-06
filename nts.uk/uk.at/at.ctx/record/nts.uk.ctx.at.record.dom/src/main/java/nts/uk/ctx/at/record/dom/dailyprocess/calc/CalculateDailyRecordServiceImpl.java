@@ -368,7 +368,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
 			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
-			val flexWork = holidayAddtionRepository.findByCId(employeeId).get().getFlexWork();
+			//val flexWork = holidayAddtionRepository.findByCId(employeeId).get().getFlexWork();
 			subhol = flexWorkSetOpt.get().getCommonSetting().getSubHolTimeSet();
 				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
 												BonusPaySetting.createFromJavaType(companyId,
@@ -384,14 +384,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												personalInfo.getStatutoryWorkTime(),calcSetinIntegre.getOvertimeSetting(),LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
-												new WorkTimeCalcMethodDetailOfHoliday(flexWork.getNotDeductLateleave2(),flexWork.getAdditionTime2()),
+												new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()));
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
-				val regularWork = holidayAddtionRepository.findByCId(companyId).get().getRegularWork();
+				//val regularWork = holidayAddtionRepository.findByCId(companyId).get().getRegularWork();
 				subhol = fixedWorkSetting.get().getCommonSetting().getSubHolTimeSet();
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
 						RestClockManageAtr.IS_CLOCK_MANAGE, goOutTimeSheetList,
@@ -421,7 +421,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						midNightTimeSheet,
 						personalInfo,
 						Optional.empty(),
-						new WorkTimeCalcMethodDetailOfHoliday(regularWork.getNotDeductLateleave2(),regularWork.getAdditionTime2()));
+						new WorkTimeCalcMethodDetailOfHoliday(1,1));
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -495,8 +495,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		
 		val compensLeaveComSet = compensLeaveComSetRepository.find(companyId);
-		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
- 
+		
+		List<CompensatoryOccurrenceSetting> eachCompanyTimeSet = new ArrayList<>();
+		
+		if(compensLeaveComSet!=null) {
+			eachCompanyTimeSet = compensLeaveComSet.getCompensatoryOccurrenceSetting();
+		}
+		
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		Optional<WorkTimeDailyAtr> workTime = Optional.empty();

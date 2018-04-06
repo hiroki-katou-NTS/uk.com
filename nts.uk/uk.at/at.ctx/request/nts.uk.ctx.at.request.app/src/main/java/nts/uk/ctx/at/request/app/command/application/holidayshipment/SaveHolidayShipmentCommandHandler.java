@@ -115,8 +115,6 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
-	final static String DATE_FORMAT = "yyyy/MM/dd";
-
 	String sID;
 	GeneralDate absDate;
 	GeneralDate recDate;
@@ -129,16 +127,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		SaveHolidayShipmentCommand command = context.getCommand();
 		sID = command.getAppCmd().getEnteredPersonSID();
-		absDate = convertDate(command.getAbsCmd().getAppDate());
-		recDate = GeneralDate.fromString(command.getRecCmd().getAppDate(), DATE_FORMAT);
+		absDate = command.getAbsCmd().getAppDate();
+		recDate = command.getRecCmd().getAppDate();
 		comType = command.getComType();
 		// アルゴリズム「振休振出申請の新規登録」を実行する
 		createNewForHolidayBreakge(command);
 
-	}
-
-	private GeneralDate convertDate(String appDate) {
-		return GeneralDate.fromString(appDate.substring(0, 10), DATE_FORMAT);
 	}
 
 	private void createNewForHolidayBreakge(SaveHolidayShipmentCommand command) {
@@ -263,7 +257,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new WorkTime(wkTime2Cmd.getEndTime()));
 		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, absAppCmd.getWkTypeCD(),
 				EnumAdaptor.valueOf(absAppCmd.getChangeWorkHoursType(), NotUseAtr.class),
-				new WorkTimeCode(wkTime1Cmd.getWkTimeCD()), workTime1, workTime2, Collections.emptyList(),
+				new WorkTimeCode(absAppCmd.getWkTimeCD()), workTime1, workTime2, Collections.emptyList(),
 				Collections.emptyList());
 		appImp.insert(absApplication);
 		absRepo.insert(absApp);
@@ -287,7 +281,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		WkTimeCommand wkTime1Cmd = recAppCmd.getWkTime1();
 		WkTimeCommand wkTime2Cmd = recAppCmd.getWkTime2();
 		RecruitmentApp recApp = new RecruitmentApp(recAppID, recAppCmd.getWkTypeCD(),
-				new WorkTimeCode(wkTime1Cmd.getWkTimeCD()),
+				new WorkTimeCode(recAppCmd.getWkTimeCD()),
 				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime1Cmd.getEndTime()),
@@ -460,9 +454,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 			// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
 			BigDecimal holidayBrkDownDay = getByWorkType(command.getRecCmd().getWkTypeCD(),
 					WorkTypeClassification.Shooting);
-			if (takingoutBrkDownDay != BigDecimal.valueOf(0) && holidayBrkDownDay != BigDecimal.valueOf(0)) {
+			if (!(BigDecimal.valueOf(0).compareTo(takingoutBrkDownDay) == 0)
+					&& !(BigDecimal.valueOf(0).compareTo(holidayBrkDownDay) == 0)) {
 				if (!(takingoutBrkDownDay.compareTo(holidayBrkDownDay) == 0)) {
-					// TODO param msg
 					throw new BusinessException("Msg_698", "");
 				}
 			}
@@ -612,10 +606,10 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		if (cmd.getChangeWorkHoursType() == NotUseAtr.NOT_USE.value) {
 			wkTime1.setStartTime(null);
 			wkTime1.setEndTime(null);
-			wkTime1.setWkTimeCD(null);
+			cmd.setWkTimeCD(null);
 			wkTime2.setStartTime(null);
 			wkTime2.setEndTime(null);
-			wkTime2.setWkTimeCD(null);
+			cmd.setWkTimeCD(null);
 
 		} else {
 			// 開始時刻＜終了時刻 (#Msg_966#)
@@ -652,7 +646,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
 		if (appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)) {
-			typicalReason += command.getAppCmd().getAppReasonID();
+			typicalReason += command.getAppCmd().getAppReasonText();
 		}
 		if (appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)) {
 			if (Strings.isNotBlank(typicalReason)) {
@@ -671,6 +665,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 			}
 		}
 		appReason = typicalReason + displayReason;
+
 		return appReason;
 	}
 

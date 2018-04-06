@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOn
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -124,11 +125,17 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
 
+	@Inject
+	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
+
+	@Inject
+	private ReflectShortWorkingTimeDomainService reflectShortWorkingTimeDomainService;
+
 	@Override
 	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
+			ExecutionType reCreateAttr) {
 
 		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
 
@@ -170,6 +177,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
 					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
 					companyID);
+			
+			// 就業時間帯の休憩時間帯を日別実績に反映する
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService
+					.reflectBreakTime(companyID, employeeID, processingDate, empCalAndSumExecLogID,
+							timeLeavingOfDailyPerformance, workInfoOfDailyPerformance);
+			reflectStamp.setBreakTimeOfDailyPerformance(breakTimeOfDailyPerformance);
+			
+			//短時間勤務時間帯を反映する
+			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = this.reflectShortWorkingTimeDomainService
+					.reflect(companyID, processingDate, employeeID, workInfoOfDailyPerformance);
+			reflectStamp.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+			
 			// エラーチェック
 			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
@@ -556,14 +575,12 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		UseAtr useAtr3 = UseAtr.USE;
 		if (useAtr3 == UseAtr.USE) {
 			// PCログオンログオフの打刻漏れをチェックする
-			 this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(companyID,
-			 employeeID, processingDate, pcLogOnInfoOfDaily,
-			 workInfoOfDailyPerformance);
+			this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(companyID, employeeID, processingDate, pcLogOnInfoOfDaily,
+					workInfoOfDailyPerformance);
 
 			// PCログオンログオフの打刻順序不正をチェックする
-			 this.pCLogOnOffIncorrectOrderCheck.pCLogOnOffIncorrectOrderCheck(companyID,
-			 employeeID, processingDate, pcLogOnInfoOfDaily,
-			 timeLeavingOfDailyPerformance);
+			this.pCLogOnOffIncorrectOrderCheck.pCLogOnOffIncorrectOrderCheck(companyID, employeeID, processingDate,
+					pcLogOnInfoOfDaily, timeLeavingOfDailyPerformance);
 		}
 	}
 

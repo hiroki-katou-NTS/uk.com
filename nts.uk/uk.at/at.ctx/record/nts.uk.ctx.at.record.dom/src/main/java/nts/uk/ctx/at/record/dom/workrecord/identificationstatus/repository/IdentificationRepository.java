@@ -15,5 +15,10 @@ public interface IdentificationRepository {
 	void insert(Identification identification);
 	
 	void remove(String companyId, String employeeId, GeneralDate processingYmd);
+	
+	List<Identification> findByEmployeeIDSortDate(String employeeID,GeneralDate startDate,GeneralDate endDate);
+
+	void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd);
+
 
 }

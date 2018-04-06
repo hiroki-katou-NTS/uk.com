@@ -63,11 +63,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	public boolean isSettingCodeExist(String cid, int sysType, String conditionSetCd) {
 		Optional<OiomtStdAcceptCondSet> entity = this.queryProxy()
 				.find(new OiomtStdAcceptCondSetPk(cid, sysType, conditionSetCd), OiomtStdAcceptCondSet.class);
-		if (entity.isPresent()) {
-			return true;
-		} else {
-			return false;
-		}
+		return entity.isPresent();
 	}
 
 	@Override
@@ -77,12 +73,14 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 		if (entityOpt.isPresent()) {
 			OiomtStdAcceptCondSet entity = entityOpt.get();
 			entity.categoryId = domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null;
-			entity.checkCompleted = domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value
-					: null;
+			entity.checkCompleted = domain.getCheckCompleted().isPresent() 
+					? domain.getCheckCompleted().get().value : null;
 			entity.csvDataLineNumber = domain.getCsvDataLineNumber().isPresent()
 					? domain.getCsvDataLineNumber().get().v() : null;
-			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v()
-					: null;
+			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() 
+					? domain.getCsvDataStartLine().get().v() : null;
+			entity.characterCode = domain.getCharacterCode().isPresent() 
+					? domain.getCharacterCode().get().value : null;
 			this.commandProxy().update(entity);
 		}
 	}
