@@ -636,83 +636,103 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00025',
                         btnCode: 'IS00301',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 1
                     }, {
                         ctgCode: 'CS00026',
                         btnCode: 'IS00308',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 2
                     }, {
                         ctgCode: 'CS00027',
                         btnCode: 'IS00315',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 3
                     }, {
                         ctgCode: 'CS00028',
                         btnCode: 'IS00322',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 4
                     }, {
                         ctgCode: 'CS00029',
                         btnCode: 'IS00329',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 5
                     }, {
                         ctgCode: 'CS00030',
                         btnCode: 'IS00336',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 6
                     }, {
                         ctgCode: 'CS00031',
                         btnCode: 'IS00343',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 7
                     }, {
                         ctgCode: 'CS00032',
                         btnCode: 'IS00350',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 8
                     }, {
                         ctgCode: 'CS00033',
                         btnCode: 'IS00357',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 9
                     }, {
                         ctgCode: 'CS00034',
                         btnCode: 'IS00364',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 10
                     }, {
                         ctgCode: 'CS00049',
                         btnCode: 'IS00565',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 11
                     }, {
                         ctgCode: 'CS00050',
                         btnCode: 'IS00572',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 12
                     }, {
                         ctgCode: 'CS00051',
                         btnCode: 'IS00579',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 13
                     }, {
                         ctgCode: 'CS00052',
                         btnCode: 'IS00586',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 14
                     }, {
                         ctgCode: 'CS00053',
                         btnCode: 'IS00593',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 15
                     }, {
                         ctgCode: 'CS00054',
                         btnCode: 'IS00600',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 16
                     }, {
                         ctgCode: 'CS00055',
                         btnCode: 'IS00607',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 17
                     }, {
                         ctgCode: 'CS00056',
                         btnCode: 'IS00614',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 18
                     }, {
                         ctgCode: 'CS00057',
                         btnCode: 'IS00621',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 19
                     }, {
                         ctgCode: 'CS00058',
                         btnCode: 'IS00628',
-                        dialogId: 'i'
+                        dialogId: 'i',
+                        specialCd: 20
                     }
                 ],
 
@@ -726,23 +746,21 @@ module nts.layout {
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                let sid = __viewContext.user.employeeId;
+                                let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
                                 switch (btn.dialogId) {
                                     case "g":
                                         let empId = __viewContext.user.employeeId;
-                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getAnnLeaNumber/{0}", empId)).done(data => {
+                                        ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${empId}"`).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "h":
-                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getResvLeaNumber/{0}", empId)).done(data => {
+                                        ajax('at', `at/record/remainnumber/annlea/getResvLeaNumber/${empId}"`).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "i":
-                                        let specialCD: number = self.genSpecialCode(btn.ctgCode).specialCode;
-                                        debugger;
-                                        ajax('com', nts.uk.text.format("ctx/pereg/layout/calDayTime/{0}/{1}", sid, specialCD)).done(data => {
+                                        ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${btn.specialCd}`).done(data => {
                                             button.data.value(data);
                                         });
                                 }
@@ -901,93 +919,7 @@ module nts.layout {
 
         // 次回年休付与情報を取得する
         grantInformation = () => {
-            
-        }
 
-        genSpecialCode(categoryCode: string): any {
-
-            switch (categoryCode) {
-                case 'CS00025':
-                    return {
-                        specialCode: 1
-                    };
-                case 'CS00026':
-                    return {
-                        specialCode: 2
-                    };
-                case 'CS00027':
-                    return {
-                        specialCode: 3
-                    };
-                case 'CS00028':
-                    return {
-                        specialCode: 4
-                    };
-                case 'CS00029':
-                    return {
-                        specialCode: 5
-                    };
-                case 'CS00030':
-                    return {
-                        specialCode: 6
-                    };
-                case 'CS00031':
-                    return {
-                        specialCode: 7
-                    };
-                case 'CS00032':
-                    return {
-                        specialCode: 8
-                    };
-                case 'CS00033':
-                    return {
-                        specialCode: 9
-                    };
-                case 'CS00034':
-                    return {
-                        specialCode: 10
-                    };
-                case 'CS00049':
-                    return {
-                        specialCode: 11
-                    };
-                case 'CS00050':
-                    return {
-                        specialCode: 12
-                    };
-                case 'CS00051':
-                    return {
-                        specialCode: 13
-                    };
-                case 'CS00052':
-                    return {
-                        specialCode: 14
-                    };
-                case 'CS00053':
-                    return {
-                        specialCode: 15
-                    };
-                case 'CS00054':
-                    return {
-                        specialCode: 16
-                    };
-                case 'CS00055':
-                    return {
-                        specialCode: 17
-                    };
-                case 'CS00056':
-                    return {
-                        specialCode: 18
-                    };
-                case 'CS00057':
-                    return {
-                        specialCode: 19
-                    };
-                case 'CS00058':
-                    return {
-                        specialCode: 20
-                    };
-            }
         }
     }
 
@@ -1126,6 +1058,7 @@ module nts.layout {
         ctgCode: string;
         btnCode: string;
         dialogId: string;
+        specialCd?: number;
     }
 
     interface ITimeTable {
