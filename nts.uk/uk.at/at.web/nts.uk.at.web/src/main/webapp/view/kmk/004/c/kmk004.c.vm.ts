@@ -62,16 +62,6 @@ module nts.uk.at.view.kmk004.c {
                 
                 self.employmentCode = ko.observable('');
                 self.employmentName = ko.observable('');
-                self.selectedEmploymentCode.subscribe(code => {
-                    self.employmentCode(code);
-                    if (code) {
-                        self.loadEmploymentSetting(code);
-                        self.setEmploymentName(code);
-                    } else {
-                        self.employmentName('');
-                    }
-                    
-                });
                 
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
@@ -129,8 +119,20 @@ module nts.uk.at.view.kmk004.c {
                     self.setAlreadySettingEmploymentList();
                     self.worktimeVM.worktimeSetting.selectedTab('tab-1');
                     
+                    
+                    self.loadEmploymentSetting(self.selectedEmploymentCode()); // load setting for initial selection
+                    self.setEmploymentName(self.selectedEmploymentCode());
+                    
+                    // subscribe to furture selection
+                    self.selectedEmploymentCode.subscribe(code => {
+                        self.loadEmploymentSetting(code);
+                        self.setEmploymentName(code);
+                    });
+                    
                     ko.applyBindingsToNode($('#lblEmploymentCode')[0], { text: self.employmentCode });
                     ko.applyBindingsToNode($('#lblEmploymentName')[0], { text: self.employmentName });
+                    
+                    self.worktimeVM.postBindingHandler();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -141,6 +143,12 @@ module nts.uk.at.view.kmk004.c {
              */
             public loadEmploymentSetting(code?: string): void {
                 let self = this;
+                if (nts.uk.text.isNullOrEmpty(code)) {
+                    self.resetFieldsToNewMode();
+                    return;
+                }
+                
+                nts.uk.ui.block.invisible();
                 service.findEmploymentSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), code)
                     .done(function(data) {
                         // Clear Errors
@@ -150,9 +158,12 @@ module nts.uk.at.view.kmk004.c {
                         // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
                         if (!nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto) 
                         && !nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.regularLaborTime)) {
-                            self.worktimeVM.isNewMode(false);
+                            let isModeNew = false;
+                            
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
                                 resultData.statWorkTimeSetDto.normalSetting = new WorktimeNormalDeformSettingDto();
+                                
+                                isModeNew = true;
                             }
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
                                 resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
@@ -163,20 +174,34 @@ module nts.uk.at.view.kmk004.c {
                             // Update Full Data
                             self.worktimeVM.worktimeSetting.updateFullData(resultData);
                             self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
+                            
+                            // Sort month.
+                            self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                            
+                            self.worktimeVM.isNewMode(isModeNew);
                         }
                         else {
-                            // new mode.
-                            self.worktimeVM.isNewMode(true);
-                            let newSetting = new WorktimeSettingDto();
-                            // Reserve selected year.
-                            newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                            // Update Full Data
-                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                            self.resetFieldsToNewMode();
                         }
-                        
-                        // Sort month.
-                        self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
+            }
+            
+            
+            private resetFieldsToNewMode(): void {
+                let self = this;
+                
+                // new mode.
+                self.worktimeVM.isNewMode(true);
+                let newSetting = new WorktimeSettingDto();
+                // Reserve selected year.
+                newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
+                // Update Full Data
+                self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                
+                // Sort month.
+                self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
             }
             
             /**
@@ -185,7 +210,7 @@ module nts.uk.at.view.kmk004.c {
             private setEmploymentName(code: string): void {
                 let self = this;
                 let list = $('#list-employment').getDataList();
-                if (list && code.length > 0) {
+                if (list && code && code.length > 0) {
                     let empt = _.find(list, item => item.code == code);
                     self.employmentName(empt.name);
                     self.employmentCode(empt.code);
@@ -253,17 +278,24 @@ module nts.uk.at.view.kmk004.c {
                 let emplCode = self.selectedEmploymentCode();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), employmentCode: emplCode }
-                    service.removeEmploymentSetting(command).done(() => {
-                        self.removeAlreadySettingEmployment(emplCode);
-                        
+                    service.removeEmploymentSetting(command).done((res) => {
+                    
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();
-                        // Reserve selected year.
-                        newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                        // Update Full Data
-                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
                         
+                        // Reserve selected year.
+                        newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year()); 
+                        
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingEmployment(emplCode);
+                            //Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        } else {
+                            newSetting.statWorkTimeSetDto.regularLaborTime.updateData(self.worktimeVM.worktimeSetting.normalWorktime());
+                            newSetting.statWorkTimeSetDto.transLaborTime.updateData(self.worktimeVM.worktimeSetting.deformLaborWorktime());
+                            self.worktimeVM.worktimeSetting.updateDataDependOnYear(newSetting.statWorkTimeSetDto);
+                        }
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {

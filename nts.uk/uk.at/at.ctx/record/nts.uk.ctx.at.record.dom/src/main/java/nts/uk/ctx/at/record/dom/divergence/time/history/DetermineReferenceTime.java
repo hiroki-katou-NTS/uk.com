@@ -3,33 +3,16 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
 
-/**
- * Gets the threshold.
- *
- * @return the threshold
- */
 @Getter
-
-/**
- * Sets the threshold.
- *
- * @param threshold the new threshold
- */
 @Setter
-
-/**
- * Instantiates a new determine reference time.
- *
- * @param referenceTime the reference time
- * @param threshold the threshold
- */
 @AllArgsConstructor
 /**
  * The Class DetermineReferenceTime.
  */
 // 基準時間の判定内容
-public class DetermineReferenceTime {
+public class DetermineReferenceTime extends DomainObject {
 
 	/** The reference time. */
 	// 判定した基準時間
@@ -60,7 +43,9 @@ public class DetermineReferenceTime {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

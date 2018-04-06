@@ -686,13 +686,13 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+            if(absence.allDayHalfDayLeaveAtr == 0 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
                 appContent006 = self.convertAbsenceAllDay(absence);
             }
             if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
                 appContent006 = self.convertAbsenceSpecial(absence);
             }
-            if(absence.allDayHalfDayLeaveAtr == 0){//休暇申請.終日半日休暇区分　＝　半日休暇
+            if(absence.allDayHalfDayLeaveAtr == 1){//休暇申請.終日半日休暇区分　＝　半日休暇
                 appContent006 = self.convertAbsenceHalfDay(absence);
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';

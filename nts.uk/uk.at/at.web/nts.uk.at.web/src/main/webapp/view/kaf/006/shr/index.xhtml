@@ -206,7 +206,7 @@
 			<div data-bind="visible:changeWorkHourValueFlg">
 				<div class="valign-center-kaf006 control-group-kaf006">
 					<!--A6_1 就業時間帯を変更する-->
-					<div class="" tabindex="21"
+					<div class="" tabindex="18"
 						data-bind="ntsCheckBox: { checked: changeWorkHourValue, enable: enbChangeWorkHourFlg, text: '#{i18n.getText('KAF006_18')}'}"></div>
 					<!--A6_2 罫線-->
 					<HR data-bind="" style="width: 1000px;"></HR>
@@ -219,7 +219,7 @@
 							<div class="lblTitle-kaf006"
 								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_19')}</div>
 						</div>
-						<div class="cell valign-top-kaf006 cm-column2-kaf006">
+						<div class="cell valign-top-kaf006 cm-column2-kaf006" tabindex="19">
 							<!--A6_4 就業時間帯選択-->
 							<button class="proceed"
 								data-bind="click: btnSelectWorkTimeZone, enable : enbbtnWorkTime() &amp; changeWorkHourValue()">#{i18n.getText('KAF006_20')}</button>
@@ -240,7 +240,7 @@
 								data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF006_22')}</div>
 						</div>
 						<div class="cell valign-top-kaf006 cm-column2-kaf006"
-							tabindex="10">
+							tabindex="20">
 							<div>
 								<!--A6_7 開始時刻-->
 								<input
@@ -254,7 +254,7 @@
 						<div class="cell valign-center-kaf006">
 							<div>
 								<!--A6_9 終了時刻-->
-								<input tabindex="11"
+								<input tabindex="21"
 									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpEndTime1"
 									data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
@@ -270,7 +270,7 @@
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
 				<!--A7_2 申請定型理由-->
-				<div tabindex="15" class="combo-box-kaf006"
+				<div tabindex="29" class="combo-box-kaf006"
 					data-bind="ntsComboBox: {name: '#[KAF006_24]', 
 								options: reasonCombo ,
 								optionsValue: 'reasonId',
@@ -288,7 +288,7 @@
 					data-bind="ntsFormLabel: {}">#{i18n.getText('KAF006_26')}</div>
 				<!--A7_4 申請理由-->
 				<div id="multiline">
-					<textarea tabindex="16" id="appReason" class="textarea-kaf006"
+					<textarea tabindex="30" id="appReason" class="textarea-kaf006"
 						data-bind="ntsMultilineEditor: {name: '#[KAF006_26]', 
 								value: multilContent,
 								enable: enbContentReason,
