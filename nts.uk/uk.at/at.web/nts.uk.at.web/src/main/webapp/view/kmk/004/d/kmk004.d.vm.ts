@@ -59,6 +59,12 @@ module nts.uk.at.view.kmk004.d {
                 self.worktimeVM = new WorktimeSettingVM.ScreenModel();
                 self.alreadySettingWorkplaces = ko.observableArray([]);
                 self.selectedWorkplaceId = ko.observable('');
+                self.selectedWorkplaceId.subscribe(function(workPlaceId) {
+                    if (nts.uk.text.isNullOrEmpty(workPlaceId)) {
+                        self.workplaceCode('');
+                        self.workplaceName('');
+                    }
+                });
                 self.setWorkplaceComponentOption();
                 self.workplaceCode = ko.observable('');
                 self.workplaceName = ko.observable('');
@@ -274,6 +280,7 @@ module nts.uk.at.view.kmk004.d {
                         self.workplaceCode(data.code);
                         self.workplaceName(data.name);
                     }
+                    
                     // Continue to find in childs.
                     if (data.childs.length > 0) {
                         this.setWorkplaceCodeName(data.childs, workPlaceId);
