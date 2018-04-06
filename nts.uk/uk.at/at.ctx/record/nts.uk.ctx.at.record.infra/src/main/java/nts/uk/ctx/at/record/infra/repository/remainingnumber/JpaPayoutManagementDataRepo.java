@@ -58,6 +58,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		KrcmtPayoutManaData entity = new KrcmtPayoutManaData();
 		entity.payoutId = domain.getPayoutId();
 		entity.sID = domain.getSID();
+		entity.cID = domain.getCID();
 		entity.unknownDate = domain.getPayoutDate().isUnknownDate();
 		if (domain.getPayoutDate().getDayoffDate().isPresent()){
 			entity.dayOff = domain.getPayoutDate().getDayoffDate().get();

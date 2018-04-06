@@ -54,6 +54,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		KrcmtSubOfHDManaData entity = new KrcmtSubOfHDManaData();
 		entity.subOfHDID = domain.getSubOfHDID();
 		entity.sID = domain.getSID();
+		entity.cID = domain.getCid();
 		entity.unknownDate = domain.getHolidayDate().isUnknownDate();
 		if (domain.getHolidayDate().getDayoffDate().isPresent()){
 			entity.dayOff = domain.getHolidayDate().getDayoffDate().get();

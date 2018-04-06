@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessHolidayManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.publicholiday.PublicHolidayRemain;
@@ -47,9 +46,6 @@ public class OtherHolidayInfoFinder implements PeregFinder<OtherHolidayInfoDto>{
 	
 	@Inject 
 	private ExcessHolidayManaDataRepository excessHolidayManaDataRepository;
-	
-	@Inject 
-	private OtherHolidayInfoService otherHolidayInfoService;
 	
 	@Override
 	public String targetCategoryCode() {
