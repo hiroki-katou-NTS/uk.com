@@ -705,7 +705,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				selectionItemRefCode = relatedCtg.getRelatedCtgCode().v();
 				break;
 			case 11:
-				NumericItem numericButton = (NumericItem) dataTypeState;
+				NumericButton numericButton = (NumericButton) dataTypeState;
 				numericItemMin = numericButton.getNumericItemMin() != null ? numericButton.getNumericItemMin().v() : null;
 				numericItemMax = numericButton.getNumericItemMax() != null ? numericButton.getNumericItemMax().v() : null;
 				numericItemAmountAtr = new BigDecimal(numericButton.getNumericItemAmount().value);
