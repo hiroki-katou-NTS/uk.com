@@ -192,9 +192,7 @@ module nts.uk.request {
                     dfd.resolve(res);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log("request failed");
-                console.log(arguments);
-                specials.errorPages.systemError(jqXHR.responseJSON);
+                AjaxErrorHandlers.main(jqXHR, textStatus, errorThrown);
             });
         }
         
@@ -246,7 +244,7 @@ module nts.uk.request {
                     }
                 },
                 error: function(xhr,status, error) {
-                    specials.errorPages.systemError(xhr.responseJSON);
+                    AjaxErrorHandlers.main(xhr, status, error);
                 }
             });
         }
@@ -258,6 +256,33 @@ module nts.uk.request {
         }
 
         return dfd.promise();
+    }
+    
+    module AjaxErrorHandlers {
+        export function main(xhr, status, error) {
+                
+            switch (xhr.status) {
+                case 401:
+                    handle401(xhr);
+                    break;
+                default:
+                    handleUnknownError(xhr, status, error);
+                    break;
+            }
+        }
+        
+        function handle401(xhr) {
+            let res = xhr.responseJSON;
+            
+            // res.sessionTimeout || res.csrfError
+            //specials.errorPages.sessionTimeout();
+        }
+        
+        function handleUnknownError(xhr, status, error) {
+            console.log("request failed");
+            console.log(arguments);
+            specials.errorPages.systemError(xhr.responseJSON);
+        }
     }
     
     function doTaskShareingSesion(webAppId: WebAppId, task: () => void) {
