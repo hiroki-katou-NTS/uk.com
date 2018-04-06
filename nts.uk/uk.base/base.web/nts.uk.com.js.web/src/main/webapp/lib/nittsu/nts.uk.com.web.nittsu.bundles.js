@@ -2692,11 +2692,24 @@ var nts;
                             : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / minutesBased.MINUTES_IN_DAY)) * minutesBased.MINUTES_IN_DAY; };
                         var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
                             : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
+                        var positiveMinutes = positivizedMinutes();
+                        var minuteStr = String(positiveMinutes);
+                        var pointIndex = minuteStr.indexOf('.');
+                        var minutePart;
+                        if (pointIndex > -1) {
+                            var fraction = minuteStr.substring(pointIndex + 1);
+                            positiveMinutes = Math.floor(positiveMinutes);
+                            minuteStr = String(positiveMinutes % 60) + "." + fraction;
+                            minutePart = Number(minuteStr);
+                        }
+                        else {
+                            minutePart = positivizedMinutes() % 60;
+                        }
                         uk.util.accessor.defineInto(clock)
                             .get("typeName", function () { return "ClockMinutesBasedTime"; })
                             .get("daysOffset", daysOffset)
                             .get("hourPart", function () { return Math.floor((positivizedMinutes() % minutesBased.MINUTES_IN_DAY) / 60); })
-                            .get("minutePart", function () { return positivizedMinutes() % 60; })
+                            .get("minutePart", function () { return minutePart; })
                             .get("dayAttr", function () { return DayAttr.fromDaysOffset(daysOffset()); })
                             .get("clockTextInDay", function () { return format.clockTextInDay(clock); });
                         clock.formatById = function (formatId) {
