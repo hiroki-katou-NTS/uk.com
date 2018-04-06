@@ -64,7 +64,10 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 	 */
 
 	@Override
-	public JudgmentResultDetermineRefTime CheckDivergenceTime(String userId, GeneralDate processDate, int divergenceTimeNo, JudgmentResult checkCategory, AttendanceTime DivergenceTimeOccurred, DiverdenceReasonCode divReasonCode, DivergenceReason divReason, DivergenceTimeErrorCancelMethod divTimeErrotCancelMethod) {
+	public JudgmentResultDetermineRefTime CheckDivergenceTime(String userId, GeneralDate processDate,
+			int divergenceTimeNo, JudgmentResult checkCategory, AttendanceTime DivergenceTimeOccurred,
+			DiverdenceReasonCode divReasonCode, DivergenceReason divReason,
+			DivergenceTimeErrorCancelMethod divTimeErrotCancelMethod) {
 
 		JudgmentResultDetermineRefTime judgmentResultDetermineRefTime = new JudgmentResultDetermineRefTime();
 		DetermineReferenceTime determineRefTime = new DetermineReferenceTime();
@@ -103,34 +106,38 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 					// check getNotUseAtr
 					if (workTypeDivRefTime.getNotUseAtr() == NotUseAtr.USE) {
 
-						// check AlarmTime
-						if (workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime().get()
-								.greaterThan(DivergenceTimeOccurred)
-								|| workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime()
-										.get() == new DivergenceReferenceTime(0)) {
-							// set judgment result
-							result = JudgmentResult.NORMAL;
-						} else {
+						DivergenceReferenceTime referenceTime = new DivergenceReferenceTime(0);
+
+						if (checkCategory == JudgmentResult.ALARM) {
+							referenceTime = workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime()
+									.get();
 							// set judgment result
 							result = JudgmentResult.ALARM;
-							// set determineRefTime.Threshold
-							determineRefTime.setThreshold(
-									workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getAlarmTime().get());
-						}
-
-						// check ErrorTime
-						if (workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime().get()
-								.greaterThan(DivergenceTimeOccurred)
-								|| workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime()
-										.get() == new DivergenceReferenceTime(0)) {
-							// set judgment result
-							result = JudgmentResult.NORMAL;
 						} else {
+							referenceTime = workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime()
+									.get();
 							// set judgment result
 							result = JudgmentResult.ERROR;
-							// set determineRefTime.Threshold
-							determineRefTime.setThreshold(
-									workTypeDivRefTime.getDivergenceReferenceTimeValue().get().getErrorTime().get());
+						}
+
+						// check reference Time
+						if (referenceTime.greaterThan(DivergenceTimeOccurred)
+								|| referenceTime == new DivergenceReferenceTime(0)) {
+							// set judgment result
+							result = JudgmentResult.NORMAL;
+						} else { // set determineRefTime.Threshold
+
+							if ((divTimeErrotCancelMethod.isReasonSelected() && divReasonCode != null)
+									|| (divTimeErrotCancelMethod.isReasonInputed() && divReasonCode != null)) {
+								// set judgment result
+								result = JudgmentResult.NORMAL;
+							} else {
+								//case ReasonSelected=false and ReasonInputed=false
+								if (!divTimeErrotCancelMethod.isReasonSelected()
+										&& !divTimeErrotCancelMethod.isReasonInputed())
+									determineRefTime.setThreshold(referenceTime);
+							}
+
 						}
 
 					} else {
@@ -157,30 +164,36 @@ public class CompanyDivergenceReferenceTimeServiceIml implements CompanyDivergen
 						CompanyDivergenceReferenceTime companyDivergenceReferenceTime = optionalComDivRefTime.get();
 						// check NotUseAtr
 						if (companyDivergenceReferenceTime.getNotUseAtr() == NotUseAtr.USE) {
-							// check AlarmTime
-							if (companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get().getAlarmTime()
-									.get().greaterThan(DivergenceTimeOccurred)
-									|| companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
-											.getAlarmTime().get() == new DivergenceReferenceTime(0)) {
-								result = JudgmentResult.NORMAL;
-							} else {
+
+							DivergenceReferenceTime referenceTime = new DivergenceReferenceTime(0);
+
+							if (checkCategory == JudgmentResult.ALARM) {
+								referenceTime = companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
+										.getAlarmTime().get();
+								// set judgment result
 								result = JudgmentResult.ALARM;
-								determineRefTime.setThreshold(companyDivergenceReferenceTime
-										.getDivergenceReferenceTimeValue().get().getAlarmTime().get());
-							}
-							// check ErrorTime
-							if (companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get().getErrorTime()
-									.get().greaterThan(DivergenceTimeOccurred)
-									|| companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
-											.getErrorTime().get() == new DivergenceReferenceTime(0)) {
-								// set Judgment result
-								result = JudgmentResult.NORMAL;
 							} else {
-								// set Judgment result
+								referenceTime = companyDivergenceReferenceTime.getDivergenceReferenceTimeValue().get()
+										.getErrorTime().get();
+								// set judgment result
 								result = JudgmentResult.ERROR;
-								// set determineRefTime.Threshold
-								determineRefTime.setThreshold(companyDivergenceReferenceTime
-										.getDivergenceReferenceTimeValue().get().getErrorTime().get());
+							}
+
+							// check reference Time
+							if (referenceTime.greaterThan(DivergenceTimeOccurred)
+									|| referenceTime == new DivergenceReferenceTime(0)) {
+								// set judgment result
+								result = JudgmentResult.NORMAL;
+							} else { // set determineRefTime.Threshold
+
+								if (divTimeErrotCancelMethod.isReasonSelected()
+										|| divTimeErrotCancelMethod.isReasonInputed()) {
+									// set judgment result
+									result = JudgmentResult.NORMAL;
+								} else {
+									determineRefTime.setThreshold(referenceTime);
+								}
+
 							}
 
 						} else {
