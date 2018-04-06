@@ -146,6 +146,8 @@ module nts.uk.at.view.kmk004.c {
                     self.resetFieldsToNewMode();
                     return;
                 }
+                
+                nts.uk.ui.block.invisible();
                 service.findEmploymentSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), code)
                     .done(function(data) {
                         // Clear Errors
@@ -175,6 +177,8 @@ module nts.uk.at.view.kmk004.c {
                         else {
                             self.resetFieldsToNewMode();
                         }
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
             }
             

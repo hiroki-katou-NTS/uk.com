@@ -114,6 +114,7 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 //                if (self.isCompanySelected()) {
+                    nts.uk.ui.block.invisible();
                     // Find CompanySetting
                     service.findCompanySetting(self.worktimeVM.worktimeSetting.normalSetting().year()).done(function(data: WorktimeSettingDto) {
                         // Clear Errors
@@ -149,6 +150,8 @@ module nts.uk.at.view.kmk004.a {
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         dfd.resolve();
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
 //                }
                 

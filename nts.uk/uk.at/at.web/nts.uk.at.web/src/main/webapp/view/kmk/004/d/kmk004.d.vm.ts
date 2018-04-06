@@ -159,6 +159,7 @@ module nts.uk.at.view.kmk004.d {
                     self.resetFieldsToNewMode();
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 self.setWorkplaceCodeName( $('#list-workplace').getDataList(), wpkId);
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
@@ -189,6 +190,8 @@ module nts.uk.at.view.kmk004.d {
                         else {
                             self.resetFieldsToNewMode();
                         }
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
             }
             
