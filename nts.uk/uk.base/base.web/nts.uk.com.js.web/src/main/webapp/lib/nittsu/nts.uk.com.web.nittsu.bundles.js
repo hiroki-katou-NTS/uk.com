@@ -2711,11 +2711,24 @@ var nts;
                             : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / minutesBased.MINUTES_IN_DAY)) * minutesBased.MINUTES_IN_DAY; };
                         var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
                             : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
+                        var positiveMinutes = positivizedMinutes();
+                        var minuteStr = String(positiveMinutes);
+                        var pointIndex = minuteStr.indexOf('.');
+                        var minutePart;
+                        if (pointIndex > -1) {
+                            var fraction = minuteStr.substring(pointIndex + 1);
+                            positiveMinutes = Math.floor(positiveMinutes);
+                            minuteStr = String(positiveMinutes % 60) + "." + fraction;
+                            minutePart = Number(minuteStr);
+                        }
+                        else {
+                            minutePart = positivizedMinutes() % 60;
+                        }
                         uk.util.accessor.defineInto(clock)
                             .get("typeName", function () { return "ClockMinutesBasedTime"; })
                             .get("daysOffset", daysOffset)
                             .get("hourPart", function () { return Math.floor((positivizedMinutes() % minutesBased.MINUTES_IN_DAY) / 60); })
-                            .get("minutePart", function () { return positivizedMinutes() % 60; })
+                            .get("minutePart", function () { return minutePart; })
                             .get("dayAttr", function () { return DayAttr.fromDaysOffset(daysOffset()); })
                             .get("clockTextInDay", function () { return format.clockTextInDay(clock); });
                         clock.formatById = function (formatId) {
@@ -5192,6 +5205,9 @@ var nts;
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
                         this.onClosedHandler = function () {
+                            var dataModel = ko.dataFor(this.$dialog[0]);
+                            dataModel.kiban.errorDialogViewModel.errors([]);
+                            //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
                             windows.container.localShared = {};
                         };
@@ -5617,8 +5633,13 @@ var nts;
                                 additonalLeft = currentDialogOffset.left;
                             }
                             var currentControlOffset = element.offset();
-                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - window.scrollY;
-                            var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                            var doc = document.documentElement;
+                            var scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                            var scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - scrollY;
+                            //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                            var left = additonalLeft + currentControlOffset.left - scrollX;
+                            //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
                             var $errorDialogOffset = $dialogContainer.offset();
                             var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                             var maxTop = $errorDialogOffset.top + $dialogContainer.height();
@@ -15365,8 +15386,14 @@ var nts;
                                         additonalLeft = currentDialogOffset.left;
                                     }
                                     var currentControlOffset = error.$control.offset();
-                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - window.scrollY;
-                                    var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                                    //change for compatibility with IE
+                                    var doc = document.documentElement;
+                                    var scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                                    var scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - scrollY;
+                                    //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                                    var left = additonalLeft + currentControlOffset.left - scrollX;
+                                    //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
                                     var $errorDialogOffset = $dialogContainer.offset();
                                     var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                                     var maxTop = $errorDialogOffset.top + $dialogContainer.height();
@@ -15685,15 +15712,15 @@ var nts;
                                     if (nts.uk.util.isNullOrUndefined(oldError)) {
                                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
-                                    else {
-                                        var inListError = _.find(oldError, function (o) { return o.errorCode !== result.errorCode; });
-                                        if (nts.uk.util.isNullOrUndefined(inListError)) {
-                                            $input.ntsError('clearKibanError');
-                                            setTimeout(function () {
-                                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                            }, 10);
-                                        }
-                                    }
+                                    //else {
+                                    //    let inListError = _.find(oldError, function (o){ return o.errorCode !== result.errorCode; });
+                                    //    if(nts.uk.util.isNullOrUndefined(inListError)){
+                                    //        $input.ntsError('clearKibanError');
+                                    //        setTimeout(function() {
+                                    //            $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    //        }, 10);
+                                    //    }
+                                    //}
                                 }
                                 else {
                                     $input.ntsError('clearKibanError');
