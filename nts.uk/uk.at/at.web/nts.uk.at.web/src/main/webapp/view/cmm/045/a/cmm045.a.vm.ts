@@ -198,8 +198,8 @@ module cmm045.a.viewmodel {
                                 data.appStatusCount.denialNumber));
                         }
                         let colorBackGr = self.fillColorbackGr();
-//                        let colorsText = self.fillColorText();
-                        let colorsText = [];
+                        let colorsText = self.fillColorText();
+//                        let colorsText = [];
                         if (self.mode() == 1) {
                              let lstHidden: Array<any> = self.findRowHidden(self.items());
                              self.reloadGridApproval(lstHidden,colorBackGr,colorsText);
