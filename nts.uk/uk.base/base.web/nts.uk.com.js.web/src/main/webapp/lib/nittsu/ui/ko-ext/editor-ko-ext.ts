@@ -275,7 +275,7 @@ module nts.uk.ui.koExtentions {
                         //        $input.ntsError('clearKibanError');
                         //        setTimeout(function() {
                         //            $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        /        }, 10);
+                        //        }, 10);
                         //    }
                         //}
                     } else {
