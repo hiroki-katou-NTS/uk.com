@@ -21,20 +21,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             var self = this;
-            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
-            
-            let obj = {
-                startDate: self.startDate,
-                endDate: self.endDate,
-                isConfirmData: self.isDailyComfirm(),
-                listWorkplaceId: self.listWorkplaceId,
-                listEmpCd: self.listEmployeeCode
-                };
-                service.getAppSttByWorkpace(obj).done(function(data: any) {
-                    console.log(data);
-                    dfd.resolve();
-                })
-            
+            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });         
         }
         
         startPage(): JQueryPromise<any> {
@@ -52,18 +39,29 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.listWorkplaceId = params.listWorkplaceId;
             self.listEmployeeCode = params.listEmployeeCode;
             self.isDailyComfirm = params.isConfirmData;
-            dfd.resolve();
+
+            let obj = {
+                startDate: nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd'),
+                endDate: nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd'),
+                isConfirmData: self.isDailyComfirm,
+                listWorkplaceId: self.listWorkplaceId,
+                listEmpCd: self.listEmployeeCode
+                };
+            service.getAppSttByWorkpace(obj).done(function(data: any) {
+                console.log(data);
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
 
-        private sendMails(value: model.ConfirmationStatus) {
-            var self = this;
-            let listWsp: [];
-            _.forEach(self.tempData, function(item) {
-                listWsp.push([workPlaceId: item.workPlaceId, isChecked: item.isSendMail()]);   
-            });
-        }
+//        private sendMails(value: model.ConfirmationStatus) {
+//            var self = this;
+//            let listWsp: [];
+//            _.forEach(self.tempData, function(item) {
+//                listWsp.push([workPlaceId: item.workPlaceId, isChecked: item.isSendMail()]);   
+//            });
+//        }
 
         private getRecord1(value1: number, value2: number) : string {
             return value2 +"/"+ (value1 ? value1 + "件" : 0);

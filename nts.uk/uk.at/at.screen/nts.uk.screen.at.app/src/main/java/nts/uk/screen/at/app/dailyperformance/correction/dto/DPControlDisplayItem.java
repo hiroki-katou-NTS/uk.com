@@ -90,16 +90,19 @@ public class DPControlDisplayItem {
 		lstFormat.forEach(f -> {
 			this.lstSheet.forEach(s -> {
 				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
-					int attendanceAtr = mapDP.get(f.getAttendanceItemId()).getAttendanceAtr() ;
-					if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
-						if(attendanceAtr == DailyAttendanceAtr.Code.value){
-						s.addColumn("Code"+f.getAttendanceItemId());
-						}else{
-					   s.addColumn("NO"+f.getAttendanceItemId());
+					if (mapDP.containsKey(f.getAttendanceItemId())) {
+						int attendanceAtr = mapDP.get(f.getAttendanceItemId()).getAttendanceAtr();
+						if (attendanceAtr == DailyAttendanceAtr.Code.value
+								|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
+							if (attendanceAtr == DailyAttendanceAtr.Code.value) {
+								s.addColumn("Code" + f.getAttendanceItemId());
+							} else {
+								s.addColumn("NO" + f.getAttendanceItemId());
+							}
+							s.addColumn("Name" + f.getAttendanceItemId());
+						} else {
+							s.addColumn("A" + String.valueOf(f.getAttendanceItemId()));
 						}
-						s.addColumn("Name"+f.getAttendanceItemId());
-					}else{
-						s.addColumn("A"+String.valueOf(f.getAttendanceItemId()));
 					}
 				}
 				

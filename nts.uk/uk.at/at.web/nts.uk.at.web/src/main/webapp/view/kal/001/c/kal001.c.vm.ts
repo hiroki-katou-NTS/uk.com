@@ -22,32 +22,33 @@ module nts.uk.at.view.kal001.c {
                 }));                
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'GUID', width: 1, hidden: true },
-                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 50, ntsControl: 'isSendToMe' },
-                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: 50, ntsControl: 'isSendToManager' },
-                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: 150 },
-                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 150 },
-                    { headerText: getText('KAL001_26'), key: 'employeeName', width: 150 }
+                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToMe' },
+                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToManager' },
+                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: 170 },
+                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 170 },
+                    { headerText: getText('KAL001_26'), key: 'employeeName', width: 170 }
                 ]);
                 
                 $("#grid").ntsGrid({
-                    width: '550px',
-                    height: '350px',
+                    height: '450px',
                     dataSource: self.listEmployee(),
                     primaryKey: 'GUID',
                     virtualization: true,
-                    virtualizationMode: 'continuous',
+                    virtualizationMode: 'continuous',                    
                     columns: self.columns(),
-                    features: [{ name: 'Resizing' },
-                        {
-                            name: 'Selection', 
-                            mode: 'row',
-                            multipleSelection: false
-                        }
-                    ],
-                    avgRowHeight: "26px",
+                    features: 
+                           [                       
+                            {
+                              name: "Tooltips",
+                              columnSettings: [ 
+                                                { columnKey: "workplaceName", allowTooltips: true }
+                                              ]
+                            }                    
+                          ],
+                    enableTooltip : true,
                     ntsControls: [
-                        { name: 'isSendToMe', options: { value: 1, text: 'Custom Check' },  optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                        { name: 'isSendToManager', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                        { name: 'isSendToMe', options: { value: 1, text: '' },  optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                        { name: 'isSendToManager', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     ]
                 });                
 

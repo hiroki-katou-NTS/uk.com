@@ -15,10 +15,15 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodService;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -29,6 +34,12 @@ public class ValidatorDataDaily {
 	
 	@Inject
 	private DailyRecordWorkFinder fullFinder;
+	
+//	@Inject
+//	private DivergenceTimeRepository divergenceTimeRepository;
+//	
+//	@Inject
+//	private DivergenceReasonInputMethodService divergenceReasonInputMethodService;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -116,7 +127,7 @@ public class ValidatorDataDaily {
 		return Collections.emptyList();
 	}
 	
-	//check trong 1 ngay
+	//check trong 1 ngay nhom item yeu cau nhap theo cap
 	public List<DPItemValue> checkInputData(List<DPItemValue> items) {
 		List<DPItemValue> result = new ArrayList<>();
 		//loc chua item can check
@@ -149,6 +160,7 @@ public class ValidatorDataDaily {
 		});
 		return result;
 	}
+	
 	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date) {
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
 				new DatePeriod(date.getStartDate(), date.getEndDate()));
@@ -164,4 +176,13 @@ public class ValidatorDataDaily {
 		}
 	}
 	
+	//乖離理由が選択、入力されているかチェックする
+	public void checkReasonInput(List<DPItemValue> items){
+//		String companyId = AppContexts.user().companyId();
+//		List<DivergenceTime> divergenceTime = divergenceTimeRepository.getDivTimeListByUseSet(companyId);
+//		items.stream().forEach(x -> {
+//			JudgmentResult judgmentResult = divergenceReasonInputMethodService.determineLeakageReason(x.getEmployeeId(), x.getDate(), divergenceTimeNo, divergenceReasonCode, divergenceReasonContent, justmentResult)
+//		});
+		
+	}
 }

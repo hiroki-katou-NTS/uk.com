@@ -17,7 +17,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -666,6 +665,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 			}
 		}
 		appReason = typicalReason + displayReason;
+
 		return appReason;
 	}
 
