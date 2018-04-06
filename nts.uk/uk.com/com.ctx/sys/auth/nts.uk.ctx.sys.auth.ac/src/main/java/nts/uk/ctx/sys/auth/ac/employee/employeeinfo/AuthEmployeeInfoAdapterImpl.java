@@ -50,8 +50,11 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 
 	@Override
 	public Optional<EmpInfoImport> getByComnyIDAndEmployeeCD(String companyID, String employeeCD) {
-		// TODO Auto-generated method stub
-		return null;
+		val exportData =employeeInfoPub.getEmployeeInfo(companyID, employeeCD);
+		if(exportData ==null)
+			return Optional.empty();
+		EmpInfoImport result = new EmpInfoImport(exportData.get().getCompanyId(), exportData.get().getEmployeeCode(), exportData.get().getEmployeeId(), exportData.get().getPersonId(), exportData.get().getPerName());
+		return Optional.of(result);
 	}
 
 }

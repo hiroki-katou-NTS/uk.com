@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
+import nts.uk.ctx.workflow.pub.service.export.AppRootStateConfirmExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
@@ -186,5 +187,18 @@ public interface ApprovalRootStatePub {
 	 * @param rootStateID
 	 */
 	public void doRemandForApplicant(String companyID, String rootStateID);
+	
+	/**
+	 * RequestList #136
+	 * 承認ルートインスタンスを生成する
+	 * @param companyID
+	 * @param employeeID
+	 * @param confirmAtr
+	 * @param appType
+	 * @param date
+	 * @return
+	 */
+	public AppRootStateConfirmExport getApprovalRootState(String companyID, String employeeID, 
+			Integer confirmAtr, Integer appType, GeneralDate date);
 	
 }

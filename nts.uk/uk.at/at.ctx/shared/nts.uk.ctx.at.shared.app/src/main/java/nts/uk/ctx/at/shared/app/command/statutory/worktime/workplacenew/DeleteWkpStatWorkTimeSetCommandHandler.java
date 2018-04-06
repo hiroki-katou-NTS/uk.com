@@ -51,7 +51,7 @@ public class DeleteWkpStatWorkTimeSetCommandHandler
 		DeleteWkpStatWorkTimeSetCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
-		String wkpId = command.getWkpId();
+		String wkpId = command.getWorkplaceId();
 		
 		// remove with companyId, workplaceId & year
 		this.wkpNormalSettingRepository.remove(companyId, wkpId, year);

@@ -28,3 +28,6 @@
 	padding-left: 40px;
 	padding-bottom: 10px;
 }
+button.nts-switch-button {
+	min-width: 100px;
+}

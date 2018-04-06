@@ -34,7 +34,10 @@ module nts.uk.com.view.cmf001.e.viewmodel {
             // クロムブラウザを検出する
             let browserInfo = navigator.userAgent.toLowerCase();
             if( browserInfo.indexOf('chrome') > -1 && browserInfo .indexOf('edge') == -1 ){
-                self.listCsvItemHeight(385);
+                self.listCsvItemHeight(265);
+            }
+            else {
+                self.listCsvItemHeight(270);
             }
         }
         // キャンセルして終了する

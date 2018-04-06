@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
@@ -92,5 +93,19 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public List<String> organizeBrowsingPhase(String companyID, String employeeID, GeneralDate date, ApprovalPhase approvalPhase);
+	
+	/**
+	 * 承認ルートを取得する（確認）
+	 * @param companyID
+	 * @param employeeID
+	 * @param confirmAtr
+	 * @param standardDate
+	 * @return
+	 */
+	public ApprovalRootContentOutput getApprovalRootConfirm(
+			String companyID, 
+			String employeeID, 
+			ConfirmationRootType confirmAtr, 
+			GeneralDate standardDate);
 	
 }
