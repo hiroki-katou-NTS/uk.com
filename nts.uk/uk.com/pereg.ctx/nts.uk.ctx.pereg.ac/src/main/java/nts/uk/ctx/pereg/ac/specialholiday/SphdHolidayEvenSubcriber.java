@@ -77,15 +77,16 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				カテゴリ名称　＝　パラメータ．特別休暇名称 + #CPS001_133（○○情報） or カテゴリ名称　＝　パラメータ．特別休暇名称 + #CPS001_134（○○付与残数）
 			 */
 			for(PersonInfoCategory x : ctgLst){
+				String domainEventName = domainEvent.getSpecialHolidayName() == null ? "" : domainEvent.getSpecialHolidayName().v();
 				String name = "";
 				if(lstCtgCd1.contains(x.getCategoryCode().v())){
-					name = domainEvent.getSpecialHolidayName().v() + resources.localize("CPS001_133").get();
+					name = domainEventName + resources.localize("CPS001_133").get();
 				}else if(lstCtgCd2.contains(x.getCategoryCode().v())){
-					name = domainEvent.getSpecialHolidayName().v() + resources.localize("CPS001_134").get();
+					name = domainEventName + resources.localize("CPS001_134").get();
 				}
 				x.setDomainNameAndAbolition(new CategoryName(name), 0);
 				ctgUpdateList.add(x);
-				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getCategoryCode().v(), contractCd, true, loginCompanyId));
+				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, true, loginCompanyId));
 			}
 		}else{
 			/**
@@ -111,7 +112,8 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				}).collect(Collectors.toList()).get(0);
 				x.setDomainNameAndAbolition(ctgInComZero.getCategoryName(), 1);
 				ctgUpdateList.add(x);
-				updateItems.addAll(getUpdateItems(domainEvent.getSpecialHolidayName().v(), x.getCategoryCode().v(), contractCd, true, loginCompanyId, updateCompanyId));
+				String domainEventName = domainEvent.getSpecialHolidayName() == null ? "" : domainEvent.getSpecialHolidayName().v();
+				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, true, loginCompanyId, updateCompanyId));
 			}
 			
 		}
