@@ -58,7 +58,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			return reflectedStatesInfo;
 		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT){
-			Optional<GoBackDirectly> optGobackData = gobackRepository.findByApplicationID(application.getEmployeeID(), application.getAppID());
+			Optional<GoBackDirectly> optGobackData = gobackRepository.findByApplicationID(application.getCompanyID(), application.getAppID());
 			if(!optGobackData.isPresent()) {
 				return reflectedStatesInfo;
 			}

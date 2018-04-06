@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.flex;
+package nts.uk.ctx.at.shared.dom.workrule.workform;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

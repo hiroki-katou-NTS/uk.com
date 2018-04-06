@@ -251,10 +251,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		if(appSpec.isPresent()){
 			appAbsence.setAppForSpecLeave(appSpec.get());
 		}
-		
-//		String workTypeName = appAbsence.getWorkTypeCode() == null ||  Strings.isBlank(appAbsence.getWorkTypeCode().v()) ? "" : 
-//			repoWorkType.findByPK(companyId, appAbsence.getWorkTypeCode().v()).get().getName().v();
-		String workTimeName = appAbsence.getWorkTimeCode().v().equals("000") ? "" :
+		String workTimeName = appAbsence.getWorkTimeCode() == null ? "" :
 			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
 		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
