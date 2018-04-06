@@ -16,7 +16,8 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/public/.*",
 			"/ntscommons/arc/task/async/.*",
 			"/shr/infra/file/storage/.*",
-			"/i18n/.*"
+			"/i18n/.*",
+			"/ctx/sys/gateway/login/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
