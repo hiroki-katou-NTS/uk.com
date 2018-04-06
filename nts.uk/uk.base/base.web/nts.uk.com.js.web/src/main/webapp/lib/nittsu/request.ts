@@ -290,7 +290,7 @@ module nts.uk.request {
             let res = xhr.responseJSON;
             
             // res.sessionTimeout || res.csrfError
-            //specials.errorPages.sessionTimeout();
+            specials.errorPages.sessionTimeout();
         }
         
         function handleUnknownError(xhr, status, error) {

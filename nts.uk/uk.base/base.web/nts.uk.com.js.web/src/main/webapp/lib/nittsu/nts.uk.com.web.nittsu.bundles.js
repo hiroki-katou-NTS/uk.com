@@ -3180,7 +3180,7 @@ var nts;
                 function handle401(xhr) {
                     var res = xhr.responseJSON;
                     // res.sessionTimeout || res.csrfError
-                    //specials.errorPages.sessionTimeout();
+                    specials.errorPages.sessionTimeout();
                 }
                 function handleUnknownError(xhr, status, error) {
                     console.log("request failed");
