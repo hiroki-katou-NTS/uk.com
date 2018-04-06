@@ -74,7 +74,6 @@
 			<!--P4_1 取込項目一覧-->
 			<table id="grd_Accept">
 				<colgroup>
-					<col width="30px" />
 					<col width="140px" />
 					<col width="180px" />
 					<col width="120px" />
@@ -84,7 +83,6 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th class="ui-widget-header"></th>
 						<!--P4_2 取込項目名(ヘッダ)-->
 						<th class="ui-widget-header">#{i18n.getText('CMF001_471')}</th>
 						<!--P4_3 ＣＳＶ項目名(ヘッダ)-->
@@ -101,8 +99,6 @@
 				</thead>
 				<tbody data-bind="foreach: listAccept">
 					<tr>
-						<!--P4_8 行番号-->
-						<td class="increment-col"></td>
 						<!--P4_9 取込項目名-->
 						<td style="text-align: left;"><div class="label"
 								data-bind="text: acceptItemName"></div></td>

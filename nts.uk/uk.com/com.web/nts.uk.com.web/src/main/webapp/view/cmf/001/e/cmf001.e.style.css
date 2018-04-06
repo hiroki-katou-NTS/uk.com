@@ -10,15 +10,6 @@
 .dialog-components {
 	margin-top:15px; 
 }
-.auto-increment {
-    counter-reset: tableCount;     
-}
-
-.auto-increment th[role="rowheader"]:before {              
-    content: counter(tableCount); 
-    counter-increment: tableCount;
-    
-}
 
 .auto-increment th[role="rowheader"] {
  text-align: right !important;
