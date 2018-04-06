@@ -63,12 +63,12 @@
 								<button class="child-lb" tabindex="4" data-bind="click: openKDL002_givenDays">#{i18n.getText('KMK013_337')}</button>
 								<span tabindex="5">
 									<input 
-									class="nts-input" id="itemname"
+									class="limited-label" id="itemname_absenceDay"
 									data-bind="ntsTextEditor:{
 	                                         value: workTypeNames,
 	                                         required: true,
 	                                         enable: true,
-	                                         readonly:true}, hasFocus: $parent.j45focus" />
+	                                         readonly:true}" />
 								</span>
 <!-- 								<span class="tooltiptext" data-bind="text: workTypeNames"></span></div> -->
 							</td>
@@ -85,7 +85,7 @@
 								<button class="child-lb" tabindex="6" data-bind="click: openKDL002_attendanceDays">#{i18n.getText('KMK013_337')}</button>
 								<span tabindex="7">
 									<input
-									class="nts-input" id="itemname"
+									class="limited-label" id="itemname_attendanceDay"
 									data-bind="ntsTextEditor:{
 	                                         value: workTypeNamesAttendance,
 	                                         required: true,
