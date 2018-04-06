@@ -64,8 +64,10 @@ public class DataTypeState extends AggregateRoot {
 		return RelatedCategory.createFromJavaType(relatedCtgText);
 	}
 
-	public static DataTypeState createNumbericButton(String readText) {
-		return NumericButton.createFromJavaType(readText);
+	public static DataTypeState createNumbericButton(int numericItemMinus, int numericItemAmount, int integerPart,
+			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+		return NumericButton.createFromJavaType(numericItemMinus, numericItemAmount, integerPart, decimalPart,
+				numericItemMin, numericItemMax);
 	}
 
 	public static DataTypeState createReadonlyButton(String readText) {
