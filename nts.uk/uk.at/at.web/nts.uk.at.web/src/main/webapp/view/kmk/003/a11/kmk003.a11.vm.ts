@@ -77,17 +77,11 @@ module a11 {
     
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                // Nothing to do
-                if ($('.nts-editor').ntsError("hasError") == true) {
-                    $('.nts-input').ntsError('clear');
-                }
+                _self.clearError();
             });                                  
             _self.isSimpleMode = ko.observable(null);
             _self.isSimpleMode.subscribe(newValue => {
-                // Nothing to do
-                if ($('.nts-editor').ntsError("hasError") == true) {
-                    $('.nts-input').ntsError('clear');
-                }
+                _self.clearError();
             });                                                        
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
@@ -136,6 +130,19 @@ module a11 {
             _self.oldFromOverTimeCertainTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime());
             
             // Disable
+            _self.workdayOffTimeUseDivision.subscribe(newValue => {
+                if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
+                    _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
+                }
+                if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+                    _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
+                }                
+                if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+                    _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
+                }
+                _self.clearError();
+            });
+            
             _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
                 if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
                     if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
@@ -149,6 +156,20 @@ module a11 {
                         _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
                     }
                 }
+                _self.clearError();
+            });
+            
+            _self.fromOverTimeUseDivision.subscribe(newValue => {
+                if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+                    _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
+                }
+                if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+                    _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
+                }                
+                if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+                    _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
+                }
+                _self.clearError();
             });
             
             _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
@@ -164,8 +185,15 @@ module a11 {
                         _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
                     }
                 }
+                _self.clearError();
             });
-        }  
+        }
+        
+        private clearError() {
+            if ($('.nts-editor').ntsError("hasError") == true) {
+                $('.nts-input').ntsError('clear');
+            }    
+        }
     }     
    
     /**
