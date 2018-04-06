@@ -232,10 +232,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
                     self.selectedTypeOfDuty(result.workTypeCode);
-                }else{
-                    self.typeOfDutys([]);
-                    self.workTypecodes([]);
-                    self.selectedTypeOfDuty(null);
                 }
                 self.prePostSelected(result.application.prePostAtr);
                 self.displayPrePostFlg(result.prePostFlg);
