@@ -150,7 +150,7 @@ module nts.uk.at.view.kaf006.b{
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
-                    self.workTypecodes(null);
+                    self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
                 }else{
                     self.typeOfDutys.removeAll();
@@ -187,7 +187,7 @@ module nts.uk.at.view.kaf006.b{
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
-                    self.workTypecodes(null);
+                    self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
                 }else{
                     self.typeOfDutys.removeAll();

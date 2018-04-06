@@ -126,7 +126,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             self.changeWorkHourValueFlg(data.changeWorkHourFlg);
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
                                 self.typeOfDutys([]);
-                                self.workTypecodes(null);
+                                self.workTypecodes([]);
                                 self.selectedTypeOfDuty(null);
                             } else {
                                 self.typeOfDutys.removeAll();
@@ -234,7 +234,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.selectedTypeOfDuty(result.workTypeCode);
                 }else{
                     self.typeOfDutys([]);
-                    self.workTypecodes(null);
+                    self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
                 }
                 self.prePostSelected(result.application.prePostAtr);
@@ -267,7 +267,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
-                    self.workTypecodes(null);
+                    self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
                 } else {
                     self.typeOfDutys.removeAll();
@@ -307,7 +307,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
-                    self.workTypecodes(null);
+                    self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
                 } else {
                     self.typeOfDutys.removeAll();
