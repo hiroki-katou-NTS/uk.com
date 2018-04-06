@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpNormalSet;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpNormalSetPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpNormalSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpNormalSet_;
 
 /**
  * The Class JpaEmpNormalSettingRepository.
@@ -58,18 +49,13 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	 */
 	@Override
 	public Optional<EmpNormalSetting> find(String cid, String emplCode, int year) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstEmpNormalSet> cq = cb.createQuery(KshstEmpNormalSet.class);
-		Root<KshstEmpNormalSet> root = cq.from(KshstEmpNormalSet.class);
+		Optional<KshstEmpNormalSet> optEntity = this.queryProxy().find(new KshstEmpNormalSetPK(cid, emplCode, year), KshstEmpNormalSet.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstEmpNormalSet_.kshstEmpNormalSetPK).get(KshstEmpNormalSetPK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstEmpNormalSet_.kshstEmpNormalSetPK).get(KshstEmpNormalSetPK_.year), year));
-		predicateList.add(cb.equal(root.get(KshstEmpNormalSet_.kshstEmpNormalSetPK).get(KshstEmpNormalSetPK_.empCd), emplCode));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -91,9 +77,6 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	 * @return the emp normal setting
 	 */
 	private EmpNormalSetting toDomain(KshstEmpNormalSet entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new EmpNormalSetting(new JpaEmpNormalSettingGetMemento(entity));
 	}
 }

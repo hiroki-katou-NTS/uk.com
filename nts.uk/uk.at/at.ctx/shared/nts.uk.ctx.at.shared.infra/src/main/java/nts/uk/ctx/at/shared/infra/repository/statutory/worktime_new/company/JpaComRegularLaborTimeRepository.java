@@ -73,18 +73,6 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst com reg labor time
-	 */
-	private KshstComRegLaborTime toEntity(ComRegularLaborTime domain) {
-		KshstComRegLaborTime entity = new KshstComRegLaborTime();
-		domain.saveToMemento(new JpaComRegularLaborTimeSetMemento(entity));
-		return entity;
-	}
 	
 	/**
 	 * To domain.

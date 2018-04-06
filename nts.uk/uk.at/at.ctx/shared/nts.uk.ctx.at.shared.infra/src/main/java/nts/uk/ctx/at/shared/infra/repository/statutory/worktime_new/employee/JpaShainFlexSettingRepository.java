@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSet;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSetPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaFlexSet_;
 
 /**
  * The Class JpaShainFlexSettingRepository.
@@ -58,18 +49,14 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 */
 	@Override
 	public Optional<ShainFlexSetting> find(String cid, String empId, int year) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstShaFlexSet> cq = cb.createQuery(KshstShaFlexSet.class);
-		Root<KshstShaFlexSet> root = cq.from(KshstShaFlexSet.class);
+		Optional<KshstShaFlexSet> optEntity = this.queryProxy().find(new KshstShaFlexSetPK(cid, empId, year), KshstShaFlexSet.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstShaFlexSet_.kshstShaFlexSetPK).get(KshstShaFlexSetPK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstShaFlexSet_.kshstShaFlexSetPK).get(KshstShaFlexSetPK_.year), year));
-		predicateList.add(cb.equal(root.get(KshstShaFlexSet_.kshstShaFlexSetPK).get(KshstShaFlexSetPK_.sid), empId));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -91,9 +78,6 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 * @return the shain flex setting
 	 */
 	private ShainFlexSetting toDomain(KshstShaFlexSet entities) {
-		if (entities == null) {
-			return null;
-		}
 		return new ShainFlexSetting(new JpaShainFlexSettingGetMemento(entities));
 	}
 
