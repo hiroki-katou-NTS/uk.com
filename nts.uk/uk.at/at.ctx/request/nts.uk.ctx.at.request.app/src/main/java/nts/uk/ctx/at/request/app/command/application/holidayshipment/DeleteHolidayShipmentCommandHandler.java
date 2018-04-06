@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.S
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DeleteHolidayShipmentCommandHandler extends CommandHandler<DeleteHolidayShipmentCommand> {
+public class DeleteHolidayShipmentCommandHandler extends CommandHandler<HolidayShipmentCommand> {
 
 	@Inject
 	private AfterProcessDelete afterDelete;
@@ -25,8 +25,8 @@ public class DeleteHolidayShipmentCommandHandler extends CommandHandler<DeleteHo
 	Long version;
 
 	@Override
-	protected void handle(CommandHandlerContext<DeleteHolidayShipmentCommand> context) {
-		DeleteHolidayShipmentCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
+		HolidayShipmentCommand command = context.getCommand();
 		companyID = AppContexts.user().companyId();
 		employeeID = AppContexts.user().employeeId();
 		version = command.getAppVersion();
@@ -35,7 +35,7 @@ public class DeleteHolidayShipmentCommandHandler extends CommandHandler<DeleteHo
 
 	}
 
-	private void deleteAppForPaidLeave(DeleteHolidayShipmentCommand command) {
+	private void deleteAppForPaidLeave(HolidayShipmentCommand command) {
 
 		boolean isDeleteRec = command.getRecAppID() != null;
 		boolean isDeleteAbs = command.getAbsAppID() != null;

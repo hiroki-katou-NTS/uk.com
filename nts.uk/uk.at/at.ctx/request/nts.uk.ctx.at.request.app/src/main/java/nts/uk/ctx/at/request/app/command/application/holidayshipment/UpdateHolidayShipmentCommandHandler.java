@@ -124,12 +124,12 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime1.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1.getEndTime(), NotUseAtr.class)));
+						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
 				WkTimeCommand wkTime2 = appCmd.getWkTime2();
 				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
 						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime2.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2.getEndTime(), NotUseAtr.class)));
+						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
 				recApp.setWorkTypeCD(appCmd.getWkTypeCD());
 				this.recRepo.update(recApp);
 
