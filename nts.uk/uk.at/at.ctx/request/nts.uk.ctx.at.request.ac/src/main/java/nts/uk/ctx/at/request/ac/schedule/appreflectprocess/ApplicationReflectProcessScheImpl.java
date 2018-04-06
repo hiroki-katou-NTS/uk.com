@@ -24,7 +24,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getGoBackDirectly().getWorkTypeCD().v(),
 				reflectSche.getGoBackDirectly().getSiftCD().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart1().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeEnd1().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart2().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v());
 		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
