@@ -86,11 +86,27 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             
             public postBindingHandler(): void {
                 let self = this;
+                self.processTabToContent($('#worktime-tab-1').closest('div#tab-panel'), 'tab-1');
+                
                 self.processNextTabHandler($('#worktime-tab-1'), 'tab-2');
                 self.processNextTabHandler($('#worktime-tab-2'), 'tab-3');
                 
                 self.processPrevTabHandler($('#worktime-tab-2'), 'tab-1');
                 self.processPrevTabHandler($('#worktime-tab-3'), 'tab-2');
+            }
+            
+            private processTabToContent(obj:any, tabId:any) {
+                let self = this;
+                let targTab = $('#worktime-' + tabId);
+                obj.keydown((evt) => {
+                    if (evt.which == 9 && !evt.shiftKey && evt.originalEvent.target == obj[0]) {
+                        self.worktimeSetting.selectedTab(tabId);
+                        targTab.find('input').first().focus();
+                        
+                        evt.stopPropagation();
+                        return false;
+                    }
+                });
             }
             
             private processNextTabHandler(tabObj:any, nextTabId: string): void {
