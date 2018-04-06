@@ -121,6 +121,7 @@ module nts.uk.at.view.kmk004.c {
                     
                     
                     self.loadEmploymentSetting(self.selectedEmploymentCode()); // load setting for initial selection
+                    self.setEmploymentName(self.selectedEmploymentCode());
                     
                     // subscribe to furture selection
                     self.selectedEmploymentCode.subscribe(code => {
