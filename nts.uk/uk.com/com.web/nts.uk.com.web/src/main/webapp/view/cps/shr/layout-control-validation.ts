@@ -271,6 +271,42 @@ module nts.layout {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00426',
                         setParentCode: 'IS00427'
+                    }, {
+                        ctgCode: 'CS00027',
+                        radioCode: 'IS00441',
+                        setParentCode: 'IS00442'
+                    }, {
+                        ctgCode: 'CS00028',
+                        radioCode: 'IS00456',
+                        setParentCode: 'IS00457'
+                    }, {
+                        ctgCode: 'CS00027',
+                        radioCode: 'IS00441',
+                        setParentCode: 'IS00442'
+                    }, {
+                        ctgCode: 'CS00029',
+                        radioCode: 'IS00471',
+                        setParentCode: 'IS00472'
+                    }, {
+                        ctgCode: 'CS00030',
+                        radioCode: 'IS00486',
+                        setParentCode: 'IS00487'
+                    }, {
+                        ctgCode: 'CS00031',
+                        radioCode: 'IS00501',
+                        setParentCode: 'IS00502'
+                    }, {
+                        ctgCode: 'CS00032',
+                        radioCode: 'IS00516',
+                        setParentCode: 'IS00517'
+                    }, {
+                        ctgCode: 'CS00033',
+                        radioCode: 'IS00531',
+                        setParentCode: 'IS00532'
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        setParentCode: ''
                     }
                 ],
                 validation = (radio: IRelateRadio) => {
