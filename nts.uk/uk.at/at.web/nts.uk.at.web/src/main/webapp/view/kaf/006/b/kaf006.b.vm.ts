@@ -159,6 +159,9 @@ module nts.uk.at.view.kaf006.b{
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
+                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
+                        self.selectedTypeOfDuty(result.workTypeCode);
+                    }
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
                     self.workTimeCodes.removeAll();
@@ -196,7 +199,9 @@ module nts.uk.at.view.kaf006.b{
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    self.selectedTypeOfDuty(result.workTypeCode);
+                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
+                        self.selectedTypeOfDuty(result.workTypeCode);
+                    }
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
                     self.workTimeCodes.removeAll();
