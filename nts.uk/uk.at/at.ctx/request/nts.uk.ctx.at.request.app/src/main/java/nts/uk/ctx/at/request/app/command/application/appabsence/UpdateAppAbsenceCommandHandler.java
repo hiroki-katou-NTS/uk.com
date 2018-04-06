@@ -68,7 +68,9 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				appAbsence.getAppID(), 
 				appAbsence.getApplication().getPrePostAtr(), command.getVersion());
 		//check update
-		creatAppAbsenceCommandHandler.checkBeforeRegister(convert(command), opAppAbsence.get().getApplication().getAppDate(),opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate());
+		creatAppAbsenceCommandHandler.checkBeforeRegister(convert(command),
+				opAppAbsence.get().getApplication().getAppDate(),
+				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
 		//update appAbsence
 		appAbsenceRepository.updateAbsence(appAbsence);
 		//update application
