@@ -192,11 +192,12 @@
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_16')}</div>
 				<!--A5_2 勤務種類一覧-->
 				<div tabindex="13" class="combo-box-kaf006" id ="workTypes"
-					data-bind="ntsComboBox: {name: '#[KAF006_16]', 
+					data-bind="ntsComboBox: {name: '#{i18n.getText('KAF006_16')}', 
 								options: typeOfDutys,
 								optionsValue: 'typeOfDutyID',
 								optionsText: 'typeOfDutyName',
 								value: selectedTypeOfDuty,
+								required: true,
 								enable: enbWorkType}">
 				</div>
 				<!--A5_3 半日の組み合わせを表示-->
