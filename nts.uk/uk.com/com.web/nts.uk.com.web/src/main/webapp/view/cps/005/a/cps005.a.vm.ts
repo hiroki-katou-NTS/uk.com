@@ -36,8 +36,9 @@ module nts.uk.com.view.cps005.a {
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
-                        alertError({ messageId: res.messageId });
-                
+                        alertError({ messageId: res.messageId }).then(function() {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    });
                 });
 
                 return dfd.promise();
