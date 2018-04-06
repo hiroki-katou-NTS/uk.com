@@ -24,7 +24,7 @@ public class SaveEmpStatWorkTimeSetCommand{
 	private int year;
 	
 	/** The employee id. */
-	private String emplCode;
+	private String employmentCode;
 
 	/** The normal setting. */
 	private NormalSettingDto normalSetting;

@@ -272,8 +272,13 @@ module nts.uk.ui {
                     }
                     
                     let currentControlOffset = element.offset();
-                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
-                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                    let doc = document.documentElement;
+                    let scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                    let scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                    let top = additonalTop + currentControlOffset.top + element.outerHeight() - scrollY;
+                    //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                    let left = additonalLeft + currentControlOffset.left - scrollX;
+                    //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
                     let $errorDialogOffset = $dialogContainer.offset();
                     let maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                     let maxTop = $errorDialogOffset.top + $dialogContainer.height();

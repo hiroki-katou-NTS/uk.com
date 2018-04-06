@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements W
 		}
 
 		// Return
-		return Optional.of(new WkpRegularLaborTime(new JpaWkpRegularLaborTimeGetMemento(optEntity.get())));
+		return Optional.ofNullable(new WkpRegularLaborTime(new JpaWkpRegularLaborTimeGetMemento(optEntity.get())));
 	}
 
 	/*
@@ -95,21 +96,20 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public void remove(String cid, String wkpId) {
-		this.commandProxy().remove(KshstWkpRegLaborTimePK.class, new KshstWkpRegLaborTimePK(cid, wkpId));
+		this.commandProxy().remove(KshstWkpRegLaborTime.class, new KshstWkpRegLaborTimePK(cid, wkpId));
 	}
-
+	
 	/**
 	 * To domain.
 	 *
-	 * @param entity
-	 *            the entity
-	 * @return the wkp regular labor time
+	 * @param entities the entities
+	 * @return the list
 	 */
-	private WkpRegularLaborTime toDomain(KshstWkpRegLaborTime entity) {
-		if (entity == null) {
-			return null;
+	private List<WkpRegularLaborTime> toDomain(List<KshstWkpRegLaborTime> entities) {
+		if (entities.isEmpty()) {
+			return Collections.emptyList();
 		}
-		return new WkpRegularLaborTime(new JpaWkpRegularLaborTimeGetMemento(entity));
+		return entities.stream().map(entity -> new WkpRegularLaborTime(new JpaWkpRegularLaborTimeGetMemento(entity))).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -132,7 +132,6 @@ public class JpaWkpRegularLaborTimeRepository extends JpaRepository implements W
 
 		List<KshstWkpRegLaborTime> resultList = em.createQuery(cq).getResultList();
 
-		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
-
+		return this.toDomain(resultList); 
 	}
 }

@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.alertError;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
         listWkpStatusConfirm: Array<model.ApprovalStatusActivity>;
@@ -36,6 +37,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            block.invisible();
             let params = getShared("KAF018E_PARAMS");
             if (params) {
                 self.closureId = params.closureId;
@@ -52,7 +54,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     endDate: self.endDate,
                     isConfirmData: self.isConfirmData,
                     listWorkplaceId: self.listWorkplaceId,
-                    // listEmpCd: self.listEmpCd
+                    listEmpCd: self.listEmpCd
                 };
 
                 service.getStatusActivity(obj).done(function(data: any) {
@@ -61,6 +63,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, item.wkpId, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
                         console.log(item)
                     })
+                    block.clear();
                     dfd.resolve();
                 })
             }
@@ -72,6 +75,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
         sendMail(value: model.TransmissionAttr) {
             var self = this;
+            block.invisible();
             let listWkp = [];
             _.each(self.listWkpStatusConfirm, function(item) {
                 listWkp.push({ wkpId: item.code, isCheckOn: item.check() ? 1 : 0 })
@@ -85,7 +89,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     case model.TransmissionAttr.MONTHLY:
                         break;
                 }
+                block.clear();
             }).fail(function(err) {
+                block.clear();
                 error({ messageId: err.messageId });
             })
         }

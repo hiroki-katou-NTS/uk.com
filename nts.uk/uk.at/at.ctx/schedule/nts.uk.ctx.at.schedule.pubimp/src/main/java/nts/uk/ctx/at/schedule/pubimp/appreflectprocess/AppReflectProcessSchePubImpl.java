@@ -44,20 +44,24 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 
 	@Override
 	public void appForLeaveSche(CommonReflectSchePubParam appForleaverPara) {
-		CommonReflectParamSche leaverPara = new CommonReflectParamSche(appForleaverPara.getEmployeeId(), 
-				appForleaverPara.getDatePara(),
-				appForleaverPara.getWorktypeCode(),
-				appForleaverPara.getWorkTimeCode());
-		leaveReflect.forlearveReflectSche(leaverPara);
+		
+		leaveReflect.forlearveReflectSche(this.toParamSche(appForleaverPara));
 	}
 
 	@Override
 	public boolean appWorkChangeReflect(CommonReflectSchePubParam workChangeParam) {
-		CommonReflectParamSche paraWorkchange = new CommonReflectParamSche(workChangeParam.getEmployeeId(), 
-				workChangeParam.getDatePara(), 
-				workChangeParam.getWorktypeCode(),
-				workChangeParam.getWorkTimeCode());
-		return workchangeReflect.reflectWorkChange(paraWorkchange);
+		return workchangeReflect.reflectWorkChange(this.toParamSche(workChangeParam));
 	}
+	
+	private CommonReflectParamSche toParamSche(CommonReflectSchePubParam schePubParam) {
+		CommonReflectParamSche paramSche = new CommonReflectParamSche(schePubParam.getEmployeeId(), 
+				schePubParam.getDatePara(),
+				schePubParam.getWorktypeCode(),
+				schePubParam.getWorkTimeCode(),
+				schePubParam.getStartDate(),
+				schePubParam.getEndDate());
+		return paramSche;
+	}
+
 
 }

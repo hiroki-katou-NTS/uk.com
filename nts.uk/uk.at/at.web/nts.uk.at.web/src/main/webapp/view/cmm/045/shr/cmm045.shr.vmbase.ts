@@ -524,14 +524,14 @@ module cmm045.shr {
             yearResig: string;
             constructor(obstacleName: string, hdName: string, yearHdName: string, furikyuName: string,
                 timeDigest: string, absenteeism: string, specialVaca: string, yearResig: string){
-                this.obstacleName = obstacleName;
-                this.hdName = hdName;
-                this.yearHdName = yearHdName;
-                this.furikyuName = furikyuName;
-                this.timeDigest = timeDigest;
-                this.absenteeism = absenteeism;
-                this.specialVaca = specialVaca;
-                this.yearResig = yearResig;
+                this.obstacleName = obstacleName == null ? '' : obstacleName;
+                this.hdName = hdName == null ? '' : hdName;
+                this.yearHdName = yearHdName == null ? '' : yearHdName;
+                this.furikyuName = furikyuName == null ? '' : furikyuName;
+                this.timeDigest = timeDigest == null ? '' : timeDigest;
+                this.absenteeism = absenteeism == null ? '' : absenteeism;
+                this.specialVaca = specialVaca == null ? '' : specialVaca;
+                this.yearResig = yearResig == null ? '' : yearResig;
             }
         }
         export class CellState {
