@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,10 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
@@ -23,19 +28,23 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrection
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPBusinessTypeControl;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.tmp.MonthlyItemControlAuthDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class MonthlyPerformanceDisplay {
-	
+	/*権限別月次項目制御*/
+	@Inject
+	MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
+	/*月次の勤怠項目の制御*/
+	@Inject
+	ControlOfMonthlyFinder controlOfMonthlyFinder;
 	@Inject
 	private DailyPerformanceScreenRepo repo;
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 	//@Inject
 	//private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
-	private static final String SCREEN_KDW003 = "KDW/003/a";
+	private static final String KMW003_SELECT_FORMATCODE = "KMW003_SELECT_FORMATCODE";
 	/**
 	 * 表示フォーマットの取得
 	 * @param lstEmployees: 社員一覧：List＜社員ID＞
@@ -60,22 +69,33 @@ public class MonthlyPerformanceDisplay {
 			dispItem = getDisplayItemBussiness(lstEmployeeIds, dateRange, formatCodes, correctionOfDaily);
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
-		//TODO 権限別月次項目制御
+		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByRoleID(employmentRoleID);
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
-		//Filter param 「表示する項目一覧」 bởi domain 「権限別月次項目制御」
-		MonthlyItemControlAuthDto filterMonthItemDto = new MonthlyItemControlAuthDto();
+		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
+		Set<Integer> acceptableAttendanceId = monthlyItemAuthDto.getListDisplayAndInputMonthly().stream()
+				.map(DisplayAndInputMonthlyDto::getItemMonthlyId).collect(Collectors.toSet());
 		
-		if(!CollectionUtil.isEmpty(filterMonthItemDto.getLstInputItem())){
+		List<Integer> lstAtdItemUnique = new ArrayList<>();		
+		lstAtdItemUnique = dispItem.getLstFormat().stream().
+				filter(c -> acceptableAttendanceId.contains(c.getAttendanceItemId()))
+				.map(item -> item.getAttendanceItemId())
+				.collect(Collectors.toList());
+		
+		dispItem.setLstAtdItemUnique(lstAtdItemUnique);
+		
+		if(!CollectionUtil.isEmpty(lstAtdItemUnique)){
 			//ドメインモデル「月次の勤怠項目」を取得する
-			List<Integer> attendanceItemIds = filterMonthItemDto.getLstInputItem().stream().map(x -> x.getAtendanceItemId()).collect(Collectors.toList());
-			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, attendanceItemIds);
+			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, lstAtdItemUnique);
 			
 			//TODO 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する  - attendanceItemLinkingRepository
 			//Domain hien tai dang nam trong function.
 			
 			//TODO 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む 
+			//Update Attendance Name
 			
-			//TODO ドメインモデル「月次の勤怠項目の制御」を取得する
+			//ドメインモデル「月次の勤怠項目の制御」を取得する
+			//Setting Header color & time input
+			//ControlOfMonthlyDto ctrOfMonthlyDto = controlOfMonthlyFinder.getControlOfAttendanceItem(1);
 			
 		}
 		DisplayItem lockItem = new DisplayItem();
@@ -112,7 +132,7 @@ public class MonthlyPerformanceDisplay {
 				//}else{
 					//アルゴリズム「表示項目の選択を起動する」を実行する
 					//ダイアログで選択していたフォーマットコードをパラメータ「使用するフォーマットコード」にセットする
-					throw new BusinessException(SCREEN_KDW003);
+					throw new BusinessException(KMW003_SELECT_FORMATCODE);
 				//}
 			}
 		}		
@@ -123,7 +143,7 @@ public class MonthlyPerformanceDisplay {
 		
 		dispItem.setLstFormat(lstFormat);
 		dispItem.setLstSheet(lstSheet);
-		dispItem.setLstAtdItemUnique(lstAtdItemUnique);
+		
 		return dispItem;
 	}
 	
@@ -168,8 +188,6 @@ public class MonthlyPerformanceDisplay {
 		
 		dispItem.setLstFormat(lstFormat);
 		dispItem.setLstSheet(lstSheet);
-		dispItem.setLstAtdItemUnique(lstAtdItemUnique);
-		//dispItem.setBussiness(dailyPerformanceDto.getSettingUnit().value);
 		return dispItem;
 	}
 }
