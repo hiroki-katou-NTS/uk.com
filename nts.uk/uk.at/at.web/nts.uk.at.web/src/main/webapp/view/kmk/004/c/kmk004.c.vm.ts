@@ -130,6 +130,8 @@ module nts.uk.at.view.kmk004.c {
                     
                     ko.applyBindingsToNode($('#lblEmploymentCode')[0], { text: self.employmentCode });
                     ko.applyBindingsToNode($('#lblEmploymentName')[0], { text: self.employmentName });
+                    
+                    self.worktimeVM.postBindingHandler();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });

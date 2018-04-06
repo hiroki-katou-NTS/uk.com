@@ -71,6 +71,12 @@ module nts.uk.at.view.kmk004.a {
                 return dfd.promise();
             }
             
+            public postBindingHandler(): void {
+                let self = this;
+                
+                self.worktimeVM.postBindingHandler();
+            }
+            
             private loadUsageUnitSetting(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();

@@ -172,6 +172,7 @@ module nts.uk.at.view.kmk004.b {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
                     self.employeeList = ko.observableArray<UnitModel>([]);
                     self.applyKCP005ContentSearch([]);
+                    
                     // Load employee list component
                     $('#list-employee').ntsListComponent(self.lstPersonComponentOption).done(function() {
                         if(self.employeeList().length <= 0){
@@ -189,6 +190,8 @@ module nts.uk.at.view.kmk004.b {
                         
                         ko.applyBindingsToNode($('#lblEmployeeCode')[0], { text: self.displayEmployeeCode });
                         ko.applyBindingsToNode($('#lblEmployeeName')[0], { text: self.displayEmployeeName });
+                        
+                        self.worktimeVM.postBindingHandler();
                     });
                 });
             }

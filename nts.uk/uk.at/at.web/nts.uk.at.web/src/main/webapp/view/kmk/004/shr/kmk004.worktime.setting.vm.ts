@@ -84,6 +84,49 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 return this.setStartMonth();
             }
             
+            public postBindingHandler(): void {
+                let self = this;
+                self.processNextTabHandler($('#worktime-tab-1'), 'tab-2');
+                self.processNextTabHandler($('#worktime-tab-2'), 'tab-3');
+                
+                self.processPrevTabHandler($('#worktime-tab-2'), 'tab-1');
+                self.processPrevTabHandler($('#worktime-tab-3'), 'tab-2');
+            }
+            
+            private processNextTabHandler(tabObj:any, nextTabId: string): void {
+                let self = this;
+                let targTab = $('#worktime-' + nextTabId);
+                tabObj.keydown((evt) => {
+                    if (evt.which == 9 && !evt.shiftKey) {
+                        let inp = $(evt.target);
+                        if (inp.closest('td').is(':last-child') && inp.closest('tr').is(':last-child')) {
+                            self.worktimeSetting.selectedTab(nextTabId);
+                            targTab.find('input[tabindex="' + (parseInt(inp.attr('tabindex')) + 1) + '"]').focus();
+                            
+                            evt.stopPropagation();
+                            return false;
+                        }
+                    }
+                });
+            }
+            
+            private processPrevTabHandler(tabObj:any, prevTabId: string): void {
+                let self = this;
+                let targTab = $('#worktime-' + prevTabId);
+                tabObj.keydown((evt) => {
+                    if (evt.which == 9 && evt.shiftKey) {
+                        let inp = $(evt.target);
+                        if (inp.closest('td').is(':nth-child(2)') && inp.closest('tr').is(':nth-child(2)')) {
+                            self.worktimeSetting.selectedTab(prevTabId);
+                            targTab.find('input[tabindex="' + (parseInt(inp.attr('tabindex')) - 1) + '"]').focus();
+                            
+                            evt.stopPropagation();
+                            return false;
+                        }
+                    }
+                });
+            }
+            
             /**
              * Set start month.
              */

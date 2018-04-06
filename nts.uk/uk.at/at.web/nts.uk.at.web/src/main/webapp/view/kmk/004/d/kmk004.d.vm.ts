@@ -122,6 +122,8 @@ module nts.uk.at.view.kmk004.d {
                     });
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
                     ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
+                    
+                    self.worktimeVM.postBindingHandler();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
