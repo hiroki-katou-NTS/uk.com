@@ -148,8 +148,10 @@ public class AnnualLeaveDto extends PeregDomainDto{
 		this.nextTimeMaxTime = grantRule.nextTimeMaxTime();
 		
 		// 年間所定労働日数
-		this.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().v();
-		this.workingDayBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().v();
+		this.workingDaysPerYear = basicInfo.getWorkingDaysPerYear().isPresent()
+				? basicInfo.getWorkingDaysPerYear().get().v() : null;
+		this.workingDayBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().isPresent()
+				? basicInfo.getWorkingDayBeforeIntroduction().get().v() : null;
 	} 
 	
 	

@@ -63,8 +63,10 @@ public class DataTypeStateDto {
 		return RelatedCategoryDto.createFromJavaType(relateCtgCode);
 	}
 	
-	public static DataTypeStateDto createNumericButtonDto(String readText) {
-		return NumericButtonDto.createFromJavaType(readText);
+	public static DataTypeStateDto createNumericButtonDto(int numericItemMinus, int numericItemAmount, int integerPart,
+			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+		return NumericButtonDto.createFromJavaType(numericItemMinus, numericItemAmount, integerPart, decimalPart,
+				numericItemMin, numericItemMax);
 	}
 	//end
 }

@@ -496,8 +496,12 @@ public class PerInfoItemDefFinder {
 			return DataTypeStateDto.createRelatedCategory(reCtgDto.getRelatedCtgCode().v());
 
 		case 11:
-			NumericButton numbtnItem = (NumericButton) dataTypeState;
-			return DataTypeStateDto.createNumericButtonDto(numbtnItem.getReadText().v());
+			NumericButton numberButton = (NumericButton) dataTypeState;
+			BigDecimal numericButtonMin = numberButton.getNumericItemMin() != null ? numberButton.getNumericItemMin().v() : null;
+			BigDecimal numericButtonMax = numberButton.getNumericItemMax() != null ? numberButton.getNumericItemMax().v() : null;
+			return DataTypeStateDto.createNumericButtonDto(numberButton.getNumericItemMinus().value,
+					numberButton.getNumericItemAmount().value, numberButton.getIntegerPart().v(), numberButton.getDecimalPart().v(),
+					numericButtonMin, numericButtonMax);
 
 		case 12:
 			ReadOnlyButton rOnlyButton = (ReadOnlyButton) dataTypeState;
