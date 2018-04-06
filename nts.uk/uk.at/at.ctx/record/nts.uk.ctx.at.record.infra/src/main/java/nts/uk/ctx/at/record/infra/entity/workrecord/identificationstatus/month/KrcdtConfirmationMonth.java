@@ -36,19 +36,13 @@ public class KrcdtConfirmationMonth extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	public KrcdtConfirmationMonthPK krcdtConfirmationMonthPK;
 
-	@Column(name = "CLOSURE_DAY")
-	public int closureDay;
-	
-	@Column(name = "PROCESS_YM")
-	public int processYM;
-	
 	@Column(name = "IDENTIFY_DATE")
 	public GeneralDate indentifyYmd;
 	
 	public ConfirmationMonth toDomain(){
 		return new ConfirmationMonth(new CompanyId(this.krcdtConfirmationMonthPK.companyID),
 				this.krcdtConfirmationMonthPK.employeeId, ClosureId.valueOf(this.krcdtConfirmationMonthPK.closureId),
-				new Day(this.closureDay), new YearMonth(this.processYM), this.indentifyYmd);
+				new Day(this.krcdtConfirmationMonthPK.closureDay), new YearMonth(this.krcdtConfirmationMonthPK.processYM), this.indentifyYmd);
 	}
 	
 	@Override
