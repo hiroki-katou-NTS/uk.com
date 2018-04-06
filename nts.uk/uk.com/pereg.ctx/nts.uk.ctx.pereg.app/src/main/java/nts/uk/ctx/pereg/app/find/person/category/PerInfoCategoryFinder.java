@@ -155,11 +155,11 @@ public class PerInfoCategoryFinder {
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
 		 
 		// ログイン者がグループ会社管理者かどうか判定する - Kiểm tra quyền  
-		String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		if (roleId == null) {
-			// false Msg_1103
-			throw new BusinessException("Msg_1103");
-		} else {
+//		String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+//		if (roleId == null) {
+//			// false Msg_1103
+//			throw new BusinessException("Msg_1103");
+//		} else {
 			// true
 			List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(
 					AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
@@ -176,7 +176,7 @@ public class PerInfoCategoryFinder {
 			
 			return new PerInfoCtgDataEnumDto(historyTypes, x);
 
-		}
+//		}
 	};
 
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {
