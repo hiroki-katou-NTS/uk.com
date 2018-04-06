@@ -176,9 +176,12 @@ module nts.uk.at.view.kmk004.d {
                         // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
                         if (!nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto) 
                         && !nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.regularLaborTime)) {
-                            self.worktimeVM.isNewMode(false);
+                            let isModeNew = false;
+                            
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
                                 resultData.statWorkTimeSetDto.normalSetting = new WorktimeNormalDeformSettingDto();
+                                
+                                isModeNew = true;
                             }
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
                                 resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
@@ -192,6 +195,8 @@ module nts.uk.at.view.kmk004.d {
                             
                             // Sort month.
                             self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                            
+                            self.worktimeVM.isNewMode(isModeNew);
                         }
                         else {
                             self.resetFieldsToNewMode();
