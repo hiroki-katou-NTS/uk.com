@@ -139,12 +139,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
                 this.code = code;
                 this.name = name;
-                this.monthConfirm = monthConfirm ? monthConfirm : null;
-                this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
-                this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : null;
-                this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
-                this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
-                this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
+                this.monthConfirm = monthConfirm ? monthConfirm : 1;
+                this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : 1;
+                this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : 1;
+                this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : 1;
+                this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : 1;
+                this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : 1;
                 if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
                     //this.enable = false;
                     this.enable = true;
