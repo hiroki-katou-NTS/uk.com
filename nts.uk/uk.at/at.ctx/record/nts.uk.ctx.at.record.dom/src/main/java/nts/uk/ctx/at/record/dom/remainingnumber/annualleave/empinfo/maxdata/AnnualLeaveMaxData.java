@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 // domain name: 年休上限データ
@@ -13,6 +14,11 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 	 * 社員ID
 	 */
 	private String employeeId;
+	
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 
 	/**
 	 * 半日年休上限
@@ -28,6 +34,7 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 			Integer remainingTimes, Integer maxMinutes, Integer usedMinutes, Integer remainingMinutes) {
 		AnnualLeaveMaxData domain = new AnnualLeaveMaxData();
 		domain.employeeId = employeeId;
+		domain.companyId = AppContexts.user().companyId();
 		if (maxTimes != null && usedTimes != null && remainingTimes != null) {
 			domain.halfdayAnnualLeaveMax = Optional.of(new HalfdayAnnualLeaveMax(new MaxTimes(maxTimes),
 					new UsedTimes(usedTimes), new RemainingTimes(remainingTimes)));

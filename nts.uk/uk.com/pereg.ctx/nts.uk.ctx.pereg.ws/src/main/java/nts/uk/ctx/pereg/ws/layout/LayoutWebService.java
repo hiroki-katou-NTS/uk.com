@@ -84,9 +84,9 @@ public class LayoutWebService extends WebService {
 		return this.layoutProcessor.getSubDetailInCtgChild(query);
 	}
 	
-	@Path("calDayTime")
+	@Path("calDayTime/{sid}/{specialCD}")
 	@POST
-	public Object calDayTime(String sid, int specialCD){
+	public Object calDayTime(@PathParam("sid")String sid , @PathParam("specialCD")int specialCD){
 		String dayTime = specialLeaveGrantRemainService.calDayTime(sid, specialCD);
 		return new Object[] {dayTime};
 	}

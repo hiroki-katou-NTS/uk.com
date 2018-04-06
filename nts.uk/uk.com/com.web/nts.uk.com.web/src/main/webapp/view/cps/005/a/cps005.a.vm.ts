@@ -35,7 +35,10 @@ module nts.uk.com.view.cps005.a {
                     }
                     block.clear();
                     dfd.resolve();
-                })
+                }).fail(res => {
+                        alertError({ messageId: res.messageId });
+                
+                });
 
                 return dfd.promise();
             }

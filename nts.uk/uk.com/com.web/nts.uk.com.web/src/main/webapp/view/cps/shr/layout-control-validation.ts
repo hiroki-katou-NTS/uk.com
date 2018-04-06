@@ -5,10 +5,13 @@ module nts.layout {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    import parseTime = nts.uk.time.parseTime;
+
     let rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
-        clearError = window['nts']['uk']['ui']['errors']['clearAll'];
+        clearError = window['nts']['uk']['ui']['errors']['clearAll'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
@@ -157,6 +160,7 @@ module nts.layout {
             self.relate_button();
 
             self.dateTime();
+            self.setTable();
 
             validate.initCheckError(lstCls);
         }
@@ -718,10 +722,29 @@ module nts.layout {
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode
                             });
-
+                            
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                button.data.value('SAMPLE_DATA');
+                                let sid = __viewContext.user.employeeId;
+                                switch (btn.dialogId) {
+                                    case "g":
+                                    let empId  = __viewContext.user.employeeId;
+                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getAnnLeaNumber/{0}", empId)).done(data => {
+                                            button.data.value(data);
+                                        });
+                                        break;
+                                    case "h":
+                                        ajax('at', nts.uk.text.format("at/record/remainnumber/annlea/getResvLeaNumber/{0}", empId)).done(data => {
+                                            button.data.value(data);
+                                        });
+                                        break;
+                                    case "i":
+                                         let   specialCD: number = self.genSpecialCode(btn.ctgCode).specialCode;
+                                        debugger;
+                                        ajax('com', nts.uk.text.format("ctx/pereg/layout/calDayTime/{0}/{1}", sid, specialCD)).done(data => {
+                                            button.data.value(data);
+                                        });
+                                }
                             });
                         });
                     }
@@ -764,6 +787,60 @@ module nts.layout {
                 });
                 CS00020_IS00123.data.value.valueHasMutated();
             }
+        }
+
+        setTable = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                times: Array<ITimeTable> = [{
+                    ctgCode: 'CS00024',
+                    firstCode: 'IS00287',
+                    secondCode: 'IS00288',
+                    resultCode: 'IS00289'
+                }, {
+                        ctgCode: 'CS00024',
+                        firstCode: 'IS00291',
+                        secondCode: 'IS00292',
+                        resultCode: 'IS00293'
+                    }],
+                calc = (time: ITimeTable) => {
+                    let first: IFindData = finder.find(time.ctgCode, time.firstCode),
+                        second: IFindData = finder.find(time.ctgCode, time.secondCode),
+                        result: IFindData = finder.find(time.ctgCode, time.resultCode);
+
+                    if (first && second && result) {
+                        first.data.value.subscribe(x => {
+                            let vnb1 = ko.toJS(first.data.value),
+                                vnb2 = ko.toJS(second.data.value),
+                                nb1 = typeof vnb1 == 'number',
+                                nb2 = typeof vnb2 == 'number';
+
+                            if (ITEM_SINGLE_TYPE.TIME == first.data.item.dataTypeValue) {
+                                if (nb1 && nb2) {
+                                    result.data.value(parseTime(vnb1 - vnb2, true).format());
+                                } else {
+                                    result.data.value(undefined);
+                                }
+                            } else if (ITEM_SINGLE_TYPE.TIMEPOINT == first.data.item.dataTypeValue) {
+                                if (nb1 && nb2) {
+                                    result.data.value(parseTimeWidthDay(vnb1 - vnb2).shortText);
+                                } else {
+                                    result.data.value(undefined);
+                                }
+                            }
+                            else if (vnb1 || vnb2) {
+                                result.data.value(Number(vnb1) - Number(vnb2));
+                            } else {
+                                result.data.value(undefined);
+                            }
+                        });
+
+                        second.data.value.subscribe(x => first.data.value.valueHasMutated());
+                        second.data.value.valueHasMutated();
+                    }
+                };
+
+            _(times).each(time => calc(time));
         }
 
         dateTime = () => {
@@ -818,6 +895,107 @@ module nts.layout {
                 });
             }
         }
+        
+        genSpecialCode(categoryCode: string): any {
+
+            switch (categoryCode) {
+                case 'CS00025':
+                    return {
+                        specialCode: 1
+                    };
+                case 'CS00026':
+                    return {
+                        specialCode: 2
+                    };
+                case 'CS00027':
+                    return {
+                        specialCode: 3
+                    };
+                case 'CS00028':
+                    return {
+                        specialCode: 4
+                    };
+                case 'CS00029':
+                    return {
+                        specialCode: 5
+                    };
+                case 'CS00030':
+                    return {
+                        specialCode: 6
+                    };
+                case 'CS00031':
+                    return {
+                        specialCode: 7
+                    };
+                case 'CS00032':
+                    return {
+                        specialCode: 8
+                    };
+                case 'CS00033':
+                    return {
+                        specialCode: 9
+                    };
+                case 'CS00034':
+                    return {
+                        specialCode: 10
+                    };
+                case 'CS00049':
+                    return {
+                        specialCode: 11
+                    };
+                case 'CS00050':
+                    return {
+                        specialCode: 12
+                    };
+                case 'CS00051':
+                    return {
+                        specialCode: 13
+                    };
+                case 'CS00052':
+                    return {
+                        specialCode: 14
+                    };
+                case 'CS00053':
+                    return {
+                        specialCode: 15
+                    };
+                case 'CS00054':
+                    return {
+                        specialCode: 16
+                    };
+                case 'CS00055':
+                    return {
+                        specialCode: 17
+                    };
+                case 'CS00056':
+                    return {
+                        specialCode: 18
+                    };
+                case 'CS00057':
+                    return {
+                        specialCode: 19
+                    };
+                case 'CS00058':
+                    return {
+                        specialCode: 20
+                    };
+            }
+        }
+    }
+
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        RELATE_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
     }
 
     // define ITEM_CLASSIFICATION_TYPE
@@ -855,7 +1033,7 @@ module nts.layout {
         required: boolean;
         value: KnockoutObservable<any>;
         textValue: KnockoutObservable<any>;
-        items: KnockoutObservableArray<any>;
+        item: any;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
@@ -934,5 +1112,12 @@ module nts.layout {
         ctgCode: string;
         btnCode: string;
         dialogId: string;
+    }
+
+    interface ITimeTable {
+        ctgCode: string;
+        firstCode: string;
+        secondCode: string;
+        resultCode: string;
     }
 }
