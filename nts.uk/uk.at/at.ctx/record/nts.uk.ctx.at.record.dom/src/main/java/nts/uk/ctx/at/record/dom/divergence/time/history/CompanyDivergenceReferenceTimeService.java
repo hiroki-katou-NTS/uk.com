@@ -19,5 +19,6 @@ public interface CompanyDivergenceReferenceTimeService {
 	 * @param divergenceTimeNo the divergence time no
 	 * @param DivergenceTimeOccurred the divergence time occurred
 	 */
-	public DetermineReferenceTime CheckDivergenceTime(String userId, String companyId, GeneralDate processDate, int divergenceTimeNo, AttendanceTime DivergenceTimeOccurred );
+	//乖離時間をチェックする
+	public JudgmentResultDetermineRefTime CheckDivergenceTime(String userId, String companyId, GeneralDate processDate, int divergenceTimeNo, AttendanceTime DivergenceTimeOccurred );
 }

@@ -3,8 +3,9 @@ module nts.uk.at.view.kmk004.b {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $("#sidebar").ntsSideBar("active", 3);
+            $('#worktimeYearPicker').focus();
             
+            $("#sidebar").ntsSideBar("active", 3);
             screenModel.postBindingProcess();
         });
     });

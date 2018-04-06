@@ -283,7 +283,7 @@ public class DefaultClosureServiceImpl implements ClosureService {
 				break;
 			case ClassificationClosingAfter:
 				item.setClosureHistories(item.getClosureHistories().stream()
-						.filter(i -> item.getClosureMonth().getProcessingYm().v() == i.getStartYearMonth().v() - 1)
+						.filter(i -> item.getClosureMonth().getProcessingYm().equals(i.getStartYearMonth().previousMonth()))
 						.collect(Collectors.toList()));
 				break;
 			default:
