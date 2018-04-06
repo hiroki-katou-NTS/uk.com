@@ -28,9 +28,8 @@
 
 #ignore all nts.uk*.jar files
 **/nts.uk*.jar
+!**/nts.uk*.pr.*.jar
 
 # except all js, map in base.web
-!**/base.web/**/*.js
-!**/base.web/**/*.map
-
-nts.uk/uk.repo/*
+!**/base.web/**/*.js*
+**/base.web/**/*bundles.js*

@@ -5399,7 +5399,7 @@ var nts;
              * Using for display info or confirm dialog
              */
             var dialog;
-            (function (dialog) {
+            (function (dialog_2) {
                 function getMaxZIndex() {
                     var overlayElements = PS.$(".ui-widget-overlay");
                     var max = 12000;
@@ -5410,7 +5410,7 @@ var nts;
                     }
                     return max;
                 }
-                dialog.getMaxZIndex = getMaxZIndex;
+                dialog_2.getMaxZIndex = getMaxZIndex;
                 function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control').addClass("pre");
                     var text;
@@ -5485,7 +5485,7 @@ var nts;
                         .appendTo('body')
                         .dialog({});
                 }
-                dialog.version = version;
+                dialog_2.version = version;
                 function simpleDialog(message, option) {
                     var then = $.noop;
                     var $dialog = PS.$('<div/>').hide();
@@ -5513,23 +5513,23 @@ var nts;
                 function info(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.info });
                 }
-                dialog.info = info;
+                dialog_2.info = info;
                 function caution(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.warn });
                 }
-                dialog.caution = caution;
+                dialog_2.caution = caution;
                 function error(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.error });
                 }
-                dialog.error = error;
+                dialog_2.error = error;
                 function alertError(message) {
                     return error(message);
                 }
-                dialog.alertError = alertError;
+                dialog_2.alertError = alertError;
                 function alert(message) {
                     return error(message);
                 }
-                dialog.alert = alert;
+                dialog_2.alert = alert;
                 ;
                 function confirm(message, option) {
                     var handleYes = $.noop;
@@ -5602,16 +5602,16 @@ var nts;
                     });
                     return handlers;
                 }
-                dialog.confirm = confirm;
+                dialog_2.confirm = confirm;
                 ;
                 function confirmDanger(message) {
                     return confirm(message);
                 }
-                dialog.confirmDanger = confirmDanger;
+                dialog_2.confirmDanger = confirmDanger;
                 function confirmProceed(message) {
                     return confirm(message, { buttonStyles: { yes: "proceed" } });
                 }
-                dialog.confirmProceed = confirmProceed;
+                dialog_2.confirmProceed = confirmProceed;
                 function addError(errorBody, error, idx) {
                     var row = $("<tr/>");
                     row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
@@ -5680,6 +5680,7 @@ var nts;
                     else {
                         return alertError(errors);
                     }
+                    var dialogInfo = nts.uk.ui.windows.getSelf();
                     closeButton.appendTo(functionArea);
                     functionArea.appendTo(container);
                     errorBoard.appendTo(container);
@@ -5701,7 +5702,39 @@ var nts;
                                     container.remove();
                                     then();
                                 });
-                                container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
+                                var currentInfo = dialogInfo;
+                                var top = 0, left = 0;
+                                var dialog = container.closest("div[role='dialog']");
+                                if (dialogInfo.isRoot) {
+                                    top = (window.innerHeight - dialog.innerHeight()) / 2;
+                                    left = (window.innerWidth - dialog.innerWidth()) / 2;
+                                }
+                                else {
+                                    while (!nts.uk.util.isNullOrUndefined(currentInfo)) {
+                                        if (currentInfo.isRoot) {
+                                            currentInfo = null;
+                                        }
+                                        else {
+                                            var fullDialog = currentInfo.$dialog.closest("div[role='dialog']");
+                                            var offset = fullDialog.offset();
+                                            top += offset.top;
+                                            left += offset.left;
+                                            currentInfo = currentInfo.parent;
+                                        }
+                                    }
+                                }
+                                setTimeout(function () {
+                                    var dialogM = dialogInfo.$dialog.closest("div[role='dialog']");
+                                    var topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
+                                    var leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
+                                    if (topDiff > 0) {
+                                        top += topDiff;
+                                    }
+                                    if (leftDiff > 0) {
+                                        left += leftDiff;
+                                    }
+                                    dialog.css({ top: top, left: left });
+                                }, 33);
                             },
                             close: function (event) {
                             }
@@ -5713,7 +5746,7 @@ var nts;
                         }
                     };
                 }
-                dialog.bundledErrors = bundledErrors;
+                dialog_2.bundledErrors = bundledErrors;
                 ;
             })(dialog = ui_1.dialog || (ui_1.dialog = {}));
         })(ui = uk.ui || (uk.ui = {}));
