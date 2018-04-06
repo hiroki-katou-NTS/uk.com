@@ -11,19 +11,6 @@ module nts.uk.at.view.kdm002.a {
                     $('#dateRangePickerPeriod').find('input').first().focus();
                 });
             });
-            //Load ScheduleBatchCorrect
-            self.findScheduleBatchCorrectSetting().done(function(e) {
-                 if(!nts.uk.util.isNullOrUndefined(e)){                 
-                    self.periodDate({
-                        startDate: e.startDate,
-                        endDate: e.endDate
-                    });
-                    self.workTypeInfo(e.worktypeCode);                  
-                    self.workTimeInfo(e.worktimeCode);
-                    self.workTypeCode(e.worktypeCode.split(" ")[0]);
-                    self.workTimeCode(e.worktimeCode.split(" ")[0]);
-                }                       
-             });
         });
     });
 }
