@@ -48,6 +48,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 				ExecutionType.NORMALECECUTION, 
 				true, 
 				ApplyTimeRequestAtr.START, 
+				application,
 				null, 
 				null, 
 				null);
@@ -67,7 +68,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			isReflect = processScheReflect.goBackDirectlyReflect(reflectSchePara);
 		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
-			Optional<AppWorkChange> getAppworkChangeById = workchangeRepo.getAppworkChangeById(application.getEmployeeID(), application.getAppID());
+			Optional<AppWorkChange> getAppworkChangeById = workchangeRepo.getAppworkChangeById(application.getCompanyID(), application.getAppID());
 			if(!getAppworkChangeById.isPresent()) {
 				return reflectedStatesInfo;
 			}
