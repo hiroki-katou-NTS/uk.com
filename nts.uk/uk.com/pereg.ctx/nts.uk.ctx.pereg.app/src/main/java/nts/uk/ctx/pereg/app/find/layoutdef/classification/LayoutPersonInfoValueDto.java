@@ -119,6 +119,7 @@ public class LayoutPersonInfoValueDto {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
+		dataObject.setResourceId(itemDef.getResourceId());
 		return dataObject;
 	}
 
