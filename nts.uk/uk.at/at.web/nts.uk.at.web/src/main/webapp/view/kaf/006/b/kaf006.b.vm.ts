@@ -137,7 +137,6 @@ module nts.uk.at.view.kaf006.b{
         // change by switch button AllDayHalfDay(A3_12)
         getChangeAllDayHalfDayForDetail(value: any){
             let self = this;
-            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.getChangeAllDayHalfDayForDetail({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -176,7 +175,6 @@ module nts.uk.at.view.kaf006.b{
         // change by switch button DisplayHalfDay(A5_3)
         findChangeDisplayHalfDay(value: any){
             let self = this;
-            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.getChangeDisplayHalfDay({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -216,7 +214,6 @@ module nts.uk.at.view.kaf006.b{
         // change by workType
         findChangeWorkType(value: any){
             let self = this;
-            if (nts.uk.ui.errors.hasError()){return;} 
             let dfd = $.Deferred();
             service.getChangeWorkType({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
