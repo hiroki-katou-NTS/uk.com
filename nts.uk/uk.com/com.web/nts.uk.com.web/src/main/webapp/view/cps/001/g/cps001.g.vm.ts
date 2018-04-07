@@ -254,6 +254,7 @@ module nts.uk.com.view.cps001.g.vm {
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
             _self.loadItemDef(); 
             _self.currentValue('');
+            clearError();
             $('#idGrantDate').focus();
         }
         /**
@@ -275,23 +276,31 @@ module nts.uk.com.view.cps001.g.vm {
             block();
             if (_self.createMode()) {
                 
-                service.add(command).done((message: string) => {
+                service.add(command).done((id: string) => {
                     info({ messageId: "Msg_15" }).then(function() {
                         _self.startPage();
                     });
                     unblock();
-                }).fail((message) => {
-                    alert(message.message);
+                }).fail((res) => {
+                    if (res.messageId == 'Msg_1023'){
+                        $('#idGrantDate').ntsError('set', { messageId: res.messageId });
+                    } else {
+                        error(messageId: res.messageId);
+                    }
                     unblock();
                 });
             } else {
-                service.update(command).done((message: string) => {
+                service.update(command).done((data) => {
                     info({ messageId: "Msg_15" }).then(function() {
                         _self.startPage(ko.toJS(_self.currentItem()).annLeavID);
                     });
                     unblock();
-                }).fail((message: any) => {
-                    error(message.message);
+                }).fail((res) => {
+                    if (res.messageId == 'Msg_1023'){
+                        $('#idGrantDate').ntsError('set', { messageId: res.messageId });
+                    } else {
+                        error(messageId: res.messageId);
+                    }
                     unblock();
                 });
             }
