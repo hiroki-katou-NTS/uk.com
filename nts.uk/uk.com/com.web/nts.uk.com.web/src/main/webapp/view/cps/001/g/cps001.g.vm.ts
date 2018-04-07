@@ -5,6 +5,7 @@ module nts.uk.com.view.cps001.g.vm {
     import block = nts.uk.ui.block.grayout;
     import unblock = nts.uk.ui.block.clear;
     import clearError = nts.uk.ui.errors.clearAll;
+    import error = nts.uk.ui.dialog.alertError;
     export class ScreenModel {
 
         // Store create/update mode
@@ -253,6 +254,7 @@ module nts.uk.com.view.cps001.g.vm {
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
             _self.loadItemDef(); 
             _self.currentValue('');
+            clearError();
             $('#idGrantDate').focus();
         }
         /**
@@ -274,23 +276,31 @@ module nts.uk.com.view.cps001.g.vm {
             block();
             if (_self.createMode()) {
                 
-                service.add(command).done((message: string) => {
+                service.add(command).done((id: string) => {
                     info({ messageId: "Msg_15" }).then(function() {
                         _self.startPage();
                     });
                     unblock();
-                }).fail((message) => {
-                    alert(message.message);
+                }).fail((res) => {
+                    if (res.messageId == 'Msg_1023'){
+                        $('#idGrantDate').ntsError('set', { messageId: res.messageId });
+                    } else {
+                        error(messageId: res.messageId);
+                    }
                     unblock();
                 });
             } else {
-                service.update(command).done((message: string) => {
+                service.update(command).done((data) => {
                     info({ messageId: "Msg_15" }).then(function() {
                         _self.startPage(ko.toJS(_self.currentItem()).annLeavID);
                     });
                     unblock();
-                }).fail((message) => {
-                    alert(message.message);
+                }).fail((res) => {
+                    if (res.messageId == 'Msg_1023'){
+                        $('#idGrantDate').ntsError('set', { messageId: res.messageId });
+                    } else {
+                        error(messageId: res.messageId);
+                    }
                     unblock();
                 });
             }
@@ -378,7 +388,7 @@ module nts.uk.com.view.cps001.g.vm {
                 self.annLeavID(param.annLeavID || null);
                 self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
                 self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
-                self.expirationStatus(param.expirationStatus || 0);
+                self.expirationStatus(param.expirationStatus || EXPIRED_STATUS.AVAILABLE);
                 self.grantDays(param.grantDays || null);
                 self.grantMinutes(param.grantMinutes || null);
                 self.usedDays(param.usedDays || null);
@@ -401,8 +411,8 @@ module nts.uk.com.view.cps001.g.vm {
     }
     
     enum EXPIRED_STATUS {
-        AVAILABLE = 0,
-        EXPIRED = 1    
+        AVAILABLE = 1,
+        EXPIRED = 0    
     }
     function formatTime(value, row) {
         if (value) {
