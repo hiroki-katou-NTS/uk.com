@@ -4,6 +4,7 @@ module nts.uk.com.view.cps001.g.vm {
     import alert = nts.uk.ui.dialog.alert;
     import block = nts.uk.ui.block.grayout;
     import unblock = nts.uk.ui.block.clear;
+    import clearError = nts.uk.ui.errors.clearAll;
     export class ScreenModel {
 
         // Store create/update mode
@@ -61,6 +62,7 @@ module nts.uk.com.view.cps001.g.vm {
                          $('#idGrantDate').focus();
                     });
                     $('#idGrantDate').focus();
+                    clearError();
                 }
             });
 
@@ -250,6 +252,7 @@ module nts.uk.com.view.cps001.g.vm {
             _self.createMode(true);
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
             _self.loadItemDef(); 
+            _self.currentValue('');
             $('#idGrantDate').focus();
         }
         /**
@@ -310,6 +313,9 @@ module nts.uk.com.view.cps001.g.vm {
                     return item.annLeavID == ko.toJS(_self.currentItem()).annLeavID;
                 }),
                 finalIndex = _self.listAnnualLeaveGrantRemainData().length -1;
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                 .ifYes(() => {
                     block();
@@ -383,7 +389,7 @@ module nts.uk.com.view.cps001.g.vm {
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
-                if (value && __viewContext.viewModel.createMode()) {
+                if (value && __viewContext.viewModel.createMode() && !nts.uk.ui.errors.hasError())  {
                     service.lostFocus(value).done((data: Date) => {
                         if (data){
                             self.deadline(moment.utc(data,"YYYY/MM/DD"));                            
