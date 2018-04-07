@@ -254,10 +254,14 @@ module nts.layout {
             let self = this,
                 finder = self.finder,
                 radios: Array<IGrandRadio> = [{
-                    ctgCode: 'CS00026',
-                    radioCode: 'IS00303',
-                    comboboxCode: 'IS00304'
+                    ctgCode: 'CS00025',
+                    radioCode: 'IS00296',
+                    comboboxCode: 'IS00297'
                 }, {
+                        ctgCode: 'CS00026',
+                        radioCode: 'IS00303',
+                        comboboxCode: 'IS00304'
+                    }, {
                         ctgCode: 'CS00027',
                         radioCode: 'IS00310',
                         comboboxCode: 'IS00311'
@@ -266,9 +270,9 @@ module nts.layout {
                         radioCode: 'IS00317',
                         comboboxCode: 'IS00318'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00029',
+                        radioCode: 'IS00324',
+                        comboboxCode: 'IS00325'
                     }, {
                         ctgCode: 'CS00030',
                         radioCode: 'IS00331',
@@ -286,41 +290,53 @@ module nts.layout {
                         radioCode: 'IS00352',
                         comboboxCode: 'IS00353'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00034',
+                        radioCode: 'IS00359',
+                        comboboxCode: 'IS00360'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00035',
+                        radioCode: 'IS00311',
+                        comboboxCode: 'IS00371'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00049',
+                        radioCode: 'IS00560',
+                        comboboxCode: 'IS00561'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00050',
+                        radioCode: 'IS00567',
+                        comboboxCode: 'IS00568'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00051',
+                        radioCode: 'IS00574',
+                        comboboxCode: 'IS00575'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00052',
+                        radioCode: 'IS00581',
+                        comboboxCode: 'IS00582'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00053',
+                        radioCode: 'IS00588',
+                        comboboxCode: 'IS00589'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00054',
+                        radioCode: 'IS00595',
+                        comboboxCode: 'IS00596'
                     }, {
-                        ctgCode: '',
-                        radioCode: '',
-                        comboboxCode: ''
+                        ctgCode: 'CS00055',
+                        radioCode: 'IS00602',
+                        comboboxCode: 'IS00603'
+                    }, {
+                        ctgCode: 'CS00056',
+                        radioCode: 'IS00609',
+                        comboboxCode: 'IS00610'
+                    }, {
+                        ctgCode: 'CS00057',
+                        radioCode: 'IS00616',
+                        comboboxCode: 'IS00617'
+                    }, {
+                        ctgCode: 'CS00058',
+                        radioCode: 'IS00623',
+                        comboboxCode: 'IS00624'
                     }, {
                         ctgCode: '',
                         radioCode: '',
