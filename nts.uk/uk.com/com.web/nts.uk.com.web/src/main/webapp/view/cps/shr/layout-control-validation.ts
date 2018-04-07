@@ -164,6 +164,7 @@ module nts.layout {
             self.radio();
             self.button();
             self.combobox();
+            self.grand_radio();
             self.relate_radio();
             self.relate_button();
 
@@ -247,6 +248,98 @@ module nts.layout {
                     CS00020_IS00121.data.value.valueHasMutated();
                 }, 0);
             }
+        }
+
+        grand_radio = () => {
+            let self = this,
+                finder = self.finder,
+                radios: Array<IGrandRadio> = [{
+                    ctgCode: 'CS00026',
+                    radioCode: 'IS00303',
+                    comboboxCode: 'IS00304'
+                }, {
+                        ctgCode: 'CS00027',
+                        radioCode: 'IS00310',
+                        comboboxCode: 'IS00311'
+                    }, {
+                        ctgCode: 'CS00028',
+                        radioCode: 'IS00317',
+                        comboboxCode: 'IS00318'
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: 'CS00030',
+                        radioCode: 'IS00331',
+                        comboboxCode: 'IS00332'
+                    }, {
+                        ctgCode: 'CS00031',
+                        radioCode: 'IS00338',
+                        comboboxCode: 'IS00339'
+                    }, {
+                        ctgCode: 'CS00032',
+                        radioCode: 'IS00345',
+                        comboboxCode: 'IS00346'
+                    }, {
+                        ctgCode: 'CS00033',
+                        radioCode: 'IS00352',
+                        comboboxCode: 'IS00353'
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        comboboxCode: ''
+                    }],
+                validation = (radio: IGrandRadio) => {
+                    let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
+                        cb: IFindData = finder.find(radio.ctgCode, radio.comboboxCode);
+
+                    if (rd && cb) {
+                        rd.data.value.subscribe(v => {
+                            cb.data.editable(v == 1);
+                        });
+
+                        rd.data.value.valueHasMutated();
+                    }
+                };
+
+            _(radios).each(radio => validation(radio));
         }
 
         relate_radio = () => {
@@ -1028,7 +1121,7 @@ module nts.layout {
                     let employeeId = ko.toJS(__viewContext.viewModel.employee.employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value);
-                    
+
                     fetch.get_ro_data({
                         employeeId: employeeId,
                         standardDate: standardDate,
@@ -1170,6 +1263,12 @@ module nts.layout {
     interface ITimeFindData {
         start: IFindData;
         end: IFindData;
+    }
+
+    interface IGrandRadio {
+        ctgCode: string;
+        radioCode: string;
+        comboboxCode: string;
     }
 
     interface IRelateRadio {
