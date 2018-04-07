@@ -189,6 +189,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         $("#inputdate").focus();
                     }
                 });
+                self.changeWorkHourValue.subscribe((value) =>{
+                    self.changeDisplayWorkime();
+                });
                 nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail((res) => {
