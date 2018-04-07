@@ -5,6 +5,7 @@ module nts.uk.com.view.cps001.i.vm {
     import showDialog = nts.uk.ui.dialog;
     import alert = nts.uk.ui.dialog.alert;
     import error = nts.uk.ui.dialog.alertError;
+    import clearError = nts.uk.ui.errors.clearAll;
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
@@ -192,6 +193,7 @@ module nts.uk.com.view.cps001.i.vm {
                 } else {
                     self.newMode();
                 }
+                clearError();
                 $('#idDateGrantInp').focus();
             });
 
@@ -251,7 +253,7 @@ module nts.uk.com.view.cps001.i.vm {
                 grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
                 deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
                 ctgCode: IData = self.genSpecialCode(self.categoryCode());
-            
+
 
             if (self.dateGrantInp() == null || self.deadlineDateInp() == null
                 || self.dayNumberOfGrants() == null || self.dayNumberOfUse() == null
@@ -338,16 +340,27 @@ module nts.uk.com.view.cps001.i.vm {
                     }
 
                     let currentRow: ISpecialLeaveRemaining = _.find(ko.toJS(self.listData), function(item: ISpecialLeaveRemaining) { return item.specialid == self.currentValue(); });
+                    let itemListLength = self.listData().length;
+
                     if (currentRow != undefined) {
                         let itemListLength = self.listData().length;
                         service.remove(currentRow.specialid).done((_data: any) => {
-                            self.loadData().done(() => {
-                                if (self.listData().length == 0) {
+
+                            if (itemListLength === 1) {
+                                self.loadData().done(() => {
                                     self.newMode();
-                                } else {
-                                    self.currentValue(selectedId);
-                                }
-                            });
+                                });
+                            } else if (itemListLength - 1 === delItemIndex) {
+                                self.loadData().done(() => {
+                                    self.currentValue(self.listData()[delItemIndex-1].specialid);
+
+                                });
+                            } else if (itemListLength - 1 > delItemIndex) {
+                                self.loadData().done(() => {
+                                    self.currentValue(self.listData()[delItemIndex].specialid);
+                                });
+                            }
+
                             alert({ messageId: "Msg_15" });
                             unblock();
                         }).fail((error: any) => {
