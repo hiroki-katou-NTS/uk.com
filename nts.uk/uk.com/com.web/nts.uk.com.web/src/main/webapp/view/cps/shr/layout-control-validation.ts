@@ -1039,12 +1039,20 @@ module nts.layout {
                             if (ITEM_SINGLE_TYPE.TIME == first.data.item.dataTypeValue) {
                                 if (nb1 && nb2) {
                                     result.data.value(parseTime(vnb1 - vnb2, true).format());
+                                } else if (nb1) {
+                                    result.data.value(parseTime(vnb1, true).format());
+                                } else if (nb2) {
+                                    result.data.value(parseTime(-vnb2, true).format());
                                 } else {
                                     result.data.value(undefined);
                                 }
                             } else if (ITEM_SINGLE_TYPE.TIMEPOINT == first.data.item.dataTypeValue) {
                                 if (nb1 && nb2) {
                                     result.data.value(parseTimeWidthDay(vnb1 - vnb2).shortText);
+                                } else if (nb1) {
+                                    result.data.value(parseTimeWidthDay(vnb1).shortText);
+                                } else if (nb2) {
+                                    result.data.value(parseTimeWidthDay(-vnb2).shortText);
                                 } else {
                                     result.data.value(undefined);
                                 }
