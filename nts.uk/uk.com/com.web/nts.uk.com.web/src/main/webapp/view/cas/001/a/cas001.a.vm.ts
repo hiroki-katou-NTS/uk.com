@@ -33,7 +33,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
-        isStarted: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
