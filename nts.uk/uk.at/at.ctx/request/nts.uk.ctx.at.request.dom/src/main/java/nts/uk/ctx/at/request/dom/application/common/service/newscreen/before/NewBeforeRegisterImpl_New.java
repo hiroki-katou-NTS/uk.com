@@ -182,6 +182,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
 				// アルゴリズム「社員所属職場履歴を取得」を実行する
 				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
+				// アルゴリズム「締切日を取得する」を実行する
 				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
 						deadlineEndDate, 
 						appDeadline.getDeadline().v(), 
