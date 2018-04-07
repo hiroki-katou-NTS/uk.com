@@ -151,7 +151,10 @@ module nts.layout {
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
-        get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param)
+        get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param),
+        get_annLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getAnnLeaNumber/${sid}`),
+        get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
+        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`)
     }
 
     export class validation {
@@ -1161,6 +1164,165 @@ module nts.layout {
                 CS00024_IS00280.data.value.valueHasMutated();
             }
         }
+
+        specialLeaveInformation = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                specialLeaInfos: Array<ISpeacialLeaInfo> = [{
+                    ctgCode: 'CS00025',
+                    inpCode: 'IS00295',
+                    comboboxCode: 'IS00297',
+                    result: 'IS00300',
+                    specialCd: 1
+                }, {
+                        ctgCode: 'CS00026',
+                        inpCode: 'IS00302',
+                        comboboxCode: 'IS00304',
+                        result: 'IS00307',
+                        specialCd: 2
+                    }, {
+                        ctgCode: 'CS00027',
+                        inpCode: 'IS00309',
+                        comboboxCode: 'IS00311',
+                        result: 'IS00314',
+                        specialCd: 3
+                    }, {
+                        ctgCode: 'CS00028',
+                        inpCode: 'IS00316',
+                        comboboxCode: 'IS00318',
+                        result: 'IS00321',
+                        specialCd: 4
+                    }, {
+                        ctgCode: 'CS00029',
+                        inpCode: 'IS00323',
+                        comboboxCode: 'IS00325',
+                        result: 'IS00328',
+                        specialCd: 5
+                    }, {
+                        ctgCode: 'CS00030',
+                        inpCode: 'IS00330',
+                        comboboxCode: 'IS00332',
+                        result: 'IS00335',
+                        specialCd: 6
+                    }, {
+                        ctgCode: 'CS00031',
+                        inpCode: 'IS00337',
+                        comboboxCode: 'IS00339',
+                        result: 'IS00342',
+                        specialCd: 7
+                    }, {
+                        ctgCode: 'CS00032',
+                        inpCode: 'IS00344',
+                        comboboxCode: 'IS00346',
+                        result: 'IS00349',
+                        specialCd: 8
+                    }, {
+                        ctgCode: 'CS00033',
+                        inpCode: 'IS00351',
+                        comboboxCode: 'IS00353',
+                        result: 'IS00356',
+                        specialCd: 9
+                    }, {
+                        ctgCode: 'CS00034',
+                        inpCode: 'IS00358',
+                        comboboxCode: 'IS00360',
+                        result: 'IS00363',
+                        specialCd: 10
+                    }, {
+                        ctgCode: 'CS00049',
+                        inpCode: 'IS00559',
+                        comboboxCode: 'IS00561',
+                        result: 'IS00564',
+                        specialCd: 11
+                    }, {
+                        ctgCode: 'CS00050',
+                        inpCode: 'IS00566',
+                        comboboxCode: 'IS00568',
+                        result: 'IS00571',
+                        specialCd: 12
+                    }, {
+                        ctgCode: 'CS00051',
+                        inpCode: 'IS00573',
+                        comboboxCode: 'IS00575',
+                        result: 'IS00578',
+                        specialCd: 13
+                    }, {
+                        ctgCode: 'CS00052',
+                        inpCode: 'IS00580',
+                        comboboxCode: 'IS00582',
+                        result: 'IS00585',
+                        specialCd: 14
+                    }, {
+                        ctgCode: 'CS00053',
+                        inpCode: 'IS00587',
+                        comboboxCode: 'IS00589',
+                        result: 'IS00592',
+                        specialCd: 15
+                    }, {
+                        ctgCode: 'CS00054',
+                        inpCode: 'IS00594',
+                        comboboxCode: 'IS00596',
+                        result: 'IS00599',
+                        specialCd: 16
+                    }, {
+                        ctgCode: 'CS00055',
+                        inpCode: 'IS00601',
+                        comboboxCode: 'IS00603',
+                        result: 'IS00606',
+                        specialCd: 17
+                    }, {
+                        ctgCode: 'CS00056',
+                        inpCode: 'IS00608',
+                        comboboxCode: 'IS00610',
+                        result: 'IS00613',
+                        specialCd: 18
+                    }, {
+                        ctgCode: 'CS00057',
+                        inpCode: 'IS00615',
+                        comboboxCode: 'IS00617',
+                        result: 'IS00620',
+                        specialCd: 19
+                    }, {
+                        ctgCode: 'CS00058',
+                        inpCode: 'IS00622',
+                        comboboxCode: 'IS00624',
+                        result: 'IS00627',
+                        specialCd: 20
+                    }
+                ],
+
+                validation = (specialLeaInfo: ISpeacialLeaInfo) => {
+                    let inp: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpCode),
+                        cbx: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboboxCode),
+                        result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result);
+
+                    if (inp && cbx) {
+                        inp.data.value.subscribe(x => {
+                            // obj để get dữ liệu
+                            let sid = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                                grantDate = ko.toJS(inp.data.value),
+                                appSet = ko.toJS(cbx.data.value),
+                                specialLeaveCD = specialLeaInfo.specialCd;
+                            // 
+
+                            let x = moment.utc(ko.toJS(inp.data.value));
+                            if (x._isValid)
+                                result.data.value(x.format('YYYY/MM/DD'));
+                            else
+                                result.data.value('');
+
+                        });
+
+                        cbx.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        cbx.data.value.valueHasMutated();
+                    }
+                };
+
+            _(specialLeaInfos).each(specialLeaInfo => validation(specialLeaInfo));
+
+
+
+        }
     }
 
     enum ITEM_SINGLE_TYPE {
@@ -1313,5 +1475,20 @@ module nts.layout {
         firstCode: string;
         secondCode: string;
         resultCode: string;
+    }
+
+    interface ISpeacialLeaInfo {
+        ctgCode: string;
+        inpCode: string;
+        comboboxCode: string;
+        result: string;
+        specialCd: number;
+    }
+
+    interface ISpeacialParam {
+        sid: string;
+        grantDate: Date;
+        specialLeaveCD: number;
+        appSet: number;
     }
 }
