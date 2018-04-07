@@ -12,11 +12,13 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.IndentificationPub;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.pub.spr.dailystatus.output.DailyStatusSpr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -33,6 +35,9 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	
 	@Inject
 	private SprAppRootStatePub sprAppRootStateService;
+	
+	@Inject
+	private IndentificationPub indentificationPub;
 	
 	@Override
 	public List<DailyStatusSpr> getStatusOfDaily(String loginEmpCD, String employeeCD, String startDate,
@@ -112,8 +117,12 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 
 	@Override
 	public Integer getEmployeeStatus(GeneralDate appDate, String employeeID) {
-		// TODO Auto-generated method stub
-		return 0;
+		List<GeneralDate> dateList = indentificationPub.getResovleDateIdentify(employeeID, new DatePeriod(appDate, appDate));
+		if(CollectionUtil.isEmpty(dateList)){
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
 	@Override

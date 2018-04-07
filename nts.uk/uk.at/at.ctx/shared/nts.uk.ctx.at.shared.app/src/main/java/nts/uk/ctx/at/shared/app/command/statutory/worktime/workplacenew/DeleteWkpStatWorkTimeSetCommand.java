@@ -10,7 +10,6 @@ import lombok.Setter;
 /**
  * The Class DeleteWkpStatWorkTimeSetCommand.
  */
-
 @Setter
 @Getter
 public class DeleteWkpStatWorkTimeSetCommand {
@@ -20,5 +19,8 @@ public class DeleteWkpStatWorkTimeSetCommand {
 	
 	/** The employee id. */
 	private String workplaceId;
+	
+	/** The is over one year. */
+	private boolean isOverOneYear;
 
 }

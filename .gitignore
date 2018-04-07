@@ -23,14 +23,10 @@
 *.orig
 
 #ignore all js, map file
-**/*.js
-**/*.map
-
-#ignore all nts.uk*.jar files
-**/nts.uk*.jar
+**/*.js*
 
 # except all js, map in base.web
-!**/base.web/**/*.js
-!**/base.web/**/*.map
+!**/base.web/**/*.js*
+**/base.web/**/*bundles.js*
 
 nts.uk/uk.repo/*

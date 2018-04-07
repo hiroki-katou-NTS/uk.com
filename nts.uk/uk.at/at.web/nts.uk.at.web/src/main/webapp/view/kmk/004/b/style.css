@@ -1,5 +1,10 @@
 @CHARSET "UTF-8";
 
+#func-notifier-errors {
+	top: 135px;
+    left: 125px;
+}
+
 .border-all td {
 	border: solid grey 1px;
 	text-align: center;
@@ -89,6 +94,6 @@
 	min-height: 630px;
 }
 span#lblEmployeeCode {
-	display: inline-blockl;
+	display: inline-block;
 	width: 120px;
 }

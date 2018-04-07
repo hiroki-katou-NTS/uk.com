@@ -120,7 +120,7 @@ public class TotalWorkingTimeDto {
 						ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
 						ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily()), 
 						RaisingSalaryTimeDailyPerformDto.toDto(domain.getRaiseSalaryTimeOfDailyPerfor()), 
-						null, 
+						HolidayDailyPerformDto.from(domain.getHolidayOfDaily()), 
 						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 	}
 
@@ -166,7 +166,8 @@ public class TotalWorkingTimeDto {
 													new WorkTimes(shortWorkTime.getTimes()),
 													createDeductionTime(shortWorkTime.getTotalTime()),
 													createDeductionTime(shortWorkTime.getTotalDeductionTime()),
-													ConvertHelper.getEnum(shortWorkTime.getChildCareAttr(), ChildCareAttribute.class)));
+													ConvertHelper.getEnum(shortWorkTime.getChildCareAttr(), ChildCareAttribute.class)),
+				dailyOfHoliday == null ? null : dailyOfHoliday.toDomain());
 	}
 
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
