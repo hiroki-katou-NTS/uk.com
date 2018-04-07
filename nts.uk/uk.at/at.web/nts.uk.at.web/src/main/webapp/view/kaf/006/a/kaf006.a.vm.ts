@@ -477,8 +477,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
-                        //                        self.selectedWorkTypeCode(childData.selectedWorkTypeCode);
-                        //                        self.workTypeName(childData.selectedWorkTypeName);
+                        self.selectedTypeOfDuty(childData.selectedWorkTypeCode);
                         self.workTimeCode(childData.selectedWorkTimeCode);
                         self.workTimeName(childData.selectedWorkTimeName);
                         self.displayWorkTimeName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
