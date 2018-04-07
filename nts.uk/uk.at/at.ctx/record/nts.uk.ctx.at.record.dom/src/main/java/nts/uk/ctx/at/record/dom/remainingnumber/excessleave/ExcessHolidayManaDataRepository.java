@@ -8,5 +8,5 @@ public interface ExcessHolidayManaDataRepository {
 	// 社員ID=パラメータ「社員ID」
 	// 期限切れ状態=使用可能
 
-	List<ExcessHolidayManagementData> getBySidNotExp(String cid, String sid);
+	List<ExcessHolidayManagementData> getBySidWithExpCond(String cid, String sid, int state);
 }

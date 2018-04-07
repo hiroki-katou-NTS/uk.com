@@ -58,7 +58,7 @@ module nts.uk.com.view.cps001.g.vm {
                             _self.currentItem(new AnnualLeaveGrantRemainingData(result));
                             _self.loadItemDef();    
                         }
-                         $('#id-grantDate').focus();
+                         $('#idGrantDate').focus();
                     });
                     $('#idGrantDate').focus();
                 }
@@ -78,7 +78,8 @@ module nts.uk.com.view.cps001.g.vm {
                 } else {
                     _self.create();                    
                 }
-                 _self.loadItemDef();  
+                 _self.loadItemDef(); 
+                $('#idGrantDate').focus(); 
             });
 
 
@@ -90,6 +91,7 @@ module nts.uk.com.view.cps001.g.vm {
         public startPage(annID? : string): JQueryPromise<any> {
             let _self = this, 
             sID = __viewContext.user.employeeId;
+            block();
             service.getAllList(sID).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
@@ -121,7 +123,9 @@ module nts.uk.com.view.cps001.g.vm {
                  else {
                     _self.loadItemDef();   
                 }
-                
+                unblock();
+            }).fail((_data) => {
+                unblock();
             });
         }
         
@@ -228,7 +232,7 @@ module nts.uk.com.view.cps001.g.vm {
                 { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 60 },
                 { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 80, hidden: self.remainingMinutesH()}
             ]);
-                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:5}"></table>';
+                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:10}"></table>';
                     $("#tbl").html(table);
                     ko.applyBindings(self, $("#tbl")[0]);
         }
@@ -246,7 +250,7 @@ module nts.uk.com.view.cps001.g.vm {
             _self.createMode(true);
             _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
             _self.loadItemDef(); 
-            $('#id-grantDate').focus();
+            $('#idGrantDate').focus();
         }
         /**
          * Save sequence
@@ -328,8 +332,9 @@ module nts.uk.com.view.cps001.g.vm {
                             _self.startPage(_self.listAnnualLeaveGrantRemainData()[currentIndex].annLeavID);
                         });
                         unblock();
-                    })
-                     unblock();
+                    }).fail((error: any) => {
+                        unblock();
+                    });
                 }).ifNo(() => {
                         // Nothing happen
                 });
