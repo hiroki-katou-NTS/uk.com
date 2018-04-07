@@ -113,6 +113,9 @@ module nts.uk.at.view.kaf006.b{
                     self.displayWorkTimeName.subscribe((value) => {
                         self.changeDisplayWorkime();
                     });
+                    self.changeWorkHourValue.subscribe((value) => {
+                        self.changeDisplayWorkime();
+                    });
                     dfd.resolve(); 
                 })
                 .fail(function(res) {
@@ -245,6 +248,7 @@ module nts.uk.at.view.kaf006.b{
             self.convertListHolidayType(data.holidayAppTypes);
             self.holidayTypeCode(data.holidayAppType);
             self.displayPrePostFlg(data.prePostFlg);
+            self.workTimeCode(data.workTimeCode);
             self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(data.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : data.workTimeCode +"　"+ data.workTimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
@@ -387,6 +391,7 @@ module nts.uk.at.view.kaf006.b{
                     if (childData) {
 //                        self.selectedWorkTypeCode(childData.selectedWorkTypeCode);
 //                        self.workTypeName(childData.selectedWorkTypeName);
+                        self.selectedTypeOfDuty(childData.selectedWorkTypeCode);
                         self.workTimeCode(childData.selectedWorkTimeCode);
                         self.workTimeName(childData.selectedWorkTimeName);
                         self.displayWorkTimeName(childData.selectedWorkTimeCode +"　"+childData.selectedWorkTimeName);
