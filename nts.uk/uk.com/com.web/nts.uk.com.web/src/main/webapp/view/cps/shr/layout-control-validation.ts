@@ -151,7 +151,7 @@ module nts.layout {
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
-        get_ro_data: (param: INextTimeParam) => ajax(`at/record/remainnumber/annlea/event/nextTime`, param)
+        get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param)
     }
 
     export class validation {
@@ -169,6 +169,7 @@ module nts.layout {
 
             self.dateTime();
             self.setTable();
+            self.grantInformation();
 
             validate.initCheckError(lstCls);
         }
@@ -303,6 +304,38 @@ module nts.layout {
                         ctgCode: 'CS00033',
                         radioCode: 'IS00531',
                         setParentCode: 'IS00532'
+                    }, {
+                        ctgCode: 'CS00034',
+                        radioCode: 'IS00546',
+                        setParentCode: 'IS00547'
+                    }, {
+                        ctgCode: 'CS00049',
+                        radioCode: 'IS00631',
+                        setParentCode: 'IS00632'
+                    }, {
+                        ctgCode: 'CS00049',
+                        radioCode: 'IS00646',
+                        setParentCode: 'IS00647'
+                    }, {
+                        ctgCode: 'CS00050',
+                        radioCode: 'IS00646',
+                        setParentCode: 'IS00647'
+                    }, {
+                        ctgCode: 'CS00051',
+                        radioCode: 'IS00661',
+                        setParentCode: 'IS00662'
+                    }, {
+                        ctgCode: 'CS00052',
+                        radioCode: 'IS00676',
+                        setParentCode: 'IS00677'
+                    }, {
+                        ctgCode: 'CS00053',
+                        radioCode: 'IS00691',
+                        setParentCode: 'IS00692'
+                    }, {
+                        ctgCode: 'CS00055',
+                        radioCode: 'IS00721',
+                        setParentCode: 'IS00722'
                     }, {
                         ctgCode: '',
                         radioCode: '',
@@ -978,7 +1011,38 @@ module nts.layout {
 
         // 次回年休付与情報を取得する
         grantInformation = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00024_IS00279: IFindData = finder.find('CS00024', 'IS00279'),
+                CS00024_IS00280: IFindData = finder.find('CS00024', 'IS00280'),
+                CS00024_IS00281: IFindData = finder.find('CS00024', 'IS00281'),
+                CS00024_IS00282: IFindData = finder.find('CS00024', 'IS00282'),
+                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283');
 
+            if (CS00024_IS00279 &&
+                CS00024_IS00280 &&
+                CS00024_IS00281 &&
+                CS00024_IS00282 &&
+                CS00024_IS00283) {
+                CS00024_IS00279.data.value.subscribe(x => {
+                    let employeeId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                        standardDate = ko.toJS(CS00024_IS00279.data.value),
+                        grantTable = ko.toJS(CS00024_IS00280.data.value);
+                    
+                    fetch.get_ro_data({
+                        employeeId: employeeId,
+                        standardDate: standardDate,
+                        grantTable: grantTable
+                    }).done(result => {
+                        CS00024_IS00281.data.value(result.nextTimeGrantDate);
+                        CS00024_IS00282.data.value(result.nextTimeGrantDays);
+                        CS00024_IS00283.data.value(result.nextTimeMaxTime);
+                    });
+                });
+
+                CS00024_IS00280.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                CS00024_IS00280.data.value.valueHasMutated();
+            }
         }
     }
 

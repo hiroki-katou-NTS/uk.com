@@ -33,7 +33,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
-        isStarted: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -133,6 +132,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 grid.ntsGrid(self.isDisableAll() ? "disableNtsControls" : "enableNtsControls", "isChecked", "CheckBox", true);
 
+                if (newValue == 0) {
+                    $("#anotherSelectedAll_auth > button.nts-switch-button").prop('disabled', true);
+                }else{
+                    $("#anotherSelectedAll_auth > button.nts-switch-button").prop('disabled', false);
+                }
+
+
+
             });
 
             self.allowPersonRef.subscribe((newValue) => {
@@ -147,37 +154,50 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 grid.ntsGrid(self.isDisableAll() ? "disableNtsControls" : "enableNtsControls", "isChecked", "CheckBox", true);
 
-
+                if (newValue == 0) {
+                    $("#seftSelectedAll_auth > button.nts-switch-button").prop('disabled', true);
+                }else{
+                    $("#seftSelectedAll_auth > button.nts-switch-button").prop('disabled', false);
+                } 
             });
-
 
         }
 
 
         changeAll(parrentId, changeValue) {
             let self = this,
+                grid = $("#item_role_table_body"),
                 currentList = $("#item_role_table_body").ntsGrid("updatedCells"),
                 itemCheckLst = _.filter(currentList, { columnKey: "isChecked", value: true }),
                 changeVal = changeValue < 1 ? 1 : changeValue > 3 ? 3 : changeValue,
                 itemLst2E = self.currentRole().currentCategory().itemLst2E;
-            
+
             if (itemCheckLst.length <= 0) {
                 dialog({ messageId: "Msg_664" });
                 return;
             }
-            
+            _.each(itemLst2E, function(item2E) {
+                let x: Array<any> = [];
+                x = _.remove(itemCheckLst, function(e) {
+                    return e.rowId == item2E.personItemDefId;
+                });
+                console.log(x);
+            });
+            console.log(itemCheckLst);
+
             _.forEach(itemCheckLst, (item) => {
                 if (item.value) {
-                    $("#item_role_table_body").ntsGrid("updateRow", item.rowId, parrentId === 'anotherSelectedAll_auth' ? { otherAuth: String(changeVal) } : { selfAuth: String(changeVal) });
+                    grid.ntsGrid("updateRow", item.rowId, parrentId === 'anotherSelectedAll_auth' ? { otherAuth: String(changeVal) } : { selfAuth: String(changeVal) });
                 }
             });
 
             _.forEach(itemLst2E, (item2E) => {
                 _.forEach(itemCheckLst, (item) => {
                     if (item.value && item.rowId === item2E.personItemDefId) {
-                        let changeVal2 = (changeValue < 1) ? 1 : (changeValue > 2) ? 2 : changeValue;
-                        $("#item_role_table_body").ntsGrid("updateRow", item2E.personItemDefId , parrentId === 'anotherSelectedAll_auth' ? { otherAuth: String(changeVal2) } : { selfAuth: String(changeVal2) });
-                        console.log(item2E.personItemDefId);
+                        changeVal = (changeValue < 1) ? 1 : (changeValue > 2) ? 2 : changeValue;
+                        setTimeout(function() {
+                            grid.ntsGrid("updateRow", item2E.personItemDefId, parrentId === 'anotherSelectedAll_auth' ? { otherAuth: String(changeVal) } : { selfAuth: String(changeVal) });
+                        }, 1);
                     }
                 });
             });
@@ -642,7 +662,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             optionsText: 'text',
                             controlType: 'SwitchButtons',
                             enable: true,
-                            distinction: option2E == "{ " ? [] : JSON.parse(option2E)
+                            distinction: option2E == "{ " ? {} : JSON.parse(option2E)
                         },
                         {
                             name: 'SwitchButtons2',
@@ -651,7 +671,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             optionsText: 'text',
                             controlType: 'SwitchButtons',
                             enable: true,
-                            distinction: option2E == "{ " ? [] : JSON.parse(option2E)
+                            distinction: option2E == "{ " ? {} : JSON.parse(option2E)
                         }
                     ],
                     features: [
@@ -707,8 +727,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
         requiredAtr: string;
         itemName: string;
         parrentCd: string;
-        otherAuth: number;
-        selfAuth: number;
+        otherAuth: string;
+        selfAuth: string;
         itemCd: string;
         dataType: number;
 
@@ -800,7 +820,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 itemLst: Array<any> = [];
 
 
-            itemLst = _.map( dataSource, function(c: any) {
+            itemLst = _.map(dataSource, function(c: any) {
                 c.personItemDefId = c.personItemDefId.search("COM") > -1 ? c.personItemDefId : _.replace(c.personItemDefId, new RegExp("_", "g"), "-");
                 _.each(itemGroup, function(i) {
                     if (i.length > 0) {
