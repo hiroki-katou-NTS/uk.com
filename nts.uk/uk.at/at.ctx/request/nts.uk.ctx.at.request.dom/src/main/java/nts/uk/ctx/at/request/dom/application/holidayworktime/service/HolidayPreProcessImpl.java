@@ -140,7 +140,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 				List<Application_New> application = this.applicationRepository.getApp(employeeId,
 						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
 						ApplicationType.BREAK_TIME_APPLICATION.value);
-				if(CollectionUtil.isEmpty(application)){
+				if(!CollectionUtil.isEmpty(application)){
 					result.setAppDate(application.get(0).getAppDate());
 					Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
 							.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());

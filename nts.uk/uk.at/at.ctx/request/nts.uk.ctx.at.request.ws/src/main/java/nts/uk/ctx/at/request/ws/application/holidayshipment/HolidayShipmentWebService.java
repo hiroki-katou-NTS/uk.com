@@ -8,10 +8,13 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.DenyHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ReleaseHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
@@ -41,6 +44,12 @@ public class HolidayShipmentWebService extends WebService {
 	private CancelHolidayShipmentCommandHandler cancelHanler;
 	@Inject
 	private ChangeAbsDateCommandHandler changeAbsHanler;
+	@Inject
+	private ApproveHolidayShipmentCommandHandler approveHandler;
+	@Inject
+	private DenyHolidayShipmentCommandHandler denyHandler;
+	@Inject
+	private ReleaseHolidayShipmentCommandHandler releaseHandler;
 
 	@POST
 	@Path("start")
@@ -81,14 +90,32 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("remove")
-	public void remove(DeleteHolidayShipmentCommand command) {
+	public void remove(HolidayShipmentCommand command) {
 		this.deleteHanler.handle(command);
 	}
 
 	@POST
 	@Path("cancel")
-	public void cancel(DeleteHolidayShipmentCommand command) {
+	public void cancel(HolidayShipmentCommand command) {
 		this.cancelHanler.handle(command);
+	}
+
+	@POST
+	@Path("approve")
+	public void approve(HolidayShipmentCommand command) {
+		this.approveHandler.handle(command);
+	}
+
+	@POST
+	@Path("deny")
+	public void deny(HolidayShipmentCommand command) {
+		this.denyHandler.handle(command);
+	}
+
+	@POST
+	@Path("release")
+	public void release(HolidayShipmentCommand command) {
+		this.releaseHandler.handle(command);
 	}
 
 	@POST

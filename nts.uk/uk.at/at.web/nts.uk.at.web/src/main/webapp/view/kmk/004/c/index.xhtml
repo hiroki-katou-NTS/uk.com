@@ -44,8 +44,8 @@
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('Com_Employment')}</span>
 				<span class="action-bar">
-				<button tabindex="2" data-bind="click: saveEmployment, enable: (selectedEmploymentCode()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
-				<button tabindex="4" class="danger" data-bind="click: removeEmployment, disable: worktimeVM.isNewMode() || !selectedEmploymentCode()">#{i18n.getText('KMK004_29')}</button>
+				<button tabindex="6" data-bind="click: saveEmployment, enable: (selectedEmploymentCode()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
+				<button tabindex="7" class="danger" data-bind="click: removeEmployment, disable: worktimeVM.isNewMode() || !selectedEmploymentCode()">#{i18n.getText('KMK004_29')}</button>
 				</span>
 			</div>
 			<div class="contents-area cf fixed-flex-layout">
@@ -53,7 +53,9 @@
 				<div class="right-content pull-left fixed-flex-layout-right" style="min-width: 600px" data-bind="ifnot: isLoading">
 					<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
 						<com:ko tag="with" bind="worktimeVM">
-							<ui:include src="../shr/kmk004.worktime.setting.xhtml" />
+							<ui:include src="../shr/kmk004.worktime.setting.xhtml">
+								<ui:param name="baseTabIndex" value="5"></ui:param>
+							</ui:include>
 						</com:ko>
 					</fieldset>
 				</div>

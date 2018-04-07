@@ -83,14 +83,15 @@ module nts.uk.at.view.kmk004.h {
              */
             public decideData(): void {
                 let self = this;
+                let params: DeformSetParams = nts.uk.ui.windows.getShared("DEFORM_SET_PARAM");
                 let deformParams: DeformSetParams = new DeformSetParams();
                 deformParams.startWeek = self.startWeek();
                 deformParams.isIncludeExtraAggr = self.isIncludeExtraAggr();
-                deformParams.isIncludeLegalAggr = self.isIncludeLegalAggr();
-                deformParams.isIncludeHolidayAggr = self.isIncludeHolidayAggr();
+                deformParams.isIncludeLegalAggr = self.isIncludeExtraAggr() ? self.isIncludeLegalAggr() : params.isIncludeLegalAggr;
+                deformParams.isIncludeHolidayAggr = self.isIncludeExtraAggr() ? self.isIncludeHolidayAggr() : params.isIncludeHolidayAggr;
                 deformParams.isIncludeExtraExcessOutside = self.isIncludeExtraExcessOutside();
-                deformParams.isIncludeLegalExcessOutside = self.isIncludeLegalExcessOutside();
-                deformParams.isIncludeHolidayExcessOutside = self.isIncludeHolidayExcessOutside();
+                deformParams.isIncludeLegalExcessOutside = self.isIncludeExtraExcessOutside() ? self.isIncludeLegalExcessOutside() : params.isIncludeLegalExcessOutside;
+                deformParams.isIncludeHolidayExcessOutside = self.isIncludeExtraExcessOutside() ? self.isIncludeHolidayExcessOutside() : params.isIncludeHolidayExcessOutside;
                 deformParams.strMonth = self.strMonth();
                 deformParams.period = self.period();
                 deformParams.repeatCls = self.repeatCls();

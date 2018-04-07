@@ -59,14 +59,15 @@ module nts.uk.at.view.kmk004.d {
                 self.worktimeVM = new WorktimeSettingVM.ScreenModel();
                 self.alreadySettingWorkplaces = ko.observableArray([]);
                 self.selectedWorkplaceId = ko.observable('');
+                self.selectedWorkplaceId.subscribe(function(workPlaceId) {
+                    if (nts.uk.text.isNullOrEmpty(workPlaceId)) {
+                        self.workplaceCode('');
+                        self.workplaceName('');
+                    }
+                });
                 self.setWorkplaceComponentOption();
                 self.workplaceCode = ko.observable('');
                 self.workplaceName = ko.observable('');
-                self.selectedWorkplaceId.subscribe(wkpId => {
-                    if (wkpId) {
-                        self.loadWorkplaceSetting();
-                    }
-                });
                 
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
@@ -119,8 +120,16 @@ module nts.uk.at.view.kmk004.d {
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                     
+                    let wkpId = self.selectedWorkplaceId();
+                    self.loadWorkplaceSetting();
+                    
+                    self.selectedWorkplaceId.subscribe(wkpId => {
+                        self.loadWorkplaceSetting();
+                    });
                     ko.applyBindingsToNode($('#lblWorkplaceCode')[0], { text: self.workplaceCode });
                     ko.applyBindingsToNode($('#lblWorkplaceName')[0], { text: self.workplaceName });
+                    
+                    self.worktimeVM.postBindingHandler();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -136,7 +145,7 @@ module nts.uk.at.view.kmk004.d {
                     isMultiSelect: false, // is multiselect.
                     isShowSelectButton: false, // Show button select all and selected sub parent
                     treeType: 1, // workplace tree.
-                    selectType: 2, // select first item.
+                    selectType: 3, // select first item.
                     maxRows: 12, // maximum rows can be displayed.
                     selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
@@ -152,6 +161,12 @@ module nts.uk.at.view.kmk004.d {
             public loadWorkplaceSetting(): void {
                 let self = this;
                 let wpkId = self.selectedWorkplaceId();
+                if (nts.uk.text.isNullOrEmpty(wpkId)) {
+                    self.resetFieldsToNewMode();
+                    return;
+                }
+                nts.uk.ui.block.invisible();
+                self.setWorkplaceCodeName( $('#list-workplace').getDataList(), wpkId);
                 service.findWorkplaceSetting(self.worktimeVM.worktimeSetting.normalSetting().year(), wpkId)
                     .done(function(data) {
                         // Clear Errors
@@ -161,9 +176,12 @@ module nts.uk.at.view.kmk004.d {
                         // Check condition: ドメインモデル「会社別通常勤務労働時間」を取得する
                         if (!nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto) 
                         && !nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.regularLaborTime)) {
-                            self.worktimeVM.isNewMode(false);
+                            let isModeNew = false;
+                            
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.normalSetting)) {
                                 resultData.statWorkTimeSetDto.normalSetting = new WorktimeNormalDeformSettingDto();
+                                
+                                isModeNew = true;
                             }
                             if (nts.uk.util.isNullOrEmpty(data.statWorkTimeSetDto.flexSetting)) {
                                 resultData.statWorkTimeSetDto.flexSetting = new WorktimeFlexSetting1Dto();
@@ -175,22 +193,32 @@ module nts.uk.at.view.kmk004.d {
                             self.worktimeVM.worktimeSetting.updateFullData(resultData);
                             self.worktimeVM.worktimeSetting.updateYear(data.statWorkTimeSetDto.year);
                             
-                            self.setWorkplaceCodeName($('#list-workplace').getDataList(), wpkId);
+                            // Sort month.
+                            self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                            
+                            self.worktimeVM.isNewMode(isModeNew);
                         }
                         else {
-                            // new mode.
-                            self.worktimeVM.isNewMode(true);
-                            let newSetting = new WorktimeSettingDto();
-                            // Reserve selected year.
-                            newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                            // Update Full Data
-                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
-                            
-                            self.setWorkplaceCodeName($('#list-workplace').getDataList(), '');
+                            self.resetFieldsToNewMode();
                         }
-                        // Sort month.
-                        self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
+            }
+            
+            private resetFieldsToNewMode(): void {
+                let self = this;
+    
+                // new mode.
+                self.worktimeVM.isNewMode(true);
+                let newSetting = new WorktimeSettingDto();
+                // Reserve selected year.
+                newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
+                // Update Full Data
+                self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                
+                // Sort month.
+                self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
             }
             
             /**
@@ -203,19 +231,26 @@ module nts.uk.at.view.kmk004.d {
                 }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), workplaceId: self.selectedWorkplaceId() }
-                    service.removeWorkplaceSetting(command).done(() => {
-                        self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
-                        
+                    service.removeWorkplaceSetting(command).done((res) => {
+
                         // new mode.
                         self.worktimeVM.isNewMode(true);
                         let newSetting = new WorktimeSettingDto();
                         // Reserve selected year.
                         newSetting.updateYear(self.worktimeVM.worktimeSetting.normalSetting().year());
-                        // Update Full Data
-                        self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
-                        
+
+                        if (res.wtsettingCommonRemove) {
+                            self.removeAlreadySettingWorkplace(self.selectedWorkplaceId());
+
+                            // Update Full Data
+                            self.worktimeVM.worktimeSetting.updateFullData(ko.toJS(newSetting));
+                        } else {
+                            newSetting.statWorkTimeSetDto.regularLaborTime.updateData(self.worktimeVM.worktimeSetting.normalWorktime());
+                            newSetting.statWorkTimeSetDto.transLaborTime.updateData(self.worktimeVM.worktimeSetting.deformLaborWorktime());
+                            self.worktimeVM.worktimeSetting.updateDataDependOnYear(newSetting.statWorkTimeSetDto);
+                        }
                         self.setWorkplaceCodeName($('#list-workplace').getDataList(), '');
-                        
+
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
@@ -250,6 +285,7 @@ module nts.uk.at.view.kmk004.d {
                         self.workplaceCode(data.code);
                         self.workplaceName(data.name);
                     }
+                    
                     // Continue to find in childs.
                     if (data.childs.length > 0) {
                         this.setWorkplaceCodeName(data.childs, workPlaceId);

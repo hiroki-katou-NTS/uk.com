@@ -198,8 +198,8 @@ module cmm045.a.viewmodel {
                                 data.appStatusCount.denialNumber));
                         }
                         let colorBackGr = self.fillColorbackGr();
-//                        let colorsText = self.fillColorText();
-                        let colorsText = [];
+                        let colorsText = self.fillColorText();
+//                        let colorsText = [];
                         if (self.mode() == 1) {
                              let lstHidden: Array<any> = self.findRowHidden(self.items());
                              self.reloadGridApproval(lstHidden,colorBackGr,colorsText);
@@ -686,13 +686,13 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+            if(absence.allDayHalfDayLeaveAtr == 0 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
                 appContent006 = self.convertAbsenceAllDay(absence);
             }
             if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
                 appContent006 = self.convertAbsenceSpecial(absence);
             }
-            if(absence.allDayHalfDayLeaveAtr == 0){//休暇申請.終日半日休暇区分　＝　半日休暇
+            if(absence.allDayHalfDayLeaveAtr == 1){//休暇申請.終日半日休暇区分　＝　半日休暇
                 appContent006 = self.convertAbsenceHalfDay(absence);
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
@@ -706,7 +706,7 @@ module cmm045.a.viewmodel {
         //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
         convertAbsenceAllDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
-            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_248', [self.convertNameHoliday(absence.holidayAppType)]);
+            return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)]);
         }
         //※特別休暇申請.続柄コード　＝　入力ありの場合
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
@@ -1107,8 +1107,8 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.denialNumber));
                     }
                     let colorBackGr = self.fillColorbackGr();
-//                    let colorsText = self.fillColorText();
-                    let colorsText = [];
+                    let colorsText = self.fillColorText();
+//                    let colorsText = [];
                     if (self.mode() == 1) {
                         $("#grid1").ntsGrid("destroy");
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
@@ -1203,8 +1203,8 @@ module cmm045.a.viewmodel {
                 self.items(lstAppFitler);
             }
             let colorBackGr = self.fillColorbackGr();
-//            let colorsText = self.fillColorText();
-            let colorsText = [];
+            let colorsText = self.fillColorText();
+//            let colorsText = [];
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
                 if($("#grid1").data("igGrid") !== undefined){

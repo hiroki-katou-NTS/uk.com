@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.val;
 import nts.arc.security.csrf.CsrfToken;
-import nts.arc.security.ticket.DataTicket;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
