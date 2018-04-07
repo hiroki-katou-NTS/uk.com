@@ -95,10 +95,7 @@
 							<td>
 								<div class="cf" tabindex="9" id="expirationStatus"
 									data-bind="ntsSwitchButton: {
-								options: [
-							                 { code: '0', name: '使用可能'},
-							                 { code: '1', name: '期限切れ'}
-							             ],
+								options: $parent.expirationStatus,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: expirationStatus,

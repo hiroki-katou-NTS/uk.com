@@ -46,8 +46,8 @@ module nts.uk.com.view.cps001.g.vm {
 
             _self.checked = ko.observable(false);
             _self.expirationStatus = ko.observableArray([
-                { code: '0', name: '使用可能' },
-                { code: '1', name: '期限切れ' }
+                { code: EXPIRED_STATUS.AVAILABLE.toString(), name: '使用可能' },
+                { code: EXPIRED_STATUS.EXPIRED.toString(), name: '期限切れ' }
             ]);
 
             // Subsribe table
@@ -137,7 +137,7 @@ module nts.uk.com.view.cps001.g.vm {
                 _self.listAnnualLeaveGrantRemainData(_self.alllist());
             } else {
                 _self.listAnnualLeaveGrantRemainData(_.filter(_self.alllist(),function(item){
-                    return item.expirationStatus === 0;  
+                    return item.expirationStatus === EXPIRED_STATUS.AVAILABLE;  
                 }));
             }
         }
@@ -224,8 +224,8 @@ module nts.uk.com.view.cps001.g.vm {
             let self = this;
             self.columns = ko.observableArray([
                 {type: 'string', key: 'annLeavID', hidden: true },
-                { headerText: getText('CPS001_110'), type: 'date', key: 'grantDate', width: 100 },
-                { headerText: getText('CPS001_111'), type: 'date', key: 'deadline', width: 100 },
+                { headerText: getText('CPS001_118'), type: 'date', key: 'grantDate', width: 100 },
+                { headerText: getText('CPS001_119'), type: 'date', key: 'deadline', width: 100 },
                 { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
                 { headerText: getText('CPS001_128'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
                 { headerText: getText('CPS001_121'), key: 'grantMinutes', formatter: formatTime, width: 80, hidden: self.grantMinutesH()},
@@ -400,6 +400,10 @@ module nts.uk.com.view.cps001.g.vm {
         }
     }
     
+    enum EXPIRED_STATUS {
+        AVAILABLE = 0,
+        EXPIRED = 1    
+    }
     function formatTime(value, row) {
         if (value) {
             let hour = Math.floor(Math.abs(value)/60);
@@ -417,9 +421,9 @@ module nts.uk.com.view.cps001.g.vm {
     }
 
     function formatEnum(value, row) {
-        if (value && value === '0') {
+        if (value && value === EXPIRED_STATUS.AVAILABLE.toString()) {
             return '使用可能';
-        } else if (value && value === '1') {
+        } else if (value && value === EXPIRED_STATUS.EXPIRED.toString()) {
             return '期限切れ';
         }
     }
