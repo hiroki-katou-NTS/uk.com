@@ -35,6 +35,14 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
@@ -296,7 +304,14 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
 						 ChildCareAttribute.CARE
-						)
+						),
+				new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)), 
+								   new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)), 
+								   new YearlyReservedOfDaily(new AttendanceTime(0)), 
+								   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+								   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+								   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+								   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)))
 				);
 
 		// 日別実績の勤務実績時間
