@@ -78,7 +78,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				breakTime = this.checkOutSideTimeTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), siftCD, breakTime,recordWorkInfoImport,calTime);
 			}
 		}
-		return null;
+		return breakTime;
 	}
 	// 03-02-2_当日以外の場合
 	@Override
