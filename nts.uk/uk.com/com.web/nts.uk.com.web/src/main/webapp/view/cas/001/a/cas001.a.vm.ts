@@ -134,12 +134,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 if (newValue == 0) {
                     $("#anotherSelectedAll_auth > button.nts-switch-button").prop('disabled', true);
-                }else{
+                } else {
                     $("#anotherSelectedAll_auth > button.nts-switch-button").prop('disabled', false);
                 }
-
-
-
             });
 
             self.allowPersonRef.subscribe((newValue) => {
@@ -156,9 +153,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 if (newValue == 0) {
                     $("#seftSelectedAll_auth > button.nts-switch-button").prop('disabled', true);
-                }else{
+                } else {
                     $("#seftSelectedAll_auth > button.nts-switch-button").prop('disabled', false);
-                } 
+                }
             });
 
         }
@@ -176,14 +173,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 dialog({ messageId: "Msg_664" });
                 return;
             }
-            _.each(itemLst2E, function(item2E) {
-                let x: Array<any> = [];
-                x = _.remove(itemCheckLst, function(e) {
-                    return e.rowId == item2E.personItemDefId;
-                });
-                console.log(x);
-            });
-            console.log(itemCheckLst);
 
             _.forEach(itemCheckLst, (item) => {
                 if (item.value) {
@@ -464,8 +453,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
-
-
                 if (result.length <= 0) {
                     screenModel.roleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
                     dialog({ messageId: "Msg_217" });
@@ -617,7 +604,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     }];
 
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: any) {
-                self.roleItemDatas(result.itemAuthLst);
+                self.roleItemDatas(_.map(result.itemLst, x => new PersonRoleItem(x)));
                 self.roleItemList(_.filter(_.map(result.itemLst, x => new PersonRoleItem(x)), ['parrentCd', null]));
                 self.itemLst2E = result.itemReadLst;
                 if (self.roleItemList().length < 1) {
@@ -859,15 +846,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 itemDatas = sm.currentRole().currentCategory().roleItemDatas();
             //create loop parent for get child item 
             _.forEach(items, function(parentItem: PersonRoleItemCommand) {
-
-                let childItems = _.filter(itemDatas, { 'parrentCd': parentItem.itemCd });
+                let childItems = _.filter(itemDatas, { parrentCd: parentItem.itemCd });
                 //set atr same parent item
                 _.forEach(childItems, function(childItem: PersonRoleItem) {
+                    let subItems = _.filter(itemDatas, { parrentCd: childItem.itemCd });
+                    //set atr same child item
+                    _.forEach(subItems, function(obj: PersonRoleItem) {
+                        obj.selfAuth = parentItem.selfAuth;
+                        obj.otherAuth = parentItem.otherAuth;
+                        items.push(new PersonRoleItemCommand(obj));
+                    })
                     childItem.selfAuth = parentItem.selfAuth;
                     childItem.otherAuth = parentItem.otherAuth;
 
                     items.push(new PersonRoleItemCommand(childItem));
                 });
+                
 
             });
 

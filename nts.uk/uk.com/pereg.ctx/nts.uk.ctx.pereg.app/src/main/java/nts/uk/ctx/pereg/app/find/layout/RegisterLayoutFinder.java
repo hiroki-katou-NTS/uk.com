@@ -258,6 +258,7 @@ public class RegisterLayoutFinder {
 			item.setValue(setItem.getSaveData().getValue());
 		}
 		item.setCategoryCode(itemCls.getPersonInfoCategoryCD());
+		item.setResourceId(itemDef.getResourceId());
 		return item;
 
 	}
