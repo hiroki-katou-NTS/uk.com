@@ -5,6 +5,7 @@ module nts.uk.com.view.cps001.g.vm {
     import block = nts.uk.ui.block.grayout;
     import unblock = nts.uk.ui.block.clear;
     import clearError = nts.uk.ui.errors.clearAll;
+    import error = nts.uk.ui.dialog.alertError;
     export class ScreenModel {
 
         // Store create/update mode
@@ -289,8 +290,8 @@ module nts.uk.com.view.cps001.g.vm {
                         _self.startPage(ko.toJS(_self.currentItem()).annLeavID);
                     });
                     unblock();
-                }).fail((message) => {
-                    alert(message.message);
+                }).fail((message: any) => {
+                    error(message.message);
                     unblock();
                 });
             }
@@ -378,7 +379,7 @@ module nts.uk.com.view.cps001.g.vm {
                 self.annLeavID(param.annLeavID || null);
                 self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
                 self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
-                self.expirationStatus(param.expirationStatus || 0);
+                self.expirationStatus(param.expirationStatus || EXPIRED_STATUS.AVAILABLE);
                 self.grantDays(param.grantDays || null);
                 self.grantMinutes(param.grantMinutes || null);
                 self.usedDays(param.usedDays || null);
@@ -401,8 +402,8 @@ module nts.uk.com.view.cps001.g.vm {
     }
     
     enum EXPIRED_STATUS {
-        AVAILABLE = 0,
-        EXPIRED = 1    
+        AVAILABLE = 1,
+        EXPIRED = 0    
     }
     function formatTime(value, row) {
         if (value) {
