@@ -331,8 +331,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			long start = System.currentTimeMillis();
 			
 			List<ApplicationFullOutput> lstAppFull = this.mergeAppAndPhase(lstApp, companyId);
-			long end = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh mergeAppAndPhase: " + (end - start) + "Millis");
+//			long end = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh mergeAppAndPhase: " + (end - start) + "Millis");
 			//条件１： ログイン者の表示対象の基本条件
 //			String idAppAgent = null;
 			List<ApplicationFullOutput> lstAppFullFil1 = new ArrayList<>();
@@ -343,8 +343,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					lstAppFullFil1.add(appFull);
 				}
 			}
-			long start2 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh filterConditions1: " + (start2 - end) + "Millis");
+//			long start2 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh filterConditions1: " + (start2 - end) + "Millis");
 			//条件2: 申請者の指定条件
 			List<ApplicationFullOutput> lstAppFilter2 = new ArrayList<>();
 			for (ApplicationFullOutput app : lstAppFullFil1) {
@@ -370,8 +370,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				// TODO Auto-generated method stub
 			}
-			long start3 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh filterConditions2: " + (start3 - start2) + "Millis");
+//			long start3 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh filterConditions2: " + (start3 - start2) + "Millis");
 			//条件３：承認区分の指定条件
 			List<Application_New> lstAppFilter3 = new ArrayList<>();
 //			List<ApplicationFullOutput> lstAppFullFilter3 = lstAppFilter2;
@@ -450,8 +450,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 			}
-			long start4 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh filterConditions3: " + (start4 - start3) + "Millis");
+//			long start4 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh filterConditions3: " + (start4 - start3) + "Millis");
 			//条件５：重複承認の対応条件
 			
 			
@@ -460,37 +460,39 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			List<Application_New> lstHdWork = lstAppFilter3.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());
 			List<Application_New> lstWkChange = lstAppFilter3.stream().filter(d -> d.isAppWkChange()).collect(Collectors.toList());
 			List<Application_New> lstAbsence = lstAppFilter3.stream().filter(d -> d.isAppAbsence()).collect(Collectors.toList());
+			List<Application_New> lstCompltLeave = lstAppFilter3.stream().filter(d -> d.isAppCompltLeave()).collect(Collectors.toList());
 			
 			List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 			List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
 			List<AppHolidayWorkFull> lstAppHdWork = new ArrayList<>();
 			List<AppWorkChangeFull> lstAppWorkChange = new ArrayList<>();
 			List<AppAbsenceFull> lstAppAbsence = new ArrayList<>();
+			List<AppCompltLeaveSync> lstAppCompltLeaveSync = new ArrayList<>();
 			//get info full
 			for (Application_New app : lstOverTime) {
 				AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, app.getAppID());
 				lstAppOt.add(appOt);
 			}
-			long start6 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh overtimeFull: " + (start6 - start4) + "Millis");
+//			long start6 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh overtimeFull: " + (start6 - start4) + "Millis");
 			for (Application_New app : lstGoBack) {
 				AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
 				lstAppGoBack.add(appGoBack);
 			}
-			long start7 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh gobackFull: " + (start7 - start6) + "Millis");
+//			long start7 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh gobackFull: " + (start7 - start6) + "Millis");
 			for (Application_New app : lstHdWork) {
 				AppHolidayWorkFull appHdWork = repoAppDetail.getAppHolidayWorkInfo(companyId, app.getAppID());
 				lstAppHdWork.add(appHdWork);
 			}
-			long start8 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh hdWorkFull: " + (start8 - start7) + "Millis");
+//			long start8 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh hdWorkFull: " + (start8 - start7) + "Millis");
 			for (Application_New app : lstWkChange) {
 				AppWorkChangeFull appWkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
 				lstAppWorkChange.add(appWkChange);
 			}
-			long start9 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh wkChangeFull: " + (start9 - start8) + "Millis");
+//			long start9 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh wkChangeFull: " + (start9 - start8) + "Millis");
 			//休暇申請: get full info(1);
 			for (Application_New app : lstAbsence) {
 				Integer day = 0;
@@ -500,28 +502,67 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 				lstAppAbsence.add(appAbsence);
 			}
-			long start10 = System.currentTimeMillis();
-			System.out.println("Thời gian chạy đoạn lệnh gabsenceFull: " + (start10 - start9) + "Millis");
+			//振休振出申請: get full info(10);
+			List<String> lstSyncId = new ArrayList<>();
+			for (Application_New app : lstCompltLeave) {
+				if(lstSyncId.contains(app.getAppID())){
+					continue;
+				}
+				AppCompltLeaveFull appMain = null;
+				AppCompltLeaveFull appSub = null;
+				String appDateSub = null;
+				String appInputSub = null;
+				//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
+				AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
+				if(!sync.isSync()){//TH k co don lien ket
+					//lay thong tin chi tiet
+					appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+				}else{//TH co don lien ket
+					//lay thong tin chi tiet A
+					appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+					//check B co trong list don xin k?
+					String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
+					CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
+					if(checkExit.isCheckExit()){//exist
+						lstSyncId.add(appIdSync);
+						appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
+						appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
+					}else{//not exist
+						//lay thong tin chung
+						Application_New sub = repoApp.findByID(companyId, appIdSync).get();
+						appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+						appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
+					}
+					appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0);
+				}
+				
+				lstAppCompltLeaveSync.add(new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub));
+			}
+			List<Application_New> lstCompltSync = lstCompltLeave.stream()
+					.filter(c -> !lstSyncId.contains(c.getAppID())).collect(Collectors.toList());
+//			long start10 = System.currentTimeMillis();
+//			System.out.println("Thời gian chạy đoạn lệnh gabsenceFull: " + (start10 - start9) + "Millis");
 			List<Application_New> lstAppFilter = lstOverTime;
 			lstAppFilter.addAll(lstGoBack);
 			lstAppFilter.addAll(lstHdWork);
 			lstAppFilter.addAll(lstWkChange);
 			lstAppFilter.addAll(lstAbsence);
+			lstAppFilter.addAll(lstCompltSync);
 			//アルゴリズム「申請一覧リスト取得出張」を実行する
 			// TODO Auto-generated method stub
 //		}
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
 		// TODO Auto-generated method stub
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter3, companyId);
+		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter, companyId);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
 		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFullFilter3, displaySet, companyId, sID);
-		long start5 = System.currentTimeMillis();
-		System.out.println("Thời gian chạy đoạn lệnh getDetailFull: " + (start5 - start4) + "Millis");
+//		long start5 = System.currentTimeMillis();
+//		System.out.println("Thời gian chạy đoạn lệnh getDetailFull: " + (start5 - start4) + "Millis");
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
-		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack,lstAppHdWork, lstAppWorkChange,
-				lstAppAbsence, null, timeOutput.getAppStatus(),timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), 
+		return new AppListOutPut(lstMaster, lstAppFilter, lstAppOt, lstAppGoBack,lstAppHdWork, lstAppWorkChange,
+				lstAppAbsence, lstAppCompltLeaveSync, timeOutput.getAppStatus(),timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), 
 				lstFrameUn, lstPhaseStatus, timeOutput.getLstAppGroup());
 	}
 //	private boolean findAppPre(String preAppID){
