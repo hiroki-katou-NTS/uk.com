@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.mail;
+package nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.remandsetting;
 
 import java.io.Serializable;
 
@@ -17,16 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class SgwmtUrlExecInfoPk implements Serializable
+public class KrqstContentOfRemandMailPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
-    /**
-    * 埋込URLID
-    */
-    @Basic(optional = false)
-    @Column(name = "EMBEDDED_ID")
-    public String embeddedId;
     
     /**
     * 会社ID
