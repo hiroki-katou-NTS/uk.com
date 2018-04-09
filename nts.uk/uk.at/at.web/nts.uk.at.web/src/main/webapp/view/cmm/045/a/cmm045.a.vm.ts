@@ -676,8 +676,9 @@ module cmm045.a.viewmodel {
             let appContent007 = getText('CMM045_250') + wkChange.workTypeName + wkChange.workTimeName + go1 + back1 + go2 + back2 + breakTime + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
+            let dateRange = self.appDateColor(self.convertDate(app.startDate), '') + '－' + self.appDateColor(self.convertDate(app.endDate), '');
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent007, self.convertDateTime(app.inputDate),
+                masterInfo.dispName, prePostApp, dateRange, appContent007, self.convertDateTime(app.inputDate),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null);
             return a;
@@ -704,8 +705,9 @@ module cmm045.a.viewmodel {
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
+            let dateRange = app.endDate == null ? self.appDateColor(self.convertDate(app.applicationDate), '') : self.appDateColor(self.convertDate(app.startDate), '') + '－' + self.appDateColor(self.convertDate(app.endDate), '');
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), appContent006 + reason, self.convertDateTime(app.inputDate),
+                masterInfo.dispName, prePostApp, dateRange, appContent006 + reason, self.convertDateTime(app.inputDate),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null);
             return a;
