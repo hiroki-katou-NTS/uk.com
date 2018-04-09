@@ -65,8 +65,7 @@ public class DiffTimeWorkStampReflectTimezone extends WorkTimeDomainObject {
 	 *            the old domain
 	 */
 	public void correctData(ScreenMode screenMode, DiffTimeWorkStampReflectTimezone oldDomain) {
-		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = this.stampReflectTimezone
-				.stream()
+		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = oldDomain.getStampReflectTimezone().stream()
 				.collect(Collectors.toMap(
 						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()),
 						Function.identity()));

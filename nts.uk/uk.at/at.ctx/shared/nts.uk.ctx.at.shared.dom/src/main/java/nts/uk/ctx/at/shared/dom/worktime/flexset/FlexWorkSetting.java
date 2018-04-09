@@ -5,9 +5,17 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
@@ -106,6 +114,14 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 * @param other the other
 	 */
 	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
+		// Dialog J: list stamp timezone
+		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = other.getLstStampReflectTimezone().stream()
+				.collect(Collectors.toMap(
+						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()), 
+						Function.identity()));
+		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
+				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
+		
 		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 		
 		this.offdayWorkTime.correctData(screenMode, other);
@@ -119,6 +135,9 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 	 * @param screenMode the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
+		// Dialog J: list stamp timezone
+		this.lstStampReflectTimezone.forEach(item -> item.correctDefaultData(screenMode));
+		
 		this.commonSetting.correctDefaultData(screenMode);
 		
 		this.coreTimeSetting.correctDefaultData(screenMode);

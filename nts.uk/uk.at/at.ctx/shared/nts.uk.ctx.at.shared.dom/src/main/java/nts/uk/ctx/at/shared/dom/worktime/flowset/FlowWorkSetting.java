@@ -104,6 +104,9 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 *            the other
 	 */
 	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
+		// Dialog J: list stamp timezone
+		this.stampReflectTimezone.correctData(screenMode, other.getStampReflectTimezone());
+		
 		// Tab 2 + 5 + 7
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
@@ -133,6 +136,9 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 *            the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
+		// Dialog J: list stamp timezone
+		this.stampReflectTimezone.correctDefaultData(screenMode);
+		
 		// Tab 2 + 5: restore 平日勤務時間帯
 		this.halfDayWorkTimezone.correctDefaultData(screenMode);
 		
