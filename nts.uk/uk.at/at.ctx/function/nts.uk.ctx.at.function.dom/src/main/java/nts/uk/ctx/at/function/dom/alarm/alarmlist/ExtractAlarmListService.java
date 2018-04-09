@@ -61,7 +61,7 @@ public class ExtractAlarmListService {
 		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = aggregationProcessService.processAlarmListWorkRecord(listEmployee,
 				checkPatternCode, periodByCategory);
 		// ドメインモデル「アラームリスト抽出処理状況」を更新する
-		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), GeneralDateTime.now().minutes());
+		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), GeneralDateTime.now().hours()*60 + GeneralDateTime.now().minutes());
 		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
 
 		// 集計結果を確認する sort list
