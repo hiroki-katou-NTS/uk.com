@@ -169,10 +169,10 @@ module a4 {
                         dataObject.stampGoWork1End = workEnd;
                         dataObject.stampLeavingWork1Start = workStart;
                         dataObject.stampLeavingWork1End = workEnd;
-                        dataObject.stampGoWork2Start = workStart;
-                        dataObject.stampGoWork2End = workEnd;
-                        dataObject.stampLeavingWork2Start = workStart;
-                        dataObject.stampLeavingWork2End = workEnd;
+                        dataObject.stampGoWork2Start = 0;
+                        dataObject.stampGoWork2End = 1440;
+                        dataObject.stampLeavingWork2Start = 0;
+                        dataObject.stampLeavingWork2End = 1440;
                     }                    
                 } else {
                     dataObject.stampGoWork1Start = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().startTime();
