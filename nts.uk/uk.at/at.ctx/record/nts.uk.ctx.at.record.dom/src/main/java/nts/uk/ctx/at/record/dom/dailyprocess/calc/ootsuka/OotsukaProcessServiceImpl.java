@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka;
 
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -15,12 +20,14 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
  * @author keisuke_hoshina
  *
  */
-public class OotsukaProcessServiceImpl {
+@Stateless
+public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 
+	@Override
 	public WorkType getOotsukaWorkType(WorkType workType,
-									   /*就業時間帯*/
+									   Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
 									   TimeLeavingOfDailyPerformance attendanceLeaving) {
-		if(decisionOotsukaMode(workType,attendanceLeaving)) {
+		if(decisionOotsukaMode(workType,calcMethodOfFixWork,attendanceLeaving)) {
 			return createOotsukaWorkType(workType);
 		}
 		else {
@@ -78,10 +85,10 @@ public class OotsukaProcessServiceImpl {
 	 * @return
 	 */
 	private boolean decisionOotsukaMode(WorkType workType,
-										/*就業時間帯*/
+										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
 										TimeLeavingOfDailyPerformance attendanceLeaving) {
 		//勤務計算をする　＆＆　打刻漏れをしていない
-		if(decisionAbleCalc(workType,true/*就業時間帯*/) && attendanceLeaving.isLeakageStamp()) {
+		if(decisionAbleCalc(workType,calcMethodOfFixWork) && attendanceLeaving.isLeakageStamp()) {
 			return true;
 		}
 		return false;
@@ -94,9 +101,9 @@ public class OotsukaProcessServiceImpl {
 	 * @param isCalcInVacation 休暇時の計算
 	 * @return
 	 */
-	private boolean decisionAbleCalc(WorkType workType,boolean isCalcInVacation) {
+	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork) {
 		//休暇時の計算を取得
-		if(isCalcInVacation) {
+		if(workType != null && calcMethodOfFixWork.isPresent()) {
 			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
 					&& workType.getDailyWork().isOneOrHalfDaySpecHoliday()
 					&& workType.getDailyWork().isOneOrHalfDayYearlyReserved();

@@ -183,4 +183,13 @@ public class WithinStatutoryTimeOfDaily {
 		}
 		return returnErrorItem;
 	}
+	
+	/**
+	 * 就業時間から休憩未使用時間を減算(大塚モード専用処理)
+	 * @param unUseBreakTime 休憩未取得時間
+	 */
+	public void workTimeMinusUnUseBreakTimeForOotsuka(AttendanceTime unUseBreakTime) {
+		this.workTime = this.workTime.minusMinutes(unUseBreakTime.valueAsMinutes());
+		this.actualWorkTime = this.actualWorkTime.minusMinutes(unUseBreakTime.valueAsMinutes());
+	}
 }
