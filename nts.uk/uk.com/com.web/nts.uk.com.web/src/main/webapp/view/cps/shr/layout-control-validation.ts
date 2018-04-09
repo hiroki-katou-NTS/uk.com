@@ -174,6 +174,7 @@ module nts.layout {
             self.dateTime();
             self.setTable();
             self.grantInformation();
+            self.specialLeaveInformation();
 
             validate.initCheckError(lstCls);
         }
