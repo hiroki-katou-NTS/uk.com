@@ -27,7 +27,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="extract" class="proceed" data-bind="click: open_Dialog" tabindex="1" >#{i18n.getText('KAL001_2')}</button>
+					<button id="extract" class="proceed" data-bind="click: open_Dialog, enable: $root.errors.isEmpty" tabindex="1" >#{i18n.getText('KAL001_2')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class ='fixed-flex-layout' >
