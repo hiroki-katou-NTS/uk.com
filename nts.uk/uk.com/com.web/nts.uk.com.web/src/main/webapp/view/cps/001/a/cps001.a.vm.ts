@@ -667,6 +667,8 @@ module cps001.a.vm {
                         }
                     }
                     self.categoryId.valueHasMutated();
+                } else {
+                    unblock();
                 }
             });
 
@@ -822,6 +824,8 @@ module cps001.a.vm {
                                 break;
                         }
                     }
+                } else {
+                    unblock();
                 }
             });
 
@@ -939,6 +943,8 @@ module cps001.a.vm {
                     } else {
                         setShared(REPL_KEY, REPL_KEYS.NORMAL);
                     }
+                } else {
+                    unblock();
                 }
             });
         }
