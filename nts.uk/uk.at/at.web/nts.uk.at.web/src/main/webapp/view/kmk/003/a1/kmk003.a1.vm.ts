@@ -82,18 +82,21 @@ module a1 {
             
             self.linkedWithDialogF = ko.observable(true);
             self.predseting.predTime.predTime.oneDay.subscribe((v) => {
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
                 if (self.linkedWithDialogF()) {
                     self.predseting.predTime.addTime.oneDay(v);
                 }
                 self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
             self.predseting.predTime.predTime.morning.subscribe((v) => {
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
                 if (self.linkedWithDialogF()) {
                     self.predseting.predTime.addTime.morning(v);
                 }
                 self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
             self.predseting.predTime.predTime.afternoon.subscribe((v) => {
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
                 if (self.linkedWithDialogF()) {
                     self.predseting.predTime.addTime.afternoon(v);
                 }
