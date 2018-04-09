@@ -1,4 +1,6 @@
 module nts.uk.at.view.kdw006.g.viewmodel {
+    let __viewContext: any = window["__viewContext"] || {};
+    
     export class ScreenModelG {
         // declare
         fullWorkTypeList: KnockoutObservableArray<any>;
@@ -225,7 +227,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             } else {
                 listWorkType = [WorkTypeClass.Holiday, WorkTypeClass.HolidayWork, WorkTypeClass.Shooting];
             }
-            let viewG = __viewContext.viewModel.viewmodelG;
+            let viewG = __viewContext.viewModel;
             service.defaultValue(listWorkType).done(function(res) {
                 let workTypeCodess = _.map(res, 'workTypeCode');
                 self.workTypeCodes = workTypeCodess;
