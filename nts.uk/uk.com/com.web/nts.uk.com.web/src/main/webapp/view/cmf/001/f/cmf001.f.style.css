@@ -26,3 +26,11 @@
 	text-align: right !important;
 	background-color: #CFF1A5;
 }
+
+#F3_1_displayContainer {
+	height: 346px !important;
+}
+
+#F3_1_scrollContainer{
+	height: 346px !important;
+}
