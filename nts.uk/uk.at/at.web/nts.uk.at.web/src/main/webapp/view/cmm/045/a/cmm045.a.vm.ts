@@ -1251,9 +1251,15 @@ module cmm045.a.viewmodel {
             let lstApp = [];
             _.each(self.items(), function(item) {
                 if (item.check && item.checkAtr) {
-                    lstApp.push({ appId: item.appId, version: item.version });
+                    if(item.appType == 10 && item.appIdSub != null){
+                        lstApp.push({ appId: item.appId, version: item.version });
+                        lstApp.push({ appId: item.appIdSub, version: item.version });
+                    }else{
+                        lstApp.push({ appId: item.appId, version: item.version });
+                    }
                 }
             });
+//            console.log(lstApp);
             if(lstApp.length == 0){
                 block.clear();
                 return;
