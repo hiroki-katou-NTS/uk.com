@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Entity
-@Table(name = "KRCDT_DAY_HIVERGENCETIME")
+@Table(name = "KRCDT_DAY_DIVERGENCE_TIME")
 public class KrcdtDayDivergenceTime extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;

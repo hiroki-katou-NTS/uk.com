@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -65,16 +66,16 @@ public class WorkTypeDaysCountTable {
 	private boolean addSpecialHoliday;
 	
 	/** 月別実績の縦計方法 */
-	private VerticalTotalMethodOfMonthly verticalTotalMethod;
+	private Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOpt;
 	
 	/**
 	 * コンストラクタ
 	 * @param workType 勤務種類
 	 * @param vacationAddSet 休暇加算設定
-	 * @param verticalTotalMethod 月別実績の縦計方法
+	 * @param verticalTotalMethod 月別実績の縦計方法　（特定日日数の振分用）
 	 */
 	public WorkTypeDaysCountTable(WorkType workType,
-			VacationAddSet vacationAddSet, VerticalTotalMethodOfMonthly verticalTotalMethod){
+			VacationAddSet vacationAddSet, Optional<VerticalTotalMethodOfMonthly> verticalTotalMethod){
 		
 		// init
 		this.attendanceDays = new AttendanceDaysMonth(0.0);
@@ -100,7 +101,7 @@ public class WorkTypeDaysCountTable {
 		//*****（未）　特別休暇の判定方法について、設計確認要。
 		this.addSpecialHoliday = false;
 		
-		this.verticalTotalMethod = verticalTotalMethod;
+		this.verticalTotalMethodOpt = verticalTotalMethod;
 		
 		this.confirmCount(workType);
 	}

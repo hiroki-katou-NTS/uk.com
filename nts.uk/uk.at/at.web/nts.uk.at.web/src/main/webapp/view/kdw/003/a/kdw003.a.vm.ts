@@ -589,15 +589,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 });
                 if(!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null){
-                    let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "", "layoutAndType.layoutCode", self.shareObject().initClock.employeeId, self.shareObject().initClock.utc().toISOString(), 0);
-                    let dataLiveTime = new InfoCellEdit("", "41", String(self.shareObject().initClock.liveTime), "", "layoutAndType.layoutCode", self.shareObject().initClock.employeeId, self.shareObject().initClock.utc().toISOString(), 0);
+                    let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "INTEGER", "I_A_A_A_A1", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
+                    let dataLiveTime = new InfoCellEdit("", "41", String(self.shareObject().initClock.liveTime), "INTEGER", "I_A_A_A_A2", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
                     dataChangeProcess.push(dataGout);
                     dataChangeProcess.push(dataLiveTime);
                 }
                 let dataParent = { itemValues: dataChangeProcess, dataCheckSign : dataCheckSign, dataCheckApproval: dataCheckApproval, mode: self.displayFormat()}
                 if(self.displayFormat() ==0){
-                    dataParent["employeeId"] = dataSource[0].employeeId;
-                    dataParent["dateRange"] = {startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length -1].dateDetail}
+                    if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
+                        dataParent["employeeId"] = self.shareObject().initClock.employeeId;
+                        dataParent["dateRange"] = { startDate: self.shareObject().initClock.dateSpr.utc(), endDate: self.shareObject().initClock.dateSpr.utc() };
+                    } else {
+                        dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
+                        dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
+                    }
                 }
                 if ((dataChangeProcess.length > 0  || dataCheckSign.length > 0 || dataCheckApproval.length > 0) && checkDataCare) {
                     let dfd = $.Deferred();
@@ -1884,7 +1889,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
-                    if (header.headerText) {
+                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
                         if (header.group == undefined || header.group == null || header.group.length == 0) {
                             header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                         }else{
@@ -1895,7 +1900,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
             } else {
                 self.optionalHeader.map((header) => {
-                    if (header.headerText) {
+                    if (header.headerText && header.headerText != "提出済みの申請" && header.headerText != "申請") {
                         header.headerText = header.headerText.split(" ")[0];
                     }
                     return header;

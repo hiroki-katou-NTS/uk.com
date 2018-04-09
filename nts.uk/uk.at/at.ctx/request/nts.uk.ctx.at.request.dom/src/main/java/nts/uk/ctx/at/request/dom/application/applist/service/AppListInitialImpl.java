@@ -32,6 +32,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeI
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -67,6 +69,8 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepositor
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
@@ -117,6 +121,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AtEmployeeAdapter employeeAdapter;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepo;
+	@Inject
+	private RqClosureAdapter closureAdapter;
 	
 	/**
 	 * 0 - 申請一覧事前必須チェック
@@ -417,19 +425,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//条件５：重複承認の対応条件
 			
 			
+			List<Application_New> lstOverTime = lstAppFilter3.stream().filter(c -> c.isAppOverTime()).collect(Collectors.toList());
+			List<Application_New> lstGoBack = lstAppFilter3.stream().filter(d -> d.isAppGoBack()).collect(Collectors.toList());
+			List<Application_New> lstHdWork = lstAppFilter3.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());
+			List<Application_New> lstWkChange = lstAppFilter3.stream().filter(d -> d.isAppWkChange()).collect(Collectors.toList());
+			List<Application_New> lstAbsence = lstAppFilter3.stream().filter(d -> d.isAppAbsence()).collect(Collectors.toList());
 			
-			
-			
-			List<Application_New> lstOverTime = lstAppFilter3.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstGoBack = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstHdWork = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstWkChange = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstAbsence = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.ABSENCE_APPLICATION))
-					.collect(Collectors.toList());
 			List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 			List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
 			List<AppHolidayWorkFull> lstAppHdWork = new ArrayList<>();
@@ -960,6 +961,25 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//開始日付の4か月後を終了日付として取得
 		GeneralDate end = minDate.addMonths(4);
 		return new DatePeriod(minDate,end);
+	}
+	/**
+	 * 12.1 - 申請一覧初期日付期間_申請
+	 * @param companyId
+	 * @return
+	 */
+	@Override
+	public DatePeriod getInitPeriodApp(String companyId) {
+		//imported(就業)「所属雇用履歴」より雇用コードを取得する - request list 264
+		// TODO Auto-generated method stub
+		//imported（就業.shared）「雇用に紐づく就業締め」を取得する
+		Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, "");
+		//アルゴリズム「処理年月と締め期間を取得する」を実行する
+		Optional<PresentClosingPeriodImport> closure = closureAdapter.getClosureById(companyId, closureEmp.get().getClosureId());
+		//締め開始日を開始日付とする
+		GeneralDate startDate = closure.get().getClosureStartDate();
+		//締め終了日付の３か月後を終了日付として取得
+		GeneralDate endDate = closure.get().getClosureEndDate().addMonths(3);
+		return new DatePeriod(startDate, endDate);
 	}
 	/**
 	 * find closure history min

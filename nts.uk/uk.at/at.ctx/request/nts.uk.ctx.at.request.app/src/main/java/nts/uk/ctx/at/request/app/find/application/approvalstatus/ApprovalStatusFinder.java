@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -9,13 +10,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
@@ -59,6 +64,9 @@ public class ApprovalStatusFinder {
 	
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
+	
+	@Inject
+	private ApprovalStatusService appSttService;
 
 	public ApprovalStatusMailTempDto findByType(int mailType) {
 		// 会社ID
@@ -108,20 +116,6 @@ public class ApprovalStatusFinder {
 		Optional<ApprovalStatusMailTemp> domain = finder.getApprovalStatusMailTempById(cid, mailType);
 		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get())
 				: new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
-	}
-
-	/**
-	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
-	 * 
-	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
-	 */
-	public EmployeeEmailDto findEmpMailAddr() {
-		String cId = AppContexts.user().employeeId();
-		List<String> listCId = new ArrayList<String>();
-		listCId.add(cId);
-		Optional<EmployeeEmailImport> employee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listCId).stream()
-				.findFirst();
-		return employee.isPresent() ? EmployeeEmailDto.fromImport(employee.get()) : null;
 	}
 
 	/**
@@ -247,6 +241,7 @@ public class ApprovalStatusFinder {
 		
 		
 		//就業締め日（リスト）の先頭の締めIDを選択
+		List<String> listEmpCode = new ArrayList<>();
 		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
 		if (closure.isPresent()) {
 			val closureId = closure.get().getClosureId();
@@ -263,12 +258,15 @@ public class ApprovalStatusFinder {
 				startDate = closurePeriod.start();
 				endDate = closurePeriod.end();
 				//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
-				listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
+				List<ClosureEmployment> listEmployee = closureEmpRepo.findByClosureId(companyId, closureId);
+				for(ClosureEmployment emp: listEmployee) {
+					listEmpCode.add(emp.getEmploymentCD());
+				}
 			} else {
 				throw new RuntimeException("Could not find closure");
 			}
 		}
-		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmployeeCode);
+		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmpCode);
 	}
 	
 	/**
@@ -286,7 +284,7 @@ public class ApprovalStatusFinder {
 		// 当月の期間を算出する
 		YearMonth processingYm = new YearMonth(closureDate);
 		
-		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
+		List<ClosureEmployment> listEmployee = new ArrayList<>();
 		Optional<Closure> closure = repository.findById(companyId, closureId);
 		if(!closure.isPresent()){
 			throw new RuntimeException("Could not find closure");
@@ -299,7 +297,62 @@ public class ApprovalStatusFinder {
 		startDate = closurePeriod.start();
 		endDate = closurePeriod.end();
 		//ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
-		listEmployeeCode = closureEmpRepo.findByClosureId(companyId, closureId);
-		return new ApprovalStatusPeriorDto(startDate, endDate, listEmployeeCode, processingYmNew);
+		listEmployee = closureEmpRepo.findByClosureId(companyId, closureId);
+		List<String> listEmpCode = new ArrayList<>();
+		for(ClosureEmployment emp: listEmployee) {
+			listEmpCode.add(emp.getEmploymentCD());
+		}
+		return new ApprovalStatusPeriorDto(startDate, endDate, listEmpCode, processingYmNew);
+	}
+	
+	/**
+	 * アルゴリズム「承認状況職場別起動」を実行する
+	 * @param appStatus
+	 */
+	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData appStatus) {
+		List<ApprovalSttAppOutput> listAppSttApp = new ArrayList<>();
+		ApprovalSttAppOutput approvalSttApp = null;
+		GeneralDate startDate = GeneralDate.fromString(appStatus.getStartDate(), "yyyy/MM/dd");
+		GeneralDate endDate = GeneralDate.fromString(appStatus.getEndDate(), "yyyy/MM/dd");
+		for (String wkpId : appStatus.getListWorkplaceId()) {
+			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService.getApprovalStatusEmployee(wkpId, startDate, endDate, appStatus.getListEmpCd());
+			 approvalSttApp = appSttService.getApprovalSttApp(wkpId, listAppStatusEmp);
+			 listAppSttApp.add(approvalSttApp);
+		}
+		return listAppSttApp;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況未承認メール送信」を実行する
+	 */
+	public List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp) {
+		List<String> listWorksp = new ArrayList<>();
+		if(this.IsAppSttSenderEmailConfirm()) {
+			//職場一覧のメール送信欄のチェックがONの件数
+			int countOnChecked = 0;
+			for(ApprovalSttAppOutput app: listAppSttApp){
+				if(app.isChecked()) countOnChecked ++;
+				listWorksp.add(app.getWorkplaceId());
+			}
+			if(countOnChecked <= 0) {
+				throw new BusinessException("Msg_794");
+			}
+		} else {
+			
+		}
+		return listWorksp;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況送信者メール確認」を実行する
+	 */
+	private boolean IsAppSttSenderEmailConfirm() {
+		EmployeeEmailOutput empEmail =  appSttService.findEmpMailAddr();
+		if(!Objects.isNull(empEmail)) {
+			if(Objects.isNull(empEmail.getMailAddr()) || empEmail.getMailAddr().isEmpty()){
+				throw new BusinessException("Msg_791");
+			}
+		}
+		return true;
 	}
 }

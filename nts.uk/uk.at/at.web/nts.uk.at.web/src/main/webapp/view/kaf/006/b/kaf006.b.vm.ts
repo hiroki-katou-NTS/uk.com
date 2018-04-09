@@ -110,6 +110,9 @@ module nts.uk.at.view.kaf006.b{
                     self.selectedTypeOfDuty.subscribe((value) => {
                         self.findChangeWorkType(value);
                     });
+                    self.displayWorkTimeName.subscribe((value) => {
+                        self.changeDisplayWorkime();
+                    });
                     dfd.resolve(); 
                 })
                 .fail(function(res) {
@@ -148,12 +151,15 @@ module nts.uk.at.view.kaf006.b{
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes.removeAll();
                     self.workTimeCodes(result.workTimeCodes);
                 }
                  dfd.resolve(result);
@@ -180,6 +186,8 @@ module nts.uk.at.view.kaf006.b{
                 if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
                     self.typeOfDutys([]);
                 }else{
+                    self.typeOfDutys.removeAll();
+                    self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
                         self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
@@ -187,6 +195,7 @@ module nts.uk.at.view.kaf006.b{
                     self.selectedTypeOfDuty(result.workTypeCode);
                 }
                 if(!nts.uk.util.isNullOrEmpty(result.workTimeCodes)){
+                    self.workTimeCodes.removeAll();
                     self.workTimeCodes(result.workTimeCodes);
                 }
                  dfd.resolve(result);
@@ -279,13 +288,15 @@ module nts.uk.at.view.kaf006.b{
                 self.enbWorkType(true);
                 self.enbHalfDayFlg(true);
                 self.enbChangeWorkHourFlg(true);
-                self.enbbtnWorkTime(true);
+                
                 if(data.changeWorkHourFlg && !nts.uk.util.isNullOrEmpty(data.workTimeCode)){
                      self.eblTimeStart1(true);
                      self.eblTimeEnd1(true);
+                    self.enbbtnWorkTime(true);
                 }else{
                     self.eblTimeStart1(false);
                      self.eblTimeEnd1(false);
+                    self.enbbtnWorkTime(false);
                 }
                 self.enbReasonCombo(true);
                 self.enbContentReason(true);
@@ -309,14 +320,7 @@ module nts.uk.at.view.kaf006.b{
              if (!appcommon.CommonProcess.checklenghtReason(appReason, "#appReason")) {
                  return;
              }
-             if(!self.changeWorkHourValueFlg()){
-                 self.changeWorkHourValue(false);
-                 self.timeStart1(null);
-                 self.timeEnd1(null);
-                 self.timeStart2(null);
-                 self.timeEnd2(null);
-                 self.workTimeCode(null);
-             }
+             
              let paramInsert = {
                 version: self.version,
                 appID: self.appID(),
@@ -392,7 +396,9 @@ module nts.uk.at.view.kaf006.b{
                     }
                 });
             });
-            
+        }
+        changeDisplayWorkime() {
+            let self = this;
             self.eblTimeStart1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
             self.eblTimeEnd1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
         }
