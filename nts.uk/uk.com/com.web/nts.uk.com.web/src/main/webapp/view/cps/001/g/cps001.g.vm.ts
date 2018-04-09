@@ -289,7 +289,7 @@ module nts.uk.com.view.cps001.g.vm {
                     if (res.messageId == 'Msg_1023'){
                         $('#idGrantDate').ntsError('set', { messageId: res.messageId });
                     } else {
-                        error(messageId: res.messageId);
+//                        error(messageId: res.messageId);
                     }
                     unblock();
                 });
@@ -303,7 +303,7 @@ module nts.uk.com.view.cps001.g.vm {
                     if (res.messageId == 'Msg_1023'){
                         $('#idGrantDate').ntsError('set', { messageId: res.messageId });
                     } else {
-                        error(messageId: res.messageId);
+//                        error(messageId: res.messageId);
                     }
                     unblock();
                 });
