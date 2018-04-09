@@ -43,9 +43,8 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	}
 
 	@Override
-	public void appForLeaveSche(CommonReflectSchePubParam appForleaverPara) {
-		
-		leaveReflect.forlearveReflectSche(this.toParamSche(appForleaverPara));
+	public boolean appForLeaveSche(CommonReflectSchePubParam appForleaverPara) {
+		return leaveReflect.forlearveReflectSche(this.toParamSche(appForleaverPara));
 	}
 
 	@Override

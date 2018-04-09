@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 @Produces("application/json")
 public class ApprovalStatusWebservice extends WebService {
 	@Inject
-	private ApprovalStatusFinder approvalMailTempFinder;
+	private ApprovalStatusFinder approvalMailFinder;
 
 	@Inject
 	private RegisterApprovalStatusMailTempCommandHandler registerApprovalStatusMailTempCommandHandler;
@@ -32,17 +32,11 @@ public class ApprovalStatusWebservice extends WebService {
 	/** The finder. */
 	@Inject
 	private ApprovalStatusFinder finder;
-	
-	@POST
-	@Path("getMail/{mailType}")
-	public ApprovalStatusMailTempDto getMail(@PathParam("mailType") int mailType) {
-		return approvalMailTempFinder.findByType(mailType);
-	}
 
 	@POST
 	@Path("getMailBySetting")
 	public List<ApprovalStatusMailTempDto> findBySetting() {
-		return approvalMailTempFinder.findBySetting();
+		return approvalMailFinder.findBySetting();
 	}
 
 	@POST
@@ -52,15 +46,15 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 
 	@POST
-	@Path("getEmpMail")
-	public EmployeeEmailDto getEmpMail() {
-		return null;
+	@Path("confirmSenderMail")
+	public String confirmSenderMail() {
+		return approvalMailFinder.confirmSenderMail();
 	}
 	
 	@POST
 	@Path("sendTestMail/{mailType}")
 	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
-		return approvalMailTempFinder.sendTestMail(mailType);
+		return approvalMailFinder.sendTestMail(mailType);
 	}
 	
 	/**

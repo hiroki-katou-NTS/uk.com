@@ -135,7 +135,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			} else
 				return Optional.empty();
 		}
-		return this.findByCompanyIDAndEmpCD(companyID, employeeCD);
+		return Optional.empty();
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			} else
 				return Optional.empty();
 		}
-		return this.getByComIDAndEmpCD(companyID, employeeCD);
+		return Optional.empty();
 	}
 
 }
