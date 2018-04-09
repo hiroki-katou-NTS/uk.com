@@ -26,7 +26,9 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Override
 	public UrlExecInfo obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
-		String loginId = AppContexts.user().employeeId();
+//		String loginId = AppContexts.user().employeeId();
+		List <UrlExecInfo> list = urlExcecInfoRepo.getAllUrlExecInfo();
+		String loginId = "nts";
 		String uuID = UUID.randomUUID().toString();
 		String a = "1";
 		return this.registerEmbeddedForApp(appId, appType, prePostAtr, loginId, employeeId);
@@ -136,6 +138,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		String embeddedId = UUID.randomUUID().toString();
 		try{
 			taskIncre.forEach(x -> {
+				x.setVersion(0);
 				x.setCid(cid);
 				x.setEmbeddedId(embeddedId);
 				x.setTaskIncreId(UUID.randomUUID().toString());
