@@ -37,8 +37,8 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 	@Inject
 	private FlowMenuRepository flowMenuRepository;
 	
-	@Inject
-	private OptionalWidgetRepository optionalWidgetRepository;
+//	@Inject
+//	private OptionalWidgetRepository optionalWidgetRepository;
 	
 	@Inject
 	private PlacementService placementService;
@@ -106,17 +106,17 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 			FlowMenu = flowMenuRepository.findByCodes(companyID, listFlowMenuID);
 		
 		// TODO: Get list OptionalWidget
-		val listOptionalWidget = listTopPagePart.stream().filter(c -> c.isOptionalWidget()).collect(Collectors.toList());
-		List<String> listOptionalWidgetID = listOptionalWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
-		List<OptionalWidget> OptionalWidget = new ArrayList<>();
-		if (!listOptionalWidgetID.isEmpty()){
-			OptionalWidget = optionalWidgetRepository.findByCode(companyID, listOptionalWidgetID);
-		}
+//		val listOptionalWidget = listTopPagePart.stream().filter(c -> c.isOptionalWidget()).collect(Collectors.toList());
+//		List<String> listOptionalWidgetID = listOptionalWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+//		List<OptionalWidget> OptionalWidget = new ArrayList<>();
+//		if (!listOptionalWidgetID.isEmpty()){
+//			OptionalWidget = optionalWidgetRepository.findByCode(companyID, listOptionalWidgetID);
+//		}
 		
 		// TODO: Get list Dashboard
 		
 		result.addAll(FlowMenu);
-		result.addAll(OptionalWidget);
+		//result.addAll(OptionalWidget);
 		return result;
 	}
 	
