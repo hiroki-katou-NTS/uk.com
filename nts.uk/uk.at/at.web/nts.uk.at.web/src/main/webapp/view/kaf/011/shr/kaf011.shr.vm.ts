@@ -188,7 +188,6 @@ module nts.uk.at.view.kaf011.shr {
                 let self = this;
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    if (!vm.screenModeNew()) { return; }
                     let changeWkTypeParam = {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
