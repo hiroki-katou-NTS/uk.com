@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.WidgetDisplayItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -28,6 +29,10 @@ public class SptstWidgetDisplay extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return sptstWidgetDisplayPK;
+	}
+	
+	public WidgetDisplayItem toDomain() {
+		return WidgetDisplayItem.createFromJavaType(sptstWidgetDisplayPK.widgetType, useAtr);
 	}
 
 }

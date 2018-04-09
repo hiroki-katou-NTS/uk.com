@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.infra.repository.toppage.widget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -151,4 +153,33 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return optional.isPresent();
 	}
 
+	private final String SELECT_BASE = "SELECT o, t, d FROM SptstOptionalWidget o "
+			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+			+ "INNER JOIN SptstWidgetDisplay d ON o.sptstOptionalWidgetPK.topPagePartID = d.sptstWidgetDisplayPK.topPagePartID ";
+	
+	private final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
+	
+	@Override
+	public List<OptionalWidget> findByCode(String companyId, List<String> listOptionalWidgetID) {
+		return this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", listOptionalWidgetID)
+				.getList(c -> joinObjectToDomain(c));
+	}
+
+	private OptionalWidget joinObjectToDomain(Object[] entity) {
+		SptstOptionalWidget OptionalWidget = (SptstOptionalWidget) entity[0];
+		CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
+		List<WidgetDisplayItem> wDisplayItems = widgetDisplayItems(OptionalWidget.sptstOptionalWidgetPK.topPagePartID);
+		return new OptionalWidget(OptionalWidget.sptstOptionalWidgetPK.companyID, OptionalWidget.sptstOptionalWidgetPK.topPagePartID, 
+				new TopPagePartCode(topPagePart.code), new TopPagePartName(topPagePart.name), TopPagePartType.valueOf(topPagePart.topPagePartType),
+				Size.createFromJavaType(topPagePart.width, topPagePart.height), wDisplayItems);
+	}
+	
+	private final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
+	
+	private List<WidgetDisplayItem> widgetDisplayItems(String topPagePartId){
+		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS, SptstWidgetDisplay.class)
+				.setParameter("topPagePartID", topPagePartId)
+				.getList(c ->c.toDomain());
+	}
 }
