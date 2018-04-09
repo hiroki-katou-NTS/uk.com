@@ -581,7 +581,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                                         value: {0},
                                         enable: {1} }"></div>
                                 <span id='selected_all_caret' class='caret-bottom outline'></span>`,
-                checkboxString = `<div id='selected_all_ckb' data-bind='ntsCheckBox: { checked: checkboxSelectedAll, enable: !isDisableAll() }'></div>`,
                 selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', '!!allowOtherRef'),
                 selfSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef');
 
@@ -628,17 +627,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     height: '315px',
                     dataSource: self.roleItemList(),
                     primaryKey: 'personItemDefId',
-                    hidePrimaryKey: true,
+//                    hidePrimaryKey: true,
                     rowVirtualization: true,
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px' },
+                        { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
                         { headerText: '', key: 'isChecked', dataType: 'boolean', width: '48px', ntsControl: 'Checkbox', showHeaderCheckbox: true },
                         { headerText: getText('CAS001_69'), key: 'setting', dataType: 'string', width: '48px', formatter: makeIcon },
-                        { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '300px' },
-                        { headerText: getText('CAS001_48') + selectedAllString, key: 'otherAuth', dataType: 'string', width: '300px', ntsControl: 'SwitchButtons1' },
-                        { headerText: getText('CAS001_52') + selfSelectedAllString, key: 'selfAuth', dataType: 'string', width: '300px', ntsControl: 'SwitchButtons2' },
+                        { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
+                        { headerText: getText('CAS001_48') + selectedAllString, key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons1' },
+                        { headerText: getText('CAS001_52') + selfSelectedAllString, key: 'selfAuth', dataType: 'string', width: '232', ntsControl: 'SwitchButtons2' },
                     ],
                     ntsControls: [
                         { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
@@ -823,11 +822,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             }
 
                         });
-
-
-
                     }
-
                     return c;
 
                 });
