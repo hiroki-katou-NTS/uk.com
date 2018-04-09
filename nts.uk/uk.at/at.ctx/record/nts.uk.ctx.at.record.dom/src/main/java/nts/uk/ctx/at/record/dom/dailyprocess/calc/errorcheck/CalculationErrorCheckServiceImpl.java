@@ -64,74 +64,71 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		return integrationOfDaily;
 	}
 
-	
-	
-	public void systemErrorCheck() {
-	}
 	/**
 	 * システム固定エラーチェック
 	 * @param attendanceItemConverter 
 	 * @return 社員の日別実績エラー一覧
 	 */
 	public List<EmployeeDailyPerError> systemErrorCheck(IntegrationOfDaily integrationOfDaily,ErrorAlarmWorkRecord errorItem, DailyRecordToAttendanceItemConverter attendanceItemConverter) {
-		SystemFixedErrorAlarm fixedErrorAlarmCode = SystemFixedErrorAlarm.valueOf(errorItem.getErrorAlarmCheckID());
-		if(!integrationOfDaily.getAttendanceLeave().isPresent())
+		Optional<SystemFixedErrorAlarm> fixedErrorAlarmCode = SystemFixedErrorAlarm.getEnumFromErrorCode(errorItem.getCode().toString());
+		if(!integrationOfDaily.getAttendanceLeave().isPresent() || !fixedErrorAlarmCode.isPresent())
 			return Collections.emptyList();
-		switch(fixedErrorAlarmCode) {
+		
+		switch(fixedErrorAlarmCode.get()) {
 			//事前残業申請超過
 			case PRE_OVERTIME_APP_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_OVERTIME_APP_EXCESS);
 				break;
 			//事前休出申請超過
 			case PRE_HOLIDAYWORK_APP_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_HOLIDAYWORK_APP_EXCESS);
 				break;
 			//事前フレックス申請超過
 			case PRE_FLEX_APP_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_FLEX_APP_EXCESS);
 				break;
 			//事前深夜申請超過
 			case PRE_MIDNIGHT_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_MIDNIGHT_EXCESS);
 				break;
 			//残業時間実績超過
 			case OVER_TIME_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.OVER_TIME_EXCESS);
 				break;
 			//休出時間実績超過
 			case REST_TIME_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.REST_TIME_EXCESS);
 				break;
 			//フレックス時間実績超過
 			case FLEX_OVER_TIME:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.FLEX_OVER_TIME);
 				break;
 			//深夜時間実績超過
 			case MIDNIGHT_EXCESS:
 				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
-												fixedErrorAlarmCode,
+												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.MIDNIGHT_EXCESS);
 				break;
 			
