@@ -1,7 +1,9 @@
-package nts.uk.ctx.at.request.dom.mail;
+package nts.uk.ctx.sys.gateway.dom.mail;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
+
+import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
 * 

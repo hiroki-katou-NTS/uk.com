@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.mail;
+package nts.uk.ctx.sys.gateway.infra.entity.mail;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.mail.service;
+package nts.uk.shr.com.url;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public interface RegisterEmbededURL {
 	 * @param employeeId
 	 * @return embeddedUrl
 	 */
-	public String obtainApplicationEmbeddedUrl( String appId, int appType, int prePostAtr, List<String> employeeId);
+	public UrlExecInfo obtainApplicationEmbeddedUrl( String appId, int appType, int prePostAtr, String employeeId);
 	/**
 	 * アルゴリズム「埋込URL情報登録申請」を実行する
 	 * @param appId
@@ -29,7 +29,7 @@ public interface RegisterEmbededURL {
 	 * @param employeeId
 	 * @return Embed URL
 	 */
-	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, List<String> employeeId);
+	public UrlExecInfo registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId);
 
 	/**
 	 * アルゴリズム「埋込URL情報申請画面ID取得」を実行する
@@ -49,8 +49,8 @@ public interface RegisterEmbededURL {
 	 * @param taskIncidental
 	 * @return 埋込用URL
 	 */
-	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls,
-			int numOfPeriod, String employeeId, String loginId, Map<String, String> taskIncidental);
+	public UrlExecInfo embeddedUrlInfoRegis(String programId, String screenId, int periodCls,
+			int numOfPeriod, String employeeId, String loginId, List<UrlTaskIncre> taskIncidental);
 	// アルゴリズム「埋込URL有効期限取得」を実行する
 	/**
 	 * アルゴリズム「埋込URL有効期限取得」を実行する
@@ -60,4 +60,10 @@ public interface RegisterEmbededURL {
 	 * @return 有効期間　＝　終了日時
 	 */
 	public GeneralDateTime getEmbeddedUrlExpriredDate (GeneralDateTime startDate, int periodCls, int numOfPeriod);
+
+	/**
+	 * アルゴリズム「埋込URLデータ更新」を実行する
+	 * @return
+	 */
+	public UrlExecInfo updateEmbeddedUrl (String cid, String contractCd, String loginID, String sCD, String sID, String programID, String screenID, GeneralDateTime issueDate, GeneralDateTime expiredDate, List<UrlTaskIncre> taskIncre);
 }
