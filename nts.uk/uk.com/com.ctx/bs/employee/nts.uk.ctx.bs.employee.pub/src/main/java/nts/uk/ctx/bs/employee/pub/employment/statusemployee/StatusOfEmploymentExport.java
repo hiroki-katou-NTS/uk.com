@@ -24,5 +24,5 @@ public class StatusOfEmploymentExport {
 	
 	private int statusOfEmployment;
 	
-	private int leaveHolidayType;
+	private int tempAbsenceFrNo;
 }

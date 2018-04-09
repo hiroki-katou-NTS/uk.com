@@ -35,7 +35,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 					|| oneDay == WorkTypeClassification.ContinuousWork
 					|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
 				WorkInformation recordWorkInformation = new WorkInformation(
-						workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v(), null);
+						workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode().v(), null);
 				workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 				
 				// ドメインモデル「日別実績の勤務情報」を更新する(Update domain 「日別実績の勤務情報」)

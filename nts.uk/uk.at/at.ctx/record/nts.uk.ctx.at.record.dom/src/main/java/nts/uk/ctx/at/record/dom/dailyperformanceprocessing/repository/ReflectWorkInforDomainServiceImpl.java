@@ -63,6 +63,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.B
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.AutomaticStampSetDetailOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ClosureOfDailyPerOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
@@ -887,11 +888,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * 休業を日別実績に反映する
 	 */
 	@Override
-	public Optional<WorkInfoOfDailyPerformance> reflectHolidayOfDailyPerfor(String companyId, String employeeId,
-			GeneralDate day) {
+	public ClosureOfDailyPerOutPut reflectHolidayOfDailyPerfor(String companyId, String employeeId,
+			GeneralDate day,String empCalAndSumExecLogID, WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
+		
+		ClosureOfDailyPerOutPut closureOfDailyPerOutPut = new ClosureOfDailyPerOutPut();
+		
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+		
 		RecStatusOfEmployeeImport recStatusOfEmployeeImport = this.recStatusOfEmployeeAdapter
 				.getStatusOfEmployeeService(employeeId, day);
-		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = Optional.empty();
 		if (recStatusOfEmployeeImport != null) {
 			if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2
 					|| recStatusOfEmployeeImport.getStatusOfEmployment() == 3) {
@@ -916,6 +921,27 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							case 3:
 								closeAtr = 1;
 								break;
+							case 4:
+								closeAtr = 2;
+								break;
+							case 5:
+								closeAtr = 3;
+								break;
+							case 6:
+								closeAtr = 4;
+								break;
+							case 7:
+								closeAtr = 5;
+								break;
+							case 8:
+								closeAtr = 6;
+								break;
+							case 9:
+								closeAtr = 7;
+								break;
+							case 10:
+								closeAtr = 8;
+								break;
 						}
 						
 						if (closeAtr == workTypeSet.getCloseAtr().value) {
@@ -925,10 +951,29 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 				}
-
+				if (workTypeNeed == null) {
+					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+							new ErrMessageResource("014"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+							new ErrMessageContent(TextResource.localize("Msg_1150")));
+					errMesInfos.add(employmentErrMes);
+				} else {
+					WorkInformation recordInfo = new WorkInformation(workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode(), workTypeNeed.getWorkTypeCode());
+					workInfoOfDailyPerformance.setRecordInfo(recordInfo);
+					WorkTypeClassification oneDay = workTypeNeed.getDailyWork().getOneDay();
+					if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
+							|| oneDay == WorkTypeClassification.ContinuousWork
+							|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
+						WorkInformation recordWorkInformation = new WorkInformation(
+								workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode().v(), null);
+						workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
+					}
+				}
 			}
 		}
-		return workInfoOfDailyPerformance;
+		
+		closureOfDailyPerOutPut.setErrMesInfos(errMesInfos);
+		closureOfDailyPerOutPut.setWorkInfoOfDailyPerformance(workInfoOfDailyPerformance);
+		return closureOfDailyPerOutPut;
 	}
 
 	/**

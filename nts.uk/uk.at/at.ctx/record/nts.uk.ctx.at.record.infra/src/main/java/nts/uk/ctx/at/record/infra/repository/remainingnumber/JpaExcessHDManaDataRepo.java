@@ -13,13 +13,14 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.excessleave.KrcmtExcess
 @Stateless
 public class JpaExcessHDManaDataRepo extends JpaRepository implements ExcessHolidayManaDataRepository{
 
-	private String QUERY_BYSID = "SELECT e FROM KrcmtExcessHDManaData e WHERE e.cID =:cid AND e.sID =:sid AND e.expiredState = 1 ";
+	private String QUERY_BYSID = "SELECT e FROM KrcmtExcessHDManaData e WHERE e.cID =:cid AND e.sID =:sid AND e.expiredState = :expiredState ";
 	
 	@Override
-	public List<ExcessHolidayManagementData> getBySid(String cid, String sid) {
+	public List<ExcessHolidayManagementData> getBySidWithExpCond(String cid, String sid, int state) {
 		List<KrcmtExcessHDManaData> list = this.queryProxy().query(QUERY_BYSID,KrcmtExcessHDManaData.class)
 				.setParameter("sid", sid)
 				.setParameter("cid", cid)
+				.setParameter("expiredState", state)
 				.getList();
 		return list.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}

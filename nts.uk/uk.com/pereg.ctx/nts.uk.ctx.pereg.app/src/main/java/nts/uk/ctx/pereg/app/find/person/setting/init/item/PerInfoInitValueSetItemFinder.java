@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.setting.init.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +16,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.CategoryStateDto;
 import nts.uk.ctx.pereg.dom.common.PredetemineTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
@@ -35,6 +37,9 @@ public class PerInfoInitValueSetItemFinder {
 	private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
 	@Inject
 	private PerInfoCtgByCompanyRepositoty ctgRepo;
+	
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
@@ -53,6 +58,7 @@ public class PerInfoInitValueSetItemFinder {
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		PersonInfoCategory ctg = this.ctgRepo.getDetailCategoryInfo(companyId, perInfoCtgId, contract)
 				.orElseThrow(null);
+		if(item.isEmpty()) return ctgState;
 		String ctgCode = item.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
 		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
@@ -136,20 +142,32 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> item) {
 		String ctgCode = item.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
-		List<String> itemList = this.toList("IS00133", "IS00134", "IS00142", "IS00143", "IS00160", "IS00161", "IS00169",
+		//アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
+		List<String> itemEven = this.toList("IS00133", "IS00134", "IS00142", "IS00143", "IS00160", "IS00161", "IS00169",
 				"IS00170", "IS00178", "IS00179", "IS00151", "IS00152", "IS00196", "IS00197", "IS00205", "IS00206",
 				"IS00214", "IS00215", "IS00223", "IS00224", "IS00232", "IS00233", "IS00214", "IS00215", "IS00241",
 				"IS00242", "IS00187", "IS00188");
 
+		//アルゴリズム「勤務開始終了時刻を活性にするかチェックする」AND 「アルゴリズム「複数回項目を活性にするかチェックする」
 		List<String> itemOld = this.toList("IS00136", "IS00137", "IS00145", "IS00146", "IS00163", "IS00164", "IS00172",
 				"IS00173", "IS00181", "IS00182", "IS00154", "IS00155", "IS00199", "IS00200", "IS00208", "IS00209",
 				"IS00217", "IS00218", "IS00226", "IS00227", "IS00235", "IS00236", "IS00217", "IS00218", "IS00244",
 				"IS00245", "IS00190", "IS00191");
+		
+		// Get company id
+		String companyId = AppContexts.user().companyId();
+		// Get Command
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
+		
+		if (!perInfoCategory.isPresent()){
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
+				
 		if (ctgCode.equals("CS00020")) {
 			itemDto = item.stream().map(c -> {
 
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-				boolean isEven = itemList.contains(c.getItemCode()), isOld = itemOld.contains(c.getItemCode());
+				boolean isEven = itemEven.contains(c.getItemCode()), isOld = itemOld.contains(c.getItemCode());
 				if (isOld || isEven) {
 					dto.setDisableCombox(true);
 				} else {
@@ -189,7 +207,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true,perInfoCategory.get().getPersonEmployeeType());
 
 					dto.setSelection(selectionDto);
 
@@ -216,7 +234,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true,perInfoCategory.get().getPersonEmployeeType());
 
 					dto.setSelection(selectionDto);
 
@@ -241,7 +259,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true, perInfoCategory.get().getPersonEmployeeType());
 
 					dto.setSelection(selectionDto);
 				}
@@ -256,6 +274,15 @@ public class PerInfoInitValueSetItemFinder {
 		String ctgCode = item.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
 		List<String> itemList = this.createItemTimePointOfCS00020();
+		
+		// Get company id
+		String companyId = AppContexts.user().companyId();
+		// Get Command
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
+		
+		if (!perInfoCategory.isPresent()){
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
 		if (ctgCode.equals("CS00020")) {
 			itemDto = item.stream().filter(x -> {
 				return !itemList.contains(x.getItemCode());
@@ -276,7 +303,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true, perInfoCategory.get().getPersonEmployeeType());
 
 					dto.setSelection(selectionDto);
 				}
@@ -302,7 +329,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true, perInfoCategory.get().getPersonEmployeeType());
 
 					dto.setSelection(selectionDto);
 
@@ -327,7 +354,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true, perInfoCategory.get().getPersonEmployeeType());
 
 					dto.setSelection(selectionDto);
 				}

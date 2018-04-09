@@ -15,6 +15,9 @@ public class KrcmtAnnLeaMax extends UkJpaEntity{
     @Column(name = "SID")
     public String sid;
 	
+	@Column(name = "CID")
+	public String cid;
+	
 	@Column(name = "MAX_TIMES")
     public Integer maxTimes;
 	

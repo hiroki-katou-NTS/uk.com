@@ -471,7 +471,7 @@ public class LayoutFinder {
 							|| dataType == DataTypeValue.SELECTION_BUTTON.value) {
 						SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
 						valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-								comboBoxStandardDate, valueItem.isRequired()));
+								comboBoxStandardDate, valueItem.isRequired(),perInfoCategory.getPersonEmployeeType()));
 					}
 				}
 			}
