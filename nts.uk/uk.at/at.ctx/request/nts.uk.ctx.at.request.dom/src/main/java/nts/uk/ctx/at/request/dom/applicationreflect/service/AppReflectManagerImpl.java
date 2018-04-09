@@ -108,17 +108,16 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			AppAbsence absenceAppData = optAbsence.get();
 			reflectScheParam.setForLeave(absenceAppData);
 			//TODO lam trong lan giao hang tiep theo
-			/*absenceInfor = this.getAbsence(appInfor);
-			if(absenceInfor == null) {
+			commonReflect = this.getAbsence(appInfor, absenceAppData);
+			if(commonReflect == null) {
 				return;
-			}*/
+			}
 		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;
 			}
-			AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();
-				
+			AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();				
 			holidayworkInfor = this.getHolidayWork(appInfor, holidayWorkData);
 			if(holidayworkInfor == null) {
 				return;
@@ -136,25 +135,25 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
-		//TODO 勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
-		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
-		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);		
-		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, appGobackTmp, overTimeTmp, commonReflect, holidayworkInfor);
-		//勤務予定反映		 
+		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		
 		ScheReflectedStatesInfo scheRelectStates = scheReflect.workscheReflect(reflectScheParam);
 		appInfor.getReflectionInformation().setStateReflection(scheRelectStates.getReflectedSate());
 		if(scheRelectStates.getNotReflectReson() != null) {
 			appInfor.getReflectionInformation().setNotReason(Optional.of(scheRelectStates.getNotReflectReson()));
 		}
 		
-		//勤務実績反映
+		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
+		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);		
+		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, 
+				appGobackTmp, 
+				overTimeTmp, 
+				commonReflect, 
+				holidayworkInfor);
 		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
 		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
 		if(workRecordreflect.getNotReflectReson() != null) {
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
 		}
-		
-		
 		appRepo.updateWithVersion(appInfor);
 	}
 	

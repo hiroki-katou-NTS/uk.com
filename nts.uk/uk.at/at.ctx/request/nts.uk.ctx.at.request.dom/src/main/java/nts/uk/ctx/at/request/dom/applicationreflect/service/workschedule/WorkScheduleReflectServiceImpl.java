@@ -61,6 +61,10 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			AppWorkChange appWorkChangeData = reflectParam.getWorkChange();
 			reflectSchePara.setWorkChange(appWorkChangeData);
 			isReflect = processScheReflect.workChangeReflect(reflectSchePara);
+		} else if(application.getAppType() == ApplicationType.ABSENCE_APPLICATION
+				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
+			reflectSchePara.setForLeave(reflectParam.getForLeave());
+			processScheReflect.forleaveReflect(reflectSchePara);
 		}
 		if(isReflect){
 			reflectedStatesInfo.setReflectedSate(ReflectedState_New.REFLECTED);
@@ -86,37 +90,5 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		//TODO cha hieu gi
 		
 	}
-
-//	@Override
-//	public ReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	@Override
-//	public ScheReflectedStatesInfo workscheReflect(ReflectScheDto reflectSheDto) {
-//		// TODO: Fix tạm theo chị dự bảo thế cho hết error
-//		Application_New application = null;
-//		ScheReflectedStatesInfo reflectInfo = new ScheReflectedStatesInfo(ReflectedState_New.NOTREFLECTED, ReasonNotReflect_New.NOT_PROBLEM);
-//		// TODO 反映チェック処理
-//		
-//		//反映処理
-//		//残業申請
-//		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
-//			reflectInfo = new ScheReflectedStatesInfo(application.getReflectionInformation().getStateReflection(),
-//					application.getReflectionInformation().getNotReason().isPresent() ? application.getReflectionInformation().getNotReason().get() : ReasonNotReflect_New.NOT_PROBLEM);
-//			return reflectInfo;
-//		} else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
-//				&& application.getPrePostAtr() == PrePostAtr.PREDICT){
-//			appReflectProcess.goBackDirectlyReflect(reflectSheDto);
-//			reflectInfo = new ScheReflectedStatesInfo(ReflectedState_New.REFLECTED, ReasonNotReflect_New.WORK_FIXED);
-//			
-//		} else if (application.getAppType() == ApplicationType.ABSENCE_APPLICATION //休暇申請
-//				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
-//			appReflectProcess.forleaveReflect(reflectSheDto);
-//			reflectInfo = new ScheReflectedStatesInfo(ReflectedState_New.REFLECTED, ReasonNotReflect_New.WORK_FIXED);
-//		}
-//		return reflectInfo;
-//	}
 
 }
