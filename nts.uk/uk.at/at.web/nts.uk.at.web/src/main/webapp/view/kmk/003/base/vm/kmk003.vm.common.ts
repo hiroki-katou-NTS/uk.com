@@ -56,6 +56,7 @@ module nts.uk.at.view.kmk003.a {
     import SubHolTransferSetAtr = service.model.common.SubHolTransferSetAtr;
     import StampPiorityAtr = service.model.common.StampPiorityAtr;
     import Superiority = service.model.common.Superiority;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
 
     export module viewmodel {
         export module common {
@@ -2099,10 +2100,31 @@ module nts.uk.at.view.kmk003.a {
                 lstWorkingTimezone: KnockoutObservableArray<EmTimeZoneSetModel>;
                 lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
+                lstWorkingTimezoneSimpleMode: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+
                 constructor() {
                     super();
                     this.lstWorkingTimezone = this.originalList2;
                     this.lstOTTimezone = this.originalList;
+                    this.lstWorkingTimezoneSimpleMode = ko.observableArray([]);
+                }
+
+                public initSubscribeForTab2(timezone: TimezoneModel): void {
+                    let self = this;
+
+                    timezone.valueChangedNotifier.subscribe(() => {
+                        const cloned = _.cloneDeep(self.lstWorkingTimezoneSimpleMode()[0]);
+                        if (cloned) {
+                            const updatedTime = <TimePeriod>{};
+                            updatedTime.startTime = timezone.start();
+                            updatedTime.endTime = timezone.end();
+                            cloned.timeRange(updatedTime);
+
+                            // update list on fixed table
+                            self.lstWorkingTimezoneSimpleMode([cloned]);
+                        } 
+                    });
+
                 }
 
                 toOriginalDto(convertedItem: OverTimeFixedTableModel): OverTimeOfTimeZoneSetDto {
@@ -2170,14 +2192,12 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
-                    this.lstOTTimezone([]);
-                    var dataModelTimezone: OverTimeOfTimeZoneSetModel[] = [];
-                    for (var dataDTO of lstOTTimezone) {
-                        var dataModel: OverTimeOfTimeZoneSetModel = new OverTimeOfTimeZoneSetModel();
-                        dataModel.updateData(dataDTO);
-                        dataModelTimezone.push(dataModel);
-                    }
-                    this.lstOTTimezone(dataModelTimezone);
+                    const updatedList = _.map(lstOTTimezone, dto => {
+                        const model = new OverTimeOfTimeZoneSetModel();
+                        model.updateData(dto);
+                        return model;
+                    });
+                    this.lstOTTimezone(updatedList);
                 }
 
 
@@ -2189,6 +2209,12 @@ module nts.uk.at.view.kmk003.a {
                         return m;
                     });
                     self.lstWorkingTimezone(updatedList);
+
+                    // for simple mode list
+                    const firstItem = updatedList[0];
+                    if (firstItem) {
+                        self.lstWorkingTimezoneSimpleMode([new EmTimeZoneSetFixedTableModel(firstItem)]);
+                    }
                 }
 
                 getWorkingTimezoneByEmploymentTimeFrameNo(employmentTimeFrameNo: number) {
