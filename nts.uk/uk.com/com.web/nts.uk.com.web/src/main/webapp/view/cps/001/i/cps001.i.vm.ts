@@ -97,10 +97,10 @@ module nts.uk.com.view.cps001.i.vm {
 
             self.expStateTitle = ko.observable('expDateTitle');
             self.roundingRules = ko.observableArray([
-                { code: 0, name: '使用可能' },
-                { code: 1, name: '期限切れ' }
+                { code: 1, name: '使用可能' },
+                { code: 0, name: '期限切れ' }
             ]);
-            self.selectedRuleCode = ko.observable(0);
+            self.selectedRuleCode = ko.observable(1);
 
             // Subsribe table
             self.currentValue.subscribe(value => {
@@ -118,14 +118,12 @@ module nts.uk.com.view.cps001.i.vm {
             self.checked.subscribe(value => {
                 let self = this;
                 self.activeBtn();
-                let sID = __viewContext.user.employeeId;
-                console.log(sID);
                 if (value) {
                     self.listData(self.convertData(self.listFullData()));
                     self.currentValue(self.listData()[0].specialid);
                 } else {
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
-                        return item.expStatus == 0;
+                        return item.expStatus == 1;
                     })));
                 }
                 if (self.listData().length) {
@@ -150,7 +148,7 @@ module nts.uk.com.view.cps001.i.vm {
                 if (data && data.length > 0) {
                     self.listFullData(data);
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
-                        return item.expStatus == 0;
+                        return item.expStatus == 1;
                     })));
 
                     if (self.listData().length > 0) {
@@ -236,7 +234,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.timeReam(null);
             self.dayNumberOver(null);
             self.timeOver(null);
-            self.selectedRuleCode(0);
+            self.selectedRuleCode(1);
             $('#idDateGrantInp').focus();
         }
 
@@ -401,7 +399,7 @@ module nts.uk.com.view.cps001.i.vm {
         }
 
         formatEnum(value: number) {
-            return value == 0 ? '使用可能' : '期限切れ';
+            return value == 1 ? '使用可能' : '期限切れ';
         }
 
 
@@ -491,16 +489,16 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('CPS001_118'), key: 'specialid', width: 0 },
-                { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 120 },
-                { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadlineDate', width: 120 },
+                { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 100 },
+                { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadlineDate', width: 100 },
                 { headerText: nts.uk.resource.getText('CPS001_120'), key: 'numberDayGrant', width: 60 },
-                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'timeGrant', width: 60, hidden: self.grantTimeH() },
+                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'timeGrant', width: 70, hidden: self.grantTimeH() },
                 { headerText: nts.uk.resource.getText('CPS001_121'), key: 'numberDayUse', width: 60 },
-                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'timeUse', width: 60, hidden: self.useTimeH() },
+                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'timeUse', width: 70, hidden: self.useTimeH() },
                 { headerText: nts.uk.resource.getText('CPS001_130'), key: 'numberDaysOver', width: 60 },
-                { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 60, hidden: self.timeExeededH() },
+                { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 70, hidden: self.timeExeededH() },
                 { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 60 },
-                { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeRemain', width: 60, hidden: self.timeReamH() },
+                { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeRemain', width: 70, hidden: self.timeReamH() },
                 { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
             ]);
             let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 , showNumbering: true}"></table>';
