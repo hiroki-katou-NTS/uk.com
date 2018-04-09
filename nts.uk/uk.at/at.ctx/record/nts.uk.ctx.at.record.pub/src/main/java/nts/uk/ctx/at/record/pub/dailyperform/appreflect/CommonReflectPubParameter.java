@@ -39,4 +39,8 @@ public class CommonReflectPubParameter {
 	 * 予定反映不可理由
 	 */
 	private ReasonNotReflectPubRecord reasoNotReflect;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 }

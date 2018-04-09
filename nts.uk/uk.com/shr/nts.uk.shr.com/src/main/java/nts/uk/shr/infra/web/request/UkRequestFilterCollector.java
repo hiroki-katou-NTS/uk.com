@@ -8,16 +8,30 @@ import javax.ejb.Stateless;
 import nts.arc.layer.ws.preprocess.RequestFilterCollector;
 import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
+import nts.arc.security.csrf.CsrfProtectionFilter;
+import nts.uk.shr.com.program.nosession.PathsNoSession;
 import nts.uk.shr.infra.web.session.ScreenLoginSessionValidator;
+import nts.uk.shr.infra.web.session.SharingSessionFilter;
+import nts.uk.shr.infra.web.session.WebApiLoginSessionValidator;
 
 @Stateless
 public class UkRequestFilterCollector implements RequestFilterCollector {
+	
+	private static class PathPattern {
+		static final String ALL_REQUESTS = ".*";
+		static final String ALL_SCREENS = ".*\\.xhtml.*";
+		static final String ALL_WEB_APIS = ".*/webapi/.*";
 
+	}
+	
 	private static final List<RequestFilterMapping> FILTERS = Arrays.asList(
-			RequestFilterMapping.map(".*", new RequestPerformanceLogFilter()),
-			RequestFilterMapping.map(".*", new CorsPreflightFilter()),
-			RequestFilterMapping.map(".*/webapi/.*", new ProgramIdDetector()),
-			RequestFilterMapping.map(".*\\.xhtml.*", new ScreenLoginSessionValidator())
+			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new RequestPerformanceLogFilter()),
+			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new CorsPreflightFilter()),
+			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()),
+			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()),
+			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
+			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()),
+			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS))
 			);
 
 	@Override

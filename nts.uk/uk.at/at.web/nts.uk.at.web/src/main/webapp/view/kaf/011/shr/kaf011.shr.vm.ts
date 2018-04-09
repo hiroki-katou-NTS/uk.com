@@ -235,14 +235,16 @@ module nts.uk.at.view.kaf011.shr {
 
                 self.appDate.subscribe((newDate) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                        absDate = vm.absWk().appDate(),
+                        recDate = vm.recWk().appDate(),
                         changeDateParam = {
-                            holidayDate: vm.absWk().appDate(),
-                            takingOutDate: vm.recWk().appDate(),
+                            holidayDate: absDate,
+                            takingOutDate: recDate,
                             comType: vm.appComSelectedCode(),
                             uiType: 0
-
                         }
-                    if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date" || newDate.toString().length != 10) { return; }
+
+                    if (!vm.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
                     block.invisible();
                     service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
                         vm.recWk().wkTypes(data.recWkTypes || []);

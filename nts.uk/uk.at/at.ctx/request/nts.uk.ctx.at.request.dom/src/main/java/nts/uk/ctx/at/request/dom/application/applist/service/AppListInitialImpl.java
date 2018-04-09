@@ -425,19 +425,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//条件５：重複承認の対応条件
 			
 			
+			List<Application_New> lstOverTime = lstAppFilter3.stream().filter(c -> c.isAppOverTime()).collect(Collectors.toList());
+			List<Application_New> lstGoBack = lstAppFilter3.stream().filter(d -> d.isAppGoBack()).collect(Collectors.toList());
+			List<Application_New> lstHdWork = lstAppFilter3.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());
+			List<Application_New> lstWkChange = lstAppFilter3.stream().filter(d -> d.isAppWkChange()).collect(Collectors.toList());
+			List<Application_New> lstAbsence = lstAppFilter3.stream().filter(d -> d.isAppAbsence()).collect(Collectors.toList());
 			
-			
-			
-			List<Application_New> lstOverTime = lstAppFilter3.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstGoBack = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstHdWork = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstWkChange = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION))
-					.collect(Collectors.toList());
-			List<Application_New> lstAbsence = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.ABSENCE_APPLICATION))
-					.collect(Collectors.toList());
 			List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 			List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
 			List<AppHolidayWorkFull> lstAppHdWork = new ArrayList<>();

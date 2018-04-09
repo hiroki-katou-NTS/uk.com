@@ -45,3 +45,6 @@
 	padding-right: 5px;
 	text-align: right;
 }
+button.nts-switch-button {
+	min-width: 100px;
+}

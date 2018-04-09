@@ -60,7 +60,7 @@ public class JpaComNormalSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId, int year) {
-		this.commandProxy().remove(KshstComNormalSetPK.class,
+		this.commandProxy().remove(KshstComNormalSet.class,
 				new KshstComNormalSetPK(companyId, year));
 	}
 

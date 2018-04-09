@@ -22,12 +22,24 @@ public interface ClosureService {
 	 * @param processingYm the processing ym
 	 * @return the closure period
 	 */
-	// 当月の期間を算出する
+	// 当月の期間を算�する
 	public DatePeriod getClosurePeriod(int closureId, YearMonth processingYm);
 	
+	// TODO: Pls review
+	public DatePeriod getClosurePeriodNws(int closureId, YearMonth processingYm);
+	
 	/**
-	 * 全締めの当月と期間を取得する
-	 * @return 締め情報リスト
+	 * Gets the closure info.
+	 *
+	 * @return the closure info
+	 */
+	public List<ClosureInfor> getClosureInfo();
+	
+
+	/**
+	 * Gets the all closure info.
+	 *
+	 * @return the all closure info
 	 */
 	// 2018.4.4 add shuichi_ishida
 	public List<ClosureInfo> getAllClosureInfo();
