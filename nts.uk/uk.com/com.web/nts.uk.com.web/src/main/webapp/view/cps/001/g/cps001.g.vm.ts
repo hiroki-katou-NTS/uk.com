@@ -253,7 +253,9 @@ module nts.uk.com.view.cps001.g.vm {
         public create(): void {
             let _self = this;
             _self.createMode(true);
-            _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{}));
+            _self.currentItem(new AnnualLeaveGrantRemainingData(<IAnnualLeaveGrantRemainingData>{
+                expirationStatus: EXPIRED_STATUS.AVAILABLE
+            }));
             _self.loadItemDef(); 
             _self.currentValue('');
             clearError();
@@ -390,7 +392,7 @@ module nts.uk.com.view.cps001.g.vm {
                 self.annLeavID(param.annLeavID || null);
                 self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
                 self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
-                self.expirationStatus(param.expirationStatus || EXPIRED_STATUS.AVAILABLE);
+                self.expirationStatus(param.expirationStatus);
                 self.grantDays(param.grantDays || null);
                 self.grantMinutes(param.grantMinutes || null);
                 self.usedDays(param.usedDays || null);
