@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.monthlyclosureupdatelog;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErro
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdErrInf;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdErrInfPk;
+import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdPerLog;
 
 /**
  * 
@@ -33,6 +35,13 @@ public class JpaMonthlyClosureUpdateErrorInforRepository extends JpaRepository
 			return Optional.of(optEntity.get().toDomain());
 		else
 			return Optional.empty();
+	}
+
+	@Override
+	public List<MonthlyClosureUpdateErrorInfor> getAll(String monthlyClosureUpdateLogId) {
+		String sql = "SELECT e FROM KrcdtMcloseUpdErrInf e WHERE e.pk.monthlyClosureUpdateLogId = :logId";
+		return this.queryProxy().query(sql, KrcdtMcloseUpdErrInf.class).setParameter("logId", monthlyClosureUpdateLogId)
+				.getList(c -> c.toDomain());
 	}
 
 }
