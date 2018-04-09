@@ -17,4 +17,5 @@ public interface OptionalWidgetRepository {
 
 	boolean isExist(String companyId, String code);
 
+	List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int TopPagePartType);
 }
