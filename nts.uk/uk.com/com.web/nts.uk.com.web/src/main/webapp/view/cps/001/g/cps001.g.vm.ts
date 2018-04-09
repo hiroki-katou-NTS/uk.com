@@ -81,7 +81,6 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.create();                    
                 }
                  _self.loadItemDef(); 
-                $('#idGrantDate').focus(); 
             });
 
 
@@ -118,7 +117,6 @@ module nts.uk.com.view.cps001.g.vm {
                     // Set to cr eate mode
                     _self.createMode(true);
                 }
-                $('#idGrantDate').focus();
                 
                 if(_self.init){
                     _self.getItemDef();
