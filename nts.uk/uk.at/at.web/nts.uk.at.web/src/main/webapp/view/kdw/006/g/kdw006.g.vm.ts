@@ -109,9 +109,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     if (item.no == 4) {
                         comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
                     }
-                    let group = new WorkTypeGroup(item.no, 'a', item.workTypeList, names.join("、　"),
+                    let group = new WorkTypeGroup(item.no, item.name === " " ? '' : item.name, item.workTypeList, names.join("、　"),
                         fullWorkTypeCodes, comment);
-                    //                    item.name === " " ? '' : item.name
                     array.push(group);
                     if (group.no < 5) {
                         self.groups1.push(group);
