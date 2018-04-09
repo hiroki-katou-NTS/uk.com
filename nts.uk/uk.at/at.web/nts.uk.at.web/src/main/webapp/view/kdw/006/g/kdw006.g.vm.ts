@@ -43,7 +43,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             self.employmentList = ko.observableArray<UnitModel>([]);
 
             self.selectedCode.subscribe(function(newValue) {
-                self.getWorkType();
+                if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                self.getWorkType(newValue);
             });
         }
 
@@ -60,7 +61,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 dfd.resolve();
             });
             self.getFullWorkTypeList().done(function() {
-                self.getWorkType().done(function() {
+                self.getWorkType(self.selectedCode()).done(function() {
                     dfd.resolve();
                 });
             });
@@ -89,12 +90,12 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
 
-        getWorkType(): JQueryPromise<any> {
+        getWorkType(newValue:any): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             let array = [];
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
-            service.getWorkTypes(self.selectedCode()).done(function(res) {
+            service.getWorkTypes(newValue).done(function(res) {
                 self.groups1.removeAll();
                 self.groups2.removeAll();
                 _.forEach(res, function(item) {
