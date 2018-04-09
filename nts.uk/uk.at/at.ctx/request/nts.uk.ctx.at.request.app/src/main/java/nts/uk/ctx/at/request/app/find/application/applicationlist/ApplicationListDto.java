@@ -6,6 +6,7 @@ import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
@@ -34,4 +35,5 @@ public class ApplicationListDto {
 	private List<AppAbsenceFull> lstAppAbsence;
 	private List<AppInfor> lstAppInfor;
 	private HdAppSetDto hdAppSet;
+	private List<AppCompltLeaveSync> lstAppCompltLeaveSync;
 }

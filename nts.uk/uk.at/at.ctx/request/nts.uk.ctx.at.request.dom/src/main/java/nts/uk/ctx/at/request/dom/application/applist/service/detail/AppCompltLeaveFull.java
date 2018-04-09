@@ -12,6 +12,9 @@ public class AppCompltLeaveFull {
 
 	/**申請ID*/
 	private String appID;
+	//0 - abs
+	//1 - rec
+	private int type;
 	/**勤務種類*/
 	private String workTypeCD;
 	/**勤務時間1.開始時刻*/
