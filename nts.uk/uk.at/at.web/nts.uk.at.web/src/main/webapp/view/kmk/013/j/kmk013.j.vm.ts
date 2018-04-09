@@ -181,7 +181,9 @@ module nts.uk.at.view.kmk013.j {
                         };
     
                         service.registerPayItem(workTypeData).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                $('#trans-attend').focus();
+                            });
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message);
                         }).always(() => {
