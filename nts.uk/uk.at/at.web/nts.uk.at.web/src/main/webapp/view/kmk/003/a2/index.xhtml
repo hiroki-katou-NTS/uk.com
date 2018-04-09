@@ -5,9 +5,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 	<!-- BEGIN A14_1 ~ A16_12 -->
-	<com:ko tag="ifnot" bind="isFlowMode()">
+	<com:ko tag="ifnot" bind="isFlowMode">
 		
-		<com:ko tag="if" bind="isSimpleMode()">
+		<com:ko tag="if" bind="isSimpleMode">
 			<div tabindex="46" class="accordion setting_detail_tab2">
 				<com:ko tag="if" bind="isFixedMode">
 					<div id="fixtable-tab2-one-day-simple-mode-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
@@ -28,7 +28,7 @@
 		</com:ko>
 		
 		<!-- =================== Detail mode =================== -->
-		<com:ko tag="ifnot" bind="isSimpleMode()">
+		<com:ko tag="ifnot" bind="isSimpleMode">
 			<div tabindex="-1" class="accordion setting_detail_tab2"
 				data-bind="ntsAccordion: {enable: true} ">
 				<h3>
@@ -51,7 +51,7 @@
 			</div>
 			
 			<!-- =================== Use half day =================== -->
-			<com:ko tag="if" bind="isUseHalfDay()">
+			<com:ko tag="if" bind="isUseHalfDay">
 				<div tabindex="-1" class="accordion setting_detail_tab2"
 					data-bind="ntsAccordion: {enable: true}">
 					<h3>
@@ -151,7 +151,7 @@
 		</div><!-- END A18_19 ~ A18_23 -->
 
 		<!-- BEGIN A18_24 ~ A18_26 -->
-		<com:ko tag="if" bind="!isSimpleMode()">
+		<com:ko tag="ifnot" bind="isSimpleMode">
 			<div class="tab-rows">
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_138')}</div>
 			</div>

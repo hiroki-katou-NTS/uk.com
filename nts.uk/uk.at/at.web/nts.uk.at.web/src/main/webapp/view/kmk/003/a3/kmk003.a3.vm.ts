@@ -76,13 +76,13 @@ module a3 {
         //define for 精算�primitive value
         lstSettlementOrder: any[];
         screenSettingMode: KnockoutObservable<number>;
-        isNewMode: KnockoutObservable<boolean>;
+        isNewMode: KnockoutComputed<boolean>;
         
         /**
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,
-            isUseHalfDay: KnockoutObservable<boolean>, isNewMode: KnockoutObservable<boolean>,lstOvertimeWorkFrame : any) {
+            isUseHalfDay: KnockoutObservable<boolean>, isNewMode: KnockoutComputed<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
@@ -582,9 +582,9 @@ module a3 {
             let input = valueAccessor();
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
-            var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
+            var isDetailMode:  KnockoutComputed<boolean> = input.isDetailMode;
             var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
-            var isNewMode: KnockoutObservable<boolean> = input.isNewMode;
+            var isNewMode: KnockoutComputed<boolean> = input.isNewMode;
             let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, useHalfDay,isNewMode,input.overTimeWorkFrameOptions());
             screenModel.startPage().done(() => {
                 $(element).load(webserviceLocator, function() {
