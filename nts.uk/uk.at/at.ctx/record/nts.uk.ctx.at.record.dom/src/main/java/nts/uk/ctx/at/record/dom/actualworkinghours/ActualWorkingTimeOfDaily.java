@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -122,6 +123,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param breakTimeCount 
 	 * @param schePreTimeSet 
 	 * @param schePreTimeSet 
+	 * @param ootsukaFixedCalcSet 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -144,7 +146,9 @@ public class ActualWorkingTimeOfDaily {
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount
+			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
+			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -173,7 +177,12 @@ public class ActualWorkingTimeOfDaily {
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
-		//val calcResultOotsuka = calcOotsuka(workingSystem,totalWorkingTime);
+		val calcResultOotsuka = calcOotsuka(workingSystem,
+											totalWorkingTime,
+											fixRestTimeSetting,
+											oneDay.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(),
+											ootsukaFixedCalcSet,
+											overTimeAutoCalcSet);
 		
 		/*拘束差異時間*/
 		val constraintDifferenceTime = new AttendanceTime(0);
@@ -204,7 +213,7 @@ public class ActualWorkingTimeOfDaily {
 				constraintDifferenceTime,
 				constraintTime,
 				timeDifferenceWorkingHours,
-				totalWorkingTime,
+				calcResultOotsuka,
 				divergenceTimeOfDaily,
 				premiumTime
 				);
@@ -338,23 +347,33 @@ public class ActualWorkingTimeOfDaily {
 	 * @param predetermineTime 所定時間
 	 * @return
 	 */
-	private static void calcOotsuka(WorkingSystem workingSystem, TotalWorkingTime totalWorkingTime,
-									TimezoneOfFixedRestTimeSet fixRestTimeSetting,
-									AttendanceTime predetermineTime) {
+	private static TotalWorkingTime calcOotsuka(WorkingSystem workingSystem, TotalWorkingTime totalWorkingTime,
+									Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting,
+									AttendanceTime predetermineTime,
+									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
+									AutoCalOvertimeSetting autoCalcSet) {
 		if(workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork()) {
 			//休憩未取得時間の計算
-			val unUseBreakTime = totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting);
+			val unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get()):new AttendanceTime(0);
+			//日別実績の総労働からとってくる
+			AttendanceTime vacationAddTime = new AttendanceTime(0);
 			//残業時間
 			if(totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
 				//休憩未取得時間から残業時間計算
 				totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcOotsukaOverTime(
 						totalWorkingTime.getWithinStatutoryTimeOfDaily().getActualWorkTime(),
 						unUseBreakTime,
-						/*休暇加算時間*/
-						predetermineTime
+						vacationAddTime,/*休暇加算時間*/
+						predetermineTime, 
+						ootsukaFixedCalcSet,
+						autoCalcSet
 						);
+				
 			}
+			//就業時間から休憩未取得時間を減算
+			totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
 			
 		}
+		return totalWorkingTime;
 	}
 }
