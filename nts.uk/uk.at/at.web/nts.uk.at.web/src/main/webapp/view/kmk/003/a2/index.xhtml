@@ -9,9 +9,21 @@
 		
 		<com:ko tag="if" bind="isSimpleMode()">
 			<div tabindex="46" class="accordion setting_detail_tab2">
-				<div id="fixtable-tab2-one-day-simple-mode" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
-						isEnableAllControl: isEnableTimeRangeOneDaySimpleMode,
-						option: fixTableOptionOneDaySimpleMode}"></div>
+				<com:ko tag="if" bind="isFixedMode">
+					<div id="fixtable-tab2-one-day-simple-mode-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							isEnableAllControl: ko.observable(false),
+							option: fixTableOptionOneDaySimpleModeFixed}"></div>
+				</com:ko>
+				<com:ko tag="if" bind="isFlexMode">
+					<div id="fixtable-tab2-one-day-simple-mode-flex" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							isEnableAllControl: ko.observable(true),
+							option: fixTableOptionOneDaySimpleModeFlex}"></div>
+				</com:ko>
+				<com:ko tag="if" bind="isDiffTimeMode">
+					<div id="fixtable-tab2-one-day-simple-mode-difftime" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							isEnableAllControl: ko.observable(false),
+							option: fixTableOptionOneDaySimpleModeDifftime}"></div>
+				</com:ko>
 			</div>
 		</com:ko>
 		

@@ -26,7 +26,9 @@ module nts.uk.at.view.kmk003.a {
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     import TimeRange = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRange;
+    import TimePeriod = nts.uk.at.view.kmk003.a.viewmodel.common.TimePeriod;
     import EmTimeZoneSetFixedTableModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetFixedTableModel;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
 
     import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
     export module viewmodel {
@@ -264,10 +266,30 @@ module nts.uk.at.view.kmk003.a {
                 employmentTimezones: KnockoutObservableArray<EmTimeZoneSetModel>;
                 lstOtTimezone: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
 
+                lstWorkingTimezoneSimpleMode: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+
                 constructor() {
                     super();
                     this.employmentTimezones = this.originalList2;
                     this.lstOtTimezone = this.originalList;
+                    this.lstWorkingTimezoneSimpleMode = ko.observableArray([]);
+                }
+
+                public initSubscribeForTab2(timezone: TimezoneModel): void {
+                    let self = this;
+                    timezone.valueChangedNotifier.subscribe(() => {
+                        const cloned = _.cloneDeep(self.lstWorkingTimezoneSimpleMode()[0]);
+                        if (cloned) {
+                            const updatedTime = <TimePeriod>{};
+                            updatedTime.startTime = timezone.start();
+                            updatedTime.endTime = timezone.end();
+                            cloned.timeRange(updatedTime);
+
+                            // update list on fixed table
+                            self.lstWorkingTimezoneSimpleMode([cloned]);
+                        }
+                    });
+
                 }
 
                 toOriginalDto(convertedItem: DiffOverTimeFixedTableModel): DiffTimeOTTimezoneSetDto {
@@ -332,29 +354,34 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: DiffTimezoneSettingDto) {
                     let self = this;
-                    self.employmentTimezones(data.employmentTimezones.map(item => {
+                    self.updateEmpTimezones(data.employmentTimezones);
+                    self.updateOtTimezones(data.lstOtTimezone);
+                }
+
+                updateEmpTimezones(data: Array<EmTimeZoneSetDto>): void {
+                    let self = this;
+                    const updatedList = _.map(data, item => {
                         let m = new EmTimeZoneSetModel();
                         m.updateData(item);
                         return m;
-                    }));
+                    });
+                    self.employmentTimezones(updatedList);
 
-                    self.lstOtTimezone(data.lstOtTimezone?data.lstOtTimezone.map(item => {
+                    // for simple mode list
+                    const firstItem = updatedList[0];
+                    if (firstItem) {
+                        self.lstWorkingTimezoneSimpleMode([new EmTimeZoneSetFixedTableModel(firstItem)]);
+                    }
+                }
+
+                updateOtTimezones(data: Array<DiffTimeOTTimezoneSetDto>): void {
+                    let self = this;
+                    const updatedList = data ? _.map(data, item => {
                         let m = new DiffTimeOTTimezoneSetModel();
                         m.updateData(item);
                         return m;
-                    }):[]);
-
-                }
-                
-                updateOvertimeZone(lstOTTimezone: DiffTimeOTTimezoneSetDto[]) {
-                    this.lstOtTimezone([]);
-                    var dataModelTimezone: DiffTimeOTTimezoneSetModel[] = [];
-                    for (var dataDTO of lstOTTimezone) {
-                        var dataModel: DiffTimeOTTimezoneSetModel = new DiffTimeOTTimezoneSetModel();
-                        dataModel.updateData(dataDTO);
-                        dataModelTimezone.push(dataModel);
-                    }
-                    this.lstOtTimezone(dataModelTimezone);
+                    }) : [];
+                    self.lstOtTimezone(updatedList);
                 }
 
                 toDto(): DiffTimezoneSettingDto {
@@ -587,6 +614,13 @@ module nts.uk.at.view.kmk003.a {
                 public getHDWtzAfternoon(): DiffTimeHalfDayWorkTimezoneModel {
                     let self = this;
                     return _.find(self.halfDayWorkTimezones, time => time.amPmAtr() == 2);
+                }
+
+                public initSubscriberForTab2(timezone: TimezoneModel): void {
+                    let self = this;
+                    self.getHDWtzOneday().workTimezone.initSubscribeForTab2(timezone);
+                    self.getHDWtzMorning().workTimezone.initSubscribeForTab2(timezone);
+                    self.getHDWtzAfternoon().workTimezone.initSubscribeForTab2(timezone);
                 }
 
                 public resetData(): void {

@@ -764,6 +764,18 @@ module nts.uk.at.view.kmk003.a {
                 self.flowWorkSetting = new FlowWorkSettingModel();
                 self.diffWorkSetting = new DiffTimeWorkSettingModel(self.tabMode);
                 self.flexWorkSetting = new FlexWorkSettingModel(self.tabMode);
+
+                self.initSubscriber();
+
+            }
+
+            private initSubscriber(): void {
+                let self = this;
+                const shiftOne = self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
+                self.fixedWorkSetting.initSubscriberForTab2(shiftOne);
+                self.flexWorkSetting.initSubscriberForTab2(shiftOne);
+                self.diffWorkSetting.initSubscriberForTab2(shiftOne);
+
                 self.workTimeSetting.worktimeCode.subscribe(worktimeCode => {
                     self.predetemineTimeSetting.workTimeCode(worktimeCode);
                     self.fixedWorkSetting.workTimeCode(worktimeCode);

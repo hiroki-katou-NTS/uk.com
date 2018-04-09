@@ -26,6 +26,7 @@ module nts.uk.at.view.kmk003.a {
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     import FixRestTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixRestTimezoneSetModel;
     import BaseDataModel = nts.uk.at.view.kmk003.a.viewmodel.common.BaseDataModel;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     
     import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
@@ -194,6 +195,13 @@ module nts.uk.at.view.kmk003.a {
                 public getHDWtzAfternoon(): FixHalfDayWorkTimezoneModel {
                     let self = this;
                     return _.find(self.lstHalfDayWorkTimezone, time => time.dayAtr() == 2);
+                }
+
+                public initSubscriberForTab2(timezone: TimezoneModel): void {
+                    let self = this;
+                    self.getHDWtzOneday().workTimezone.initSubscribeForTab2(timezone);
+                    self.getHDWtzMorning().workTimezone.initSubscribeForTab2(timezone);
+                    self.getHDWtzAfternoon().workTimezone.initSubscribeForTab2(timezone);
                 }
 
                 updateData(data: FixedWorkSettingDto) {

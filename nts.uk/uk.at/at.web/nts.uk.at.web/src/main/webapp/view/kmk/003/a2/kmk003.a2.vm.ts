@@ -46,9 +46,12 @@ module a2 {
         dataSourceAfternoonDifftime: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
         fixTableOptionAfternoonDifftime: any;
         
-        dataSourceOneDaySimpleMode: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
-        fixTableOptionOneDaySimpleMode: any;
-        isEnableTimeRangeOneDaySimpleMode: KnockoutObservable<boolean>;
+        dataSourceOneDaySimpleModeFixed: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDaySimpleModeFixed: any;
+        dataSourceOneDaySimpleModeFlex: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDaySimpleModeFlex: any;
+        dataSourceOneDaySimpleModeDifftime: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDaySimpleModeDifftime: any;
         
         // Defined variable flow mode
         roundingProcsses: KnockoutObservableArray<any>;
@@ -89,11 +92,6 @@ module a2 {
             self.isDiffTimeMode = self.parentModel.workTimeSetting.isDiffTime;
             self.isUseHalfDay = input.useHalfDay; 
 
-            self.isEnableTimeRangeOneDaySimpleMode = ko.computed(() => {
-                return self.isSimpleMode() && (self.parentModel.workTimeSetting.isFlex()
-                    || self.parentModel.workTimeSetting.isFlow());
-            });
-            
             // ====================================== Defined Variable Flow Mode ======================================
             
             self.roundingProcsses = ko.observableArray([
@@ -108,6 +106,10 @@ module a2 {
             self.bindDataFlowMode();
             self.setFixedTableDatasource();
             self.setFixedTableOptions();
+
+            // force to update value in tab 2
+            document.querySelector('#ui-id-2').addEventListener('click', () =>
+                self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated());
         }
 
         private setFixedTableDatasource(): void {
@@ -128,7 +130,9 @@ module a2 {
             self.dataSourceMorningFlex = flex.getHDWtzMorning().workTimezone.convertedList2;
             self.dataSourceAfternoonFlex = flex.getHDWtzAfternoon().workTimezone.convertedList2;
 
-            self.dataSourceOneDaySimpleMode = ko.observableArray([]);
+            self.dataSourceOneDaySimpleModeFixed = fixed.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
+            self.dataSourceOneDaySimpleModeFlex = flex.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
+            self.dataSourceOneDaySimpleModeDifftime = difftime.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
 
         }
 
@@ -138,13 +142,13 @@ module a2 {
             const TABINDEX_MORNING = 47;
             const TABINDEX_AFTERNOON = 48;
 
-            self.fixTableOptionOneDaySimpleMode = self.getDefaultFixedTableOption();
-            self.fixTableOptionOneDaySimpleMode.maxRow = 1;
-            self.fixTableOptionOneDaySimpleMode.maxRowDisplay = 1;
-            self.fixTableOptionOneDaySimpleMode.isShowButton = false;
-            self.fixTableOptionOneDaySimpleMode.dataSource = self.dataSourceOneDaySimpleMode;
-            self.fixTableOptionOneDaySimpleMode.isMultipleSelect = false;
-            self.fixTableOptionOneDaySimpleMode.tabindex = 1;
+            // simple mode
+            self.fixTableOptionOneDaySimpleModeFixed = self.getSimpleFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeFixed.dataSource = self.dataSourceOneDaySimpleModeFixed;
+            self.fixTableOptionOneDaySimpleModeFlex = self.getSimpleFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeFlex.dataSource = self.dataSourceOneDaySimpleModeFlex;
+            self.fixTableOptionOneDaySimpleModeDifftime = self.getSimpleFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeDifftime.dataSource = self.dataSourceOneDaySimpleModeDifftime;
 
             // fixed
             self.fixTableOptionOneDayFixed = self.getDefaultFixedTableOption();
@@ -191,6 +195,20 @@ module a2 {
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
                 tabindex: null
+            };
+        }
+
+        private getSimpleFixedTableOption(): any {
+            let self = this;
+            return {
+                maxRow: 1,
+                minRow: 1,
+                maxRowDisplay: 1,
+                isShowButton: false,
+                dataSource: null,
+                isMultipleSelect: false,
+                columns: self.columnSetting(),
+                tabindex: 1
             };
         }
 
