@@ -86,11 +86,6 @@ module nts.uk.com.view.cps001.i.vm {
         nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable(null);
         nameTimeReam: KnockoutObservable<string> = ko.observable(null);
 
-
-
-
-
-
         //data recive from cps001.a
         categoryCode: KnockoutObservable<string> = ko.observable(null);
 
@@ -115,10 +110,8 @@ module nts.uk.com.view.cps001.i.vm {
                             self.bindingData(result);
                         }
                     });
-
                 }
                 self.activeBtn();
-
             });
 
             // Subscribe checkbox
@@ -166,7 +159,6 @@ module nts.uk.com.view.cps001.i.vm {
                     } else {
                         self.newMode();
                     }
-
                 } else {
                     self.listData([]);
                     self.newMode();
@@ -263,7 +255,6 @@ module nts.uk.com.view.cps001.i.vm {
 
             if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
                 error({ messageId: "Msg_1023" });
-                $('#idDateGrantInp').focus();
                 return;
             }
 
@@ -352,7 +343,7 @@ module nts.uk.com.view.cps001.i.vm {
                                 });
                             } else if (itemListLength - 1 === delItemIndex) {
                                 self.loadData().done(() => {
-                                    self.currentValue(self.listData()[delItemIndex-1].specialid);
+                                    self.currentValue(self.listData()[delItemIndex - 1].specialid);
 
                                 });
                             } else if (itemListLength - 1 > delItemIndex) {
