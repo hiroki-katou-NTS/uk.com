@@ -95,22 +95,10 @@ module nts.uk.at.view.kmk003.a {
                 workTimezone: FixedWorkTimezoneSetModel;
                 ampmAtr: KnockoutObservable<number>;
 
-                constructor(ampmAtr: number) {
+                constructor(ampmAtr: number, displayMode: KnockoutObservable<number>) {
                     this.restTimezone = new FlowWorkRestTimezoneModel();
-                    this.workTimezone = new FixedWorkTimezoneSetModel();
+                    this.workTimezone = new FixedWorkTimezoneSetModel(displayMode);
                     this.ampmAtr = ko.observable(ampmAtr);
-                }
-
-                public static initOneDay(): FlexHalfDayWorkTimeModel {
-                    return new FlexHalfDayWorkTimeModel(0);
-                }
-
-                public static initMorning(): FlexHalfDayWorkTimeModel {
-                    return new FlexHalfDayWorkTimeModel(1);
-                }
-
-                public static initAfternoon(): FlexHalfDayWorkTimeModel {
-                    return new FlexHalfDayWorkTimeModel(2);
                 }
 
                 bindFixRestTime(fixRestTime: KnockoutObservable<boolean>): void {
@@ -250,7 +238,7 @@ module nts.uk.at.view.kmk003.a {
                     self.offdayWorkTime = new FlexOffdayWorkTimeModel();
                     self.commonSetting = new WorkTimezoneCommonSetModel();
                     self.fixRestTime = ko.observable(true); // initial value = lead
-                    self.lstHalfDayWorkTimezone = self.initListHalfDay();
+                    self.lstHalfDayWorkTimezone = self.initListHalfDay(self.displayMode);
                     self.lstStampReflectTimezone = [];
                     self.initStampSets();
                     self.calculateSetting = new FlexCalcSettingModel();                   
@@ -276,22 +264,18 @@ module nts.uk.at.view.kmk003.a {
                     self.lstStampReflectTimezone.push(leaveWork2Stamp);                         
                 }
 
-                private initListHalfDay(): Array<FlexHalfDayWorkTimeModel> {
+                private initListHalfDay(displayMode: KnockoutObservable<number>): Array<FlexHalfDayWorkTimeModel> {
                     let self = this;
-                    let oneDay = FlexHalfDayWorkTimeModel.initOneDay();
+                    let oneDay = new FlexHalfDayWorkTimeModel(0, displayMode);
                     oneDay.bindFixRestTime(self.fixRestTime);
 
-                    let morning = FlexHalfDayWorkTimeModel.initMorning();
+                    let morning = new FlexHalfDayWorkTimeModel(1, displayMode);
                     morning.bindFixRestTime(self.fixRestTime);
 
-                    let afternoon = FlexHalfDayWorkTimeModel.initAfternoon();
+                    let afternoon = new FlexHalfDayWorkTimeModel(2, displayMode);
                     afternoon.bindFixRestTime(self.fixRestTime);
 
-                    let list: FlexHalfDayWorkTimeModel[] = [];
-                    list.push(oneDay);
-                    list.push(morning);
-                    list.push(afternoon);
-                    return list;
+                    return [oneDay, morning, afternoon];
                 }
 
                 public resetData(): void {

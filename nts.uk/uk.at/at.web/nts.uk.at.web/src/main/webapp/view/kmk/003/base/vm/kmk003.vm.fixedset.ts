@@ -80,19 +80,19 @@ module nts.uk.at.view.kmk003.a {
                 workTimezone: FixedWorkTimezoneSetModel;
                 dayAtr: KnockoutObservable<number>;
                 
-                constructor() {
+                constructor(displayMode: KnockoutObservable<number>) {
                     super();
                     this.restTimezone = new FixRestTimezoneSetModel();
-                    this.workTimezone = new FixedWorkTimezoneSetModel();
+                    this.workTimezone = new FixedWorkTimezoneSetModel(displayMode);
                     this.dayAtr = ko.observable(0);
                 }
 
-                static getDefaultData(): Array<FixHalfDayWorkTimezoneModel> {
-                    let oneday = new FixHalfDayWorkTimezoneModel();
+                static getDefaultData(displayMode: KnockoutObservable<number>): Array<FixHalfDayWorkTimezoneModel> {
+                    let oneday = new FixHalfDayWorkTimezoneModel(displayMode);
                     oneday.dayAtr(0);
-                    let morning = new FixHalfDayWorkTimezoneModel();
+                    let morning = new FixHalfDayWorkTimezoneModel(displayMode);
                     morning.dayAtr(1);
-                    let afternoon = new FixHalfDayWorkTimezoneModel();
+                    let afternoon = new FixHalfDayWorkTimezoneModel(displayMode);
                     afternoon.dayAtr(2);
                     let list: any[] = [];
                     list.push(oneday);
@@ -156,7 +156,7 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting = new WorkTimezoneCommonSetModel();
                     self.useHalfDayShift = ko.observable(false);
                     self.fixedWorkRestSetting = new FixedWorkRestSetModel();
-                    self.lstHalfDayWorkTimezone = FixHalfDayWorkTimezoneModel.getDefaultData();
+                    self.lstHalfDayWorkTimezone = FixHalfDayWorkTimezoneModel.getDefaultData(self.displayMode);
                     self.lstStampReflectTimezone = [];
                     self.legalOTSetting = ko.observable(0);
                     // Update phase 2
