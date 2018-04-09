@@ -1,16 +1,25 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -40,64 +49,112 @@ public class VacationClass {
 	 * 休暇使用時間の計算
 	 * @return
 	 */
-	public void calcUseRestTime(WorkType workType,
+	public static HolidayOfDaily calcUseRestTime(WorkType workType,
 			 							  PredetermineTimeSetForCalc predetermineTimeSet,
 			 							  Optional<WorkTimeCode> siftCode,
 			 							  Optional<PersonalLaborCondition> personalCondition,
 			 							  VacationAddTimeSet vacationAddTimeSet,
-			 							  OutingTimeOfDaily goOutTimeOfDaily,
-			 							  LateTimeOfDaily lateTimeOfDaily,
-			 							  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily) {
-//		//代休
-//		AttendanceTime substituUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.SubstituteHoliday,
-//																 predetermineTimeSet,siftCode,
-//																 personalCondition,vacationAddTimeSet);
-//		int sumSubTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().valueAsMinutes()
-//						+ lateTimeOfDaily.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes()
-//						+ leaveEarlyTimeOfDaily.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes();
-//		substituUseTime = substituUseTime.addMinutes(sumSubTime);
-//		
-//		val substituteHoliday = new SubstituteHolidayOfDaily(substituUseTime, );
-//		
-//		//振休
+			 							  List<OutingTimeOfDaily> goOutTimeOfDaily,
+			 							  List<LateTimeOfDaily> lateTimeOfDaily,
+			 							  List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily) {
+		
+		//欠勤
+		AttendanceTime absenceUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.Absence,
+				  											    predetermineTimeSet,siftCode,
+				  											    personalCondition,vacationAddTimeSet);
+		val absenceOfDaily = new AbsenceOfDaily(absenceUseTime);
+		
+		//時間消化休暇
+		AttendanceTime timeDigest = new AttendanceTime(0); 
+		val timeDigestOfDaily = new TimeDigestOfDaily(timeDigest, new AttendanceTime(0));
+		
+		//積立年休使用時間
+		AttendanceTime yearlyReservedTime = vacationTimeOfcalcDaily(workType,VacationCategory.YearlyReserved,
+				  											  		predetermineTimeSet,siftCode,
+				  											  		personalCondition,vacationAddTimeSet);
+		val yearlyReservedOfDaily = new YearlyReservedOfDaily(yearlyReservedTime);
+		//代休
+		AttendanceTime substituUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.SubstituteHoliday,
+																 predetermineTimeSet,siftCode,
+																 personalCondition,vacationAddTimeSet);
+		int sumSubTime = goOutTimeOfDaily.stream()
+										 .map(tc -> tc.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().valueAsMinutes())
+										 .collect(Collectors.summingInt(tc -> tc))
+						+ lateTimeOfDaily.stream()
+										 .map(tc -> tc.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes())
+										 .collect(Collectors.summingInt(tc -> tc))
+						+ leaveEarlyTimeOfDaily.stream()
+						 					   .map(tc -> tc.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes())
+						 					   .collect(Collectors.summingInt(tc -> tc));
+		substituUseTime = substituUseTime.addMinutes(sumSubTime);
+		
+		val substituteOfDaily = new SubstituteHolidayOfDaily(substituUseTime,new AttendanceTime(0));
+		
+		//振休
 //		AttendanceTime pauseUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.Pause,
 //				 											  predetermineTimeSet,siftCode,
 //				 											  personalCondition,vacationAddTimeSet);
-//		//年休
-//		AttendanceTime annualUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.AnnualHoliday,
-//				 												 predetermineTimeSet,siftCode,
-//				 												 personalCondition,vacationAddTimeSet);
-//		int sumAnnTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().valueAsMinutes()
-//						+ lateTimeOfDaily.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes()
-//						+ leaveEarlyTimeOfDaily.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes();
-//		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
-//
-//		val annualHoliday = new SubstituteHolidayOfDaily(annualUseTime, );
-//		
-//		//超過有休
-//		int sumExcessTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().valueAsMinutes()
-//					  + lateTimeOfDaily.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes()
-//					  + leaveEarlyTimeOfDaily.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes();
-//		val overSalary = new OverSalaryOfDaily(sumExcessTime, );
-//		//特別休暇
-//		AttendanceTime specHolidayTime = vacationTimeOfcalcDaily(workType,VacationCategory.SpecialHoliday,
-//				 											  	 predetermineTimeSet,siftCode,
-//				 											  	 personalCondition,vacationAddTimeSet);
-//		int sumSpecTime = goOutTimeOfDaily.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes()
-//							+ lateTimeOfDaily.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()
-//							+ leaveEarlyTimeOfDaily.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes();
-//		specHolidayTime = specHolidayTime.addMinutes(sumSpecTime);
-//		
-//		val specHoliday = new SubstituteHolidayOfDaily(specHolidayTime, );
-//		
-//		//欠勤使用時間
-//		AttendanceTime absenceUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.Absence,
-//				  											    predetermineTimeSet,siftCode,
-//				  											    personalCondition,vacationAddTimeSet);
-//		//積立年休使用時間
-//		AttendanceTime yearlyReservedTime = vacationTimeOfcalcDaily(workType,VacationCategory.YearlyReserved,
-//				  											  		predetermineTimeSet,siftCode,
-//				  											  		personalCondition,vacationAddTimeSet);
+		
+		//超過有休
+		AttendanceTime overSalaryTime = vacationTimeOfcalcDaily(workType,VacationCategory.SpecialHoliday,
+			  	 												 predetermineTimeSet,siftCode,
+			  	 												 personalCondition,vacationAddTimeSet);
+		int sumOverTime = goOutTimeOfDaily.stream()
+				 						  .map(tc -> tc.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().valueAsMinutes())
+				 						  .collect(Collectors.summingInt(tc -> tc))
+				 		  + lateTimeOfDaily.stream()
+				 		  				  .map(tc -> tc.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes())
+				 		  				  .collect(Collectors.summingInt(tc -> tc))
+						  + leaveEarlyTimeOfDaily.stream()
+							 			  .map(tc -> tc.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes())
+							 			  .collect(Collectors.summingInt(tc -> tc));
+		overSalaryTime = overSalaryTime.addMinutes(sumOverTime);
+		
+		val overSalaryOfDaily = new OverSalaryOfDaily(overSalaryTime, new AttendanceTime(0));
+		
+		//特別休暇
+		AttendanceTime specHolidayTime = vacationTimeOfcalcDaily(workType,VacationCategory.SpecialHoliday,
+				 											  	 predetermineTimeSet,siftCode,
+				 											  	 personalCondition,vacationAddTimeSet);
+		int sumSpecTime = goOutTimeOfDaily.stream()
+				 						  .map(tc -> tc.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes())
+				 						  .collect(Collectors.summingInt(tc -> tc))
+				 		  + lateTimeOfDaily.stream()
+				 		  				  .map(tc -> tc.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes())
+										  .collect(Collectors.summingInt(tc -> tc))
+						  + leaveEarlyTimeOfDaily.stream()
+							 			  .map(tc -> tc.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes())
+							 			  .collect(Collectors.summingInt(tc -> tc));
+		specHolidayTime = specHolidayTime.addMinutes(sumSpecTime);
+		
+		val specHolidayOfDaily = new SpecialHolidayOfDaily(specHolidayTime, new AttendanceTime(0));
+		
+		//年休
+		AttendanceTime annualUseTime = vacationTimeOfcalcDaily(workType,VacationCategory.AnnualHoliday,
+				 												 predetermineTimeSet,siftCode,
+				 												 personalCondition,vacationAddTimeSet);
+		int sumAnnTime = goOutTimeOfDaily.stream()
+				 						 .map(tc -> tc.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().valueAsMinutes())
+				 						 .collect(Collectors.summingInt(tc -> tc))
+				 		 + lateTimeOfDaily.stream()
+										 .map(tc -> tc.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes())
+										 .collect(Collectors.summingInt(tc -> tc))
+						 + leaveEarlyTimeOfDaily.stream()
+						 					   .map(tc -> tc.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes())
+						 					   .collect(Collectors.summingInt(tc -> tc));
+		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
+
+		val annualOfDaily = new AnnualOfDaily(annualUseTime, new AttendanceTime(0));
+		
+
+		return new HolidayOfDaily(absenceOfDaily,
+								  timeDigestOfDaily,
+								  yearlyReservedOfDaily,
+								  substituteOfDaily,
+								  overSalaryOfDaily,
+								  specHolidayOfDaily,
+								  annualOfDaily
+								  );
 	}
 	
 	
@@ -330,4 +387,7 @@ public class VacationClass {
 			throw new RuntimeException("不正な労働制です");
 		}
 	}
+
+
+
 }
