@@ -15,7 +15,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 
 	private String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
 	
-	private String QUERY_BYSID_WITH_COND = String.join(" ",QUERY_BYSID, "AND p.stateAtr = 0");
+	private String QUERY_BYSID_WITH_COND = String.join(" ",QUERY_BYSID, "AND p.stateAtr = :state");
 	
 	
 	@Override
@@ -27,10 +27,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 	
 	@Override
-	public List<PayoutManagementData> getSidWithCod(String cid, String sid) {
+	public List<PayoutManagementData> getSidWithCod(String cid, String sid, int state) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_WITH_COND,KrcmtPayoutManaData.class)
 				.setParameter("cid", cid)
-				.setParameter("employeeId", sid).getList();
+				.setParameter("employeeId", sid)
+				.setParameter("state", state)
+				.getList();
 		return list.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
 
@@ -58,6 +60,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		KrcmtPayoutManaData entity = new KrcmtPayoutManaData();
 		entity.payoutId = domain.getPayoutId();
 		entity.sID = domain.getSID();
+		entity.cID = domain.getCID();
 		entity.unknownDate = domain.getPayoutDate().isUnknownDate();
 		if (domain.getPayoutDate().getDayoffDate().isPresent()){
 			entity.dayOff = domain.getPayoutDate().getDayoffDate().get();

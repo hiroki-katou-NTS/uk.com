@@ -26,6 +26,8 @@ public class LayoutPersonInfoValueDto {
 	// categoryCode
 	@NonNull
 	private String categoryCode;
+	
+	private int ctgType;
 
 	// itemDefID
 	@NonNull
@@ -75,7 +77,9 @@ public class LayoutPersonInfoValueDto {
 	private boolean showColor;
 
 	private int type;
-	private int ctgType;
+	
+	// help button Id
+	private String resourceId;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, String itemParentCode, Integer row, Object value) {
@@ -115,6 +119,7 @@ public class LayoutPersonInfoValueDto {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
+		dataObject.setResourceId(itemDef.getResourceId());
 		return dataObject;
 	}
 
@@ -132,10 +137,11 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setValue(value);
 		dataObject.setCtgType(itemDef.getCtgType());
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		dataObject.setResourceId(itemDef.getResourceId());
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 
-		if (itemDef.getItemDefType() == 2) {
+		if (itemDef.getItemTypeState().getItemType() == 2) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}

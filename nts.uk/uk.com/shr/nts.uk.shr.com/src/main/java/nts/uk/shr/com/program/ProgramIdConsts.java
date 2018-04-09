@@ -568,6 +568,8 @@ public class ProgramIdConsts {
 	public static final String CPS001F = "CPS001F";
 
 	public static final String CPS001H = "CPS001H";
+	
+	public static final String CPS001I = "CPS001I";
 
 	public static final String CMM007A = "CMM007A";
 	public static final String CMM007B = "CMM007B";
