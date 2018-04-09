@@ -38,7 +38,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 isShowNoSelectRow: false,
                 isDialog: false,
                 alreadySettingList: self.alreadySettingList,
-                maxRows: 12
+                maxRows: 12,
+                tabindex: 4
             };
             self.employmentList = ko.observableArray<UnitModel>([]);
 
@@ -56,7 +57,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 if (self.employmentList().length > 0) {
                     self.selectedCode(self.employmentList()[0].code);
                 } else {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_146" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
                 }
                 dfd.resolve();
             });
