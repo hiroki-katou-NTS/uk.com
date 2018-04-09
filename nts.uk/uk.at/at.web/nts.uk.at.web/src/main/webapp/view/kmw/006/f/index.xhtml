@@ -22,7 +22,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area-bottom">
-				<button tabindex="1">#{i18n.getText('KMW006_58')}</button>
+				<button data-bind="enable: isComplete(), click: confirmComplete">#{i18n.getText('KMW006_58')}</button>
 			</div>
 			<div class="contents-area">
 				<table id="fixed-table">
@@ -33,19 +33,31 @@
 					<tbody>
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_47')}</th>
-							<td>HoangNK</td>
+							<td>
+								#{i18n.getText('KMW006_49')}
+								<span data-bind="text: startTime"></span>
+							</td>
 						</tr>
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_48')}</th>
-							<td>HoangNK</td>
+							<td>
+								#{i18n.getText('KMW006_49')}
+								<span data-bind="text: endTime"></span>
+							</td>
 						</tr>
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_51')}</th>
-							<td>HoangNK</td>
+							<td><span id="elapseTime"></span></td>
 						</tr>
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_52')}</th>
-							<td>HoangNK</td>
+							<td>
+								<span data-bind="text: processedCount"></span>/<span data-bind="text: totalCount"></span>
+								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.INCOMPLETE">#{i18n.getText('KMW006_61')}</span>
+								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE">#{i18n.getText('KMW006_58')}</span>
+								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ALARM">#{i18n.getText('KMW006_59')}</span>
+								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ERROR">#{i18n.getText('KMW006_60')}</span>
+							</td>
 						</tr>
 					</tbody>
 				</table>

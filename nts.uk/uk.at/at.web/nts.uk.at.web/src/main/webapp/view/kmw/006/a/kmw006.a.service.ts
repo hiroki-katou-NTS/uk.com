@@ -3,12 +3,12 @@ module nts.uk.at.view.kmw006.a.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        getAllData: "at/function/alarm/checkcondition/findAll/{0}",
+        checkStatus: "at/record/monthlyclosure/checkStatus/{0}",
         getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes"
     }
 
-    export function getAllData(category: number): JQueryPromise<any> {
-        let _path = format(paths.getAllData, category);
+    export function checkStatus(closureId: number): JQueryPromise<any> {
+        let _path = format(paths.checkStatus, closureId);
         return ajax("at", _path);
     };
         

@@ -10,17 +10,22 @@ module nts.uk.at.view.kmw006.a.viewmodel {
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<number>;
+        selectedClosureId: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
                 new ItemModel(1, '基本給'),
                 new ItemModel(2, '役職手当'),
+                new ItemModel(3, '役職手当'),
+                new ItemModel(4, '役職手当'),
                 new ItemModel(3, '基本給ながい文')
             ]);
     
-            self.selectedCode = ko.observable(1);
+            self.selectedClosureId = ko.observable(1);
+            $("#A1_1").ntsFixedTable({});
+            $("#A1_10").ntsFixedTable({});
+            $("#A1_14").ntsFixedTable({});
         }
 
         startPage(): JQueryPromise<any> {
@@ -30,11 +35,26 @@ module nts.uk.at.view.kmw006.a.viewmodel {
             return dfd.promise();
         }
 
+        private executeClick(){
+            let self = this;
+            block.invisible();
+            service.checkStatus(self.selectedClosureId()).done((result) => {
+                if (result) {
+                    result.periodStart = moment.utc("result.periodStart", "YYYY/MM/DD").toISOString();
+                    result.periodEnd = moment.utc("result.periodEnd", "YYYY/MM/DD").toISOString();
+                    self.openKMW006fDialog(result);
+                }
+            }).fail((error) => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+        }
 
-
-        openKMW006fDialog() {
+        private openKMW006fDialog(params: any) {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            setShared("kmw006fParams", params);
             modal("/view/kmw/006/f/index.xhtml").onClosed(() => {
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {

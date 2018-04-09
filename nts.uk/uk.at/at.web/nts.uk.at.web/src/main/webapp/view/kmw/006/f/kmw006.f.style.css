@@ -1,1 +1,10 @@
 /* style */
+ul.countdown {
+	list-style: none;
+	display: block;
+	margin-left: 20px;
+}
+
+ul.countdown li {
+	display: inline-block;
+}
