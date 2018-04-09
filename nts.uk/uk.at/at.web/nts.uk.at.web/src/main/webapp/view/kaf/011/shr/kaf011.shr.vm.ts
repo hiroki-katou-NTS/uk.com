@@ -209,10 +209,10 @@ module nts.uk.at.view.kaf011.shr {
                                 self.wkTime1().clearData();
                                 self.wkTime2().clearData();
                             }
-
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
+                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
@@ -300,7 +300,7 @@ module nts.uk.at.view.kaf011.shr {
                 }
                 //半休時のみ利用する
                 if (wkTimeSelect == 2) {
-                     //午前と午後
+                    //午前と午後
                     if (workAtr == 1) {
                         if (afternoonType != 0 && morningType != 0) {
                             return false;

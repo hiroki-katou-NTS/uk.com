@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,12 +8,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.Applicatio
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	

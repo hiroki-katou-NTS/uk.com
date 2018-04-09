@@ -19,17 +19,17 @@ public class ApprovalStatusMailTempImport {
 	/**
 	 * URL承認埋込
 	 */
-	private NotUseAtr urlApprovalEmbed;
+	private int urlApprovalEmbed;
 
 	/**
 	 * URL日別埋込
 	 */
-	private NotUseAtr urlDayEmbed;
+	private int urlDayEmbed;
 
 	/**
 	 * URL月別埋込
 	 */
-	private NotUseAtr urlMonthEmbed;
+	private int urlMonthEmbed;
 
 	/**
 	 * メール件名

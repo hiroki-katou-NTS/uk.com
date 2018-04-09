@@ -16,6 +16,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
@@ -68,6 +72,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private RelationshipRepository repoRelationship;
 	@Inject
 	private AppForSpecLeaveRepository repoAppLeaveSpec;
+	@Inject
+	private AbsenceLeaveAppRepository absRepo;
+	@Inject
+	private RecruitmentAppRepository recRepo;
 	/**
 	 * get Application Over Time Info
 	 * appType = 0;
@@ -250,7 +258,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 */
 	@Override
 	public AppAbsenceFull getAppAbsenceInfo(String companyId, String appId, Integer day) {
-		// TODO Auto-generated method stub
 		//get 休暇申請
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, appId);
 		AppAbsence appAbsence = absence.get();
@@ -284,6 +291,27 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				relaCode, relaName, appForSpec == null ? false : appForSpec.isMournerFlag());
 	}
 	/**
+	 * get Application Complt Leave Info
+	 * @param companyID
+	 * @param appId
+	 * @param type
+	 * @return
+	 */
+	@Override
+	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type) {
+		if(type == 0){//xin nghi
+			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
+			return new AppCompltLeaveFull(abs.getAppID(), type,abs.getWorkTypeCD(),
+					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
+					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
+		}
+		//di lam
+		RecruitmentApp rec = recRepo.findByAppId(appId).get();
+		return new AppCompltLeaveFull(rec.getAppID(), type, rec.getWorkTypeCD(),
+				this.convertTime(rec.getWorkTime1().getStartTime().v()),
+				this.convertTime(rec.getWorkTime1().getEndTime().v()));
+	}
+	/**
 	 * convert time from integer to Time_Short_HM
 	 * @param time
 	 * @return
@@ -295,6 +323,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
 		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
 	}
+	
 
 
 }
