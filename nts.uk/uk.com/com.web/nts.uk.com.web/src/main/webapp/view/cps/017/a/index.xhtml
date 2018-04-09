@@ -51,7 +51,7 @@
 				<button id="A1_003"
 					data-bind="click: openDialogB, enable: revDisSel03" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
-				<button id="A1_007" tabindex="6"
+				<button id="A1_007" class="danger" tabindex="6"
 					data-bind="click: ReflUnrComp, visible : refecToAll">#{i18n.getText('CPS017_49')}</button>
 
 				<com:ko-if bind="(isDialog() === true)">
@@ -194,7 +194,7 @@
 											value: selectionCD,
 											constraint: 'SelectionCdNumeric', 
 											option: '',
-											required: false, 
+											required: true, 
 											enable: $parent.selectionCd, 
 			 								immediate: false									
 											}" />
@@ -243,7 +243,7 @@
 											value: selectionCD,
 											constraint: 'SelectionCdAlphaNumeric', 
 											option: '',
-											required: false, 
+											required: true, 
 											enable: $parent.selectionCd, 
 			 								immediate: false									
 											}" />
