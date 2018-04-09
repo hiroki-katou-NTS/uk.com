@@ -89,14 +89,18 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                         let successList: Array<string> = [];
                         // 送信失敗 
                         let failedList: Array<string> = [];
-                        _.forEach(result, (x, index) => {
                             // メール送信時のエラーチェック
-                            if (x == 0) {
-                                successList.push(command.sendMailOption[index].employeName);
-                            } else  {
-                                failedList.push(command.sendMailOption[index].employeName);
+                        if (result.successList){
+                            _.forEach(result.successList, x => {
+                                successList.push(x);
                             }
-                        });
+                        }
+                     
+                        if (result.errorList){
+                            _.forEach(result.errorList, x => {
+                                successList.push(x);
+                            }
+                        }
                         self.handleSendMailResult(successList, failedList);
                         nts.uk.ui.windows.close();
                     }

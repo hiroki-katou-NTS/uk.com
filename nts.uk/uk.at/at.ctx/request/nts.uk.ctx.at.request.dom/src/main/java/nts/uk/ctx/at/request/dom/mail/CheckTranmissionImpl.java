@@ -25,7 +25,7 @@ import nts.uk.shr.com.url.UrlExecInfo;
 @Stateless
 public class CheckTranmissionImpl implements CheckTransmission{
 	
-	//@Inject
+	@Inject
 	private UrlEmbeddedRepository urlEmbeddedRepo;
 	@Inject
 	private MailSender mailSender;
