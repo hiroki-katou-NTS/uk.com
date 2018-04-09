@@ -27,9 +27,9 @@
 					data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW006_25')}</a>
 				<!-- G1_2 -->
 				<button id="register-button" class="proceed" tabindex="2"
-					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: saveData, enable: employmentList().length>0" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
 				<!-- G5_1 -->
-				<button id="copy-button" class="normal"
+				<button id="copy-button" class="normal" tabindex="3"
 					data-bind="click: copyData" style="margin-left: 85px;">#{i18n.getText('KDW006_52')}</button>
 			</div>
 			<div id="contents-area">
@@ -37,7 +37,7 @@
 					<table>
 						<tr>
 							<td id="left-side">
-								<div id="empt-list-setting" tabindex="4"></div>
+								<div id="empt-list-setting"></div>
 							</td>
 							<td id="right-side">
 								<!-- G2_1 -->
