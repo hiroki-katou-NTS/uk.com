@@ -8,6 +8,10 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSc
  *
  */
 public interface ForleaveReflectSche {
-	public void forlearveReflectSche(CommonReflectParamSche reflectParam);
+	/**
+	 * (休暇申請)勤務予定への反映
+	 * @param reflectParam
+	 */
+	public boolean forlearveReflectSche(CommonReflectParamSche reflectParam);
 
 }

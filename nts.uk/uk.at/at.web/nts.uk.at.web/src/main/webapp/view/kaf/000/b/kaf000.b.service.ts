@@ -13,6 +13,9 @@ module nts.uk.at.view.kaf000.b.service {
         getAppByID: "at/request/application/getAppInfoByAppID",
         holidayShipmentRemove: "at/request/application/holidayshipment/remove",
         holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
+        holidayShipmentApprove: "at/request/application/holidayshipment/approve",
+        holidayShipmentDeny: "at/request/application/holidayshipment/deny",
+        holidayShipmentRelease: "at/request/application/holidayshipment/release",
     }
 
     export function getAppDataDate(command): JQueryPromise<any> {
@@ -22,22 +25,25 @@ module nts.uk.at.view.kaf000.b.service {
     /**
      * approve application
      */
-    export function approveApp(command): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.approveApp, command);
+    export function approveApp(command, appType): JQueryPromise<any> {
+        let approveUrl = appType != 10 ? paths.approveApp : paths.holidayShipmentApprove;
+        return nts.uk.request.ajax("at", approveUrl, command);
     }
 
     /**
      * deny  application
      */
-    export function denyApp(command): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.denyApp, command);
+    export function denyApp(command, appType): JQueryPromise<any> {
+        let denyUrl = appType != 10 ? paths.denyApp : paths.holidayShipmentDeny;
+        return nts.uk.request.ajax("at", denyUrl, command);
     }
 
     /**
     * release   application
     */
-    export function releaseApp(command): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.releaseApp, command);
+    export function releaseApp(command, appType): JQueryPromise<any> {
+        let releaseUrl = appType != 10 ? paths.releaseApp : paths.holidayShipmentRelease;
+        return nts.uk.request.ajax("at", releaseUrl, command);
     }
 
     /**
@@ -45,8 +51,8 @@ module nts.uk.at.view.kaf000.b.service {
     */
     export function cancelApp(command, appType): JQueryPromise<any> {
 
-        let deleteUrl = appType != 10 ? paths.cancelApp : paths.holidayShipmentCancel;
-        return nts.uk.request.ajax("at", paths.cancelApp, command);
+        let cancelUrl = appType != 10 ? paths.cancelApp : paths.holidayShipmentCancel;
+        return nts.uk.request.ajax("at", cancelUrl, command);
     }
 
     /**

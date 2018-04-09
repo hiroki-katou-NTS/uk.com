@@ -52,14 +52,13 @@ public class SaveEmpMonthCalSetCommandHandler extends CommandHandler<SaveEmpMont
 
 		// get employment code
 		SaveEmpMonthCalSetCommand command = context.getCommand();
-		String empCode = command.getEmpCode();
+		String empCode = command.getEmplCode();
 
 		EmpDeforLaborMonthActCalSet empDeforLaborMonthActCalSet = new EmpDeforLaborMonthActCalSet(context.getCommand());
 		EmpFlexMonthActCalSet empFlexMonthActCalSet = new EmpFlexMonthActCalSet(context.getCommand());
 		EmpRegulaMonthActCalSet empRegulaMonthActCalSet = new EmpRegulaMonthActCalSet(context.getCommand());
 
-		Optional<EmpDeforLaborMonthActCalSet> optEmpDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo.find(cid,
-				empCode);
+		Optional<EmpDeforLaborMonthActCalSet> optEmpDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo.find(cid, empCode);
 
 		if (optEmpDeforLaborMonthActCalSet.isPresent()) {
 			deforLaborMonthActCalSetRepo.update(empDeforLaborMonthActCalSet);

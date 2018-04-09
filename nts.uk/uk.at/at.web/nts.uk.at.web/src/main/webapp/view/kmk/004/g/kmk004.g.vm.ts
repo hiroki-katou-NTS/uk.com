@@ -17,11 +17,11 @@ module nts.uk.at.view.kmk004.g {
                     new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_73"))]);
                 
                 self.shortageSettingOpt = ko.observableArray([
-                    new ItemModel(1, "当月精算"),
-                    new ItemModel(2, "翌月繰越")]);
+                    new ItemModel(CarryForwardSet.CURRENT_MONTH_INTEGRATION, nts.uk.resource.getText("KMK004_76")),//"当月精算"
+                    new ItemModel(CarryForwardSet.NEXT_MONTH_CARRY_FORWARD, nts.uk.resource.getText("KMK004_77"))]);//"翌月繰越"
                 
-                self.isIncludeOverTime = ko.observable(params && params.isIncludeOverTime ? params.isIncludeOverTime : false);
-                self.shortageSetting = ko.observable(params && params.shortageSetting ? params.shortageSetting : 1);
+                self.isIncludeOverTime = ko.observable(params && !nts.uk.util.isNullOrEmpty(params.isIncludeOverTime) ? params.isIncludeOverTime : false);
+                self.shortageSetting = ko.observable((params && !nts.uk.util.isNullOrEmpty(params.shortageSetting)) ? params.shortageSetting : 0);
             }
 
             /**
@@ -76,9 +76,9 @@ module nts.uk.at.view.kmk004.g {
          */
         export class CarryForwardSet {
             // 当月精算
-            static CURRENT_MONTH_INTEGRATION = 1;
+            static CURRENT_MONTH_INTEGRATION = 0;
             // 翌月繰越
-            static NEXT_MONTH_CARRY_FORWARD = 2;
+            static NEXT_MONTH_CARRY_FORWARD = 1;
         }
         
         /**

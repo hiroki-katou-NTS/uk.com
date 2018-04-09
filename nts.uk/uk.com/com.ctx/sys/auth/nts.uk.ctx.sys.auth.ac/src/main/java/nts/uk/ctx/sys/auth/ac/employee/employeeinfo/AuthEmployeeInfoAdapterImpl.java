@@ -22,19 +22,19 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 
 	@Inject
 	private EmployeeInfoPub employeeInfoPub;
-	
+
 	@Inject
 	private EmpInfoByCidSidPub empInfoByCidSidPub;
-	
+
 	@Override
 	public List<EmployeeInfoImport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate baseDate) {
 		val listEmployeeInfoExport = employeeInfoPub.getEmployeesAtWorkByBaseDate(companyId, baseDate);
-		
+
 		List<EmployeeInfoImport> result = new ArrayList<EmployeeInfoImport>();
 		for (EmployeeInfoDtoExport exportData : listEmployeeInfoExport) {
 			result.add(new EmployeeInfoImport(exportData.getCompanyId(), exportData.getEmployeeCode(), exportData.getEmployeeId(), exportData.getPerName(), exportData.getPersonId()));
 		}
-		
+
 		return result;
 	}
 
@@ -43,15 +43,20 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 		val exportData = empInfoByCidSidPub.getEmpInfoBySidCid(pid, cid);
 		if (exportData == null)
 			return Optional.empty();
-		
+
 		EmpInfoByCidSidImport result = new EmpInfoByCidSidImport(exportData.getSid(), exportData.getPersonName(), exportData.getPid(), exportData.getCid(), exportData.getScd());
 		return Optional.of(result);
 	}
 
 	@Override
 	public Optional<EmpInfoImport> getByComnyIDAndEmployeeCD(String companyID, String employeeCD) {
-		// TODO Auto-generated method stub
-		return null;
+		val exportData = employeeInfoPub.getEmployeeInfo(companyID, employeeCD);
+		if (!exportData.isPresent())
+			return Optional.empty();
+		else {
+			EmpInfoImport result = new EmpInfoImport(exportData.get().getCompanyId(), exportData.get().getEmployeeCode(), exportData.get().getEmployeeId(), exportData.get().getPersonId(), exportData.get().getPerName());
+			return Optional.of(result);
+		}
 	}
 
 }

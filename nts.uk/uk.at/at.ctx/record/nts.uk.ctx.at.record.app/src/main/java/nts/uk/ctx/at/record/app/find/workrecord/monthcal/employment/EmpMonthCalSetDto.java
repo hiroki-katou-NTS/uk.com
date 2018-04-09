@@ -50,6 +50,7 @@ public class EmpMonthCalSetDto implements EmpRegulaMonthActCalSetSetMemento,
 	 */
 	@Override
 	public void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
+		deforAggrSetting = DeforWorkTimeAggrSetDto.builder().build();
 		deforAggrSetting.fromDomain(legalAggrSetOfIrgNew);
 	}
 
@@ -58,6 +59,7 @@ public class EmpMonthCalSetDto implements EmpRegulaMonthActCalSetSetMemento,
 	 */
 	@Override
 	public void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
+		flexAggrSetting = FlexMonthWorkTimeAggrSetDto.builder().build();
 		flexAggrSetting.fromDomain(aggrSettingMonthlyOfFlxNew);
 	}
 
@@ -66,6 +68,7 @@ public class EmpMonthCalSetDto implements EmpRegulaMonthActCalSetSetMemento,
 	 */
 	@Override
 	public void setAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
+		regAggrSetting = RegularWorkTimeAggrSetDto.builder().build();
 		regAggrSetting.fromDomain(legalAggrSetOfRegNew);
 	}
 

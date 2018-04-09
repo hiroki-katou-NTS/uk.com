@@ -43,4 +43,8 @@ public class CommonReflectPara {
 	 * 予定反映不可理由
 	 */
 	private ReasonNotReflectDaily_New reasoNotReflect;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 }

@@ -72,19 +72,6 @@ public class JpaComTransLaborTimeRepository extends JpaRepository
 	}
 
 	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the kshst com trans lab time
-	 */
-	private KshstComTransLabTime toEntity(ComTransLaborTime domain) {
-		KshstComTransLabTime entity = new KshstComTransLabTime();
-		domain.saveToMemento(new JpaComTransLaborTimeSetMemento(entity));
-		return entity;
-	}
-
-	/**
 	 * To domain.
 	 *
 	 * @param entity

@@ -41,5 +41,9 @@ public class CommonReflectParameter {
 	 * 予定反映不可理由
 	 */
 	private ReasonNotReflectRecord reasoNotReflect;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 
 }

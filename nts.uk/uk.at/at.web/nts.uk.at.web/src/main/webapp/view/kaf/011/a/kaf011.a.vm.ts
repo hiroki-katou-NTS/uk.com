@@ -173,7 +173,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    jump("at", "/view/kaf/011/a/index.xhtml");
+                    location.reload();
                 });
             }).fail((error) => {
                 dialog({ messageId: error.messageId, messageParams: error.parameterIds });

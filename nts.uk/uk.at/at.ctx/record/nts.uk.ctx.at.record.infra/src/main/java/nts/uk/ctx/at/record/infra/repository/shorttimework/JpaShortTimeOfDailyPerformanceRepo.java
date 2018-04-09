@@ -24,10 +24,20 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements ShortTimeOfDailyPerformanceRepository {
 
+	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDaiShortWorkTime a ");
+		builderString.append("WHERE a.krcdtDaiShortWorkTimePK.sid = :employeeId ");
+		builderString.append("AND a.krcdtDaiShortWorkTimePK.ymd = :ymd ");
+		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
+	}
+
 	@Override
 	public Optional<ShortTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
-		List<ShortWorkingTimeSheet> shortTimeSheets = findEntities(employeeId, ymd).getList(
-				c -> shortWorkTime(c));
+		List<ShortWorkingTimeSheet> shortTimeSheets = findEntities(employeeId, ymd).getList(c -> shortWorkTime(c));
 		if (!shortTimeSheets.isEmpty()) {
 			return Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortTimeSheets, ymd));
 		}
@@ -37,18 +47,17 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private ShortWorkingTimeSheet shortWorkTime(KrcdtDaiShortWorkTime c) {
 		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
 				EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
-				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime),
-				new AttendanceTime(c.time));
+				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime), new AttendanceTime(c.time));
 	}
 
 	@Override
 	public void updateByKey(ShortTimeOfDailyPerformance shortWork) {
 		List<KrcdtDaiShortWorkTime> entities = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
-        commandProxy().removeAll(entities);
-        getEntityManager().flush();
-        commandProxy().insertAll(shortWork.getShortWorkingTimeSheets().stream()
-        		.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c))
-        		.collect(Collectors.toList()));
+		commandProxy().removeAll(entities);
+		getEntityManager().flush();
+		commandProxy().insertAll(shortWork.getShortWorkingTimeSheets().stream()
+				.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList()));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -56,14 +65,14 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		List<KrcdtDaiShortWorkTime> entities = shortWork.getShortWorkingTimeSheets().stream()
 				.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
 		commandProxy().insertAll(entities);
+		this.getEntityManager().flush();
 	}
 
 	private KrcdtDaiShortWorkTime newEntities(String employeeId, GeneralDate ymd, ShortWorkingTimeSheet c) {
 		return new KrcdtDaiShortWorkTime(new KrcdtDaiShortWorkTimePK(employeeId, ymd, c.getShortWorkTimeFrameNo().v()),
-				c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes(), 
-				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), 
-				c.getChildCareAttr().value,
-				c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes(), 
+				c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes(),
+				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value,
+				c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes(),
 				c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes());
 	}
 
@@ -85,12 +94,20 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
-				.entrySet().stream().map(c -> new ShortTimeOfDailyPerformance(
-												c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
-												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
-												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+						c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+						c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 }

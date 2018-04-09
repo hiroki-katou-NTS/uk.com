@@ -26,4 +26,6 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	void update(List<BreakTimeOfDailyPerformance> breakTimes);
 	
 	Optional<BreakTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd, int breakType);
+	
+	void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType);
 }
