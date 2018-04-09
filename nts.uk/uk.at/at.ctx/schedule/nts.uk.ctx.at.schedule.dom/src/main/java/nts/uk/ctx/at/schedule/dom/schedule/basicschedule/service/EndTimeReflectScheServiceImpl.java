@@ -40,9 +40,12 @@ public class EndTimeReflectScheServiceImpl implements EndTimeReflectScheService{
 		basicReposi.update(basicScheByDate);
 		//終了時刻の編集状態を更新する
 		//予定項目ID=予定開始時刻(予定勤務回数=INPUT．枠番号)の項目ID 4, 6
-		WorkScheduleState sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 4, timeDto.getDateInfo(), timeDto.getEmployeeId());
-		workScheReposi.updateScheduleEditState(sateData);
-		sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 6, timeDto.getDateInfo(), timeDto.getEmployeeId());
+		WorkScheduleState sateData = null;
+		if(timeDto.getFrameNumber() == 1) {
+			sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 4, timeDto.getDateInfo(), timeDto.getEmployeeId());	
+		} else {
+			sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 6, timeDto.getDateInfo(), timeDto.getEmployeeId());	
+		}
 		workScheReposi.updateScheduleEditState(sateData);
 	}
 
