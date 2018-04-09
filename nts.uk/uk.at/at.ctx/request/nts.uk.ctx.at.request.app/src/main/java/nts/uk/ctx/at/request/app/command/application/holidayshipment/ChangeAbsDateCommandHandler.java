@@ -48,6 +48,8 @@ public class ChangeAbsDateCommandHandler extends CommandHandler<SaveHolidayShipm
 			updateAplication(absApp);
 			// アルゴリズム「登録前共通処理（新規）」を実行する
 			saveHanler.CmProcessBeforeReg(command, absApp);
+			// ドメイン「振休申請」を1件登録する
+
 		}
 
 	}

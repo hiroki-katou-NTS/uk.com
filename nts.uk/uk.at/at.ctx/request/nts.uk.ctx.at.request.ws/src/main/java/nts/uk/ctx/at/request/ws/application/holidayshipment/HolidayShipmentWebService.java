@@ -50,6 +50,8 @@ public class HolidayShipmentWebService extends WebService {
 	private DenyHolidayShipmentCommandHandler denyHandler;
 	@Inject
 	private ReleaseHolidayShipmentCommandHandler releaseHandler;
+	@Inject
+	private ChangeAbsDateCommandHandler changeHander;
 
 	@POST
 	@Path("start")
@@ -126,8 +128,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_date_c")
-	public HolidayShipmentDto changeDateC(String appDate) {
-		return this.cFinder.changeAppDate(appDate);
+	public void changeDateC(SaveHolidayShipmentCommand command) {
+		this.changeHander.handle(command);
 	}
 
 	@POST

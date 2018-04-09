@@ -1,17 +1,16 @@
-package nts.uk.ctx.at.request.dom.mail;
+package nts.uk.shr.com.url;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
 * 
 */
 @AllArgsConstructor
 @Getter
+@Setter
 public class UrlTaskIncre extends AggregateRoot
 {
     
