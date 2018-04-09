@@ -193,6 +193,10 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	}	
 
 	
+	/**
+	 * 控除項目の置き換え 
+	 * @return
+	 */
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord, List<BreakTimeSheet> breakTimeSheets,
 			List<OutingTimeSheet> outingTimeSheets, List<ShortWorkingTimeSheet> shortWorkingTimeSheets,
 			String employeeId,GeneralDate ymd) {
