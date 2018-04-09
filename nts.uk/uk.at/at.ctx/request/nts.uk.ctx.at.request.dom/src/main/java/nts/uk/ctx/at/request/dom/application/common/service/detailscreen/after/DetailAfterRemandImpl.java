@@ -62,25 +62,35 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
 				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
+		application.setReversionReason(new AppReason(returnReason));
+		applicationRepository.updateWithVersion(application);
 		MailSenderResult mailSenderResult = null;
-		UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appID, application.getAppType().value,
-				application.getPrePostAtr().value, application.getEmployeeID());
 		if (order != null) {
 			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appID, application.getAppType().value,
+						application.getPrePostAtr().value, application.getEmployeeID());
 				mailSenderResult = this.getMailSenderResult(application, employeeList, urlInfo);
+			}else{
+				List<String> errorList = new ArrayList<>();
+				employeeList.forEach(x ->{
+					errorList.add(employeeAdapter.getEmployeeName(x));
+				});
+				return new MailSenderResult(null, errorList);
 			}
 		} else {
 			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
 			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appID, application.getAppType().value,
+						application.getPrePostAtr().value, application.getEmployeeID());
 				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()),
 						urlInfo);
+			}else{
+				return new MailSenderResult(null, Arrays.asList(employeeAdapter.getEmployeeName(application.getEmployeeID())));
 			}
 		}
-		application.setReversionReason(new AppReason(returnReason));
-		applicationRepository.updateWithVersion(application);
 		return mailSenderResult;
 	}
 
