@@ -34,4 +34,7 @@ public class HolidayWorktimeAppPubPara {
 	 * 反映不可理由
 	 */
 	private ReasonNotReflectDailyPubRecord reasonNotReflect;
+	
+	private Integer startTime;
+	private Integer endTime;
 }

@@ -156,7 +156,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.getHolidayWorkPara().getMapWorkTimeFrame(),
 				param.getHolidayWorkPara().getNightTime(),
 				EnumAdaptor.valueOf(param.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
-				param.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(param.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+				param.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(param.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class),
+				param.getHolidayWorkPara().getStartTime(),
+				param.getHolidayWorkPara().getEndTime());
 		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
 				param.getBaseDate(),
 				param.isHolidayWorkReflectFlg(), 
