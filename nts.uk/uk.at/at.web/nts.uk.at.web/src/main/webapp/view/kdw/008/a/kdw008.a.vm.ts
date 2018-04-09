@@ -41,11 +41,19 @@ module nts.uk.at.view.kdw008.a {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
-            constructor() {
+           //is daily
+            isDaily :boolean; 
+           
+            constructor(dataShare:any) {
+                
                 var self = this;
+                
+                //isdaily
+                self.isDaily =  dataShare.ShareObject; 
+                    
                 self.newMode = ko.observable(false);
                 self.isUpdate = ko.observable(true);
-                self.isRemove = ko.observable(true);
+                self.isRemove = ko.observable(true);    
                 self.showCode = ko.observable(false);
 
                 self.checked = ko.observable(false);
