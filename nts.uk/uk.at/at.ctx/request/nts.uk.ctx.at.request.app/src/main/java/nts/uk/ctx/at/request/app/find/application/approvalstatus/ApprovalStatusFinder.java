@@ -59,14 +59,6 @@ public class ApprovalStatusFinder {
 	
 	@Inject RealityStatusAdapter realityStatusAdapter;
 
-	public ApprovalStatusMailTempDto findByType(int mailType) {
-		// 会社ID
-		String cid = AppContexts.user().companyId();
-		// ドメインモデル「承認状況メールテンプレート」を取得する
-		Optional<ApprovalStatusMailTemp> domain = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cid, mailType);
-		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get()) : null;
-	}
-
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -96,6 +88,14 @@ public class ApprovalStatusFinder {
 		Optional<ApprovalStatusMailTemp> domain = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cid, mailType);
 		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get())
 				: new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
+	}
+	
+	/**
+	 * 承認状況メールテスト送信
+	 */
+	public String confirmSenderMail(){
+		// アルゴリズム「承認状況送信者メール確認」を実行する
+		return appSttService.confirmApprovalStatusMailSender();
 	}
 
 	public SendMailResultOutput sendTestMail(int mailType) {
