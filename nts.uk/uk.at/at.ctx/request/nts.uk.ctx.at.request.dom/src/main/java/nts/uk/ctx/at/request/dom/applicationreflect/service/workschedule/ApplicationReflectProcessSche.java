@@ -11,7 +11,7 @@ public interface ApplicationReflectProcessSche {
 	 * 休暇申請
 	 * @param reflectSche
 	 */
-	public void forleaveReflect(ReflectScheDto reflectSche);
+	public boolean forleaveReflect(ReflectScheDto reflectSche);
 	/**
 	 * 勤務変更申請
 	 * @param reflectSche

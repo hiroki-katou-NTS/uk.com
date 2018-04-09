@@ -43,9 +43,12 @@ public class StartTimeReflectScheServiceImpl implements StartTimeReflectScheServ
 		
 		//開始時刻の編集状態を更新する  勤務予定項目状態
 		//予定項目ID=予定開始時刻(予定勤務回数=INPUT．枠番号)の項目ID 3, 5
-		WorkScheduleState sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 3, startTimeDto.getDateInfo(), startTimeDto.getEmployeeId());
-		workScheReposi.updateScheduleEditState(sateData);
-		sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 5, startTimeDto.getDateInfo(), startTimeDto.getEmployeeId());
+		WorkScheduleState sateData = null;
+		if(startTimeDto.getFrameNumber() == 1) {
+			sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 3, startTimeDto.getDateInfo(), startTimeDto.getEmployeeId());	
+		} else {
+			sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 5, startTimeDto.getDateInfo(), startTimeDto.getEmployeeId());	
+		}
 		workScheReposi.updateScheduleEditState(sateData);
 	}
 
