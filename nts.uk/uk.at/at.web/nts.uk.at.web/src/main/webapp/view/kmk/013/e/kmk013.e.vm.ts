@@ -107,6 +107,7 @@ module nts.uk.at.view.kmk013.e {
                                 
                                 self.listData.push(ur);
                             });
+                            $('#unit-combo-box').find("input").focus();
                         });
                     });
                 });
