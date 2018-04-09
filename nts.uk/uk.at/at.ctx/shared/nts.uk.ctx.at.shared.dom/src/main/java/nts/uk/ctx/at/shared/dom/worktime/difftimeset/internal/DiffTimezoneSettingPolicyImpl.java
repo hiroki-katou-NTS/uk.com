@@ -46,7 +46,7 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
 		// Validate list working timezone
 		diffTzSet.getEmploymentTimezones().forEach(workingTimezone -> {
-			this.emTzPolicy.validate(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
+			this.emTzPolicy.validateFixedAndDiff(be, predTime, workingTimezone, displayMode, dayAtr, useHalfDayShift);
 		});
 
 		// Validate list OT timezone

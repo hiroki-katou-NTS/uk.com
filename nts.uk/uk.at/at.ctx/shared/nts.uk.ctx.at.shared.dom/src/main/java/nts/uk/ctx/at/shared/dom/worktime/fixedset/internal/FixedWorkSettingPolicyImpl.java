@@ -13,10 +13,10 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedStampReflectTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -168,7 +168,7 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 				.filter(fixHalfWork -> lstAmPm.contains(fixHalfWork.getDayAtr())).collect(Collectors.toList());
 
 		lstFixHalfWork.forEach(fixHalfWork -> {
-			this.fixHalfDayPolicy.validate(be, predetemineTimeSet, displayMode, fixHalfWork,
+			this.fixHalfDayPolicy.validateFixedAndDiff(be, predetemineTimeSet, displayMode, fixHalfWork,
 					fixedWorkSetting.getUseHalfDayShift());
 		});
 	}

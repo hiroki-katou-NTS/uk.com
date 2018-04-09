@@ -15,6 +15,8 @@ module a17 {
      */
     class ScreenModel {
         
+        isNewMode: KnockoutObservable<boolean>;
+        
         // Screen mode
         selectedCode: KnockoutObservable<any>;
         isDetailMode: KnockoutObservable<boolean>;
@@ -52,10 +54,18 @@ module a17 {
         diffIsCalcExceededPredAddVacation: KnockoutObservable<boolean>;
         diffIsCalcNoBreak: KnockoutObservable<boolean>;
         lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
+        
+        // Temp data variable (using in create mode)
+        tempCalcMethodNoBreak: KnockoutObservable<number>;
+        tempCalcMethodExceededPredAddVacation: KnockoutObservable<number>;      
+        tempOtFrameNo: KnockoutObservable<number>;
+        tempInLawOT: KnockoutObservable<number>;
+        tempNotInLawOT: KnockoutObservable<number>;
+        
         /**
          * Constructor
          */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstOvertimeWorkFrame:any) {
+        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstOvertimeWorkFrame:any) {
             let _self = this;
             
             // Check exist
@@ -63,6 +73,9 @@ module a17 {
                 // Stop rendering page
                 return;    
             }
+            
+            // Save value when switch between mode
+            _self.isNewMode = isNewMode;
             
             // Binding data
             _self.model = model;     
@@ -72,6 +85,26 @@ module a17 {
             _self.isFlow = _self.model.workTimeSetting.isFlow;  
             _self.isFlex = _self.model.workTimeSetting.isFlex; 
             _self.bindingData();
+            
+            // Save value when switch between mode
+            _self.isFixed.subscribe((v) => {
+                if (_self.isNewMode()) {
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodNoBreak)) _self.fixedCalcMethodNoBreak(_self.tempCalcMethodNoBreak());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodExceededPredAddVacation)) _self.fixedCalcMethodExceededPredAddVacation(_self.tempCalcMethodExceededPredAddVacation());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempOtFrameNo)) _self.fixedOtFrameNo(_self.tempOtFrameNo());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempInLawOT)) _self.fixedInLawOT(_self.tempInLawOT());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempNotInLawOT)) _self.fixedNotInLawOT(_self.tempNotInLawOT());    
+                }
+            });
+            _self.isDiff.subscribe((v) => {
+                if (_self.isNewMode()) {
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodNoBreak)) _self.diffCalcMethodNoBreak(_self.tempCalcMethodNoBreak());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempCalcMethodExceededPredAddVacation)) _self.diffCalcMethodExceededPredAddVacation(_self.tempCalcMethodExceededPredAddVacation());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempOtFrameNo)) _self.diffOtFrameNo(_self.tempOtFrameNo());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempInLawOT)) _self.diffInLawOT(_self.tempInLawOT());
+                    if (!nts.uk.util.isNullOrUndefined(_self.tempNotInLawOT)) _self.diffNotInLawOT(_self.tempNotInLawOT());
+                }
+            });
             
             // Init all data                 
             _self.listNotUseAtr = ko.observableArray([
@@ -88,6 +121,12 @@ module a17 {
             ]);            
             _self.listOtFrameNo = ko.observableArray(lstOvertimeWorkFrame);             
 
+            _self.tempCalcMethodNoBreak = ko.observable(0); 
+            _self.tempCalcMethodExceededPredAddVacation = ko.observable(0);      
+            _self.tempOtFrameNo = ko.observable(0);
+            _self.tempInLawOT = ko.observable(0);
+            _self.tempNotInLawOT = ko.observable(0);
+            
             // Detail mode and simple mode is same     
             _self.isDetailMode = ko.observable(null);                         
             _self.fixedIsCalcExceededPredAddVacation = ko.computed(() => {
@@ -176,35 +215,35 @@ module a17 {
             _self.notUseAtr.subscribe(v => {
                 if (nts.uk.util.isNullOrUndefined(v)) { _self.notUseAtr(0); }
             }); 
-            _self.fixedCalcMethodNoBreak.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.fixedCalcMethodNoBreak(0); }
+            _self.fixedCalcMethodNoBreak.subscribe(v => {                
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodNoBreak(v); _self.fixedCalcMethodNoBreak(0); }
             }); 
             _self.fixedInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.fixedInLawOT(1); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempInLawOT(v); _self.fixedInLawOT(1); }
             }); 
             _self.fixedNotInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.fixedNotInLawOT(1); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempNotInLawOT(v); _self.fixedNotInLawOT(1); }
             }); 
             _self.fixedCalcMethodExceededPredAddVacation.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.fixedCalcMethodExceededPredAddVacation(0); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodExceededPredAddVacation(v); _self.fixedCalcMethodExceededPredAddVacation(0); }
             }); 
             _self.fixedOtFrameNo.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.fixedOtFrameNo(1); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempOtFrameNo(v); _self.fixedOtFrameNo(1); }
             }); 
             _self.diffCalcMethodNoBreak.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.diffCalcMethodNoBreak(0); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodNoBreak(v); _self.diffCalcMethodNoBreak(0); }
             }); 
             _self.diffInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.diffInLawOT(1); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempInLawOT(v); _self.diffInLawOT(1); }
             }); 
             _self.diffNotInLawOT.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.diffNotInLawOT(1); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempNotInLawOT(v); _self.diffNotInLawOT(1); }
             }); 
             _self.diffCalcMethodExceededPredAddVacation.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.diffCalcMethodExceededPredAddVacation(0); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempCalcMethodExceededPredAddVacation(v); _self.diffCalcMethodExceededPredAddVacation(0); }
             }); 
             _self.diffOtFrameNo.subscribe(v => {
-                if (nts.uk.util.isNullOrUndefined(v)) { _self.diffOtFrameNo(1); }
+                if (nts.uk.util.isNullOrUndefined(v)) { _self.tempOtFrameNo(v); _self.diffOtFrameNo(1); }
             }); 
         }
         
@@ -238,7 +277,7 @@ module a17 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(screenMode, model, settingEnum,input.overTimeWorkFrameOptions());
+            let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum,input.overTimeWorkFrameOptions());
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

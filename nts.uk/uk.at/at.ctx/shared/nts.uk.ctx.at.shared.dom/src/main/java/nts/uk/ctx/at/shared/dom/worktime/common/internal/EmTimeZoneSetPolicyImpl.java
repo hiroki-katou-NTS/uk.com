@@ -37,7 +37,7 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet,
+	public void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet,
 			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
 		TimeZoneRounding emTimezone = etzSet.getTimezone();
 		PrescribedTimezoneSetting presTz = predTime.getPrescribedTimezoneSetting();
@@ -47,7 +47,7 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 			be.addMessage("Msg_516", "KMK003_86");
 		}
 
-		// Msg_773
+		// Msg_773 (Fixed and Diff)
 		if (this.isTimezoneNotValid(presTz, emTimezone)) {
 			be.addMessage("Msg_773", "KMK003_86");
 		}
@@ -70,18 +70,57 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 			}
 		} else {
 			if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
-				// Msg_1054
+				// Msg_1054 (Fixed and Diff)
 				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_1054", "KMK003_295");
 				}
 			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
-				// Msg_1055
+				// Msg_1055 (Fixed and Diff)
 				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_1055", "KMK003_296");
 				}
 			}
 		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy#
+	 * validateFlexAndFlow(nts.arc.error.BundledBusinessException,
+	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode,
+	 * nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr, boolean)
+	 */
+	@Override
+	public void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet,
+			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+		TimeZoneRounding emTimezone = etzSet.getTimezone();
+		PrescribedTimezoneSetting presTz = predTime.getPrescribedTimezoneSetting();
+
+		// Msg_516
+		if (this.tzrPolicy.validateRange(predTime, emTimezone)) {
+			be.addMessage("Msg_516", "KMK003_86");
+		}
+
+		// Msg_774 + Msg_1054 + Msg_1055
+		if (presTz.getTimezoneShiftTwo().isUsed()) {
+			// Msg_774
+			if (AmPmAtr.ONE_DAY.equals(dayAtr)) {
+				if (!this.isBetweenOneDayTimezone(presTz, emTimezone)) {
+					be.addMessage("Msg_774", "KMK003_86");
+				}
+			} else if (AmPmAtr.AM.equals(dayAtr)) {
+				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
+					be.addMessage("Msg_774", "KMK003_295");
+				}
+			} else if (AmPmAtr.PM.equals(dayAtr)) {
+				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
+					be.addMessage("Msg_774", "KMK003_296");
+				}
+			}
+		}
 	}
 
 	/**
@@ -144,15 +183,15 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 */
 	private boolean isBetweenAfternoonTimezone(PrescribedTimezoneSetting presTz, TimeZoneRounding emTimezone) {
 		if (presTz.getTimezoneShiftTwo().isUsed()) {
-			if (presTz.getMorningEndTime().greaterThanOrEqualTo(presTz.getTimezoneShiftOne().getStart())
-					&& presTz.getMorningEndTime().lessThanOrEqualTo(presTz.getTimezoneShiftOne().getEnd())) {
+			if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(presTz.getTimezoneShiftOne().getStart())
+					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(presTz.getTimezoneShiftOne().getEnd())) {
 				// Break time in shift one
 				TimeWithDayAttr startTime = presTz.getAfternoonStartTime();
 				TimeWithDayAttr endTime = presTz.getTimezoneShiftOne().getEnd();
 				return emTimezone.getStart().greaterThanOrEqualTo(startTime)
 						&& emTimezone.getEnd().lessThanOrEqualTo(endTime);
-			} else if (presTz.getMorningEndTime().greaterThanOrEqualTo(presTz.getTimezoneShiftTwo().getStart())
-					&& presTz.getMorningEndTime().lessThanOrEqualTo(presTz.getTimezoneShiftTwo().getEnd())) {
+			} else if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(presTz.getTimezoneShiftTwo().getStart())
+					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(presTz.getTimezoneShiftTwo().getEnd())) {
 				// Break time in shift two
 				TimeWithDayAttr startTime = presTz.getAfternoonStartTime();
 				TimeWithDayAttr endTime = presTz.getTimezoneShiftTwo().getEnd();
