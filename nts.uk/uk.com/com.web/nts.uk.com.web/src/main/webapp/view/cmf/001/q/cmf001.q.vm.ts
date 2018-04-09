@@ -237,6 +237,7 @@ module nts.uk.com.view.cmf001.q {
                                     self.executionState(getListProcessing()[1].value);
                                 }else {
                                     self.executionState(getListProcessing()[3].value);
+                                    $('#BTN_ERROR').focus();
                                 }
 
                                 if (res.succeeded) {
