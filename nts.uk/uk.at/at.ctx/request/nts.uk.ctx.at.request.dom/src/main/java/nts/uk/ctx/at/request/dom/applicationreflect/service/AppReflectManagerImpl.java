@@ -100,8 +100,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(appGobackTmp == null) {
 				return;
 			}
-		} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-			Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
+		//} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+			/*Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optAbsence.isPresent()) {
 				return;
 			}
@@ -111,7 +111,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			commonReflect = this.getAbsence(appInfor, absenceAppData);
 			if(commonReflect == null) {
 				return;
-			}
+			}*/
 		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
@@ -133,6 +133,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(commonReflect == null) {
 				return;
 			}
+		} else {
+			return;
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
 		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		
