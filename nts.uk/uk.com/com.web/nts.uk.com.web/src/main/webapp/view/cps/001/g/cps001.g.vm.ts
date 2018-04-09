@@ -13,7 +13,7 @@ module nts.uk.com.view.cps001.g.vm {
         columns: KnockoutObservableArray<any>;
         currentValue: KnockoutObservable<string> = ko.observable('');
         date: KnockoutObservable<string>;
-        expirationStatus: KnockoutObservableArray<any>;
+        listExpirationStatus: KnockoutObservableArray<any>;
         value: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
 
@@ -46,7 +46,7 @@ module nts.uk.com.view.cps001.g.vm {
             _self.createMode = ko.observable(null);
 
             _self.checked = ko.observable(false);
-            _self.expirationStatus = ko.observableArray([
+            _self.listExpirationStatus = ko.observableArray([
                 { code: EXPIRED_STATUS.AVAILABLE.toString(), name: '使用可能' },
                 { code: EXPIRED_STATUS.EXPIRED.toString(), name: '期限切れ' }
             ]);
@@ -109,9 +109,11 @@ module nts.uk.com.view.cps001.g.vm {
                     // Set focus
                     if (annID && currentIndex > 0) {
                          _self.currentValue(annID);
-                    } else {
+                    } else if (_self.listAnnualLeaveGrantRemainData().length > 0) {
                         _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
                         _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]));
+                    } else {
+                        _self.create();
                     }
                 } else {
                     // Set to cr eate mode
