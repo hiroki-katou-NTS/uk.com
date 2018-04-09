@@ -158,10 +158,12 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 			} else if (presTz.getMorningEndTime().greaterThanOrEqualTo(presTz.getTimezoneShiftTwo().getStart())
 					&& presTz.getMorningEndTime().lessThanOrEqualTo(presTz.getTimezoneShiftTwo().getEnd())) {
 				// Break time in shift two
-				TimeWithDayAttr startTime = presTz.getTimezoneShiftTwo().getStart();
-				TimeWithDayAttr endTime = presTz.getMorningEndTime();
-				return emTimezone.getStart().greaterThanOrEqualTo(startTime)
-						&& emTimezone.getEnd().lessThanOrEqualTo(endTime);
+				TimeWithDayAttr startTime1 = presTz.getTimezoneShiftOne().getStart();
+				TimeWithDayAttr endTime1 = presTz.getTimezoneShiftOne().getEnd();
+				TimeWithDayAttr startTime2 = presTz.getTimezoneShiftTwo().getStart();
+				TimeWithDayAttr endTime2 = presTz.getMorningEndTime();
+				return (emTimezone.getStart().greaterThanOrEqualTo(startTime1) && emTimezone.getEnd().lessThanOrEqualTo(endTime1)) 
+						|| (emTimezone.getStart().greaterThanOrEqualTo(startTime2) && emTimezone.getEnd().lessThanOrEqualTo(endTime2));
 			}
 			return false;
 		} else {
@@ -186,10 +188,12 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 			if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(presTz.getTimezoneShiftOne().getStart())
 					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(presTz.getTimezoneShiftOne().getEnd())) {
 				// Break time in shift one
-				TimeWithDayAttr startTime = presTz.getAfternoonStartTime();
-				TimeWithDayAttr endTime = presTz.getTimezoneShiftOne().getEnd();
-				return emTimezone.getStart().greaterThanOrEqualTo(startTime)
-						&& emTimezone.getEnd().lessThanOrEqualTo(endTime);
+				TimeWithDayAttr startTime1 = presTz.getAfternoonStartTime();
+				TimeWithDayAttr endTime1 = presTz.getTimezoneShiftOne().getEnd();
+				TimeWithDayAttr startTime2 = presTz.getTimezoneShiftTwo().getStart();
+				TimeWithDayAttr endTime2 = presTz.getTimezoneShiftTwo().getEnd();
+				return (emTimezone.getStart().greaterThanOrEqualTo(startTime1) && emTimezone.getEnd().lessThanOrEqualTo(endTime1))
+						|| (emTimezone.getStart().greaterThanOrEqualTo(startTime2) && emTimezone.getEnd().lessThanOrEqualTo(endTime2));
 			} else if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(presTz.getTimezoneShiftTwo().getStart())
 					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(presTz.getTimezoneShiftTwo().getEnd())) {
 				// Break time in shift two
