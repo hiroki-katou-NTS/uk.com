@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.realitystatus;
+package nts.uk.ctx.at.record.ws.application.realitystatus;
 
 import java.util.List;
 
@@ -11,10 +11,12 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.realitystatus.ExeSendUnconfirmMailParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusFinder;
+import nts.uk.ctx.at.record.app.find.realitystatus.SendMailResultDto;
+import nts.uk.ctx.at.record.app.find.realitystatus.UseSetingDto;
 import nts.uk.ctx.at.record.app.find.realitystatus.WkpIdMailCheckParam;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 
-@Path("at/record/realitystatus")
+@Path("at/record/application/realitystatus")
 @Produces("application/json")
 public class RealityStatusWebService extends WebService {
 	@Inject
@@ -28,13 +30,19 @@ public class RealityStatusWebService extends WebService {
 
 	@POST
 	@Path("checkSendUnconfirmedMail")
-	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
-		realityStatusFinder.checkSendUnconfirmedMail(listWkp);
+	public String checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
+		return realityStatusFinder.checkSendUnconfirmedMail(listWkp);
 	}
 	
 	@POST
 	@Path("exeSendUnconfirmedMail")
-	public void exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
-		realityStatusFinder.exeSendUnconfirmMail(obj);
+	public SendMailResultDto exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
+		return realityStatusFinder.exeSendUnconfirmMail(obj);
+	}
+	
+	@POST
+	@Path("getUseSetting")
+	public UseSetingDto getUseSetting() {
+		return realityStatusFinder.getUseSetting();
 	}
 }

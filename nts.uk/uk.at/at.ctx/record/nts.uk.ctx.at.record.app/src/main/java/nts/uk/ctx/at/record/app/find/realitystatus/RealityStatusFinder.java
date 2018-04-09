@@ -8,10 +8,13 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.TransmissionAttr;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 承認状況メールテンプレート
@@ -31,18 +34,20 @@ public class RealityStatusFinder {
 				wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData());
 	}
 
-	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
+	public String checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
 		// アルゴリズム「承認状況未確認メール送信」を実行する
-		realityStatusService.checkSendUnconfirmedMail(this.getWkpIdMailCheck(listWkp));
+		return realityStatusService.checkSendUnconfirmedMail(this.getWkpIdMailCheck(listWkp));
 	}
 
-	public void exeSendUnconfirmMail(ExeSendUnconfirmMailParam dto) {
+	public SendMailResultDto exeSendUnconfirmMail(ExeSendUnconfirmMailParam dto) {
 		List<WkpIdMailCheckOutput> listWkp = this.getWkpIdMailCheck(dto.getListWkp());
 		GeneralDate startDate = GeneralDate.fromString(dto.getStartDate(), "yyyy/MM/dd");
 		GeneralDate endDate = GeneralDate.fromString(dto.getEndDate(), "yyyy/MM/dd");
 		// アルゴリズム「承認状況未確認メール送信実行」を実行する
-		realityStatusService.exeSendUnconfirmMail(EnumAdaptor.valueOf(dto.getType(), TransmissionAttr.class), listWkp,
-				startDate, endDate, dto.getListEmpCd());
+		SendMailResultImport result = realityStatusService.exeSendUnconfirmMail(
+				EnumAdaptor.valueOf(dto.getType(), TransmissionAttr.class), listWkp, startDate, endDate,
+				dto.getListEmpCd());
+		return new SendMailResultDto(result.isOK(), result.getListError());
 	}
 
 	private List<WkpIdMailCheckOutput> getWkpIdMailCheck(List<WkpIdMailCheckParam> listWkpParam) {
@@ -52,5 +57,11 @@ public class RealityStatusFinder {
 			listWkp.add(wkp);
 		}
 		return listWkp;
+	}
+	
+	public UseSetingDto getUseSetting(){
+		String cid = AppContexts.user().companyId();
+		UseSetingOutput setting = realityStatusService.getUseSetting(cid);
+		return new UseSetingDto(setting.isMonthlyConfirm(), setting.isUseBossConfirm(), setting.isUsePersonConfirm());
 	}
 }

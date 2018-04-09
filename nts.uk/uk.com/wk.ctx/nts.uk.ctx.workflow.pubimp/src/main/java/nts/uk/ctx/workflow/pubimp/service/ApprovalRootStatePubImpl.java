@@ -582,6 +582,18 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				appRootStateConfirmOutput.getRootStateID(), 
 				appRootStateConfirmOutput.getErrorMsg());
 	}
+	@Override
+	// requestList155
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndListApprovalRecordDate(
+			List<GeneralDate> approvalRecordDates, List<String> employeeIDs, Integer rootType) {
+		List<ApproveRootStatusForEmpExport> result = new ArrayList<>();
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		
+		//承認ルート状況を取得する
+		result = this.getApproveRootStatusForEmpExport(approvalRootSates);
+		return result;
+	}
 
 	
 }
