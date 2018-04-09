@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlowWorkRestSettingDetail.
@@ -55,5 +56,9 @@ public class FlowWorkRestSettingDetail extends WorkTimeDomainObject {
 		memento.setFlowFixedRestSetting(this.flowFixedRestSetting);
 		memento.setUsePluralWorkRestTime(this.usePluralWorkRestTime);
 		memento.setRoundingBreakMultipleWork(this.roundingBreakMultipleWork);
+	}
+
+	public void correctData(ScreenMode screenMode, FlowWorkRestSettingDetail flowRestSetting,boolean fixRestTime) {
+		this.flowFixedRestSetting.correctData(screenMode,flowRestSetting.getFlowFixedRestSetting(),fixRestTime);
 	}
 }

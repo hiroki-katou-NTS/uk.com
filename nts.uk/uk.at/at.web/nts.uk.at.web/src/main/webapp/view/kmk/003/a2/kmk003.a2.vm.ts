@@ -13,8 +13,6 @@ module a2 {
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
-    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
-    import ScreenMode = nts.uk.at.view.kmk003.a.viewmodel.ScreenMode;
     
     /**
      * ScreenModel
@@ -64,9 +62,8 @@ module a2 {
         dataModelOneDay: EmTimeZoneSetModel[];
         
         // Defined variable Screen model
-        tabMode: KnockoutObservable<number>
-        isSimpleMode: KnockoutObservable<boolean>;
-        isFlowMode: KnockoutObservable<boolean>;
+        isSimpleMode: KnockoutComputed<boolean>;
+        isFlowMode: KnockoutComputed<boolean>;
         isFlexMode: KnockoutComputed<boolean>;
         isFixedMode: KnockoutComputed<boolean>;
         isDiffTimeMode: KnockoutComputed<boolean>;
@@ -82,10 +79,7 @@ module a2 {
             self.parentModel = input.mainModel;
             self.settingEnum = input.enum;
             
-            self.tabMode = input.tabMode;
-            self.isSimpleMode = ko.computed(() => {
-                return self.tabMode() == TabMode.SIMPLE;
-            });
+            self.isSimpleMode = input.isSimpleMode;
             self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
             self.isFlexMode = self.parentModel.workTimeSetting.isFlex;
             self.isFixedMode = self.parentModel.workTimeSetting.isFixed;

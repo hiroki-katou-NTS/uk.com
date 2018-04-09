@@ -53,12 +53,12 @@ module nts.uk.at.view.kmk003.a {
             settingEnum: WorkTimeSettingEnumDto;
             
             screenMode: KnockoutObservable<number>;
-            isNewMode: KnockoutObservable<boolean>;
-            isCopyMode: KnockoutObservable<boolean>;
-            isNewOrCopyMode: KnockoutObservable<boolean>;
-            isUpdateMode: KnockoutObservable<boolean>;
-            isSimpleMode: KnockoutObservable<boolean>;
-            isDetailMode: KnockoutObservable<boolean>;
+            isNewMode: KnockoutComputed<boolean>;
+            isCopyMode: KnockoutComputed<boolean>;
+            isNewOrCopyMode: KnockoutComputed<boolean>;
+            isUpdateMode: KnockoutComputed<boolean>;
+            isSimpleMode: KnockoutComputed<boolean>;
+            isDetailMode: KnockoutComputed<boolean>;
             isLoading: KnockoutObservable<boolean>;
             isTestMode: KnockoutObservable<boolean>;
             flexWorkManaging: boolean;
@@ -743,18 +743,18 @@ module nts.uk.at.view.kmk003.a {
             isChangeItemTable: KnockoutObservable<boolean>;
             useHalfDay: KnockoutObservable<boolean>;
             tabMode: KnockoutObservable<number>;
-            addMode: KnockoutObservable<boolean>;
+            addMode: KnockoutComputed<boolean>;
             
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
-            constructor(tabMode: KnockoutObservable<number>, addMode: KnockoutObservable<boolean>, useHalfDay: KnockoutObservable<boolean>) {
+            constructor(tabMode: KnockoutObservable<number>, isNewOrCopyMode: KnockoutComputed<boolean>, useHalfDay: KnockoutObservable<boolean>) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
-                self.addMode = addMode;
+                self.addMode = isNewOrCopyMode;
                 
                 self.workTimeSetting = new WorkTimeSettingModel();
                 self.manageEntryExit = new ManageEntryExitModel();

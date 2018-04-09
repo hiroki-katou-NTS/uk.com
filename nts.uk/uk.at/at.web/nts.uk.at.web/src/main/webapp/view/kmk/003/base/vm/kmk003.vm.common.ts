@@ -2101,9 +2101,11 @@ module nts.uk.at.view.kmk003.a {
                 lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
                 lstWorkingTimezoneSimpleMode: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+                displayMode: KnockoutObservable<number>;
 
-                constructor() {
+                constructor(displayMode: KnockoutObservable<number>) {
                     super();
+                    this.displayMode = displayMode;
                     this.lstWorkingTimezone = this.originalList2;
                     this.lstOTTimezone = this.originalList;
                     this.lstWorkingTimezoneSimpleMode = ko.observableArray([]);
@@ -2213,7 +2215,14 @@ module nts.uk.at.view.kmk003.a {
                     // for simple mode list
                     const firstItem = updatedList[0];
                     if (firstItem) {
-                        self.lstWorkingTimezoneSimpleMode([new EmTimeZoneSetFixedTableModel(firstItem)]);
+                        let simple = self.lstWorkingTimezoneSimpleMode()[0];
+                        if (simple) {
+                            simple.roundingTime(firstItem.timezone.rounding.roundingTime());
+                            simple.rounding(firstItem.timezone.rounding.rounding());
+                        } else {
+                            simple = new EmTimeZoneSetFixedTableModel(firstItem);
+                        }
+                        self.lstWorkingTimezoneSimpleMode([simple]);
                     }
                 }
 
@@ -2223,6 +2232,15 @@ module nts.uk.at.view.kmk003.a {
                 toDto(): FixedWorkTimezoneSetDto {
                     let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone(), (dataModel) => dataModel.toDto());
                     let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
+
+                    if (this.displayMode() == 1) {
+                        const simple = this.lstWorkingTimezoneSimpleMode()[0];
+                        const detail = lstWorkingTimezone[0].timezone;
+                        detail.rounding.roundingTime = simple.roundingTime();
+                        detail.rounding.rounding = simple.rounding();
+                        detail.start = simple.timeRange().startTime;
+                        detail.end = simple.timeRange().endTime;
+                    }
 
                     let dataDTO: FixedWorkTimezoneSetDto = {
                         lstWorkingTimezone: lstWorkingTimezone,

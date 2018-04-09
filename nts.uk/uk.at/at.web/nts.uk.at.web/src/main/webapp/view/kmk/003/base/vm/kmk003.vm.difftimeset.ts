@@ -267,9 +267,11 @@ module nts.uk.at.view.kmk003.a {
                 lstOtTimezone: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
 
                 lstWorkingTimezoneSimpleMode: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+                displayMode: KnockoutObservable<number>;
 
-                constructor() {
+                constructor(displayMode: KnockoutObservable<number>) {
                     super();
+                    this.displayMode = displayMode;
                     this.employmentTimezones = this.originalList2;
                     this.lstOtTimezone = this.originalList;
                     this.lstWorkingTimezoneSimpleMode = ko.observableArray([]);
@@ -370,7 +372,14 @@ module nts.uk.at.view.kmk003.a {
                     // for simple mode list
                     const firstItem = updatedList[0];
                     if (firstItem) {
-                        self.lstWorkingTimezoneSimpleMode([new EmTimeZoneSetFixedTableModel(firstItem)]);
+                        let simple = self.lstWorkingTimezoneSimpleMode()[0];
+                        if (simple) {
+                            simple.roundingTime(firstItem.timezone.rounding.roundingTime());
+                            simple.rounding(firstItem.timezone.rounding.rounding());
+                        } else {
+                            simple = new EmTimeZoneSetFixedTableModel(firstItem);
+                        }
+                        self.lstWorkingTimezoneSimpleMode([simple]);
                     }
                 }
 
@@ -388,6 +397,15 @@ module nts.uk.at.view.kmk003.a {
                     let self = this;
                     let employmentTimezones = self.employmentTimezones().map(item => item.toDto());
                     let lstOtTimezone = self.lstOtTimezone().map(item => item.toDto());
+
+                    if (self.displayMode() == 1) {
+                        const simple = this.lstWorkingTimezoneSimpleMode()[0];
+                        const detail = employmentTimezones[0].timezone;
+                        detail.rounding.roundingTime = simple.roundingTime();
+                        detail.rounding.rounding = simple.rounding();
+                        detail.start = simple.timeRange().startTime;
+                        detail.end = simple.timeRange().endTime;
+                    }
 
                     var dataDTO: DiffTimezoneSettingDto = {
                         employmentTimezones: employmentTimezones,
@@ -407,18 +425,18 @@ module nts.uk.at.view.kmk003.a {
                 workTimezone: DiffTimezoneSettingModel;
                 amPmAtr: KnockoutObservable<number>;
 
-                constructor() {
+                constructor(isSimpleMode: KnockoutObservable<number>) {
                     this.restTimezone = new DiffTimeRestTimezoneModel();
-                    this.workTimezone = new DiffTimezoneSettingModel();
+                    this.workTimezone = new DiffTimezoneSettingModel(isSimpleMode);
                     this.amPmAtr = ko.observable(0);
                 }
 
-                static getDefaultData(): Array<DiffTimeHalfDayWorkTimezoneModel> {
-                    let oneday = new DiffTimeHalfDayWorkTimezoneModel();
+                static getDefaultData(isSimpleMode: KnockoutObservable<number>): Array<DiffTimeHalfDayWorkTimezoneModel> {
+                    let oneday = new DiffTimeHalfDayWorkTimezoneModel(isSimpleMode);
                     oneday.amPmAtr(0);
-                    let morning = new DiffTimeHalfDayWorkTimezoneModel();
+                    let morning = new DiffTimeHalfDayWorkTimezoneModel(isSimpleMode);
                     morning.amPmAtr(1);
-                    let afternoon = new DiffTimeHalfDayWorkTimezoneModel();
+                    let afternoon = new DiffTimeHalfDayWorkTimezoneModel(isSimpleMode);
                     afternoon.amPmAtr(2);
                     let list: any[] = [];
                     list.push(oneday);
@@ -596,7 +614,7 @@ module nts.uk.at.view.kmk003.a {
                     this.commonSet = new WorkTimezoneCommonSetModel();
                     this.isUseHalfDayShift = ko.observable(false);
                     this.changeExtent = new EmTimezoneChangeExtentModel();
-                    this.halfDayWorkTimezones = DiffTimeHalfDayWorkTimezoneModel.getDefaultData();
+                    this.halfDayWorkTimezones = DiffTimeHalfDayWorkTimezoneModel.getDefaultData(this.displayMode);
                     this.stampReflectTimezone = new DiffTimeWorkStampReflectTimezoneModel();
                     this.overtimeSetting = ko.observable(0);
                     // Update phase 2

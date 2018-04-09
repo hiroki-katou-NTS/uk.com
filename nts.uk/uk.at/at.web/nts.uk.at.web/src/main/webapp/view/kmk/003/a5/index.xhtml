@@ -40,9 +40,9 @@
 	<div class="tab-seperator">	
 	
 		<!-- Begin Fixed timezones -->
-		<com:ko tag="if" bind="isFixed()">
+		<com:ko tag="if" bind="isFixed">
 			<!-- Begin Simple mode -->
-			<com:ko tag="if" bind="!isDetailMode()">
+			<com:ko tag="ifnot" bind="isDetailMode">
 				<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
 			</com:ko>
 			<!-- End of Simple mode -->
@@ -88,7 +88,7 @@
 		<!-- Begin Flex timezones -->
 		<com:ko tag="if" bind="isFlexTimezone">
 			<!-- Simple mode -->
-			<com:ko tag="if" bind="!isDetailMode()">
+			<com:ko tag="ifnot" bind="isDetailMode">
 				<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
 			</com:ko>
 			<!-- Simple mode -->
@@ -375,9 +375,9 @@
 		<!-- End of flow rest set -->
 		
 		<!-- Begin Diff timezones -->
-		<com:ko tag="if" bind="isDiffTime()">
+		<com:ko tag="if" bind="isDiffTime">
 			<!-- Begin Simple mode -->
-			<com:ko tag="if" bind="!isDetailMode()">
+			<com:ko tag="ifnot" bind="isDetailMode">
 				<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
 			</com:ko>
 			<!-- End of Simple mode -->

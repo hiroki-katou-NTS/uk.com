@@ -76,7 +76,7 @@ module a5 {
         isFlow: KnockoutComputed<boolean>;
         isFixed: KnockoutComputed<boolean>;
         isDiffTime: KnockoutComputed<boolean>;
-        isDetailMode: KnockoutObservable<boolean>;
+        isDetailMode: KnockoutComputed<boolean>;
         useHalfDay: KnockoutObservable<boolean>;
 
         // show/hide

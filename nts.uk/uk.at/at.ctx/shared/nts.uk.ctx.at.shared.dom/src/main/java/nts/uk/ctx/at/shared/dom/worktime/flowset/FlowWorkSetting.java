@@ -116,6 +116,8 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 			this.halfDayWorkTimezone.correctData(screenMode, other.getHalfDayWorkTimezone());
 			// Tab 7
 			this.offdayWorkTimezone.correctData(screenMode, other.getOffdayWorkTimezone());
+			
+			this.restSetting.correctData(screenMode,other.getRestSetting(),other.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime());
 		} else {
 			// Tab 2
 			this.flowSetting = other.getFlowSetting();
