@@ -14,10 +14,10 @@ module a6 {
         fixTableOptionFixed: any;
         fixTableOptionDiffTime: any;
         selectedTab: KnockoutObservable<string>;
-        isFlowMode: KnockoutObservable<boolean>;
-        isFlexMode: KnockoutObservable<boolean>;
-        isFixedMode: KnockoutObservable<boolean>;
-        isDiffTimeMode: KnockoutObservable<boolean>;
+        isFlowMode: KnockoutComputed<boolean>;
+        isFlexMode: KnockoutComputed<boolean>;
+        isFixedMode: KnockoutComputed<boolean>;
+        isDiffTimeMode: KnockoutComputed<boolean>;
         dataSourceFlow: KnockoutObservableArray<any>;
         dataSourceFlex: KnockoutObservableArray<any>;
         dataSourceFixed: KnockoutObservableArray<any>;

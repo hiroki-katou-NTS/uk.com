@@ -43,11 +43,11 @@ module a3 {
         fixTableOptionOvertimeFlowSimple: any;
 
         // Flags
-        isFlowMode: KnockoutObservable<boolean>;
-        isFlexMode: KnockoutObservable<boolean>;
-        isFixedMode: KnockoutObservable<boolean>;
-        isDiffTimeMode: KnockoutObservable<boolean>;
-        isDetailMode: KnockoutObservable<boolean>;
+        isFlowMode: KnockoutComputed<boolean>;
+        isFlexMode: KnockoutComputed<boolean>;
+        isFixedMode: KnockoutComputed<boolean>;
+        isDiffTimeMode: KnockoutComputed<boolean>;
+        isDetailMode: KnockoutComputed<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
         showSimpleFixed: KnockoutComputed<boolean>;
         showSimpleDifftime: KnockoutComputed<boolean>;
@@ -81,7 +81,7 @@ module a3 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutObservable<boolean>,
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,
             isUseHalfDay: KnockoutObservable<boolean>, isNewMode: KnockoutObservable<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
             self.isNewMode = isNewMode;
