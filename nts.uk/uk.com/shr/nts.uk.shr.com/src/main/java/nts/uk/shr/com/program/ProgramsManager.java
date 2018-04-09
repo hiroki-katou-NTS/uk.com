@@ -265,6 +265,12 @@ public class ProgramsManager {
 	 */
 	public static final Program CPS001H = new Program(WebAppId.COM, ProgramIdConsts.CPS001H, "CPS001_112",
 			"/view/cps/001/h/index.xhtml");
+	
+	/**
+	 * CPS001I
+	 */
+	public static final Program CPS001I = new Program(WebAppId.COM, ProgramIdConsts.CPS001I, "CPS001_113",
+			"/view/cps/001/i/index.xhtml");
 
 	/**
 	 * KMK011A
