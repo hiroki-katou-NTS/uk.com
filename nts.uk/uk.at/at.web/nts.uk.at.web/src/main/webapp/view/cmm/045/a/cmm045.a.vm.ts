@@ -673,7 +673,7 @@ module cmm045.a.viewmodel {
             let back2 = (wkChange.backHomeAtr2 == 0 || wkChange.backHomeAtr2 == null) ? '' : getText('CMM045_100') + getText('CMM045_252') + wkChange.workTimeEnd2;
             let breakTime = getText('CMM045_251') + wkChange.breakTimeStart1 + getText('CMM045_100') + wkChange.breakTimeEnd1;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
-            let appContent007 = getText('CMM045_250') + wkChange.workTypeName + wkChange.workTimeName + go1 + back1 + go2 + back2 + reason;
+            let appContent007 = getText('CMM045_250') + wkChange.workTypeName + wkChange.workTimeName + go1 + back1 + go2 + back2 + breakTime + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
