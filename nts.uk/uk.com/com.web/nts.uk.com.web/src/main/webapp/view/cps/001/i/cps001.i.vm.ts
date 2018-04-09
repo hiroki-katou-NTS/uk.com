@@ -108,6 +108,7 @@ module nts.uk.com.view.cps001.i.vm {
                     service.getDetail(value).done((result: ISpecialLeaveRemaining) => {
                         if (result) {
                             self.bindingData(result);
+                            $("#idDateGrantInp").focus();
                         }
                     });
                 }
@@ -184,7 +185,6 @@ module nts.uk.com.view.cps001.i.vm {
                     self.newMode();
                 }
                 clearError();
-                $('#idDateGrantInp').focus();
             });
 
         }
@@ -235,7 +235,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.dayNumberOver(null);
             self.timeOver(null);
             self.selectedRuleCode(1);
-            $('#idDateGrantInp').focus();
+            $("#idDateGrantInp").focus();
         }
 
         Save() {
