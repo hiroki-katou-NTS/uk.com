@@ -1,5 +1,6 @@
 .contents-area{
-	margin:10px;
+	margin-left:10px;
+	padding-top:10px;
 }
 .bggreen{
 	background-color: #BFEA60;
@@ -9,6 +10,7 @@
 }
 .cmf001_508{
 	margin-bottom: 3px;
+	margin-left: 10px;
 }
 .cmf001_515{
 	top: 25px;
@@ -23,7 +25,7 @@
 }
 .kekkanaiyou{
 	margin-bottom: 15px;
-	margin-right: 10px;
+	margin-right: 60px;
 	float: left;
 }
 .setting-zyouhou {
@@ -66,14 +68,20 @@ table, th, td {
 	float: right;
 	margin-right: 0 !important;
 }
-.settingzyouho td {
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
 
 #grd_Accept .increment-col, #single-list th.ui-iggrid-rowselector-class
 	{
 	background-color: #CFF1A5;
 	text-align: right;
 	height: 1em;
+}
+#BTN_CLOSE {
+	margin-top: 10px;
+}
+#BTN_ERROR_EXPORT{
+	margin-top: 20px;
+}
+td {
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
