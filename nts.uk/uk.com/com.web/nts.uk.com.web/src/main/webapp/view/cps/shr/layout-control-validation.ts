@@ -954,18 +954,17 @@ module nts.layout {
                                 let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
                                 switch (btn.dialogId) {
                                     case "g":
-                                        let empId = __viewContext.user.employeeId;
-                                        ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${empId}"`).done(data => {
+                                        fetch.get_annLeaNumber(sid).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "h":
-                                        ajax('at', `at/record/remainnumber/annlea/getResvLeaNumber/${empId}"`).done(data => {
+                                        fetch.get_resvLeaNumber(sid).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "i":
-                                        ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${btn.specialCd}`).done(data => {
+                                        fetch.get_calDayTime(sid, btn.specialCd).done(data => {
                                             button.data.value(data);
                                         });
                                 }
