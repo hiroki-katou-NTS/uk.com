@@ -447,7 +447,7 @@ public class PeregProcessor {
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition itemDefinition;
 
-		Map<Integer, Map<String, List<ComboBoxObject>>> combobox = new HashMap<Integer, Map<String, List<ComboBoxObject>>>();
+		Map<String, Map<Boolean, List<ComboBoxObject>>> combobox = new HashMap<String, Map<Boolean, List<ComboBoxObject>>>();
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(paramObject.getRoleId(), category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
