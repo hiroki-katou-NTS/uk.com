@@ -119,20 +119,19 @@ public class PerInfoItemDefForLayoutFinder {
 	private List<ComboBoxObject> getCombo(SelectionItemDto selectionItemDto,
 			Map<String, Map<Boolean, List<ComboBoxObject>>> combobox, String empId, GeneralDate sDate,
 			boolean isRequired, PersonEmployeeType perEmplType) {
-		List<Object> key = new ArrayList<Object>();
 		String referenceCode = null;
 		switch (selectionItemDto.getReferenceType()) {
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto master = (MasterRefConditionDto) selectionItemDto;
-			key.add(master.getMasterType());
+			referenceCode = master.getMasterType();
 			break;
 		case CODE_NAME:
 			CodeNameRefTypeDto code = (CodeNameRefTypeDto) selectionItemDto;
-			key.add(code.getTypeCode());
+			referenceCode = code.getTypeCode();
 			break;
 		case ENUM:
 			EnumRefConditionDto enu = (EnumRefConditionDto) selectionItemDto;
-			key.add(enu.getEnumName());
+			referenceCode = enu.getEnumName();
 			break;
 		}
 		if (combobox.containsKey(referenceCode)) {
