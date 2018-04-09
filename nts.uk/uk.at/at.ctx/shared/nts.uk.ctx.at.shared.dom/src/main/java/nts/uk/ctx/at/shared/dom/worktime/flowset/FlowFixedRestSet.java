@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlowFixedRestSet.
@@ -105,5 +106,24 @@ public class FlowFixedRestSet extends WorkTimeDomainObject {
 	 */
 	public boolean isReferRestTime() {
 		return this.getCalculateFromSchedule().isReferRestTime();
+	}
+
+	public void correctData(ScreenMode screenMode, FlowFixedRestSet flowFixedRestSetting,boolean fixRestTime) {
+		if (ScreenMode.DETAIL.equals(screenMode) && fixRestTime) {
+			switch (this.calculateMethod) {
+			case REFER_MASTER:
+				this.calculateFromSchedule = flowFixedRestSetting.getCalculateFromSchedule();
+				this.calculateFromStamp = flowFixedRestSetting.getCalculateFromStamp();
+				break;
+			case REFER_SCHEDULE:
+				this.calculateFromStamp = flowFixedRestSetting.getCalculateFromStamp();
+				break;
+			case STAMP_WHITOUT_REFER:
+				this.calculateFromSchedule = flowFixedRestSetting.getCalculateFromSchedule();
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }
