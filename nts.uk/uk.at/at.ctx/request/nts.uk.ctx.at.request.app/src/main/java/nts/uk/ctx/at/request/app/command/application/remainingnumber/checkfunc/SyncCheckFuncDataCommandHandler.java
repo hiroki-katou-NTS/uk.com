@@ -134,7 +134,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				if(dailyWorkTypeListImport.isPresent()){
 					excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
 				}
-				excelInforCommand.setMaxNumberDays(plannedVacationList.get(i).getMaxNumberDays());
+				excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
 				excelInforList.add(excelInforCommand);
 
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);

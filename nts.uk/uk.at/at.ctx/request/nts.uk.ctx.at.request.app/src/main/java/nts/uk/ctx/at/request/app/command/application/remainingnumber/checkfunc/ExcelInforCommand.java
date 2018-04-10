@@ -25,5 +25,5 @@ public class ExcelInforCommand {
 	//年休使用数(8列目)
 	private List<NumberOfWorkTypeUsedImport> numberOfWorkTypeUsedImport;
 	//上限日数(9列目)
-	private int maxNumberDays;
+	private List<PlannedVacationListCommand> plannedVacationListCommand;
 }
