@@ -189,9 +189,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//所定時間と就業時間帯の重複部分取得
 		List<EmTimeZoneSet> workingHourSet = createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone, workNo);
 		//出退勤時刻と↑の重複時間帯と重複部分取得
-		workingHourSet = duplicatedByStamp(workingHourSet,timeLeavingWork);
+		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(workingHourSet,timeLeavingWork);
 		
-		for(EmTimeZoneSet duplicateTimeSheet :workingHourSet) {
+		for(WithinWorkTimeFrame duplicateTimeSheet :withinWorkTimeFrame) {
 			//就業時間内時間枠の作成
 			timeFrames.add(WithinWorkTimeFrame.createWithinWorkTimeFrame(duplicateTimeSheet,
 																		 deductionTimeSheet,
@@ -218,18 +218,35 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param timeLeavingWork　出退勤
 	 * @return　時間枠の時間帯と出退勤の重複時間
 	 */
-	private static List<EmTimeZoneSet> duplicatedByStamp(List<EmTimeZoneSet> workingHourSet,
+	private static List<WithinWorkTimeFrame> duplicatedByStamp(List<EmTimeZoneSet> workingHourSet,
 			TimeLeavingWork timeLeavingWork) {
-		List<EmTimeZoneSet> returnList = new ArrayList<>();
+		List<WithinWorkTimeFrame> returnList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicatedRange = Optional.empty(); 
 		for(EmTimeZoneSet timeZone:workingHourSet) {
 			duplicatedRange = timeZone.getTimezone().getDuplicatedWith(timeLeavingWork.getTimespan());
-			if(duplicatedRange.isPresent())
-				returnList.add(new EmTimeZoneSet(timeZone.getEmploymentTimeFrameNo(),
-												 new TimeZoneRounding(duplicatedRange.get().getStart(),
-														 			  duplicatedRange.get().getEnd(),
-														 			  timeZone.getTimezone().getRounding())));
-			
+			if(duplicatedRange.isPresent()) {
+				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
+														new TimeZoneRounding(duplicatedRange.get().getStart(),duplicatedRange.get().getEnd(),timeZone.getTimezone().getRounding()),
+														new TimeSpanForCalc(timeZone.getTimezone().getStart(), timeZone.getTimezone().getEnd()),
+														new ArrayList<>(),
+														new ArrayList<>(),
+														new ArrayList<>(),
+														Optional.empty(),
+														new ArrayList<>(),
+														Optional.empty(),
+														Optional.empty()));
+			}else {
+				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
+													   new TimeZoneRounding(timeZone.getTimezone().getStart(),timeZone.getTimezone().getStart(),timeZone.getTimezone().getRounding()),
+													   new TimeSpanForCalc(timeZone.getTimezone().getStart(), timeZone.getTimezone().getEnd()),
+													   new ArrayList<>(),
+													   new ArrayList<>(),
+													   new ArrayList<>(),
+													   Optional.empty(),
+													   new ArrayList<>(),
+													   Optional.empty(),
+													   Optional.empty()));
+			}
 		}
 		return returnList;
 	}
