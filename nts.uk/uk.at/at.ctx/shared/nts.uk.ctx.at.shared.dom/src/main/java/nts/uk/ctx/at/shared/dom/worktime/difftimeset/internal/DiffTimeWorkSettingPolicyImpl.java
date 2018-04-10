@@ -203,6 +203,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item -> {
 
 			List<DiffTimeDeductTimezone> lstRestTime = item.getRestTimezone().getRestTimezones().stream()
+					.filter(halftime->!halftime.isUpdateStartTime())
 					.sorted((obj1, obj2) -> obj1.getStart().compareTo(obj2.getStart())).collect(Collectors.toList());
 			List<EmTimeZoneSet> lstWorkTime = item.getWorkTimezone().getEmploymentTimezones().stream()
 					.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
