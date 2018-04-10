@@ -134,6 +134,7 @@ module nts.uk.com.view.cps001.i.vm {
                 } else {
                     self.newMode();
                 }
+                $("#idDateGrantInp").focus();
 
             });
 
