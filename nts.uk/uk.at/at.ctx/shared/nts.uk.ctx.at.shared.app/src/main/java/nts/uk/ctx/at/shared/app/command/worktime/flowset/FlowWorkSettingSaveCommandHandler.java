@@ -110,7 +110,7 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		}
 
 		// Check policy
-		this.flowPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), flowWorkSetting);
+		this.flowPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), command.toWorkTimeDisplayMode(), flowWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

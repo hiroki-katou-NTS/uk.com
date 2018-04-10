@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeStampReflect
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
@@ -49,7 +50,8 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	/** The wtz common set policy. */
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
-	
+
+	/** The diff time stamp reflect timezone policy. */
 	@Inject
 	private DiffTimeStampReflectTimezonePolicy diffTimeStampReflectTimezonePolicy;
 
@@ -94,10 +96,11 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
-		
-		// validate list stamp timezone
-		this.diffTimeStampReflectTimezonePolicy.validate(be, pred, diffTimeWorkSetting);
 
+		// validate list stamp timezone
+		if (DisplayMode.DETAIL.equals(displayMode)) {
+			this.diffTimeStampReflectTimezonePolicy.validate(be, pred, diffTimeWorkSetting);
+		}
 	}
 
 	/**

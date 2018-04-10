@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexStampReflectTimezone
 import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
@@ -87,7 +88,9 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		this.wtzCommonSetPolicy.validate(be, predTime, flexWork.getCommonSetting());
 
 		// validate list stamp timezone
-		this.flexStampReflectTimezonePolicy.validate(be, predTime, flexWork);
+		if (DisplayMode.DETAIL.equals(displayMode)) {
+			this.flexStampReflectTimezonePolicy.validate(be, predTime, flexWork);
+		}
 	}
 
 	/**

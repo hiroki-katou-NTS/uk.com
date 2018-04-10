@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedStampReflectTimezo
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
@@ -91,7 +92,9 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 //		}
 		
 		// validate list stamp timezone
-		this.fixedStampReflectTimezonePolicy.validate(be, predetemineTimeSet, fixedWorkSetting);
+		if (DisplayMode.DETAIL.equals(displayMode)) {
+			this.fixedStampReflectTimezonePolicy.validate(be, predetemineTimeSet, fixedWorkSetting);
+		}
 
 		// Check #Msg_516 domain HDWorkTimeSheetSetting
 		fixedWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().forEach(setting -> {
