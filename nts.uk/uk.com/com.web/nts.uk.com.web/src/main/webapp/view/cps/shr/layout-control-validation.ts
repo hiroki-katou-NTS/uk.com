@@ -778,7 +778,7 @@ module nts.layout {
                     workType.ctrl.on('click', () => {
                         setShared("KDL002_Multiple", false, true);
                         setShared("KDL002_SelectedItemId", workType.data.value(), true);
-                        setShared("KDL002_AllItemObj", _.map(workType.data.lstComboBoxValue, x => x.optionValue), true);
+                        setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                         modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                             let childData: Array<any> = getShared('KDL002_SelectedNewItem');
@@ -794,10 +794,10 @@ module nts.layout {
 
                     workType.ctrl.on('click', () => {
                         setShared('parentCodes', {
-                            workTypeCodes: workType && _.map(workType.data.lstComboBoxValue, x => x.optionValue),
-                            selectedWorkTypeCode: workType && ko.toJS(workType.data.value),
-                            workTimeCodes: workTime && _.map(workTime.data.lstComboBoxValue, x => x.optionValue),
-                            selectedWorkTimeCode: workTime && ko.toJS(workTime.data.value)
+                            workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                            workTimeCodes: workTime && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
                         }, true);
 
                         modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
