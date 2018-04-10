@@ -666,7 +666,7 @@ module nts.layout {
                     }
                 ],
                 setData = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.value(value || undefined);
+                    ctrl && ctrl.data.value(value);
                 },
                 setDataText = (ctrl: IFindData, value?: any) => {
                     ctrl && ctrl.data.textValue(value || undefined);
