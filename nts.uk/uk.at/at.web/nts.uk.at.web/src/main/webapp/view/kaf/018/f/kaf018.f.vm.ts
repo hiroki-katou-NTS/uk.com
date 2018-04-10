@@ -79,6 +79,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
             }
+            for(let i = 0; i< self.listWkp.length; i++){
+                self.listWkp[i].index = i.toString();
+            }
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
             self.createSampleData();
@@ -119,7 +122,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 let currentDay = new Date(self.dtPrev().toString());
                 while (currentDay <= self.dtAft()) {
                     let time = new Time(currentDay);
-                    item["_" + time.yearMonthDay] = currentDay.getDate();
+                    item["__" + time.yearMonthDay] = currentDay.getDate();
                     currentDay.setDate(currentDay.getDate() + 1);
                 }
             })
@@ -152,6 +155,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 detailContentDs = [],
                 objDetailHeaderDs = {},
                 detailColumns = [],
+                detailContentColumns = [],
                 horzSumHeaderDs = [],
                 horzSumContentDs = [],
                 leftHorzContentDs = [],
@@ -163,6 +167,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 detailColumns.push({
                     key: "_" + time.yearMonthDay, width: "40px", headerText: self.getDay(time)
                 });
+                //detailContentColumns.push({
+                //key: "__" + time.yearMonthDay, width: "40px"
+                //});
                 currentDay.setDate(currentDay.getDate() + 1);
             }
 
@@ -190,12 +197,29 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             };
 
             detailContentDs = self.listWkp;
-            console.log(detailContentDs);
+
+            detailContentColumns.push({
+                key: "__20180216", width: "40px"
+            });
+            detailContentColumns.push({
+                key: "__20180217", width: "40px"
+            });
+            detailContentColumns.push({
+                key: "__20180218", width: "40px"
+            });
+
+            detailContentDeco.push(new kaf018.share.model.CellColor("__20180216", "1", "bg-schedule-sunday color-schedule-sunday"));
+            detailContentDeco.push(new kaf018.share.model.CellColor("__20180217", "2", "bg-schedule-specific-date"));
+            detailContentDeco.push(new kaf018.share.model.CellColor("__20180216", "3", "bg-schedule-sunday color-schedule-sunday"));
+            //detailContentDs.push({ wkpId: "1", wkpName: "123", __20180216: 1, __20180217: 2, __20180218: 3 });
+            //detailContentDs.push({ wkpId: "2", wkpName: "123", __20180216: 1, __20180217: 2, __20180218: 3 });
+            //detailContentDs.push({ wkpId: "3", wkpName: "123", __20180216: 1, __20180217: 2, __20180218: 3 });
+            console.log(detailContentColumns, detailContentDs, detailContentDeco);
             //create Detail Content
             let detailContent = {
-                columns: detailColumns,
+                columns: detailContentColumns,
                 dataSource: detailContentDs,
-                primaryKey: "empId",
+                primaryKey: "index",
                 features: [{
                     name: "BodyCellStyle",
                     decorator: detailContentDeco
@@ -259,22 +283,23 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, undefined, "bg-schedule-specific-date "));
+                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-specific-date "));
                         //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, undefined, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                         //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, undefined, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-saturday color-schedule-saturday"));
                         //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-saturday color-schedule-saturday"));
                     } else if (date.weekDay === '日') {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, undefined, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                         //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-sunday color-schedule-sunday"));
                     } else {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, undefined, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-weekdays color-weekdays"));
                         //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-weekdays color-weekdays"));
                     }
                 });
+
                 self.listColorOfHeader(detailHeaderDeco);
                 dfd.resolve();
             });
@@ -329,6 +354,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 this.isSunday = false;
         }
 
+    }
     class ExHeader {
         constructor(arrDay: Time[]) {
             for (let i = 0; i < arrDay.length; i++) {

@@ -53,13 +53,17 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 self.startDate = params.startDate;
                 self.endDate = params.endDate;
                 self.isConfirmData = params.isConfirmData;
-                let listWorkplaceId = params.listWorkplaceId;
+                let listWorkplace = params.listWorkplace;
                 self.listEmpCd = params.listEmployeeCode;
-                let listWorkplace = [];
-                for (let i = 0; i < listWorkplaceId.length; i++) {
-                    listWorkplace.push({ wkpId: listWorkplaceId[i], wkpName: "workplace " + i });
-                }
-
+                let listWorkplaceId = [];
+                _.each(listWorkplace, function(item){
+                    listWorkplaceId.push(item.code)
+                })
+                //for (let i = 0; i < listWorkplace.length; i++) {
+                   // listWorkplace.push({ wkpId: listWorkplaceId[i], wkpName: "workplace " + i });
+                //}
+                
+                
                 let obj = {
                     startDate: self.startDate,
                     endDate: self.endDate,
@@ -70,12 +74,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
                 service.getUseSetting().done(function(setting) {
                     self.useSetting = setting;
-                    console.log(self.useSetting);
                     service.getStatusActivity(obj).done(function(data: any) {
                         _.each(data, function(item) {
-                            let wkp = _.find(listWorkplace, { wkpId: item.wkpId });
-                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, wkp.wkpName, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
-                            self.listWkp.push({wkpId: item.wkpId, wkpName: wkp.wkpName});
+                            let wkp = _.find(listWorkplace, { code: item.wkpId });
+                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, wkp.name, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                            self.listWkp.push({wkpId: item.wkpId, wkpName: wkp.name});
                         })
                         dfd.resolve();
                     }).always(function() {
