@@ -133,8 +133,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.selection().selectionCD('');
                             self.selection().selectionName('');
                             self.selection().memoSelection('');
+                            self.focusToInput();
                         } else {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
+                            self.focusToInput();
                         }
                     });
 
@@ -197,7 +199,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             //itemList.forEach(x => self.listSelection.push(x));
 
                             self.selection().selectionID(self.listSelection()[0].selectionID);
-                            this.focusToInput();
+                            self.focusToInput();
                         } else {
                             //self.enableSelName(true);
 
@@ -218,6 +220,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.enableSelName(false);
                         }
                     }
+                    self.focusToInput();
                 } else {
                     self.listSelection.removeAll();
                     self.registerData();
@@ -241,7 +244,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     _.defer(() => {
                         selection.codeType(selectLists.codeType);
                     });
-
+                    self.focusToInput();
                     // $("#name").focus();
                 } else {
                     self.registerData();
@@ -252,11 +255,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 if (x == undefined && self.enableSelName() == true) {
                     self.selectionCd(true);
                     //$("#name").focus();
+                    self.focusToInput();
                 } else {
                     self.selectionCd(false);
                     //$("#name").focus();
+                    self.focusToInput();
                 }
                 //$("#name").focus();
+                self.focusToInput();
+                
             });
 
         }
@@ -345,7 +352,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.revDisSel02(false);
             self.revDisSel03(false);
             self.revDisSel04(false);
-            this.focusToInput();
+            self.focusToInput();
 
         }
 
@@ -519,7 +526,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             } else {
                 alertError({ messageId: "Msg_521" });
                 self.registerDataSelectioItem();
-                this.focusToInput();
+                self.focusToInput();
             }
         }
 
@@ -555,10 +562,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
-                    this.focusToInput();
+                    self.focusToInput();
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
-                    this.focusToInput();
+                    self.focusToInput();
                     return;
                 })
             } else {
