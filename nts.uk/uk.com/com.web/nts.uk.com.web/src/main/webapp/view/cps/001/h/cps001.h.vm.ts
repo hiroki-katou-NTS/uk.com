@@ -21,7 +21,7 @@ module cps001.h.vm {
         resvLeaGrantRemNum: KnockoutObservable<ResvLeaGrantRemNum> = ko.observable(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
         enableRemoveBtn: KnockoutObservable<boolean> = ko.observable(true);
         isCreate: KnockoutObservable<boolean> = ko.observable(false);
-        ckbAll: KnockoutObservable<boolean> = ko.observable(true);
+        ckbAll: KnockoutObservable<boolean> = ko.observable(false);
         itemDefs: any = [];
 
         nameGrantDate: KnockoutObservable<string> = ko.observable('');
@@ -58,11 +58,11 @@ module cps001.h.vm {
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
                 { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_121"), key: 'grantDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_130"), key: 'useDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
+                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
             ]);
         }
         load(): JQueryPromise<any> {
