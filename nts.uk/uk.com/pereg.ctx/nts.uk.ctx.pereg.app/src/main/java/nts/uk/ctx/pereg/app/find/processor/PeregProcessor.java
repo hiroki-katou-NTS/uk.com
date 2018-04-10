@@ -389,10 +389,12 @@ public class PeregProcessor {
 			String sDateId = "";	
 			String eDateId = "";	
 			if(!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
-				DateRangeItem dateRangeItem = perInfoCtgRepositoty
+				Optional<DateRangeItem> dateRangeItem = perInfoCtgRepositoty
 						.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-				eDateId = dateRangeItem.getEndDateItemId();
-				sDateId = dateRangeItem.getStartDateItemId();
+				if (dateRangeItem.isPresent()) {
+					eDateId = dateRangeItem.get().getEndDateItemId();
+					sDateId = dateRangeItem.get().getStartDateItemId();
+				}
 			}
 			
 			Object sValue = null;
