@@ -57,7 +57,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 		//1日半日出勤・1日休日系の判定
 		WorkStyle checkworkDay = basicService.checkWorkDay(workTypeCode);
 		if(checkworkDay == WorkStyle.ONE_DAY_REST) {
-			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(employeeId, dateData, startTime, endTime, 1));
+			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(employeeId, dateData, startTime, endTime, 1, true, true));
 		}
 	}	
 }
