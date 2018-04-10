@@ -25,12 +25,14 @@ import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -45,7 +47,6 @@ import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
@@ -142,7 +143,7 @@ public class ComboBoxRetrieveFactory {
 		// 時給者区分
 		aMap.put("E00010", HourlyPaymentAtr.class);
 		// するしない区分
-		aMap.put("E00011", NotUseAtr.class);
+		aMap.put("E00011", ManageAtr.class);
 		// 特別休暇適用設定
 		aMap.put("E00012", SpecialLeaveAppSetting.class);
 		// 60H超過時の精算方法

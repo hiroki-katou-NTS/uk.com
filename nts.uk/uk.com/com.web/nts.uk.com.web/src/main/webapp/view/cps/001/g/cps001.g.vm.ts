@@ -62,7 +62,6 @@ module nts.uk.com.view.cps001.g.vm {
                         }
                          $('#idGrantDate').focus();
                     });
-                    $('#idGrantDate').focus();
                     clearError();
                 }
             });
@@ -82,7 +81,6 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.create();                    
                 }
                  _self.loadItemDef(); 
-                $('#idGrantDate').focus(); 
             });
 
 
@@ -119,7 +117,6 @@ module nts.uk.com.view.cps001.g.vm {
                     // Set to cr eate mode
                     _self.createMode(true);
                 }
-                $('#idGrantDate').focus();
                 
                 if(_self.init){
                     _self.getItemDef();
@@ -231,11 +228,11 @@ module nts.uk.com.view.cps001.g.vm {
                 { headerText: getText('CPS001_119'), type: 'date', key: 'deadline', width: 100 },
                 { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
                 { headerText: getText('CPS001_128'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
-                { headerText: getText('CPS001_121'), key: 'grantMinutes', formatter: formatTime, width: 80, hidden: self.grantMinutesH()},
-                { headerText: getText('CPS001_122'), type: 'string', formatter: formatDate, key: 'usedDays', width: 60 },
-                { headerText: getText('CPS001_123'), key: 'usedMinutes', formatter: formatTime, width: 80, hidden: self.usedMinutesH()},
-                { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 60 },
-                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 80, hidden: self.remainingMinutesH()}
+                { headerText: getText('CPS001_121'), key: 'grantMinutes', formatter: formatTime, width: 70, hidden: self.grantMinutesH()},
+                { headerText: getText('CPS001_122'), type: 'string', formatter: formatDate, key: 'usedDays', width: 80 },
+                { headerText: getText('CPS001_123'), key: 'usedMinutes', formatter: formatTime, width: 70, hidden: self.usedMinutesH()},
+                { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 80 },
+                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 70, hidden: self.remainingMinutesH()}
             ]);
                     let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:10}"></table>';
                     $("#tbl").html(table);
@@ -288,9 +285,7 @@ module nts.uk.com.view.cps001.g.vm {
                 }).fail((res) => {
                     if (res.messageId == 'Msg_1023'){
                         $('#idGrantDate').ntsError('set', { messageId: res.messageId });
-                    } else {
-                        error(messageId: res.messageId);
-                    }
+                    } 
                     unblock();
                 });
             } else {
@@ -302,9 +297,7 @@ module nts.uk.com.view.cps001.g.vm {
                 }).fail((res) => {
                     if (res.messageId == 'Msg_1023'){
                         $('#idGrantDate').ntsError('set', { messageId: res.messageId });
-                    } else {
-                        error(messageId: res.messageId);
-                    }
+                    } 
                     unblock();
                 });
             }

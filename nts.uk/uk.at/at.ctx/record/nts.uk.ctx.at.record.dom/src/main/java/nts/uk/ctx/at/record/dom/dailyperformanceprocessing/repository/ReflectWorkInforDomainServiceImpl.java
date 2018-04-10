@@ -52,8 +52,6 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
@@ -68,9 +66,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOu
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectStampDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.RegisterDailyPerformanceInfoService;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
@@ -112,18 +107,19 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -553,7 +549,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			workInfoOfDailyPerformanceUpdate.setYmd(day);
 			workInfoOfDailyPerformanceUpdate.setDayOfWeek(EnumAdaptor.valueOf((day.dayOfWeek() - 1), DayOfWeek.class));
 
-			if (workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE) {
+			if (workingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {
 
 				// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
 				Optional<BasicScheduleSidDto> basicScheduleHasData = this.basicScheduleAdapter
