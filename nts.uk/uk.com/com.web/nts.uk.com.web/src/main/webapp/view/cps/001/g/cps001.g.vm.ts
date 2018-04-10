@@ -68,19 +68,17 @@ module nts.uk.com.view.cps001.g.vm {
 
             // Subscribe checkbox
             _self.checked.subscribe(value => {
-                
                _self.changeFollowExpSta(value);
                 
                 if (_self.listAnnualLeaveGrantRemainData().length) {
                      _self.createMode(false);
                     // Set focus
                     _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
-                    _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]));
                     // Set to update mode
                 } else {
                     _self.create();                    
                 }
-                 _self.loadItemDef(); 
+                
                  $('#idGrantDate').focus();
             });
 
@@ -148,16 +146,13 @@ module nts.uk.com.view.cps001.g.vm {
         loadItemDef(){
             let _self = this;
              if(_self.itemDefs.length > 0){
-                _self.setItemDefValue(_self.itemDefs).done(() => {
-                 });
+                _self.setItemDefValue(_self.itemDefs);
              } 
         }
          getItemDef(){
             let self = this;
             if(self.itemDefs.length > 0){
-                self.setItemDefValue(self.itemDefs).done(() => {
-                        self.setGridList();
-                    });
+                self.setItemDefValue(self.itemDefs);
             }else{
                 service.getItemDef().done((data) => {
                     self.itemDefs = data;
@@ -240,14 +235,6 @@ module nts.uk.com.view.cps001.g.vm {
                     let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:10}"></table>';
                     $("#tbl").html(table);
                     ko.applyBindings(self, $("#tbl")[0]);
-        }
-
-        /**
-         * Start create mode
-         */
-        public startCreateMode(): void {
-            let _self = this;
-            _self.createMode(true);
         }
 
         public create(): void {
