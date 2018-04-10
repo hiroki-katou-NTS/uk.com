@@ -466,7 +466,9 @@ module cmm045.a.viewmodel {
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
 //            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
+            let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
+            let appContent1111: string = getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
@@ -599,7 +601,9 @@ module cmm045.a.viewmodel {
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
+            let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
@@ -622,7 +626,9 @@ module cmm045.a.viewmodel {
             let self = this;
             let appPre = '';
             if(appPreDB != null){
-                appPre = getText('CMM045_268') + ' ' + appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
+                let time1 = appPreDB.workClockFrom1  == '' ? '' : appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1;
+                let time2 = appPreDB.workClockFrom2  == '' ? '' : appPreDB.workClockFrom2 + getText('CMM045_100') + appPreDB.workClockTo2;
+                appPre = getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
             }
             let appResContent = '';
             //thuc te
