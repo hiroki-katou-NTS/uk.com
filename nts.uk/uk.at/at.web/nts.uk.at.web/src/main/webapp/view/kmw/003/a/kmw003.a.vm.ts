@@ -714,21 +714,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 });
             }
         }
-
-        
-        getDataShare(data: any) {
-            let self = this;
-            let param = {
-                dateRange: data.dateRangeParam ? {
-                    startDate: moment(data.dateRangeParam.startDate).utc().toISOString(),
-                    endDate: moment(data.dateRangeParam.endDate).utc().toISOString()
-                } : null,
-                displayFormat: 0,
-                initScreen: 0,
-                lstEmployee: [],
-                formatCodes: self.formatCodes()
-            };
-        }
         /**********************************
          * Button Event 
          **********************************/   
@@ -774,6 +759,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_983" }).ifYes(() => {
                 //画面モードを「ロック解除モード」に変更する
                 self.initMode(1);
+                self.showButton = ko.observable(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(),self.dataAll().formatPerformance.settingUnitType ));
                 //保持しているパラメータ「ロック状態一覧」のすべてのロック状態をアンロックに変更する
                 //TODO Loop all param and change lock status to Unlock
                 //ロック状態を画面に反映する
@@ -789,6 +775,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             // 画面モードを「修正モード」に変更する
             self.initMode(0);
+            self.showButton = ko.observable(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(),self.dataAll().formatPerformance.settingUnitType ));
             //アルゴリズム「ロック状態を表示する」を実行する
             //Restore init lock status 
             //確認メッセージ「#Msg_984」を表示する
@@ -940,16 +927,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             if (check == null) return false;
             else return check.availability;
         };
-        
-        public changeLockStatus(){
-            let self = this;
-            if(self.prevInitMode == 0){ //修正モード                
-                self.available_A1_8(self.checkAvailable(self.prevData, 12));
-            }else if(self.prevInitMode == 1){ //ロック解除モード 
-                this.available_A1_9(self.checkAvailable(self.prevData, 12));
-                this.available_A1_11(self.checkAvailable(self.prevData, 12)); 
-            }         
-        }
     }
     class ItemModel {
         code: string;

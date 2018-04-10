@@ -75,6 +75,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private ClosureService closureService;
 	@Inject 
 	private MonthlyPerformanceDisplay monthlyDisplay;
+	/**
+	 * 実績の時系列をチェックする
+	 */
 	@Inject 
 	private MonthlyPerformanceCheck monthlyCheck;
 	@Inject
@@ -120,10 +123,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}		
 		//3. アルゴリズム「ログイン社員の締めを取得する」を実行する(Lấy thông tin close của thằng login
 		//基準日：システム日付
-		Integer closureId = getClosureId(companyId, employeeId, GeneralDate.today());
+		Integer closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
 		
 		//4.アルゴリズム「処理年月の取得」を実行する 
-		Optional<PresentClosingPeriodExport> presentClosingPeriodExport = this.shClosurePub.find(companyId, closureId);
+		Optional<PresentClosingPeriodExport> presentClosingPeriodExport = shClosurePub.find(companyId, closureId);
 		
 		//アルゴリズム「締め情報の表示」を実行する
 		Integer yearMonth = 0;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,7 +13,17 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
+import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.AcquireActualStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.EmploymentFixedStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationOutput;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
@@ -22,13 +33,17 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPBusinessTypeControl;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyPerformanceDisplay {
@@ -42,8 +57,18 @@ public class MonthlyPerformanceDisplay {
 	private DailyPerformanceScreenRepo repo;
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
+	
+	@Inject
+	private EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
+	@Inject 
+	private MonthlyActualSituationStatus monthlyActualStatus;
 	//@Inject
 	//private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
+	/**
+	 * 実績の時系列をチェックする
+	 */
+	@Inject 
+	private MonthlyPerformanceCheck monthlyCheck;
 	private static final String KMW003_SELECT_FORMATCODE = "KMW003_SELECT_FORMATCODE";
 	/**
 	 * 表示フォーマットの取得
@@ -190,5 +215,63 @@ public class MonthlyPerformanceDisplay {
 		dispItem.setLstFormat(lstFormat);
 		dispItem.setLstSheet(lstSheet);
 		return dispItem;
+	}
+	/**
+	 * ロック状態をチェックする
+	 * @param empIds 社員一覧：List＜社員ID＞
+	 * @param processDateYM 処理年月：年月
+	 * @param closureId 締めID：締めID
+	 * @param dateRange 締め期間：期間
+	 * 
+	 * ロック状態一覧：List＜月の実績のロック状態＞
+	 */
+	public List<MonthlyPerformaceLockStatus> checkLockStatus(String cid, List<String> empIds, Integer processDateYM, Integer closureId, DatePeriod closureTime, int intMode){
+		List<MonthlyPerformaceLockStatus> monthlyLockStatusLst = new ArrayList<MonthlyPerformaceLockStatus>();
+		//ロック解除モード　の場合
+		if (intMode == 1) {
+			return monthlyLockStatusLst;
+		}
+		//TODO 社員ID（List）と基準日から所属職場IDを取得
+		//TODO follow Daily process.
+		List<AffCompanyHistImport> affCompany = employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(empIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+		//「List＜所属職場履歴項目＞」の件数ループしてください 
+		MonthlyPerformaceLockStatus monthlyLockStatus = null;
+		for (AffCompanyHistImport affCompanyHistImport : affCompany) {
+			//TODO workplaceId, employeeId in parameter
+			//月の実績の状況を取得する
+			AcquireActualStatus param = new AcquireActualStatus(cid, affCompanyHistImport.getEmployeeId(), processDateYM, closureId, 
+					closureTime.end(), closureTime, "");
+			MonthlyActualSituationOutput monthlymonthlyActualStatusOutput = monthlyActualStatus.getMonthlyActualSituationStatus(param);
+			//Output「月の実績の状況」を元に「ロック状態一覧」をセットする
+			monthlyLockStatus = new MonthlyPerformaceLockStatus(monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),
+					LockStatus.LOCK, 
+					//職場の就業確定状態
+					monthlymonthlyActualStatusOutput.getEmploymentFixedStatus().equals(EmploymentFixedStatus.CONFIRM) ? LockStatus.LOCK : LockStatus.UNLOCK,
+					//月の承認状況
+					monthlymonthlyActualStatusOutput.getApprovalStatus().equals(ApprovalStatus.APPROVAL) ? LockStatus.LOCK : LockStatus.UNLOCK, 
+					//月別実績のロック状態
+					monthlymonthlyActualStatusOutput.getMonthlyLockStatus(), 
+					//本人確認が完了している	
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isIdentityVerificationCompleted() ? LockStatus.LOCK : LockStatus.UNLOCK,
+					//日の実績が存在する						
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist() ? LockStatus.LOCK : LockStatus.UNLOCK, 
+					LockStatus.LOCK);
+		}
+		
+		return monthlyLockStatusLst;
+	}
+	/**
+	 * 過去実績の修正ロック
+	 * @param processDateYM
+	 * @param closureId
+	 * @param actualTime
+	 * @return ロック状態：ロック or アンロック
+	 */
+	private LockStatus editLockOfPastResult(Integer processDateYM, Integer closureId, ActualTime actualTime){
+		ActualTimeState actualTimeState = monthlyCheck.checkActualTime(processDateYM, closureId, actualTime);
+		if (actualTimeState.equals(ActualTimeState.Past)) {
+			return LockStatus.LOCK;
+		}
+		return LockStatus.UNLOCK;
 	}
 }
