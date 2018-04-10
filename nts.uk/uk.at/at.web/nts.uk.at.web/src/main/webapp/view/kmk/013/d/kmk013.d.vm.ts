@@ -148,7 +148,10 @@ module nts.uk.at.view.kmk013.d {
                         let insuffData = {};
                         insuffData.attendanceTime = self.time();
                         service.saveRefresh(insuffData).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                // Focus on D3_4 by default
+                                $('#d3_4').focus();
+                            });
                         });
                     });
                 }
