@@ -9,13 +9,16 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
     export class ScreenModel {
         listWkpStatusConfirm: Array<model.ApprovalStatusActivity>;
-        useSetting: UseSetting;
+        useSetting: model.UseSetting;
         closureId: string;
         closureName: string;
         processingYm: string;
-        startDate: string;
-        endDate: string;
+        startDateFormat: string;
+        endDateFormat: string;
+        startDate: Date;
+        endDate: Date;
         isConfirmData: boolean
+        listWkp: any;
         listWorkplaceId: Array<string>;
         listEmpCd: Array<string>;
 
@@ -27,6 +30,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 186 });
             self.listWkpStatusConfirm = [];
+            self.listWkp = [];
             self.person = model.TransmissionAttr.PERSON;
             self.daily = model.TransmissionAttr.DAILY;
             self.monthly = model.TransmissionAttr.MONTHLY;
@@ -44,17 +48,23 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
-                self.startDate = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
-                self.endDate = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
+                self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+                self.startDate = params.startDate;
+                self.endDate = params.endDate;
                 self.isConfirmData = params.isConfirmData;
-                self.listWorkplaceId = params.listWorkplaceId;
+                let listWorkplaceId = params.listWorkplaceId;
                 self.listEmpCd = params.listEmployeeCode;
+                let listWorkplace = [];
+                for (let i = 0; i < listWorkplaceId.length; i++) {
+                    listWorkplace.push({ wkpId: listWorkplaceId[i], wkpName: "workplace " + i });
+                }
 
                 let obj = {
                     startDate: self.startDate,
                     endDate: self.endDate,
                     isConfirmData: self.isConfirmData,
-                    listWorkplaceId: self.listWorkplaceId,
+                    listWorkplaceId: listWorkplaceId,
                     listEmpCd: self.listEmpCd
                 };
 
@@ -63,7 +73,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     console.log(self.useSetting);
                     service.getStatusActivity(obj).done(function(data: any) {
                         _.each(data, function(item) {
-                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, item.wkpId, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                            let wkp = _.find(listWorkplace, { wkpId: item.wkpId });
+                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, wkp.wkpName, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                            self.listWkp.push({wkpId: item.wkpId, wkpName: wkp.wkpName});
                         })
                         dfd.resolve();
                     }).always(function() {
@@ -88,7 +100,19 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             })
             //アルゴリズム「承認状況未確認メール送信」を実行する
             service.checkSendUnconfirmedMail(listWkp).done(function() {
-                confirm({ messageId: "Msg_797" }).ifYes(() => {
+                let messageId = "";
+                switch (value) {
+                    case model.TransmissionAttr.PERSON:
+                        messageId = "Msg_796";
+                        break;
+                    case model.TransmissionAttr.DAILY:
+                        messageId = "Msg_797";
+                        break;
+                    case model.TransmissionAttr.MONTHLY:
+                        messageId = "Msg_798";
+                        break;
+                }
+                confirm({ messageId: messageId }).ifYes(() => {
                     block.invisible();
                     // アルゴリズム「承認状況未確認メール送信実行」を実行する
                     let obj = {
@@ -121,6 +145,22 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         private getRecord(value?: number) {
             return value ? value + "件" : "";
         }
+
+        gotoF(index) {
+            var self = this;
+            
+            let params = {
+                closureId: self.closureId,
+                closureName: self.closureName,
+                processingYm: self.processingYm,
+                startDate: self.startDate,
+                endDate: self.endDate,
+                listWkp: self.listWkp,
+                selectedWplIndex: index(),
+                listEmployeeCode: self.listEmpCd,
+            };
+            nts.uk.request.jump('/view/kaf/018/f/index.xhtml', params);
+        }
     }
 
     export module model {
@@ -139,12 +179,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
                 this.code = code;
                 this.name = name;
-                this.monthConfirm = monthConfirm ? monthConfirm : 1;
-                this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : 1;
-                this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : 1;
-                this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : 1;
-                this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : 1;
-                this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : 1;
+                this.monthConfirm = monthConfirm ? monthConfirm : null;
+                this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
+                this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : null;
+                this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
+                this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
+                this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
                 if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
                     //this.enable = false;
                     this.enable = true;
@@ -154,7 +194,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     this.enable = true;
                     this.check = ko.observable(this.enable);
                 }
-
             }
         }
 

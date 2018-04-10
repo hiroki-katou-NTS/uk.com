@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf018.e {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getWorkplaceExperienceStartUp: "at/record/application/realitystatus/getStatusActivity",
+            getStatusActivity: "at/record/application/realitystatus/getStatusActivity",
             checkSendUnconfirmedMail: "at/record/application/realitystatus/checkSendUnconfirmedMail",
             exeSendUnconfirmedMail: "at/record/application/realitystatus/exeSendUnconfirmedMail",
             getUseSetting: "at/record/application/realitystatus/getUseSetting"
@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf018.e {
          * アルゴリズム「承認状況職場実績起動」を実行する
          */
         export function getStatusActivity(obj: any): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.getWorkplaceExperienceStartUp, obj);
+            return nts.uk.request.ajax("at", paths.getStatusActivity, obj);
         }
 
         /**

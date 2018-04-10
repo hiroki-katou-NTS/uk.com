@@ -137,7 +137,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 endDate: self.endDate(),
                 closureName: self.closureName(),
                 listWorkplaceId: self.multiSelectedWorkplaceId(),
-                isConfirmData: self.isDailyComfirm,
+                isConfirmData: self.isDailyComfirm(),
                 listEmployeeCode: self.listEmployeeCode(),
             };
             if (self.selectedValue() == 0) {

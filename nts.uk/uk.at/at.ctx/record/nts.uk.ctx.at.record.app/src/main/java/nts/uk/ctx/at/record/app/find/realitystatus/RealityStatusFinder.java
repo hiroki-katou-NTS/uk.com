@@ -27,11 +27,9 @@ public class RealityStatusFinder {
 	RealityStatusService realityStatusService;
 
 	public List<StatusWkpActivityOutput> getStatusWkpActivity(RealityStatusActivityParam wkpInfoDto) {
-		GeneralDate startDate = GeneralDate.fromString(wkpInfoDto.getStartDate(), "yyyy/MM/dd");
-		GeneralDate endDate = GeneralDate.fromString(wkpInfoDto.getEndDate(), "yyyy/MM/dd");
 		// アルゴリズム「承認状況職場実績起動」を実行する
-		return realityStatusService.getStatusWkpActivity(wkpInfoDto.getListWorkplaceId(), startDate, endDate,
-				wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData());
+		return realityStatusService.getStatusWkpActivity(wkpInfoDto.getListWorkplaceId(), wkpInfoDto.getStartDate(),
+				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData());
 	}
 
 	public String checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
@@ -41,12 +39,10 @@ public class RealityStatusFinder {
 
 	public SendMailResultDto exeSendUnconfirmMail(ExeSendUnconfirmMailParam dto) {
 		List<WkpIdMailCheckOutput> listWkp = this.getWkpIdMailCheck(dto.getListWkp());
-		GeneralDate startDate = GeneralDate.fromString(dto.getStartDate(), "yyyy/MM/dd");
-		GeneralDate endDate = GeneralDate.fromString(dto.getEndDate(), "yyyy/MM/dd");
 		// アルゴリズム「承認状況未確認メール送信実行」を実行する
 		SendMailResultImport result = realityStatusService.exeSendUnconfirmMail(
-				EnumAdaptor.valueOf(dto.getType(), TransmissionAttr.class), listWkp, startDate, endDate,
-				dto.getListEmpCd());
+				EnumAdaptor.valueOf(dto.getType(), TransmissionAttr.class), listWkp, dto.getStartDate(),
+				dto.getEndDate(), dto.getListEmpCd());
 		return new SendMailResultDto(result.isOK(), result.getListError());
 	}
 
@@ -58,8 +54,8 @@ public class RealityStatusFinder {
 		}
 		return listWkp;
 	}
-	
-	public UseSetingDto getUseSetting(){
+
+	public UseSetingDto getUseSetting() {
 		String cid = AppContexts.user().companyId();
 		UseSetingOutput setting = realityStatusService.getUseSetting(cid);
 		return new UseSetingDto(setting.isMonthlyConfirm(), setting.isUseBossConfirm(), setting.isUsePersonConfirm());
