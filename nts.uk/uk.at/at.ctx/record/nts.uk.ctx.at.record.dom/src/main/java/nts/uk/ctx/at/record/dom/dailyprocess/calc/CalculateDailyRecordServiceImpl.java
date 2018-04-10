@@ -53,10 +53,18 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -127,10 +135,13 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExce
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExcessSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfStatutoryHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfWeekDay;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -142,9 +153,12 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
@@ -212,8 +226,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject 
 	private DivergenceTimeRepository divergenceTimeRepository;
 
-//	@Inject
-//	private OotsukaProcessService ootsukaProcessService;
+	@Inject
+	private OotsukaProcessService ootsukaProcessService;
 	
 	@Inject
 	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
@@ -446,13 +460,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//自動計算設定
 		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();
-			
+		
+		
 		List<WorkTimezoneOtherSubHolTimeSet> subhol = new ArrayList<>();
+		Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet = Optional.empty();
+		Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSet = Optional.empty(); 
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
 			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
-//			val flexWork = holidayAddtionRepository.findByCId(employeeId);
+			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			/*大塚モード*/
 //			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 			
@@ -488,9 +505,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
-//				val regularWork = holidayAddtionRepository.findByCId(companyId);
+				//val regularWork = holidayAddtionRepository.findByCId(companyId);
+				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OverTimeFrameNo(1)),
+														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OverTimeFrameNo(1),new OverTimeFrameNo(1))));
 				/*大塚モード*/
-//				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
+				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork()));
 				
 				
 				/*前日の勤務情報取得  */
@@ -547,7 +566,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				throw new RuntimeException("unknown workTimeMethodSet" + workTime.get().getWorkTimeDivision().getWorkTimeMethodSet());
 			}
 		}
-		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime, workType, subhol, personalInfo ,dailyUnit);
+		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime, workType, subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet);
 	}
 	
 	/**
@@ -599,9 +618,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		AddSettingOfRegularWork regularAddSetting = new AddSettingOfRegularWork(new CompanyId(companyId),holidaycalcMethodSet);
 
 		//個人労働条件
-		PersonalLaborCondition personalLabor = new PersonalLaborCondition(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
+		//PersonalLaborCondition personalLabor = new PersonalLaborCondition(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 		//休暇クラス
-		VacationClass vacation = new VacationClass(new HolidayOfDaily());
+		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
+																	  new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)),
+																	  new YearlyReservedOfDaily(new AttendanceTime(0)),
+																	  new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+																	  new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+																	  new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+																	  new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		
@@ -705,7 +730,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					attendanceLeave,
 					forCalcDivergenceDto,
 					divergenceTimeList,
-					calculateOfTotalConstraintTime, schePreTimeSet));
+					calculateOfTotalConstraintTime, 
+					schePreTimeSet,
+					manageReGetClass.getOotsukaFixedWorkSet(),
+					manageReGetClass.getFixRestTimeSetting()
+					));
 //					schePreTimeSet));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）

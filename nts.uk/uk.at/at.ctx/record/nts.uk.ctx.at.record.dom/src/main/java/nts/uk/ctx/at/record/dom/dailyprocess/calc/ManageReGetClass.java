@@ -9,7 +9,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -43,6 +45,12 @@ public class ManageReGetClass {
 	//法定労働時間(日単位)
 	DailyUnit dailyUnit;
 	
+	//大塚用　固定勤務の休憩時間帯保持
+	Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting;
+	
+	//大塚要ケインで使用する固定計算設定クラス
+	Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet;
+	
 	//計算処理に入ることができるかフラグ
 	//(造語)
 	Boolean calculatable;
@@ -53,7 +61,9 @@ public class ManageReGetClass {
 	private ManageReGetClass(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit, Boolean calculatable) {
+			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
+			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
+			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,Boolean calculatable) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -61,6 +71,7 @@ public class ManageReGetClass {
 		this.workType = workType;
 		this.subHolTransferSetList = subHolTransferSetList;
 		this.personalInfo = personalInfo;
+		this.fixRestTimeSetting = fixRestTimeSeting;
 		this.dailyUnit = dailyUnit;
 		this.calculatable = calculatable;
 	}
@@ -76,6 +87,8 @@ public class ManageReGetClass {
 									null, 
 									null,
 									null,
+									Optional.empty(),
+									Optional.empty(),
 									false);
 				
 	}
@@ -86,7 +99,9 @@ public class ManageReGetClass {
 	public static ManageReGetClass canCalc(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 										  Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 										  List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit) {
+										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
+										  Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
+										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -94,6 +109,8 @@ public class ManageReGetClass {
 									subHolTransferSetList,
 									personalInfo,
 									dailyUnit,
+									fixRestTimeSeting,
+									ootsukaFixedWorkSet,
 									true);
 	
 	}

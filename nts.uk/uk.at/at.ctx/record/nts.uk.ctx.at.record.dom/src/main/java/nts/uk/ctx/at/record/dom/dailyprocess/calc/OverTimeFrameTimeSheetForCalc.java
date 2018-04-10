@@ -328,26 +328,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	}
 	
 	
-	/**
-	 * 計算区分の判定処理
-	 * @return 打刻から計算する
-	 */
-	public static boolean decisionCalcAtr(OverTimeFrameTimeSheetForCalc overTimeWorkFrameTimeSheet,AutoCalOvertimeSetting autoCalculationSet) {
-		if(overTimeWorkFrameTimeSheet.getWithinStatutryAtr().isStatutory()) {
-			if(overTimeWorkFrameTimeSheet.isGoEarly()) {
-				/*早出残業区分を参照*/
-				return autoCalculationSet.getEarlyOtTime().getCalAtr().isCalculateEmbossing();
-			}
-			else {
-				/*普通残業計算区分を参照*/
-				return autoCalculationSet.getNormalOtTime().getCalAtr().isCalculateEmbossing();
-			}
-		}
-		else {
-			/*法定内の場合*/
-			return autoCalculationSet.getLegalOtTime().getCalAtr().isCalculateEmbossing();
-		}
-	}
+
 
     /**
      * 時間帯の分割

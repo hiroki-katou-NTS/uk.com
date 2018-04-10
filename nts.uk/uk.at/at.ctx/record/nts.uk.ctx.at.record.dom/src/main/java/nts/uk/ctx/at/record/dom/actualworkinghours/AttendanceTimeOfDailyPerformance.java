@@ -49,7 +49,9 @@ import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -136,6 +138,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * 日別実績の勤怠時間の計算
 	 * @param oneDay 1日の範囲クラス
 	 * @param schePreTimeSet 
+	 * @param ootsukaFixCalsSet 
 	 * @return 日別実績(Work)クラス
 	 */
 	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay oneDay,IntegrationOfDaily integrationOfDaily,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
@@ -164,7 +167,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList,
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, 
-			   Optional<PredetermineTimeSetForCalc> schePreTimeSet) {
+			   Optional<PredetermineTimeSetForCalc> schePreTimeSet, Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -192,7 +196,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     divergenceTimeList,
 				   																	     calculateOfTotalConstraintTime,
 				   																	     schePreTimeSet,
-				   																	     integrationOfDaily.getBreakTime().size())));
+				   																	     integrationOfDaily.getBreakTime().size(),
+				   																	     ootsukaFixCalsSet,
+				   																	     fixRestTimeSetting)));
 		
 		return integrationOfDaily;
 	}
@@ -201,6 +207,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * 時間の計算結果をまとめて扱う
 	 * @param schePreTimeSet 
 	 * @param breakTimeCount 
+	 * @param ootsukaFixCalsSet 
 	 * @param 1日の範囲クラス
 	 */
 	private static AttendanceTimeOfDailyPerformance collectCalculationResult(CalculationRangeOfOneDay recordOneDay,CalculationRangeOfOneDay scheduleOneDay,
@@ -230,7 +237,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList,
-			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount) {
+			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount,
+			   Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting
+			   ) {
 		
 		/*日別実績の勤務予定時間の計算*/
 		//実績,予定で渡す予定(今は実績のみ渡してる)　****要修正***
@@ -261,7 +271,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					/*実績所定労働時間*/
 					/*勤務予定時間の計算*/,
 					schePreTimeSet,
-					breakTimeCount);
+					breakTimeCount,
+					ootsukaFixCalsSet,
+					fixRestTimeSetting);
 		
 
 		/*滞在時間の計算*/

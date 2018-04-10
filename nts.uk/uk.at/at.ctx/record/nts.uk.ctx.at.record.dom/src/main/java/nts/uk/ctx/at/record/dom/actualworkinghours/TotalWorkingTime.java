@@ -271,8 +271,9 @@ public class TotalWorkingTime {
 		val tempTime = new TemporaryTimeOfDaily(Collections.emptyList());
 
 		//日別実績の休暇
-		val vacationOfDaily = new  HolidayOfDaily();
-				//vacationClass.calcUseRestTime(workType, oneDay.getPredetermineTimeSetForCalc(), oneDay.get, personalCondition, vacationAddTimeSet, outingList, lateTime, leaveEarlyTime);
+		val vacationOfDaily = VacationClass.calcUseRestTime(workType, oneDay.getPredetermineTimeSetForCalc(), workTimeCode, personalCondition, vacationAddTimeSet, outingList, lateTime, leaveEarlyTime);
+				//new  HolidayOfDaily();
+				//
 		
 		//総労働時間
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()

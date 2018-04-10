@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting;
 
+import java.util.Optional;
+
+import lombok.Getter;
+
 /*
  * システム固定のエラーアラーム
  */
+@Getter
 public enum SystemFixedErrorAlarm {
 
 	// 出退勤打刻漏れ
@@ -83,5 +88,16 @@ public enum SystemFixedErrorAlarm {
 
 	private SystemFixedErrorAlarm(String value) {
 		this.value = value;
+	}
+	/**
+	 * エラーコードからEnumを取得 
+	 * @return　Enum
+	 */
+	public static Optional<SystemFixedErrorAlarm> getEnumFromErrorCode(String errorCode) {
+		for(SystemFixedErrorAlarm item: values()) {
+			if(item.getValue().equals(errorCode))
+				return Optional.of(item);
+		}
+		return Optional.empty();
 	}
 }
