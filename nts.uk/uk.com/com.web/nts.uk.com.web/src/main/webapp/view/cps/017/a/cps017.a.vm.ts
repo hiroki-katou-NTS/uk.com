@@ -242,7 +242,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         selection.codeType(selectLists.codeType);
                     });
 
-                   // $("#name").focus();
+                    // $("#name").focus();
                 } else {
                     self.registerData();
                     //$("#code").focus();
@@ -328,7 +328,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionCD('');
             selection.selectionName('');
             selection.memoSelection('');
-            
+
 
             selection.codeType(99);
             _.defer(() => {
@@ -345,7 +345,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.revDisSel02(false);
             self.revDisSel03(false);
             self.revDisSel04(false);
-           this.focusToInput();
+            this.focusToInput();
 
         }
 
@@ -410,7 +410,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     if (itemList.length == 1) {
-                                        nts.uk.ui.dialog.confirm({ messageId: "Msg_530" }).then(() => {;
+                                        nts.uk.ui.dialog.confirm({ messageId: "Msg_530" }).then(() => {
+                                            ;
                                             self.focusToInput();
                                         });
                                     }
@@ -451,16 +452,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let oldIndex = _.findIndex(itemList, x => x.selectionID == currentItem.selectionID());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionID(newItem.selectionID);
-                    this.focusToInput();
+                    self.focusToInput();
                     //$("#name").focus();
                 });
                 //nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                   this.focusToInput();
+                    self.focusToInput();
                 });
                 self.listSelection.valueHasMutated();
-                 $("#name").focus();
-                //this.focusToInput();
+                //$("#name").focus();
+                self.focusToInput();
 
             });
         }
@@ -491,7 +492,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 }
                                 let newItem = itemList[oldIndex];
                                 currentItem.selectionID(newItem.selectionID);
-                               self.focusToInput();
+                                self.focusToInput();
 
                             } else {
                                 //self.registerData();
@@ -505,7 +506,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                             //$("#code").focus();
-                        self.focusToInput();
+                            self.focusToInput();
                         });
 
                     });
@@ -685,13 +686,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
             }
             return allValid;
         }
-        
+
         focusToInput(): void {
             _.defer(() => {
-            if (this.checkCreateaaa())
-                $('#code').focus();
-            else
-                $('#name').focus();
+                if (this.checkCreateaaa())
+                    $('#code').focus();
+                else
+                    $('#name').focus();
             });
         }
     }
