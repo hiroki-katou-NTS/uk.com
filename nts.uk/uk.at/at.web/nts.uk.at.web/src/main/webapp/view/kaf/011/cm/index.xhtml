@@ -1,5 +1,4 @@
 <div id="container">
-
 	<div id="content_left">
 		<!-- 	<div class="div_line" id='number_Info'>
 			<div class="div_line_col_1">
@@ -80,7 +79,7 @@
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
-						<label class="text_line" data-bind="text:appDate"></label>
+						<label tabindex="4"  class="text_line" data-bind="text:appDate"></label>
 					</div>
 
 				</div>
@@ -187,13 +186,13 @@
 						<div class="div_line_col_3">
 							<div data-bind="if:$parent.appComSelectedCode() ==0"
 								style="display: inline-block;">
-								<button data-bind="click:removeAbs" class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
-								<button data-bind="click:cancelAbs" tabindex="1">#{i18n.getText('KAF011_25')}</button>
+								<button tabindex="5" data-bind="click:$parent.removeAbs" class="danger" >#{i18n.getText('KAF011_24')}</button>
+								<button tabindex="5" data-bind="click:$parent.cancelAbs" >#{i18n.getText('KAF011_25')}</button>
 							</div>
-							<button style="display: inline-block;" tabindex="1">#{i18n.getText('KAF011_26')}</button>
+							<button tabindex="5" style="display: inline-block;" >#{i18n.getText('KAF011_26')}</button>
 							<div style="display: inline-block;"
 								data-bind="if:wkType().workAtr() == 0">
-								<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
+								<button tabindex="5" data-bind="click:openCDialog" >#{i18n.getText('KAF011_27')}</button>
 								<span class="caret-right caret-inline"></span>
 							</div>
 						</div>
