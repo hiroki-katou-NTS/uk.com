@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 
 @Stateless
@@ -53,20 +54,15 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			workUpdate.updateWorkTimeType(reflectInfo, false);
 					
 			//予定開始時刻の反映
-			TimeReflectParameter startTime = new TimeReflectParameter(holidayWorkPara.getEmployeeId(), 
+			//予定終了時刻の反映
+			TimeReflectPara timeData = new TimeReflectPara(holidayWorkPara.getEmployeeId(), 
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getStartTime(), 
-					1, 
-					true);
-			scheWork.updateStartTimeOfReflect(startTime);
-			//予定終了時刻の反映
-			TimeReflectParameter endTime = new TimeReflectParameter(holidayWorkPara.getEmployeeId(), 
-					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getEndTime(), 
 					1, 
-					false);
-			scheWork.updateStartTimeOfReflect(endTime);
-			
+					true, 
+					true);
+			scheWork.updateScheStartEndTime(timeData);
 			
 			//事前休出時間の反映
 			holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame());
