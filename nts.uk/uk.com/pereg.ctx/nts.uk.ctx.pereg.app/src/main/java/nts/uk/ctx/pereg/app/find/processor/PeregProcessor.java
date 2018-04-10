@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -237,6 +238,17 @@ public class PeregProcessor {
 				if (peregDto != null) {
 					// map data
 					MappingFactory.mapListItemClass(peregDto, classItemList);
+					
+					/*
+					 *	edit with category CS00021 勤務種別
+					 *	change type of category when history item is latest
+					 */
+					if (query.getCategoryCode().equals("CS00021")) {
+						BusinessTypeDto businessTypeDto = (BusinessTypeDto)peregDto.getDomainDto();
+						if (businessTypeDto.isLatestHistory()) {
+							changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
+						}
+					}
 				}
 			} else {
 				switch (perInfoCtg.getCategoryType()) {
@@ -258,8 +270,25 @@ public class PeregProcessor {
 			initDefaultValue.setDefaultValueRadio(classItemList);
 		}
 		
+		/*
+		 *	edit with category CS00021 勤務種別
+		 *	change type of category when create new
+		 *	 
+		 */
+		if (query.getCategoryCode().equals("CS00021") && query.getInfoId() == null) {
+			changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
+		}
 		
 		return classItemList;
+	}
+	
+	private void changeCategoryType(List<LayoutPersonInfoClsDto> classItemList, CategoryType type) {
+		classItemList.forEach( classItem -> {
+			classItem.getItems().forEach( item -> {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setCtgType(type.value);
+			});
+		});
 	}
 	
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem) {
@@ -447,7 +476,7 @@ public class PeregProcessor {
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition itemDefinition;
 
-		Map<Integer, Map<String, List<ComboBoxObject>>> combobox = new HashMap<Integer, Map<String, List<ComboBoxObject>>>();
+		Map<String, Map<Boolean, List<ComboBoxObject>>> combobox = new HashMap<String, Map<Boolean, List<ComboBoxObject>>>();
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(paramObject.getRoleId(), category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));

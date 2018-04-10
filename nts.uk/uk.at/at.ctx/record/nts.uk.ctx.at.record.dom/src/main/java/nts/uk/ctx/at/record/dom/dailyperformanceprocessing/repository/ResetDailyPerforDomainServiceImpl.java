@@ -83,7 +83,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = null;
 			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = null;
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = null;
-			ReflectStampOutput stampOutput = null;
+			ReflectStampOutput stampOutput = new ReflectStampOutput();
 			List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 			ClosureOfDailyPerOutPut closureOfDailyPerOutPut = new ClosureOfDailyPerOutPut();
 			if (executionLog.isPresent()) {
@@ -127,7 +127,6 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						// 休業再設定(reSetting 休業)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getClosedHolidays() == true) {
-							// has error
 							closureOfDailyPerOutPut = this.reflectWorkInforDomainService
 									.reflectHolidayOfDailyPerfor(companyID, employeeID, processingDate,empCalAndSumExecLogID, workInfoOfDailyPerformanceUpdate);
 							if (closureOfDailyPerOutPut.getErrMesInfos().isEmpty()) {
@@ -154,11 +153,12 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									workInfoOfDailyPerformanceUpdate,
 									null, empCalAndSumExecLogID, reCreateAttr);
 						}
+						stampOutput.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);  
 					}
 				}
 			}
 
-			if (errMesInfos.isEmpty() && breakTimeOfDailyPerformance != null && closureOfDailyPerOutPut.getErrMesInfos().isEmpty()) {
+			if (errMesInfos.isEmpty()) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
 						processingDate, stampOutput, affiliationInforOfDailyPerfor.get(),
 						workInfoOfDailyPerformanceUpdate, specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance,
