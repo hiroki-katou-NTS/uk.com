@@ -205,7 +205,7 @@ module nts.uk.at.view.kal001.a.model {
         public open_Dialog(): any {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
-            let listPeriodByCategory = self.periodByCategory().filter(x => x.category==2);
+            let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
           
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
