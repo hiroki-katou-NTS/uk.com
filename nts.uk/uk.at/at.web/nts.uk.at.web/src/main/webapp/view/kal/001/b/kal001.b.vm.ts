@@ -43,7 +43,7 @@ module nts.uk.at.view.kal001.b {
                         primaryKey: 'guid',
                         columns: self.columns(), 
                         features: [
-                            { name: 'Paging', type: 'local', pageSize: 15 },
+                            { name: 'Paging', type: 'local', pageSize: 20 },
                             {
                               name: "Tooltips",
                               columnSettings: [ 
