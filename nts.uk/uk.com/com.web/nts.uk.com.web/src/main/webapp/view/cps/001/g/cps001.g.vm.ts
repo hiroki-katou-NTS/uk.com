@@ -267,9 +267,9 @@ module nts.uk.com.view.cps001.g.vm {
             block();
             if (_self.createMode()) {
                 
-                service.add(command).done((id: string) => {
+                service.add(command).done((data: Array<string>) => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        _self.startPage();
+                        _self.startPage(data[0]);
                     });
                     unblock();
                 }).fail((res) => {
