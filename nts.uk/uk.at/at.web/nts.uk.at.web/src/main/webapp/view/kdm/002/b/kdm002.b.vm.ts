@@ -10,17 +10,17 @@ module nts.uk.at.view.kdm002.b {
             
             // params
             parrams = nts.uk.ui.windows.getShared('KDM002Params');
-            empployeeList: any = parrams.empployeeList;
-            periodDate: any =  parrams.periodDate;
-            date: any = parrams.date;
-            maxday: any = parrams.maxDaysCumulationByEmp;   
+            pempployeeList: any;
+            pperiodDate: any;
+            pdate: any;
+            pmaxday: any;   
             
             // table result
             timeStart: KnockoutObservable<string> = ko.observable('2018/01/01 13:25:16');
             timeOver: KnockoutObservable<string> = ko.observable('00:03:07.123');
             status: KnockoutObservable<string> = ko.observable('処理中');
             result: KnockoutObservable<string> = ko.observable('2 / 25人');
-            total: KnockoutObservable<number> = ko.observable(empployeeList.length);
+            total: KnockoutObservable<number>;
             pass: KnockoutObservable<number> = ko.observable(0);
             error: KnockoutObservable<number> = ko.observable(0);
             // gridList
@@ -38,7 +38,12 @@ module nts.uk.at.view.kdm002.b {
                     employeeName: '',
                     errorMessage: ''
                 };
+                self.pempployeeList = self.parrams.empployeeList;
+                self.pperiodDate =  self.parrams.periodDate;
+                self.pdate = self.parrams.date;
+                self.pmaxday = self.parrams.maxDaysCumulationByEmp;   
                 
+                self.total = ko.observable(self.pempployeeList.length);
                 self.currentCode = ko.observable(dataDump);
                 self.imErrorLog =  ko.observableArray([]);
                 self.columns = ko.observableArray([
@@ -55,6 +60,7 @@ module nts.uk.at.view.kdm002.b {
                 var self = this;
                 var dfd = $.Deferred();
                 var self = this;
+                self.execution();
                 dfd.resolve();
                 return dfd.promise();
             }
