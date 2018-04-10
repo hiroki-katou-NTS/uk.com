@@ -93,11 +93,19 @@ module nts.uk.com.view.cps001.g.vm {
             let _self = this, 
             sID = __viewContext.user.employeeId;
             block();
+            if(_self.init){
+                _self.getItemDef();
+                _self.init = false;
+             }
+             else {
+                _self.loadItemDef();   
+            }
+            _self.alllist.removeAll();
+            _self.listAnnualLeaveGrantRemainData.removeAll();
             service.getAllList(sID).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
                     _self.createMode(false);
-                    _self.alllist.removeAll();
                     _self.alllist(data);
                     _self.changeFollowExpSta(_self.checked());
                     
@@ -115,16 +123,10 @@ module nts.uk.com.view.cps001.g.vm {
                     }
                 } else {
                     // Set to cr eate mode
-                    _self.createMode(true);
+                    _self.create();
                 }
                 
-                if(_self.init){
-                    _self.getItemDef();
-                    _self.init = false;
-                 }
-                 else {
-                    _self.loadItemDef();   
-                }
+                
                 unblock();
             }).fail((_data) => {
                 unblock();
@@ -133,6 +135,7 @@ module nts.uk.com.view.cps001.g.vm {
         
         changeFollowExpSta(value: boolean){
             let _self = this;
+            
              if (value){
                 _self.listAnnualLeaveGrantRemainData(_self.alllist());
             } else {
