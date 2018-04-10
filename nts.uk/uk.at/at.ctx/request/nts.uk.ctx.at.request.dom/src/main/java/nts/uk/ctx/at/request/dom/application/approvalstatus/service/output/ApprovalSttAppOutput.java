@@ -7,6 +7,8 @@ public class ApprovalSttAppOutput {
 	
 	private String workplaceId;
 	
+	private String workplaceName;
+	
 	private boolean isEnabled;
 	
 	private boolean isChecked;

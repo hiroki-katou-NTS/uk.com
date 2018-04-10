@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf018.a.viewmodel {
     import text = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
+    import service = nts.uk.at.view.kaf018.a.service;
     var lstWkp = [];
     export class ScreenModel {
         targets: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -13,12 +14,12 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         isDailyComfirm: KnockoutObservable<boolean>;
         startDate: KnockoutObservable<Date>;
         endDate: KnockoutObservable<Date>;
-        approvalConfirm: KnockoutObservable<model.ApprovalComfirm> = ko.observable(null);
         processingYm: KnockoutObservable<string> = ko.observable('');
         processYm: KnockoutObservable<number> = ko.observable(0);
         closureName: KnockoutObservable<string>;
         listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
-
+        isEnableDailyComfirm: KnockoutObservable<boolean> = ko.observable(true);
+        
         //Control component
         baseDate: KnockoutObservable<Date>;
         selectType: KnockoutObservable<number> = ko.observable(1);
@@ -37,7 +38,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             self.startDate = ko.observable(new Date());
             self.endDate = ko.observable(new Date());
             self.enable = ko.observable(true);
-            self.checked = ko.observable(true);
+            self.checked = ko.observable(false);
             self.selectTarget = ko.observable(1);
             self.closureName = ko.observable('');
 
@@ -63,7 +64,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             };
             self.isBindingTreeGrid = ko.observable(true);
             //character.save('NewWorkplaceListOption', kaf018WorkplaceListOption);
-
+            //TODO
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                 self.reloadData();
                 $('#tree-grid').focusTreeGridComponent();
@@ -71,7 +72,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             
             service.findAllClosure().done((data: any) => {
                 self.targets(data.closuresDto);
-                let closures = _.find(data.closuresDto, x => { return x.closureId === data.selectedClosureId });
+                let closures = _.find(self.targets(), x => { return x.closureId == data.selectedClosureId });
                 self.startDate(new Date(data.startDate));
                 self.endDate(new Date(data.endDate));
                 self.processYm = data.processingYm;
@@ -98,6 +99,14 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     });
                 });
             });
+            
+            //Confirm checkbox A4_2_1
+            service.getUseSetting().done(function(data: any){
+                if(data.monthlyConfirm || data.useBossConfirm || data.usePersonConfirm){
+                    self.isEnableDailyComfirm(true);
+                }
+                self.isEnableDailyComfirm(false);
+            });
         }
 
 
@@ -105,7 +114,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             var self = this;
             lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
             nts.uk.ui.block.invisible();
-            nts.uk.at.view.kaf018.a.service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
+            service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
                 self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true}; }));
                 self.multiSelectedWorkplaceId.valueHasMutated();
                 nts.uk.ui.block.clear();
@@ -130,54 +139,36 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
         choiceNextScreen() {
             var self = this;
+            let listWorkplace = [];
+            console.log(self.multiSelectedWorkplaceId());
+            _.forEach(self.multiSelectedWorkplaceId(), function(item) {
+                let data = _.find(lstWkp, (wkp) => { return wkp.workplaceId == item });
+                listWorkplace.push({ code: data.workplaceId, name: data.name });
+            })
+            console.log(listWorkplace);
             let params = {
                 closureId: self.selectTarget(),
                 processingYm: self.processingYm(),
                 startDate: self.startDate(),
                 endDate: self.endDate(),
                 closureName: self.closureName(),
-                listWorkplaceId: self.multiSelectedWorkplaceId(),
+                listWorkplace: listWorkplace,
                 isConfirmData: self.isDailyComfirm(),
                 listEmployeeCode: self.listEmployeeCode(),
             };
-            if (self.selectedValue() == 0) {
-                nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
+            if (self.multiSelectedWorkplaceId().length == 0) {
+                $('#tree-grid').ntsError('set', 'Msg_786');
             } else {
-                nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
+                if (self.selectedValue() == 0) {
+                    nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
+                } else {
+                    nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
+                }
             }
         }
     }
 
     export module model {
-        export class ApprovalComfirm {
-            /** The closure id. */
-            closureId: number;
-
-            /** The start date. */
-            startDate: string;
-
-            /** The end date. */
-            endDate: string;
-
-            /** The closure name. */
-            closureName: string;
-
-            /** The closure date. */
-            //処理年月
-            closureDate: number;
-
-            employeeCodes: Array<String>;
-
-            constructor(closureId: number, closureName: string, startDate: string, endDate: string, closureDate: number, employeeCodes: Array<String>) {
-                this.closureId = closureId;
-                this.closureName = closureName;
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.closureDate = closureDate;
-                this.employeeCodes = employeeCodes;
-            }
-        }
-        
         export interface IApplicationApprovalSettingWkp {
             // 会社ID
             companyId: string;

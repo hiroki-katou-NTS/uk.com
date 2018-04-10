@@ -18,7 +18,10 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttCheckExist;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnAppMailTransmisOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.RealityStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.UseSetingImport;
@@ -114,7 +117,6 @@ public class ApprovalStatusFinder {
 		GeneralDate startDate = null;
 		GeneralDate endDate = null;
 		int processingYm = 0;
-		List<ClosureEmployment> listEmployeeCode = new ArrayList<>();
 		//ドメインモデル「就業締め日」を取得する　<shared>
 		List<Closure> closureList = this.repository.findAllUse(companyId);
 		int selectedClosureId = 0;
@@ -204,13 +206,17 @@ public class ApprovalStatusFinder {
 	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData appStatus) {
 		List<ApprovalSttAppOutput> listAppSttApp = new ArrayList<>();
 		ApprovalSttAppOutput approvalSttApp = null;
-		GeneralDate startDate = GeneralDate.fromString(appStatus.getStartDate(), "yyyy/MM/dd");
+		/*GeneralDate startDate = GeneralDate.fromString(appStatus.getStartDate(), "yyyy/MM/dd");
 		GeneralDate endDate = GeneralDate.fromString(appStatus.getEndDate(), "yyyy/MM/dd");
-		for (String wkpId : appStatus.getListWorkplaceId()) {
-			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService.getApprovalStatusEmployee(wkpId, startDate, endDate, appStatus.getListEmpCd());
-			 approvalSttApp = appSttService.getApprovalSttApp(wkpId, listAppStatusEmp);
+		for (WorkplaceInfor wkp : appStatus.getListWorkplaceInfor()) {
+			//String wkpName = this.
+			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService.getApprovalStatusEmployee(wkp.getWkpId(), startDate, endDate, appStatus.getListEmpCd());
+			 approvalSttApp = appSttService.getApprovalSttApp(wkp, listAppStatusEmp);
 			 listAppSttApp.add(approvalSttApp);
-		}
+		}*/
+		listAppSttApp.add(new ApprovalSttAppOutput("01", "経理課", true, false, 1, 12, 3, 4, 0));
+		listAppSttApp.add(new ApprovalSttAppOutput("02", "人事課", true, true, 3, 15, 6, 8, 0));
+		listAppSttApp.add(new ApprovalSttAppOutput("03", "管理部", true, false, 2, 22, 4, 6, 0));
 		return listAppSttApp;
 	}
 	
@@ -218,36 +224,14 @@ public class ApprovalStatusFinder {
 	 * アルゴリズム「承認状況未承認メール送信」を実行する
 	 */
 	public List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp) {
-		List<String> listWorksp = new ArrayList<>();
-		if(this.IsAppSttSenderEmailConfirm()) {
-			//職場一覧のメール送信欄のチェックがONの件数
-			int countOnChecked = 0;
-			for(ApprovalSttAppOutput app: listAppSttApp){
-				if(app.isChecked()) countOnChecked ++;
-				listWorksp.add(app.getWorkplaceId());
-			}
-			if(countOnChecked <= 0) {
-				throw new BusinessException("Msg_794");
-			}
-		} else {
-			
-		}
-		return listWorksp;
+		return appSttService.getAppSttSendingUnapprovedMail(listAppSttApp);
+
 	}
 	
 	/**
-	 * アルゴリズム「承認状況送信者メール確認」を実行する
+	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
 	 */
-	private boolean IsAppSttSenderEmailConfirm() {
-		String sId = AppContexts.user().userId();
-		List<String> listSId = new  ArrayList<>();
-		listSId.add(sId);
-		Optional<EmployeeEmailImport> empEmail =  appSttService.findEmpMailAddr(listSId).stream().findFirst();
-		if(empEmail.isPresent()) {
-			if(Objects.isNull(empEmail.get().getMailAddr()) || empEmail.get().getMailAddr().isEmpty()){
-				throw new BusinessException("Msg_791");
-			}
-		}
-		return true;
+	public void exeSendUnconfirmedMail(UnAppMailTransmisOutput unAppMailTransmis) {
+		appSttService.exeSendUnconfirmedMail(unAppMailTransmis);
 	}
 }

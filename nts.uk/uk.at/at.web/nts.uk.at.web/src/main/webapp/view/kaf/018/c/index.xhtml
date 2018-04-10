@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kaf018.c.main.css" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="kaf018.c.start.js" />
+			<com:scriptfile path="kaf018.c.service.js" />
+			<com:scriptfile path="kaf018.c.vm.js" />
+			<com:scriptfile path="kaf018.c.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- C1_1 -->
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
+				<!-- C1_2 -->
+				<button tabindex="1" data-bind="">#{i18n.getText('KAF018_26')}</button>
+			</div>
+			<div id="contents-area">
+				<table class="tbl-control">
+					<colgroup>
+						<col width="200px" />
+						<col />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- C2_1 -->
+							<button class="auto-height"
+								data-bind="click: preWkp, enable: enablePre">
+								#{i18n.getText('KAF018_27')}<i class="img-icon icon-prev"></i>
+							</button> <!-- C2_2 -->
+							<button class="auto-height"
+								data-bind="click: nextWkp, enable: enableNext">
+								#{i18n.getText('KAF018_28')}<i class="img-icon icon-next"></i>
+							</button>
+						</td>
+						<td>
+							<!-- C2_3 -->
+							<div class="label" data-bind="text: selectedWplName"></div>
+						</td>
+					</tr>
+				</table>
+				<table class="tbl-control">
+					<colgroup>
+						<col width="100px" />
+						<col width="300px" />
+						<col width="500px" />
+						<col width="100px" />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- C3 -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+						</td>
+						<td>
+							<!-- C3_1 -->
+							<div class="limited-label label" style="width: 190px;"
+								data-bind="text: closureName"></div>
+						</td>
+						<td>
+							<!-- C4 --> <!-- C4_1 -->
+							<div class="limited-label label" style="width: 150px;">
+								<span data-bind="text: processingYm"></span>(<span
+									data-bind="text: startDateFormat"></span> ~ <span
+									data-bind="text: endDateFormat"></span>)
+							</div>
+						</td>
+						<td class="align-right">
+							<!-- C10 -->
+							<lable>#{i18n.getText('KAF018_30')}</lable>
+						</td>
+					</tr>
+				</table>
+				<!-- C5 -->
+				<div id="extable"></div>
+				<!-- <table id="fixed-table">
+					<colgroup>
+						<col width="100px" />
+						<col width="80px" />
+						<col width="80px" />
+						<col width="80px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+						<col width="28px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" rowspan="3">#{i18n.getText('KAF018_60')}</th>
+							<th class="ui-widget-header" rowspan="3">#{i18n.getText('KAF018_61')}</th>
+							<th class="ui-widget-header" rowspan="3">#{i18n.getText('KAF018_62')}</th>
+							<th class="ui-widget-header" rowspan="3">#{i18n.getText('KAF018_63')}</th>
+							<th class="ui-widget-header" colspan="31">#{i18n.getText('KAF018_64')}</th>
+						</tr>
+						<tr data-bind="foreach: listDay">
+							<com:ko-if bind="isSaturday">
+								<th
+									class="ui-widget-header bg-schedule-saturday color-schedule-saturday"
+									data-bind="text: day"></th>
+							</com:ko-if>
+							<com:ko-if bind="isSunday">
+								<th
+									class="ui-widget-header bg-schedule-sunday color-schedule-sunday"
+									data-bind="text: day"></th>
+							</com:ko-if>
+							<com:ko-if bind="!isSunday &amp;&amp; !isSaturday">
+								<th class="ui-widget-header" data-bind="text: day"></th>
+							</com:ko-if>
+						</tr>
+						<tr data-bind="foreach: listDay">
+							<com:ko-if bind="isSaturday">
+								<th
+									class="ui-widget-header bg-schedule-saturday color-schedule-saturday"
+									data-bind="text: weekDay"></th>
+							</com:ko-if>
+							<com:ko-if bind="isSunday">
+								<th
+									class="ui-widget-header bg-schedule-sunday color-schedule-sunday"
+									data-bind="text: weekDay"></th>
+							</com:ko-if>
+							<com:ko-if bind="!isSunday &amp;&amp; !isSaturday">
+								<th class="ui-widget-header" data-bind="text: weekDay"></th>
+							</com:ko-if>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: listWkp">
+
+					</tbody>
+				</table> -->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

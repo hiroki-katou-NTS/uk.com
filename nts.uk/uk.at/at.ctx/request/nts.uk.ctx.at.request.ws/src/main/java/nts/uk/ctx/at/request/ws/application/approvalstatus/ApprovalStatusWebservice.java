@@ -15,9 +15,10 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusA
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttCheckExist;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnAppMailTransmisOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
 @Path("at/request/application/approvalstatus")
@@ -88,10 +89,15 @@ public class ApprovalStatusWebservice extends WebService {
 		return finder.getAppSttByWorkpace(param);
 	}
 	
-/*	@POST
-	@Path("getCheckSendMail/")
-	public List<String> getAppSttSendingUnapprovedMail(int empId) {
+	@POST
+	@Path("getCheckSendMail")
+	public List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp) {
 		return this.finder.getAppSttSendingUnapprovedMail(listAppSttApp);
-	}*/
+	}
 	
+	@POST
+	@Path("exeSendUnconfirmedMail")
+	public void exeSendUnconfirmedMail(UnAppMailTransmisOutput unAppMailTransmis) {
+		
+	}
 }

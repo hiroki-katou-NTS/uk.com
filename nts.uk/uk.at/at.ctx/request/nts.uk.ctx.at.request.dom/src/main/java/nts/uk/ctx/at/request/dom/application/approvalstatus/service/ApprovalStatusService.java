@@ -6,8 +6,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnAppMailTransmisOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 
 public interface ApprovalStatusService {
@@ -30,7 +33,7 @@ public interface ApprovalStatusService {
 	 * @param wkpInfoDto
 	 * @return ApprovalSttAppDto
 	 */
-	ApprovalSttAppOutput getApprovalSttApp(String wkpId, List<ApprovalStatusEmployeeOutput> listAppStatusEmp);
+	ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor, List<ApprovalStatusEmployeeOutput> listAppStatusEmp);
 	
 	/**
 	 * 承認状況社員メールアドレス取得
@@ -64,4 +67,29 @@ public interface ApprovalStatusService {
 	 * 承認状況送信者メール確認
 	 */
 	String confirmApprovalStatusMailSender();
+	
+	/**
+	 * アルゴリズム「承認状況未承認メール送信」を実行する
+	 */
+	List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp);
+	
+	/**
+	 * アルゴリズム「承認状況未承認メール送信」を実行する
+	 * @param listAppSttApp
+	 * @return
+	 */
+	/*List<String> getAppSttUnapprovedMailTranmis(List<ApprovalSttCheckExist> listAppSttApp);*/
+
+	/**
+	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
+	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
+	 */
+	EmployeeEmailOutput findEmpMailAddr();
+
+	
+	/**
+	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
+	 * @param unAppMailTransmis
+	 */
+	void exeSendUnconfirmedMail(UnAppMailTransmisOutput unAppMailTransmis);
 }

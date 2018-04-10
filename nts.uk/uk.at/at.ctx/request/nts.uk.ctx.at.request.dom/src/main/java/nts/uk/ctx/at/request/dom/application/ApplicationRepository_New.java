@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 
 public interface ApplicationRepository_New {
 	

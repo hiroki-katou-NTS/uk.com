@@ -73,13 +73,13 @@
 					</thead>
 					<tbody data-bind="foreach: tempData">
 						<tr>
-							<td><a class="hyperlink" href="#" data-bind="text: workSpaceName"></a></td>
-							<td data-bind="text: $parent.getRecord1(totalNotReflected,notReflected)"></td>
-							<td data-bind="text: $parent.getRecord(unapproved)"></td>
-							<td data-bind="text: $parent.getRecord(approved)"></td>
-							<td data-bind="text: $parent.getRecord(denail)"></td>
+							<td><a class="hyperlink" href="#" data-bind="text: workplaceName, click: function(){$parent.gotoC($index)}"></a></td>
+							<td data-bind="text: $parent.getRecord1(numOfApp, numOfUnreflected)"></td>
+							<td data-bind="text: $parent.getRecord(numOfUnapproval)"></td>
+							<td data-bind="text: $parent.getRecord(approvedNumOfCase)"></td>
+							<td data-bind="text: $parent.getRecord(numOfDenials)"></td>
 							
-							<td><div data-bind="ntsCheckBox: { checked: isSendMail, enable:  enable }" /></td>
+							<td><div data-bind="ntsCheckBox: { checked: isChecked, enable: isEnabled }" /></td>
 						</tr>
 					</tbody>
 				</table>
