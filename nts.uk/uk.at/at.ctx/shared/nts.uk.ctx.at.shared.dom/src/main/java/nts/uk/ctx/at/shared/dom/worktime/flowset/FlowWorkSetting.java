@@ -149,5 +149,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 		
 		// Tab 8 -> 16
 		this.commonSetting.correctDefaultData(screenMode);
+		//Dialog H
+		this.restSetting.correctDefaultData(screenMode,this.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime());
 	}
 }

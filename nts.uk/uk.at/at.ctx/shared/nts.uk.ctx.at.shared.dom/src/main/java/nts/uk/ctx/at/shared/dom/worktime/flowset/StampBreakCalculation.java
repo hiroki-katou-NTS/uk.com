@@ -57,4 +57,9 @@ public class StampBreakCalculation extends WorkTimeDomainObject {
 		memento.setUsePrivateGoOutRest(this.usePrivateGoOutRest);
 		memento.setUseAssoGoOutRest(this.useAssoGoOutRest);
 	}
+
+	public void setDefaultValue() {
+		this.useAssoGoOutRest = false;
+		this.usePrivateGoOutRest = false;
+	}
 }

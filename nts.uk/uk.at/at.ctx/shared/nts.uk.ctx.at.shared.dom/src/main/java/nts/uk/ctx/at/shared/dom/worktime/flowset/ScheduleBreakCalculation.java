@@ -53,4 +53,9 @@ public class ScheduleBreakCalculation {
 		memento.setIsReferRestTime(this.isReferRestTime);
 		memento.setIsCalcFromSchedule(this.isCalcFromSchedule);
 	}
+
+	public void setDefaultValue() {
+		this.isReferRestTime = false;
+		this.isCalcFromSchedule = false;
+	}
 }

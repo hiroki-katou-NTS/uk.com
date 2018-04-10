@@ -47,4 +47,8 @@ public class FlowWorkRestSetting extends WorkTimeDomainObject {
 	public void correctData(ScreenMode screenMode, FlowWorkRestSetting restSetting,boolean fixRestTime) {
 		this.flowRestSetting.correctData(screenMode,restSetting.getFlowRestSetting(),fixRestTime);
 	}
+
+	public void correctDefaultData(ScreenMode screenMode,boolean fixRestTime) {
+		this.flowRestSetting.correctDefaultData(screenMode,fixRestTime);
+	}
 }

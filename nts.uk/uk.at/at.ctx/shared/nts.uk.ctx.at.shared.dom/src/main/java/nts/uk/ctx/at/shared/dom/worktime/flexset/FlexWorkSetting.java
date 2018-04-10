@@ -127,7 +127,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 		this.offdayWorkTime.correctData(screenMode, other);
 		
 		this.coreTimeSetting.correctData(screenMode, other.getCoreTimeSetting());
-		
+		//for dialog H
 		this.restSetting.correctData(screenMode, other.getRestSetting(), this.getLstHalfDayWorkTimezone().size() > 0
 				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
 	}
@@ -144,6 +144,10 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 		this.commonSetting.correctDefaultData(screenMode);
 		
 		this.coreTimeSetting.correctDefaultData(screenMode);
+		
+		//for dialog H
+		this.restSetting.correctDefaultData(screenMode,this.getLstHalfDayWorkTimezone().size() > 0
+				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
 	}
 	
 }

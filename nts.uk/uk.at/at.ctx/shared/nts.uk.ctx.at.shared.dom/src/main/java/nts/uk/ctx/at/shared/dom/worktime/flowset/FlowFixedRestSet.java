@@ -126,4 +126,23 @@ public class FlowFixedRestSet extends WorkTimeDomainObject {
 			}
 		}
 	}
+
+	public void correctDefaultData(ScreenMode screenMode,boolean fixRestTime) {
+		if (ScreenMode.DETAIL.equals(screenMode) && fixRestTime) {
+			switch (this.calculateMethod) {
+			case REFER_MASTER:
+				this.calculateFromSchedule.setDefaultValue();
+				this.calculateFromStamp.setDefaultValue();
+				break;
+			case REFER_SCHEDULE:
+				this.calculateFromStamp.setDefaultValue();
+				break;
+			case STAMP_WHITOUT_REFER:
+				this.calculateFromSchedule.setDefaultValue();
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
