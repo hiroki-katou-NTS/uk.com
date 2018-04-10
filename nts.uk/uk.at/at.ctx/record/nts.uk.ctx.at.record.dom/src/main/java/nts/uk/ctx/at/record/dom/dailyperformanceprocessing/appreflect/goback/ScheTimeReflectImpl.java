@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRec
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -63,42 +64,33 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				ApplyTimeAtr.START, 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
-		if(startTimeReflect.isReflectFlg()) {
-			//予定開始時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), 1, true);
-			scheUpdateService.updateStartTimeOfReflect(timeRef);
-		}
 		//(終了時刻)反映する時刻を求める
 		TimeOfDayReflectOutput endTimeReflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getEndTime1(), 
 				ApplyTimeAtr.END, 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
-		if(endTimeReflect.isReflectFlg()) {
-			TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), endTimeReflect.getTimeOfDay(), 1, false);
-			scheUpdateService.updateStartTimeOfReflect(endTime);
-		}
+		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
+		scheUpdateService.updateScheStartEndTime(timeData1);		
 		//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), 
 				ApplyTimeAtr.START2, 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
-		if(startTime2Reflect.isReflectFlg()) {
-			//予定開始時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), startTime2Reflect.getTimeOfDay(), 2, true);
-			scheUpdateService.updateStartTimeOfReflect(timeRef);
-		}
 		//(終了時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput endTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getEndTime2(), 
 				ApplyTimeAtr.END2, 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
-		if(endTime2Reflect.isReflectFlg()) {
-			TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), endTime2Reflect.getTimeOfDay(), 2, false);
-			scheUpdateService.updateStartTimeOfReflect(endTime);
-		}
+		TimeReflectPara timeData2 = new TimeReflectPara(para.getEmployeeId(),
+				para.getDateData(), startTime2Reflect.getTimeOfDay(), 
+				endTime2Reflect.getTimeOfDay(), 
+				2, 
+				startTime2Reflect.isReflectFlg(), 
+				endTime2Reflect.isReflectFlg());
+		scheUpdateService.updateScheStartEndTime(timeData2);		
 	}
 	@Override
 	public TimeOfDayReflectOutput getTimeOfDayReflect(boolean timeTypeScheReflect, 
@@ -184,7 +176,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLate = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true);
 			//開始時刻を反映する 
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate, 1, true);
-			scheUpdateService.updateReflectStartEndTime(timeData);			
+			scheUpdateService.updateRecordStartEndTime(timeData);			
 		}
 		//退勤時刻を反映できるか
 		if(this.checkAttendenceReflect(para, 1, false)) {
@@ -192,7 +184,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLeave = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false);
 			//終了時刻の反映
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave, 1, false);
-			scheUpdateService.updateReflectStartEndTime(timeData);
+			scheUpdateService.updateRecordStartEndTime(timeData);
 		}
 		//出勤時刻２を反映できるか
 		if(this.checkAttendenceReflect(para, 2, true)) {
@@ -200,7 +192,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLate2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime2(), 2, true);
 			//開始時刻を反映する 
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate2, 2, true);
-			scheUpdateService.updateReflectStartEndTime(timeData);			
+			scheUpdateService.updateRecordStartEndTime(timeData);			
 		}
 		//退勤時刻２を反映できるか
 		if(this.checkAttendenceReflect(para, 2, false)) {
@@ -208,7 +200,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLeave2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime2(), 2, false);
 			//終了時刻の反映
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave2, 2, false);
-			scheUpdateService.updateReflectStartEndTime(timeData);
+			scheUpdateService.updateRecordStartEndTime(timeData);
 		}
 	}
 	@Override
