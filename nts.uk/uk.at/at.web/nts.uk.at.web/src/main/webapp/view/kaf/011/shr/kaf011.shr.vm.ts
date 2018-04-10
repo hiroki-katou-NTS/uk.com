@@ -196,17 +196,19 @@ module nts.uk.at.view.kaf011.shr {
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         if (data) {
-                            if (data.timezoneUseDtos) {
-                                let timeZone1 = data.timezoneUseDtos[0];
-                                let timeZone2 = data.timezoneUseDtos[1];
+                            if (vm.screenModeNew()) {
+                                if (data.timezoneUseDtos) {
+                                    let timeZone1 = data.timezoneUseDtos[0];
+                                    let timeZone2 = data.timezoneUseDtos[1];
 
-                                timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
+                                    timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
 
-                                timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
+                                    timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
 
-                            } else {
-                                self.wkTime1().clearData();
-                                self.wkTime2().clearData();
+                                } else {
+                                    self.wkTime1().clearData();
+                                    self.wkTime2().clearData();
+                                }
                             }
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);

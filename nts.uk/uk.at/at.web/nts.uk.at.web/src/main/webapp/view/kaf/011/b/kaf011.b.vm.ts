@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         }
 
         removeAbs() {
-            let self = this,
+            let self = __viewContext['viewModel'],
                 removeCmd = self.getHolidayShipmentCmd();
             confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 block.invisible();
@@ -180,7 +180,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         }
 
         cancelAbs() {
-            let self = this,
+            let self = __viewContext['viewModel'],
                 cancelCmd = self.getHolidayShipmentCmd();
             confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 block.invisible();
