@@ -97,17 +97,11 @@ module nts.uk.at.view.kmk013.d {
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
-                var dfd = $.Deferred();
-                self.initData();
-                dfd.resolve();
-                
-                // Focus on D1_1 by default
-                $('.goback').focus();
-                
-                return dfd.promise();
+                return self.initData();
             }
-            initData(): void {
+            initData(): JQueryPromise<any> {
                 let self = this;
+                var dfd = $.Deferred();
                 service.findByCompanyId().done((arr) => {
                     let data = arr[0];
                     if (data) {
@@ -124,13 +118,17 @@ module nts.uk.at.view.kmk013.d {
                         //非勤務日計算
                         self.selectedId62(data.flexNonworkingDayCalc);
                     }
+                }).always(() => {
+                    service.findRefreshByCId().done((arr) => {
+                        let data = arr[0];
+                        if (data) {
+                            self.time(data.attendanceTime);
+                        }
+                    }).always(() => {
+                        dfd.resolve();
+                    });
                 });
-                service.findRefreshByCId().done((arr) => {
-                    let data = arr[0];
-                    if (data) {
-                        self.time(data.attendanceTime);
-                    }
-                });
+                return dfd.promise();
             }
             saveData(): void {
                 let self = this;
