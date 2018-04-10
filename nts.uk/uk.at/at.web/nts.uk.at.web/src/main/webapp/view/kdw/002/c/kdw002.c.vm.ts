@@ -45,13 +45,13 @@ module nts.uk.at.view.kdw002.c {
                     self.currentRoleId(roleId);
                     _.defer(() => nts.uk.ui.block.invisible());
                     
-                    var useTemplate = "<input type='checkbox' {{if ${toUse} }} checked {{/if}} onclick='useChanged(this, ${itemDailyID},${userCanUpdateAtr})' />";
-                    var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${itemDailyID})' />";
-                    var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${itemDailyID})' />";
+                    var useTemplate = "<input tabindex='-1' type='checkbox' {{if ${toUse} }} checked {{/if}} onclick='useChanged(this, ${itemDailyID},${userCanUpdateAtr})' />";
+                    var youCanChangeItTemplate = "<input tabindex='-1' type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${itemDailyID})' />";
+                    var canBeChangedByOthersTemplate = "<input tabindex='-1' type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${itemDailyID})' />";
 
-                    var useHeader = "<input type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
-                    var youCanChangeItHeader = "<input type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
-                    var canBeChangedByOthersHeader = "<input type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+                    var useHeader = "<input  tabindex='-1' type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
+                    var youCanChangeItHeader =  "<input  tabindex='-1' type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
+                    var canBeChangedByOthersHeader = "<input  tabindex='-1'  type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
                     self.columns = ko.observableArray([
                         { headerText: '', key: 'itemDailyID', width: 1, hidden: true },
                         { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70 },
@@ -80,18 +80,19 @@ module nts.uk.at.view.kdw002.c {
                             $('#otherCheckAll').prop('checked', false);
                             if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls)) {
                                 self.datasources(self.dailyServiceTypeControl().displayAndInput);
-                                $("#grid").ntsGrid({
+                                $("#grid").igGrid({
                                     primaryKey: "itemDailyID",
                                     height: 400,
                                     dataSource: self.datasources(),
-                                    autoGenerateColumns: false,
-                                    alternateRowStyles: false,
+//                                    autoGenerateColumns: false,
+//                                    alternateRowStyles: false,
                                     dataSourceType: "json",
                                     autoCommit: true,
+                                    tabIndex: -1,
                                     //virtualization: true,
                                     rowVirtualization: false,
-                                    //virtualizationMode: "continuous",
-                                    virtualizationMode: "fiexd",
+//                                    //virtualizationMode: "continuous",
+//                                    virtualizationMode: "fixed",
                                     columns: self.columns(),
                                     features: [
                                         {

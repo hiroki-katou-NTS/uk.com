@@ -18,9 +18,12 @@ module nts.uk.at.view.kdw002.a {
 
             //
             isDaily: boolean;
+            isSave : KnockoutObservable<boolean>;
             constructor(dataShare: any) {
+               
                 var self = this;
                 //
+                self.isSave = ko.observable(true);
                 self.isDaily = dataShare.ShareObject;
                 self.headerColorValue = ko.observable('');
                 self.linebreak = ko.observable(0);
@@ -34,6 +37,7 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCode = ko.observable(null);
                 self.aICurrentCode.subscribe(attendanceItemId => {
                     if(attendanceItemId){
+                        self.isSave(true);
                         var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
                         self.txtItemName(attendanceItem.attendanceItemName);
                         self.txtItemId(attendanceItemId);
@@ -82,6 +86,7 @@ module nts.uk.at.view.kdw002.a {
                             });
                         }
                     }else{
+                        self.isSave(false);
                         self.txtItemName("");
                         self.txtItemId(attendanceItemId);
                         self.headerColorValue(null);
