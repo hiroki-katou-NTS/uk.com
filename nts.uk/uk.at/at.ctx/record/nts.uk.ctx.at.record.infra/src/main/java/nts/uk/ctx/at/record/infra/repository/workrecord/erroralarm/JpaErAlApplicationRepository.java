@@ -27,7 +27,7 @@ public class JpaErAlApplicationRepository extends JpaRepository implements ErAlA
 		.setParameter("errorCd", errorAlarmCode)
 		.getList();
 		if(listKrcstErAlApplication.isEmpty()) {
-			return null;
+			return Optional.ofNullable(null);
 		}
 		List<Integer> listAppType = listKrcstErAlApplication.stream().map(c->c.krcstErAlApplicationPK.appTypeCd.intValueExact()).collect(Collectors.toList());
 		
