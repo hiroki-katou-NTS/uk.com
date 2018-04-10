@@ -410,9 +410,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     if (itemList.length == 1) {
-                                        nts.uk.ui.dialog.confirm({ messageId: "Msg_530" });
+                                        nts.uk.ui.dialog.confirm({ messageId: "Msg_530" }).then(() => {;
+                                            self.focusToInput();
+                                        });
                                     }
-                                    this.focusToInput();
+                                    self.focusToInput();
                                 });
                                 //$("#name").focus();
                             }
@@ -420,11 +422,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     perInfoSelectionItem.selectionItemId.valueHasMutated();
 
                     self.listSelection.valueHasMutated();
-                    this.focusToInput();
+                    self.focusToInput();
                     //$("#name").focus();
                 });
                 //$("#name").focus();
-                this.focusToInput();
+                self.focusToInput();
             }
 
         }
@@ -489,12 +491,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 }
                                 let newItem = itemList[oldIndex];
                                 currentItem.selectionID(newItem.selectionID);
-                               this.focusToInput();
+                               self.focusToInput();
 
                             } else {
                                 //self.registerData();
                                 histList.histId.valueHasMutated();
-                                this.focusToInput();
+                                self.focusToInput();
                             }
 
                             //                            histList.histId.valueHasMutated();
@@ -503,14 +505,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                             //$("#code").focus();
-                        this.focusToInput();
+                        self.focusToInput();
                         });
 
                     });
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
                     //$("#name").focus();
-                    this.focusToInput();
+                    self.focusToInput();
                     return;
                 })
             } else {
