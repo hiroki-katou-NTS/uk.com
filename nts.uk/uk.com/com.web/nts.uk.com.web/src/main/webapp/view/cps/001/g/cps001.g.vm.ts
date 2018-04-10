@@ -118,7 +118,6 @@ module nts.uk.com.view.cps001.g.vm {
                          _self.currentValue(annID);
                     } else if (_self.listAnnualLeaveGrantRemainData().length > 0) {
                         _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
-                        _self.currentItem(new AnnualLeaveGrantRemainingData(_self.listAnnualLeaveGrantRemainData()[0]));
                     } else {
                         _self.create();
                     }
@@ -230,13 +229,13 @@ module nts.uk.com.view.cps001.g.vm {
                 {type: 'string', key: 'annLeavID', hidden: true },
                 { headerText: getText('CPS001_118'), type: 'date', key: 'grantDate', width: 100 },
                 { headerText: getText('CPS001_119'), type: 'date', key: 'deadline', width: 100 },
-                { headerText: getText('CPS001_120'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 },
-                { headerText: getText('CPS001_128'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
-                { headerText: getText('CPS001_121'), key: 'grantMinutes', formatter: formatTime, width: 70, hidden: self.grantMinutesH()},
-                { headerText: getText('CPS001_122'), type: 'string', formatter: formatDate, key: 'usedDays', width: 80 },
-                { headerText: getText('CPS001_123'), key: 'usedMinutes', formatter: formatTime, width: 70, hidden: self.usedMinutesH()},
-                { headerText: getText('CPS001_124'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 80 },
-                { headerText: getText('CPS001_129'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 70, hidden: self.remainingMinutesH()}
+                { headerText: getText('CPS001_120'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
+                { headerText: getText('CPS001_128'), key: 'grantMinutes', formatter: formatTime, width: 70, hidden: self.grantMinutesH()},
+                { headerText: getText('CPS001_121'), type: 'string', formatter: formatDate, key: 'usedDays', width: 80 },
+                { headerText: getText('CPS001_122'), key: 'usedMinutes', formatter: formatTime, width: 70, hidden: self.usedMinutesH()},
+                { headerText: getText('CPS001_123'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 80 },
+                { headerText: getText('CPS001_124'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 70, hidden: self.remainingMinutesH()},
+                { headerText: getText('CPS001_129'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 }
             ]);
                     let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:10}"></table>';
                     $("#tbl").html(table);
