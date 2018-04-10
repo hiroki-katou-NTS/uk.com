@@ -256,7 +256,7 @@ module nts.uk.com.view.cmf001.q {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_911" })
                 .ifYes(() => {
-                    self.isStop(true);
+                    
                     if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                         return;
                     }
