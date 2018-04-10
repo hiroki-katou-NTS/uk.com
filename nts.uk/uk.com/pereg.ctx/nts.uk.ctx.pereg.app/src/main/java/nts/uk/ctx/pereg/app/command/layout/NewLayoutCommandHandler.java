@@ -18,6 +18,8 @@ import nts.uk.ctx.pereg.app.find.person.category.PerCtgInfoDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
+import nts.uk.ctx.pereg.dom.copysetting.item.IsRequired;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -95,36 +97,53 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		for (String categoryId : allCatIds) {
 
 			Optional<DateRangeItem> range = perInfoCtgRepositoty.getDateRangeItemByCategoryId(categoryId);
+			if ( !range.isPresent()) {
+				continue;
+			}
+			PerCtgInfoDto ctgDto = itemCtgFinder.getDetailCtgInfo(categoryId);
 
-			if (range.isPresent()) {
-				PerCtgInfoDto ctgDto = itemCtgFinder.getDetailCtgInfo(categoryId);
+			PerInfoItemDefDto startDto = itemDefFinder.getPerInfoItemDefByItemDefId(range.get().getStartDateItemId());
+			PerInfoItemDefDto endDto = itemDefFinder.getPerInfoItemDefByItemDefId(range.get().getEndDateItemId());
 
-				PerInfoItemDefDto startDto = itemDefFinder.getPerInfoItemDefByItemDefId(range.getStartDateItemId());
-				PerInfoItemDefDto endDto = itemDefFinder.getPerInfoItemDefByItemDefId(range.getEndDateItemId());
+			if (startDto.getIsAbolition() == IsAbolition.ABOLITION.value
+					|| endDto.getIsAbolition() == IsAbolition.ABOLITION.value) {
+				continue;
+			}
+			String startItemId = startDto.getId();
+			String endDateId = endDto.getId();
+			String startItemName = startDto.getItemName();
+			String endItemName = endDto.getItemName();
+			String categoryName = ctgDto.getCategoryName();
+			boolean isStartItemRequire = startDto.getIsRequired() == IsRequired.REQUIRED.value;
+			boolean isEndItemRequire = startDto.getIsRequired() == IsRequired.REQUIRED.value;
 
-				if (startDto.getIsAbolition() == 0 && endDto.getIsAbolition() == 0) {
-					if (!allSaveItemIds.contains(startDto.getId()) && startDto.getIsRequired() == 1
-							&& allSaveItemIds.contains(endDto.getId())) {
-						throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_1111")
-								.addRaw(ctgDto.getCategoryName()).addRaw(startDto.getItemName()).build()));
-					} else if (allSaveItemIds.contains(startDto.getId()) && !allSaveItemIds.contains(endDto.getId())
-							&& endDto.getIsRequired() == 1) {
-						throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_1111")
-								.addRaw(ctgDto.getCategoryName()).addRaw(endDto.getItemName()).build()));
-					} else if (!allSaveItemIds.contains(startDto.getId()) && !allSaveItemIds.contains(endDto.getId())) {
-						if (startDto.getIsRequired() == 1 && endDto.getIsRequired() == 1) {
-							throw new BusinessException(
-									new I18NErrorMessage(I18NText.main("Msg_1111").addRaw(ctgDto.getCategoryName())
-											.addRaw(startDto.getItemName() + "," + endDto.getItemName()).build()));
-						} else if (startDto.getIsRequired() == 1) {
-							throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_1111")
-									.addRaw(ctgDto.getCategoryName()).addRaw(startDto.getItemName()).build()));
-						} else if (endDto.getIsRequired() == 1) {
-							throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_1111")
-									.addRaw(ctgDto.getCategoryName()).addRaw(endDto.getItemName()).build()));
-						}
-					}
-				}
+			if (!allSaveItemIds.contains(startItemId) && isStartItemRequire && allSaveItemIds.contains(endDateId)) {
+				throw new BusinessException(new I18NErrorMessage(
+						I18NText.main("Msg_1111").addRaw(categoryName).addRaw(startItemName).build()));
+			}
+
+			if (allSaveItemIds.contains(startItemId) && !allSaveItemIds.contains(endDateId) && isEndItemRequire) {
+				throw new BusinessException(new I18NErrorMessage(
+						I18NText.main("Msg_1111").addRaw(categoryName).addRaw(endItemName).build()));
+			}
+			
+			if ( allSaveItemIds.contains(startItemId) || allSaveItemIds.contains(endDateId)) {
+				continue;
+			}
+
+			if (isStartItemRequire && isEndItemRequire) {
+				throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_1111").addRaw(categoryName)
+						.addRaw(startItemName + "," + endItemName).build()));
+			}
+
+			if (isStartItemRequire) {
+				throw new BusinessException(new I18NErrorMessage(
+						I18NText.main("Msg_1111").addRaw(categoryName).addRaw(startItemName).build()));
+			}
+
+			if (isEndItemRequire) {
+				throw new BusinessException(new I18NErrorMessage(
+						I18NText.main("Msg_1111").addRaw(categoryName).addRaw(endItemName).build()));
 			}
 		}
 
