@@ -292,6 +292,7 @@ module nts.uk.ui.errors {
     export function removeByElement($control: JQuery): void {
         errorsViewModel().removeErrorByElement($control);
         
+        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
         ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
     }
     
