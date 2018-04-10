@@ -29,6 +29,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -118,6 +119,9 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
+	
+	@Inject
+	private YearServicePerRepository yearServiceRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -334,6 +338,11 @@ public class ComboBoxRetrieveFactory {
 			return yearHolidayRepo.findAll(companyId).stream()
 					.map(grantTable -> new ComboBoxObject(grantTable.getYearHolidayCode().v(),
 							grantTable.getYearHolidayName().v()))
+					.collect(Collectors.toList());
+		case "M00017":
+			return yearServiceRepo.getAllPer(companyId).stream()
+					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
+							yearServicePer.getYearServiceName().v()))
 					.collect(Collectors.toList());
 		default:
 			break;
