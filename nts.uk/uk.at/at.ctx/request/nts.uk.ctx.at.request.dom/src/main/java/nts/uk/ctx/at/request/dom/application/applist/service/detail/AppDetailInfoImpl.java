@@ -211,13 +211,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}
 		}
-//		String workTimeName =  hdWork.getWorkTimeCode() == null || hdWork.getWorkTimeCode().v().equals("000") ? "" :
-//			repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
-		
-//		     .orElseGet(()->{
-//		      return workTimeRepository.findByCompanyId(companyID).get(0);
-//		     });
-//		workTime.getWorkTimeDisplayName().getWorkTimeName().toString()
 		return new AppHolidayWorkFull(appId, workTypeName,workTimeName,
 				hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
 				hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
@@ -236,8 +229,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId) {
 		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
 		AppWorkChange appWkChange = workChange.get();
-		return new AppWorkChangeFull(appId, appWkChange.getWorkTypeName() == null ? "" : appWkChange.getWorkTypeName(),
-				appWkChange.getWorkTimeName() == null ? "" : appWkChange.getWorkTimeName(),
+		String workTypeName = appWkChange.getWorkTypeCd() == null ||  Strings.isBlank(appWkChange.getWorkTypeCd()) ? "" : 
+					repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd()).get().getName().v();
+		String workTimeName = "";
+		if(appWkChange.getWorkTimeCd() != null && !appWkChange.getWorkTimeCd().equals("000")){
+			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyID,appWkChange.getWorkTimeCd());
+			if(workTime.isPresent()){
+				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+		}
+		return new AppWorkChangeFull(appId, workTypeName,
+				workTimeName,
 				appWkChange.getGoWorkAtr1(),
 				this.convertTime(appWkChange.getWorkTimeStart1()),
 				appWkChange.getBackHomeAtr1(),
