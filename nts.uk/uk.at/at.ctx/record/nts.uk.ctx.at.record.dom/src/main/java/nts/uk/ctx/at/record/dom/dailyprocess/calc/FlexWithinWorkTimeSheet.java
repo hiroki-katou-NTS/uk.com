@@ -45,12 +45,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
-	/*フレックス時間*/
-	private TimeSpanForCalc coreTimeSheet;
+	/*コアタイム*/
+	private Optional<TimeSpanForCalc> coreTimeSheet;
 	/*事前申請時間*/
 	private AttendanceTime preOrderTime;
 
-	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame, TimeSpanForCalc coreTimeSheet) {
+	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame, Optional<TimeSpanForCalc> coreTimeSheet) {
 		super(withinWorkTimeFrame,new LateDecisionClock(new TimeWithDayAttr(0), 1),new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1));
 		this.coreTimeSheet = coreTimeSheet;
 	}	

@@ -63,18 +63,12 @@ module nts.uk.com.view.cps009.b.viewmodel {
          */
         registerItems() {
             let self = this,
+                dataSource : Array<any> = $("#grid0").ntsGrid("updatedCells"),
                 itemList: Array<any>,
                 id: Array[any] = [],
                 obj: any;
-
-            if (self.currentCtg.categoryType == 3) {
-                id = _.filter(self.itemInitLst, { itemName: "終了日" });
-            }
-            if (id.length > 0) {
-                _.remove(self.itemInitLst, { perInfoItemDefId: id[0].perInfoItemDefId });
-            }
             
-            itemList = _.map(self.itemInitLst, function(x) { return x.perInfoItemDefId });
+            itemList = _.map(dataSource, function(x) { return x.rowId });
             
             obj = {
                 isCancel: false,

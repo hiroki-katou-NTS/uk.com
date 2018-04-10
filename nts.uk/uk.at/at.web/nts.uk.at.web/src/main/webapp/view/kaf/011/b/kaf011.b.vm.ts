@@ -6,6 +6,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
+    import jump = nts.uk.request.jump;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -70,7 +72,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
 
             service.update(saveCmd).done(() => {
-                dialog({ messageId: 'Msg_15' });
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    location.reload();
+                });
 
 
             }).fail((error) => {
@@ -92,12 +96,14 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             var self = this,
                 dfd = $.Deferred(),
                 appParam = { appID: appID };
+            block.invisible();
             service.findById(appParam).done((data) => {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
+                block.clear();
                 dfd.resolve();
 
             });
@@ -157,26 +163,76 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.setDataApp(self.recWk(), data.recApp);
         }
 
+        removeAbs() {
+            let self = this,
+                removeCmd = self.getHolidayShipmentCmd();
+            confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                block.invisible();
+                service.removeAbs(removeCmd).done(function(data) {
+                    location.reload();
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            });
+        }
+
+        cancelAbs() {
+            let self = this,
+                cancelCmd = self.getHolidayShipmentCmd();
+            confirm({ messageId: 'Msg_249' }).ifYes(function() {
+                block.invisible();
+                service.cancelAbs(cancelCmd).done(function(data) {
+                    location.reload();
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            });
+        }
+
+
+        getHolidayShipmentCmd() {
+            let self = this,
+                shipmentCmd;
+
+            shipmentCmd = {
+                absAppID: self.absWk().appID(),
+                recAppID: null,
+                appVersion: self.version(),
+                memo: ""
+            }
+
+            return shipmentCmd;
+
+        }
+
 
 
 
         setDataApp(control: common.AppItems, data, comType?) {
             let self = this;
-            control.wkTypeCD(data.workTypeCD);
-            control.wkTimeCD(data.workTimeCD);
-            control.changeWorkHoursType(data.changeWorkHoursType);
-            control.appDate(new Date(data.appDate));
-            control.appID(data.appID);
-            if (data.wkTime1) {
-                control.wkTime1().startTime(data.wkTime1.startTime);
-                control.wkTime1().endTime(data.wkTime1.endTime);
-                if (data.wkTime1.startType) {
-                    control.wkTime1().startType(data.wkTime1.startType);
-                    control.wkTime1().startTime(data.wkTime1.endType);
+            if (data) {
+                control.wkTypeCD(data.workTypeCD);
+                control.wkTimeCD(data.workTimeCD);
+                control.changeWorkHoursType(data.changeWorkHoursType);
+                control.appDate(data.appDate);
+                control.appID(data.appID);
+                if (data.wkTime1) {
+                    control.wkTime1().startTime(data.wkTime1.startTime);
+                    control.wkTime1().endTime(data.wkTime1.endTime);
+                    if (data.wkTime1.startType) {
+                        control.wkTime1().startType(data.wkTime1.startType);
+                        control.wkTime1().startTime(data.wkTime1.endType);
+                    }
                 }
-            }
-            if (comType) {
-                self.appComSelectedCode(comType);
+                if (comType) {
+                    self.appComSelectedCode(comType);
+                }
             }
         }
 

@@ -107,4 +107,8 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
 	
 	List<String> getAllItemIdsByCtgCode(String cid, String ctgCode);
+	
+	List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId);
+	
+	void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId);
 }

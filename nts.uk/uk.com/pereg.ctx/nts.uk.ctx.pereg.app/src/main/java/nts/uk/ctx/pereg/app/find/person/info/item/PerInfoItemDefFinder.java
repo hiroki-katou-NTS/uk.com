@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.find.person.info.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,32 +24,19 @@ import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
-import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemDataType;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemType;
-import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
-import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
@@ -101,7 +87,10 @@ public class PerInfoItemDefFinder {
 					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
 
-		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce).stream().filter(c  -> (c.getValue() == 1 || c.getValue() == 2 || c.getValue() == 3 || c.getValue() == 4 || c.getValue() == 5 || c.getValue() == 6)).collect(Collectors.toList());
+
+		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce);
+//				.stream().filter(c  -> (c.getValue() == 1 || c.getValue() == 2 || c.getValue() == 3 || c.getValue() == 4 || c.getValue() == 5 || c.getValue() == 6))
+//				.collect(Collectors.toList());
 		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class, ukResouce);
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
 				ukResouce);
@@ -424,13 +413,13 @@ public class PerInfoItemDefFinder {
 	}
 
 	public PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
+		
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
-		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
-		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
-				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(),
-				itemDef.getIsAbolition().value, itemDef.getIsFixed().value, itemDef.getIsRequired().value,
-				itemDef.getSystemRequired().value, itemDef.getRequireChangable().value, dispOrder,
-				itemDef.getSelectionItemRefType(), itemTypeStateDto, selectionItemRefTypes);
+		
+		PerInfoItemDefDto dto = new PerInfoItemDefDto(itemDef);
+		dto.setDispOrder(dispOrder);
+		dto.setSelectionItemRefTypes(selectionItemRefTypes);
+		return dto;
 	}
 
 	public static ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
@@ -438,70 +427,14 @@ public class PerInfoItemDefFinder {
 
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
-			return ItemTypeStateDto.createSingleItemDto(createDataTypeStateDto(singleItemDom.getDataTypeState()));
+			DataTypeStateDto dataTypeStateDto = DataTypeStateDto.createDto(singleItemDom.getDataTypeState());
+			return ItemTypeStateDto.createSingleItemDto(dataTypeStateDto);
 		} else if (itemType == ItemType.SET_ITEM) {
 			SetItem setItemDom = (SetItem) itemTypeState;
 			return ItemTypeStateDto.createSetItemDto(setItemDom.getItems());
 		} else {
 			SetTableItem setItemDom = (SetTableItem) itemTypeState;
 			return ItemTypeStateDto.createSetTableItemDto(setItemDom.getItems());
-		}
-	}
-
-	public static DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
-		int dataTypeValue = dataTypeState.getDataTypeValue().value;
-		switch (dataTypeValue) {
-		case 1:
-			StringItem strItem = (StringItem) dataTypeState;
-			return DataTypeStateDto.createStringItemDto(strItem.getStringItemLength().v(),
-					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
-		case 2:
-			NumericItem numItem = (NumericItem) dataTypeState;
-			BigDecimal numericItemMin = numItem.getNumericItemMin() != null ? numItem.getNumericItemMin().v() : null;
-			BigDecimal numericItemMax = numItem.getNumericItemMax() != null ? numItem.getNumericItemMax().v() : null;
-			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
-					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
-					numericItemMin, numericItemMax);
-		case 3:
-			DateItem dItem = (DateItem) dataTypeState;
-			return DataTypeStateDto.createDateItemDto(dItem.getDateItemType().value);
-		case 4:
-			TimeItem tItem = (TimeItem) dataTypeState;
-			return DataTypeStateDto.createTimeItemDto(tItem.getMax().v(), tItem.getMin().v());
-		case 5:
-			TimePointItem tPointItem = (TimePointItem) dataTypeState;
-			return DataTypeStateDto.createTimePointItemDto(tPointItem.getTimePointItemMin().v(),
-					tPointItem.getTimePointItemMax().v());
-		case 6:
-			SelectionItem sItem = (SelectionItem) dataTypeState;
-			return DataTypeStateDto.createSelectionItemDto(sItem.getReferenceTypeState());
-
-		case 7:
-			SelectionRadio rItem = (SelectionRadio) dataTypeState;
-			return DataTypeStateDto.createSelectionRadioDto(rItem.getReferenceTypeState());
-
-		case 8:
-			SelectionButton bItem = (SelectionButton) dataTypeState;
-			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
-
-		case 9:
-			ReadOnly rOnlyItem = (ReadOnly) dataTypeState;
-			return DataTypeStateDto.createReadOnly(rOnlyItem.getReadText().v());
-
-		case 10:
-			RelatedCategory reCtgDto = (RelatedCategory) dataTypeState;
-			return DataTypeStateDto.createRelatedCategory(reCtgDto.getRelatedCtgCode().v());
-
-		case 11:
-			NumericButton numbtnItem = (NumericButton) dataTypeState;
-			return DataTypeStateDto.createNumericButtonDto(numbtnItem.getReadText().v());
-
-		case 12:
-			ReadOnlyButton rOnlyButton = (ReadOnlyButton) dataTypeState;
-			return DataTypeStateDto.createReadOnlyButton(rOnlyButton.getReadText().v());
-
-		default:
-			return null;
 		}
 	}
 

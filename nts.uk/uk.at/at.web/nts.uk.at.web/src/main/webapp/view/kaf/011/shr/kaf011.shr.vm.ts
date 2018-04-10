@@ -172,7 +172,7 @@ module nts.uk.at.view.kaf011.shr {
             }
         }
         export class AppItems {
-            appID: KnockoutObservable<string> = ko.observable('');
+            appID: KnockoutObservable<string> = ko.observable(null);
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
             wkType: KnockoutObservable<WkType> = ko.observable(new WkType(null));
             wkTypeCD: KnockoutObservable<string> = ko.observable(null);
@@ -188,7 +188,6 @@ module nts.uk.at.view.kaf011.shr {
                 let self = this;
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    if (!vm.screenModeNew()) { return; }
                     let changeWkTypeParam = {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
@@ -209,10 +208,10 @@ module nts.uk.at.view.kaf011.shr {
                                 self.wkTime1().clearData();
                                 self.wkTime2().clearData();
                             }
-
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
+                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
@@ -266,6 +265,7 @@ module nts.uk.at.view.kaf011.shr {
                 return true;
 
             }
+
             showAbsWorkTimeZone() {
                 let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
                     workAtr = self.wkType().workAtr(),
@@ -282,6 +282,7 @@ module nts.uk.at.view.kaf011.shr {
                     Attendance = 0;
                 //利用する
                 if (wkTimeSelect == 1) {
+                    //午前と午後
                     if (workAtr == 1) {
                         if ((afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance)) {
                             return true;
@@ -298,6 +299,7 @@ module nts.uk.at.view.kaf011.shr {
                 }
                 //半休時のみ利用する
                 if (wkTimeSelect == 2) {
+                    //午前と午後
                     if (workAtr == 1) {
                         if (afternoonType != 0 && morningType != 0) {
                             return false;
@@ -334,10 +336,6 @@ module nts.uk.at.view.kaf011.shr {
                     }
                 }
                 return true;
-            }
-
-            parseText(date) {
-                return nts.uk.time.formatDate(date(), "YYYY/MM/DD");
             }
 
             parseTime(value) {

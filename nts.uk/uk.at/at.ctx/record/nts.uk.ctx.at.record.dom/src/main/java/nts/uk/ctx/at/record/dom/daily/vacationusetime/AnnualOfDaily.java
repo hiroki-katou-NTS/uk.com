@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.vacationusetime;
 
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -7,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class AnnualOfDaily {
 	//使用時間
 	private AttendanceTime useTime;

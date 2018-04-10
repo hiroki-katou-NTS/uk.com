@@ -40,7 +40,6 @@ public class AppListApprovalImpl implements AppListApprovalRepository{
 			boolean scheduleCheck) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		// TODO Auto-generated method stub
 		for (AppVersion app : lstApp) {
 			//アルゴリズム「承認する」を実行する
 			//共通アルゴリズム「詳細画面登録前の処理」を実行する(thực hiện xử lý 「詳細画面登録前の処理」) - 4.1(CMM045)

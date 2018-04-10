@@ -16,7 +16,8 @@ module nts.uk.at.view.ktg002.a.viewmodel {
          */
         public startPage(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
+            var dfd = $.Deferred();
+            block.invisible();
             service.getData().done((data) => {
                 //console.log(data);
                 if(data){
@@ -26,7 +27,9 @@ module nts.uk.at.view.ktg002.a.viewmodel {
                     self.text = ko.observable(getText('KTG002_5'));
                     self.visible = ko.observable(false);
                 }
-            dfd.resolve();
+                dfd.resolve(); 
+            }).always(function () {
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }

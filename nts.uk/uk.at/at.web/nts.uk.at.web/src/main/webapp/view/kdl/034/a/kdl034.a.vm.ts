@@ -30,7 +30,7 @@ module nts.uk.at.view.kdl034.a {
                         listApprover.push(applicant);
                         approvalFrame.forEach(function(approvalState) {
                             approvalState.listApprover.forEach(function(approver) {
-                                listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
+                                listApprover.push(new Approver(approver.approverID, approver.approverName, approver.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
                             });
                         });
                         self.listApprover(listApprover);

@@ -269,12 +269,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private String createNewRecApp(SaveHolidayShipmentCommand command) {
-		// アルゴリズム「登録前共通処理（新規）」を実行する
+
 		Application_New recApplication = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), recDate, appType, sID,
 				new AppReason(appReason));
 		String recAppID = recApplication.getAppID();
-
+		// アルゴリズム「登録前共通処理（新規）」を実行する
 		CmProcessBeforeReg(command, recApplication);
 		// ドメイン「振出申請」を1件登録する
 		RecruitmentAppCommand recAppCmd = command.getRecCmd();
@@ -298,7 +298,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 		return recAppID;
 	}
 
-	private void CmProcessBeforeReg(SaveHolidayShipmentCommand command, Application_New application) {
+	public void CmProcessBeforeReg(SaveHolidayShipmentCommand command, Application_New application) {
 		// アルゴリズム「新規画面登録前の処理」を実行する
 		processBeforeRegister.processBeforeRegister(application);
 
@@ -513,7 +513,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	private void dateCheck(SaveHolidayShipmentCommand command) {
+	public void dateCheck(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
 		if (isSaveAbs()) {
 			vacationTransferCheck(sID, absDate, command.getAppCmd().getPrePostAtr());

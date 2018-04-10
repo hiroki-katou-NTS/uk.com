@@ -13,15 +13,15 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.RealityStatusAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.UseSetingImport;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
@@ -31,8 +31,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -44,16 +42,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ApprovalStatusFinder {
 
 	@Inject
-	private ApprovalStatusMailTempRepository finder;
-
-	@Inject
-	private EmployeeRequestAdapter employeeRequestAdapter;
-	
-	@Inject 
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
-
-	@Inject
-	private MailSender mailsender;
+	private ApprovalStatusMailTempRepository approvalStatusMailTempRepo;
 	
 	@Inject
 	private ClosureService closureService;
@@ -67,149 +56,52 @@ public class ApprovalStatusFinder {
 	
 	@Inject
 	private ApprovalStatusService appSttService;
-
-	public ApprovalStatusMailTempDto findByType(int mailType) {
-		// 会社ID
-		String cid = AppContexts.user().companyId();
-		// ドメインモデル「承認状況メールテンプレート」を取得する
-		Optional<ApprovalStatusMailTemp> domain = finder.getApprovalStatusMailTempById(cid, mailType);
-		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get()) : null;
-	}
+	
+	@Inject RealityStatusAdapter realityStatusAdapter;
 
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
-	 * 
-	 * @return
 	 */
 	public List<ApprovalStatusMailTempDto> findBySetting() {
 		// 会社ID
 		String cid = AppContexts.user().companyId();
 		List<ApprovalStatusMailTempDto> listMail = new ArrayList<ApprovalStatusMailTempDto>();
-
-		UseSetingDto transmissionAttr = this.getUseSeting();
-
+		UseSetingImport useSetting = realityStatusAdapter.getUseSetting(cid);
 		listMail.add(this.getApprovalStatusMailTemp(cid, 0));
-		if (transmissionAttr.isUsePersonConfirm()) {
+		if (useSetting.isUsePersonConfirm()) {
 			listMail.add(this.getApprovalStatusMailTemp(cid, 1));
 		}
-		if (transmissionAttr.isUseBossConfirm()) {
+		if (useSetting.isUseBossConfirm()) {
 			listMail.add(this.getApprovalStatusMailTemp(cid, 2));
 		}
-		if (transmissionAttr.isMonthlyConfirm()) {
+		if (useSetting.isMonthlyConfirm()) {
 			listMail.add(this.getApprovalStatusMailTemp(cid, 3));
 		}
 		listMail.add(this.getApprovalStatusMailTemp(cid, 4));
-
 		return listMail;
 	}
 
 	/**
-	 * アルゴリズム「承認状況メール本文取得」を実行する
-	 * 
-	 * @param cid
-	 *            会社ID
-	 * @param mailType
-	 *            メール種類
-	 * @return ドメイン：承認状況メールテンプレート
+	 * 承認状況メール本文取得
 	 */
 	private ApprovalStatusMailTempDto getApprovalStatusMailTemp(String cid, int mailType) {
-		Optional<ApprovalStatusMailTemp> domain = finder.getApprovalStatusMailTempById(cid, mailType);
+		Optional<ApprovalStatusMailTemp> domain = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cid, mailType);
 		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get())
 				: new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
 	}
-
+	
 	/**
-	 * アルゴリズム「承認状況メールテスト送信実行」を実行する
-	 * 
-	 * @param mailType
-	 *            対象メール
-	 * @return 結果
+	 * 承認状況メールテスト送信
 	 */
-	public boolean sendTestMail(int mailType) {
-		// 会社ID
-		String cid = AppContexts.user().companyId();
-		// ドメインモデル「承認状況メールテンプレート」を取得する
-		ApprovalStatusMailTemp domain = finder.getApprovalStatusMailTempById(cid, mailType).get();
-		// 社員ID
-		String sid = AppContexts.user().employeeId();
-		// 社員名
-		String sName = employeeRequestAdapter.getEmployeeName(sid);
-		// メールアドレス
-		String mailAddr = employeeRequestAdapter.empEmail(sid);
-		// 件名
-		String subject = domain.getMailSubject().v();
-		// 送信本文
-		String text = domain.getMailContent().v();
-
-		// ログイン者よりメール送信内容を作成する(create nội dung send mail theo người login)
-		List<MailTransmissionContentDto> listMailContent = new ArrayList<MailTransmissionContentDto>();
-		listMailContent.add(new MailTransmissionContentDto(sid, sName, mailAddr, subject, text));
-		UseSetingDto transmissionAttr = this.getUseSeting();
-		// アルゴリズム「承認状況メール送信実行」を実行する
-		this.exeApprovalStatusMailTransmission(listMailContent, domain, transmissionAttr);
-		return false;
+	public String confirmSenderMail(){
+		// アルゴリズム「承認状況送信者メール確認」を実行する
+		return appSttService.confirmApprovalStatusMailSender();
 	}
 
-	/**
-	 * アルゴリズム「承認状況メール送信実行」を実行する
-	 * 
-	 * @param listMailContent
-	 *            メール送信内容＜社員ID、社員名、メールアドレス、件名、送信本文＞(リスト)
-	 * @param domain
-	 *            ドメイン：承認状況メールテンプレート
-	 * @param transmissionAttr
-	 *            送信区分（本人/日次/月次）
-	 */
-	private void exeApprovalStatusMailTransmission(List<MailTransmissionContentDto> listMailContent,
-			ApprovalStatusMailTemp domain, UseSetingDto transmissionAttr) {
-		for (MailTransmissionContentDto mailTransmission : listMailContent) {
-			// アルゴリズム「承認状況メール埋込URL取得」を実行する
-
-			EmbeddedUrlDto embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, transmissionAttr);
-			String s1 = embeddedURL.getURL();
-			String s2 = embeddedURL.getURL2();
-			try {
-				mailsender.send("nts", mailTransmission.getMailAddr(),
-						new MailContents(mailTransmission.getSubject(), mailTransmission.getText()));
-			} catch (SendMailFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * アルゴリズム「承認状況メール埋込URL取得」を実行する
-	 * 
-	 * @param eid
-	 * @param domain
-	 * @param transmissionAttr
-	 */
-	private EmbeddedUrlDto getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, UseSetingDto transmissionAttr) {
-		String url1 = "123123123";
-		String url2 = "1231ád23123";
-		return new EmbeddedUrlDto(url1, url2);
-	}
-
-	/**
-	 * アルゴリズム「承認状況取得実績使用設定」を実行する
-	 * 
-	 * @return
-	 */
-	private UseSetingDto getUseSeting() {
-		// 月別確認を利用する ← 承認処理の利用設定.月の承認者確認を利用する
-		boolean monthlyConfirm = true;
-		// 上司確認を利用する ← 承認処理の利用設定.日の承認者確認を利用する
-		boolean useBossConfirm = true;
-		// 本人確認を利用する ← 本人確認処理の利用設定.日の本人確認を利用する
-		boolean usePersonConfirm = true;
-		// Waiting for Q&A
-		return new UseSetingDto(monthlyConfirm, useBossConfirm, usePersonConfirm);
-	}
-
-	public List<ApprovalStatusActivityDto> getStatusActivity(ApprovalStatusActivityData wkpInfoDto) {
-		return null;
-	}
+	public SendMailResultOutput sendTestMail(int mailType) {
+		//アルゴリズム「承認状況メールテスト送信実行」を実行する
+		return appSttService.sendTestMail(mailType);
+	}	
 
 	/**
 	 * アルゴリズム「承認状況指定締め日取得」を実行する
@@ -347,9 +239,12 @@ public class ApprovalStatusFinder {
 	 * アルゴリズム「承認状況送信者メール確認」を実行する
 	 */
 	private boolean IsAppSttSenderEmailConfirm() {
-		EmployeeEmailOutput empEmail =  appSttService.findEmpMailAddr();
-		if(!Objects.isNull(empEmail)) {
-			if(Objects.isNull(empEmail.getMailAddr()) || empEmail.getMailAddr().isEmpty()){
+		String sId = AppContexts.user().userId();
+		List<String> listSId = new  ArrayList<>();
+		listSId.add(sId);
+		Optional<EmployeeEmailImport> empEmail =  appSttService.findEmpMailAddr(listSId).stream().findFirst();
+		if(empEmail.isPresent()) {
+			if(Objects.isNull(empEmail.get().getMailAddr()) || empEmail.get().getMailAddr().isEmpty()){
 				throw new BusinessException("Msg_791");
 			}
 		}

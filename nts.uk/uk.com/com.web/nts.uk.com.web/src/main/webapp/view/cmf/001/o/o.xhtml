@@ -59,12 +59,11 @@
 											rows: 10,
 											name: '#[CMF001_439]', 
 				 							dataSource: listCondition,
-											primaryKey: 'dispConditionSettingCode', 
-											showNumbering: true,
+											primaryKey: 'dispConditionSettingCode',
 				 							columns: [
-										    	{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 40, formatter: _.escape },
-										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 345, formatter: _.escape }
-										    ], 
+												{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 40, formatter: _.escape },
+												{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 365, formatter: _.escape }
+											], 
 											multiple: false,
 											value: selectedConditionCd}">
 									</table>
@@ -122,7 +121,7 @@
 										<td></td>
 										<td colspan="2">
 											<label>#{i18n.getText('CMF001_146')}</label>									
-											<div style="display: inline-table; margin-left: 30px;"  
+											<div style="display: inline-table; margin-left: 5px;"  
 													data-bind="ntsComboBox: {
 													options: encodingList,
 													optionsValue: 'value',

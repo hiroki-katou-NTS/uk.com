@@ -43,6 +43,7 @@ module nts.uk.ui {
         };
         
         __viewContext.bind = function (contentViewModel: any, dialogOptions?: any) {
+            
             var kiban = new KibanViewModel(dialogOptions);
             
             _viewModel = {
@@ -84,27 +85,34 @@ module nts.uk.ui {
         
         var startP = function(){
             _.defer(() => _start.call(__viewContext));
-                
+            
+            let onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
+            
             // Menu
-            if ($(document).find("#header").length > 0) {
-                menu.request();
-            } else if (!util.isInFrame() && !__viewContext.noHeader) {
-                let header = "<div id='header'><div id='menu-header'>" 
-                                + "<div id='logo-area' class='cf'>" 
-                                + "<div id='logo'>勤次郎</div>"
-                                + "<div id='user-info' class='cf'>"
-                                + "<div id='company' class='cf' />"
-                                + "<div id='user' class='cf' />"    
-                                + "</div></div>"                            
-                                + "<div id='nav-area' class='cf' />"
-                                + "<div id='pg-area' class='cf' />"
-                                + "</div></div>";
-                $("#master-wrapper").prepend(header);
-                menu.request();
-            }    
+            if (!onSamplePage) {
+                if ($(document).find("#header").length > 0) {
+                    menu.request();
+                } else if (!util.isInFrame() && !__viewContext.noHeader) {
+                    let header = "<div id='header'><div id='menu-header'>" 
+                                    + "<div id='logo-area' class='cf'>" 
+                                    + "<div id='logo'>勤次郎</div>"
+                                    + "<div id='user-info' class='cf'>"
+                                    + "<div id='company' class='cf' />"
+                                    + "<div id='user' class='cf' />"    
+                                    + "</div></div>"                            
+                                    + "<div id='nav-area' class='cf' />"
+                                    + "<div id='pg-area' class='cf' />"
+                                    + "</div></div>";
+                    $("#master-wrapper").prepend(header);
+                    menu.request();
+                }
+            }
         }
         
         $(function () {
+            
+            __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
+            
             console.log("call");
             documentReady.fire();
             
