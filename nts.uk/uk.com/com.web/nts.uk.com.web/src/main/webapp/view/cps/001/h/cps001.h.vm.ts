@@ -7,6 +7,7 @@ module cps001.h.vm {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -31,6 +32,7 @@ module cps001.h.vm {
         constructor() {
             let self = this;
             self.ckbAll.subscribe((data) => {
+                clearError();
                 service.getAll(__viewContext.user.employeeId, data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
@@ -280,7 +282,7 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                if (data) {
+                if (!nts.uk.ui.errors.hasError() && data) {
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });
