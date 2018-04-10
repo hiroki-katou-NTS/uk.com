@@ -30,6 +30,7 @@ public class EmpMaintLayoutDto {
 	private GeneralDate standardDate;
 
 	private List<LayoutPersonInfoClsDto> classificationItems;
+	
 	public EmpMaintLayoutDto(){
 		this.classificationItems = new ArrayList<>();
 	}

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
@@ -96,4 +97,9 @@ public class HolidayShipmentDto {
 	 * 申請
 	 */
 	private ApplicationDto_New application;
+
+	/**
+	 * 申請種類別設定
+	 */
+	private AppTypeSetDto appTypeSet;
 }

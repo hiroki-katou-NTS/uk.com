@@ -9,16 +9,17 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
  */
 // するしない区分
 public enum NotUseAtr {	
+	
+	/** The pattern schedule. */
+	// する 
+	USE(1, "Enum_NotUseAtr_USE", "する"),
+	
 	/**
 	 * Notuse.
 	 */
 	// しない
-	NOTUSE(0, "Enum_UseAtr_notuse", "しない"),
+	NOTUSE(0, "Enum_NotUseAtr_NOT_USE", "しない");
 
-	/** The pattern schedule. */
-	// する 
-	USE(1, "Enum_UseAtr_use", "する");
-	
 	/** The value. */
 	public final int value;
 

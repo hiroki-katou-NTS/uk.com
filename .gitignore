@@ -28,3 +28,5 @@
 # except all js, map in base.web
 !**/base.web/**/*.js*
 **/base.web/**/*bundles.js*
+
+nts.uk/uk.repo/*

@@ -24,6 +24,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<UpdateAppAbsenceCommand, List<String>>{
+	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
@@ -32,6 +33,8 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	private ApplicationRepository_New applicationRepository;
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
+	@Inject
+	private CreatAppAbsenceCommandHandler creatAppAbsenceCommandHandler;
 	@Override
 	protected List<String> handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
 		String companyID = AppContexts.user().companyId();
@@ -64,12 +67,24 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				1, 
 				appAbsence.getAppID(), 
 				appAbsence.getApplication().getPrePostAtr(), command.getVersion());
+		//check update
+		creatAppAbsenceCommandHandler.checkBeforeRegister(convert(command),
+				opAppAbsence.get().getApplication().getAppDate(),
+				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
 		//update appAbsence
 		appAbsenceRepository.updateAbsence(appAbsence);
 		//update application
 		applicationRepository.updateWithVersion(appAbsence.getApplication());
 		// 4-2.詳細画面登録後の処理
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appAbsence.getApplication());
+	}
+	private CreatAppAbsenceCommand convert(UpdateAppAbsenceCommand command){
+		CreatAppAbsenceCommand creat = new CreatAppAbsenceCommand();
+		creat.setEmployeeID(command.getEmployeeID());
+		creat.setPrePostAtr(command.getPrePostAtr());
+		creat.setHolidayAppType(command.getHolidayAppType());
+		creat.setWorkTypeCode(command.getWorkTypeCode());
+		return creat;
 	}
 
 }

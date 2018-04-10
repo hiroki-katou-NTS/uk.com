@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.PaymentMethod;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
@@ -72,11 +74,34 @@ public class InitDefaultValue {
 					case "IS00248":
 					case "IS00247":
 					case "IS00258":
-						valueItem.setValue("0");
+					case "IS00296":
+					case "IS00303":
+					case "IS00310":
+					case "IS00317":
+					case "IS00324":
+					case "IS00331":
+					case "IS00338":
+					case "IS00345":
+					case "IS00352":
+					case "IS00359":
+					case "IS00560":
+					case "IS00567":
+					case "IS00574":
+					case "IS00581":
+					case "IS00588":
+					case "IS00595":
+					case "IS00602":
+					case "IS00609":
+					case "IS00616":
+					case "IS00623":
+					case "IS00370":
+						valueItem.setValue(String.valueOf(UseAtr.NotUse.value));
 						break;
 					case "IS00121":
-						valueItem.setValue("1");
+						valueItem.setValue(String.valueOf(UseAtr.Use.value));
 						break;
+					case "IS00372":
+						valueItem.setValue(String.valueOf(PaymentMethod.VACATION_OCCURRED.value));
 					default:
 						break;
 					}

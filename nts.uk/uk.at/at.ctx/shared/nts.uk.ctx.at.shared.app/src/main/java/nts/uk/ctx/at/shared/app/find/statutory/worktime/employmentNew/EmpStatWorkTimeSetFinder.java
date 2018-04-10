@@ -67,7 +67,7 @@ public class EmpStatWorkTimeSetFinder {
 		EmpStatWorkTimeSetDtoBuilder dtoBuilder = EmpStatWorkTimeSetDto.builder();
 		
 		dtoBuilder.year(year);
-		dtoBuilder.emplCode(emplCode);
+		dtoBuilder.employmentCode(emplCode);
 
 		Optional<EmpNormalSetting> optEmpNormalSet = this.normalSettingRepository.find(companyId, emplCode, year);
 		if (optEmpNormalSet.isPresent()) {

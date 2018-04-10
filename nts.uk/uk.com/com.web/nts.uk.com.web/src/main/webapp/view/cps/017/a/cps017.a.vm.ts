@@ -244,12 +244,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     $("#name").focus();
                 } else {
                     self.registerData();
+                    //$("#code").focus();
                 }
 
                 if (x == undefined && self.enableSelName() == true) {
                     self.selectionCd(true);
                 } else {
                     self.selectionCd(false);
+                    $("#name").focus();
                 }
             });
 
@@ -322,7 +324,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionCD('');
             selection.selectionName('');
             selection.memoSelection('');
-
+            $("#code").focus();
+            
             selection.codeType(99);
             _.defer(() => {
                 selection.codeType(perSelection.selectionCodeCharacter);
@@ -338,7 +341,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.revDisSel02(false);
             self.revDisSel03(false);
             self.revDisSel04(false);
-            $("#code").focus();
+            
         }
 
         //検証チェック 
@@ -402,7 +405,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     if (itemList.length == 1) {
-                                        nts.uk.ui.dialog.alert({ messageId: "Msg_530" });
+                                        nts.uk.ui.dialog.confirm({ messageId: "Msg_530" });
                                     }
                                 });
 
@@ -415,6 +418,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                     $("#name").focus();
                 });
+                $("#name").focus();
             }
 
         }
@@ -439,7 +443,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let oldIndex = _.findIndex(itemList, x => x.selectionID == currentItem.selectionID());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionID(newItem.selectionID);
-                    $("#name").focus();
+                    //$("#name").focus();
                 });
                 //nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -477,24 +481,26 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 }
                                 let newItem = itemList[oldIndex];
                                 currentItem.selectionID(newItem.selectionID);
+                                $("#name").focus();
 
                             } else {
-                                self.registerData();
+                                //self.registerData();
                                 histList.histId.valueHasMutated();
+                                $("#code").focus();
                             }
-                            $("#name").focus();
+                            
                             //                            histList.histId.valueHasMutated();
                         });
                         self.listItems.valueHasMutated();
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" }).then(() => {
-                            $("#name").focus();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            //$("#code").focus();
                         });
 
                     });
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
-                    $("#name").focus();
+                    //$("#name").focus();
                     return;
                 })
             } else {
@@ -533,7 +539,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             }
                         });
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
                     $("#name").focus();
                 }).ifNo(() => {

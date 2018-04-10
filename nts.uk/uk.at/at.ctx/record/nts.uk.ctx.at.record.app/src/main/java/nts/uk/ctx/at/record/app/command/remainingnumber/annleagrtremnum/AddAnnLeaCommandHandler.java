@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class AddAnnLeaCommandHandler extends AsyncCommandHandler<AnnLeaGrantRemnNumCommand>{
+public class AddAnnLeaCommandHandler extends CommandHandler<AnnLeaGrantRemnNumCommand>{
 	
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaRepo;

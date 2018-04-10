@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.g.start.js" />
+			<com:scriptfile path="kmk013.g.vm.js" />
+			<com:scriptfile path="kmk013.g.service.js" />
+			<com:stylefile path="kmk013.g.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
+				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
+			</div>
+			<div id="contents-area">
+				<table>
+					<TBODY>
+						<tr>
+							<td>
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_206')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
+							</td>
+							<td class="td-content">
+    								<div data-bind="ntsSwitchButton: {
+    												options: flexSettingOpt,     
+    												optionsValue: 'id',     
+    												optionsText: 'name',     
+    												value: flexSetting}"></div>     
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_211')}</div>
+							</td>
+							<td class="td-content">
+    								<span data-bind="ntsSwitchButton: {
+    												options: aggWorkSetOpt,     
+    												optionsValue: 'id',     
+    												optionsText: 'name',     
+    												value: aggWorkSet}"></span>     
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_215')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_216')}</div>
+							</td>
+							<td class="td-content">
+								<div data-bind="ntsSwitchButton: {
+	    												options: multipleWorkOpt,     
+	    												optionsValue: 'id',     
+	    												optionsText: 'name',     
+	    												value: multipleWorkSet}"></div>     
+   								
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_220')}</div>
+							</td>
+							<td class="td-content">
+   								<div data-bind="ntsSwitchButton: {
+  												options: tempWorkOpt,     
+  												optionsValue: 'id',     
+  												optionsText: 'name',     
+  												value: tempWorkSet}"></div>     
+							</td>
+						</tr>
+					</TBODY>
+				</table>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

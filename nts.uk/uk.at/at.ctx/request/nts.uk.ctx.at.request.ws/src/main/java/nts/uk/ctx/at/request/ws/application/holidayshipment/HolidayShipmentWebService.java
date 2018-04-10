@@ -7,14 +7,20 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommand;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.DenyHolidayShipmentCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ReleaseHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 
@@ -25,6 +31,8 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private HolidayShipmentScreenAFinder aFinder;
 	@Inject
+	private HolidayShipmentScreenCFinder cFinder;
+	@Inject
 	private HolidayShipmentScreenBFinder bFinder;
 	@Inject
 	private SaveHolidayShipmentCommandHandler saveHandler;
@@ -34,6 +42,16 @@ public class HolidayShipmentWebService extends WebService {
 	private DeleteHolidayShipmentCommandHandler deleteHanler;
 	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHanler;
+	@Inject
+	private ChangeAbsDateCommandHandler changeAbsHanler;
+	@Inject
+	private ApproveHolidayShipmentCommandHandler approveHandler;
+	@Inject
+	private DenyHolidayShipmentCommandHandler denyHandler;
+	@Inject
+	private ReleaseHolidayShipmentCommandHandler releaseHandler;
+	@Inject
+	private ChangeAbsDateCommandHandler changeHander;
 
 	@POST
 	@Path("start")
@@ -74,14 +92,50 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("remove")
-	public void remove(DeleteHolidayShipmentCommand command) {
+	public void remove(HolidayShipmentCommand command) {
 		this.deleteHanler.handle(command);
 	}
 
 	@POST
 	@Path("cancel")
-	public void cancel(DeleteHolidayShipmentCommand command) {
+	public void cancel(HolidayShipmentCommand command) {
 		this.cancelHanler.handle(command);
+	}
+
+	@POST
+	@Path("approve")
+	public void approve(HolidayShipmentCommand command) {
+		this.approveHandler.handle(command);
+	}
+
+	@POST
+	@Path("deny")
+	public void deny(HolidayShipmentCommand command) {
+		this.denyHandler.handle(command);
+	}
+
+	@POST
+	@Path("release")
+	public void release(HolidayShipmentCommand command) {
+		this.releaseHandler.handle(command);
+	}
+
+	@POST
+	@Path("start_c")
+	public HolidayShipmentDto startPageC(StartAParam param) {
+		return this.cFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
+	}
+
+	@POST
+	@Path("change_date_c")
+	public void changeDateC(SaveHolidayShipmentCommand command) {
+		this.changeHander.handle(command);
+	}
+
+	@POST
+	@Path("change_abs_date")
+	public void changeAbsDate(SaveHolidayShipmentCommand command) {
+		this.changeAbsHanler.handle(command);
 	}
 
 }
@@ -89,7 +143,7 @@ public class HolidayShipmentWebService extends WebService {
 @Value
 class StartAParam {
 	private String sID;
-	private String appDate;
+	private GeneralDate appDate;
 	private int uiType;
 }
 
@@ -116,5 +170,13 @@ class ChangeDateParam {
 	 */
 	private int comType;
 	private int uiType;
+
+	public GeneralDate getHolidayDate() {
+		return holidayDate != null ? GeneralDate.fromString(holidayDate, "yyyy/MM/dd") : null;
+	}
+
+	public GeneralDate getTakingOutDate() {
+		return takingOutDate != null ? GeneralDate.fromString(takingOutDate, "yyyy/MM/dd") : null;
+	}
 
 }

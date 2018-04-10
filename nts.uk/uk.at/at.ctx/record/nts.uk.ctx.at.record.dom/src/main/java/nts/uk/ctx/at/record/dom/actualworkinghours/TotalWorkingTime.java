@@ -26,6 +26,14 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
@@ -116,6 +124,8 @@ public class TotalWorkingTime {
 	/*短時間勤務時間*/
 	private ShortWorkTimeOfDaily shotrTimeOfDaily;
 	
+	/*日別実績の休暇*/
+	private HolidayOfDaily holidayOfDaily;
 	
 	/**
 	 * 
@@ -149,7 +159,7 @@ public class TotalWorkingTime {
 			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
-			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime) {
+			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime,HolidayOfDaily holidayOfDaily) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -164,6 +174,7 @@ public class TotalWorkingTime {
 		this.workTimes = workTimes;
 		this.temporaryTime = temporaryTime;
 		this.shotrTimeOfDaily = shotrTime;
+		this.holidayOfDaily = holidayOfDaily;
 	}
 	
 	/**
@@ -281,7 +292,15 @@ public class TotalWorkingTime {
 		//実働時間
 		val actualTime = new AttendanceTime(0);
 		
-
+		//日別実績の休暇
+		val holidayOfDaily = new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)), 
+				   							    new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)), 
+				   							    new YearlyReservedOfDaily(new AttendanceTime(0)), 
+				   							    new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+				   							    new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+				   							    new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+				   							    new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)));
+		
 		
 		return new TotalWorkingTime(totalWorkTime,
 									totalCalcTime,
@@ -295,7 +314,8 @@ public class TotalWorkingTime {
 									raiseTime,
 									workTimes,
 									tempTime,
-									shotrTime);
+									shotrTime,
+									holidayOfDaily);
 	}
 
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,

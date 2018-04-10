@@ -91,6 +91,8 @@ public class ProgramIdConsts {
 
 	public static final String KMK011I = "KMK011I";
 
+	public static final String KMK015A = "KMK015A";
+	
 	public static final String KML001A = "KML001A";
 
 	public static final String KML001B = "KML001B";
@@ -265,6 +267,12 @@ public class ProgramIdConsts {
 
 	public static final String KMK004E = "KMK004E";
 
+	public static final String KMK004F = "KMK004F";
+	
+	public static final String KMK004G = "KMK004G";
+	
+	public static final String KMK004H = "KMK004H";
+	
 	public static final String KMK012A = "KMK012A";
 
 	public static final String KMK012D = "KMK012D";
@@ -560,6 +568,8 @@ public class ProgramIdConsts {
 	public static final String CPS001F = "CPS001F";
 
 	public static final String CPS001H = "CPS001H";
+	
+	public static final String CPS001I = "CPS001I";
 
 	public static final String CMM007A = "CMM007A";
 	public static final String CMM007B = "CMM007B";
@@ -602,6 +612,15 @@ public class ProgramIdConsts {
 	public static final String KMK013F = "KMK013F";
 	public static final String KMK013G = "KMK013G";
 	public static final String KMK013H = "KMK013H";
+	public static final String KMK013I = "KMK013I";
+	public static final String KMK013J = "KMK013J";
+	public static final String KMK013K = "KMK013K";
+	public static final String KMK013L = "KMK013L";
+	public static final String KMK013M = "KMK013M";
+	public static final String KMK013N = "KMK013N";
+	public static final String KMK013O = "KMK013O";
+	public static final String KMK013P = "KMK013P";
+	public static final String KMK013Q = "KMK013Q";
 
 	public static final String KAF022A = "KAF022A";
 	public static final String KAF022B = "KAF022B";

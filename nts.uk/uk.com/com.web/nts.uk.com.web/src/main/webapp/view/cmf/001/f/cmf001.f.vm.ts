@@ -79,9 +79,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         return new AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting, x.cdConvertDetails);
                     });
 
-                    //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
-                    self.codeConvertList(_codeConvertList);
-
                     //F:「コード変換一括登録」ダイアログを更新モードでモーダル表示する
                     self.screenMode(model.SCREEN_MODE.UPDATE);
 
@@ -92,6 +89,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         _codeConvert = _codeConvertList[0].convertCd();
                     }
                     self.selectedConvertCode(_codeConvert);
+                    //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
+                    self.codeConvertList(_codeConvertList);
 
                     //フォーカス制御
                     self.setFocusItem(FOCUS_TYPE.INIT, model.SCREEN_MODE.UPDATE);
@@ -204,9 +203,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         
         //登録ボタンを押下
         regAcceptCodeConvert_Click() {
-            nts.uk.ui.errors.clearAll();
-
+            
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            block.invisible();
+            for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
+                self.codeConvertData().cdConvertDetails()[i].convertCd(self.codeConvertData().convertCd());
+            }
+
             let currentAcceptCodeConvert = self.codeConvertData;
 
             //新規モードか更新モードを判別する
@@ -232,10 +236,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
             let _lineError: Array<any> = [];
             let _codeDuplicate: Array<any> = [];
+            let _emptyData: Boolean = true;
             for (let detail of currentAcceptCodeConvert().cdConvertDetails()) {
                 if (_.isEmpty(detail.outputItem()) && _.isEmpty(detail.systemCd())) {
                     continue;
                 }
+                 _emptyData = false;
                 if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCd())) {
                     _lineError.push(detail.lineNumber());
                 }
@@ -243,6 +249,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                 if (data.length >= 2) {
                     _codeDuplicate.push(detail);
                 }
+            }
+            
+            if(_emptyData){
+                dialog.alertError({ messageId: "Msg_906" });
+                block.clear();
+                return;
             }
 
             if (!_.isEmpty(_lineError)) {
@@ -258,20 +270,19 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     $('tr[data-id=' + _errorCodeDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_1015', messageParams: [_errorCodeDuplicate[i].outputItem] });
                 }
             }
-
+            $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                block.invisible();
-
                 self.codeConvertData().cdConvertDetails(_.filter(self.codeConvertData().cdConvertDetails(), x => !_.isEmpty(x.outputItem()) && !_.isEmpty(x.systemCd())));
 
                 //画面の項目を、ドメインモデル「受入コード変換」に登録/更新する
                 if (model.SCREEN_MODE.NEW == self.screenMode()) {
                     service.addAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
-                        //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
-                        self.initialScreen(self.codeConvertData().convertCd());
 
                         //情報メッセージ　Msg_15 登録しました。を表示する。
-                        dialog.info({ messageId: "Msg_15" });
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
+                            self.initialScreen(self.codeConvertData().convertCd());
+                        });
                     }).fail(function(error) {
                         dialog.alertError(error);
                     }).always(function() {
@@ -279,17 +290,19 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     });
                 } else {
                     service.updateAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
-                        //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
-                        self.initialScreen(self.selectedConvertCode());
-
                         //情報メッセージ　Msg_15 登録しました。を表示する。
-                        dialog.info({ messageId: "Msg_15" });
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
+                            self.initialScreen(self.selectedConvertCode());
+                        });
                     }).fail(function(error) {
                         dialog.alertError(error);
                     }).always(function() {
                         block.clear();
                     });
                 }
+            } else {
+                block.clear();
             }
         }
         
@@ -306,23 +319,23 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     //select next code convert
                     let index: number = _.findIndex(listAcceptCodeConvert(), function(x)
                     { return x.convertCd() == currentCodeConvert().convertCd() });
-                    
+
                     if (index > -1) {
                         self.codeConvertList.splice(index, 1);
-
                         if (index >= listAcceptCodeConvert().length) {
                             index = listAcceptCodeConvert().length - 1;
                         }
+                    }
+
+                    //情報メッセージ　Msg-16を表示する
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
                         if (listAcceptCodeConvert().length > 0) {
                             self.initialScreen(listAcceptCodeConvert()[index].convertCd());
                             self.screenMode(model.SCREEN_MODE.UPDATE);
                         } else {
                             self.settingCreateMode();
                         }
-                    }
-                    
-                    //情報メッセージ　Msg-16を表示する
-                    dialog.info({ messageId: "Msg_16" });
+                    });
                 }).fail(function(error) {
                     dialog.alertError(error);
                 }).always(function() {

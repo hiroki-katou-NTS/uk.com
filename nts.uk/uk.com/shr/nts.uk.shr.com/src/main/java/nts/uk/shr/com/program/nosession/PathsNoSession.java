@@ -6,24 +6,30 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nts.arc.security.csrf.PathsToCheckCsrf;
 import nts.uk.shr.com.program.ProgramsManager;
 
-public class PathsNoSession {
+public class PathsNoSession implements PathsToCheckCsrf {
 
 	public static PathsNoSession WEB_APIS = PathsNoSession.define(
 			"/sample/.*",
 			"/public/.*",
 			"/ntscommons/arc/task/async/.*",
-			"/shr/infra/file/storage/.*"
+			"/ntscommons/arc/filegate/.*",
+			"/shr/infra/file/storage/.*",
+			"/i18n/.*",
+			"/ctx/sys/gateway/login/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
 			"/view/sample/.*",
 			"/view/common/error/.*",
+			"/view/spr/index.xhtml",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
-			ProgramsManager.CCG007D.getPPath()
+			ProgramsManager.CCG007D.getPPath(),
+			ProgramsManager.KDW003A.getPPath()
 			);
 
 	
@@ -60,4 +66,9 @@ public class PathsNoSession {
                 	return p.matcher(pathToBeChecked).matches();
                 });
     }
+
+	@Override
+	public Set<Pattern> patternsPathNoCheck() {
+		return this.patterns;
+	}
 }

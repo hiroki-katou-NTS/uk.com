@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.Process
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CancelHolidayShipmentCommandHandler extends CommandHandler<DeleteHolidayShipmentCommand> {
+public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayShipmentCommand> {
 
 	@Inject
 	private ProcessCancel processCancel;
@@ -18,25 +18,25 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<DeleteHo
 	Long version;
 
 	@Override
-	protected void handle(CommandHandlerContext<DeleteHolidayShipmentCommand> context) {
-		DeleteHolidayShipmentCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
+		HolidayShipmentCommand command = context.getCommand();
 		companyID = AppContexts.user().companyId();
 		employeeID = AppContexts.user().employeeId();
 		version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の取消」を実行する
-		cancelAppForPaidLeave(command);
+		cancelAppForPaidLeave(companyID, command);
 	}
 
-	private void cancelAppForPaidLeave(DeleteHolidayShipmentCommand command) {
-		boolean isDeleteRec = command.getRecAppID() != null;
-		boolean isDeleteAbs = command.getAbsAppID() != null;
+	public void cancelAppForPaidLeave(String companyID, HolidayShipmentCommand command) {
+		boolean isCancelRec = command.getRecAppID() != null;
+		boolean isCancelAbs = command.getAbsAppID() != null;
 
-		if (isDeleteAbs) {
+		if (isCancelAbs) {
 			// アルゴリズム「取消処理」を実行する
 			cancelProcess(companyID, command.getAbsAppID());
 		}
 
-		if (isDeleteRec) {
+		if (isCancelRec) {
 			// アルゴリズム「取消処理」を実行する
 			cancelProcess(companyID, command.getRecAppID());
 		}

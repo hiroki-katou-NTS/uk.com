@@ -1,7 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.calculationsetting;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,9 +16,7 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 
- * @author nampt 打刻反映管理
- *
+ * The Class KrcmtStampImprint.
  */
 @NoArgsConstructor
 @Entity
@@ -46,32 +47,35 @@ public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 	/** 直行直帰外出補正区分*/
 	@Column(name = "GO_BACK_OUT_CORRECTION_ATR")
 	public int goBackOutCorrectionClass;
-
-	/** 入退門の管理をする*/
-	@Column(name = "MANAGEMENT_OF_ENTRANCE")
-	public int managementOfEntrance;
 	
 	/** 未来日の自動打刻セット区分*/
 	@Column(name = "AUTO_STAMP_FUTURE_DAY_ATR")
 	public int autoStampForFutureDayClass;
-	
-	/** 休憩として扱う外出区分*/
-	@Column(name = "OUTING_ATR")
-	public int outingAtr;
-	
-	/** 最大使用回数*/
-	@Column(name = "MAX_USE_COUNT")
-	public BigDecimal maxUseCount;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.krcdtStampReflectPK;
 	}
 
+	/**
+	 * Instantiates a new krcmt stamp imprint.
+	 *
+	 * @param krcdtStampReflectPK the krcdt stamp reflect PK
+	 * @param breakSwitchClass the break switch class
+	 * @param autoStampReflectionClass the auto stamp reflection class
+	 * @param actualStampOfPriorityClass the actual stamp of priority class
+	 * @param reflectWorkingTimeClass the reflect working time class
+	 * @param goBackOutCorrectionClass the go back out correction class
+	 * @param autoStampForFutureDayClass the auto stamp for future day class
+	 */
 	public KrcmtStampImprint(KrcmtStampImprintPK krcdtStampReflectPK, int breakSwitchClass,
 			int autoStampReflectionClass, int actualStampOfPriorityClass,
-			int reflectWorkingTimeClass, int goBackOutCorrectionClass, int managementOfEntrance,
-			int autoStampForFutureDayClass, int outingAtr, BigDecimal maxUseCount) {
+			int reflectWorkingTimeClass, int goBackOutCorrectionClass, 
+			int autoStampForFutureDayClass
+			) {
 		super();
 		this.krcdtStampReflectPK = krcdtStampReflectPK;
 		this.breakSwitchClass = breakSwitchClass;
@@ -79,20 +83,32 @@ public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 		this.actualStampOfPriorityClass = actualStampOfPriorityClass;
 		this.reflectWorkingTimeClass = reflectWorkingTimeClass;
 		this.goBackOutCorrectionClass = goBackOutCorrectionClass;
-		this.managementOfEntrance = managementOfEntrance;
 		this.autoStampForFutureDayClass = autoStampForFutureDayClass;
-		this.outingAtr = outingAtr;
-		this.maxUseCount = maxUseCount;
-	}
-	public StampReflectionManagement toDomain() {
-		return StampReflectionManagement.createJavaType(this.krcdtStampReflectPK.companyId, this.breakSwitchClass, this.autoStampReflectionClass, this.actualStampOfPriorityClass, this.reflectWorkingTimeClass, 
-				this.goBackOutCorrectionClass, this.managementOfEntrance, this.autoStampForFutureDayClass, this.outingAtr, this.maxUseCount);
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @return the stamp reflection management
+	 */
+	public StampReflectionManagement toDomain() {
+		return StampReflectionManagement.createJavaType(this.krcdtStampReflectPK.companyId, this.breakSwitchClass, this.autoStampReflectionClass, this.actualStampOfPriorityClass, this.reflectWorkingTimeClass, 
+				this.goBackOutCorrectionClass, 
+				this.autoStampForFutureDayClass
+				);
+	}
+	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the krcmt stamp imprint
+	 */
 	public static KrcmtStampImprint toEntity(StampReflectionManagement domain){
 		return new KrcmtStampImprint(
 				new KrcmtStampImprintPK(domain.getCompanyId()),
 				domain.getBreakSwitchClass().value,domain.getAutoStampReflectionClass().value,domain.getActualStampOfPriorityClass().value, domain.getReflectWorkingTimeClass().value, domain.getGoBackOutCorrectionClass().value,
-				domain.getManagementOfEntrance().value, domain.getAutoStampForFutureDayClass().value, domain.getOutingAtr().value, domain.getMaxUseCount());
+				domain.getAutoStampForFutureDayClass().value
+				);
 	}
 }

@@ -56,5 +56,15 @@ public class CareLeaveInfoDto extends PeregDomainDto{
 	@PeregItem("IS00384")
 	private int careUsedDays;
 	
+	public static CareLeaveInfoDto createDomain(String sId, boolean childCareUseArt, int childCareUpLimSet, 
+			Integer childCareThisFiscal, Integer childCareNextFiscal, int childCareUsedDays, 
+			boolean careUseArt, int careUpLimSet, Integer careThisFiscal, Integer careNextFiscal, int careUsedDays){
+		CareLeaveInfoDto domain = new CareLeaveInfoDto(sId, childCareUseArt, childCareUpLimSet, 
+				childCareThisFiscal, childCareNextFiscal, childCareUsedDays, 
+				careUseArt, careUpLimSet, careThisFiscal, careNextFiscal, careUsedDays);
+		domain.setRecordId(sId);
+		return domain;
+	}
+	
 	
 }

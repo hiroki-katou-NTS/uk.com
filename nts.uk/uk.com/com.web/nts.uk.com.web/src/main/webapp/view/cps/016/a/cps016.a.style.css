@@ -1,3 +1,6 @@
+body{
+	overflow: hidden;
+}
 .valign-center {
 	vertical-align: middle !important;
 }
@@ -100,7 +103,7 @@ i.icon.icon-searchbox {
 #contents-area {
 	width: 1208px;
 	height: 768px;
-	
+	overflow: hidden;
 }
 
 #contents-area-left {

@@ -17,6 +17,16 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         dailyCreateTotal: KnockoutObservable<number> = ko.observable(0);
         dailyCreateStatus: KnockoutObservable<string> = ko.observable("");
         dailyCreateHasError: KnockoutObservable<string> = ko.observable("");
+        
+        // daily calculation
+        dailyCalculateCount : KnockoutObservable<number> = ko.observable(0);
+        dailyCalculateStatus : KnockoutObservable<string> = ko.observable("");
+        dailyCalculateHasError : KnockoutObservable<string> = ko.observable("");
+        
+        // monthly aggregation data
+        monthlyAggregateCount: KnockoutObservable<number> = ko.observable(0);
+        monthlyAggregateStatus: KnockoutObservable<string> = ko.observable("");
+        monthlyAggregateHasError: KnockoutObservable<string> = ko.observable("");
 
         // Period Date
         startPeriod: KnockoutObservable<string> = ko.observable("");
@@ -139,6 +149,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         // DailyCreate
                         self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
+                        
+                        // daily calculation
+                        self.dailyCalculateCount(self.getAsyncData(info.taskDatas, "dailyCalculateCount").valueAsNumber);
+                        
+                        // monthly aggregation 
+                        self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);                        
 
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
@@ -157,7 +173,15 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
-
+                            
+                            // daily calculation
+                            self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                            self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
+                            
+                            // monthly aggregation
+                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
+                            self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            
                             // Get Log data
                             self.getLogData();
                         }

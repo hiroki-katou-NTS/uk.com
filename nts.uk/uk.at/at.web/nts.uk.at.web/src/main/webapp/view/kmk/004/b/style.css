@@ -1,5 +1,10 @@
 @CHARSET "UTF-8";
 
+#func-notifier-errors {
+	top: 135px;
+    left: 125px;
+}
+
 .border-all td {
 	border: solid grey 1px;
 	text-align: center;
@@ -17,14 +22,13 @@
 }
 
 .contents-area {
-	margin-top: 30px;
 	margin-left: 50px;
 }
 .bg-dark-green {
 	background-color: #C7F391;
 }
 .right-content {
-	margin-left: 50px;
+	margin-top: 30px;
 }
 #list-workplace {
 	width: 480px;
@@ -66,10 +70,14 @@
 	margin-bottom: 10px;
 }
 #aggr-setting-content {
-	width: 300px;
+	width: 250px;
 	margin-top: 40px;
 	margin-left: 20px;
 }
+	#aggr-setting-content .setting-panel:nth-child(2) {
+		height: 170px;
+	}
+	
 .open-Detail {
 	float: right;
 	margin-bottom: 20px;
@@ -80,4 +88,12 @@
 }
 #radio-box-content .ntsRadioBox {
 	height: 40px;
+}
+
+#tab-panel .ui-widget-content:not(.disappear) {
+	min-height: 630px;
+}
+span#lblEmployeeCode {
+	display: inline-block;
+	width: 120px;
 }

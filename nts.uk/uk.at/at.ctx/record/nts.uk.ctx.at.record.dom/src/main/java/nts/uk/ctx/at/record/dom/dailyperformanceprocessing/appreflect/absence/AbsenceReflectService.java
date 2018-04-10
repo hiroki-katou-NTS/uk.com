@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 
 /**
@@ -14,16 +15,6 @@ public interface AbsenceReflectService {
 	 * @param isPre: True - 事前申請の処理, False - 事後申請の処理
 	 * @return
 	 */
-	public ApplicationReflectOutput absenceReflect(AbsenceReflectParameter absencePara, boolean isPre);
-	/**
-	 * 予定勤種の反映
-	 * @param absencePara
-	 */
-	public void reflectScheWorkTimeWorkType(AbsenceReflectParameter absencePara, boolean isPre);
-	/**
-	 * 予定勤種を反映できるかチェックする
-	 * @param absencePara
-	 * @return
-	 */
-	public boolean checkReflectScheWorkTimeType(AbsenceReflectParameter absencePara, boolean isPre);
+	public ApplicationReflectOutput absenceReflect(CommonReflectParameter absencePara, boolean isPre);
+	
 }

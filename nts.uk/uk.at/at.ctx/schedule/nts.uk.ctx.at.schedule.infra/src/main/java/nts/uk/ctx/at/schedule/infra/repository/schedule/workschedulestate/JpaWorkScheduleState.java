@@ -44,6 +44,7 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 		if (kscstWorkScheduleState.isPresent()) {
 			kscstWorkScheduleState.get().scheduleEditState = domain.getScheduleEditState().value;
 			this.commandProxy().update(kscstWorkScheduleState);
+			this.getEntityManager().flush();
 		}
 	}
 

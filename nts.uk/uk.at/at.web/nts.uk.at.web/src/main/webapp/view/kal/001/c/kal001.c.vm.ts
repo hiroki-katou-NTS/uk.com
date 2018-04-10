@@ -6,80 +6,74 @@ module nts.uk.at.view.kal001.c {
             columns: KnockoutObservableArray<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
             //data
-            listEmployee: KnockoutObservableArray<model.EmployeeSendEmail>;
+            listEmployee: KnockoutObservableArray<modeldto.EmployeeSendEmail> = ko.observableArray([]);;
+            shareEmployees : KnockoutObservableArray<modeldto.ShareEmployee> 
             isSendToMe: KnockoutObservable<boolean>;
             isSendToManager: KnockoutObservable<boolean>;
-            shareEmployee : KnockoutObservableArray<model.ShareEmployee>;
-            
-            constructor() {
+            constructor( shareEmployees: Array<modeldto.ShareEmployee>) {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
-                self.listEmployee = ko.observableArray([]);
+                self.shareEmployees  = ko.observableArray(shareEmployees);
                 self.isSendToMe = ko.observable(true);
-                self.isSendToManager = ko.observable(true);
-                for (let i = 1; i < 100; i++) {
-                    let temp = new model.EmployeeSendEmail(
-                        false,
-                        false,
-                        'workplace ' + i,
-                        'workplaceName' +'i',
-                        'employeeId' +i,
-                        'employeeCode' + i,
-                        'employeeName' + i
-                    );
-                    self.listEmployee.push(temp);
-                }
-
-                self.columns = ko.observableArray([
-                    { headerText: '', key: 'GUID', width: 1, hidden: true },
-                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToMe' },
-                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToManager' },
-                    { headerText: getText('KAL001_27'), key: 'workplaceId', width: 150 },
-                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 300 },
-                    { headerText: getText('KAL001_26'), key: 'employeeName', width: 150 }
-                ]);
-                $("#grid").ntsGrid({
-                    width: '650px',
-                    height: '350px',
-                    dataSource: self.listEmployee(),
-                    primaryKey: 'GUID',
-                    virtualization: true,
-                    virtualizationMode: 'continuous',
-                    columns: self.columns(),
-                    features: [{ name: 'Resizing' },
-                        {
-                            name: 'Selection', 
-                            mode: 'row',
-                            multipleSelection: false
-                        }
-                    ],
-                    avgRowHeight: "26px",
-                    ntsControls: [
-                        { name: 'isSendToMe', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                        { name: 'isSendToManager', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    ]
-                });
-
+                self.isSendToManager = ko.observable(true);                                              
             }
 
             /**
              * functiton start pagea
              */
-            startPage(): JQueryPromise<any> {
+            startPage(): JQueryPromise<any>  {
                 let self = this;
-                let dfd = $.Deferred();
+                let dfd = $.Deferred(); 
+                service.getEmployeeSendEmail(self.shareEmployees()).done((listEmployeeDto: Array<modeldto.EmployeeDto>)=>{
+                    self.listEmployee(_.map(listEmployeeDto, (e) =>{
+                        return new modeldto.EmployeeSendEmail(e);                        
+                    }));
+                    dfd.resolve();                     
+                }).fail((error) =>{
+                    nts.uk.ui.dialog.alertError(error);
+                });                 
 
-                dfd.resolve();
-
-                return dfd.promise();
+                               
+                self.columns = ko.observableArray([
+                    { headerText: '', key: 'GUID', width: 1, hidden: true },
+                    { headerText: getText('KAL001_23'),  dataType: 'boolean', key: 'isSendToMe', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToMe' },
+                    { headerText: getText('KAL001_24'),  dataType: 'boolean',  key: 'isSendToManager', showHeaderCheckbox: true, width: 100, ntsControl: 'isSendToManager' },
+                    { headerText: getText('KAL001_27'), key: 'workplaceName', width: 170 },
+                    { headerText: getText('KAL001_25'), key: 'employeeCode', width: 170 },
+                    { headerText: getText('KAL001_26'), key: 'employeeName', width: 170 }
+                ]);
+                
+                $("#grid").ntsGrid({
+                    height: '450px',
+                    dataSource: self.listEmployee(),
+                    primaryKey: 'GUID',
+                    virtualization: true,
+                    virtualizationMode: 'continuous',                    
+                    columns: self.columns(),
+                    features: 
+                           [                       
+                            {
+                              name: "Tooltips",
+                              columnSettings: [ 
+                                                { columnKey: "workplaceName", allowTooltips: true }
+                                              ]
+                            }                    
+                          ],
+                    enableTooltip : true,
+                    ntsControls: [
+                        { name: 'isSendToMe', options: { value: 1, text: '' },  optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                        { name: 'isSendToManager', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    ]
+                });                 
+                
+                return dfd.promise();                
             }//end start page 
 
              closeDialog(){
                  nts.uk.ui.windows.close();
             }
              sendEmail(){
-                 let self = this;
-                 console.log(" tu dep trai");                 
+                 let self = this;              
                  return;
             }
 
@@ -89,7 +83,7 @@ module nts.uk.at.view.kal001.c {
     }//end viewmodel  
 
     //module model
-    export module model {
+    export module modeldto {
 
         export class EmployeeSendEmail {
             GUID: string;
@@ -100,36 +94,32 @@ module nts.uk.at.view.kal001.c {
             employeeId: string;
             employeeCode: string;
             employeeName: string;
-            constructor(isSendToMe: boolean,
-                isSendToManager: boolean,
-                workplaceId: string,
-                workplaceName: string,
-                employeeId: string, 
-                employeeCode: string,
-                employeeName: string) {
+            constructor(e: EmployeeDto ) {
                 this.GUID = nts.uk.util.randomId();
-                this.isSendToMe = ko.observable(isSendToMe);
-                this.isSendToManager = ko.observable( isSendToManager);
-                this.workplaceId = workplaceId;
-                this.workplaceName = workplaceName;
-                this.employeeId = employeeId;
-                this.employeeCode = employeeCode;
-                this.employeeName = employeeName;
+                this.isSendToMe = ko.observable(false);
+                this.isSendToManager = ko.observable(false);
+                this.workplaceId = e.workplaceId;
+                this.workplaceName = e.workplaceName;
+                this.employeeId = e.employeeId;
+                this.employeeCode = e.employeeCode;
+                this.employeeName = e.employeeName;
             }
 
         }
         
-        export class ShareEmployee{
+        export interface EmployeeDto{
             employeeId: string;
+            employeeCode: string;
+            employeeName: string;
             workplaceId: string;
-            workplaceName: string;
-            constructor(employeeId: string, workplaceId, workplaceName: string){
-                this.employeeId = employeeId;
-                this.workplaceId = workplaceId;
-                this.workplaceName= workplaceName;
-            }    
+            workplaceName: string;   
         }
 
+        export class ShareEmployee{
+            employeeID: string;
+            workplaceID: string;
+        }
+                
     }//end module model
 
 }//end module

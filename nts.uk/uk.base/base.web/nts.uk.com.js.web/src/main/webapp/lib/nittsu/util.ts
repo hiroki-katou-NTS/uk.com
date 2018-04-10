@@ -851,4 +851,29 @@
             return true;
         }
     }
+     
+    export module cookie {
+        
+        export function get(name: string) {
+            let value = asMap()[name];
+            return util.optional.of(value);
+        }
+        
+        export function remove(name: string, attr: any) {
+            document.cookie = name + "=; path=" + attr.path + "; max-age=0";
+        }
+        
+        export function asMap(): any {
+            let map = {};
+            document.cookie.split(";")
+                .forEach(item => {
+                    let positionOfDelimiter = item.indexOf("=");
+                    let name = item.slice(0, positionOfDelimiter).trim();
+                    map[name] = item.slice(positionOfDelimiter + 1);
+                });
+            
+            return map;
+        }
+    }
 }
+

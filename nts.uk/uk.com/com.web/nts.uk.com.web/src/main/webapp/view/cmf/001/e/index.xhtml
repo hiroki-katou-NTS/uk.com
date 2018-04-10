@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 380, height: 620 };</script>
+			<script>var dialogSize = { width: 480, height: 510 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.e.vm.js" />
@@ -20,7 +20,7 @@
 				<div id ="E1_1" class = "label dialog-title" >#{i18n.getText('CMF001_180')}</div>
 				<div style = "margin-top: 15px; ">
 					<div id ="E1_2"  data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_181')}</div>
-					<div id ="E1_3" tabindex = "1"  style=" display:inline-block; width: 180px" 
+					<div id ="E1_3" tabindex = "1"  style=" display:inline-block; width: 250px" 
 					data-bind="ntsSearchBox: {
 						searchMode: 'highlight', 
 						targetKey: 'csvItemNumber', comId: 'E2_1', 
@@ -31,7 +31,7 @@
 						mode: 'igGrid'}" 
 						/>		
 					<table tabindex = "-1" id="E2_1" class = "auto-increment" data-bind="ntsGridList: {
-							width: 300,
+							width: 400,
 							height: listCsvItemHeight(),
 							name:'#{i18n.getText('CMF001_182')}',
 							dataSource: listCsvItem,
@@ -40,9 +40,9 @@
 				                { headerText: '', key: 'csvItemNumber', width: 40, hidden: true, formatter: _.escape },
 				                { headerText: '#{i18n.getText('CMF001_183')}', key: 'csvItemName', width: 180, formatter: _.escape }
 				            ],
-				            showNumbering: true,
 							multiple: false,
-							value: selectedCsvItemNumber
+							value: selectedCsvItemNumber,
+							rows: 10
 						}">
 					</table>
 				</div>

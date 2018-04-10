@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
@@ -26,6 +27,9 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	@Override
 	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID) {
 		Optional<Application_New> opApplication = applicationRepository.findByID(companyID, applicationID);
+		if(!opApplication.isPresent()){
+			throw new BusinessException("Msg_198");
+		}
 		return new ApplicationMetaOutput(
 				opApplication.get().getAppID(),
 				opApplication.get().getAppType(), 

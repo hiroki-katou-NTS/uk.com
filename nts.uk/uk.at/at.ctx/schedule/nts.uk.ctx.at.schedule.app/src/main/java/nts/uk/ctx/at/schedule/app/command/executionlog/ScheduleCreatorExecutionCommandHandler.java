@@ -401,7 +401,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			}
 
-			if (workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
+			if (workingConditionItem.isPresent()
+					&& workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
 					&& workingConditionItem.get().getScheduleMethod().isPresent()) {
 				if (workingConditionItem.get().getScheduleMethod().get()
 						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {

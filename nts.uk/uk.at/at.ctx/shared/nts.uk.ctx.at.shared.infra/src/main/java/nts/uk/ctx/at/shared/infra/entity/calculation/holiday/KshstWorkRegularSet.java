@@ -70,6 +70,14 @@ public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "WKT_ADDITION_TIME")
 	public int additionTime2;
 	
+	/*就業時間帯毎の設定を可能とする*/
+	@Column(name = "ENABLE_SET_PER_WORK_HOUR1")
+	public int enableSetPerWorkHour1;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	@Column(name = "ENABLE_SET_PER_WORK_HOUR2")
+	public int enableSetPerWorkHour2;
+	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
 	public KshstHolidayAdditionSet holidayAddtimeSet;

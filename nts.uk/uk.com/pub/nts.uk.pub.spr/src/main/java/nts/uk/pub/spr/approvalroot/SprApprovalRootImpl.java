@@ -35,6 +35,8 @@ import nts.uk.pub.spr.approvalroot.output.ApprovalRootSpr;
 @Stateless
 public class SprApprovalRootImpl implements SprApprovalRootService {
 	
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
 	
@@ -49,7 +51,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_301");
 		}
-		return this.getApproverStatus(companyID, opEmployeeSpr.get().getEmployeeID(), GeneralDate.fromString(date, "yyyy/mm/dd"));
+		return this.getApproverStatus(companyID, opEmployeeSpr.get().getEmployeeID(), GeneralDate.fromString(date, DATE_FORMAT));
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 			throw new BusinessException("Msg_1009", "Msg_1026");
 		}
 		try {
-			GeneralDate.fromString(date, "yyyy/mm/dd");
+			GeneralDate.fromString(date, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1009", date);
 		}

@@ -63,5 +63,13 @@ public interface ScheWorkUpdateService {
 	 * @param scheUpdate true: 予定勤務種類, false: 勤務種類
 	 */
 	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate);
+	/**
+	 * 休出時間の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param worktimeFrame
+	 * @param isPre
+	 */
+	public void updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre);
 
 }
