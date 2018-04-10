@@ -217,45 +217,45 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
-		// ドメインモデル「就業時間帯の設定」を取得
-		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
-
-		// 1日分の打刻反映範囲を取得
-		if (workTimeSetting.isPresent()) {
-
-			List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getScheduleTimeSheets();
-
-			// 打刻反映時間帯を取得する
-			List<StampReflectTimezone> stampReflectTimezones = this.workTimeSettingService.getStampReflectTimezone(
-					companyID, workTimeCode.v(), 
-					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null) ? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes() : null,
-					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null) ? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes() : null,
-					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null) ? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes() : null,
-					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null) ? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes() : null);
-
-			 if (!stampReflectTimezones.isEmpty()) {
-			 List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new
-			 ArrayList<>();
-				stampReflectTimezones.stream().forEach(timezone -> {
-					StampReflectTimezoneOutput stampReflectTimezoneOutput = new StampReflectTimezoneOutput(
-							timezone.getWorkNo(), timezone.getClassification(), timezone.getEndTime(),
-							timezone.getStartTime());
-					stampReflectRangeOutputs.add(stampReflectTimezoneOutput);
-				});
-				stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectRangeOutputs);
-			} else {
-				return stampReflectRangeOutput;
-			 }
+//		// ドメインモデル「就業時間帯の設定」を取得
+//		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
+//
+//		// 1日分の打刻反映範囲を取得
+//		if (workTimeSetting.isPresent()) {
+//
+//			List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getScheduleTimeSheets();
+//
+//			// 打刻反映時間帯を取得する
+//			List<StampReflectTimezone> stampReflectTimezones = this.workTimeSettingService.getStampReflectTimezone(
+//					companyID, workTimeCode.v(), 
+//					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null) ? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes() : null,
+//					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null) ? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes() : null,
+//					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null) ? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes() : null,
+//					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null) ? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes() : null);
+//
+//			 if (!stampReflectTimezones.isEmpty()) {
+//			 List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new
+//			 ArrayList<>();
+//				stampReflectTimezones.stream().forEach(timezone -> {
+//					StampReflectTimezoneOutput stampReflectTimezoneOutput = new StampReflectTimezoneOutput(
+//							timezone.getWorkNo(), timezone.getClassification(), timezone.getEndTime(),
+//							timezone.getStartTime());
+//					stampReflectRangeOutputs.add(stampReflectTimezoneOutput);
+//				});
+//				stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectRangeOutputs);
+//			} else {
+//				return stampReflectRangeOutput;
+//			 }
 			// fake data
-//			List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
-//			StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(new WorkNo(1),
-//					GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(720), new TimeWithDayAttr(480));
-//			StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(new WorkNo(1),
-//					GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1320), new TimeWithDayAttr(1020));
-//			lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
-//			lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
-//			stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
-		}
+			List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
+			StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(new WorkNo(1),
+					GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(1440), new TimeWithDayAttr(0));
+			StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(new WorkNo(1),
+					GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1440), new TimeWithDayAttr(0));
+			lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
+			lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
+			stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
+//		}
 		return stampReflectRangeOutput;
 	}
 
