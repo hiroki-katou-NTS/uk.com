@@ -111,8 +111,14 @@ public class SelectionFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date) {
+	public List<SelectionInitDto> getAllSelectionByCompanyId(String selectionItemId, GeneralDate date, PersonEmployeeType perEmplType) {
+		
 		String companyId = AppContexts.user().companyId();
+		
+		if (perEmplType == PersonEmployeeType.PERSON){
+			companyId = AppContexts.user().zeroCompanyIdInContract();
+		}
+		// Zero company
 		List<SelectionInitDto> selectionLst = new ArrayList<>();
 		List<Selection> domainLst = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, date);
 		if (domainLst != null) {
@@ -137,7 +143,7 @@ public class SelectionFinder {
 			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
 					dto.getSelectionItemRefType());
 			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert,
-					true);
+					true, PersonEmployeeType.EMPLOYEE, true);
 
 		}
 		return new ArrayList<>();

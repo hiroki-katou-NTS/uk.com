@@ -21,7 +21,7 @@ public class WkpStatWorkTimeSetDto {
 	private int year;
 	
 	/** The employee id. */
-	private String wkpId;
+	private String workplaceId;
 
 	/** The defor labor setting. */
 	private WkpDeforLaborSettingDto deforLaborSetting;

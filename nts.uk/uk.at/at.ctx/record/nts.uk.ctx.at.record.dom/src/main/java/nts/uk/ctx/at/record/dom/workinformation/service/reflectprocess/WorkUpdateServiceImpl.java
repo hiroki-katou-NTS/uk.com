@@ -102,7 +102,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	
 	
 	@Override
-	public void updateStartTimeOfReflect(TimeReflectParameter para) {
+	public void updateScheStartEndTime(TimeReflectPara para) {
 		
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
@@ -121,15 +121,10 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 		ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
 		ScheduleTimeSheet timeSheet;
-		if(para.isPreCheck()) {
-			timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
-					para.getTime(), 
-					timeSheetFrameNo.getLeaveWork().v());
-		} else {
-			timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(),
-					timeSheetFrameNo.getAttendance().v(),
-					para.getTime());
-		}
+		timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
+				para.isStart() ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
+				para.isEnd() ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
+
 		dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
 		dailyPerfor.getScheduleTimeSheets().add(timeSheet);		
 		//dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
@@ -139,26 +134,27 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		//日別実績の編集状態
 		//予定開始時刻の項目ID
 		List<Integer> lstItem = new ArrayList<Integer>();
-		if(para.isPreCheck()) {
-			if(para.getFrameNo() == 1) {
+		if(para.getFrameNo() == 1) {
+			if(para.isStart()) {
 				lstItem.add(3);	
-			} else {
-				lstItem.add(5);	
-			}	
-		} else {
-			if(para.getFrameNo() == 1) {
+			}
+			if(para.isEnd()) {
 				lstItem.add(4);	
-			} else {
+			}
+		} else {
+			if(para.isStart()) {
+				lstItem.add(5);	
+			}
+			if(para.isEnd()) {
 				lstItem.add(6);	
 			}
 		}
-		
 		//TODO add lstItem
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		
 	}
 	@Override
-	public void updateReflectStartEndTime(TimeReflectParameter para) {
+	public void updateRecordStartEndTime(TimeReflectParameter para) {
 		//開始時刻を反映する 
 		Optional<TimeLeavingOfDailyPerformance> optTimeLeavingOfDaily = timeLeavingOfDaily.findByKey(para.getEmployeeId(), para.getDateData());
 		if(!optTimeLeavingOfDaily.isPresent()) {
@@ -172,6 +168,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
 		Optional<TimeActualStamp> optTimeAttendance;
+		
+		
 		if(para.isPreCheck()) {
 			optTimeAttendance = timeLeavingWork.getAttendanceStamp();	
 		}else {
@@ -450,15 +448,20 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Override
 	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate) {
 		//日別実績の勤務情報
-		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(employeeId, dateData).get();
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dateData);
+		if(!optDailyPerfor.isPresent()) {
+			return;
+		} 
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
+		
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			lstItem.add(1);
-			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));
+			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態

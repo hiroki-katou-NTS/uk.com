@@ -9,7 +9,7 @@
 		<com:ko tag="with" bind="worktimeSetting">
 			<!-- YEAR -->
 			<div class="control-group ">
-				<div tabindex="6" id="companyYearPicker" 
+				<div tabindex="#{baseTabIndex + 3}" id="worktimeYearPicker" 
 					data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
 											value: normalSetting().year, 
 											dateFormat: 'YYYY', 
@@ -21,11 +21,11 @@
 			<!-- YEAR -->
 			<ui:insert name="worktime-setting-extra-info" />
 			<!-- Start of TAB PANEL -->
-			<div tabindex="7" id="tab-panel" class="pull-left"
+			<div tabindex="#{baseTabIndex + 4}" id="tab-panel" class="pull-left"
 				data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 
 				<!-- NORMAL WORK TIME SETTING START -->
-				<div class="tab-content-1">
+				<div class="tab-content-1" id="worktime-tab-1">
 					<div class="control-group">
 						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
 						<table class="border-all tbl-monthly">
@@ -39,7 +39,7 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': 11 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 5 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 									</td>
 								</tr>
 							</com:ko>
@@ -49,7 +49,7 @@
 				<!-- NORMAL WORK TIME SETTING END -->
 
 				<!-- FLEX WORK TIME SETTING START -->
-				<div class="tab-content-2">
+				<div class="tab-content-2" id="worktime-tab-2">
 					<div class="control-group">
 						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
 						<table class="border-all tbl-monthly">
@@ -64,10 +64,10 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': 25 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': 37 + $index()}, ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 									</td>
 								</tr>
 							</com:ko>
@@ -78,7 +78,7 @@
 				<!-- FLEX WORK TIME SETTING END -->
 
 				<!-- DEFORMATION LABOR WORK TIME SETTING START -->
-				<div class="tab-content-3">
+				<div class="tab-content-3" id="worktime-tab-3">
 					<div class="control-group">
 						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
 						<table class="border-all tbl-monthly">
@@ -92,7 +92,7 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': 52 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 41 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 									</td>
 								</tr>
 							</com:ko>
@@ -109,7 +109,7 @@
 				<!-- Normal Setting -->
 				<div class="panel panel-frame setting-panel">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_46')}</div>
-					<button class="open-Detail" data-bind="click: gotoF">#{i18n.getText('KMK004_47')}</button>
+					<button class="open-Detail" tabindex="#{baseTabIndex + 53}" data-bind="click: gotoF">#{i18n.getText('KMK004_47')}</button>
 
 					<!-- <com:ko tag="with" bind=normalWorktime> -->
 						<table class="border-all">
@@ -119,13 +119,13 @@
 							</tr>
 							<tr>
 								<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-								<td><input tabindex="9"
+								<td><input tabindex="#{baseTabIndex + 54}"
 									data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: normalWorktime().dailyTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 								</td>
 							</tr>
 							<tr>
 								<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
-								<td><input tabindex="10"
+								<td><input tabindex="#{baseTabIndex + 55}"
 									data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: normalWorktime().weeklyTime, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 								</td>
 							</tr>
@@ -135,8 +135,8 @@
 				<!-- Flex Setting -->
 				<div class="panel panel-frame setting-panel">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_48')}</div>
-					<BUTTON class="open-Detail" data-bind="click: gotoG">#{i18n.getText('KMK004_47')}</BUTTON>
-					<div id="radio-box-content" data-bind="ntsRadioBoxGroup: {
+					<BUTTON class="open-Detail" tabindex="#{baseTabIndex + 56}" data-bind="click: gotoG">#{i18n.getText('KMK004_47')}</BUTTON>
+					<div id="radio-box-content" tabindex="#{baseTabIndex + 57}" data-bind="ntsRadioBoxGroup: {
 									name: '#[KMK004_50]',
 									options: $parent.aggrSelectionItemList,
 									optionsValue: 'id',
@@ -147,7 +147,7 @@
 				<!-- Deformed Labor Setting -->
 				<div class="panel panel-frame setting-panel">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_49')}</div>
-					<button class="open-Detail" data-bind="click: gotoH">#{i18n.getText('KMK004_47')}</button>
+					<button class="open-Detail" tabindex="#{baseTabIndex + 58}" data-bind="click: gotoH">#{i18n.getText('KMK004_47')}</button>
 
 					<com:ko tag="with" bind="deformLaborWorktime">
 						<table class="border-all">
@@ -157,13 +157,13 @@
 							</tr>
 							<tr>
 								<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-								<td><input tabindex="9"
+								<td><input tabindex="#{baseTabIndex + 59}"
 									data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: dailyTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 								</td>
 							</tr>
 							<tr>
 								<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
-								<td><input tabindex="10"
+								<td><input tabindex="#{baseTabIndex + 60}"
 									data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weeklyTime, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 								</td>
 							</tr>

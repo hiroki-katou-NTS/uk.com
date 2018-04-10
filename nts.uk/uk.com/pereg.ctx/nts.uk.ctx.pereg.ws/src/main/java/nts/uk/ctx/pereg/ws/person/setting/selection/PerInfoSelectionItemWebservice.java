@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommand;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommand;
@@ -42,6 +41,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.Selectio
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionInitQuery;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionQuery;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Path("ctx/pereg/person/info/setting/selection")
@@ -194,9 +194,7 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Lanlt
 	@POST
 	@Path("findAllCombox")
-	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery  query) {
-		//return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
-		
+	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery query) {
 		return this.selecFider.getAllComboxByHistoryId(query);
 	}
 	

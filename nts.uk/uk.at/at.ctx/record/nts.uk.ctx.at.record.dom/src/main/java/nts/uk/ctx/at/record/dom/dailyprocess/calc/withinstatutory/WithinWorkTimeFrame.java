@@ -247,14 +247,14 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		//就業時間帯の設定を取得
 		NotUseAtr deductLateLeaveEarly = premiumAtr.isRegularWork()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()
 																   :holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly();
-		if(jugmentDeductLateEarly(premiumAtr,deductLateLeaveEarly)) {
-			//遅刻控除時間を計算
-			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late, holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
-			//早退控除時間を計算
-			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
-			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
-			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
-		}
+//		if(jugmentDeductLateEarly(premiumAtr,deductLateLeaveEarly)) {
+//			//遅刻控除時間を計算
+//			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late, holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
+//			//早退控除時間を計算
+//			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
+//			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
+//			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
+//		}
 		
 		//時間休暇使用の残時間を計算 
 		//timevacationUseTimeOfDaily.subtractionDeductionOffSetTime(timeVacationOffSetTime);
@@ -519,8 +519,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 									   dupTimeSheet.getTimezone(),
 									   duplicateTimeSheet.getCalcrange(),
 									   recordTimeSheet,dedTimeSheet,bonusPayTimeSheet,duplicatemidNightTimeSheet,specifiedBonusPayTimeSheet,
-									   Optional.of(lateTimeSheet),
-									   Optional.of(LeaveEarlyTimeSheet));
+									   Optional.empty(),
+									   Optional.empty());
 	}
 	
 	/**

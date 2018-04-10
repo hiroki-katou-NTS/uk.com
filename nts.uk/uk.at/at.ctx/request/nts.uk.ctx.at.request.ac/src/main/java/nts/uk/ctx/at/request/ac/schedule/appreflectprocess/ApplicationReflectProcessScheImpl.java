@@ -24,7 +24,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getGoBackDirectly().getWorkTypeCD().v(),
 				reflectSche.getGoBackDirectly().getSiftCD().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart1().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeEnd1().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart2().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v());
 		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
@@ -36,12 +36,14 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 	}
 
 	@Override
-	public void forleaveReflect(ReflectScheDto reflectSche) {
+	public boolean forleaveReflect(ReflectScheDto reflectSche) {
 		CommonReflectSchePubParam leavePra = new CommonReflectSchePubParam(reflectSche.getEmployeeId(),
 				reflectSche.getDatePara(),
-				reflectSche.getForLeave().getWorkTypeCode().v(),
-				reflectSche.getForLeave().getWorkTimeCode().v());
-		appReflectSchePub.appForLeaveSche(leavePra);
+				reflectSche.getForLeave().getWorkTypeCode().v(), //勤務種類=INPUT．勤務種類コード chi update workType
+				null,
+				null,
+				null);
+		return appReflectSchePub.appForLeaveSche(leavePra);
 	}
 
 	@Override
@@ -49,7 +51,9 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 		CommonReflectSchePubParam workChangePara = new CommonReflectSchePubParam(reflectSche.getEmployeeId(), 
 				reflectSche.getDatePara(), 
 				reflectSche.getWorkChange().getWorkTypeCd(), 
-				reflectSche.getWorkChange().getWorkTimeCd());
+				reflectSche.getWorkChange().getWorkTimeCd(),
+				reflectSche.getAppInfor().getStartDate() == null ? null : reflectSche.getAppInfor().getStartDate().get(),
+				reflectSche.getAppInfor().getEndDate() == null ? null : reflectSche.getAppInfor().getEndDate().get());
 		
 		return appReflectSchePub.appWorkChangeReflect(workChangePara);
 	}

@@ -15,15 +15,15 @@ module nts.uk.at.view.kmk004.b {
     
         }
         
-        export function removeCompanySetting(command: any): JQueryPromise<any> {
+        export function removeEmployeeSetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.removeEmployeeSetting, command);
         }
 
-        export function findCompanySetting(year: number, sid: string): JQueryPromise<any> {
+        export function findEmployeeSetting(year: number, sid: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findEmployeeSetting + '/' + year + '/' + sid);
         }
         
-        export function saveCompanySetting(command: any): JQueryPromise<any> {
+        export function saveEmployeeSetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveEmployeeSetting, command);
         }
     

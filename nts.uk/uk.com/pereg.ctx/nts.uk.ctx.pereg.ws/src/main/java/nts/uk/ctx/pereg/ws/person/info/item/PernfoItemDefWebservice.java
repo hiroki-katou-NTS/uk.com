@@ -182,4 +182,6 @@ public class PernfoItemDefWebservice extends WebService {
 	public List<SimpleItemDef> getSimpleItemDefsByCtgCd(@PathParam("ctgcd") String ctgCd) {
 		return itemDefFinder.getSingpleItemDef(ctgCd);
 	}
+	
+	
 }

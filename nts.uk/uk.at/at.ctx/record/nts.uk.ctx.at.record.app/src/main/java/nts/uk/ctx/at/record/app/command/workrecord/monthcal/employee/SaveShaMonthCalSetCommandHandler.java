@@ -52,7 +52,7 @@ public class SaveShaMonthCalSetCommandHandler extends CommandHandler<SaveShaMont
 		
 		// get employee id
 		SaveShaMonthCalSetCommand command = context.getCommand();
-		String sid = command.getSid();
+		String sid = command.getEmpId();
 
 		ShaDeforLaborMonthActCalSet shaDeforLaborMonthActCalSet = new ShaDeforLaborMonthActCalSet(context.getCommand());
 		ShaFlexMonthActCalSet shaFlexMonthActCalSet = new ShaFlexMonthActCalSet(context.getCommand());

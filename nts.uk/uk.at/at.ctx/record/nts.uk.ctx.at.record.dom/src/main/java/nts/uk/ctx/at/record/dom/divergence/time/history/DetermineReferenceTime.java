@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.divergence.time.history;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
 
 @Getter
 @Setter
@@ -11,14 +12,14 @@ import lombok.Setter;
  * The Class DetermineReferenceTime.
  */
 // 基準時間の判定内容
-public class DetermineReferenceTime {
+public class DetermineReferenceTime extends DomainObject {
 
 	/** The reference time. */
 	// 判定した基準時間
 	ReferenceTime referenceTime;
 	// 閾値
 	/** The threshold. */
-	int threshold;
+	DivergenceReferenceTime threshold;
 
 	/**
 	 * Instantiates a new determine reference time.
@@ -32,12 +33,13 @@ public class DetermineReferenceTime {
 	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((referenceTime == null) ? 0 : referenceTime.hashCode());
-		result = prime * result + threshold;
+		result = prime * result + ((threshold == null) ? 0 : threshold.hashCode());
 		return result;
 	}
 
@@ -57,7 +59,10 @@ public class DetermineReferenceTime {
 		DetermineReferenceTime other = (DetermineReferenceTime) obj;
 		if (referenceTime != other.referenceTime)
 			return false;
-		if (threshold != other.threshold)
+		if (threshold == null) {
+			if (other.threshold != null)
+				return false;
+		} else if (!threshold.equals(other.threshold))
 			return false;
 		return true;
 	}

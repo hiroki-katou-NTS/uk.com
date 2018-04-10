@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.algorithm;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -23,7 +24,7 @@ public class EmpReferenceRangeServiceImpl implements EmpReferenceRangeService {
 	@Override
 	public Optional<Role> getByUserIDAndReferenceDate(String UserID, int roleType, GeneralDate referenceDate) {
 		// アルゴリズム「ユーザIDからロールを取得する」を実行する
-		String roleID = roleIndividualService.getRoleFromUserId(UserID, RoleType.EMPLOYMENT.value, referenceDate);
+		String roleID = roleIndividualService.getRoleFromUserId(UserID,roleType , referenceDate);
 		// ドメインモデル「ロール」を取得する (Lấy Domain Model 「ロール」)
 		Optional<Role> role = roleRepository.findByRoleId(roleID);
 		return role;

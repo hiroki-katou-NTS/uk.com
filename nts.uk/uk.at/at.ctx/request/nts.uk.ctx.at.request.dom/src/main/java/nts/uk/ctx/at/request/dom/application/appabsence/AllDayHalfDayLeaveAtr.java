@@ -8,11 +8,11 @@ public enum AllDayHalfDayLeaveAtr {
 	/**
 	 * 終日休暇
 	 */
-	ALL_DAY_LEAVE(1),
+	ALL_DAY_LEAVE(0),
 	/**
 	 * 半日休暇
 	 */
-	HALF_DAY_LEAVE(0);
+	HALF_DAY_LEAVE(1);
 	
 	public final int value;
 	

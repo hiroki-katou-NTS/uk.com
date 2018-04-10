@@ -105,7 +105,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput preOvertimeReflect(PreOvertimePubParameter param) {
 		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				reflect.getReasonNotReflect().value == null ? null : EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 
@@ -113,7 +113,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput afterOvertimeReflect(PreOvertimePubParameter param) {
 		ApplicationReflectOutput reflect = afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				reflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 
@@ -143,17 +143,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 
 	@Override
 	public AppReflectPubOutput absenceReflect(CommonReflectPubParameter param, boolean isPre) {
-		CommonReflectParameter absencePara = new CommonReflectParameter(param.getEmployeeId(), 
-				param.getBaseDate(), 
-				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class), 
-				param.isScheTimeReflectAtr(), 
-				param.getWorkTypeCode(), 
-				"",
-				EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class), 
-				EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class)); 
-		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(absencePara, isPre);
+		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(this.toRecordPara(param), isPre);
 		AppReflectPubOutput dataOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return dataOutput;
 	}
 
@@ -164,7 +156,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.getHolidayWorkPara().getMapWorkTimeFrame(),
 				param.getHolidayWorkPara().getNightTime(),
 				EnumAdaptor.valueOf(param.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
-				param.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(param.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+				param.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(param.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class),
+				param.getHolidayWorkPara().getStartTime(),
+				param.getHolidayWorkPara().getEndTime());
 		HolidayWorktimePara para = new HolidayWorktimePara(param.getEmployeeId(),
 				param.getBaseDate(),
 				param.isHolidayWorkReflectFlg(), 
@@ -172,24 +166,30 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isScheReflectFlg(),
 				appPara);
 		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);
-		ReasonNotReflectPubRecord tem = outputData.getReflectedState() == null ? ReasonNotReflectPubRecord.ACTUAL_CONFIRMED : ReasonNotReflectPubRecord.NOT_PROBLEM;
 		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
 				outputData.getReflectedState() == null ? null : EnumAdaptor.valueOf(outputData.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 	}
 
 	@Override
 	public AppReflectPubOutput workChangeReflect(CommonReflectPubParameter param, boolean isPre) {
+		
+		ApplicationReflectOutput workChangeOut = workChangeService.workchangeReflect(this.toRecordPara(param), isPre);
+		AppReflectPubOutput outPutData = new AppReflectPubOutput(EnumAdaptor.valueOf(workChangeOut.getReflectedState().value, ReflectedStatePubRecord.class),
+				workChangeOut.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(workChangeOut.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		
+		return outPutData;
+	}
+	
+	private CommonReflectParameter toRecordPara(CommonReflectPubParameter param) {
 		CommonReflectParameter workchangePara = new CommonReflectParameter(param.getEmployeeId(), param.getBaseDate(), EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 			 	param.isScheTimeReflectAtr(),
 			 	param.getWorkTypeCode(),
 			 	param.getWorkTimeCode(),
 			 	EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class),
-			 	param.getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class));
-		ApplicationReflectOutput workChangeOut = workChangeService.workchangeReflect(workchangePara, isPre);
-		AppReflectPubOutput outPutData = new AppReflectPubOutput(EnumAdaptor.valueOf(workChangeOut.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(workChangeOut.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		
-		return outPutData;
+			 	param.getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class),
+			 	param.getStartDate(),
+			 	param.getEndDate());
+		return workchangePara;
 	}
 
 }

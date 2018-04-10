@@ -363,14 +363,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		TimeWithDayAttr startTime = new TimeWithDayAttr(0);
 		TimeWithDayAttr endTime = new TimeWithDayAttr(0);
+		//コアタイムの設定があった時
 		if(!duplicateCoreTimeList.isEmpty()) {
 			startTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(0).getStart();
 			endTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(duplicateCoreTimeList.size() - 1).getEnd();
 			/*フレックス時間帯に入れる*/
-			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,new TimeSpanForCalc(startTime, endTime));
+			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.of(new TimeSpanForCalc(startTime, endTime)));
 		}
+		//ない時
 		else {
-			return this;
+			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.empty());
 		}
 	}
 	

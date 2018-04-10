@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -68,7 +69,6 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -287,7 +287,7 @@ public class AppHolidayWorkFinder {
 		  //14-1.詳細画面起動前申請共通設定を取得する
 		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appID);
 		if(!opAppHolidayWork.isPresent()){
-			throw new RuntimeException("Msg_198");
+			throw new BusinessException("Msg_198");
 		}
 		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
 		AppHolidayWorkDto appHolidayWorkDto = AppHolidayWorkDto.fromDomain(appHolidayWork);
@@ -401,6 +401,11 @@ public class AppHolidayWorkFinder {
 					});;
 		});
 		appHolidayWorkDto.setHolidayWorkInputDtos(holidayWorkInputDtos);
+		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value) {
+			appHolidayWorkDto.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+		}else{
+			appHolidayWorkDto.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
+		}
 		return appHolidayWorkDto;
 	}
 	

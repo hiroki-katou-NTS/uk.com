@@ -33,14 +33,6 @@ public class PerInfoSelectionItemFinder {
 			// グループ会社管理者でない場合トップページへ戻す処理を追加
 			// エラーメッセージ（#Msg_1103）を表示するHiển thị error message （#Msg_1103）
 			throw new BusinessException("Msg_1103");
-			// return null;
-
-			// String companyId = AppContexts.user().companyId();
-			// return
-			// this.perInfoSelectionItemRepo.getAllSelectionItemByContractCdAndCID(contractCode,
-			// companyId).stream()
-			// .map(i ->
-			// PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
 		} else {
 			// ログイン者がグループ会社管理者かどうかの判定を追加
 			return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCd(contractCode).stream()

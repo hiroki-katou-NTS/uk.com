@@ -193,6 +193,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		int type = 0;
 		if(abs.isPresent()){//don xin nghi
 			absId = appId;
+			//tim lien ket theo abs
 			sync = compLeaveRepo.findByAbsID(appId);
 			if(sync.isPresent() && sync.get().getSyncing().equals(SyncState.SYNCHRONIZING)){
 				recId = sync.get().getRecAppID();

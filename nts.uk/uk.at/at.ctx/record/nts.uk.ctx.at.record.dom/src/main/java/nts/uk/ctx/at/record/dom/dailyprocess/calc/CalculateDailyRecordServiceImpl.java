@@ -620,13 +620,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//個人労働条件
 		//PersonalLaborCondition personalLabor = new PersonalLaborCondition(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 		//休暇クラス
-		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
-																	  new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)),
-																	  new YearlyReservedOfDaily(new AttendanceTime(0)),
-																	  new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-																	  new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-																	  new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-																	  new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+		VacationClass vacation = new VacationClass(	new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)), 
+				   													   new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)), 
+				   													   new YearlyReservedOfDaily(new AttendanceTime(0)), 
+				   													   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+				   													   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+				   													   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+				   													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		

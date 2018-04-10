@@ -529,7 +529,7 @@ public class CommonApprovalRootFinder {
 			throw new BusinessException("Msg_1078");
 
 		return employeeWithRange.map(x -> {
-			return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getPersonID(), x.getEmployeeCD(),
+			return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getEmployeeCD(),
 					x.getEmployeeID());
 		}).orElse(null);
 	}

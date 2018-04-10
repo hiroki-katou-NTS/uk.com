@@ -16,4 +16,6 @@ public interface ShortTimeOfDailyPerformanceRepository {
 	void updateByKey(ShortTimeOfDailyPerformance shortWork);
 	
 	void insert(ShortTimeOfDailyPerformance shortWork);
+	
+	void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
 }
