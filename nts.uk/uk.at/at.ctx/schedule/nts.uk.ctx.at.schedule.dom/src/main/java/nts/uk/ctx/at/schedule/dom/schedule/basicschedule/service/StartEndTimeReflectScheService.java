@@ -7,7 +7,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.Time
  * @author dudt
  *
  */
-public interface StartTimeReflectScheService {
+public interface StartEndTimeReflectScheService {
 	/**
 	 * domain 「勤務予定基本情報」、「勤務予定項目状態」を更新する
 	 * @param startTimeDto
