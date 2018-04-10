@@ -42,8 +42,7 @@ public interface EmployeeRequestAdapter {
 	SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate);
 	
 	/**
-	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する
-	 * RequestList #126
+	 * 承認状況社員メールアドレス取得
 	 * @param sIds 社員ID
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */

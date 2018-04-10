@@ -80,7 +80,7 @@
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
-						<label class="text_line" data-bind="text:parseText(appDate)"></label>
+						<label class="text_line" data-bind="text:appDate"></label>
 					</div>
 
 				</div>
@@ -181,20 +181,23 @@
 
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
-						<label class="text_line" data-bind="text:parseText(appDate)"></label>
+						<label class="text_line" data-bind="text:appDate"></label>
 					</div>
-
-					<div data-bind="if:$parent.screenModeNew() ==false"
-						class="div_line_col_3">
-						<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
-						<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
-
-						<button tabindex="1">#{i18n.getText('KAF011_26')}</button>
-
-						<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
-						<span class="caret-right caret-inline"></span>
+					<div data-bind="if:$parent.screenModeNew() ==false">
+						<div class="div_line_col_3">
+							<div data-bind="if:$parent.appComSelectedCode() ==0"
+								style="display: inline-block;">
+								<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
+								<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
+							</div>
+							<button style="display: inline-block;" tabindex="1">#{i18n.getText('KAF011_26')}</button>
+							<div style="display: inline-block;"
+								data-bind="if:wkType().workAtr() == 0">
+								<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
+								<span class="caret-right caret-inline"></span>
+							</div>
+						</div>
 					</div>
-
 				</div>
 				<div class="div_line">
 					<div class="div_line_col_1">
@@ -297,10 +300,9 @@
 					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<textarea style="height: 100px" tabindex="6"
+					<textarea style="height: 100px" tabindex="6" id="appReason"
 						data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
-					required:appTypeSet().displayAppReason() !=0,
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,

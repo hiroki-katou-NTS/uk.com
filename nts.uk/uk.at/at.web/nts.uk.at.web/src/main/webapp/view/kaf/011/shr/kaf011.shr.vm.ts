@@ -172,7 +172,7 @@ module nts.uk.at.view.kaf011.shr {
             }
         }
         export class AppItems {
-            appID: KnockoutObservable<string> = ko.observable('');
+            appID: KnockoutObservable<string> = ko.observable(null);
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
             wkType: KnockoutObservable<WkType> = ko.observable(new WkType(null));
             wkTypeCD: KnockoutObservable<string> = ko.observable(null);
@@ -209,10 +209,10 @@ module nts.uk.at.view.kaf011.shr {
                                 self.wkTime1().clearData();
                                 self.wkTime2().clearData();
                             }
-
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
+                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
@@ -235,14 +235,16 @@ module nts.uk.at.view.kaf011.shr {
 
                 self.appDate.subscribe((newDate) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
+                        absDate = vm.absWk().appDate(),
+                        recDate = vm.recWk().appDate(),
                         changeDateParam = {
-                            holidayDate: vm.absWk().appDate(),
-                            takingOutDate: vm.recWk().appDate(),
+                            holidayDate: absDate,
+                            takingOutDate: recDate,
                             comType: vm.appComSelectedCode(),
                             uiType: 0
-
                         }
-                    if (!vm.screenModeNew() || !newDate || new Date(newDate.toString()).toString() == "Invalid Date" || newDate.toString().length != 10) { return; }
+
+                    if (!vm.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
                     block.invisible();
                     service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
                         vm.recWk().wkTypes(data.recWkTypes || []);
@@ -264,6 +266,7 @@ module nts.uk.at.view.kaf011.shr {
                 return true;
 
             }
+
             showAbsWorkTimeZone() {
                 let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
                     workAtr = self.wkType().workAtr(),
@@ -280,6 +283,7 @@ module nts.uk.at.view.kaf011.shr {
                     Attendance = 0;
                 //利用する
                 if (wkTimeSelect == 1) {
+                    //午前と午後
                     if (workAtr == 1) {
                         if ((afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance)) {
                             return true;
@@ -296,6 +300,7 @@ module nts.uk.at.view.kaf011.shr {
                 }
                 //半休時のみ利用する
                 if (wkTimeSelect == 2) {
+                    //午前と午後
                     if (workAtr == 1) {
                         if (afternoonType != 0 && morningType != 0) {
                             return false;
@@ -332,10 +337,6 @@ module nts.uk.at.view.kaf011.shr {
                     }
                 }
                 return true;
-            }
-
-            parseText(date) {
-                return nts.uk.time.formatDate(date(), "YYYY/MM/DD");
             }
 
             parseTime(value) {

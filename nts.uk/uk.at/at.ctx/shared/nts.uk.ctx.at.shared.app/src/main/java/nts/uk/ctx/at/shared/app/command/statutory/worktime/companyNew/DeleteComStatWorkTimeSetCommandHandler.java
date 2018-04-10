@@ -44,12 +44,12 @@ public class DeleteComStatWorkTimeSetCommandHandler
 		String companyId = AppContexts.user().companyId();
 		int year = command.getYear();
 		
-		// remove ComNormalSetting, ComFlexSetting, ComDeforLaborSetting, ComRegularLaborTime, ComTransLaborTime with companyID & year
-		this.comNormalSettingRepository.remove(companyId, year);
-		this.comFlexSettingRepository.remove(companyId, year);
-		this.comDeforLaborSettingRepository.remove(companyId, year);
-		this.comRegularLaborTimeRepository.remove(companyId);
-		this.comTransLaborTimeRepository.remove(companyId);
+		// remove ComNormalSetting, ComFlexSetting, ComDeforLaborSetting, ComRegularLaborTime, ComTransLaborTime with companyID & year if present
+		this.comNormalSettingRepository.find(companyId, year).ifPresent((setting) -> this.comNormalSettingRepository.remove(companyId, year));
+		this.comFlexSettingRepository.find(companyId, year).ifPresent((setting) -> this.comFlexSettingRepository.remove(companyId, year));
+		this.comDeforLaborSettingRepository.find(companyId, year).ifPresent((setting) -> this.comDeforLaborSettingRepository.remove(companyId, year));
+		this.comRegularLaborTimeRepository.find(companyId).ifPresent((setting) -> this.comRegularLaborTimeRepository.remove(companyId));
+		this.comTransLaborTimeRepository.find(companyId).ifPresent((setting) -> this.comTransLaborTimeRepository.remove(companyId));
 	}
 
 }

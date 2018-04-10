@@ -34,6 +34,11 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  "
 			+ " ORDER BY c.krcdtIdentificationStatusPK.processingYmd ASC ";
 
+	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE = "DELETE FROM KrcdtIdentificationStatus c "
+			+ " WHERE c.krcdtIdentificationStatusPK.employeeId = :employeeId "
+			+ " AND c.krcdtIdentificationStatusPK.processingYmd = :processingYmd ";
+
+
 	@Override
 	public List<Identification> findByEmployeeID(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(GET_BY_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
@@ -51,6 +56,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	@Override
 	public void insert(Identification identification) {
 		this.commandProxy().insert(KrcdtIdentificationStatus.toEntity(identification));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -58,6 +64,14 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 		this.getEntityManager().createQuery(REMOVE_BY_KEY, KrcdtIdentificationStatus.class)
 				.setParameter("employeeId", employeeId).setParameter("processingYmd", processingYmd)
 				.setParameter("companyID", companyId).executeUpdate();
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd) {
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE, KrcdtIdentificationStatus.class)
+		.setParameter("employeeId", employeeId).setParameter("processingYmd", processingYmd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

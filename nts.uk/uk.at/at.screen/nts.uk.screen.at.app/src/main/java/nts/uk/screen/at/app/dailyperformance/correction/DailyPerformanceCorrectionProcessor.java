@@ -449,7 +449,7 @@ public class DailyPerformanceCorrectionProcessor {
 			//set checkbox sign
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
+			if (resultOfOneRow != null) {
 				lockData(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
@@ -600,27 +600,6 @@ public class DailyPerformanceCorrectionProcessor {
 		data.setCellDatas(cellDatas);
 	}
 
-	private boolean isDataWorkInfoEmpty(List<ItemValue> values) {
-		if (values == null || values.isEmpty())
-			return true;
-		else {
-			List<ItemValue> data = values.stream().filter(
-					x -> (checkLayoutDataWork(x.getLayoutCode()) && x.getValue() != null && !x.getValue().equals("")))
-					.collect(Collectors.toList());
-			if (data.isEmpty())
-				return true;
-			else
-				return false;
-		}
-	}
-
-	private boolean checkLayoutDataWork(String layoutCode) {
-		if (layoutCode.split("_")[0].equals("A"))
-			return true;
-		else
-			return false;
-	}
-
 	private DailyModifyResult getRow(Map<String, DailyModifyResult> resultDailyMap, String sId, GeneralDate date) {
 		return resultDailyMap.isEmpty() ? null : resultDailyMap.get(mergeString(sId, "|", date.toString()));
 	}
@@ -696,9 +675,9 @@ public class DailyPerformanceCorrectionProcessor {
 					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
 					// lock sign
 					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-						if (data.getError().contains("ER")) {
+						if (data.getError().contains("ER") && data.isSign()) {
 							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
-						} else {
+						} else if(data.getError().contains("ER") && !data.isSign()){
 							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 						}
 						// thieu check khi co data

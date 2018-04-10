@@ -16,5 +16,8 @@ public interface OptionalWidgetRepository {
 	Optional<OptionalWidget> findByCode(String companyID, String topPagePartID);
 
 	boolean isExist(String companyId, String code);
+	
+	List<OptionalWidget> findByCode(String companyId, List<String> listOptionalWidgetID);
 
+	List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int TopPagePartType);
 }

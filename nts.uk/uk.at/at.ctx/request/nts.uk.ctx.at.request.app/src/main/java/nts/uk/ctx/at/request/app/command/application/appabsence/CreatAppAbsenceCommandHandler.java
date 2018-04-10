@@ -62,12 +62,12 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getAllDayHalfDayLeaveAtr(), 
 				command.getStartTime1(),
 				command.getEndTime1(),
-				command.getStartTime1(),
+				command.getStartTime2(),
 				command.getEndTime2());
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(appRoot);
 		// 7.登録時のエラーチェック
-		checkBeforeRegister(command,startDate);
+		checkBeforeRegister(command,startDate,endDate,true);
 		// insert
 		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
@@ -76,13 +76,15 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		return newAfterRegister.processAfterRegister(appRoot);
 
 	}
-	private void checkBeforeRegister(CreatAppAbsenceCommand command,GeneralDate startDate){
+	public void checkBeforeRegister(CreatAppAbsenceCommand command,GeneralDate startDate,GeneralDate endDate,boolean isInsert){
 		int countDay = 0;
-		for(int i = 0; command.getStartDate().compareTo(command.getEndDate()) + i <= 0; i++){
+		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
 			GeneralDate appDate = startDate.addDays(i);
 			countDay = countDay + 1;
 			// 休暇・振替系申請存在チェック
-			saveHolidayShipmentCommandHandler.vacationTransferCheck(command.getEmployeeID(), appDate, command.getPrePostAtr());
+			if(isInsert){
+				saveHolidayShipmentCommandHandler.vacationTransferCheck(command.getEmployeeID(), appDate, command.getPrePostAtr());
+			}
 			if(command.getHolidayAppType() == HolidayAppType.DIGESTION_TIME.value){
 				// 11.時間消化登録時のエラーチェック :TODO
 			}

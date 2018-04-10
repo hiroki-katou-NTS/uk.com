@@ -12,19 +12,19 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
 public class ApprovalStatusWebservice extends WebService {
 	@Inject
-	private ApprovalStatusFinder approvalMailTempFinder;
+	private ApprovalStatusFinder approvalMailFinder;
 
 	@Inject
 	private RegisterApprovalStatusMailTempCommandHandler registerApprovalStatusMailTempCommandHandler;
@@ -32,17 +32,11 @@ public class ApprovalStatusWebservice extends WebService {
 	/** The finder. */
 	@Inject
 	private ApprovalStatusFinder finder;
-	
-	@POST
-	@Path("getMail/{mailType}")
-	public ApprovalStatusMailTempDto getMail(@PathParam("mailType") int mailType) {
-		return approvalMailTempFinder.findByType(mailType);
-	}
 
 	@POST
 	@Path("getMailBySetting")
 	public List<ApprovalStatusMailTempDto> findBySetting() {
-		return approvalMailTempFinder.findBySetting();
+		return approvalMailFinder.findBySetting();
 	}
 
 	@POST
@@ -52,21 +46,15 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 
 	@POST
-	@Path("getEmpMail")
-	public EmployeeEmailDto getEmpMail() {
-		return null;
+	@Path("confirmSenderMail")
+	public String confirmSenderMail() {
+		return approvalMailFinder.confirmSenderMail();
 	}
 	
 	@POST
 	@Path("sendTestMail/{mailType}")
-	public boolean sendTestMail(@PathParam("mailType") int mailType) {
-		return approvalMailTempFinder.sendTestMail(mailType);
-	}
-	
-	@POST
-	@Path("getStatusActivity")
-	public List<ApprovalStatusActivityDto> getStatusActivity(ApprovalStatusActivityData wkpInfoDto) {
-		return approvalMailTempFinder.getStatusActivity(wkpInfoDto);
+	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
+		return approvalMailFinder.sendTestMail(mailType);
 	}
 	
 	/**

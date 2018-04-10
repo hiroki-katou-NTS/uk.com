@@ -27,14 +27,15 @@ module nts.uk.at.view.kmk004.h {
                 let self = this;
                 let params: DeformSetParams = nts.uk.ui.windows.getShared("DEFORM_SET_PARAM");
                 
-                self.startWeekList = ko.observableArray([new ItemModel(2, '月曜日'),
-                    new ItemModel(3, '火曜日'),
-                    new ItemModel(4, '水曜日'),
-                    new ItemModel(5, '木曜日'),
-                    new ItemModel(6, '金曜日'),
-                    new ItemModel(7, '土曜日'),
-                    new ItemModel(0, '日曜日'),
-                    new ItemModel(1, '締め開始日')]);
+                self.startWeekList = ko.observableArray([
+                    new ItemModel(StartWeek.MONDAY, '月曜日'),
+                    new ItemModel(StartWeek.TUESDAY, '火曜日'),
+                    new ItemModel(StartWeek.WEDNESDAY, '水曜日'),
+                    new ItemModel(StartWeek.THURSDAY, '木曜日'),
+                    new ItemModel(StartWeek.FRIDAY, '金曜日'),
+                    new ItemModel(StartWeek.SATURDAY, '土曜日'),
+                    new ItemModel(StartWeek.SUNDAY, '日曜日'),
+                    new ItemModel(StartWeek.CLOSURE_STR_DATE, '締め開始日')]);
                 
                 self.includeExtraAggrOpt = ko.observableArray([
                     new ItemModelBoolean(true, nts.uk.resource.getText("KMK004_58")),
@@ -45,16 +46,16 @@ module nts.uk.at.view.kmk004.h {
                     new ItemModelBoolean(false, nts.uk.resource.getText("KMK004_64"))]);
                 
                 // Initialize variables
-                self.strMonth = ko.observable(params && params.strMonth ? params.strMonth : (moment(new Date()).toDate().getMonth()));
-                self.period = ko.observable(params && params.period ? params.period : 1);
-                self.repeatCls = ko.observable(params && params.repeatCls ? params.repeatCls : false);
-                self.startWeek = ko.observable(params && params.startWeek ? params.startWeek : StartWeek.MONDAY);
-                self.isIncludeExtraAggr = ko.observable(params && params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
-                self.isIncludeLegalAggr = ko.observable(params && params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);
-                self.isIncludeHolidayAggr = ko.observable(params && params.isIncludeHolidayAggr ? params.isIncludeHolidayAggr : false);
-                self.isIncludeExtraExcessOutside = ko.observable(params && params.isIncludeExtraExcessOutside ? params.isIncludeExtraExcessOutside : false);
-                self.isIncludeLegalExcessOutside = ko.observable(params && params.isIncludeLegalExcessOutside ? params.isIncludeLegalExcessOutside : false);
-                self.isIncludeHolidayExcessOutside = ko.observable(params && params.isIncludeHolidayExcessOutside ? params.isIncludeHolidayExcessOutside : false);
+                self.strMonth = ko.observable(params && !nts.uk.util.isNullOrEmpty(params.strMonth) ? params.strMonth : (moment(new Date()).toDate().getMonth()));
+                self.period = ko.observable(params && !nts.uk.util.isNullOrEmpty(params.period) ? params.period : 1);
+                self.repeatCls = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.repeatCls) ? params.repeatCls : false);
+                self.startWeek = ko.observable(params && !nts.uk.util.isNullOrEmpty(params.startWeek) ? params.startWeek : StartWeek.MONDAY);
+                self.isIncludeExtraAggr = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.isIncludeExtraAggr) ? params.isIncludeExtraAggr : false);
+                self.isIncludeLegalAggr = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.isIncludeLegalAggr) ? params.isIncludeLegalAggr : false);
+                self.isIncludeHolidayAggr = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.isIncludeHolidayAggr) ? params.isIncludeHolidayAggr : false);
+                self.isIncludeExtraExcessOutside = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.isIncludeExtraExcessOutside) ? params.isIncludeExtraExcessOutside : false);
+                self.isIncludeLegalExcessOutside = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.isIncludeLegalExcessOutside) ? params.isIncludeLegalExcessOutside : false);
+                self.isIncludeHolidayExcessOutside = ko.observable(params && !nts.uk.util.isNullOrUndefined(params.isIncludeHolidayExcessOutside) ? params.isIncludeHolidayExcessOutside : false);
                 
                 // Initialize Enable/Disable variables
                 // Enable/Disable Var Depend on F2_3
@@ -82,14 +83,15 @@ module nts.uk.at.view.kmk004.h {
              */
             public decideData(): void {
                 let self = this;
+                let params: DeformSetParams = nts.uk.ui.windows.getShared("DEFORM_SET_PARAM");
                 let deformParams: DeformSetParams = new DeformSetParams();
                 deformParams.startWeek = self.startWeek();
                 deformParams.isIncludeExtraAggr = self.isIncludeExtraAggr();
-                deformParams.isIncludeLegalAggr = self.isIncludeLegalAggr();
-                deformParams.isIncludeHolidayAggr = self.isIncludeHolidayAggr();
+                deformParams.isIncludeLegalAggr = self.isIncludeExtraAggr() ? self.isIncludeLegalAggr() : params.isIncludeLegalAggr;
+                deformParams.isIncludeHolidayAggr = self.isIncludeExtraAggr() ? self.isIncludeHolidayAggr() : params.isIncludeHolidayAggr;
                 deformParams.isIncludeExtraExcessOutside = self.isIncludeExtraExcessOutside();
-                deformParams.isIncludeLegalExcessOutside = self.isIncludeLegalExcessOutside();
-                deformParams.isIncludeHolidayExcessOutside = self.isIncludeHolidayExcessOutside();
+                deformParams.isIncludeLegalExcessOutside = self.isIncludeExtraExcessOutside() ? self.isIncludeLegalExcessOutside() : params.isIncludeLegalExcessOutside;
+                deformParams.isIncludeHolidayExcessOutside = self.isIncludeExtraExcessOutside() ? self.isIncludeHolidayExcessOutside() : params.isIncludeHolidayExcessOutside;
                 deformParams.strMonth = self.strMonth();
                 deformParams.period = self.period();
                 deformParams.repeatCls = self.repeatCls();
@@ -111,14 +113,14 @@ module nts.uk.at.view.kmk004.h {
          * 週開始
          */
         export class StartWeek {
-            static MONDAY = 2;
-            static TUESDAY = 3;
-            static WEDNESDAY = 4;
-            static THURSDAY = 5;
-            static FRIDAY = 6;
-            static SATURDAY = 7;
-            static SUNDAY = 0;
-            static CLOSURE_STR_DATE = 1;
+            static MONDAY = 0;
+            static TUESDAY = 1;
+            static WEDNESDAY = 2;
+            static THURSDAY = 3;
+            static FRIDAY = 4;
+            static SATURDAY = 5;
+            static SUNDAY = 6;
+            static CLOSURE_STR_DATE = 7;
         }
         
         /**

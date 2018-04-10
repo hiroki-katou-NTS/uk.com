@@ -159,4 +159,14 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate);
+	
+	/**
+	 * 
+	 * @param companyID
+	 * @param employeeID
+	 * @param confirmType
+	 * @param date
+	 * @return
+	 */
+	List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID, ConfirmationRootType confirmType, GeneralDate date);
 }
