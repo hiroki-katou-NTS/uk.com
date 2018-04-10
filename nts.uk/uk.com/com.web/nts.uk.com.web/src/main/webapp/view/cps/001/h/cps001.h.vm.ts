@@ -79,15 +79,19 @@ module cps001.h.vm {
             });
             return dfd.promise();
         }
-        start() {
-            let self = this;
+
+        start() : JQueryPromise<any>{
+            let self = this , dfd = $.Deferred();
             self.setDef();
             self.load().done(() => {
                 if (self.items().length > 0) {
                     self.currentItem(self.items()[0].id);
                 }
+                 dfd.resolve();
             });
+            return dfd.promise();
         }
+        
         setDef() {
             let self = this;
             if (self.itemDefs.length > 0) {
@@ -98,10 +102,10 @@ module cps001.h.vm {
                     self.setItemValue(self.itemDefs);
                 });
             }
-
         }
-        setItemValue(data: any) {
-            let self = this;    
+        
+        setItemValue(data: any): JQueryPromise<any> {
+            let self = this , dfd = $.Deferred();
             $("td[data-itemCode]").each(function() {
                 let itemCodes = $(this).attr('data-itemCode');
                 if (itemCodes) {
@@ -129,7 +133,9 @@ module cps001.h.vm {
                         }
                     });
                 }
+                 dfd.resolve();
             });
+            return dfd.promise();
         }
 
         close() {
@@ -166,14 +172,14 @@ module cps001.h.vm {
                 });
             });
         }
-        clearError(){
+        clearError() {
             $("#grantDate").ntsError("clear");
             $("#deadline").ntsError("clear");
             $("#grantDays").ntsError("clear");
             $("#useDays").ntsError("clear");
             $("#overLimitDays").ntsError("clear");
             $("#remainingDays").ntsError("clear");
-            }
+        }
         register() {
             let self = this;
 
@@ -269,11 +275,11 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                if(data){
+                if (data) {
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });
-                    }
+                }
             });
         }
     }

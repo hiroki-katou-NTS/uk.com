@@ -408,7 +408,6 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
-                console.log(data);
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });
