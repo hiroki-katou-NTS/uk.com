@@ -22,13 +22,17 @@ public class KrcdtDayLeaveGatePK implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate ymd;
 
+	@Column(name = "AL_NO")
+	public int alNo;
+	
 	public KrcdtDayLeaveGatePK() {
 	}
 
-	public KrcdtDayLeaveGatePK(String sid, GeneralDate ymd) {
+	public KrcdtDayLeaveGatePK(String sid, GeneralDate ymd, int alNo) {
 		super();
 		this.sid = sid;
 		this.ymd = ymd;
+		this.alNo = alNo;
 	}
 
 	public boolean equals(Object other) {
@@ -39,7 +43,8 @@ public class KrcdtDayLeaveGatePK implements Serializable {
 			return false;
 		}
 		KrcdtDayLeaveGatePK castOther = (KrcdtDayLeaveGatePK) other;
-		return this.sid.equals(castOther.sid) && this.ymd.equals(castOther.ymd);
+		return this.sid.equals(castOther.sid) && this.ymd.equals(castOther.ymd) &&
+				this.alNo == castOther.alNo;
 	}
 
 	public int hashCode() {
@@ -47,6 +52,7 @@ public class KrcdtDayLeaveGatePK implements Serializable {
 		int hash = 17;
 		hash = hash * prime + this.sid.hashCode();
 		hash = hash * prime + this.ymd.hashCode();
+		hash = hash * prime + this.alNo;
 
 		return hash;
 	}
