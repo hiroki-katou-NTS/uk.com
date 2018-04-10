@@ -218,8 +218,11 @@ module nts.uk.at.view.kal001.a.model {
             if(listPeriodByCategory.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1168" });
                 return;    
-            }            
+            }    
             
+            $(".nts-input").trigger("validate");
+            if ($(".nts-input").ntsError("hasError")) return;
+                                      
             block.invisible();
             service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
@@ -261,7 +264,10 @@ module nts.uk.at.view.kal001.a.model {
         dateValue: KnockoutObservable<DateValue>;
         checkBox: KnockoutObservable<boolean>;
         typeInput :  string;
+        required: KnockoutObservable<boolean>; 
+        
         constructor(dto:  service.CheckConditionTimeDto){
+            let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName;
             if(dto.category==2 || dto.category==5){
@@ -272,6 +278,15 @@ module nts.uk.at.view.kal001.a.model {
                 this.typeInput = "yearmonth";   
             }
             this.checkBox = ko.observable(false);
+            
+            this.checkBox.subscribe((v)=>{
+                if(v ==false) 
+                {
+                     $("#fixed-table").find("tr[categorynumber='"+self.category+"']").find(".nts-input").ntsError("clear");    
+                }
+                
+            })
+            this.required = ko.computed(() =>{ return this.checkBox()}); 
         }
         
         public setClick() : void{
