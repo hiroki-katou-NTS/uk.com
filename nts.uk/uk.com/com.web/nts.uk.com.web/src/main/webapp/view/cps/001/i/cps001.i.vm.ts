@@ -108,6 +108,7 @@ module nts.uk.com.view.cps001.i.vm {
                     service.getDetail(value).done((result: ISpecialLeaveRemaining) => {
                         if (result) {
                             self.bindingData(result);
+                            $("#idDateGrantInp").focus();
                         }
                     });
                 }
@@ -118,6 +119,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.checked.subscribe(value => {
                 let self = this;
                 self.activeBtn();
+                clearError();
                 if (value) {
                     self.listData(self.convertData(self.listFullData()));
                     self.currentValue(self.listData()[0].specialid);
@@ -133,6 +135,7 @@ module nts.uk.com.view.cps001.i.vm {
                 } else {
                     self.newMode();
                 }
+                $("#idDateGrantInp").focus();
 
             });
 
@@ -184,7 +187,6 @@ module nts.uk.com.view.cps001.i.vm {
                     self.newMode();
                 }
                 clearError();
-                $('#idDateGrantInp').focus();
             });
 
         }
@@ -235,7 +237,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.dayNumberOver(null);
             self.timeOver(null);
             self.selectedRuleCode(1);
-            $('#idDateGrantInp').focus();
+            $("#idDateGrantInp").focus();
         }
 
         Save() {
@@ -408,7 +410,6 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
-                console.log(data);
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });

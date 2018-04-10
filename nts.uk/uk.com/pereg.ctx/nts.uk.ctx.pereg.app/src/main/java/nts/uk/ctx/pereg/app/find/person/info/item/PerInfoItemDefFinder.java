@@ -88,9 +88,9 @@ public class PerInfoItemDefFinder {
 				}).collect(Collectors.toList());
 
 
-		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce)
-				.stream().filter(c  -> (c.getValue() == 1 || c.getValue() == 2 || c.getValue() == 3 || c.getValue() == 4 || c.getValue() == 5 || c.getValue() == 6))
-				.collect(Collectors.toList());
+		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce);
+//				.stream().filter(c  -> (c.getValue() == 1 || c.getValue() == 2 || c.getValue() == 3 || c.getValue() == 4 || c.getValue() == 5 || c.getValue() == 6))
+//				.collect(Collectors.toList());
 		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class, ukResouce);
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
 				ukResouce);

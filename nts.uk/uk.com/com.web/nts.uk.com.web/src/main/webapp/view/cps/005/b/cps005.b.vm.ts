@@ -263,6 +263,7 @@ module nts.uk.com.view.cps005.b {
         isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
         isEnableButtonDelete: KnockoutObservable<boolean> = ko.observable(true);
         dataTypeEnum: Array<any> = new Array();
+        dataTypeEnumFilter: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 1 - 文字列(String)
         stringItemTypeEnum: Array<any> = new Array();
         stringItemDataTypeEnum: Array<any> = new Array();
@@ -290,6 +291,9 @@ module nts.uk.com.view.cps005.b {
             if (params) {
                 self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
+                self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c){
+                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
+                });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();
@@ -319,7 +323,7 @@ module nts.uk.com.view.cps005.b {
                             && data.itemTypeState.dataTypeState.referenceType === "CODE_NAME") {
                             self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
                         }
-
+                        
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
