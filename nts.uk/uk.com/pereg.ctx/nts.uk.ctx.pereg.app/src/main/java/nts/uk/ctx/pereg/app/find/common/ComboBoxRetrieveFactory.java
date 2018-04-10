@@ -25,12 +25,15 @@ import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -45,7 +48,6 @@ import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
@@ -117,6 +119,9 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
+	
+	@Inject
+	private YearServicePerRepository yearServiceRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -142,7 +147,7 @@ public class ComboBoxRetrieveFactory {
 		// 時給者区分
 		aMap.put("E00010", HourlyPaymentAtr.class);
 		// するしない区分
-		aMap.put("E00011", NotUseAtr.class);
+		aMap.put("E00011", ManageAtr.class);
 		// 特別休暇適用設定
 		aMap.put("E00012", SpecialLeaveAppSetting.class);
 		// 60H超過時の精算方法
@@ -158,7 +163,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -180,7 +185,7 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired, perEmplType);
+		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired, perEmplType, isDataType6);
 	}
 
 	/**
@@ -207,7 +212,7 @@ public class ComboBoxRetrieveFactory {
 			break;
 		}
 		return getComboBox(referenceType, referenceCode, comboBoxParam.getStandardDate(), comboBoxParam.getEmployeeId(),
-				comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(), comboBoxParam.isRequired(), perEmplType);
+				comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(), comboBoxParam.isRequired(), perEmplType, true);
 
 	}
 
@@ -334,6 +339,11 @@ public class ComboBoxRetrieveFactory {
 					.map(grantTable -> new ComboBoxObject(grantTable.getYearHolidayCode().v(),
 							grantTable.getYearHolidayName().v()))
 					.collect(Collectors.toList());
+		case "M00017":
+			return yearServiceRepo.getAllPer(companyId).stream()
+					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
+							yearServicePer.getYearServiceName().v()))
+					.collect(Collectors.toList());
 		default:
 			break;
 		}
@@ -366,7 +376,7 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isCps002, boolean isRequired,
-			PersonEmployeeType perEmplType) {
+			PersonEmployeeType perEmplType, boolean isDataType6) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -383,7 +393,7 @@ public class ComboBoxRetrieveFactory {
 
 		}
 		if (!CollectionUtil.isEmpty(resultList)) {
-			if (!isRequired) {
+			if (!isRequired && isDataType6) {
 
 				comboboxItems = new ArrayList<ComboBoxObject>(Arrays.asList(new ComboBoxObject("", "")));
 			}
