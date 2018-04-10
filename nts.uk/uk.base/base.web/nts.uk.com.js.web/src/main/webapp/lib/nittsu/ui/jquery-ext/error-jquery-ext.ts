@@ -78,7 +78,6 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function clearErrors($control: JQuery) {
-            $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
             
             return $control;
