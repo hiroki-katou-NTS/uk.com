@@ -135,9 +135,11 @@ public class LateTimeSheet{
 				,deductionTimeSheet);
 			
 		//遅刻時間を計算
-		AttendanceTime lateTime = instance.get().calcTotalTime();
+		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
-		
+		if(instance.isPresent()) {
+			instance = Optional.of(instance.get().collectionAgain(lateTime));
+		}
 		return instance;
 	}
 	
