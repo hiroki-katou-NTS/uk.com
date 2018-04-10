@@ -454,11 +454,11 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			lstItem.add(1);
-			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));
+			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態
