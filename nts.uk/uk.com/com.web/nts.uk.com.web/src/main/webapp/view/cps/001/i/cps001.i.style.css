@@ -15,3 +15,7 @@
 	font-weight: bold; 
 	padding: 10px !important;
 }
+
+th.ui-iggrid-header{
+	white-space: unset !important;
+}

@@ -8,17 +8,17 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
  * The Enum UseAtr.
  */
 // するしない区分
-public enum NotUseAtr {	
+public enum ManageAtr {	
 	
 	/** The pattern schedule. */
 	// する 
-	USE(1, "Enum_NotUseAtr_USE", "する"),
+	USE(1, "Enum_ManageAtr_Manage", "管理する"),
 	
 	/**
 	 * Notuse.
 	 */
 	// しない
-	NOTUSE(0, "Enum_NotUseAtr_NOT_USE", "しない");
+	NOTUSE(0, "Enum_ManageAtr_NotManage", "管理しない");
 
 	/** The value. */
 	public final int value;
@@ -30,7 +30,7 @@ public enum NotUseAtr {
 	public final String description;
 
 	/** The Constant values. */
-	private final static NotUseAtr[] values = NotUseAtr.values();
+	private final static ManageAtr[] values = ManageAtr.values();
 
 	/**
 	 * Instantiates a new implement atr.
@@ -39,7 +39,7 @@ public enum NotUseAtr {
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private NotUseAtr(int value, String nameId, String description) {
+	private ManageAtr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -51,14 +51,14 @@ public enum NotUseAtr {
 	 * @param value the value
 	 * @return the implement atr
 	 */
-	public static NotUseAtr valueOf(Integer value) {
+	public static ManageAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (NotUseAtr val : NotUseAtr.values) {
+		for (ManageAtr val : ManageAtr.values) {
 			if (val.value == value) {
 				return val;
 			}
