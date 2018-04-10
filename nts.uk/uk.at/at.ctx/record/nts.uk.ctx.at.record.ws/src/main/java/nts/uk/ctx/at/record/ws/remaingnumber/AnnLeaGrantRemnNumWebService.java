@@ -82,8 +82,8 @@ public class AnnLeaGrantRemnNumWebService extends WebService{
 	
 	@POST
 	@Path("add")
-	public void add(AnnLeaGrantRemnNumCommand command){
-		addHandler.handle(command);
+	public Object add(AnnLeaGrantRemnNumCommand command){
+		return new Object[] {addHandler.handle(command).getAddedRecordId()};
 	}
 	
 	@POST
