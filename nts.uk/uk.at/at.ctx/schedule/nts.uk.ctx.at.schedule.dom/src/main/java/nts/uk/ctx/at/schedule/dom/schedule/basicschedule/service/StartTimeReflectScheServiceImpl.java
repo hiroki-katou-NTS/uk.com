@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRe
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class StartTimeReflectScheServiceImpl implements StartTimeReflectScheService{
+public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheService{
 	@Inject
 	private BasicScheduleRepository basicReposi;
 	@Inject
