@@ -134,6 +134,7 @@ public class MonthlyAttendanceItemFinder {
 		attdItemDto.setDailyAttendanceAtr(dom.getMonthlyAttendanceAtr().value);
 		attdItemDto.setNameLineFeedPosition(dom.getNameLineFeedPosition());
 		attdItemDto.setDisplayNumber(dom.getDisplayNumber());
+		attdItemDto.setUserCanUpdateAtr(dom.getUserCanUpdateAtr().value);
 		return attdItemDto;
 
 	}

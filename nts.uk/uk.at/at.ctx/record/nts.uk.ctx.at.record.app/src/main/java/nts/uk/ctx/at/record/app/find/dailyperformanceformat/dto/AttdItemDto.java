@@ -17,5 +17,7 @@ public class AttdItemDto {
 	
 	private int displayNumber;
 	
+	private int userCanUpdateAtr;
+	
 
 }

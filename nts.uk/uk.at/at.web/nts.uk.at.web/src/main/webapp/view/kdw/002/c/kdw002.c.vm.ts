@@ -17,13 +17,20 @@ module nts.uk.at.view.kdw002.c {
             txtSearch: KnockoutObservable<string>;
             //isDaily
             isDaily :boolean;
+            
+            //datasource
+            datasources :KnockoutObservableArray<any>;
+            selectedList: any;
+            
             constructor(dataShare:any) {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
                 self.listAttdItem = [];
                 self.dailyServiceTypeControl = ko.observable(null);
                 self.isDaily = dataShare.ShareObject;
-                
+                //
+                self.datasources = ko.observableArray([]);
+                self.selectedList = ko.observableArray([]);
                 //monthly
                 self.listAttdMonthlyItem = [];
 
@@ -67,14 +74,16 @@ module nts.uk.at.view.kdw002.c {
                     }
                     $.when(dfd).done(
                         (DailyServiceTypeControls) => {
+                            
                             $('#useCheckAll').prop('checked', false);
                             $('#youCanCheckAll').prop('checked', false);
                             $('#otherCheckAll').prop('checked', false);
                             if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls)) {
+                                self.datasources(self.dailyServiceTypeControl().displayAndInput);
                                 $("#grid").ntsGrid({
                                     primaryKey: "itemDailyID",
                                     height: 400,
-                                    dataSource: self.dailyServiceTypeControl().displayAndInput,
+                                    dataSource: self.datasources(),
                                     autoGenerateColumns: false,
                                     alternateRowStyles: false,
                                     dataSourceType: "json",
@@ -82,7 +91,7 @@ module nts.uk.at.view.kdw002.c {
                                     //virtualization: true,
                                     rowVirtualization: false,
                                     //virtualizationMode: "continuous",
-                                    virtualizationMode: "fixed",
+                                    virtualizationMode: "fiexd",
                                     columns: self.columns(),
                                     features: [
                                         {
@@ -93,7 +102,7 @@ module nts.uk.at.view.kdw002.c {
                                             editMode: 'cell',
                                             columnSettings: [
                                                 { columnKey: "itemDailyID", hidden: true },
-                                                { columnKey: "attendanceItemName", readOnly: true },
+                                                { columnKey: "itemDailyName", readOnly: true },
                                                 { columnKey: "toUse", readOnly: true },
                                                 { columnKey: "youCanChangeIt", readOnly: true },
                                                 { columnKey: "canBeChangedByOthers", readOnly: true },
@@ -106,6 +115,7 @@ module nts.uk.at.view.kdw002.c {
                                             multipleSelection: false,
                                             touchDragSelect: false, // this is true by default
                                             multipleCellSelectOnClick: false
+                                            
                                         }
                                     ],
                                     avgRowHeight: "26px"
@@ -250,7 +260,7 @@ module nts.uk.at.view.kdw002.c {
                                         self.listAttdMonthlyItem[i].attendanceItemId,
                                         self.listAttdMonthlyItem[i].attendanceItemName,
                                         self.listAttdMonthlyItem[i].attendanceItemDisplayNumber,
-                                        self.listAttdMonthlyItem[i].dailyAttendanceAtr,
+                                        self.listAttdMonthlyItem[i].userCanUpdateAtr,
                                         true,
                                         false,
                                         false));
@@ -267,7 +277,7 @@ module nts.uk.at.view.kdw002.c {
                                                 self.listAttdMonthlyItem[i].attendanceItemId,
                                                 self.listAttdMonthlyItem[i].attendanceItemName,
                                                 self.listAttdMonthlyItem[i].attendanceItemDisplayNumber,
-                                                self.listAttdMonthlyItem[i].dailyAttendanceAtr,
+                                                self.listAttdMonthlyItem[i].userCanUpdateAtr,
                                                 data.listDisplayAndInputMonthly[j].toUse,
                                                 data.listDisplayAndInputMonthly[j].canBeChangedByOthers,
                                                 data.listDisplayAndInputMonthly[j].youCanChangeIt));

@@ -29,56 +29,64 @@ module nts.uk.at.view.kdw002.a {
                 self.txtItemId = ko.observable(null);
                 self.txtItemName = ko.observable('');
                 self.attendanceItems = ko.observableArray([]);
-                self.aICurrentCode = ko.observable(null);
+                self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
+                self.aICurrentCode = ko.observable(null);
                 self.aICurrentCode.subscribe(attendanceItemId => {
-                    var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
-                    self.txtItemName(attendanceItem.attendanceItemName);
-                    // self.txtItemName(cAttendanceItem.attandanceItemName);
-                    self.unitRoundings([
-                        { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
-                        { timeInputValue: 3, timeInputName: '15分' }, { timeInputValue: 4, timeInputName: '30分' }
-                        , { timeInputValue: 5, timeInputName: '60分' }]);
-                    self.timeInputCurrentCode(0);
-                    if (self.isDaily) {
-                        if (attendanceItem.dailyAttendanceAtr == 5) {
-                            self.timeInputEnable(true);
-                        } else {
-                            self.timeInputEnable(false);
-                        }
-                    } else {
-                        if (attendanceItem.dailyAttendanceAtr == 1) {
-                            self.timeInputEnable(true);
-                        } else {
-                            self.timeInputEnable(false);
-                        }
-                    }
-
-                    self.linebreak(attendanceItem.nameLineFeedPosition);
-                    if (self.isDaily) {
-                        service.getControlOfDailyItem(attendanceItemId).done(cAttendanceItem => {
-                            if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                self.txtItemId(cAttendanceItem.itemDailyID);
-                                self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
-                                self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                    if(attendanceItemId){
+                        var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
+                        self.txtItemName(attendanceItem.attendanceItemName);
+                        self.txtItemId(attendanceItemId);
+                        // self.txtItemName(cAttendanceItem.attandanceItemName);
+                        self.unitRoundings([
+                            { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
+                            { timeInputValue: 3, timeInputName: '15分' }, { timeInputValue: 4, timeInputName: '30分' }
+                            , { timeInputValue: 5, timeInputName: '60分' }]);
+                        self.timeInputCurrentCode(0);
+                        if (self.isDaily) {
+                            if (attendanceItem.dailyAttendanceAtr == 5) {
+                                self.timeInputEnable(true);
                             } else {
-                                self.headerColorValue(null);
-                                self.timeInputCurrentCode(0);
+                                self.timeInputEnable(false);
                             }
-                        });
-                    } else {
-                        service.getControlOfMonthlyItem(attendanceItemId).done(cAttendanceItem => {
-                            if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
-                                self.txtItemId(cAttendanceItem.itemMonthlyId);
-                                self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
-                                self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                        } else {
+                            if (attendanceItem.dailyAttendanceAtr == 1) {
+                                self.timeInputEnable(true);
                             } else {
-                                self.headerColorValue(null);
-                                self.timeInputCurrentCode(0);
+                                self.timeInputEnable(false);
                             }
-                        });
+                        }
+    
+                        self.linebreak(attendanceItem.nameLineFeedPosition);
+                        if (self.isDaily) {
+                            service.getControlOfDailyItem(attendanceItemId).done(cAttendanceItem => {
+                                if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
+                                    self.txtItemId(cAttendanceItem.itemDailyID);
+                                    self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
+                                    self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                                } else {
+                                    self.headerColorValue(null);
+                                    self.timeInputCurrentCode(0);
+                                }
+                            });
+                        } else {
+                            service.getControlOfMonthlyItem(attendanceItemId).done(cAttendanceItem => {
+                                if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
+                                    self.txtItemId(cAttendanceItem.itemMonthlyId);
+                                    self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
+                                    self.timeInputCurrentCode(cAttendanceItem.inputUnitOfTimeItem);
+                                } else {
+                                    self.headerColorValue(null);
+                                    self.timeInputCurrentCode(0);
+                                }
+                            });
+                        }
+                    }else{
+                        self.txtItemName("");
+                        self.txtItemId(attendanceItemId);
+                        self.headerColorValue(null);
+                        self.timeInputCurrentCode(0);
                     }
-
                 });
 
                 self.attendanceItemColumn = ko.observableArray([
