@@ -222,16 +222,16 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			/** リポジトリ：日別実績の勤務情報 */
 			val workInf = workInformationRepository.find(employeeId, attendanceTime.getYmd());  
 			/** リポジトリ：日別実績.日別実績の計算区分 */
-			//val calAttr = calAttrOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
+			val calAttr = calAttrOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
 			
 			/** リポジトリ：日別実績の所属情報 */
 			val affiInfo = affiliationInforOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
-			if(!workInf.isPresent() ||  !affiInfo.isPresent())
+			if(!workInf.isPresent() ||  !affiInfo.isPresent())//calAttr == null
 				continue;
 			returnList.add(
 				new IntegrationOfDaily(
 					workInf.get(),
-					null,
+					calAttr,
 					affiInfo.get(),
 					pcLogOnInfoOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のPCログオン情報 */
 					employeeDailyPerErrorRepository.findByPeriodOrderByYmd(employeeId, datePeriod),/** リポジトリ:社員の日別実績エラー一覧 */
