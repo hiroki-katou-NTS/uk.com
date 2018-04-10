@@ -179,16 +179,16 @@ public class EmpCtgFinder {
 				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
 						loginCId, contractCode, empIdCurrentLogin.equals(query.getEmployeeId())));
 		Optional<PersonInfoItemDefinition> period;
-		if(!perInfoCtg.getCategoryCode().v().equals("CS00003"))
-		{
-			DateRangeItem dateRangeItem = perInfoCtgRepositoty.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-			period = lstItemDef.stream().filter(x -> {
-				return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
-			}).findFirst();
-		}else {
+		if (!perInfoCtg.getCategoryCode().v().equals("CS00003")) {
+			DateRangeItem dateRangeItem = perInfoCtgRepositoty
+					.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId()).get();
+			period = lstItemDef.stream().filter(x -> x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId()))
+					.findFirst();
+
+		} else {
 			period = Optional.of(lstItemDef.get(0));
 		}
-				
+	
 		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
 			infoList = getInfoListOfOptionalCtg(perInfoCtg, query, period);
 		} else {
