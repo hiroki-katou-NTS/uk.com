@@ -200,20 +200,15 @@ public class RegisterDailyPerformanceInfoService {
 			}
 
 			// ドメインモデル「日別実績の入退門」を更新する (Update 「日別実績の入退門」)
-			// if (stampOutput.getAttendanceLeavingGateOfDaily() != null
-			// &&
-			// stampOutput.getAttendanceLeavingGateOfDaily().getAttendanceLeavingGates()
-			// != null
-			// &&
-			// !stampOutput.getAttendanceLeavingGateOfDaily().getAttendanceLeavingGates().isEmpty())
-			// {
-			// if (this.attendanceLeavingGateOfDailyRepo.find(employeeID,
-			// day).isPresent()) {
-			// this.attendanceLeavingGateOfDailyRepo.update(stampOutput.getAttendanceLeavingGateOfDaily());
-			// } else {
-			// this.attendanceLeavingGateOfDailyRepo.add(stampOutput.getAttendanceLeavingGateOfDaily());
-			// }
-			// }
+			if (stampOutput.getAttendanceLeavingGateOfDaily() != null
+					&& stampOutput.getAttendanceLeavingGateOfDaily().getAttendanceLeavingGates() != null
+					&& !stampOutput.getAttendanceLeavingGateOfDaily().getAttendanceLeavingGates().isEmpty()) {
+				if (this.attendanceLeavingGateOfDailyRepo.find(employeeID, day).isPresent()) {
+					this.attendanceLeavingGateOfDailyRepo.update(stampOutput.getAttendanceLeavingGateOfDaily());
+				} else {
+					this.attendanceLeavingGateOfDailyRepo.add(stampOutput.getAttendanceLeavingGateOfDaily());
+				}
+			}
 
 			// ドメインモデル「日別実績のPCログオン情報」を更新する (Update 「日別実績のPCログオン情報」))
 			if (stampOutput.getPcLogOnInfoOfDaily() != null
