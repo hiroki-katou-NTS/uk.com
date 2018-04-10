@@ -157,8 +157,12 @@ module nts.uk.at.view.kal001.a.model {
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));
-                        self.periodByCategory(_.sortBy(self.periodByCategory(), 'category'));                        
+                        }));                        
+                        self.periodByCategory(_.sortBy(self.periodByCategory(), 'category'));
+                         
+                        let w4d4 = _.find(self.periodByCategory(), function(a) { return a.category == 2 });
+                        if(w4d4 && w4d4.dateValue().startDate==null && w4d4.dateValue().endDate==null)
+                           alertError({messageId : 'Msg_1193'});              
                     }).fail((errorTime)=>{
                         alertError(errorTime);
                     });
