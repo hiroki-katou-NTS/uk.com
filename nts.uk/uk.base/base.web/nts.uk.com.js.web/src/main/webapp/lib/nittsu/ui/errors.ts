@@ -276,6 +276,7 @@ module nts.uk.ui.errors {
 
     export function add(error: ErrorListItem): void {
         errorsViewModel().addError(error);
+        error.$control.data(nts.uk.ui.DATA_HAS_ERROR, true);
         (error.$control.data(nts.uk.ui.DATA_SET_ERROR_STYLE) || function () { error.$control.parent().addClass('error'); })();
     }
 
