@@ -81,6 +81,7 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.create();                    
                 }
                  _self.loadItemDef(); 
+                 $('#idGrantDate').focus();
             });
 
 

@@ -7,6 +7,7 @@ module cps001.h.vm {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -31,6 +32,7 @@ module cps001.h.vm {
         constructor() {
             let self = this;
             self.ckbAll.subscribe((data) => {
+                clearError();
                 service.getAll(__viewContext.user.employeeId, data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
@@ -39,6 +41,7 @@ module cps001.h.vm {
                         self.items([]);
                         self.create();
                     }
+                    $("#grantDate").focus();
                 });
             });
             self.currentItem.subscribe((id: string) => {
@@ -80,18 +83,18 @@ module cps001.h.vm {
             return dfd.promise();
         }
 
-        start() : JQueryPromise<any>{
-            let self = this , dfd = $.Deferred();
+        start(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             self.setDef();
             self.load().done(() => {
                 if (self.items().length > 0) {
                     self.currentItem(self.items()[0].id);
                 }
-                 dfd.resolve();
+                dfd.resolve();
             });
             return dfd.promise();
         }
-        
+
         setDef() {
             let self = this;
             if (self.itemDefs.length > 0) {
@@ -103,9 +106,9 @@ module cps001.h.vm {
                 });
             }
         }
-        
+
         setItemValue(data: any): JQueryPromise<any> {
-            let self = this , dfd = $.Deferred();
+            let self = this, dfd = $.Deferred();
             $("td[data-itemCode]").each(function() {
                 let itemCodes = $(this).attr('data-itemCode');
                 if (itemCodes) {
@@ -133,7 +136,7 @@ module cps001.h.vm {
                         }
                     });
                 }
-                 dfd.resolve();
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -164,9 +167,11 @@ module cps001.h.vm {
                         } else {
                             self.currentItem(selectedId);
                         }
+                        self.ckbAll(false);
+                        alert({ messageId: "Msg_16" });
+                        unblock();
                     });
-                    alert({ messageId: "Msg_16" });
-                    unblock();
+
                 }).fail((mes) => {
                     unblock();
                 });
@@ -207,6 +212,7 @@ module cps001.h.vm {
                                     let newId = _.difference(_.map(self.items(), (i) => { return i.id; }), _.map(currItem, (i) => { return i.id; }));
                                     self.currentItem(newId);
                                 }
+                                self.ckbAll(false);
                                 alert({ messageId: "Msg_15" });
                                 unblock();
                             });
@@ -221,6 +227,7 @@ module cps001.h.vm {
                                 if (self.items().length > 0) {
                                     self.currentItem(item.id());
                                 }
+                                self.ckbAll(false);
                                 alert({ messageId: "Msg_15" });
                                 unblock();
                             });
@@ -275,7 +282,7 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                if (data) {
+                if (!nts.uk.ui.errors.hasError() && data) {
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });

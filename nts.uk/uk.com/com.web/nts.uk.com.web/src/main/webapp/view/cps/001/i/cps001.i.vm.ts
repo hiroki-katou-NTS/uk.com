@@ -119,6 +119,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.checked.subscribe(value => {
                 let self = this;
                 self.activeBtn();
+                clearError();
                 if (value) {
                     self.listData(self.convertData(self.listFullData()));
                     self.currentValue(self.listData()[0].specialid);
@@ -134,6 +135,7 @@ module nts.uk.com.view.cps001.i.vm {
                 } else {
                     self.newMode();
                 }
+                $("#idDateGrantInp").focus();
 
             });
 
