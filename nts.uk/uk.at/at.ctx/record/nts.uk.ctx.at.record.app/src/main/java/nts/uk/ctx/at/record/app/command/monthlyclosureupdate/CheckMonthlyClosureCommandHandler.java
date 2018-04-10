@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.monthlyclosureupdate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,8 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureCompleteSt
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
@@ -61,21 +62,25 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 			throw new BusinessException("Msg_1104");
 		case 1:// executable
 			if (checkExecutableClosure(context.getCommand())) {
-				List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(null, null)).stream()
-						.map(item -> item.getEmployeeId()).collect(Collectors.toList());
 				// 締め情報の取得
 				Optional<Closure> optClosure = closureRepo.findById(companyId, closureId);
 				Closure closure = optClosure.get();
-				DatePeriod dp = closureService.getClosurePeriod(closureId, closure.getClosureMonth().getProcessingYm());
+				ClosureDate closureDate = closure.getClosureHistories().get(0).getClosureDate();
+				DatePeriod closurePeriod = closureService.getClosurePeriod(closureId,
+						closure.getClosureMonth().getProcessingYm());
+
+				List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closurePeriod)).stream()
+						.map(item -> item.getEmployeeId()).collect(Collectors.toList());
 
 				GeneralDateTime executionDT = GeneralDateTime.now();
 				MonthlyClosureUpdateLog log = new MonthlyClosureUpdateLog(IdentifierUtil.randomUniqueId(), companyId,
 						MonthlyClosureExecutionStatus.RUNNING.value, MonthlyClosureCompleteStatus.INCOMPLETE.value,
-						executionDT, dp, employeeId, closure.getClosureMonth().getProcessingYm(), closureId,
-						closure.getClosureHistories().get(0).getClosureDate());
+						executionDT, closurePeriod, employeeId, closure.getClosureMonth().getProcessingYm(), closureId,
+						closureDate);
 				monthlyClosureRepo.add(log);
 				MonthlyClosureResponse result = new MonthlyClosureResponse(log.getId(), listEmpId, closureId,
-						executionDT, closure.getClosureMonth().getProcessingYm().v(), 30, true, dp.start(), dp.end());
+						executionDT, closure.getClosureMonth().getProcessingYm().v(), closureDate.getClosureDay().v(),
+						closureDate.getLastDayOfMonth(), closurePeriod.start(), closurePeriod.end());
 				return result;
 			} else {
 				throw new BusinessException("Msg_1105");
@@ -109,6 +114,7 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 
 	}
 
+	// 実行可能な締めかチェックする
 	private boolean checkExecutableClosure(int closureId) {
 		List<ClosureInfor> listClosureInfor = closureService.getClosureInfo();
 		ClosureInfor result = listClosureInfor.get(0);
@@ -117,41 +123,40 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 				result = infor;
 			}
 		}
-//		List<ClosureId> listClosureId = listClosureInfor.stream()
-//				.filter(item -> item.getPeriod().end().afterOrEquals(result.getPeriod().end()))
-//				.map(item -> item.getClosureId()).collect(Collectors.toList());
-		return true;
+		final GeneralDate end = result.getPeriod().end();
+		List<ClosureId> listClosureId = listClosureInfor.stream()
+				.filter(item -> item.getPeriod().end().afterOrEquals(end)).map(item -> item.getClosureId())
+				.collect(Collectors.toList());
+		return listClosureId.contains(ClosureId.valueOf(closureId));
 	}
 
-	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(GeneralDate endDateOfClosurePeriod,
-			AlCheckTargetCondition checkCondition) {
+	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(DatePeriod closurePeriod) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
-		query.setBaseDate(endDateOfClosurePeriod);
+		query.setBaseDate(closurePeriod.end());
 		query.setReferenceRange(EmployeeReferenceRange.ALL_EMPLOYEE.value);
-		query.setFilterByEmployment(true);
+		query.setFilterByEmployment(false);
 		query.setEmploymentCodes(new ArrayList<>());
 		query.setFilterByDepartment(false);
-		// query.setDepartmentCodes(new ArrayList<>());
+		query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(false);
-		// query.setWorkplaceCodes(new ArrayList<>());
+		query.setWorkplaceCodes(Collections.emptyList());
 		query.setFilterByClassification(false);
-		// query.setClassificationCodes(new ArrayList<>());
+		query.setClassificationCodes(Collections.emptyList());
 		query.setFilterByJobTitle(false);
-		// query.setJobTitleCodes(new ArrayList<>());
+		query.setJobTitleCodes(Collections.emptyList());
 		query.setFilterByWorktype(false);
-		// query.setWorktypeCodes(new ArrayList<>());
-		// query.setPeriodStart(workingDate.toString());
-		// query.setPeriodEnd(workingDate.toString());
+		query.setWorktypeCodes(Collections.emptyList());
+		query.setPeriodStart(closurePeriod.start());
+		query.setPeriodEnd(closurePeriod.end());
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);
-		// query.setIncludeAreOnLoan(true);
-		// query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
 		// query.setRetireStart(retireStart);
 		// query.setRetireEnd(retireEnd);
 		query.setSortOrderNo(1);
 		// query.setNameType(nameType);
+		query.setSystemType(2);
 		return query;
 	}
 

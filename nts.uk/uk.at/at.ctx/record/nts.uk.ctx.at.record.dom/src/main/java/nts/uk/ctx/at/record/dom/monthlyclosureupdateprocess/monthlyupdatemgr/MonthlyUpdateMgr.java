@@ -23,8 +23,8 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess.MonthlyCl
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.MonthlyClosureRemainNumProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
-import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -49,9 +49,6 @@ public class MonthlyUpdateMgr {
 	private MonthlyClosureUpdateLogProcess logProcess;
 
 	@Inject
-	private GetClosurePeriod closurePeriodService;
-
-	@Inject
 	private MonthlyClosureUpdatePersonLogRepository mClosurePerLogRepo;
 
 	@Inject
@@ -66,6 +63,9 @@ public class MonthlyUpdateMgr {
 	@Inject
 	private ClosureStatusMng closureSttMng;
 
+	@Inject
+	private CalcPeriodForClosureProcess calcPeriod;
+
 	public void monthlyUpdateMgr(String monthlyClosureLogId, List<String> listEmpId, int closureId, YearMonth ym,
 			ClosureDate closureDate, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
@@ -77,11 +77,19 @@ public class MonthlyUpdateMgr {
 		logProcess.monthlyClosureUpdateLogProcess(monthlyClosureLogId);
 	}
 
+	// 社員毎に実行される処理
 	private void processEmployee(String monthlyClosureLogId, String empId, int closureId, YearMonth ym,
 			ClosureDate closureDate, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
-		ClosurePeriod closurePeriod = new ClosurePeriod(); //closurePeriodService.calculateAggregationPeriod(companyId, empId, closureId);
-		if (closurePeriod == null) {
+		Optional<ClosurePeriod> optClosurePeriod = calcPeriod.algorithm(companyId, empId, closureId);
+		if (optClosurePeriod.isPresent()) {
+			ClosurePeriod closurePeriod = optClosurePeriod.get();
+			MonthlyClosureUpdatePersonLog personLog = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
+					null, MonthlyClosurePersonExecutionStatus.INCOMPLETE);
+			executeProcess(monthlyClosureLogId, empId, closurePeriod);
+			logProcess.monthlyClosureUpdatePersonLogProcess(monthlyClosureLogId, empId, personLog);
+		} else {
+			// TODO: description not clear
 			// 「既に締め処理済み」が返ってきた場合 (When "already closed" has been returned)
 			MonthlyClosureUpdatePersonLog personLog = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
 					MonthlyClosurePersonExecutionResult.ALREADY_CLOSURE, MonthlyClosurePersonExecutionStatus.COMPLETE);
@@ -92,11 +100,6 @@ public class MonthlyUpdateMgr {
 			mClosurePerLogRepo.delete(monthlyClosureLogId, empId);
 			// F：進捗確認ダイアログの表示を更新する(F: Update display of progress confirmation
 			// dialog)
-		} else {
-			MonthlyClosureUpdatePersonLog personLog = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
-					null, MonthlyClosurePersonExecutionStatus.INCOMPLETE);
-			executeProcess(monthlyClosureLogId, empId, closurePeriod);
-			logProcess.monthlyClosureUpdatePersonLogProcess(monthlyClosureLogId, empId, personLog);
 		}
 
 	}
@@ -109,7 +112,7 @@ public class MonthlyUpdateMgr {
 			if (attTimeMontly == null)
 				continue;
 			monthlyClosureUpdateProc(p, empId);
-			// backup: not cover this time
+			// アルゴリズム「月別実績バックアップ」を実行する: not cover this time
 		}
 	}
 

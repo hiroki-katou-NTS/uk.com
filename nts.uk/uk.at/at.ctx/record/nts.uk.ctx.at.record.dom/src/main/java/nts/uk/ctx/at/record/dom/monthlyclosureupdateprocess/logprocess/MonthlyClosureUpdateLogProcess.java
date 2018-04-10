@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureCompleteSt
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosurePersonExecutionResult;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosurePersonExecutionStatus;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorAlarmAtr;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
@@ -32,7 +33,7 @@ public class MonthlyClosureUpdateLogProcess {
 
 	@Inject
 	private MonthlyClosureUpdatePersonLogRepository mClosureUpdatePerLogRepo;
-	
+
 	@Inject
 	private MonthlyClosureUpdateErrorInforRepository mClosureErrorInforRepo;
 
@@ -77,18 +78,28 @@ public class MonthlyClosureUpdateLogProcess {
 		// アラームなし - no alarm
 		return MonthlyClosureCompleteStatus.COMPLETE;
 	}
-	
+
 	/**
 	 * 月締め更新対象者ログ処理
+	 * 
 	 * @param monthlyClosureUpdateLogId
 	 * @param employeeId
 	 */
-	public void monthlyClosureUpdatePersonLogProcess(String monthlyClosureUpdateLogId, String employeeId, MonthlyClosureUpdatePersonLog personLog){
-		Optional<MonthlyClosureUpdateErrorInfor> optErrorInfor = mClosureErrorInforRepo.getById(monthlyClosureUpdateLogId, employeeId);
-		if (optErrorInfor.isPresent()){
+	public void monthlyClosureUpdatePersonLogProcess(String monthlyClosureUpdateLogId, String employeeId,
+			MonthlyClosureUpdatePersonLog personLog) {
+		Optional<MonthlyClosureUpdateErrorInfor> optErrorInfor = mClosureErrorInforRepo
+				.getById(monthlyClosureUpdateLogId, employeeId);
+		if (optErrorInfor.isPresent()) {
+			MonthlyClosureUpdateErrorInfor errorInfor = optErrorInfor.get();
+			if (errorInfor.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ERROR) {
+				personLog.updateResult(MonthlyClosurePersonExecutionResult.NOT_UPDATED_WITH_ERROR);
+			} else {
+				personLog.updateResult(MonthlyClosurePersonExecutionResult.UPDATED_WITH_ALARM);
+			}
+		} else {
 			personLog.updateResult(MonthlyClosurePersonExecutionResult.UPDATED);
 		}
-		
+
 		personLog.updateStatus(MonthlyClosurePersonExecutionStatus.COMPLETE);
 		mClosureUpdatePerLogRepo.add(personLog);
 	}

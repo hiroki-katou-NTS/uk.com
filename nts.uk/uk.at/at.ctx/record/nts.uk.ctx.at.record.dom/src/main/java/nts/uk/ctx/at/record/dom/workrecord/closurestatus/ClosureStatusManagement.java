@@ -32,8 +32,6 @@ public class ClosureStatusManagement extends AggregateRoot {
 	// 期間
 	private DatePeriod period;
 
-//	private ClosureProcessStatus status;
-
 	public ClosureStatusManagement(YearMonth yearMonth, String employeeId, int closureId, ClosureDate closureDate,
 			DatePeriod period) {
 		super();
@@ -42,7 +40,6 @@ public class ClosureStatusManagement extends AggregateRoot {
 		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
 		this.closureDate = closureDate;
 		this.period = period;
-//		this.status = EnumAdaptor.valueOf(status, ClosureProcessStatus.class);
 	}
 
 }

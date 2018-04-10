@@ -37,13 +37,15 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 				.filterByEmployment(queryX.getFilterByEmployment()).employmentCodes(queryX.getEmploymentCodes())
 				.filterByDepartment(queryX.getFilterByDepartment()).departmentCodes(queryX.getDepartmentCodes())
 				.filterByWorkplace(queryX.getFilterByWorkplace()).workplaceCodes(queryX.getWorkplaceCodes())
-				.filterByClassification(queryX.getFilterByClassification())
-				.classificationCodes(queryX.getClassificationCodes()).filterByJobTitle(queryX.getFilterByJobTitle())
-				.jobTitleCodes(queryX.getJobTitleCodes()).filterByWorktype(queryX.getFilterByWorktype())
-				.worktypeCodes(queryX.getWorktypeCodes()).periodStart(periodStart).periodEnd(periodEnd)
+				.filterByClassification(queryX.getFilterByClassification()).classificationCodes(queryX.getClassificationCodes())
+				.filterByJobTitle(queryX.getFilterByJobTitle()).jobTitleCodes(queryX.getJobTitleCodes())
+				.filterByWorktype(queryX.getFilterByWorktype()).worktypeCodes(queryX.getWorktypeCodes())
+				.periodStart(periodStart).periodEnd(periodEnd)
 				.includeIncumbents(queryX.getIncludeIncumbents())
-				.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave()).includeOccupancy(queryX.getIncludeOccupancy())
-				.systemType(2).sortOrderNo(1).includeRetirees(queryX.getIncludeRetirees()).build();
+				.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave())
+				.includeOccupancy(queryX.getIncludeOccupancy())
+				.systemType(2).sortOrderNo(1)
+				.includeRetirees(queryX.getIncludeRetirees()).build();
 	}
 
 }
