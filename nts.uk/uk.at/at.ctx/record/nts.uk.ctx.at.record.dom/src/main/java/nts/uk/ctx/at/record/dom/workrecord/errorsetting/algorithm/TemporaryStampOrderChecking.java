@@ -68,8 +68,8 @@ public class TemporaryStampOrderChecking {
 				if (item.getLeaveStamp().isPresent()) {
 					leaveStamp = item.getLeaveStamp().get();
 				}
-				item = new TimeLeavingWork(new WorkNo((workNo)), Optional.ofNullable(attendanceStamp),
-						Optional.ofNullable(leaveStamp));
+				item = new TimeLeavingWork(new WorkNo((workNo)), attendanceStamp,
+						leaveStamp);
 				workNo++;
 			}
 
