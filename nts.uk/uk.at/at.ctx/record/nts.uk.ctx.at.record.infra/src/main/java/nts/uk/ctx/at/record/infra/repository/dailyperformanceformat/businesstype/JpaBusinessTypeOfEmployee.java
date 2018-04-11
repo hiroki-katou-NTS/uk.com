@@ -34,8 +34,8 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 		StringBuilder stringBuild = new StringBuilder();
 		stringBuild.append("SELECT k ");
 		stringBuild.append("FROM KrcmtBusinessTypeOfEmployee ");
-		stringBuild.append("WHERE k.sId =: employeeId");
-		stringBuild.append("AND k.krcmtBusinessTypeOfEmployeePK.historyId =: historyId");
+		stringBuild.append("WHERE k.sId = :employeeId ");
+		stringBuild.append("AND k.krcmtBusinessTypeOfEmployeePK.historyId = :historyId");
 		FIND_BY_SID_HISTID = stringBuild.toString();
 	}
 
@@ -105,7 +105,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 	@Override
 	public Optional<BusinessTypeOfEmp> getBySidAndHistId(String employeeId, String histId) {
 		return this.queryProxy().query(FIND_BY_SID_HISTID, KrcmtBusinessTypeOfEmployee.class)
-				.setParameter("sId", employeeId).setParameter("histId", histId)
+				.setParameter("employeeId", employeeId).setParameter("histId", histId)
 				.getSingle(x -> new BusinessTypeOfEmp(x.businessTypeCode, x.krcmtBusinessTypeOfEmployeePK.historyId,
 						x.sId));
 	}
