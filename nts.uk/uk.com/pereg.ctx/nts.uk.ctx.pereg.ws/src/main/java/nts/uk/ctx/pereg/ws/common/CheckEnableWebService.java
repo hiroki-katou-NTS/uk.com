@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.ws.common;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -23,7 +24,7 @@ public class CheckEnableWebService extends WebService {
 
 	@Inject
 	private OtherHolidayInfoService otherHolidayInfoService;
-	
+
 	@POST
 	@Path("checkStartEnd")
 	public boolean checkStartDateAndEndDate(CheckEnableParam param) {
@@ -43,17 +44,16 @@ public class CheckEnableWebService extends WebService {
 			return false;
 		}
 	}
-	
-	
-	@Path("checkEnableRemainDays")
+
+	@Path("checkEnableRemainDays/{sid}")
 	@POST
-	public boolean checkEnableRemainDays(String sid){
+	public boolean checkEnableRemainDays(@PathParam(value = "sid") String sid) {
 		return otherHolidayInfoService.checkEnableLeaveMan(sid);
 	}
-	
-	@Path("checkEnableRemainLeft")
+
+	@Path("checkEnableRemainLeft/{sid}")
 	@POST
-	public boolean checkEnableRemainLeft(String sid){
+	public boolean checkEnableRemainLeft(@PathParam(value = "sid") String sid) {
 		return otherHolidayInfoService.checkEnablePayout(sid);
 	}
 }

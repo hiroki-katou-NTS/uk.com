@@ -191,7 +191,7 @@ module nts.layout {
                 CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
-                    $(document).on('change', item.id, () => {
+                    $(item.id).on('change', () => {
                         let value: string = ko.toJS(item.data.value),
                             index: number = value.indexOf('　'),
                             lindex: number = value.lastIndexOf('　'),
@@ -717,7 +717,7 @@ module nts.layout {
 
                     if (firstTimes && secondTimes) {
                         if (firstTimes.end && secondTimes.start) {
-                            $(document).on('change', `${firstTimes.end.id}, ${secondTimes.start.id}`, () => {
+                            $(`${firstTimes.end.id}, ${secondTimes.start.id}`).on('change', () => {
                                 setTimeout(() => {
                                     let dom1 = $(firstTimes.end.id),
                                         dom2 = $(secondTimes.start.id),
@@ -975,13 +975,7 @@ module nts.layout {
                 validation = (btn: IRelateButton) => {
                     let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
                     if (button) {
-                        $(document).on('click', button.id, (evt) => {
-                            if ($(evt.tartget).data('clicked')) {
-                                return;
-                            } else {
-                                $(evt.tartget).data('clicked', true);
-                            }
-
+                        $(button.id).on('click', (evt) => {
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode,
@@ -989,9 +983,7 @@ module nts.layout {
                             });
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
-                                $(evt.tartget).data('clicked', false);
                                 // load lai du lieu
-
 
                                 if (!sid) {
                                     return;
