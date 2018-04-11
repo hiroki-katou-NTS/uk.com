@@ -36,15 +36,8 @@ public class SyncCsvExecuteImportDataCommandHandler extends AsyncCommandHandler<
 		setter.setData(STOP_MODE, command.getStopMode());
 		setter.setData(STATUS, command.getStateBehavior());
 
-		for (int i = 1; i < command.getCsvLine(); i++) {
+		for (int i = 1; i <= command.getCsvLine(); i++) {
 			//TODO アルゴリズム「外部受入テスト本体」を実行する
-
-			if (asyncTask.hasBeenRequestedToCancel()) {
-				// 外部受入動作管理の中断するしない区分を更新する
-				setter.updateData(STOP_MODE, 1);
-				asyncTask.finishedAsCancelled();
-				break;
-			}
 
 			// TODO	Dump data. delete after proccess pharse 2
 			if(i %5 == 0){
@@ -52,6 +45,13 @@ public class SyncCsvExecuteImportDataCommandHandler extends AsyncCommandHandler<
 			}
 			setter.updateData(NUMBER_OF_SUCCESS, i);
 			setter.updateData(STATUS, command.getStateBehavior());
+			
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				// 外部受入動作管理の中断するしない区分を更新する
+				setter.updateData(STOP_MODE, 1);
+				asyncTask.finishedAsCancelled();
+				break;
+			}
 			
 			try {
 				TimeUnit.SECONDS.sleep(1);
