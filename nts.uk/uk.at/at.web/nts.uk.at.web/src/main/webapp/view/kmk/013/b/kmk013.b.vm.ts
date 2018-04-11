@@ -246,6 +246,7 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedValueB8_5() == true) {
                             self.enableB8_22(true);
                         }
+                        self.checkedB8_14(true);
                     } else {
                         self.enableB8_22(false);    
                     }
@@ -295,13 +296,16 @@ module nts.uk.at.view.kmk013.b {
                     if (v == false) {
                         if (self.selectedValueB8_6() == true && self.selectedValueB8_17() == true) {
                             self.checkedB8_14(false);    
-                        } 
+                        }
+                        self.checkedB8_20(false);
+                        self.checkedB8_14(false);
                     }
                 });
                 
                 self.checkedB8_20.subscribe((v) => {
                     if (v == false) {
-                        self.enableB8_22(false);
+                        self.enableB8_23(false);
+                        self.checkedB8_13(false);
                     } 
 //                    if (v == true) {
 //                        if (self.selectedValueB8_16() == true) {
@@ -313,6 +317,7 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB5_22.subscribe((v) => {
                     if (v == true) {
                         if (self.selectedValueB54() == 1 && self.selectedValueB515() == 1) {
+                            // temparory don't action B5_23
                             self.checkedB5_23(true);
                         }
                     }
@@ -537,6 +542,7 @@ module nts.uk.at.view.kmk013.b {
                         if (self.enableB215() == true && self.selectedB215() == 0) {
                             $('.input-time').ntsError('check');    
                         }
+                        self.selectedB215.valueHasMutated();
                     }
                 });
                 self.selectedB29.subscribe((newValue) => {
@@ -551,6 +557,7 @@ module nts.uk.at.view.kmk013.b {
                         if (self.enableB215() == true && self.selectedB215() == 0) {
                             $('.input-time').ntsError('check');    
                         }
+                        self.selectedB215.valueHasMutated();
                     }
                 });
                 self.selectedB215.subscribe((newValue) => {
@@ -991,7 +998,7 @@ module nts.uk.at.view.kmk013.b {
                                                 "notDeductLateLeaveEarly":0, "calculateIncludeIntervalExemptionTime2":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
                                                 };
                     }
-                    self.notifyVarKnockoutchange();
+//                    self.notifyVarKnockoutchange();
                     
                     self.oldData(data[0]);
                     let obj = data[0];
@@ -1228,8 +1235,10 @@ module nts.uk.at.view.kmk013.b {
                     obj.regularWork.incChildNursingCareWork = convertToInt(self.checkedB519());
                     obj.regularWork.notDeductLateleaveWork = convertToInt(self.checkedB520());
                     obj.regularWork.exemptTaxTimeWork = convertToInt(self.checkedB521());
-                    if (self.checkedB520() == true) {
+                    if (self.checkedB520() == true && self.enableB5_23()) {
                         obj.regularWork.enableSetPerWorkHour2 = convertToInt(self.checkedB5_23());    
+                    } else {
+                        obj.regularWork.enableSetPerWorkHour2 = self.oldData().regularWork.enableSetPerWorkHour2;
                     }
                 } else {
                     obj.regularWork.additionTimeWork = self.oldData().regularWork.additionTimeWork;
