@@ -153,7 +153,9 @@ module nts.uk.at.view.kal001.a.model {
         
         public alarmCodeChange(): void{
             let self = this;
+            
             self.currentAlarmCode.subscribe((newCode)=>{
+                    $(".nts-input").ntsError("clear");
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
