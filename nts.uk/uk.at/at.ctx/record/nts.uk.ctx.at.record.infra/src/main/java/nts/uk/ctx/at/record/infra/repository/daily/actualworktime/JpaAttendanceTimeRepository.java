@@ -401,8 +401,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		this.commandProxy().remove(KrcdtDayAttendanceTime.class, new KrcdtDayAttendanceTimePK(employeeId, ymd));
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 }
