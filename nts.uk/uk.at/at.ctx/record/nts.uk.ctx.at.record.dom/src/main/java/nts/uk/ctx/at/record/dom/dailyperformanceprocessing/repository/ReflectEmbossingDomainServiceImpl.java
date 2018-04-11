@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -698,16 +699,26 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("PCログオン".equals(inOrOutClass)) {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
+				/*
 				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOn() != null
 						&& logOnInfo.getLogOn().isPresent()) {
 					return i;
 				}
+				*/
+				if(logOnInfo.getWorkNo().v().intValue() == worktNo){
+					return i;
+				}
+				
 			}
 		} else {
 			for (int i = 0; i < logOnInfoSize; i++) {
 				LogOnInfo logOnInfo = lstLogOnInfo.get(i);
+				/*
 				if (logOnInfo.getWorkNo().v().intValue() == worktNo && logOnInfo.getLogOff() != null
 						&& logOnInfo.getLogOff().isPresent()) {
+					return i;
+				}*/
+				if(logOnInfo.getWorkNo().v().intValue() == worktNo){
 					return i;
 				}
 			}
@@ -875,8 +886,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		} else {
 			attendanceLeavingGates.set(indexAttendanceLeavingGate, new AttendanceLeavingGate(
 					attendanceLeavingGate.getWorkNo(),
-					(attendanceLeavingGate.getAttendance() != null && attendanceLeavingGate.getLeaving().isPresent())
-							? attendanceLeavingGate.getLeaving().get() : null,
+					(attendanceLeavingGate.getAttendance() != null && attendanceLeavingGate.getAttendance().isPresent())
+							? attendanceLeavingGate.getAttendance().get() : null,
 					inorOutStamp));
 		}
 		return attendanceLeavingGateOfDaily;
@@ -947,18 +958,28 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if ("入門".equals(inOrOutClass)) {
 			for (int i = 0; i < attendanceLeavingGateSize; i++) {
 				AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(i);
+				/*
 				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo
 						&& attendanceLeavingGate.getAttendance() != null
 						&& attendanceLeavingGate.getAttendance().isPresent()) {
+					return i;
+				}
+				*/
+				if(attendanceLeavingGate.getWorkNo().v().intValue() == worktNo){
 					return i;
 				}
 			}
 		} else {
 			for (int i = 0; i < attendanceLeavingGateSize; i++) {
 				AttendanceLeavingGate attendanceLeavingGate = attendanceLeavingGates.get(i);
+				/*
 				if (attendanceLeavingGate.getWorkNo().v().intValue() == worktNo
 						&& attendanceLeavingGate.getLeaving() != null
 						&& attendanceLeavingGate.getLeaving().isPresent()) {
+					return i; 
+				}
+				*/
+				if(attendanceLeavingGate.getWorkNo().v().intValue() == worktNo){
 					return i;
 				}
 			}
@@ -3062,8 +3083,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			return stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst()
-					.get();
+			if(stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst()!=null && stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst().isPresent()){
+				return stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr).findFirst()
+						.get();	
+			}
+			return null;
+			
 		}
 		return null;
 	}
