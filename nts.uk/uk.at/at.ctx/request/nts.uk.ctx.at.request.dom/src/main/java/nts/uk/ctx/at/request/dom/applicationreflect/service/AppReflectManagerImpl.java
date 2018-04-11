@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -79,7 +80,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				null);
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
-		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
+		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getFullAppOvertime(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
 				return;
@@ -100,8 +102,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(appGobackTmp == null) {
 				return;
 			}
-		} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-			Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
+		//} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+			/*Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optAbsence.isPresent()) {
 				return;
 			}
@@ -111,7 +113,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			commonReflect = this.getAbsence(appInfor, absenceAppData);
 			if(commonReflect == null) {
 				return;
-			}
+			}*/
 		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
@@ -133,6 +135,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(commonReflect == null) {
 				return;
 			}
+		} else {
+			return;
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
 		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		

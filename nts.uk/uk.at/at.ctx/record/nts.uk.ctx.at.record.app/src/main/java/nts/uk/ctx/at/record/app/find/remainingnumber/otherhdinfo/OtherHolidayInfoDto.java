@@ -59,7 +59,7 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 			dto.occurrenceUnit = exLeavInfo.get().getOccurrenceUnit().v();
 			dto.paymentMethod = exLeavInfo.get().getPaymentMethod().value;
 			if (StringUtils.isEmpty(dto.getRecordId())){
-				dto.setRecordId(pubHDRemain.get().getSID());
+				dto.setRecordId(exLeavInfo.get().getSID());
 			}
 		}
 		return dto;

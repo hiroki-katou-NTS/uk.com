@@ -6,11 +6,13 @@ package nts.uk.ctx.sys.auth.ac.role.workplace;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
@@ -65,10 +67,14 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 		return syWorkplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
 	}
 
+	private AffiliationWorkplace toImport (AffAtWorkplaceExport ex){
+		return new AffiliationWorkplace(ex.getHistoryID(), ex.getEmployeeId(), ex.getWorkplaceId(), ex.getNormalWorkplaceID());
+	}
+	
 	@Override
 	public List<AffiliationWorkplace> findByListEmpIDAndDate(List<String> listEmployeeID, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return syWorkplacePub.findBySIdAndBaseDate(listEmployeeID, baseDate).stream().map(c -> toImport(c)).collect(Collectors.toList());
 	}
 
 	

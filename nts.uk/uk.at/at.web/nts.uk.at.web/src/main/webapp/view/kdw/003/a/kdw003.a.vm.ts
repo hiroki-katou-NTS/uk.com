@@ -959,14 +959,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                } else {1
+                } else {
                     lstEmployee = self.lstEmployee();
                 }
-                //  let errorCodes =["0001","0002","003"];      
+                //  let errorCodes =["0001","0002","003"];     
+                let errorParam = { initMode: 0, selectedItems: [] };
+                nts.uk.ui.windows.setShared("KDW003D_ErrorParam", errorParam);  
                 nts.uk.ui.windows.sub.modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
-                    let errorCodes = nts.uk.ui.windows.getShared('errorAlarmList');
-                    if (errorCodes != undefined) {
+                    let errorCodes = nts.uk.ui.windows.getShared('KDW003D_Output');
+                    if (errorCodes != undefined && errorCodes.length > 0) {
                         let param = {
                             dateRange: {
                                 startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),

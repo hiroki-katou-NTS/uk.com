@@ -11,32 +11,33 @@ import nts.uk.shr.pereg.app.PeregItem;
 public class UpdateSpecialleave2informationCommand {
 	@PeregEmployeeId
 	private String sID;
+	
 	//	特別休暇付与基準日
-	@PeregItem("IS00309")
+	@PeregItem("IS00302")
 	private GeneralDate grantDate;
 	
 	//	特別休暇管理
-	@PeregItem("IS00310")
+	@PeregItem("IS00303")
 	private BigDecimal useAtr;
 	
 	//	付与設定
-	@PeregItem("IS00311")
+	@PeregItem("IS00304")
 	private BigDecimal appSet;
 	
 	//	付与日数
-	@PeregItem("IS00312")
+	@PeregItem("IS00305")
 	private BigDecimal grantDays;
 	
 	//	付与テーブル
-	@PeregItem("IS00313")
+	@PeregItem("IS00306")
 	private String grantTable;
 	
 	//	次回付与日
-	@PeregItem("IS00314")
+	@PeregItem("IS00307")
 	private String nextGrantDate;
 
 	//	特別休暇残数
-	@PeregItem("IS00315")
+	@PeregItem("IS00308")
 	private String spHDRemain;
 
 }

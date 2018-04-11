@@ -79,10 +79,11 @@ module cmm045.shr {
             version: number;
             checkTimecolor: number;
             appIdSub: string;
+            appStatusNo: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string, appContent: string,
-                inputDate: string, appStatus: string, displayAppStatus: string,
-                checkAtr: boolean, version: number, checkTimecolor: number, appIdSub: string){
+                inputDate: string, appStatus: string, displayAppStatus: string, checkAtr: boolean,
+                version: number, checkTimecolor: number, appIdSub: string, appStatusNo: number){
                 this.appId = appId;
                 this.appType = appType;
                 this.check = false;
@@ -99,6 +100,7 @@ module cmm045.shr {
                 this.version = version;
                 this.checkTimecolor = checkTimecolor;
                 this.appIdSub = appIdSub;
+                this.appStatusNo = appStatusNo;
             }
         }  
         

@@ -48,49 +48,54 @@ public class PCLogOnOffIncorrectOrderCheck {
 				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
 						new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 			} else {
-				if (logOnInfos.get(0).getLogOn().isPresent() && logOnInfos.get(1).getLogOn().isPresent()) {
+				if (logOnInfos.size() == 2) {
+					if (logOnInfos.get(0).getLogOn().isPresent() && logOnInfos.get(1).getLogOn().isPresent()) {
 
-					logOnInfos.sort((e1, e2) -> e1.getLogOn().get().v()
-							.compareTo(e2.getLogOn().get().v()));
-					if (logOnInfos.get(0).getWorkNo().greaterThan(logOnInfos.get(1).getWorkNo())) {
-						attendanceItemIds.add(794);
-						attendanceItemIds.add(795);
-						attendanceItemIds.add(796);
-						attendanceItemIds.add(797);
-						this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-								processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
-					} else {
-						if (logOnInfos.get(0).getLogOff().isPresent() && logOnInfos.get(1).getLogOff().isPresent()) {
+						logOnInfos.sort((e1, e2) -> e1.getLogOn().get().v().compareTo(e2.getLogOn().get().v()));
+						if (logOnInfos.get(0).getWorkNo().greaterThan(logOnInfos.get(1).getWorkNo())) {
+							attendanceItemIds.add(794);
+							attendanceItemIds.add(795);
+							attendanceItemIds.add(796);
+							attendanceItemIds.add(797);
+							this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
+									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+						} else {
+							if (logOnInfos.get(0).getLogOff().isPresent()
+									&& logOnInfos.get(1).getLogOff().isPresent()) {
 
-							TimeWithDayAttr startFirstTime = logOnInfos.get(0).getLogOn().get();
-							TimeWithDayAttr endFirstTime = logOnInfos.get(0).getLogOff().get();
-							TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(startFirstTime, endFirstTime);
+								TimeWithDayAttr startFirstTime = logOnInfos.get(0).getLogOn().get();
+								TimeWithDayAttr endFirstTime = logOnInfos.get(0).getLogOff().get();
+								TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(startFirstTime, endFirstTime);
 
-							TimeWithDayAttr startSecondTime = logOnInfos.get(1).getLogOn().get();
-							TimeWithDayAttr endSecondTime = logOnInfos.get(1).getLogOff().get();
-							TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(startSecondTime, endSecondTime);
+								TimeWithDayAttr startSecondTime = logOnInfos.get(1).getLogOn().get();
+								TimeWithDayAttr endSecondTime = logOnInfos.get(1).getLogOff().get();
+								TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(startSecondTime,
+										endSecondTime);
 
-							DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-									.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-							DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-									.checkStateAtr(duplicateStateAtr);
+								DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+										.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+								DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+										.checkStateAtr(duplicateStateAtr);
 
-							if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
-								attendanceItemIds.add(794);
-								attendanceItemIds.add(795);
-								attendanceItemIds.add(796);
-								attendanceItemIds.add(797);
-								this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
-							} else {
-								// PCログオンログオフと出退勤の順序不正判断処理
-								attendanceItemIds = this.checkOder(pCLogOnInfoOfDaily, timeLeavingOfDailyPerformance);
-								if (!attendanceItemIds.isEmpty()) {
+								if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
+									attendanceItemIds.add(794);
+									attendanceItemIds.add(795);
+									attendanceItemIds.add(796);
+									attendanceItemIds.add(797);
 									this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
 											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+								} else {
+									// PCログオンログオフと出退勤の順序不正判断処理
+									attendanceItemIds = this.checkOder(pCLogOnInfoOfDaily,
+											timeLeavingOfDailyPerformance);
+									if (!attendanceItemIds.isEmpty()) {
+										this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
+												employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+												attendanceItemIds);
+									}
 								}
-							}
 
+							}
 						}
 					}
 				}
@@ -112,8 +117,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 		for (LogOnInfo logOnInfo : logOnInfos) {
 			if (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOff().isPresent()) {
-				if (logOnInfo.getLogOn().get()
-						.greaterThan(logOnInfo.getLogOff().get())) {
+				if (logOnInfo.getLogOn().get().greaterThan(logOnInfo.getLogOff().get())) {
 					if (logOnInfo.getWorkNo().v() == 1) {
 						attendanceItemIds.add(794);
 						attendanceItemIds.add(795);
