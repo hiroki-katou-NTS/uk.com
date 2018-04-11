@@ -246,8 +246,10 @@ public class AppHolidayWorkFinder {
 			inputDate = GeneralDateTime.now();
 		}
 		String companyID = AppContexts.user().companyId();
+		String employeeIDOrapproverID = AppContexts.user().employeeId();
 		List<CaculationTime> result = new ArrayList<>();
 		// 6.計算処理 : TODO
+		
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
 																GeneralDate.fromString(appDate, DATE_FORMAT),
 																workTydeCode,
@@ -256,16 +258,25 @@ public class AppHolidayWorkFinder {
 																endTime,
 																startTimeRest,
 																endTimeRest);
-		// 06-01_色表示チェック
-		result = this.holidaySixProcess.checkDisplayColor(breakTime,
-														dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
-														prePostAtr,
-														inputDate,
-														GeneralDate.fromString(appDate, DATE_FORMAT), 
-														ApplicationType.BREAK_TIME_APPLICATION.value,
-														employeeID,
-														companyID,
-														siftCD);
+		if (!employeeIDOrapproverID.equals(employeeID)) {
+			//  06-01-a_色表示チェック（承認者）
+			result = this.holidaySixProcess.checkDisplayColorForApprover(breakTime,
+															dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
+															prePostAtr,
+															inputDate,
+															GeneralDate.fromString(appDate, DATE_FORMAT), 
+															ApplicationType.BREAK_TIME_APPLICATION.value,
+															employeeID,
+															companyID,
+															siftCD);
+		}else{
+			//06-01_色表示チェック
+			result = this.holidaySixProcess.checkDisplayColor(breakTime,
+					dailyAttendanceTimeCaculationImport.getHolidayWorkTime(), prePostAtr, inputDate,
+					GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION.value,
+					employeeID, companyID, siftCD);
+		}
+		
 		// 06-02_休出時間を取得
 		this.holidaySixProcess.getCaculationHolidayWork(companyID,
 				employeeID,
@@ -364,26 +375,44 @@ public class AppHolidayWorkFinder {
 				}
 			});
 		});
-		
-		// 06-01_色表示チェック
-		List<CaculationTime> breakTimeCal = this.holidaySixProcess.checkDisplayColor(convertHolidayWorkInputDtoToCal(breakTimes),
-				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(), 
-				appHolidayWork.getApplication().getPrePostAtr().value,
-				appHolidayWork.getApplication().getInputDate(),
-				appHolidayWork.getApplication().getAppDate(),
-				ApplicationType.BREAK_TIME_APPLICATION.value,
-				appHolidayWork.getApplication().getEmployeeID(), 
-				companyID, appHolidayWork.getWorkTimeCode().toString());
-		holidayWorkInputDtos.forEach(x -> {
-			breakTimeCal.forEach(breakTime -> {
-				if(x.getAttendanceType() == breakTime.getAttendanceID()){
-					if(x.getFrameNo() == breakTime.getFrameNo()){
-						x.setErrorCode(breakTime.getErrorCode());
+		String employeeIDOrApprover = AppContexts.user().employeeId();
+		if(employeeIDOrApprover.equals(appHolidayWork.getApplication().getEmployeeID())){
+			// 06-01_色表示チェック
+			List<CaculationTime> breakTimeCal = this.holidaySixProcess.checkDisplayColor(convertHolidayWorkInputDtoToCal(breakTimes),
+					dailyAttendanceTimeCaculationImport.getHolidayWorkTime(), 
+					appHolidayWork.getApplication().getPrePostAtr().value,
+					appHolidayWork.getApplication().getInputDate(),
+					appHolidayWork.getApplication().getAppDate(),
+					ApplicationType.BREAK_TIME_APPLICATION.value,
+					appHolidayWork.getApplication().getEmployeeID(), 
+					companyID, appHolidayWork.getWorkTimeCode().toString());
+			holidayWorkInputDtos.forEach(x -> {
+				breakTimeCal.forEach(breakTime -> {
+					if(x.getAttendanceType() == breakTime.getAttendanceID()){
+						if(x.getFrameNo() == breakTime.getFrameNo()){
+							x.setErrorCode(breakTime.getErrorCode());
+						}
 					}
-				}
+				});
 			});
-		});
-		
+		}else{
+			// 06-01-a_色表示チェック（承認者）
+			List<CaculationTime> breakTimeCalforApprover = this.holidaySixProcess.checkDisplayColorForApprover(convertHolidayWorkInputDtoToCal(breakTimes),
+					dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),
+					appHolidayWork.getApplication().getPrePostAtr().value,
+					appHolidayWork.getApplication().getInputDate(), appHolidayWork.getApplication().getAppDate(),
+					ApplicationType.BREAK_TIME_APPLICATION.value, appHolidayWork.getApplication().getEmployeeID(),
+					companyID, appHolidayWork.getWorkTimeCode().toString());
+			holidayWorkInputDtos.forEach(x -> {
+				breakTimeCalforApprover.forEach(breakTime -> {
+					if(x.getAttendanceType() == breakTime.getAttendanceID()){
+						if(x.getFrameNo() == breakTime.getFrameNo()){
+							x.setErrorCode(breakTime.getErrorCode());
+						}
+					}
+				});
+			});
+		}
 		for(int i = 1; i < 11; i++){
 			HolidayWorkInputDto holidayInputDto = new HolidayWorkInputDto();
 			holidayInputDto.setAttendanceType(AttendanceType.RESTTIME.value);
