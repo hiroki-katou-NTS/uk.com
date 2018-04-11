@@ -368,7 +368,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, PrescribedTimezoneSetting oldDomain) {
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
-			this.getTimezoneShiftTwo().correctData(oldDomain.getTimezoneShiftTwo());
+			this.getTimezoneShiftTwo().correctDefaultData();
 		}
 
 		if (screenMode == ScreenMode.DETAIL) {
