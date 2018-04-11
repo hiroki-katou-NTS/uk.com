@@ -364,6 +364,21 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			 }
 		 }
 	}
+	@Override
+	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr, int appType, String employeeID,
+			String companyID, GeneralDate appDate, CaculationTime breakTimeInput, String siftCD, Integer calTime) {
+		// 03-02-1_チェック条件
+		if(!this.checkCodition(prePostAtr, companyID)){
+			return breakTimeInput;
+		}
+		//Imported(申請承認)「勤務実績」を取得する
+		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+		if(breakTimeInput.getApplicationTime() != null && breakTimeInput.getApplicationTime() > 0){
+			breakTimeInput.setErrorCode(2);
+		}
+		breakTimeInput.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
+		return breakTimeInput;
+	}
 	
 	
 }
