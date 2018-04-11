@@ -27,7 +27,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		implements BusinessTypeEmpOfHistoryRepository, BusinessTypeOfEmpHisAdaptor {
-	private static final String FIND_ALL;
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
 	private static final String FIND_BY_EMPLOYEE_DESC;
