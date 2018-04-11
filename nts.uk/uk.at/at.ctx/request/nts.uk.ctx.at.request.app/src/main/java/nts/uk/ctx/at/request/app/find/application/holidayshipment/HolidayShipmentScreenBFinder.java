@@ -215,10 +215,7 @@ public class HolidayShipmentScreenBFinder {
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMng.getAbsenceLeaveAppID());
 			if (absAppOpt.isPresent()) {
 				setAbsApp(absAppOpt.get());
-			} else {
-
-				throw new BusinessException("");
-			}
+			} 
 
 		}
 		return result;
