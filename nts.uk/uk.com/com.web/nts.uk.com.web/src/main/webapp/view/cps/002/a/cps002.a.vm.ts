@@ -418,15 +418,20 @@ module cps002.a.vm {
         }
 
         gotoStep2() {
-            let self = this,
-                command = ko.toJS(self.currentEmployee()),
-                layout = self.layout();
+            let self = this;
             self.currentStep(2);
-
+            let layout = self.layout();
+            layout.layoutCode('');
+            layout.layoutName('');
+            layout.listItemCls([]);
+            
+            let command = ko.toJS(self.currentEmployee());
+            
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
             command.createType = self.createTypeId();
+            
             service.getLayoutByCreateType(command).done((data: ILayout) => {
                 layout.layoutCode(data.layoutCode || '');
                 layout.layoutName(data.layoutName || '');
@@ -454,8 +459,7 @@ module cps002.a.vm {
 
 
         }
-
-
+        
         completeStep1() {
             let self = this;
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
