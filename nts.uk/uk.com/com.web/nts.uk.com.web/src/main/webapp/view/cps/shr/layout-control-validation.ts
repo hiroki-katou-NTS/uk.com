@@ -666,7 +666,10 @@ module nts.layout {
                     }
                 ],
                 setData = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.value(value);
+                    if (ctrl) {
+                        ctrl.data.value(value);
+                        //ctrl.data.defValue = value;
+                    }
                 },
                 setDataText = (ctrl: IFindData, value?: any) => {
                     ctrl && ctrl.data.textValue(value || undefined);
@@ -1375,6 +1378,7 @@ module nts.layout {
         'type': ITEM_TYPE;
         required: boolean;
         value: KnockoutObservable<any>;
+        defValue: any;
         textValue: KnockoutObservable<any>;
         item: any;
         editable: KnockoutObservable<boolean>;

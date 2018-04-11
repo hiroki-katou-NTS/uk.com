@@ -1849,6 +1849,8 @@ module nts.custombinding {
 
                     def.defValue = ko.toJS(def.value);
 
+                    def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
+
                     if (ko.toJS(access.editAble) == 2) {
                         def.value.subscribe(x => {
                             let inputs = [],
