@@ -124,7 +124,7 @@ module nts.uk.com.view.cps001.i.vm {
                 clearError();
                 if (value) {
                     self.listData(self.convertData(self.listFullData()));
-                    self.currentValue(self.listData()[0].specialid);
+                    //self.currentValue(self.listData()[0].specialid);
                 } else {
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
                         return item.expStatus == 1;
@@ -132,8 +132,11 @@ module nts.uk.com.view.cps001.i.vm {
                 }
                 if (self.listData().length) {
                     // Set focus
-                    self.currentValue(self.listData()[0].specialid);
-                    // Set to update mode
+                    let index = _.findIndex(self.listData(), (item) => { return item.specialid == self.currentValue(); });
+                    
+                    if (index == -1) {
+                        self.currentValue(self.listData()[0].specialid);
+                    }
                 } else {
                     self.newMode();
                 }
@@ -146,15 +149,21 @@ module nts.uk.com.view.cps001.i.vm {
 
         loadData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.checked(false);
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
 
             service.getAllList(self.sid(), ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
-                    self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
-                        return item.expStatus == 1;
-                    })));
+                    if (self.checked()) {
+                        self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
+                            return item;
+                        })));
+                    } else {
+                        self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
+                            return item.expStatus == 1;
+                        })));
+                    }
+
 
                     if (self.listData().length > 0) {
                         // Set focus
@@ -257,8 +266,7 @@ module nts.uk.com.view.cps001.i.vm {
             }
 
             if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
-                error({ messageId: "Msg_1023" });
-                return;
+                $('#idDateGrantInp').ntsError('set', { messageId: "Msg_1023" });
             }
 
             let currentRow: ISpecialLeaveRemaining = _.find(ko.toJS(self.listData), function(item: any) { return item.specialid == self.currentValue(); });
@@ -284,7 +292,11 @@ module nts.uk.com.view.cps001.i.vm {
             service.saveData(command).done((_data: any) => {
                 if (command.specialid) {
                     self.loadData().done(() => {
-                        self.currentValue(self.listData()[saveItemIndex].specialid);
+                        if (ids.length == self.listData().length) {
+                            self.currentValue(self.listData()[saveItemIndex].specialid);
+                        } else if ((self.listData().length > 0) && (ids.length != self.listData().length)) {
+                            self.currentValue(self.listData()[0].specialid);
+                        }
                     });
 
                 } else {
