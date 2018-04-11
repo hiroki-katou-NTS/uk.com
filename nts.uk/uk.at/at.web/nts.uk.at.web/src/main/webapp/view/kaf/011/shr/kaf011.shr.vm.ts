@@ -46,10 +46,8 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateData(param) {
                 if (param) {
-                    this.startTime(param.startTime || null);
-                    this.endTime(param.endTime || null);
-                    this.startType(param.startType != undefined ? param.startType : 1);
-                    this.endType(param.endType != undefined ? param.endType : 1);
+                    this.startTime(param.start || null);
+                    this.endTime(param.end || null);
                 }
             }
         }
