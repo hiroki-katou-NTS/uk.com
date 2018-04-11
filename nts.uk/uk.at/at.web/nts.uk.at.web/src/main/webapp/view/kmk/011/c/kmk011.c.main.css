@@ -25,6 +25,7 @@
 
 #inpReason {
 	width: 170px !important;
+	cursor: text;
 }
 #single-list tr td {
 	white-space: nowrap;
