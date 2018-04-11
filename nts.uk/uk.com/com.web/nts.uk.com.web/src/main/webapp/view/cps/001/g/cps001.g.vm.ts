@@ -39,7 +39,6 @@ module nts.uk.com.view.cps001.g.vm {
         nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable('');
         nameTimeReam: KnockoutObservable<string> = ko.observable('');
         
-        init: boolean = true;
         itemDefs: any = [];
         
         sid: KnockoutObservable<string> = ko.observable(null);
@@ -98,13 +97,7 @@ module nts.uk.com.view.cps001.g.vm {
             let _self = this; 
             
             block();
-            if(_self.init){
-                _self.getItemDef();
-                _self.init = false;
-             }
-             else {
-                _self.loadItemDef();   
-            }
+            _self.getItemDef();
             _self.alllist.removeAll();
             _self.listAnnualLeaveGrantRemainData.removeAll();
             service.getAllList(_self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
