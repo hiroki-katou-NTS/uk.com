@@ -95,6 +95,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             var self = this;
             self.selectedWplIndex++;
             self.getWkpName();
+            self.updateExTable();
         }
 
         preWkp() {
@@ -118,7 +119,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         initExTable(): void {
             var self = this;
             self.getSampleData().done(function(listData: any) {
-                console.log(listData);
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setColorForCellContentDetail(listData);
                 $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
@@ -141,6 +141,22 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         /**
+         * Update exTable
+         */
+        updateExTable() {
+            var self = this;
+            self.getSampleData2().done(function(listData: any) {
+                let sv1 = self.setColorForCellHeaderDetail();
+                let sv2 = self.setColorForCellContentDetail(listData);
+                $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
+                    let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
+                    $("#extable").exTable("updateTable", "leftmost", initExTable.leftmostHeader, initExTable.leftmostContent, true);
+                    $("#extable").exTable("updateTable", "detail", initExTable.detailHeader, initExTable.detailContent, true);
+                })
+            })
+        }
+
+        /**
          * Get data
          */
         getSampleData(): JQueryPromise<any> {
@@ -159,7 +175,50 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     sName: "sName - " + i,
                     monthConfirm: i % 3 == 0 ? text("KAF018_92") : "",
                     personConfirm: i % 2 == 0 ? text("KAF018_92") : "",
-                    bossConfirm: i % 4 ? text("KAF018_92") : "",
+                    bossConfirm: i % 4 == 0 ? text("KAF018_92") : "",
+                    dailyReport: []
+                };
+                let dailyReport = [];
+                while (currentDay <= self.dtAft()) {
+                    let time = new Time(currentDay);
+                    if (currentDay <= r1) {
+                        dailyReport.push(0)
+                    } else if (currentDay <= r2) {
+                        dailyReport.push(1)
+                    } else if (currentDay <= r3) {
+                        dailyReport.push(2)
+                    } else {
+                        dailyReport.push(3)
+                    }
+                    currentDay.setDate(currentDay.getDate() + 1);
+                }
+                data.dailyReport = dailyReport;
+                listData.push(data);
+            }
+            dfd.resolve(listData);
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data
+         */
+        getSampleData2(): JQueryPromise<any> {
+            var self = this, dfd = $.Deferred();
+            let listData = [];
+            let currentDay = new Date(self.dtPrev().toString());
+            let r1 = new Date(self.dtPrev().toString()), r2 = new Date(self.dtPrev().toString()), r3 = new Date(self.dtPrev().toString());
+            r1.setDate(r1.getDate() + 7);
+            r2.setDate(r2.getDate() + 10);
+            r3.setDate(r3.getDate() + 20);
+            for (let i = 0; i < 60; i++) {
+                currentDay = new Date(self.dtPrev().toString());
+                let data = {
+                    index: i.toString(),
+                    sId: "sid-" + i,
+                    sName: "sName - " + i,
+                    monthConfirm: i % 2 == 0 ? text("KAF018_92") : "",
+                    personConfirm: i % 4 == 0 ? text("KAF018_92") : "",
+                    bossConfirm: i % 3 == 0 ? text("KAF018_92") : "",
                     dailyReport: []
                 };
                 let dailyReport = [];
@@ -196,7 +255,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             //create leftMost Header and Content
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "150px" },
+                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link" },
                 { headerText: text("KAF018_61"), key: "monthConfirm", width: "50px" },
                 { headerText: text("KAF018_62"), key: "personConfirm", width: "50px" },
                 { headerText: text("KAF018_63"), key: "bossConfirm", width: "50px" }
@@ -209,7 +268,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             leftmostContent = {
                 columns: leftmostColumns,
                 dataSource: listData,
-                primaryKey: "sId"
+                primaryKey: "index"
             };
 
             // create detail Columns and detail Content Columns
