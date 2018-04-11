@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
     import text = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
+    import shareModel = kaf018.share.model;
 
     export class ScreenModel {
         legendOptions: any;
@@ -13,7 +14,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         endDateFormat: string;
         startDate: Date;
         endDate: Date;
-        isConfirmData: boolean
         listWkp: any;
         selectedWplIndex: number;
         selectedWplId: KnockoutObservable<string>;
@@ -23,18 +23,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
 
-        listDay: Array<Time>;
-
-        selectedDate: KnockoutObservable<string> = ko.observable('1993/23/12');
-        listColorOfHeader: KnockoutObservableArray<kaf018.share.model.CellColor> = ko.observableArray([]);
+        listData: any;
 
         arrDay: Time[] = [];
-        //Date time
-        currentDate: Date = new Date();
         dtPrev: KnockoutObservable<Date> = ko.observable(null);
         dtAft: KnockoutObservable<Date> = ko.observable(null);
-        dateTimePrev: KnockoutObservable<string>;
-        dateTimeAfter: KnockoutObservable<string>;
 
         dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -50,9 +43,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     { cssClass: { className: 'bg-weekdays', colorPropertyName: 'background-color' }, labelText: text("KAF018_88") }
                 ]
             };
-            self.listDay = [];
+            self.listData = [];
             self.listWkp = [];
-            $("#fixed-table").ntsFixedTable({ width: 1200, height: 286 });
+            //$("#fixed-table").ntsFixedTable({ width: 1200, height: 286 });
             self.selectedWplId = ko.observable('');
             self.selectedWplName = ko.observable('');
             self.enableNext = ko.observable(false);
@@ -79,14 +72,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
             }
-            for(let i = 0; i< self.listWkp.length; i++){
-                self.listWkp[i].index = i.toString();
-            }
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
-            self.createSampleData();
+            self.setArrDate();
             self.getWkpName();
-            //self.initTable();
             self.initExTable();
             dfd.resolve();
             return dfd.promise();
@@ -114,22 +103,166 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             self.getWkpName();
         }
 
-        createSampleData() {
+        setArrDate() {
             var self = this;
+            let currentDay = new Date(self.dtPrev().toString());
+            while (currentDay <= self.dtAft()) {
+                self.arrDay.push(new Time(currentDay));
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+        };
 
-            let result: [];
-            _.each(self.listWkp, function(item) {
-                let currentDay = new Date(self.dtPrev().toString());
+        /**
+         * Create exTable
+         */
+        initExTable(): void {
+            var self = this;
+            self.getSampleData().done(function(listData: any) {
+                console.log(listData);
+                let sv1 = self.setColorForCellHeaderDetail();
+                let sv2 = self.setColorForCellContentDetail(listData);
+                $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
+                    let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
+
+                    new nts.uk.ui.exTable.ExTable($("#extable"), {
+                        headerHeight: "50px", bodyRowHeight: "17px", bodyHeight: "340px",
+                        horizontalSumBodyRowHeight: "0px",
+                        areaResize: true,
+                        bodyHeightMode: "fixed",
+                        windowXOccupation: 50,
+                        windowYOccupation: 20,
+                        primaryTable: $("#extable")
+                    })
+                        .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
+                        .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
+                        .create();
+                })
+            });
+        }
+
+        /**
+         * Get data
+         */
+        getSampleData(): JQueryPromise<any> {
+            var self = this, dfd = $.Deferred();
+            let listData = [];
+            let currentDay = new Date(self.dtPrev().toString());
+            let r1 = new Date(self.dtPrev().toString()), r2 = new Date(self.dtPrev().toString()), r3 = new Date(self.dtPrev().toString());
+            r1.setDate(r1.getDate() + 5);
+            r2.setDate(r2.getDate() + 16);
+            r3.setDate(r3.getDate() + 25);
+            for (let i = 0; i < 30; i++) {
+                currentDay = new Date(self.dtPrev().toString());
+                let data = {
+                    index: i.toString(),
+                    sId: "sid-" + i,
+                    sName: "sName - " + i,
+                    monthConfirm: i % 3 == 0 ? text("KAF018_92") : "",
+                    personConfirm: i % 2 == 0 ? text("KAF018_92") : "",
+                    bossConfirm: i % 4 ? text("KAF018_92") : "",
+                    dailyReport: []
+                };
+                let dailyReport = [];
                 while (currentDay <= self.dtAft()) {
                     let time = new Time(currentDay);
-                    item["__" + time.yearMonthDay] = currentDay.getDate();
+                    if (currentDay <= r1) {
+                        dailyReport.push(0)
+                    } else if (currentDay <= r2) {
+                        dailyReport.push(1)
+                    } else if (currentDay <= r3) {
+                        dailyReport.push(2)
+                    } else {
+                        dailyReport.push(3)
+                    }
                     currentDay.setDate(currentDay.getDate() + 1);
                 }
-            })
+                data.dailyReport = dailyReport;
+                listData.push(data);
+            }
+            dfd.resolve(listData);
+            return dfd.promise();
+        }
+
+        setFormatData(detailHeaderDeco, detailContentDeco, listData) {
+            var self = this;
+            let leftmostColumns = [];
+            let leftmostHeader = {};
+            let leftmostContent = {};
+
+            let detailHeaderColumns = [];
+            let detailHeader = {};
+            let detailContentColumns = [];
+            let detailContent = {};
+
+            //create leftMost Header and Content
+            leftmostColumns = [
+                { headerText: text("KAF018_60"), key: "sName", width: "150px" },
+                { headerText: text("KAF018_61"), key: "monthConfirm", width: "50px" },
+                { headerText: text("KAF018_62"), key: "personConfirm", width: "50px" },
+                { headerText: text("KAF018_63"), key: "bossConfirm", width: "50px" }
+            ];
+            leftmostHeader = {
+                columns: leftmostColumns,
+                rowHeight: "50px",
+                width: "300px"
+            };
+            leftmostContent = {
+                columns: leftmostColumns,
+                dataSource: listData,
+                primaryKey: "sId"
+            };
+
+            // create detail Columns and detail Content Columns
+            let currentDay = new Date(self.dtPrev().toString());
+            while (currentDay <= self.dtAft()) {
+                let time = new Time(currentDay);
+                detailHeaderColumns.push({
+                    key: "_" + time.yearMonthDay, width: "40px", headerText: self.getDay(time)
+                });
+                detailContentColumns.push({
+                    key: "__" + time.yearMonthDay, width: "40px"
+                });
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+
+            //create Detail Header
+            detailHeader = {
+                columns: [{
+                    headerText: text("KAF018_64"),
+                    group: detailHeaderColumns
+                }],
+                width: "900px",
+                features: [
+                    {
+                        name: "HeaderRowHeight",
+                        rows: { 0: "20px", 1: "30px" }
+                    },
+                    {
+                        name: "HeaderCellStyle",
+                        decorator: detailHeaderDeco
+                    }]
+            };
+
+            //create Detail Content
+            detailContent = {
+                columns: detailContentColumns,
+                dataSource: listData,
+                primaryKey: "index",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }]
+            };
+            return {
+                leftmostHeader: leftmostHeader,
+                leftmostContent: leftmostContent,
+                detailHeader: detailHeader,
+                detailContent: detailContent
+            };
         }
 
         getDay(time: Time): string {
-            if (time.day == 1) {
+            if (time.day == "1") {
                 return time.month + '/' + time.day + "<br/>" + time.weekDay;
             } else {
                 return time.day + "<br/>" + time.weekDay;
@@ -137,145 +270,12 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         /**
-         * Create exTable
-         */
-        initExTable(): void {
-            var self = this,
-                timeRanges = [],
-                //Get dates in time period
-                currentDay = new Date(self.dtPrev().toString());
-
-            // create data for columns
-            let leftmostDs = [],
-                middleDs = [],
-                middleContentDeco = [],
-                detailHeaderDeco = [],
-                detailContentDeco = [],
-                detailHeaderDs = [],
-                detailContentDs = [],
-                objDetailHeaderDs = {},
-                detailColumns = [],
-                detailContentColumns = [],
-                horzSumHeaderDs = [],
-                horzSumContentDs = [],
-                leftHorzContentDs = [],
-                vertSumContentDs = [];
-
-            while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay));
-                let time = new Time(currentDay);
-                detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "40px", headerText: self.getDay(time)
-                });
-                //detailContentColumns.push({
-                //key: "__" + time.yearMonthDay, width: "40px"
-                //});
-                currentDay.setDate(currentDay.getDate() + 1);
-            }
-
-            //create dataSource for detailHeader
-            detailHeaderDs.push({});
-            detailHeaderDs.push(new ExHeader(self.arrDay));
-
-            leftmostDs = self.listWkp;
-
-            //create leftMost Header and Content
-            let leftmostColumns = [{
-                headerText: nts.uk.resource.getText("KAF018_60"), key: "wkpName", width: "160px"
-            }];
-
-            let leftmostHeader = {
-                columns: leftmostColumns,
-                rowHeight: "70px",
-                width: "160px"
-            };
-
-            let leftmostContent = {
-                columns: leftmostColumns,
-                dataSource: leftmostDs,
-                primaryKey: "wkpId"
-            };
-
-            detailContentDs = self.listWkp;
-
-            detailContentColumns.push({
-                key: "__20180216", width: "40px"
-            });
-            detailContentColumns.push({
-                key: "__20180217", width: "40px"
-            });
-            detailContentColumns.push({
-                key: "__20180218", width: "40px"
-            });
-
-            detailContentDeco.push(new kaf018.share.model.CellColor("__20180216", "1", "bg-schedule-sunday color-schedule-sunday"));
-            detailContentDeco.push(new kaf018.share.model.CellColor("__20180217", "2", "bg-schedule-specific-date"));
-            detailContentDeco.push(new kaf018.share.model.CellColor("__20180216", "3", "bg-schedule-sunday color-schedule-sunday"));
-            //detailContentDs.push({ wkpId: "1", wkpName: "123", __20180216: 1, __20180217: 2, __20180218: 3 });
-            //detailContentDs.push({ wkpId: "2", wkpName: "123", __20180216: 1, __20180217: 2, __20180218: 3 });
-            //detailContentDs.push({ wkpId: "3", wkpName: "123", __20180216: 1, __20180217: 2, __20180218: 3 });
-            console.log(detailContentColumns, detailContentDs, detailContentDeco);
-            //create Detail Content
-            let detailContent = {
-                columns: detailContentColumns,
-                dataSource: detailContentDs,
-                primaryKey: "index",
-                features: [{
-                    name: "BodyCellStyle",
-                    decorator: detailContentDeco
-                }]
-            };
-
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco)).done(() => {
-                // create Detail Header               
-                let detailHeader = {
-                    columns: [{
-                        headerText: nts.uk.resource.getText("KAF018_64"),
-                        group: detailColumns
-                    }],
-                    //dataSource: detailHeaderDs,
-                    width: "800px",
-                    features: [
-                        {
-                            name: "HeaderRowHeight",
-                            rows: { 0: "30px", 1: "40px" }
-                        },
-                        {
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }]
-                };
-
-                new nts.uk.ui.exTable.ExTable($("#extable"), {
-                    headerHeight: "70px", bodyRowHeight: "30px", bodyHeight: "100px",
-                    horizontalSumHeaderHeight: "40px", horizontalSumBodyHeight: "75px",
-                    horizontalSumBodyRowHeight: "20px",
-                    areaResize: true,
-                    bodyHeightMode: "dynamic",
-                    windowXOccupation: 25,
-                    windowYOccupation: 210,
-                    updateMode: "stick",
-                    pasteOverWrite: true,
-                    stickOverWrite: true,
-                    viewMode: "shortName",
-                    determination: {
-                        rows: [0, 1],
-                        columns: ["empName"]
-                    },
-                })
-                    .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .DetailHeader(detailHeader).DetailContent(detailContent)
-                    .create();
-            });
-        }
-
-        /**
          * Set color for cell header: 日付セル背景色文字色制御
          * 
          */
-        setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
+        setColorForCellHeaderDetail(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-
+            let detailHeaderDeco = [];
             // getDataSpecDateAndHoliday always query to server
             // because date is changed when click nextMonth or backMonth
             $.when(self.getDataSpecDateAndHoliday()).done(() => {
@@ -283,25 +283,18 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-specific-date "));
-                        //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-specific-date "));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
-                        //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-saturday color-schedule-saturday"));
-                        //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-saturday color-schedule-saturday"));
                     } else if (date.weekDay === '日') {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
-                        //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                     } else {
-                        detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd, "1", "bg-weekdays color-weekdays"));
-                        //detailHeaderDeco.push(new kaf018.share.model.CellColor("_" + ymd + "_day", 2, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-weekdays color-weekdays"));
                     }
                 });
-
-                self.listColorOfHeader(detailHeaderDeco);
-                dfd.resolve();
+                dfd.resolve(detailHeaderDeco);
             });
             return dfd.promise();
         }
@@ -327,6 +320,45 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             });
             return dfd.promise();
         }
+
+        /**
+         * Set color for cell detail
+         * 
+         */
+        setColorForCellContentDetail(listData): JQueryPromise<any> {
+            var self = this, dfd = $.Deferred();
+            let detailContentDeco = [];
+            for (let i = 0; i < listData.length; i++) {
+                let currentDay = new Date(self.dtPrev().toString());
+                let j = 0;
+                while (currentDay <= self.dtAft()) {
+                    let time = new Time(currentDay);
+                    let key = "__" + time.yearMonthDay;
+                    let clazz = "";
+                    switch (listData[i].dailyReport[j]) {
+                        case 0:
+                            clazz = "bg-canceled-application";
+                            break;
+                        case 1:
+                            clazz = "bg-updating-cell";
+                            break;
+                        case 2:
+                            clazz = "bg-unapproved-application";
+                            break;
+                        case 3:
+                            clazz = "bg-weekdays";
+                            break;
+                    }
+                    detailContentDeco.push(new shareModel.CellColor(key, i.toString(), clazz));
+                    listData[i][key] = "";
+
+                    currentDay.setDate(currentDay.getDate() + 1);
+                    j++;
+                }
+            }
+            dfd.resolve(detailContentDeco);
+            return dfd.promise();
+        }
     }
 
     class Time {
@@ -335,8 +367,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         day: string;
         weekDay: string;
         yearMonthDay: string;
-        isSaturday: boolean;
-        isSunday: boolean
 
         constructor(ymd: Date) {
             this.year = moment(ymd).format('YYYY');
@@ -344,26 +374,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             this.day = moment(ymd).format('D');
             this.weekDay = moment(ymd).format('dd');
             this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
-            if (this.weekDay === '土')
-                this.isSaturday = true;
-            else
-                this.isSaturday = false;
-            if (this.weekDay === '日')
-                this.isSunday = true;
-            else
-                this.isSunday = false;
-        }
-
-    }
-    class ExHeader {
-        constructor(arrDay: Time[]) {
-            for (let i = 0; i < arrDay.length; i++) {
-                if (+arrDay[i].day == 1) {
-                    this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
-                } else {
-                    this['_' + arrDay[i].yearMonthDay] = arrDay[i].day + "<br/>" + arrDay[i].weekDay;
-                }
-            }
         }
     }
 }
