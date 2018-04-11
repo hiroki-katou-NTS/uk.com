@@ -947,14 +947,23 @@ module nts.layout {
                 validation = (btn: IRelateButton) => {
                     let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
                     if (button) {
-                        $(document).on('click', button.id, () => {
+                        $(document).on('click', button.id, (evt) => {
+                            if ($(evt.tartget).data('clicked')) {
+                                return;
+                            } else {
+                                $(evt.tartget).data('clicked', true);
+                            }
+                            
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
                             setShared('CPS001GHI_VALUES', {
-                                ctgCode: button.data.categoryCode
+                                ctgCode: button.data.categoryCode,
+                                sid : sid
                             });
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
+                                $(evt.tartget).data('clicked', false);
                                 // load lai du lieu
-                                let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
+                                
 
                                 if (!sid) {
                                     return;
