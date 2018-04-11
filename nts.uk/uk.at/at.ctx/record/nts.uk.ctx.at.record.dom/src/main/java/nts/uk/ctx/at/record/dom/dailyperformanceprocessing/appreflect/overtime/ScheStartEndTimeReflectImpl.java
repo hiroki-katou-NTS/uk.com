@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -54,83 +55,43 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			//１回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect1Atr()) {
 				//予定開始時刻の反映
-				TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), 
+				//予定終了時刻の反映
+				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), 
 						para.getDateInfo(), 
 						findStartEndTime.getStartTime1(), 
-						1, 
-						true);
-				scheWork.updateStartTimeOfReflect(startTime);
-				//予定終了時刻の反映
-				TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), 
-						para.getDateInfo(), 
 						findStartEndTime.getEndTime1(), 
-						1, 
-						false);
-				scheWork.updateStartTimeOfReflect(endTime);
+						1, true, true);
+				scheWork.updateScheStartEndTime(timeData1);
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
 				//予定開始時刻２の反映
-				TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), 
-						para.getDateInfo(), 
-						findStartEndTime.getStartTime2(),
-						2,
-						true);
-				scheWork.updateStartTimeOfReflect(startTime);
 				//予定終了時刻２の反映
-				TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), 
-						para.getDateInfo(), 
-						findStartEndTime.getEndTime2(),
+				TimeReflectPara timeData2 = new TimeReflectPara(para.getEmployeeId(),
+						para.getDateInfo(),
+						findStartEndTime.getStartTime2(), 
+						findStartEndTime.getEndTime2(), 
 						2,
-						false);
-				scheWork.updateStartTimeOfReflect(endTime);
+						true, 
+						true);
+				scheWork.updateScheStartEndTime(timeData2);
 			}
 		} else {
 			//１回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect1Atr()) {
 				//予定開始時刻を反映できるかチェックする
-				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), true)) {
-					//予定開始時刻の反映
-					TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), 
-							para.getDateInfo(), 
-							findStartEndTime.getStartTime1(), 
-							1, 
-							true);
-					scheWork.updateStartTimeOfReflect(startTime);
-				}
-				//予定終了時刻を反映できるかチェックする
-				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false)) {
-					//予定終了時刻の反映
-					TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), 
-							para.getDateInfo(), 
-							findStartEndTime.getEndTime1(), 
-							1, 
-							false);
-					scheWork.updateStartTimeOfReflect(endTime);
-				}
+				boolean isCheckStart = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), true);
+				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), false);
+				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 1, isCheckStart, isCheckEnd);
+				scheWork.updateScheStartEndTime(timeData1);		
+				
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
-				//予定開始時刻２を反映できるかチェックする
-				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), true)) {
-					//予定開始時刻２の反映
-					TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), 
-							para.getDateInfo(), 
-							findStartEndTime.getStartTime2(),
-							2,
-							true);
-					scheWork.updateStartTimeOfReflect(startTime);
-				}
-				//予定終了時刻２を反映できるかチェックする
-				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false)) {
-					//予定終了時刻２の反映
-					TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), 
-							para.getDateInfo(), 
-							findStartEndTime.getEndTime2(),
-							2,
-							false);
-					scheWork.updateStartTimeOfReflect(endTime);
-				}
+				boolean isCheckStart = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), true);
+				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false);
+				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime2(), findStartEndTime.getEndTime2(), 2, isCheckStart, isCheckEnd);
+				scheWork.updateScheStartEndTime(timeData1);
 			}
 		}
 		
