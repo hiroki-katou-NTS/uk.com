@@ -125,19 +125,19 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	@Column(name = "DIV_OUT_PRS_MIDN_TIME")
 	public int divOutPrsMidnTime;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayOvertimework krcdtDayOvertimework;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayOvertimeworkTs krcdtDayOvertimeworkTs;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
@@ -149,25 +149,25 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime")
 	public List<KrcdtDayLateTime> krcdtDayLateTime;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayHolidyWork krcdtDayHolidyWork;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayHolidyWorkTs krcdtDayHolidyWorkTs;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayWorkScheTime krcdtDayWorkScheTime;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "krcdtDayAttendanceTime")
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
