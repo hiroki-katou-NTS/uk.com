@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppage.widget;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -34,13 +36,13 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	private final String GET_SELECTED_WIDGET = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
 			+ "AND c.code =:code AND c.topPagePartType =:topPagePartType ";
 
-	private final String SELECT_BASE = "SELECT o, t, d FROM SptstOptionalWidget o "
-			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
-			+ "INNER JOIN SptstWidgetDisplay d ON o.sptstOptionalWidgetPK.topPagePartID = d.sptstWidgetDisplayPK.topPagePartID ";
+	private final String SELECT_BASE = "SELECT o, t FROM SptstOptionalWidget o "
+			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID ";
 	
 	private final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
 	private final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
 	
+			
 	@Override
 	public List<OptionalWidget> findByCompanyId(String companyID) {
 		List<OptionalWidget> optionalWidgets = new ArrayList<OptionalWidget>();
@@ -187,6 +189,9 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	
 	@Override
 	public List<OptionalWidget> findByCode(String companyId, List<String> listOptionalWidgetID) {
+		if(listOptionalWidgetID.size()==0) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(SELECT_IN, Object[].class)
 				.setParameter("topPagePartID", listOptionalWidgetID)
 				.getList(c -> joinObjectToDomain(c));

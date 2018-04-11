@@ -11,20 +11,20 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CCGMT_STANDARD_WIDGET")
-public class CcgtmtStandardWidget extends UkJpaEntity implements Serializable {
+@Table(name = "SPTST_STANDARD_WIDGET")
+public class SptstStandardWidget extends UkJpaEntity implements Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public CcgmtStandardWidgetPK ccgmtStandardWidgetPK;
+	public SptstStandardWidgetPK sptstStandardWidgetPK;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return ccgmtStandardWidgetPK;
+		return sptstStandardWidgetPK;
 	}
 
 }

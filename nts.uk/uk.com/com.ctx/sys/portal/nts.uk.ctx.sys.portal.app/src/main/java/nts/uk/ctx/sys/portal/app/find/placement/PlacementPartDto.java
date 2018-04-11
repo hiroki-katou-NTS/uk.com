@@ -62,6 +62,11 @@ public class PlacementPartDto {
 					flowMenu.getToppagePartID(), flowMenu.getCode().v(), flowMenu.getName().v(),
 					TopPagePartType.FlowMenu.value, null,
 					flowMenu.getFileID(), flowMenu.getDefClassAtr().value);
+		}else if(topPagePart.isOptionalWidget()||topPagePart.isStandardWidget()) {
+			return new PlacementPartDto(topPagePart.getWidth().v(), 
+					topPagePart.getHeight().v(), topPagePart.getToppagePartID(), 
+					topPagePart.getCode().v(), topPagePart.getName().v(), topPagePart.getType().value, 
+					null, null, null);
 		}
 		return null;
 	}
