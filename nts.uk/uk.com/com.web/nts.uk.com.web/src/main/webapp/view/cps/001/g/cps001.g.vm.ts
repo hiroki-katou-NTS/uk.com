@@ -47,7 +47,7 @@ module nts.uk.com.view.cps001.g.vm {
         constructor() {
             let _self = this,
             data: any = getShared('CPS001GHI_VALUES');
-            self.sid(data.sid);
+            _self.sid(data.sid);
 
             _self.createMode = ko.observable(null);
 
@@ -107,7 +107,7 @@ module nts.uk.com.view.cps001.g.vm {
             }
             _self.alllist.removeAll();
             _self.listAnnualLeaveGrantRemainData.removeAll();
-            service.getAllList(self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
+            service.getAllList(_self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
                     _self.createMode(false);
@@ -323,7 +323,7 @@ module nts.uk.com.view.cps001.g.vm {
                     block();
                     let command = {
                         annLeavID: ko.toJS(_self.currentItem()).annLeavID,
-                        employeeId: self.sid(),
+                        employeeId: _self.sid(),
                         grantDate: ko.toJS(_self.currentItem()).grantDate
                     };
                     service.deleteLeav(command).done((message: string) => {
