@@ -240,6 +240,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.timeOver(null);
             self.selectedRuleCode(1);
             $("#idDateGrantInp").focus();
+            nts.uk.ui.errors.clearAll;
         }
 
         Save() {
@@ -295,7 +296,10 @@ module nts.uk.com.view.cps001.i.vm {
                         }
                     });
                 }
-                alert({ messageId: "Msg_15" });
+                alert({ messageId: "Msg_15" }).then(function() {
+                    clearError();
+                    $("#idDateGrantInp").focus();
+                });
                 unblock();
             }).fail((error: any) => {
                 unblock();
@@ -340,9 +344,7 @@ module nts.uk.com.view.cps001.i.vm {
                         service.remove(currentRow.specialid).done((_data: any) => {
 
                             if (itemListLength === 1) {
-                                self.loadData().done(() => {
-                                    self.newMode();
-                                });
+                                self.loadData().done(() => { });
                             } else if (itemListLength - 1 === delItemIndex) {
                                 self.loadData().done(() => {
                                     self.currentValue(self.listData()[delItemIndex - 1].specialid);
@@ -354,7 +356,11 @@ module nts.uk.com.view.cps001.i.vm {
                                 });
                             }
 
-                            alert({ messageId: "Msg_15" });
+                            alert({ messageId: "Msg_15" }).then(function() {
+                                clearError();
+                                $("#idDateGrantInp").focus();
+                            });
+
                             unblock();
                         }).fail((error: any) => {
                             unblock();

@@ -38,7 +38,7 @@ module cps001.h.vm {
             self.sid(data.sid);
 
             self.ckbAll.subscribe((data) => {
-                clearError();
+
                 service.getAll(self.sid(), data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
@@ -47,6 +47,7 @@ module cps001.h.vm {
                         self.create();
                     }
                     $("#grantDate").focus();
+                    clearError();
                 });
             });
             self.currentItem.subscribe((id: string) => {
@@ -54,14 +55,15 @@ module cps001.h.vm {
                     service.getByGrantDate(id).done((curItem: IResvLeaGrantRemNum) => {
                         self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
                         self.setDef();
-                        $("#grantDate").focus();
                         if (curItem) {
                             self.enableRemoveBtn(true);
                             self.isCreate(false);
                         }
+                        $("#grantDate").focus();
                     });
                 }
                 self.enableRemoveBtn(true);
+                clearError();
 
             });
             self.columns = ko.observableArray([
@@ -79,9 +81,11 @@ module cps001.h.vm {
         create() {
             let self = this;
             self.items([]);
-            self.currentItem("-1");
+            self.currentItem('-1');
             self.enableRemoveBtn(false);
             self.isCreate(true);
+            clearError();
+            $("#grantDate").focus();
         }
 
         newmode() {
@@ -89,6 +93,7 @@ module cps001.h.vm {
             self.currentItem("-1");
             self.enableRemoveBtn(false);
             self.isCreate(true);
+            $("#grantDate").focus();
         }
 
         load(): JQueryPromise<any> {
@@ -205,9 +210,7 @@ module cps001.h.vm {
                         service.remove(currentRow.id).done((_data: any) => {
 
                             if (itemListLength === 1) {
-                                self.load().done(() => {
-                                    self.create();
-                                });
+                                self.load().done(() => { });
                             } else if (itemListLength - 1 === delItemIndex) {
                                 self.load().done(() => {
                                     self.currentItem(self.items()[delItemIndex - 1].id);
@@ -219,7 +222,11 @@ module cps001.h.vm {
                                 });
                             }
 
-                            alert({ messageId: "Msg_15" });
+                            alert({ messageId: "Msg_15" }).then(function() {
+                                clearError();
+                                $("#grantDate").focus();
+                            });
+
                             unblock();
                         }).fail((error: any) => {
                             unblock();
@@ -259,16 +266,23 @@ module cps001.h.vm {
                                 if (data && data.length > 0) {
                                     self.items(data);
                                     let newItem = _.find(self.items(), x => ids.indexOf(x.id) == -1);
-                                    let saveItemIndex = _.findIndex(self.items(), (item) => { return item.id == newItem.id; });
-                                    self.currentItem(self.items()[saveItemIndex].id);
-                                    
+                                    if (newItem) {
+                                        let saveItemIndex = _.findIndex(self.items(), (item) => { return item.id == newItem.id; });
+                                        self.currentItem(self.items()[saveItemIndex].id);
+                                    } else {
+                                        self.currentItem(self.items()[0].id);
+                                    }
+
                                 } else {
                                     self.create();
                                 }
                             }).fail((_data) => {
                                 unblock();
                             });
-                            alert({ messageId: "Msg_15" });
+                            alert({ messageId: "Msg_15" }).then(function() {
+                                clearError();
+                                $("#grantDate").focus();
+                            });
                             unblock();
 
                         }).fail((mes) => {
@@ -287,7 +301,11 @@ module cps001.h.vm {
                                 } else if (self.items().length == 0) {
                                     self.create();
                                 }
-                                alert({ messageId: "Msg_15" });
+
+                                alert({ messageId: "Msg_15" }).then(function() {
+                                    clearError();
+                                    $("#grantDate").focus();
+                                });
                                 unblock();
                             });
 
