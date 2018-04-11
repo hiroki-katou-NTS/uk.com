@@ -4,6 +4,8 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
 
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
+        roleType : KnockoutObservable<number>;
+        listRoleType: Array<any>;
         valueReturn: KnockoutObservable<string>;
         
         // list target type
@@ -13,6 +15,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         // base date
         baseDate: KnockoutObservable<Date>;
         enableBaseDate: KnockoutObservable<boolean>;
+        requiredRoleType : KnockoutObservable<boolean>;
         
         // list item setting
         itemSetting: KnockoutObservable<string>;
@@ -22,6 +25,8 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             let self = this;
             self.code = ko.observable(null);
             self.name = ko.observable(null);
+            self.listRoleType = __viewContext.enums.RoleType;
+            self.roleType = ko.observable(0);
             self.valueReturn = ko.observable(null);
             
             self.targetList = ko.observableArray([
@@ -31,15 +36,22 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 {value: TargetType.WORKPLACE, name: '職場'},
                 {value: TargetType.DEPARTMENT, name: '部門'},
                 {value: TargetType.WORKPLACE_PERSONAL, name: '職場個人'},
-                {value: TargetType.DEPARTMENT_PERSONAL, name: '部門個人'}
+                {value: TargetType.DEPARTMENT_PERSONAL, name: '部門個人'},
+                {value: TargetType.ROLE, name: 'ロール'},
+                {value: TargetType.WORK_TYPE, name: '勤務種別'}
+                
             ]);
             self.selectedTarget = ko.observable(1);
             
             self.baseDate = ko.observable(moment(new Date()).toDate());
+            
             self.enableBaseDate = ko.computed(() => {
                 return self.isHasBaseDate();
             });
             
+            self.requiredRoleType = ko.computed(() => {
+                return TargetType.ROLE == self.selectedTarget(); 
+            });
             self.itemSetting = ko.observable(null);
             self.selectedItems = ko.observableArray([]);
             
@@ -47,6 +59,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             self.selectedTarget.subscribe(newValue => {
                 self.itemSetting("");
                 self.selectedItems([]);
+                    
             });
             self.itemSetting.subscribe((newValue) => {
                 if (nts.uk.text.isNullOrEmpty(self.itemSetting())) {
@@ -91,6 +104,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 itemListSetting: self.selectedItems(),
                 baseDate: moment(self.baseDate()).toDate()
             };
+            if( self.requiredRoleType()) object.roleType = self.roleType();
             nts.uk.ui.windows.setShared("CDL023Input", object);
             
             // open dialog
@@ -148,6 +162,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         targetType: number;
         itemListSetting: Array<string>;
         baseDate?: Date;
+        roleType?: number;
     }
     
     /**
@@ -175,5 +190,11 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         
         // 部門個人
         static DEPARTMENT_PERSONAL = 7;
+                
+        // ロール
+        static ROLE = 8;
+        
+        // 勤務種別
+        static WORK_TYPE = 9;
     }
 }
