@@ -83,7 +83,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 		workingType.getChangeableWorkTypeGroups().forEach(group -> {
 			if (group.getWorkTypeList().isEmpty()) {
 				KrcmtWorktypeChangeablePk pk = new KrcmtWorktypeChangeablePk(cid, empCode,
-						new BigDecimal(group.getNo()), "　");
+						new BigDecimal(group.getNo()), null);
 				KrcmtWorktypeChangeable entity = new KrcmtWorktypeChangeable(pk, group.getName().v());
 				this.commandProxy().insert(entity);
 			} else {
@@ -91,7 +91,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 					KrcmtWorktypeChangeablePk pk = new KrcmtWorktypeChangeablePk(cid, empCode,
 							new BigDecimal(group.getNo()), workTypeCode);
 					KrcmtWorktypeChangeable entity = new KrcmtWorktypeChangeable(pk,
-							!group.getName().v().isEmpty() ? group.getName().v() : "　");
+							!group.getName().v().isEmpty() ? group.getName().v() : null);
 					this.commandProxy().insert(entity);
 				});
 			}
