@@ -136,7 +136,7 @@
 							<div data-bind="foreach: { data: multipleData, as: 'multiple' }">
 								<div data-bind="if: !$index()">
 									<div class="form-group search-box" data-bind="let: { _cid: nts.uk.util.randomId().replace(/-/g, '') }">
-										<button type="button"
+										<button type="button" class="hidden"
 											data-bind="click: function() { multiple.id.valueHasMutated() }"
 											tabindex="8">#{i18n.getText('CPS001_27')}</button>
 										<div

@@ -379,13 +379,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// chưa sử lý (fixed) sửa dụng
 					// 9*
 				boolean isUse = true;
-				//Optional<TemporaryWorkUseManage> temporaryWorkUseManageOptional = this.tempWorkUseManageRepo.findByKey(companyId);
-				//DungDT
-				/*if(temporaryWorkUseManageOptional.isPresent()){
-					NotUseAtr useClassification = temporaryWorkUseManageOptional.get().getUseClassification();
-					isUse = (useClassification.value ==1) ? true :false;
-				}
-				*/
+//				Optional<TemporaryWorkUseManage> temporaryWorkUseManageOptional = this.tempWorkUseManageRepo.findByKey(companyId);
+//				//DungDT
+//				if(temporaryWorkUseManageOptional.isPresent()){
+//					NotUseAtr useClassification = temporaryWorkUseManageOptional.get().getUseClassification();
+//					isUse = (useClassification.value ==1) ? true :false;
+//				}
 				if (isUse) {
 					// 10* Chuyển thời gian check tay đang xử lý sang thời gian
 					// tương ứng với ngày tháng năm đang xử lý
@@ -608,7 +607,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			} else {
 				ArrayList<LogOnInfo> lstLogOnInfo = new ArrayList<LogOnInfo>();
 				// fixed LogOnInfo thuoc tinh dang khong dung can sua lai
-				lstLogOnInfo.add(new LogOnInfo(null, null, null));
+				lstLogOnInfo.add(new LogOnInfo(new PCLogOnNo(worktNo), null, null));
 				pcLogOnInfoOfDaily = new PCLogOnInfoOfDaily(employeeId, date, lstLogOnInfo);
 				indexPCLogOnInfo = 0;
 			}
@@ -2620,7 +2619,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp())),
 						null));
 
-			} else if ("出勤".equals(attendanceClass) && !"実打刻".equals(actualStampClass)) {
+			} else if (" ".equals(attendanceClass) && !"実打刻".equals(actualStampClass)) {
 				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo), Optional.ofNullable(new TimeActualStamp(
 						(timeActualStamp.getActualStamp() != null && timeActualStamp.getActualStamp().isPresent())
 								? timeActualStamp.getActualStamp().get() : null,

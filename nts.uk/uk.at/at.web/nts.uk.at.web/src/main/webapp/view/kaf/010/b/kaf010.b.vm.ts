@@ -172,6 +172,7 @@ module nts.uk.at.view.kaf010.b {
                 var self = this;
                 self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
+                self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
