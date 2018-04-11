@@ -41,7 +41,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -182,6 +181,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// update execution time to now
 		domain.setExecutionTimeToNow();
+
+		// set exeAtr is manual
+		domain.setExeAtrIsManual();
 
 		// update domain execution log
 		this.scheduleExecutionLogRepository.update(domain);
@@ -527,8 +529,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		val asyncTask = context.asAsync();
 
 		for (ScheduleCreator domain : scheduleCreators) {
-			// 実行ログ作成処理 - ドメインモデル「スケジュール作成対象者」を新規登録する
-			// this.scheduleCreatorRepository.add(domain);
+			// ドメインモデル「スケジュール作成対象者」を新規登録する
+			// relate to executionLogCreationProcess
+			if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+				this.scheduleCreatorRepository.add(domain);
+			}
 
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
