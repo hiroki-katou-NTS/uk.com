@@ -71,7 +71,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 	}
 	private List<HolidayWorkInput> convert(CaculationTime caculationTime){
 	List<HolidayWorkInput> holidayInputs = new ArrayList<>();
-		if(caculationTime .getApplicationTime() != null){
+		if(caculationTime.getApplicationTime() != null){
 			HolidayWorkInput holidayInput = HolidayWorkInput.createSimpleFromJavaType(caculationTime.getCompanyID(),
 					caculationTime.getAppID(),
 					caculationTime.getAttendanceID(), 
