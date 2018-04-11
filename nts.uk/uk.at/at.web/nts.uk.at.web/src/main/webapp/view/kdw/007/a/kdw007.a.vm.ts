@@ -142,10 +142,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $("#errorAlarmWorkRecordName").focus();
         }
 
-        startPage(code): JQueryPromise<any> {
+        startPage(isDaily,code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
+            if(isDaily != null)
+                self.screenMode(isDaily);
             if (self.screenMode() == ScreenMode.Daily) {
                 service.getAll().done((lstData) => {
                     if (lstData && lstData.length > 0) {
@@ -319,7 +321,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.screenMode() == ScreenMode.Daily) {
                         service.update(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(self.isNewMode() ? "U" + data.code : data.code);
+                                self.startPage(0, self.isNewMode() ? "U" + data.code : data.code);
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
@@ -330,7 +332,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     } else if (self.screenMode() == ScreenMode.Monthly) {
                         service.updateMonthlyCondition(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(self.isNewMode() ? "U" + data.code : data.code);
+                                self.startPage(1, self.isNewMode() ? "U" + data.code : data.code);
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
@@ -351,7 +353,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.remove(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(null);
+                            self.startPage(0,null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -364,7 +366,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.removeMonthlyCondition(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(null);
+                            self.startPage(1,null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {

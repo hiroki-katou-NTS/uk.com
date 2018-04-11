@@ -38,14 +38,14 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 			if (avaiBigDecimal.intValue() == 1) {
 				availability = true;
 			}
-			results.add(new DailyPerformanceAuthority(roleId, ent.pk.functionNo, availability));
+			results.add(new DailyPerformanceAuthority(ent.pk.companyId, roleId, ent.pk.functionNo, availability));
 		});
 		return results;
 	}
 
 	@Override
 	public void save(DailyPerformanceAuthority daiPerAuthority) {
-		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getRoleID(),
+		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getCompanyId(), daiPerAuthority.getRoleID(),
 				daiPerAuthority.getFunctionNo().v());
 		Optional<KrcmtDaiPerformanceAut> daiPerAthrOptional = this.queryProxy().find(primaryKey,
 				KrcmtDaiPerformanceAut.class);

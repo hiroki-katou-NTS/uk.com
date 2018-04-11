@@ -145,6 +145,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         saveData() {
             let self = this;
             nts.uk.ui.block.invisible();
+            _.forEach(self.groups1(), function(item){
+                item.name(null);    
+            })
             service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
                 if (self.groups1.length > 0 || self.groups2.length > 0) {
                     self.listSetting.push(self.selectedCode());
