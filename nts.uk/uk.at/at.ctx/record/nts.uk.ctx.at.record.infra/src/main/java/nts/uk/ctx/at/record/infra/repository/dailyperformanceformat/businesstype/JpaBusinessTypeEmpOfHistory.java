@@ -36,13 +36,6 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");
 		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
-		stringBuilder.append("WHERE k.cID = :cId ");
-		stringBuilder.append("AND k.sId =:sId");
-		FIND_ALL = stringBuilder.toString();
-
-		stringBuilder = new StringBuilder();
-		stringBuilder.append("SELECT k ");
-		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
 		stringBuilder.append("WHERE k.sId = :sId ");
 		stringBuilder.append("AND k.startDate <= :baseDate and k.endDate >= :baseDate");
 		FIND_BY_BASE_DATE = stringBuilder.toString();
@@ -57,13 +50,6 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 
 		stringBuilder.append(" DESC");
 		FIND_BY_EMPLOYEE_DESC = stringBuilder.toString();
-	}
-
-	@Override
-	public BusinessTypeOfEmployeeHistory findAll(String cId, String sId) {
-		List<KrcmtBusinessTypeOfHistory> entities = this.queryProxy().query(FIND_ALL, KrcmtBusinessTypeOfHistory.class)
-				.setParameter("cID", cId).setParameter("sId", sId).getList();
-		return toDomain(entities);
 	}
 
 	private static KrcmtBusinessTypeOfHistory toEntity(String companyId, String employeeId, String historyId,

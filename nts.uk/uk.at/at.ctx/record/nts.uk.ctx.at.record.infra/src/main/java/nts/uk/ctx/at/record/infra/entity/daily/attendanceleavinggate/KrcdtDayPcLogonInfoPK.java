@@ -22,13 +22,17 @@ public class KrcdtDayPcLogonInfoPK implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate ymd;
 
+	@Column(name = "PC_LOG_NO")
+	public int pcLogNo;
+
 	public KrcdtDayPcLogonInfoPK() {
 	}
 
-	public KrcdtDayPcLogonInfoPK(String sid, GeneralDate ymd) {
+	public KrcdtDayPcLogonInfoPK(String sid, GeneralDate ymd, int pcLogNo) {
 		super();
 		this.sid = sid;
 		this.ymd = ymd;
+		this.pcLogNo = pcLogNo;
 	}
 
 	public boolean equals(Object other) {
@@ -39,7 +43,8 @@ public class KrcdtDayPcLogonInfoPK implements Serializable {
 			return false;
 		}
 		KrcdtDayPcLogonInfoPK castOther = (KrcdtDayPcLogonInfoPK) other;
-		return this.sid.equals(castOther.sid) && this.ymd.equals(castOther.ymd);
+		return this.sid.equals(castOther.sid) && this.ymd.equals(castOther.ymd) 
+				&& this.pcLogNo == castOther.pcLogNo;
 	}
 
 	public int hashCode() {
@@ -47,6 +52,7 @@ public class KrcdtDayPcLogonInfoPK implements Serializable {
 		int hash = 17;
 		hash = hash * prime + this.sid.hashCode();
 		hash = hash * prime + this.ymd.hashCode();
+		hash = hash * prime + this.pcLogNo;
 
 		return hash;
 	}

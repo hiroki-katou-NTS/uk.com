@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -95,12 +96,14 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             var self = this,
                 dfd = $.Deferred(),
                 appParam = { appID: appID };
+            block.invisible();
             service.findById(appParam).done((data) => {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
+                block.clear();
                 dfd.resolve();
 
             });
@@ -158,6 +161,54 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.appComSelectedCode(0);
             self.setDataApp(self.absWk(), data.absApp);
             self.setDataApp(self.recWk(), data.recApp);
+        }
+
+        removeAbs() {
+            let self = this,
+                removeCmd = self.getHolidayShipmentCmd();
+            confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                block.invisible();
+                service.removeAbs(removeCmd).done(function(data) {
+                    location.reload();
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            });
+        }
+
+        cancelAbs() {
+            let self = this,
+                cancelCmd = self.getHolidayShipmentCmd();
+            confirm({ messageId: 'Msg_249' }).ifYes(function() {
+                block.invisible();
+                service.cancelAbs(cancelCmd).done(function(data) {
+                    location.reload();
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            });
+        }
+
+
+        getHolidayShipmentCmd() {
+            let self = this,
+                shipmentCmd;
+
+            shipmentCmd = {
+                absAppID: self.absWk().appID(),
+                recAppID: null,
+                appVersion: self.version(),
+                memo: ""
+            }
+
+            return shipmentCmd;
+
         }
 
 

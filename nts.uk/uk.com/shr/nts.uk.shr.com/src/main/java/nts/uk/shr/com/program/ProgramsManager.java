@@ -1589,6 +1589,9 @@ public class ProgramsManager {
 	/** KAF011A */
 	public static final Program KAF011A = new Program(WebAppId.AT, ProgramIdConsts.KAF011A, null,
 			"/view/kaf/011/a/index.xhtml");
+	/** KAF011B */
+	public static final Program KAF011B = new Program(WebAppId.AT, ProgramIdConsts.KAF011B, null,
+			"/view/kaf/011/b/index.xhtml");
 	/** KAF011C */
 	public static final Program KAF011C = new Program(WebAppId.AT, ProgramIdConsts.KAF011C, "KAF011_62",
 			"/view/kaf/011/c/index.xhtml");
