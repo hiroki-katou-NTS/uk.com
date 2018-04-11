@@ -954,7 +954,12 @@ module nts.layout {
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
+                                let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
+
+                                if (!sid) {
+                                    return;
+                                }
+
                                 switch (btn.dialogId) {
                                     case "g":
                                         fetch.get_annLeaNumber(sid).done(data => {
@@ -1089,9 +1094,13 @@ module nts.layout {
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
-                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
+
+                    if (!empId) {
+                        return;
+                    }
 
                     fetch.get_cb_data({
                         comboBoxType: comboData.item.referenceType,
@@ -1111,9 +1120,13 @@ module nts.layout {
 
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
-                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00017_IS00082.data),
                         comboData = ko.toJS(CS00017_IS00084.data);
+
+                    if (!empId) {
+                        return;
+                    }
 
                     fetch.get_cb_data({
                         comboBoxType: comboData.item.referenceType,
@@ -1148,9 +1161,13 @@ module nts.layout {
                 CS00024_IS00282 &&
                 CS00024_IS00283) {
                 CS00024_IS00279.data.value.subscribe(x => {
-                    let employeeId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value);
+
+                    if (!employeeId) {
+                        return;
+                    }
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
@@ -1302,11 +1319,15 @@ module nts.layout {
                     if (inp && cbx) {
                         inp.data.value.subscribe(x => {
                             // obj để get dữ liệu
-                            let sid = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 grantDate = ko.toJS(inp.data.value),
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd;
                             // 
+
+                            if (!sid) {
+                                return;
+                            }
 
                             let x = moment.utc(ko.toJS(inp.data.value));
                             if (x._isValid)
