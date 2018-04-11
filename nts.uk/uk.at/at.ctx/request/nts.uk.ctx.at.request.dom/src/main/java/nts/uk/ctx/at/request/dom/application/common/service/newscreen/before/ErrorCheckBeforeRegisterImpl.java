@@ -196,7 +196,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				appType, prePostAtr.value);
+				appType, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
 		}
