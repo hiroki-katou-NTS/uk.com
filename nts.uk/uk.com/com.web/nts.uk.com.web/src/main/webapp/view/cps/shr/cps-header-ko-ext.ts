@@ -221,7 +221,7 @@ module nts.custombinding {
                                 </td>
                             </tr>
                             <tr>
-                                <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_14')"></td>
+                                <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_15')"></td>
                                 <td>
                                     <div class="info first" data-bind="text: constract.position"></div>
                                     <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_16')"></div>

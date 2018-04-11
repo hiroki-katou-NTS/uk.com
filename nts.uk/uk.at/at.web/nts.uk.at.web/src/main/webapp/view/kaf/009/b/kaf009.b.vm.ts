@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf009.b {
             checkboxDisplay: KnockoutObservable<boolean> = ko.observable(false);
             checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
             workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
-            
+            workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 let self = this;
@@ -163,15 +163,16 @@ module nts.uk.at.view.kaf009.b {
                             self.isWorkChange(false);
                             self.workChangeAtr(false);
                             self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(true);
+                            self.workChangeBtnDisplay(false);
                             self.checkboxEnable(false&&self.isNewScreen());
                         }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
                             self.workChangeAtr(true);
                             self.isWorkChange(true);
                             self.workState(false);
                             self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(false);
+                            self.workChangeBtnDisplay(true);
                             self.checkboxEnable(false&&self.isNewScreen());
+                            self.workLabelRequired(self.workChangeAtr());
                         }
                         
                     }
