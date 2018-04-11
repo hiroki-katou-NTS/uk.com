@@ -155,6 +155,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     self.listSetting.remove(self.selectedCode());
                 }
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.selectedCode.valueHasMutated();
                     nts.uk.ui.block.clear();
                 });
             }).fail(() => {
