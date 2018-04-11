@@ -375,7 +375,8 @@ module nts.uk.com.view.cps001.g.vm {
         remainingDays: KnockoutObservable<number> = ko.observable(null);
         remainingMinutes: KnockoutObservable<number> = ko.observable(null);
         constructor(param?: IAnnualLeaveGrantRemainingData) {
-            let self = this;
+            let self = this,
+              data: any = getShared('CPS001GHI_VALUES');
             if (param) {
                 self.annLeavID(param.annLeavID || null);
                 self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
@@ -387,7 +388,7 @@ module nts.uk.com.view.cps001.g.vm {
                 self.usedMinutes(param.usedMinutes || null);
                 self.remainingDays(param.remainingDays || null);
                 self.remainingMinutes(param.remainingMinutes || null);
-                self.employeeId(__viewContext.user.employeeId);
+                self.employeeId(data.sid);
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
