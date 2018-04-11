@@ -115,7 +115,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				 }else{
 					 //Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
 					 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
-					if(breakTime.getApplicationTime() > calTime){
+					if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime){
 						throw new BusinessException("Msg_423");
 					}else{
 						breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
@@ -140,7 +140,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
 				 //Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
 				 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
-				if(breakTime.getApplicationTime() > calTime){
+				if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime){
 					throw new BusinessException("Msg_423");
 				}else{
 					breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
@@ -187,7 +187,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				}
 				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
 				// 画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
-				if (breakTime.getApplicationTime() > calTime) {
+				if (breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime) {
 					throw new BusinessException("Msg_423");
 				} else {
 					// 
@@ -197,7 +197,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				if(withdrawalApp.isPresent() && withdrawalApp.get().getCalStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
 					throw new BusinessException("Msg_423");
 				}else{
-					if (breakTime.getApplicationTime() > calTime) {
+					if (breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime) {
 						//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 						throw new BusinessException("Msg_423");
 					} else {
@@ -217,7 +217,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
 		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
 			//出勤、退勤打刻あり
-			if (breakTime.getApplicationTime() > calTime) {
+			if (breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime) {
 				//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 				throw new BusinessException("Msg_423");
 			} else {
@@ -229,7 +229,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			if(withdrawalApp.isPresent() && withdrawalApp.get().getCalStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
 				throw new BusinessException("Msg_423");
 			}else{
-				if (breakTime.getApplicationTime() > calTime) {
+				if ( breakTime.getApplicationTime() != null &&  breakTime.getApplicationTime() > calTime) {
 					//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 					throw new BusinessException("Msg_423");
 				} else {
@@ -301,7 +301,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				continue;
 			}
 			// 事前申請の申請時間＞事後申請の申請時間
-			if (beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
+			if (afterTime.getApplicationTime()!= null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
 				// 背景色を設定する
 				result.setErrorCode(1);
 				result.setFrameNo(frameNo);
@@ -356,7 +356,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		for(OvertimeInputCaculation holidayCal : recordWorkInfoImport.getOvertimeHolidayCaculation()){
 			 if(holidayCal.getFrameNo() == breakTime.getFrameNo()){
 				 //画面上の申請時間＞Imported(申請承認)「実績内容」.休出時間
-				 if(breakTime.getApplicationTime() > holidayCal.getResultCaculation()){
+				 if(breakTime.getApplicationTime() != null &&  breakTime.getApplicationTime() > holidayCal.getResultCaculation()){
 					 throw new BusinessException("Msg_423");
 				 }else{
 					 breakTime.setCaculationTime(holidayCal.getResultCaculation() != null ? Integer.toString(holidayCal.getResultCaculation()) : null);
