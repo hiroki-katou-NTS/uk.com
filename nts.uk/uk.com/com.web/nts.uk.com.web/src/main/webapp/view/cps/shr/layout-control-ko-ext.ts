@@ -1153,7 +1153,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
                             <label class="value-text readonly" data-bind="
-                                text: ko.computed(function() { return (value() || ''); }),
+                                text: value,
                                 attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1165,7 +1165,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.RELATE_CATEGORY -->
                             <div class="relate-button">
-                                <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <label class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1211,7 +1211,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
                             <div class="readonly-button">
-                                <label class="value-text" class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <label class="value-text" class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,

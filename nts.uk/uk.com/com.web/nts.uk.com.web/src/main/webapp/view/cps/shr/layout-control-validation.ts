@@ -154,7 +154,9 @@ module nts.layout {
         get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param),
         get_annLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getAnnLeaNumber/${sid}`),
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
-        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`)
+        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
+        check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
+        check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`)
     }
 
     export class validation {
@@ -170,6 +172,8 @@ module nts.layout {
             self.grand_radio();
             self.relate_radio();
             self.relate_button();
+
+            self.remain_day();
 
             self.dateTime();
             self.setTable();
@@ -251,6 +255,30 @@ module nts.layout {
                 setTimeout(() => {
                     CS00020_IS00121.data.value.valueHasMutated();
                 }, 0);
+            }
+        }
+
+        remain_day = () => {
+            let self = this,
+                finder = self.finder,
+                empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                CS00035_IS00366: IFindData = finder.find('CS00035', 'IS00366'),
+                CS00035_IS00368: IFindData = finder.find('CS00035', 'IS00368');
+
+            if (!empId) {
+                return;
+            }
+
+            if (CS00035_IS00366) {
+                fetch.check_remain_days(empId).done(x => {
+                    CS00035_IS00366.data.editable(x);
+                });
+            }
+
+            if (CS00035_IS00368) {
+                fetch.check_remain_left(empId).done(x => {
+                    CS00035_IS00368.data.editable(x);
+                });
             }
         }
 
@@ -953,17 +981,17 @@ module nts.layout {
                             } else {
                                 $(evt.tartget).data('clicked', true);
                             }
-                            
+
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
                             setShared('CPS001GHI_VALUES', {
                                 ctgCode: button.data.categoryCode,
-                                sid : sid
+                                sid: sid
                             });
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 $(evt.tartget).data('clicked', false);
                                 // load lai du lieu
-                                
+
 
                                 if (!sid) {
                                     return;
