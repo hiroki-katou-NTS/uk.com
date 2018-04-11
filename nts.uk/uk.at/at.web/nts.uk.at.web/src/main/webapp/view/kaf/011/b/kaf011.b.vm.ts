@@ -225,10 +225,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 if (data.wkTime1) {
                     control.wkTime1().startTime(data.wkTime1.startTime);
                     control.wkTime1().endTime(data.wkTime1.endTime);
-                    if (data.wkTime1.startType) {
-                        control.wkTime1().startType(data.wkTime1.startType);
-                        control.wkTime1().startTime(data.wkTime1.endType);
-                    }
+                    control.wkTime1().startType(data.wkTime1.startUseAtr);
+                    control.wkTime1().endType(data.wkTime1.endUseAtr);
                 }
                 if (comType) {
                     self.appComSelectedCode(comType);
