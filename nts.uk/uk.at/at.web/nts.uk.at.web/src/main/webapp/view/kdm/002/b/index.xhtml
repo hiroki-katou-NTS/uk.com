@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
 					width : 650,
-					height : 620
+					height : 560
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -88,11 +88,11 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- B4-1 -->
-				<com:ko-if bind="isStop() == false">
+				<com:ko-if bind="!isStop()">
 					<button id="BTN_STOP" class="x-large" tabindex="1" data-bind="click : stop">#{i18n.getText('KDM002_23')}</button>
 				</com:ko-if>
 				<!-- B4-2 -->
-				<com:ko-if bind="isStop() == true">
+				<com:ko-if bind="isStop()">
 					<button id="BTN_CLOSE" class="x-large" tabindex="2" data-bind="click : close">#{i18n.getText('KDM002_24')}</button>
 				</com:ko-if>
 			</div>

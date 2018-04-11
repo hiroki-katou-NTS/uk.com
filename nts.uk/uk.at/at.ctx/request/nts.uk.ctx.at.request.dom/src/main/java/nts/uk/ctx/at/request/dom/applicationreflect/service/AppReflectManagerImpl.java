@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -79,7 +80,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				null);
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
-		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
+		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getFullAppOvertime(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
 				return;
@@ -112,7 +114,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(commonReflect == null) {
 				return;
 			}*/
-		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
+		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;

@@ -99,7 +99,8 @@ module nts.uk.at.view.kaf007.share {
        /**
         * 申請
         */
-       export class ApplicationCommand {           
+       export class ApplicationCommand {  
+           version: number;         
            applicationID: KnockoutObservable<string>;
            appReasonID: string;
            prePostAtr: KnockoutObservable<number>;
@@ -130,6 +131,7 @@ module nts.uk.at.view.kaf007.share {
                self.applicantSID = ko.observable('');
                self.startDate =  ko.observable('');
                self.endDate =  ko.observable('');
+               self.version = 0;
            }
        }
         /**
