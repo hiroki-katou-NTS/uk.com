@@ -76,6 +76,7 @@ hr {
 
 #dateInput {
 	width: 50px;
+	margin-left: 20px;
 }
 div[tabindex]:focus {
 	box-shadow: 0 0 1px 1px #0096f2;
