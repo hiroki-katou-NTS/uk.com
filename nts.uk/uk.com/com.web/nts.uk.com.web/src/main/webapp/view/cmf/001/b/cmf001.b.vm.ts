@@ -235,20 +235,19 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                 let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSettingCode() == data.conditionSettingCode(); });
                 self.listStandardImportSetting.remove(function(item) { return item.conditionSettingCode() == data.conditionSettingCode(); });
                 service.deleteStdData(command).done(function() {
-                    self.getAllData().done(() => {
-                        if (self.listStandardImportSetting().length == 0) {
-                            self.createNewCondition();
+                    if (self.listStandardImportSetting().length == 0) {
+                        self.selectedStandardImportSettingCode(null);
+                    } else {
+                        if (indexItemDelete == self.listStandardImportSetting().length) {
+                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete - 1].conditionSettingCode());
                         } else {
-                            if (indexItemDelete == self.listStandardImportSetting().length) {
-                                self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete - 1].conditionSettingCode());
-                            } else {
-                                self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete].conditionSettingCode());
-                            }
+                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete].conditionSettingCode());
                         }
+                    }
+
+                    self.getAllData(self.selectedStandardImportSettingCode()).done(() => {
                         info({ messageId: "Msg_16" }).then(() => {
-                            if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                $("#B3_4").focus();
-                            } else {
+                            if (self.screenMode() != model.SCREEN_MODE.UPDATE) {
                                 $("#B4_3").focus();
                             }
                         });
