@@ -198,7 +198,6 @@ public class AddEmployeeCommandFacade {
 			case CODE_NAME:
 				return DataTypeValue.STRING;
 			case DESIGNATED_MASTER:
-				String itemValue = value != null ? value.value() : item.getSaveData().getValue().toString();
 				String itemValue = value != null ? value.value().toString() : item.getSaveData().getValue().toString();
 				if (NumberUtils.isDigits(itemValue)) {
 					if (String.valueOf(Integer.parseInt(itemValue)).equals(itemValue)) {
