@@ -1729,11 +1729,15 @@ module nts.custombinding {
                                         case ITEM_SINGLE_TYPE.DATE:
                                             first.startDate = ko.observable();
                                             first.endDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(second.value) ? -1 : 0, "days").toDate();
+                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
+                                                    //.add(ko.toJS(second.value) ? -1 : 0, "days")
+                                                    .toDate();
                                             });
 
                                             second.startDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(first.value) ? 1 : 0, "days").toDate();
+                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
+                                                    //.add(ko.toJS(first.value) ? 1 : 0, "days")
+                                                    .toDate();
                                             });
                                             second.endDate = ko.observable();
                                             break;
@@ -1826,7 +1830,7 @@ module nts.custombinding {
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
-                    
+
                     def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
 
                     def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
