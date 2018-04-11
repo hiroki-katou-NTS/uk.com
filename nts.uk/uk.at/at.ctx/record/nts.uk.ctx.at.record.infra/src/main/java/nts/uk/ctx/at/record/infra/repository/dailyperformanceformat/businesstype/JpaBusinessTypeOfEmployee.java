@@ -105,7 +105,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 	@Override
 	public Optional<BusinessTypeOfEmp> getBySidAndHistId(String employeeId, String histId) {
 		return this.queryProxy().query(FIND_BY_SID_HISTID, KrcmtBusinessTypeOfEmployee.class)
-				.setParameter("employeeId", employeeId).setParameter("histId", histId)
+				.setParameter("employeeId", employeeId).setParameter("historyId", histId)
 				.getSingle(x -> new BusinessTypeOfEmp(x.businessTypeCode, x.krcmtBusinessTypeOfEmployeePK.historyId,
 						x.sId));
 	}
