@@ -62,9 +62,9 @@ module nts.uk.at.view.kmk003.f {
                 }
                 
                 let outputObject = {
-                    oneDayDialog: _self.oneDay(),
-                    morningDialog: _self.morning(),
-                    afternoonDialog: _self.afternoon()
+                    oneDayDialog: _self.oneDay()==null?_self.dataObject().oneDayDialog:_self.oneDay(),
+                    morningDialog: _self.morning()==null?_self.dataObject().morningDialog:_self.morning(),
+                    afternoonDialog: _self.afternoon()==null?_self.dataObject().afternoonDialog:_self.afternoon()
                 };
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_F_OUTPUT_DATA", outputObject);
                 nts.uk.ui.windows.close();

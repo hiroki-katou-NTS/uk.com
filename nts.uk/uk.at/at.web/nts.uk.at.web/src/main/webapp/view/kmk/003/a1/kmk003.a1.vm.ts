@@ -147,18 +147,21 @@ module a1 {
             nts.uk.ui.windows.setShared('KMK003_DIALOG_F_INPUT_DATA', dialogDataObject);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml").onClosed(() => {
                 let returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_F_OUTPUT_DATA');
+                self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
+                self.predseting.predTime.addTime.morning(returnObject.morningDialog);
+                self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
                 self.linkedWithDialogF(self.checkLinked(returnObject));
-                if (self.linkedWithDialogF()) {
-                    //bind from parent to dialog model
-                    self.predseting.predTime.addTime.oneDay(self.predseting.predTime.predTime.oneDay());
-                    self.predseting.predTime.addTime.morning(self.predseting.predTime.predTime.morning());
-                    self.predseting.predTime.addTime.afternoon(self.predseting.predTime.predTime.afternoon());
-                }
-                else {
-                    self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
-                    self.predseting.predTime.addTime.morning(returnObject.morningDialog);
-                    self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
-                }
+//                if (self.linkedWithDialogF()) {
+//                    //bind from parent to dialog model
+//                    self.predseting.predTime.addTime.oneDay(self.predseting.predTime.predTime.oneDay());
+//                    self.predseting.predTime.addTime.morning(self.predseting.predTime.predTime.morning());
+//                    self.predseting.predTime.addTime.afternoon(self.predseting.predTime.predTime.afternoon());
+//                }
+//                else {
+//                    self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
+//                    self.predseting.predTime.addTime.morning(returnObject.morningDialog);
+//                    self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
+//                }
             });
         }
         
