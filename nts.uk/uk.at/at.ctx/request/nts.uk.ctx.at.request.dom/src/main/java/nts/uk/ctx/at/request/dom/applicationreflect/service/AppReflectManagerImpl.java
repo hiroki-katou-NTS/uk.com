@@ -114,7 +114,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(commonReflect == null) {
 				return;
 			}*/
-		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
+		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;

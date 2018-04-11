@@ -370,7 +370,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
-            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd();
+            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd(self.appReasonEvent());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(deleteCmd, self.appType()).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
@@ -392,12 +392,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 });
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
-                });
+            });
 
 
         }
 
-        getHolidayShipmentCmd(memo?) {
+        getHolidayShipmentCmd(memo) {
             let self = this,
                 shipmentCmd,
                 vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'];
@@ -451,7 +451,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
-            let cancelCmd = self.appType() == 10 ? self.getHolidayShipmentCmd() : self.inputCommandEvent();
+            let cancelCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd(self.appReasonEvent());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(cancelCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {
