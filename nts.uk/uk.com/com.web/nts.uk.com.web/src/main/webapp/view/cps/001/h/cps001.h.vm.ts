@@ -43,7 +43,11 @@ module cps001.h.vm {
                 service.getAll(self.sid(), data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
-                        self.currentItem(self.items()[0].id);
+                        let index = _.findIndex(self.items(), (item) => { return item.id == self.currentItem(); });
+
+                        if (index == -1) {
+                            self.currentItem(self.items()[0].id);
+                        }
                     } else {
                         self.create();
                     }
@@ -99,7 +103,6 @@ module cps001.h.vm {
 
         load(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.ckbAll(false);
             service.getAll(self.sid(), self.ckbAll()).done((data: Array<IResvLeaGrantRemNum>) => {
                 if (data && data.length > 0) {
                     self.items(data);
@@ -255,7 +258,7 @@ module cps001.h.vm {
                     deadline = moment.utc(item.deadline(), "YYYY/MM/DD"),
                     employeeId = self.sid();
                 if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
-                    error({ messageId: "Msg_1023" });
+                    $('#grantDate').ntsError('set', { messageId: "Msg_1023" });
                     return;
                 }
                 if (self.isCreate()) {
@@ -331,36 +334,6 @@ module cps001.h.vm {
 
         }
 
-        remove_2() {
-            let self = this;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                block();
-                let delItemIndex = _.findIndex(self.items(), (item) => {
-                    return item.id == self.resvLeaGrantRemNum().id();
-                });
-                let selectedId;
-                if (delItemIndex == self.items().length - 1) {
-                    if (self.items().length > 1) {
-                        selectedId = self.items()[delItemIndex - 1].id;
-                    }
-                } else {
-                    selectedId = self.items()[delItemIndex + 1].id;
-                }
-                service.remove(self.resvLeaGrantRemNum().id()).done(() => {
-                    self.load().done(() => {
-                        if (self.items().length == 0) {
-                            self.create();
-                        } else {
-                            self.currentItem(selectedId);
-                        }
-                    });
-                    alert({ messageId: "Msg_16" });
-                    unblock();
-                }).fail((mes) => {
-                    unblock();
-                });
-            });
-        }
 
     }
     class ResvLeaGrantRemNum {
