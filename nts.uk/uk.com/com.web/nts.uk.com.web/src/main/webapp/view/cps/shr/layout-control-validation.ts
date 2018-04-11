@@ -165,22 +165,24 @@ module nts.layout {
             let self = this;
             self.finder = new constraint(lstCls);
 
-            self.textBox();
-            self.radio();
-            self.button();
-            self.combobox();
-            self.grand_radio();
-            self.relate_radio();
-            self.relate_button();
+            setTimeout(() => {
+                self.textBox();
+                self.radio();
+                self.button();
+                self.combobox();
+                self.grand_radio();
+                self.relate_radio();
+                self.relate_button();
 
-            self.remain_day();
+                self.remain_day();
 
-            self.dateTime();
-            self.setTable();
-            self.grantInformation();
-            self.specialLeaveInformation();
+                self.dateTime();
+                self.setTable();
+                self.grantInformation();
+                self.specialLeaveInformation();
 
-            validate.initCheckError(lstCls);
+                validate.initCheckError(lstCls);
+            }, 500);
         }
 
         textBox = () => {
