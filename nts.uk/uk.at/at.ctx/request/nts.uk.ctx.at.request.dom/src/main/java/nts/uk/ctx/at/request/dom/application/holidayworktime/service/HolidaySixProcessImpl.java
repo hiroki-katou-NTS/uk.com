@@ -49,12 +49,12 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 		for(CaculationTime breakTime : breakTimeInputs){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
 					if(breakTime.getFrameNo() == entry.getKey()){
-						if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() != entry.getValue().getCalTime()){
+						if(breakTime.getApplicationTime() != null && !breakTime.getApplicationTime().equals(entry.getValue().getCalTime())){
 							breakTime.setErrorCode(3); // 色定義名：計算値
 						}
-						if(entry.getValue().getCalTime()!= null && entry.getValue().getCalTime() == 0){
+						if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() == 0){
 							continue;
-						}else if(entry.getValue().getCalTime()!= null && entry.getValue().getCalTime() > 0){
+						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
 									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
