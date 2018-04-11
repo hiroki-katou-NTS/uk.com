@@ -133,7 +133,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
         validate() {
 
-            $(".combo-box ,.nts-input").trigger("validate");
+            $(".kaf-011-combo-box ,.nts-input").trigger("validate");
 
         }
 
