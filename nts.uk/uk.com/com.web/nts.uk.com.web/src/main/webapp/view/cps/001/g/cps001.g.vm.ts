@@ -6,6 +6,7 @@ module nts.uk.com.view.cps001.g.vm {
     import unblock = nts.uk.ui.block.clear;
     import clearError = nts.uk.ui.errors.clearAll;
     import error = nts.uk.ui.dialog.alertError;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
 
         // Store create/update mode
@@ -40,8 +41,13 @@ module nts.uk.com.view.cps001.g.vm {
         
         init: boolean = true;
         itemDefs: any = [];
+        
+        sid: KnockoutObservable<string> = ko.observable(null);
+        
         constructor() {
-            let _self = this;
+            let _self = this,
+            data: any = getShared('CPS001GHI_VALUES');
+            self.sid(data.sid);
 
             _self.createMode = ko.observable(null);
 
@@ -90,7 +96,6 @@ module nts.uk.com.view.cps001.g.vm {
          */
         public startPage(annID? : string): JQueryPromise<any> {
             let _self = this, 
-            sID = __viewContext.user.employeeId;
             block();
             if(_self.init){
                 _self.getItemDef();
@@ -101,7 +106,7 @@ module nts.uk.com.view.cps001.g.vm {
             }
             _self.alllist.removeAll();
             _self.listAnnualLeaveGrantRemainData.removeAll();
-            service.getAllList(sID).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
+            service.getAllList(self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
                     _self.createMode(false);
@@ -305,7 +310,6 @@ module nts.uk.com.view.cps001.g.vm {
          */
         public remove(): void {
             let _self = this,
-                sID = __viewContext.user.employeeId,
                 currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) { 
                     return item.annLeavID == ko.toJS(_self.currentItem()).annLeavID;
                 }),
@@ -318,7 +322,7 @@ module nts.uk.com.view.cps001.g.vm {
                     block();
                     let command = {
                         annLeavID: ko.toJS(_self.currentItem()).annLeavID,
-                        employeeId: sID,
+                        employeeId: self.sid(),
                         grantDate: ko.toJS(_self.currentItem()).grantDate
                     };
                     service.deleteLeav(command).done((message: string) => {
