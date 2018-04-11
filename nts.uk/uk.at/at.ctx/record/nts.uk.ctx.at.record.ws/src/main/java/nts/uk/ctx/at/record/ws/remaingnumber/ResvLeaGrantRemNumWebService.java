@@ -40,10 +40,13 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	@Path("get-resv-lea/{empId}/{isall}")
 	public List<ResvLeaGrantRemNumDto> getAll(@PathParam("empId") String empId, @PathParam("isall") boolean isAll){
 		if(!isAll){
-			return finder.findNotExp(empId);
+			List<ResvLeaGrantRemNumDto> lst =   finder.findNotExp(empId);
+			return lst;
 		}else{
-			return finder.find(empId);
+			List<ResvLeaGrantRemNumDto> lst = finder.find(empId);
+			return lst;
 		}
+		
 	}
 	@POST
 	@Path("get-resv-lea-by-id/{itemId}")
@@ -59,8 +62,8 @@ public class ResvLeaGrantRemNumWebService extends WebService{
 	
 	@POST
 	@Path("add")
-	public void add(AddResvLeaRemainCommand command) {
-		addHandler.handle(command);
+	public List<ResvLeaGrantRemNumDto> add(AddResvLeaRemainCommand command) {
+		return addHandler.handle(command);
 	}
 	
 	@POST
