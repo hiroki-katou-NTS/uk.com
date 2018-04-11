@@ -39,16 +39,16 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 		setter.setData(STOP_MODE, command.getStopMode());
 		setter.setData(STATUS, command.getStateBehavior());
 		
-		for (int i = 1; i < command.getCsvLine(); i++) {
-			//TODO アルゴリズム「外部受入テスト本体」を実行する
+		for (int i = 1; i <= command.getCsvLine() ; i++) {
 
+			//TODO アルゴリズム「外部受入テスト本体」を実行する
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				// 外部受入動作管理の中断するしない区分を更新する
 				setter.updateData(STOP_MODE, 1);
 				asyncTask.finishedAsCancelled();
 				break;
 			}
-
+			
 			if(i %5 == 0){
 				exacErrorLogRepository.add(new ExacErrorLog(i, "cid", command.getProcessId(), "csvErrorItemName", "csvAcceptedValue", "errorContents", 100, GeneralDateTime.ymdhms(2018,03,14,10,10,10), "ITEM_NAME", 1));
 				setter.updateData(NUMBER_OF_ERROR, i/5);
@@ -61,6 +61,7 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
 		}
 		// TODO	END --- Dump data for testing. they will be deleted after process at phrase 2
 	}
