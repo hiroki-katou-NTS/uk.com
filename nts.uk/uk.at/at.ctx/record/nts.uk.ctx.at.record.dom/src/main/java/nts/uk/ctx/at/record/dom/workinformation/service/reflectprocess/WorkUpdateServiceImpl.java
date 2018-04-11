@@ -203,12 +203,12 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp;
 		if(para.isPreCheck()) {
 			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-					Optional.of(timeActualStam), 
-					timeLeavingWork.getLeaveStamp());
+					timeActualStam, 
+					timeLeavingWork.getLeaveStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get() : null);
 		} else {
 			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-					timeLeavingWork.getAttendanceStamp(),
-					Optional.of(timeActualStam));
+					timeLeavingWork.getAttendanceStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get() : null,
+					timeActualStam);
 		}
 		List<TimeLeavingWork> lstTimeLeavingWorksTmp = new ArrayList<>();
 		lstTimeLeavingWorksTmp.add(timeLeavingWorkTmp);

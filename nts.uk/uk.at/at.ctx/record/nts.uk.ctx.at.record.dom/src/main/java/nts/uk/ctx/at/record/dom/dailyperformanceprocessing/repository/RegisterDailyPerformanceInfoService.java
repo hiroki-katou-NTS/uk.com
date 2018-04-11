@@ -82,13 +82,13 @@ public class RegisterDailyPerformanceInfoService {
 		// ドメインモデル「日別実績の勤務情報」を更新する - update
 		// WorkInfoOfDailyPerformance
 		if (workInfoOfDailyPerformanceUpdate != null) {
-			if (this.workInformationRepository.find(employeeID, day).isPresent()) {
-//				this.insertWorkInfoOfDailyPerforService.updateWorkInfoOfDailyPerforService(companyId, employeeID, day,
-//						workInfoOfDailyPerformanceUpdate);
-				 this.workInformationRepository.updateByKey(workInfoOfDailyPerformanceUpdate);
-			} else {
-				this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
-			}
+//			if (this.workInformationRepository.find(employeeID, day).isPresent()) {
+				this.insertWorkInfoOfDailyPerforService.updateWorkInfoOfDailyPerforService(companyId, employeeID, day,
+						workInfoOfDailyPerformanceUpdate);
+//				 this.workInformationRepository.updateByKey(workInfoOfDailyPerformanceUpdate);
+//			} else {
+//				this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
+//			}
 		}
 
 		// ドメインモデル「日別実績の勤務種別」を更新する (Update domain 「日別実績の勤務種別」)

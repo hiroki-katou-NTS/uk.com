@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.command.worktype.InsertWorkTypeCommandHandler;
@@ -44,26 +45,30 @@ public class WorkTypeWebService extends WebService {
 	@Inject
 	private BasicScheduleService basicSchedule;
 
+	/** The insert work type command handler. */
 	@Inject
 	private InsertWorkTypeCommandHandler insertWorkTypeCommandHandler;
 
+	/** The remove work type command handler. */
 	@Inject
 	private RemoveWorkTypeCommandHandler removeWorkTypeCommandHandler;
 
+	/** The work type disp order command handler. */
 	@Inject
 	private WorkTypeDispOrderCommandHandler workTypeDispOrderCommandHandler;
 
+	/** The update work type command handler. */
 	@Inject
 	private UpdateWorkTypeCommandHandler updateWorkTypeCommandHandler;
 
+	/** The Constant workstyleList. */
 	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_WORK.value,
 			WorkStyle.MORNING_WORK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);
 
 	/**
 	 * Gets the possible work type.
 	 *
-	 * @param lstPossible
-	 *            the lst possible
+	 * @param lstPossible the lst possible
 	 * @return the possible work type
 	 */
 	@POST
@@ -93,12 +98,28 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeDto> findNotDeprecated() {
 		return this.find.findNotDeprecated();
 	}
+	
+	/**
+	 * Find work type by condition.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findWorkTypeByCondition")
+	public List<WorkTypeDto> findWorkTypeByCondition() {
+		List<WorkTypeDto> dto = this.find.findWorkTypeByCondition();
+		
+		if (!CollectionUtil.isEmpty(dto)){
+			return dto;
+		} else {
+			throw new BusinessException("Msg_986");
+		}
+	}
 
 	/**
 	 * Find not deprecated by list code.
 	 *
-	 * @param codes
-	 *            the codes
+	 * @param codes the codes
 	 * @return the list
 	 */
 	@POST
@@ -108,10 +129,9 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * Find by id.
+	 * Find by code.
 	 *
-	 * @param workTypeCode
-	 *            the work type code
+	 * @param workTypeCode the work type code
 	 * @return the work type dto
 	 */
 	@POST
@@ -123,8 +143,7 @@ public class WorkTypeWebService extends WebService {
 	/**
 	 * Find selectable.
 	 *
-	 * @param workStyleLst
-	 *            the work style lst
+	 * @param workStyleLst the work style lst
 	 * @return the list
 	 */
 	@POST
@@ -156,10 +175,10 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * Find by companyId and languageId in WORK TYPE LANGUAGE
-	 * 
-	 * @param workTypeCode
-	 * @return
+	 * Find work type language.
+	 *
+	 * @param langId the lang id
+	 * @return the list
 	 */
 	@POST
 	@Path("getByCIdAndLangId/{langId}")
@@ -168,10 +187,9 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * 
-	 * @param Work
-	 *            Type
-	 * 
+	 * Adds the.
+	 *
+	 * @param command the command
 	 */
 	@POST
 	@Path("add")
@@ -180,8 +198,9 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * 
-	 * @param command
+	 * Update.
+	 *
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -190,8 +209,9 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * 
-	 * @param command
+	 * Removes the.
+	 *
+	 * @param command the command
 	 */
 	@POST
 	@Path("remove")
@@ -200,9 +220,9 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * 
-	 * @param Work
-	 *            Type Order
+	 * Order.
+	 *
+	 * @param command the command
 	 */
 	@POST
 	@Path("order")
