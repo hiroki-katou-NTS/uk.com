@@ -40,9 +40,6 @@ public class LayoutWebService extends WebService {
 	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
 	
 	@Inject
-	private OtherHolidayInfoService otherHolidayInfoService;
-	
-	@Inject
 	private AnnualLeaveNumberFinder annLeaNumberFinder;
 	
 	@Inject
@@ -100,20 +97,7 @@ public class LayoutWebService extends WebService {
 		String dayTime = specialLeaveGrantRemainService.calDayTime(sid, specialCD);
 		return new Object[] {dayTime};
 	}
-	
-	@Path("checkEnableRemainDays")
-	@POST
-	public Object checkEnableRemainDays(String sid){
-		boolean result = otherHolidayInfoService.checkEnableLeaveMan(sid);
-		return new Object[] {result};
-	}
-	
-	@Path("checkEnableRemainLeft")
-	@POST
-	public Object checkEnableRemainLeft(String sid, int specialCD){
-		boolean result = otherHolidayInfoService.checkEnablePayout(sid);
-		return new Object[] {result};
-	}
+
 	
 	@POST
 	@Path("getAnnLeaNumber/{sid}")

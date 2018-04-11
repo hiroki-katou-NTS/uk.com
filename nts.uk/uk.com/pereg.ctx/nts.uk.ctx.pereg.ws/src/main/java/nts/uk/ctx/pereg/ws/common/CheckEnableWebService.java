@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 import nts.uk.ctx.pereg.app.find.common.CheckEnableParam;
 import nts.uk.ctx.pereg.dom.common.PredetemineTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
@@ -20,6 +21,9 @@ public class CheckEnableWebService extends WebService {
 	@Inject
 	private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
 
+	@Inject
+	private OtherHolidayInfoService otherHolidayInfoService;
+	
 	@POST
 	@Path("checkStartEnd")
 	public boolean checkStartDateAndEndDate(CheckEnableParam param) {
@@ -38,5 +42,18 @@ public class CheckEnableWebService extends WebService {
 		} else {
 			return false;
 		}
+	}
+	
+	
+	@Path("checkEnableRemainDays")
+	@POST
+	public boolean checkEnableRemainDays(String sid){
+		return otherHolidayInfoService.checkEnableLeaveMan(sid);
+	}
+	
+	@Path("checkEnableRemainLeft")
+	@POST
+	public boolean checkEnableRemainLeft(String sid){
+		return otherHolidayInfoService.checkEnablePayout(sid);
 	}
 }
