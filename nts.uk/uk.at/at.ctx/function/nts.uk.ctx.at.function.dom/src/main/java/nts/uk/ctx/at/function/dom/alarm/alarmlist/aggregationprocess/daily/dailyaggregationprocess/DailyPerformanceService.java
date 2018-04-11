@@ -100,7 +100,7 @@ public class DailyPerformanceService {
 				if (errorAlarm.getUseAtr() > 0) {
 					Optional<ErAlApplicationAdapterDto> erAlApplicationOpt = erAlApplicationAdapter.getAllErAlAppByEralCode(companyID, eDaily.getErrorAlarmWorkRecordCode());
 					if (!erAlApplicationOpt.isPresent())
-						throw new RuntimeException("Domain エラー発生時に呼び出す申請一覧 not found!");
+						continue;
 
 					List<Integer> listAppType = erAlApplicationOpt.get().getAppType();
 					List<Integer> listAppTypeWrited = applicationAdapter.getApplicationBySID(Arrays.asList(employee.getId()), eDaily.getDate(), eDaily.getDate()).stream().map(x -> x.getAppType()).collect(Collectors.toList());
