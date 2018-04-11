@@ -27,13 +27,13 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");
-		stringBuilder.append("FROM KrcmtBusinessTypeOfEmployee ");
+		stringBuilder.append("FROM KrcmtBusinessTypeOfEmployee k ");
 		stringBuilder.append("WHERE k.businessTypeCode IN :businessTypeCodes");
 		FIND_BY_LIST_CODE = stringBuilder.toString();
 
 		StringBuilder stringBuild = new StringBuilder();
 		stringBuild.append("SELECT k ");
-		stringBuild.append("FROM KrcmtBusinessTypeOfEmployee ");
+		stringBuild.append("FROM KrcmtBusinessTypeOfEmployee k ");
 		stringBuild.append("WHERE k.sId = :employeeId ");
 		stringBuild.append("AND k.krcmtBusinessTypeOfEmployeePK.historyId = :historyId");
 		FIND_BY_SID_HISTID = stringBuild.toString();
