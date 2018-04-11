@@ -275,12 +275,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
-            let approveCmd;
-            if (self.appType() != 10) {
-                approveCmd = self.inputCommonData();
-            } else {
-                approveCmd = self.getHolidayShipmentCmd();
-            }
+            let approveCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             service.approveApp(approveCmd, self.appType()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: 'Msg_220' }).then(function() {
                     if (!nts.uk.util.isNullOrUndefined(data)) {
@@ -302,7 +297,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
-            let denyCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd();
+            let denyCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             service.denyApp(denyCmd, self.appType()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: 'Msg_222' }).then(function() {
                     if (!nts.uk.util.isNullOrUndefined(data)) {
@@ -332,7 +327,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
-            let releaseCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd();
+            let releaseCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_248' }).ifYes(function() {
                 service.releaseApp(releaseCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
@@ -375,7 +370,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
-            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd();
+            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd(self.appReasonEvent());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(deleteCmd, self.appType()).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
@@ -402,7 +397,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         }
 
-        getHolidayShipmentCmd() {
+        getHolidayShipmentCmd(memo) {
             let self = this,
                 shipmentCmd,
                 vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'];
@@ -411,7 +406,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 absAppID: vm.absWk().appID(),
                 recAppID: vm.recWk().appID(),
                 appVersion: vm.version(),
-                memo: self.appReasonEvent()
+                memo: memo ? memo : ""
             }
 
             return shipmentCmd;
@@ -456,7 +451,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
-            let cancelCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd();
+            let cancelCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd(self.appReasonEvent());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(cancelCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {
