@@ -25,90 +25,121 @@ module cps001.h.vm {
         ckbAll: KnockoutObservable<boolean> = ko.observable(false);
         itemDefs: any = [];
 
-        nameGrantDate: KnockoutObservable<string> = ko.observable('');
-        nameDeadline: KnockoutObservable<string> = ko.observable('');
-        nameOverLimitDays: KnockoutObservable<string> = ko.observable('');
+        nameGrantDate: KnockoutObservable<string> = ko.observable(null);
+        nameDeadline: KnockoutObservable<string> = ko.observable(null);
+        nameOverLimitDays: KnockoutObservable<string> = ko.observable(null);
+
+        sid: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
-            let self = this;
+            let self = this,
+                data: any = getShared('CPS001GHI_VALUES');
+
+            self.sid(data.sid);
+
             self.ckbAll.subscribe((data) => {
                 clearError();
-                service.getAll(__viewContext.user.employeeId, data).done((data) => {
+                service.getAll(self.sid(), data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
                         self.currentItem(self.items()[0].id);
                     } else {
-                        self.items([]);
                         self.create();
                     }
                     $("#grantDate").focus();
                 });
             });
             self.currentItem.subscribe((id: string) => {
+                if (id) {
+                    service.getByGrantDate(id).done((curItem: IResvLeaGrantRemNum) => {
+                        self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
+                        self.setDef();
+                        $("#grantDate").focus();
+                        if (curItem) {
+                            self.enableRemoveBtn(true);
+                            self.isCreate(false);
+                        }
+                    });
+                }
+                self.enableRemoveBtn(true);
 
-                service.getByGrantDate(id).done((curItem) => {
-                    self.clearError();
-                    self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
-                    self.setDef();
-                    $("#grantDate").focus();
-                    if (curItem) {
-                        self.enableRemoveBtn(true);
-                        self.isCreate(false);
-                    }
-                });
             });
             self.columns = ko.observableArray([
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
                 { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
+                { headerText: text("CPS001_121"), key: 'grantDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'useDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
             ]);
         }
+
+        create() {
+            let self = this;
+            self.items([]);
+            self.currentItem("-1");
+            self.enableRemoveBtn(false);
+            self.isCreate(true);
+        }
+
+        newmode() {
+            let self = this;
+            self.currentItem("-1");
+            self.enableRemoveBtn(false);
+            self.isCreate(true);
+        }
+
         load(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                sId = __viewContext.user.employeeId;
-            service.getAll(sId, self.ckbAll()).done((data) => {
+            let self = this, dfd = $.Deferred();
+            self.ckbAll(false);
+            service.getAll(self.sid(), self.ckbAll()).done((data: Array<IResvLeaGrantRemNum>) => {
                 if (data && data.length > 0) {
                     self.items(data);
                 } else {
-                    self.items([]);
                     self.create();
                 }
                 dfd.resolve();
+            }).fail((_data) => {
+                dfd.reject();
+                unblock();
+
             });
             return dfd.promise();
         }
 
         start(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.setDef();
-            self.load().done(() => {
-                if (self.items().length > 0) {
-                    self.currentItem(self.items()[0].id);
-                }
-                dfd.resolve();
+            self.setDef().done(() => {
+                self.load().done(() => {
+                    if (self.items().length > 0) {
+                        self.currentItem(self.items()[0].id);
+                    }
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }
 
-        setDef() {
-            let self = this;
+        setDef(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             if (self.itemDefs.length > 0) {
                 self.setItemValue(self.itemDefs);
+                dfd.resolve();
             } else {
                 service.getItemDef().done((data) => {
                     self.itemDefs = data;
                     self.setItemValue(self.itemDefs);
+                    dfd.resolve();
                 });
             }
+            return dfd.promise();
+
         }
 
-        setItemValue(data: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+        setItemValue(data: any) {
+            let self = this;
             $("td[data-itemCode]").each(function() {
                 let itemCodes = $(this).attr('data-itemCode');
                 if (itemCodes) {
@@ -136,9 +167,8 @@ module cps001.h.vm {
                         }
                     });
                 }
-                dfd.resolve();
+
             });
-            return dfd.promise();
         }
 
         close() {
@@ -146,6 +176,143 @@ module cps001.h.vm {
         }
 
         remove() {
+            let self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+                .ifYes(() => {
+
+                    let delItemIndex = _.findIndex(self.items(), (item) => { return item.id == self.currentItem(); });
+
+                    let selectedId;
+                    if (delItemIndex == self.items().length - 1) {
+                        if (self.items().length > 1) {
+                            selectedId = self.items()[delItemIndex - 1].id;
+                        }
+                    } if (delItemIndex == 0) {
+                        selectedId = self.items()[0].id;
+                    } else {
+                        selectedId = self.items()[delItemIndex].id;
+                    }
+
+                    let currentRow: IResvLeaGrantRemNum = _.find(ko.toJS(self.items), function(item: IResvLeaGrantRemNum) { return item.id == self.currentItem(); });
+                    let itemListLength = self.items().length;
+
+                    if (currentRow != undefined) {
+                        let itemListLength = self.items().length;
+                        service.remove(currentRow.id).done((_data: any) => {
+
+                            if (itemListLength === 1) {
+                                self.load().done(() => {
+                                    self.create();
+                                });
+                            } else if (itemListLength - 1 === delItemIndex) {
+                                self.load().done(() => {
+                                    self.currentItem(self.items()[delItemIndex - 1].id);
+
+                                });
+                            } else if (itemListLength - 1 > delItemIndex) {
+                                self.load().done(() => {
+                                    self.currentItem(self.items()[delItemIndex].id);
+                                });
+                            }
+
+                            alert({ messageId: "Msg_15" });
+                            unblock();
+                        }).fail((error: any) => {
+                            unblock();
+                        });
+
+                    }
+
+                }).ifCancel(() => {
+                });
+        }
+
+        register() {
+            let self = this;
+
+            $("#grantDate").trigger("validate");
+            $("#deadline").trigger("validate");
+            $("#grantDays").trigger("validate");
+            $("#useDays").trigger("validate");
+            $("#overLimitDays").trigger("validate");
+            $("#remainingDays").trigger("validate");
+
+            if (!$(".nts-input").ntsError("hasError")) {
+                let item = self.resvLeaGrantRemNum(),
+                    grantDate = moment.utc(item.grantDate(), "YYYY/MM/DD"),
+                    deadline = moment.utc(item.deadline(), "YYYY/MM/DD"),
+                    employeeId = self.sid();
+                if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
+                    error({ messageId: "Msg_1023" });
+                    return;
+                }
+                if (self.isCreate()) {
+                    let currItem = self.items();
+                    let ids: Array<string> = _.map(self.items(), x => x.id);
+                    service.create(employeeId, grantDate, deadline, item.expirationStatus(),
+                        item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done((result: Array<IResvLeaGrantRemNum>) => {
+                            service.getAll(self.sid(), self.ckbAll()).done((data: Array<IResvLeaGrantRemNum>) => {
+                                if (data && data.length > 0) {
+                                    self.items(data);
+                                    let newItem = _.find(self.items(), x => ids.indexOf(x.id) == -1);
+                                    let saveItemIndex = _.findIndex(self.items(), (item) => { return item.id == newItem.id; });
+                                    self.currentItem(self.items()[saveItemIndex].id);
+                                    
+                                } else {
+                                    self.create();
+                                }
+                            }).fail((_data) => {
+                                unblock();
+                            });
+                            alert({ messageId: "Msg_15" });
+                            unblock();
+
+                        }).fail((mes) => {
+                            unblock();
+                        });
+                } else {
+                    let ids: Array<string> = _.map(self.items(), x => x.id);
+
+                    service.update(item.id(), employeeId, grantDate, deadline, item.expirationStatus(),
+                        item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
+                            self.load().done(() => {
+                                if (self.items().length > 0 && self.items().length == ids.length) {
+                                    self.currentItem(item.id());
+                                } else if (self.items().length > 0 && self.items().length != ids.length) {
+                                    self.currentItem(self.items()[0].id);
+                                } else if (self.items().length == 0) {
+                                    self.create();
+                                }
+                                alert({ messageId: "Msg_15" });
+                                unblock();
+                            });
+
+                        }).fail((mes) => {
+                            unblock();
+                        });
+                }
+            }
+
+        }
+
+        formatterDate(value) {
+            return value + "日";
+        }
+
+        formatterExState(value: number) {
+            if (value == 1) {
+                return "使用可能";
+            } else {
+                return "期限切れ";
+            }
+
+        }
+
+        remove_2() {
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block();
@@ -167,97 +334,13 @@ module cps001.h.vm {
                         } else {
                             self.currentItem(selectedId);
                         }
-                        self.ckbAll(false);
-                        alert({ messageId: "Msg_16" });
-                        unblock();
                     });
-
+                    alert({ messageId: "Msg_16" });
+                    unblock();
                 }).fail((mes) => {
                     unblock();
                 });
             });
-        }
-        clearError() {
-            $("#grantDate").ntsError("clear");
-            $("#deadline").ntsError("clear");
-            $("#grantDays").ntsError("clear");
-            $("#useDays").ntsError("clear");
-            $("#overLimitDays").ntsError("clear");
-            $("#remainingDays").ntsError("clear");
-        }
-        register() {
-            let self = this;
-
-            $("#grantDate").trigger("validate");
-            $("#deadline").trigger("validate");
-            $("#grantDays").trigger("validate");
-            $("#useDays").trigger("validate");
-            $("#overLimitDays").trigger("validate");
-            $("#remainingDays").trigger("validate");
-
-            if (!$(".nts-input").ntsError("hasError")) {
-                let item = self.resvLeaGrantRemNum(),
-                    grantDate = moment.utc(item.grantDate(), "YYYY/MM/DD"),
-                    deadline = moment.utc(item.deadline(), "YYYY/MM/DD");
-                if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
-                    error({ messageId: "Msg_1023" });
-                    return;
-                }
-                if (self.isCreate()) {
-                    let currItem = self.items();
-                    service.create(grantDate, deadline, item.expirationStatus(),
-                        item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
-                            self.load().done(() => {
-                                if (self.items().length > 0) {
-                                    let newId = _.difference(_.map(self.items(), (i) => { return i.id; }), _.map(currItem, (i) => { return i.id; }));
-                                    self.currentItem(newId);
-                                }
-                                self.ckbAll(false);
-                                alert({ messageId: "Msg_15" });
-                                unblock();
-                            });
-
-                        }).fail((mes) => {
-                            unblock();
-                        });
-                } else {
-                    service.update(item.id(), grantDate, deadline, item.expirationStatus(),
-                        item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
-                            self.load().done(() => {
-                                if (self.items().length > 0) {
-                                    self.currentItem(item.id());
-                                }
-                                self.ckbAll(false);
-                                alert({ messageId: "Msg_15" });
-                                unblock();
-                            });
-
-                        }).fail((mes) => {
-                            unblock();
-                        });
-                }
-            }
-
-        }
-
-        create() {
-            let self = this;
-            self.currentItem("-1");
-            self.enableRemoveBtn(false);
-            self.isCreate(true);
-        }
-
-        formatterDate(value) {
-            return value + "日";
-        }
-
-        formatterExState(value: number) {
-            if (value == 1) {
-                return "使用可能";
-            } else {
-                return "期限切れ";
-            }
-
         }
 
     }
@@ -282,11 +365,9 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                if (!nts.uk.ui.errors.hasError() && data) {
-                    service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
-                        self.deadline(item);
-                    });
-                }
+                service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
+                    self.deadline(item);
+                });
             });
         }
     }

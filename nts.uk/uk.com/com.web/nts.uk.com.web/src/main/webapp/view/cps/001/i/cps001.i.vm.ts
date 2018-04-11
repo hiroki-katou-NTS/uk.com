@@ -88,12 +88,14 @@ module nts.uk.com.view.cps001.i.vm {
 
         //data recive from cps001.a
         categoryCode: KnockoutObservable<string> = ko.observable(null);
+        sid: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             let self = this,
                 data: any = getShared('CPS001GHI_VALUES');
 
             self.categoryCode(data.ctgCode);
+            self.sid(data.sid);
 
             self.expStateTitle = ko.observable('expDateTitle');
             self.roundingRules = ko.observableArray([
@@ -147,7 +149,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.checked(false);
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
 
-            service.getAllList(__viewContext.user.employeeId, ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
+            service.getAllList(self.sid(), ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
@@ -262,7 +264,7 @@ module nts.uk.com.view.cps001.i.vm {
             //sid = "1B3D3CC4-90FD-4992-9566-12EC72827E4C" || __viewContext.user.employeeId
             let command = {
                 specialid: currentRow == undefined ? null : currentRow.specialid,
-                sid: __viewContext.user.employeeId,
+                sid: self.sid(),
                 specialLeaCode: ctgCode.specialCode,
                 grantDate: self.dateGrantInp(), deadlineDate: self.deadlineDateInp(),
                 expStatus: self.selectedRuleCode(), registerType: null,
