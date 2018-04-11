@@ -212,10 +212,11 @@ module cmm045.a.viewmodel {
                         if(appCHeck != null){
                             self.selectedCode(appCHeck);
                         }
+                        block.clear();
                         dfd.resolve();
                     });
-                }).always(() => {
-                    block.clear();
+                }).fail(()=>{
+                    block.clear();    
                 });
             });
             return dfd.promise();
@@ -1251,7 +1252,8 @@ module cmm045.a.viewmodel {
                         self.reloadGridApplicaion(colorBackGr);
                     }
                 }
-            }).always(() => {
+                block.clear();
+            }).fail(() => {
                 block.clear();
             });
         }
