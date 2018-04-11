@@ -95,7 +95,8 @@ module nts.uk.com.view.cps001.g.vm {
          * Run after page loaded
          */
         public startPage(annID? : string): JQueryPromise<any> {
-            let _self = this, 
+            let _self = this; 
+            
             block();
             if(_self.init){
                 _self.getItemDef();
