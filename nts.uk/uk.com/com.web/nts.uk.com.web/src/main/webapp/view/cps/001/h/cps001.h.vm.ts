@@ -8,6 +8,7 @@ module cps001.h.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import clearError = nts.uk.ui.errors.clearAll;
+    import info = nts.uk.ui.dialog.info;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -222,7 +223,7 @@ module cps001.h.vm {
                                 });
                             }
 
-                            alert({ messageId: "Msg_15" }).then(function() {
+                            info({ messageId: "Msg_16" }).then(function() {
                                 clearError();
                                 $("#grantDate").focus();
                             });

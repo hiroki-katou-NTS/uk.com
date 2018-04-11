@@ -356,7 +356,7 @@ module nts.uk.com.view.cps001.i.vm {
                                 });
                             }
 
-                            alert({ messageId: "Msg_15" }).then(function() {
+                            info({ messageId: "Msg_16" }).then(function() {
                                 clearError();
                                 $("#idDateGrantInp").focus();
                             });
