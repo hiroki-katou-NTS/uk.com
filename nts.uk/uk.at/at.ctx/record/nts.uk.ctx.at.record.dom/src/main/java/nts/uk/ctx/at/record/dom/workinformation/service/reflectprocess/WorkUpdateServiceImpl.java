@@ -54,7 +54,11 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate) {
 		//日別実績の勤務情報
-		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData()).get();
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData()); 
+		if(!optDailyPerfor.isPresent()) {
+			return;
+		}
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
