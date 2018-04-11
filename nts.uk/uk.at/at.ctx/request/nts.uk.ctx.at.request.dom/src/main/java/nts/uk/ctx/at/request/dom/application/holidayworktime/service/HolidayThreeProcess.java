@@ -114,4 +114,17 @@ public interface HolidayThreeProcess {
 	 * @param calTime
 	 */
 	public void checkDayIsHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
+	/**
+	 * 03-02-a_実績超過チェック（承認者）	
+	 * @param prePostAtr
+	 * @param appType
+	 * @param employeeID
+	 * @param companyID
+	 * @param appDate
+	 * @param breakTimeInput
+	 * @param siftCD
+	 * @param calTime
+	 * @return
+	 */
+	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime breakTimeInput, String siftCD,Integer calTime);
 }
