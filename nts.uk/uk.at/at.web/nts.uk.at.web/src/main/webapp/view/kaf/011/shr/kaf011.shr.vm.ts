@@ -228,9 +228,9 @@ module nts.uk.at.view.kaf011.shr {
 
                     self.updateWorkingText();
                 });
-                self.wkTypes.subscribe((item) => {
-                    if (item.length) {
-                        self.wkTypeCD(item[0].workTypeCode);
+                self.wkTypes.subscribe((items) => {
+                    if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
+                        self.wkTypeCD(items[0].workTypeCode);
                     }
                 });
 
