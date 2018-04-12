@@ -418,7 +418,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     if (itemList.length == 1) {
                                         nts.uk.ui.dialog.confirm({ messageId: "Msg_530" }).then(() => {
-                                            ;
                                             self.focusToInput();
                                         });
                                     }
@@ -459,16 +458,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let oldIndex = _.findIndex(itemList, x => x.selectionID == currentItem.selectionID());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionID(newItem.selectionID);
-                    self.focusToInput();
+                    //self.focusToInput();
                     //$("#name").focus();
                 });
                 //nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.focusToInput();
+                    //self.focusToInput();
                 });
                 self.listSelection.valueHasMutated();
                 //$("#name").focus();
-                self.focusToInput();
+                //self.focusToInput();
 
             });
         }
