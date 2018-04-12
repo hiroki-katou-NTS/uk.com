@@ -187,8 +187,8 @@ module cmm045.a.viewmodel {
                             self.hdAppSet(new vmbase.HdAppSet('', '', '', '', '', '', '', ''));    
                         }
                         _.each(data.lstAppCompltLeaveSync, function(complt){
-                            let appMain = new vmbase.AppCompltLeaveFull(complt.appMain.appID, complt.appMain.workTypeCD, complt.appMain.startTime, complt.appMain.endTime);
-                            let appSub = complt.appSub == null ? null : new vmbase.AppCompltLeaveFull(complt.appSub.appID, complt.appSub.workTypeCD, complt.appSub.startTime, complt.appSub.endTime);
+                            let appMain = new vmbase.AppCompltLeaveFull(complt.appMain.appID, complt.appMain.workTypeName, complt.appMain.startTime, complt.appMain.endTime);
+                            let appSub = complt.appSub == null ? null : new vmbase.AppCompltLeaveFull(complt.appSub.appID, complt.appSub.workTypeName, complt.appSub.startTime, complt.appSub.endTime);
                             self.lstAppCompltSync.push(new vmbase.AppCompltLeaveSync(complt.typeApp, complt.sync, appMain, appSub, complt.appDateSub, complt.appInputSub));
                         });  
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), 
@@ -922,7 +922,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
-            return getText('CMM045_262') + date + getText('CMM045_231', [compltLeave.workTypeCD]) + time + reasonApp;
+            return getText('CMM045_262') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
         //※振休申請のみ同期なし・紐付けなし
         //申請/承認モード
@@ -931,7 +931,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
-            return getText('CMM045_263') + date + getText('CMM045_231', [compltLeave.workTypeCD]) + time + reasonApp;
+            return getText('CMM045_263') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
         //※振休振出申請　同期（あり/なし）・紐付けあり
         //申請モード/承認モード merge convert C + D
@@ -946,7 +946,7 @@ module cmm045.a.viewmodel {
             if(compltSync.typeApp == 0){
                 abs = compltSync.appMain;
                 rec = compltSync.appSub;
-                recContent = self.convertA(rec, compltSync.appDateSub, app.applicationReason);
+                recContent = self.convertA(rec, compltSync.appDateSub, '');
                 absContent = self.convertB(abs, app.applicationDate, app.applicationReason);
                 
             }else{
@@ -1271,8 +1271,8 @@ module cmm045.a.viewmodel {
                         absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
                 });
                 _.each(data.lstAppCompltLeaveSync, function(complt){
-                    let appMain = new vmbase.AppCompltLeaveFull(complt.appMain.appID, complt.appMain.workTypeCD, complt.appMain.startTime, complt.appMain.endTime);
-                    let appSub = complt.appSub == null ? null : new vmbase.AppCompltLeaveFull(complt.appSub.appID, complt.appSub.workTypeCD, complt.appSub.startTime, complt.appSub.endTime);
+                    let appMain = new vmbase.AppCompltLeaveFull(complt.appMain.appID, complt.appMain.workTypeName, complt.appMain.startTime, complt.appMain.endTime);
+                    let appSub = complt.appSub == null ? null : new vmbase.AppCompltLeaveFull(complt.appSub.appID, complt.appSub.workTypeName, complt.appSub.startTime, complt.appSub.endTime);
                     self.lstAppCompltSync.push(new vmbase.AppCompltLeaveSync(complt.typeApp, complt.sync, appMain, appSub, complt.appDateSub, complt.appInputSub));
                 });
                 let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), 
