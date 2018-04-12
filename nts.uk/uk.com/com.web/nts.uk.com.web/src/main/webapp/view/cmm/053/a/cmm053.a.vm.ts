@@ -32,7 +32,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
-        tabindex: number = 1;
+        tabindex: number = -1;
         isInitDepartment: boolean = true;
         isInitdailyApproval: boolean = true;
 
