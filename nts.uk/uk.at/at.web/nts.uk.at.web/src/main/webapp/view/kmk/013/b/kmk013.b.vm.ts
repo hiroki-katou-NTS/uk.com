@@ -1109,7 +1109,7 @@ module nts.uk.at.view.kmk013.b {
                     /** 休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する */
                     self.checkedB8_20(convertToBoolean(obj.hourlyPaymentAdditionSet.notDeductLateLeaveEarly));
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
-//                    self.checkedB8_23(convertToBoolean(obj.hourlyPaymentAdditionSet.enableSetPerWorkHour2));
+                    self.checkedB8_23(convertToBoolean(obj.hourlyPaymentAdditionSet.enableSetPerWorkHour2));
                     /** 休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する */
                     self.checkedB8_21(convertToBoolean(obj.hourlyPaymentAdditionSet.calculateIncludeIntervalExemptionTime2));
                     
@@ -1126,12 +1126,12 @@ module nts.uk.at.view.kmk013.b {
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
                     self.checkedB5_22(convertToBoolean(obj.regularWork.enableSetPerWorkHour1));
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
-//                    self.checkedB5_23(convertToBoolean(obj.regularWork.enableSetPerWorkHour2));
+                    self.checkedB5_23(convertToBoolean(obj.regularWork.enableSetPerWorkHour2));
                     
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */     
                     self.checkedB6_21(convertToBoolean(obj.flexWork.enableSetPerWorkHour1));
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */                               
-//                    self.checkedB6_22(convertToBoolean(obj.flexWork.enableSetPerWorkHour2));
+                    self.checkedB6_22(convertToBoolean(obj.flexWork.enableSetPerWorkHour2));
                     /** 休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.月次法定内のみ加算*/
                     self.checkedB6_23(convertToBoolean(obj.flexWork.additionWithinMonthlyStatutory));
                     
@@ -1139,7 +1139,7 @@ module nts.uk.at.view.kmk013.b {
                     self.checkedB7_23(convertToBoolean(obj.irregularWork.enableSetPerWorkHour1));
                     
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
-//                    self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
+                    self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
                     
                     self.notifyVarKnockoutchange();
                 });    
@@ -1155,6 +1155,7 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedValueB612.valueHasMutated();
                 self.selectedValueB74.valueHasMutated();
                 self.selectedValueB715.valueHasMutated();    
+                self.checkedB615.valueHasMutated();
             }
             
             save(): void {
@@ -1282,10 +1283,10 @@ module nts.uk.at.view.kmk013.b {
                 obj.irregularWork.companyId = "";
                 obj.irregularWork.calcActualOperationPre = self.selectedValueB74();
                 if (self.selectedValueB74() == 1) {
-                    obj.irregularWork.additionTimePre = convertToInt(self.checkedB57());
-                    obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB512());
-                    obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB513());
-                    obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
+                    obj.irregularWork.additionTimePre = convertToInt(self.checkedB77());
+                    obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB712());
+                    obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB713());
+                    obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB714());
                     if (self.checkedB713()) {
                         obj.irregularWork.enableSetPerWorkHour1 = convertToInt(self.checkedB7_23());
                     }
