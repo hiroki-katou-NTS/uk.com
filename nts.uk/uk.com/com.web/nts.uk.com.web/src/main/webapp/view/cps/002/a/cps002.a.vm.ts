@@ -306,10 +306,12 @@ module cps002.a.vm {
         }
 
         getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                genType = userSetting.employeeCodeType;
-
+            let self = this;
+            let dfd = $.Deferred();
+            let genType = userSetting.employeeCodeType;
+            // 1 = 頭文字指定
+            // 2 = 空白
+            // 3 = 最大値 
             if (genType === 3 || genType === 1) {
                 service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
 
