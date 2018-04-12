@@ -12,6 +12,7 @@ module nts.uk.com.view.cps005.a {
             currentData: KnockoutObservable<DataModel>;
             isUpdate: boolean = false;
             isEnableButtonProceedA: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this,
                     dataModel = new DataModel(null);
@@ -160,6 +161,9 @@ module nts.uk.com.view.cps005.a {
                         isAdd: ko.toJS(self.currentData().currentCtgSelected().addItemObjCls())
 
                     };
+                if(nts.uk.text.isNullOrEmpty(params.categoryId)){
+                     return;    
+                }
                 block.invisible();
 
                 setShared('CPS005_A', params);
