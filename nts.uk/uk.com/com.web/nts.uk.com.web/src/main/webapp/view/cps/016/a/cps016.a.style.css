@@ -1,6 +1,16 @@
-body{
+/* #master-wrapper { */
+/* 	width: 1208px; */
+/* } */
+
+#master-wrapper {
+    height: 890px;
+    width: 1352px;
+}
+ 
+body {
 	overflow: hidden;
 }
+
 .valign-center {
 	vertical-align: middle !important;
 }
