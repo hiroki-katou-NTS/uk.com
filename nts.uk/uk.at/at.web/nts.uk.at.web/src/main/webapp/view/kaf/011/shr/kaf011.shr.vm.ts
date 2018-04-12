@@ -218,14 +218,6 @@ module nts.uk.at.view.kaf011.shr {
                     });
 
                 });
-
-                self.wkTime1().startTime.subscribe((newValue) => {
-                    self.updateWorkingText();
-                });
-                self.wkTime1().endTime.subscribe((newValue) => {
-
-                    self.updateWorkingText();
-                });
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
                         self.wkTypeCD(items[0].workTypeCode);
