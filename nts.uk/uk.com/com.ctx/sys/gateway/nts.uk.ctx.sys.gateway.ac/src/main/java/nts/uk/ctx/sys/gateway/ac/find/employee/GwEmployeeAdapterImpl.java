@@ -15,10 +15,10 @@ import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 
 /**
- * The Class EmployeeAdapterImpliment.
+ * The Class GwEmployeeAdapterImpl.
  */
 @Stateless
-public class EmployeeAdapterImpl implements EmployeeInfoAdapter {
+public class GwEmployeeAdapterImpl implements EmployeeInfoAdapter {
 
 	/** The employee info pub. */
 	@Inject
