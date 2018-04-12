@@ -72,11 +72,11 @@ hr {
 
 .d7_label {
 	padding: 10px 30px;
+	margin-left: 23px;
 }
 
 #dateInput {
 	width: 50px;
-	margin-left: 23px;
 }
 div[tabindex]:focus {
 	box-shadow: 0 0 1px 1px #0096f2;
