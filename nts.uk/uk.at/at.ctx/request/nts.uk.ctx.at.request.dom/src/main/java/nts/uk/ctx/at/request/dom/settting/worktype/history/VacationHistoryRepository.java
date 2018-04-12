@@ -56,4 +56,12 @@ public interface VacationHistoryRepository {
     public Integer countByDatePeriod(String companyId, String workTypeCode, DatePeriod datePeriod,
 			String histId);
 
+    /**
+     * Find history.
+     *
+     * @param companyId the company id
+     * @param historyId the history id
+     * @return the optional
+     */
+    public List<PlanVacationHistory> findHistory(String companyId, String historyId);
 }

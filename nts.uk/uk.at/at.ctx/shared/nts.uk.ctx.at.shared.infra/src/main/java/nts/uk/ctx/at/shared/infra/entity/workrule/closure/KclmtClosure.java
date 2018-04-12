@@ -18,6 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KclmtClosure.
  */
+
 @Getter
 @Setter
 @Entity
@@ -38,6 +39,10 @@ public class KclmtClosure extends UkJpaEntity implements Serializable {
     /** The closure month. */
     @Column(name = "CLOSURE_MONTH")
     private Integer closureMonth;
+    
+    /** The closure classification. */
+    @Column(name = "CLOSURE_CLASSIFICATION")
+    private Integer closureClassification;
 
     /**
      * Instantiates a new kclmt closure.

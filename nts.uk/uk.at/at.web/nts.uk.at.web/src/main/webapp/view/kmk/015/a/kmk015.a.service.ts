@@ -34,13 +34,13 @@ module nts.uk.at.view.kmk015.a {
             
             export class SaveVacationHistoryCommand {
                 
-                isCreateMode: boolean;
+                isCreated: boolean;
                 workTypeCode: string;
                 maxDay: number;
                 vacationHistory: SaveHistory;
                 
-                constructor(isCreateMode: boolean, workTypeCode: string, maxDay: number, vacationHistory: SaveHistory) {
-                    this.isCreateMode = isCreateMode;
+                constructor(isCreated: boolean, workTypeCode: string, maxDay: number, vacationHistory: SaveHistory) {
+                    this.isCreated = isCreated;
                     this.workTypeCode = workTypeCode;
                     this.maxDay = maxDay;
                     this.vacationHistory = vacationHistory;

@@ -13,24 +13,30 @@ module nts.uk.at.view.kmk015.a {
             selectedCode: KnockoutObservable<string>;
             selectedCodeHistory: KnockoutObservable<string>;
             listWorkType: KnockoutObservableArray<OptionalItemHeaderDto>;
-            hasSelected: KnockoutObservable<boolean>;
             nameWorkType: KnockoutObservable<string>;
             timeHistory: KnockoutObservable<string>;
             listHistory: KnockoutObservableArray<any>;
             startTime: KnockoutObservable<moment.Moment>;
             endTime: KnockoutObservable<moment.Moment>;
+            startforC: KnockoutObservable<moment.Moment>;
+            endforC: KnockoutObservable<moment.Moment>;
+            isCreated: KnockoutObservable<boolean>;
+            historyId: KnockoutObservable<string>;
 
 
             constructor() {
                 let self = this;
                 self.listWorkType = ko.observableArray([]);
-                self.hasSelected = ko.observable(true);
                 self.numberDay = ko.observable(0);
+                self.isCreated = ko.observable(true);
 
                 self.selectedCode = ko.observable('');
+                self.historyId = ko.observable('');
                 self.selectedCodeHistory = ko.observable('');
                 self.startTime = ko.observable(moment());
                 self.endTime = ko.observable(moment());
+                self.startforC = ko.observable(moment());
+                self.endforC = ko.observable(moment());
                 self.nameWorkType = ko.observable('');
                 self.timeHistory = ko.observable('');
                 self.listHistory = ko.observableArray([]);
@@ -64,7 +70,13 @@ module nts.uk.at.view.kmk015.a {
                 
                 self.selectedCodeHistory.subscribe(code => {
                     self.listHistory().forEach(function(item) {
-                        if (item.historyId == code) { self.timeHistory(item.time); self.numberDay(item.maxDay)}
+                        if (item.historyId == code) { 
+                            self.historyId(code);
+                            self.timeHistory(item.time); 
+                            self.numberDay(item.maxDay);
+                            self.startforC(item.startItem);
+                            self.endforC(item.endItem);
+                        }
                     });
                 });
             }
@@ -105,7 +117,9 @@ module nts.uk.at.view.kmk015.a {
                             self.listHistory.push({
                                 historyId: item.historyId,
                                 time: item.startDate + ' ~ ' + item.endDate,
-                                maxDay: item.maxDay
+                                maxDay: item.maxDay,
+                                startItem: item.startDate,
+                                endItem: item.endDate
                             });
                         });
                         
@@ -121,18 +135,36 @@ module nts.uk.at.view.kmk015.a {
                 return dfd.promise();
             }
 
-            //open dialog 00B 
+            //open dialog B
             OpenDialogB() {
                 let self = this;
-                let workTypeCodes = self.selectedCode();
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
-                }, true);
-
                 nts.uk.ui.windows.sub.modal('/view/kmk/015/b/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
+                        self.isCreated(childData.isCreated);
+                        self.timeHistory(childData.timeHistory);
+                        self.startTime(childData.start);
+                        self.endTime(childData.end);
+                    }
+                })
+            }
+            
+            //open dialog C
+            OpenDialogC() {
+                let self = this;
+                let workTypeCodes = self.selectedCode();
+                nts.uk.ui.windows.setShared('parentCodes', {
+                    workTypeCodes: workTypeCodes,
+                    startTime: self.startforC(),
+                    endTime: self.endforC()
+                }, true);
+
+                nts.uk.ui.windows.sub.modal('/view/kmk/015/c/index.xhtml').onClosed(function(): any {
+                    //view all code of selected item 
+                    var childData = nts.uk.ui.windows.getShared('childData');
+                    if (childData) {
+                        self.isCreated(childData.isCreated);
                         self.timeHistory(childData.timeHistory);
                         self.startTime(childData.start);
                         self.endTime(childData.end);
@@ -147,15 +179,21 @@ module nts.uk.at.view.kmk015.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                let historyId = "";
+                
+                //check isNewMode
+                if (!self.isCreated()){
+                    historyId = self.historyId();
+                }
+                
                 //Add command
-                let history: SaveHistory = new SaveHistory("", new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
-                let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(true, self.selectedCode(), self.numberDay(), history);
-
+                let history: SaveHistory = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
+                let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(self.isCreated(), self.selectedCode(), self.numberDay(), history);
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
                 service.insertHistory(command).done(function(){
                     //clear list
-                    self.listWorkType.removeAll;
+                    self.listHistory.removeAll();
                     //get ListHistory
                     service.getHistoryByWorkType(self.selectedCode()).done(data => {
                         data.forEach(function(item) {
@@ -163,11 +201,13 @@ module nts.uk.at.view.kmk015.a {
                             self.listHistory.push({
                                 historyId: item.historyId,
                                 time: item.startDate + ' ~ ' + item.endDate,
-                                maxDay: item.maxDay
+                                maxDay: item.maxDay,
+                                startItem: item.startDate,
+                                endItem: item.endDate
                             });
                             
                             //focus new history
-                            if (self.startTime().isSame(moment(item.startDate))){
+                            if (moment(moment(self.startTime()).format("YYYY/MM/DD")).isSame(moment(item.startDate))){
                                 self.selectedCodeHistory(item.historyId);
                             }
                         });

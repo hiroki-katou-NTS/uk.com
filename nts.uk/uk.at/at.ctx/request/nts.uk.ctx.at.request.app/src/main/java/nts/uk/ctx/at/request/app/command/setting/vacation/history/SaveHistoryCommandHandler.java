@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.app.command.setting.vacation.history;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -40,36 +42,36 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		VacationHistoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 
-		if (command.getIsCreateMode()) {
+		// check conditional
+		if (command.getVacationHistory().getStartDate()
+				.after(command.getVacationHistory().getEndDate())) {
+			throw new BusinessException("Msg_917");
+		}
 
-			// check conditional
+		DatePeriod period = new DatePeriod(command.getVacationHistory().getStartDate(),
+				command.getVacationHistory().getEndDate());
+		Integer count = this.vacationHistoryRepository.countByDatePeriod(companyId, command.getWorkTypeCode(),
+				period, command.getVacationHistory().getHistoryId());
+
+		if (count.intValue() > 0) {
+			throw new BusinessException("Msg_106");
+		}
+
+		if (command.getVacationHistory().getStartDate().year() != command.getVacationHistory().getEndDate().year()) {
+			throw new BusinessException("Msg_967");
+		}
+		
+		//check isNewMode
+		if (command.getIsCreated()) {
 			if (this.vacationHistoryRepository.findByWorkTypeCode(companyId, command.getWorkTypeCode()).size() >= 20) {
 				throw new BusinessException("Msg_976");
 			}
-
-			if (command.getVacationHistory().getStartDate()
-					.after(command.getVacationHistory().getEndDate())) {
-				throw new BusinessException("Msg_917");
-			}
-
-			DatePeriod period = new DatePeriod(command.getVacationHistory().getStartDate(),
-					command.getVacationHistory().getEndDate());
-			Integer count = this.vacationHistoryRepository.countByDatePeriod(companyId, command.getWorkTypeCode(),
-					period, command.getVacationHistory().getHistoryId());
-
-			if (count.intValue() > 0) {
-				throw new BusinessException("Msg_106");
-			}
-
-			if (command.getVacationHistory().getStartDate().year() != command.getVacationHistory().getEndDate().year()) {
-				throw new BusinessException("Msg_967");
-			}
-
+			
 			// Add
 			this.addVacationHistory(companyId, command);
 		} else {
 			// Update
-			// this.updateJobTitle(companyId, command);
+			this.updateVacationHistory(companyId, command);
 		}
 	}
 
@@ -88,19 +90,16 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		this.vacationHistoryRepository.add(history);
 	}
 
-	// private void updateJobTitle(String companyId, SaveJobTitleCommand
-	// command) {
-	//
-	// // Get old JobTitleCode
-	// Optional<JobTitleCode> opJobTitleCode =
-	// this.jobTitleInfoRepository.findJobTitleCode(companyId,
-	// command.getJobTitleInfo().getJobTitleId());
-	// if (!opJobTitleCode.isPresent()) {
-	// return;
-	// }
-	//
-	// // JobTitleCode is not changable
-	// command.getJobTitleInfo().setJobTitleCode(opJobTitleCode.get().v());
-	// this.jobTitleInfoRepository.update(command.toDomain(companyId));
-	// }
+	private void updateVacationHistory(String companyId, VacationHistoryCommand command) {
+	
+		// Get old historyId
+		List<PlanVacationHistory> hist = this.vacationHistoryRepository.findHistory(companyId, command.getVacationHistory().getHistoryId());
+		if (hist.isEmpty()) {
+			return;
+		}
+		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(), new OptionalMaxDay(command.getMaxDay()),
+				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
+		
+		this.vacationHistoryRepository.update(history);
+	 }
 }

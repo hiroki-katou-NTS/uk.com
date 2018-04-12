@@ -1,14 +1,18 @@
-module nts.uk.at.view.kmk015.b {
+module nts.uk.at.view.kmk015.c {
     export module viewmodel {
         export class ScreenModel {
             
             periodStart: KnockoutObservable<moment.Moment>;
             periodEnd: KnockoutObservable<moment.Moment>;
             
-            constructor() {
+            callerParameter: CallerParameter;
+            
+            constructor(parentData: CallerParameter) {
                 let self = this;
                 self.periodStart = ko.observable(moment());
                 self.periodEnd = ko.observable(moment());
+                
+                self.callerParameter = parentData;
             }
             
             /**
@@ -17,7 +21,11 @@ module nts.uk.at.view.kmk015.b {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
+                
+                //init data
+                self.periodStart(self.callerParameter.startTime);
+                self.periodEnd(self.callerParameter.endTime);
+                
                 dfd.resolve();
 
                 return dfd.promise();
@@ -30,7 +38,7 @@ module nts.uk.at.view.kmk015.b {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                if (self.periodStart().isAfter(self.periodEnd())) {
+                if (moment(self.periodStart()).isAfter(moment(self.periodEnd()))) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_917" });
                     return;
                 }
@@ -39,9 +47,9 @@ module nts.uk.at.view.kmk015.b {
                 nts.uk.ui.block.invisible();
 
                 // Set shared data.
-                let time = self.periodStart().format("YYYY/MM/DD") + ' ~ ' + self.periodEnd().format("YYYY/MM/DD");
+                let time = moment(self.periodStart()).format("YYYY/MM/DD") + ' ~ ' + moment(self.periodEnd()).format("YYYY/MM/DD");
                 let returnedData = {
-                    isCreated: true,
+                    isCreated: false,
                     timeHistory: time,
                     start: self.periodStart(),
                     end: self.periodEnd()
@@ -58,6 +66,12 @@ module nts.uk.at.view.kmk015.b {
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
+        }
+        
+        interface CallerParameter {
+            workTypeCodes: string;
+            startTime: moment.Moment;
+            endTime: moment.Moment;
         }
     }
 }
