@@ -75,12 +75,20 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			 									Optional<WorkTimeCode> siftCode,
 			 									Optional<PersonalLaborCondition> personalCondition,
 			 									VacationAddTimeSet vacationAddTimeSet) {
-		return VacationClass.vacationTimeOfcalcDaily(workType, 
+		if(workType.getDailyWork().getOneDay().isSubstituteHoliday()
+			|| workType.getDailyWork().getMorning().isSubstituteHoliday()
+			|| workType.getDailyWork().getAfternoon().isSubstituteHoliday())
+		{
+			return VacationClass.vacationTimeOfcalcDaily(workType, 
 													 VacationCategory.SubstituteHoliday,
 													 predetermineTimeSet,
 													 siftCode,
 													 personalCondition,
 													 vacationAddTimeSet);
+		}
+		else {
+			return new AttendanceTime(0);
+		}
 	}
 	
 	/**
