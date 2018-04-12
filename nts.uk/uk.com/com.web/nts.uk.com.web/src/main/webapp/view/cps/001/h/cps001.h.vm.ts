@@ -212,24 +212,22 @@ module cps001.h.vm {
                     if (currentRow != undefined) {
                         let itemListLength = self.items().length;
                         service.remove(currentRow.id).done((_data: any) => {
-
-                            if (itemListLength === 1) {
-                                self.load().done(() => { });
-                            } else if (itemListLength - 1 === delItemIndex) {
-                                self.load().done(() => {
-                                    self.currentItem(self.items()[delItemIndex - 1].id);
-
-                                });
-                            } else if (itemListLength - 1 > delItemIndex) {
-                                self.load().done(() => {
-                                    self.currentItem(self.items()[delItemIndex].id);
-                                });
-                            }
-                            clearError();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                if (itemListLength === 1) {
+                                    self.load().done(() => { });
+                                } else if (itemListLength - 1 === delItemIndex) {
+                                    self.load().done(() => {
+                                        self.currentItem(self.items()[delItemIndex - 1].id);
+
+                                    });
+                                } else if (itemListLength - 1 > delItemIndex) {
+                                    self.load().done(() => {
+                                        self.currentItem(self.items()[delItemIndex].id);
+                                    });
+                                }
                                 $("#grantDate").focus();
                             });
-
+                            clearError();
                             unblock();
                         }).fail((error: any) => {
                             unblock();
@@ -266,24 +264,23 @@ module cps001.h.vm {
                     service.create(employeeId, grantDate, deadline, item.expirationStatus(),
                         item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done((result: Array<IResvLeaGrantRemNum>) => {
                             service.getAll(self.sid(), self.ckbAll()).done((data: Array<IResvLeaGrantRemNum>) => {
-                                if (data && data.length > 0) {
-                                    self.items(data);
-                                    let newItem = _.find(self.items(), x => ids.indexOf(x.id) == -1);
-                                    if (newItem) {
-                                        let saveItemIndex = _.findIndex(self.items(), (item) => { return item.id == newItem.id; });
-                                        self.currentItem(self.items()[saveItemIndex].id);
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    if (data && data.length > 0) {
+                                        self.items(data);
+                                        let newItem = _.find(self.items(), x => ids.indexOf(x.id) == -1);
+                                        if (newItem) {
+                                            let saveItemIndex = _.findIndex(self.items(), (item) => { return item.id == newItem.id; });
+                                            self.currentItem(self.items()[saveItemIndex].id);
+                                        } else {
+                                            self.currentItem(self.items()[0].id);
+                                        }
+
                                     } else {
-                                        self.currentItem(self.items()[0].id);
+                                        self.create();
                                     }
-
-                                } else {
-                                    self.create();
-                                }
-
-                                alert({ messageId: "Msg_15" }).then(function() {
-                                    clearError();
                                     $("#grantDate").focus();
                                 });
+                                clearError();
                                 unblock();
 
                             }).fail((_data) => {
@@ -299,18 +296,17 @@ module cps001.h.vm {
                     service.update(item.id(), employeeId, grantDate, deadline, item.expirationStatus(),
                         item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
                             self.load().done(() => {
-                                if (self.items().length > 0 && self.items().length == ids.length) {
-                                    self.currentItem(item.id());
-                                } else if (self.items().length > 0 && self.items().length != ids.length) {
-                                    self.currentItem(self.items()[0].id);
-                                } else if (self.items().length == 0) {
-                                    self.create();
-                                }
-
-                                alert({ messageId: "Msg_15" }).then(function() {
-                                    clearError();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    if (self.items().length > 0 && self.items().length == ids.length) {
+                                        self.currentItem(item.id());
+                                    } else if (self.items().length > 0 && self.items().length != ids.length) {
+                                        self.currentItem(self.items()[0].id);
+                                    } else if (self.items().length == 0) {
+                                        self.create();
+                                    }
                                     $("#grantDate").focus();
                                 });
+                                clearError();
                                 unblock();
                             });
 
