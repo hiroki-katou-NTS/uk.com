@@ -27,6 +27,7 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 	public void add(AnnualLeaveEmpBasicInfo basicInfo) {
 		KrcmtAnnLeaBasicInfo entity = new KrcmtAnnLeaBasicInfo();
 		entity.sid = basicInfo.getEmployeeId();
+		entity.cid = basicInfo.getCompanyId();
 		entity.workDaysPerYear = basicInfo.getWorkingDaysPerYear().isPresent()
 				? basicInfo.getWorkingDaysPerYear().get().v() : null;
 		entity.workDaysBeforeIntro = basicInfo.getWorkingDayBeforeIntroduction().isPresent()

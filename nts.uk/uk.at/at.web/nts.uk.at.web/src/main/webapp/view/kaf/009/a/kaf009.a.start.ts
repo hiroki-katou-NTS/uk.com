@@ -12,6 +12,8 @@ module nts.uk.at.view.kaf009.a {
 //        __viewContext.bind(screenModel);   
 //        });
         var screenModel = new nts.uk.at.view.kaf009.a.viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });
     });
 }
