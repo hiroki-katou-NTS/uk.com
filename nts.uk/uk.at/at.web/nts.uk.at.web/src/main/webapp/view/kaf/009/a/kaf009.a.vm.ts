@@ -257,9 +257,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
-            //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
-            //直行直帰するチェック
-            $(".ntsControl , .nts-input").trigger("validate");
             if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(), "#inpReasonTextarea") || nts.uk.ui.errors.hasError()) {
                 return;
             }
