@@ -46,10 +46,8 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateData(param) {
                 if (param) {
-                    this.startTime(param.startTime || null);
-                    this.endTime(param.endTime || null);
-                    this.startType(param.startType != undefined ? param.startType : 1);
-                    this.endType(param.endType != undefined ? param.endType : 1);
+                    this.startTime(param.start || null);
+                    this.endTime(param.end || null);
                 }
             }
         }
@@ -219,14 +217,6 @@ module nts.uk.at.view.kaf011.shr {
                         block.clear();
                     });
 
-                });
-
-                self.wkTime1().startTime.subscribe((newValue) => {
-                    self.updateWorkingText();
-                });
-                self.wkTime1().endTime.subscribe((newValue) => {
-
-                    self.updateWorkingText();
                 });
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
