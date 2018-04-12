@@ -30,6 +30,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
         currentItemId: KnockoutObservable<string> = ko.observable('');
         errorList: KnockoutObservableArray<any> = ko.observableArray([]);
+        isFilter: KnockoutObservable<boolean> = ko.observable(false);
+        dataSourceFilter: Array<any> = [];
 
         constructor() {
 
@@ -77,14 +79,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
 
-                if (value) {
-
-                    self.getItemList(self.initSettingId(), value);
-
-
-                } else {
-                    return;
-                }
+                if (nts.uk.text.isNullOrEmpty(value)) { return; }
+                self.getItemList(self.initSettingId(), value);
 
             });
 
@@ -100,8 +96,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // get item list
         getItemList(settingId: string, ctgId: string) {
             let self = this,
-                i: number = 0;
-            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+                i: number = 0,
+                currentCtg: any,
+                dataSource: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+            if (self.isFilter()) {
+                currentCtg = self.findCtg(dataSource, ctgId);
+            } else {
+                currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+            }
+            if(currentCtg === undefined){ return;}
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
@@ -429,6 +432,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentItemId("");
                     self.currentItemId(updateObj.perInfoCtgId);
                     self.ctgIdUpdate(true);
+                    if (self.isFilter()) {
+                        $("#item_grid").igGrid("option", "dataSource", self.dataSourceFilter);
+                    }
 
                 });
                 self.currentItemId(updateObj.perInfoCtgId);
@@ -536,11 +542,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         checkBrowse() {
-            let Browser = navigator.userAgent; 
-            
+            let Browser = navigator.userAgent;
+
             if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
-                console.log("HHEHHEHEHHEHEHE");
-                $("#sub-right>table>tbody").css("height","495px");
+                $("#sub-right>table>tbody").css("height", "495px");
             }
         }
 
