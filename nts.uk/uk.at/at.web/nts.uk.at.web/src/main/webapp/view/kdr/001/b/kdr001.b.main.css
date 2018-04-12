@@ -1,0 +1,92 @@
+.employeeInfoSearch {
+	
+	margin-top: 10px;
+}
+
+
+.employeeAction {
+	border: 1px solid #ccc !important;
+	border-radius: 5px;
+	float: right;
+	width: 772px;
+	padding: 5px;
+	height: 443px;
+	padding-top: 35px;
+}
+
+
+.periodCovered {
+	display: inline-flex;
+	margin-bottom: 10px;
+	padding-left: 40px;
+}
+
+.lableInfo {
+	margin-top: 8px;
+	margin-left: 10px;
+	width: 100%;
+}
+
+.buttonWorkSetting {
+	margin-left: -5px;
+	height: 60px;
+}
+
+.infoButtonSetting {
+	width: 350px;
+	display: inline-flex;
+}
+
+.label{
+	margin-left: 20px;
+	margin-top: 5px;
+}
+
+.selectionEmployee {
+	border: 1px solid #ccc !important;
+	border-radius: 5px;
+	padding: 20px;
+	width: 415px;
+	float:left;
+}
+
+.labelRangeDate {
+	margin-left: 15px;
+	margin-right: 5px;
+	width: 120px;
+}
+
+.labelWork {
+	margin-top: 30px;
+	margin-left: 15px;
+	width: 120px;
+}
+.employeeWorkSetting{
+	padding-left: 40px;
+}
+
+#contents-area { 
+	overflow-x: hidden;
+	
+}
+#A3_2 {
+	margin-bottom: 40px;
+}
+
+#A4_1 {
+	margin-top: 40px;
+	
+}
+#A6_1 {
+	margin-bottom: 40px;
+	
+}
+#A2_2{
+	margin: 0px 30px 0px 90px;
+    padding-bottom: 10px;
+    width: 600px;
+}
+table, th, td {
+    border: 1px solid black;
+   
+}
