@@ -232,6 +232,13 @@ module nts.custombinding {
                         background-color: #fff;
                         border-left: 1px solid #aaa;
                     }
+
+                    .layout-control .item-control td div {
+                        background-color: rgb(217, 217, 217);
+                        height: 31px;
+                        width: 100%;
+                        display: block;
+                    }
                 
                     .layout-control .item-control td,
                     .layout-control .item-control th,
