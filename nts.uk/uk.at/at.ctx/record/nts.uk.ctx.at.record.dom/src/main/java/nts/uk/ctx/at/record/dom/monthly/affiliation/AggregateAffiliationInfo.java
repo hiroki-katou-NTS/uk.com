@@ -2,63 +2,37 @@ package nts.uk.ctx.at.record.dom.monthly.affiliation;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.primitive.WorkplaceCode;
 
-/**
- * 集計所属情報
- * @author shuichu_ishida
- */
 @Getter
+/** 集計所属情報 */
 public class AggregateAffiliationInfo {
 
-	/** 雇用コード */
-	private EmploymentCode employmentCd;
-	/** 職場ID */
-	private WorkplaceId workplaceId; 
-	/** 職位ID */
-	private JobTitleId jobTitleId; 
-	/** 分類コード */
-	private ClassificationCode classCd; 
-	/** 勤務種別コード */
-	private BusinessTypeCode businessTypeCd;
+	/** 分類コード: 分類コード */
+	private ClassificationCode classificationCode;
 	
-	/**
-	 * コンストラクタ
-	 */
-	public AggregateAffiliationInfo(){
-		
-		this.employmentCd = new EmploymentCode("");
-		this.workplaceId = new WorkplaceId("");
-		this.jobTitleId = new JobTitleId("");
-		this.classCd = new ClassificationCode("");
-		this.businessTypeCd = new BusinessTypeCode("");
-	}
+	/** 勤務種別コード: 勤務種別コード */
+	private WorkTypeCode workTypeCode;
+	
+	/** 職位ID: 職位ID */
+	private JobTitleId jobTitle;
+	
+	/** 職場ID: 職場ID (work place ID) */
+	private WorkplaceCode workPlaceCode;
+	
+	/** 雇用コード: 雇用コード */
+	private EmploymentCode employmentCode;
 
-	/**
-	 * ファクトリー
-	 * @param employmentCd 雇用コード
-	 * @param workplaceId 職場ID
-	 * @param jobTitleId 職位ID
-	 * @param classCd 分類コード
-	 * @param businessTypeCd 勤務種別コード
-	 * @return 月別実績の所属情報
-	 */
-	public static AggregateAffiliationInfo of(
-			EmploymentCode employmentCd,
-			WorkplaceId workplaceId,
-			JobTitleId jobTitleId,
-			ClassificationCode classCd,
-			BusinessTypeCode businessTypeCd){
-		
-		AggregateAffiliationInfo domain = new AggregateAffiliationInfo();
-		domain.employmentCd = employmentCd;
-		domain.workplaceId = workplaceId;
-		domain.jobTitleId = jobTitleId;
-		domain.classCd = classCd;
-		domain.businessTypeCd = businessTypeCd;
-		return domain;
+	public AggregateAffiliationInfo(ClassificationCode classificationCode, WorkTypeCode workTypeCode,
+			JobTitleId jobTitle, WorkplaceCode workPlaceCode, EmploymentCode employmentCode) {
+		super();
+		this.classificationCode = classificationCode;
+		this.workTypeCode = workTypeCode;
+		this.jobTitle = jobTitle;
+		this.workPlaceCode = workPlaceCode;
+		this.employmentCode = employmentCode;
 	}
 }
