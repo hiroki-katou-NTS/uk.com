@@ -734,7 +734,7 @@ module cps002.a.vm {
         openInitModal() {
 
 
-            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 700, width: 1400 }).onClosed(() => {
+            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1200 }).onClosed(() => {
 
             });
         }
