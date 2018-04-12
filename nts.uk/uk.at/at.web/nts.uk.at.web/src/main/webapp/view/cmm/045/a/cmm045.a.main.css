@@ -61,3 +61,6 @@
 .ui-iggrid-header.ui-widget-header{
 	text-align: center;
 }
+.dateRange{
+	float: left;
+}
