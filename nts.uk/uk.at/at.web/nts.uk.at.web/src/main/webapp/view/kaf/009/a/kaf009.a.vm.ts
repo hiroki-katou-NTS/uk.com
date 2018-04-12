@@ -150,7 +150,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     //申請制限設定.申請理由が必須
-                    self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
+                    self.requiredReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (
+                            (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)||
+                            (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
+                        )
+                    );
                     if (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
                         //登録時にメールを送信する Visible
                         self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
