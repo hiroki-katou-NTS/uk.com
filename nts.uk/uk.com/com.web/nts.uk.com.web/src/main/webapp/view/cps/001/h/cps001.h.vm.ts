@@ -7,6 +7,7 @@ module cps001.h.vm {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -21,24 +22,32 @@ module cps001.h.vm {
         resvLeaGrantRemNum: KnockoutObservable<ResvLeaGrantRemNum> = ko.observable(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
         enableRemoveBtn: KnockoutObservable<boolean> = ko.observable(true);
         isCreate: KnockoutObservable<boolean> = ko.observable(false);
-        ckbAll: KnockoutObservable<boolean> = ko.observable(true);
+        ckbAll: KnockoutObservable<boolean> = ko.observable(false);
         itemDefs: any = [];
+
+        nameGrantDate: KnockoutObservable<string> = ko.observable('');
+        nameDeadline: KnockoutObservable<string> = ko.observable('');
+        nameOverLimitDays: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
-            self.ckbAll.subscribe((data) => {             
+            self.ckbAll.subscribe((data) => {
+                clearError();
                 service.getAll(__viewContext.user.employeeId, data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
                         self.currentItem(self.items()[0].id);
                     } else {
+                        self.items([]);
                         self.create();
                     }
+                    $("#grantDate").focus();
                 });
             });
             self.currentItem.subscribe((id: string) => {
-                  
+
                 service.getByGrantDate(id).done((curItem) => {
+                    self.clearError();
                     self.resvLeaGrantRemNum(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>curItem));
                     self.setDef();
                     $("#grantDate").focus();
@@ -51,65 +60,85 @@ module cps001.h.vm {
             self.columns = ko.observableArray([
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },                
-                { headerText: text("CPS001_121"), key: 'grantDays', width: 70 , formatter: self.formatterDate},
-                { headerText: text("CPS001_130"), key: 'useDays', width: 70 , formatter: self.formatterDate},
-                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70,formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70,formatter: self.formatterDate },
-                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70, formatter: self.formatterExState}
+                { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
+                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
             ]);
         }
         load(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
-            sId = __viewContext.user.employeeId;
+                sId = __viewContext.user.employeeId;
             service.getAll(sId, self.ckbAll()).done((data) => {
                 if (data && data.length > 0) {
                     self.items(data);
                 } else {
+                    self.items([]);
                     self.create();
                 }
                 dfd.resolve();
             });
             return dfd.promise();
         }
-        start() {
-            let self = this;
+
+        start(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             self.setDef();
             self.load().done(() => {
                 if (self.items().length > 0) {
                     self.currentItem(self.items()[0].id);
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
+
         setDef() {
             let self = this;
-            if(self.itemDefs.length > 0){
+            if (self.itemDefs.length > 0) {
                 self.setItemValue(self.itemDefs);
-            }else{
+            } else {
                 service.getItemDef().done((data) => {
-                    self.itemDefs = data ;
+                    self.itemDefs = data;
                     self.setItemValue(self.itemDefs);
                 });
             }
-            
         }
-        setItemValue(data: any){
-             $("td[data-itemCode]").each(function() {
-                    let itemCodes = $(this).attr('data-itemCode');
-                    if (itemCodes) {
-                        let itemCodeArray = itemCodes.split(" ");
-                        _.forEach(itemCodeArray, (itemCode) => {
-                            let itemDef = _.find(data, (item) => {
-                                return item.itemCode == itemCode;
-                            });
-                            if (itemDef) {
-                                if (itemDef.display) {
-                                    $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+
+        setItemValue(data: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            $("td[data-itemCode]").each(function() {
+                let itemCodes = $(this).attr('data-itemCode');
+                if (itemCodes) {
+                    let itemCodeArray = itemCodes.split(" ");
+                    _.forEach(itemCodeArray, (itemCode) => {
+                        let itemDef = _.find(data, (item) => {
+                            return item.itemCode == itemCode;
+                        });
+                        if (itemDef) {
+                            if (itemDef.display) {
+                                $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+                                let timeType = itemCodeArray[itemCodeArray.length - 1];
+                                switch (timeType) {
+                                    case "grantDate":
+                                        self.nameGrantDate(itemDef.itemName);
+                                        break;
+                                    case "deadline":
+                                        self.nameDeadline(itemDef.itemName);
+                                        break;
+                                    case "overLimitDays":
+                                        self.nameOverLimitDays(itemDef.itemName);
+                                        break;
                                 }
                             }
-                        });
-                    }
-                });
+                        }
+                    });
+                }
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         close() {
@@ -138,15 +167,24 @@ module cps001.h.vm {
                         } else {
                             self.currentItem(selectedId);
                         }
+                        self.ckbAll(false);
+                        alert({ messageId: "Msg_16" });
+                        unblock();
                     });
-                    alert({ messageId: "Msg_16" });
-                    unblock();
+
                 }).fail((mes) => {
                     unblock();
                 });
             });
         }
-
+        clearError() {
+            $("#grantDate").ntsError("clear");
+            $("#deadline").ntsError("clear");
+            $("#grantDays").ntsError("clear");
+            $("#useDays").ntsError("clear");
+            $("#overLimitDays").ntsError("clear");
+            $("#remainingDays").ntsError("clear");
+        }
         register() {
             let self = this;
 
@@ -162,7 +200,7 @@ module cps001.h.vm {
                     grantDate = moment.utc(item.grantDate(), "YYYY/MM/DD"),
                     deadline = moment.utc(item.deadline(), "YYYY/MM/DD");
                 if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
-                    error({ messageId: "Msg_1023"});
+                    error({ messageId: "Msg_1023" });
                     return;
                 }
                 if (self.isCreate()) {
@@ -171,13 +209,14 @@ module cps001.h.vm {
                         item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done(() => {
                             self.load().done(() => {
                                 if (self.items().length > 0) {
-                                    let newId = _.difference(_.map(self.items(), (i)=>{return i.id;}), _.map(currItem, (i) => {return i.id;}));
+                                    let newId = _.difference(_.map(self.items(), (i) => { return i.id; }), _.map(currItem, (i) => { return i.id; }));
                                     self.currentItem(newId);
                                 }
+                                self.ckbAll(false);
                                 alert({ messageId: "Msg_15" });
                                 unblock();
                             });
-                           
+
                         }).fail((mes) => {
                             unblock();
                         });
@@ -188,10 +227,11 @@ module cps001.h.vm {
                                 if (self.items().length > 0) {
                                     self.currentItem(item.id());
                                 }
+                                self.ckbAll(false);
                                 alert({ messageId: "Msg_15" });
                                 unblock();
                             });
-                           
+
                         }).fail((mes) => {
                             unblock();
                         });
@@ -206,18 +246,18 @@ module cps001.h.vm {
             self.enableRemoveBtn(false);
             self.isCreate(true);
         }
-        
-        formatterDate(value){
+
+        formatterDate(value) {
             return value + "日";
         }
-        
-        formatterExState(value: number){
-            if(value == 1){ 
-                    return "使用可能";
-            }else{
+
+        formatterExState(value: number) {
+            if (value == 1) {
+                return "使用可能";
+            } else {
                 return "期限切れ";
             }
-            
+
         }
 
     }
@@ -240,11 +280,13 @@ module cps001.h.vm {
             self.useDays(data && data.useDays || "");
             self.overLimitDays(data && data.overLimitDays || "");
             self.remainingDays(data && data.remainingDays || "");
-            
-            self.grantDate.subscribe((data)=>{
-                    service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) =>{
+
+            self.grantDate.subscribe((data) => {
+                if (!nts.uk.ui.errors.hasError() && data) {
+                    service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });
+                }
             });
         }
     }

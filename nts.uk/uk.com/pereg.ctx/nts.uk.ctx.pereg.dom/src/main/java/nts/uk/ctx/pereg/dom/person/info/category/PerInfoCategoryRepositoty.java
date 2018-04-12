@@ -47,6 +47,10 @@ public interface PerInfoCategoryRepositoty {
 
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
 	List<PersonInfoCategory> getAllPerInfoCategoryNoMulAndDupHist(String companyId, String contractCd);
+	
+	List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId);
+	
+	void updateAbolition(List<PersonInfoCategory> ctg, String companyId);
 	// vinhpx: end
 	
 	//laitv

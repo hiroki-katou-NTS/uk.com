@@ -188,7 +188,6 @@ module nts.uk.at.view.kaf011.shr {
                 let self = this;
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    if (!vm.screenModeNew()) { return; }
                     let changeWkTypeParam = {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
@@ -197,22 +196,24 @@ module nts.uk.at.view.kaf011.shr {
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         if (data) {
-                            if (data.timezoneUseDtos) {
-                                let timeZone1 = data.timezoneUseDtos[0];
-                                let timeZone2 = data.timezoneUseDtos[1];
+                            if (vm.screenModeNew()) {
+                                if (data.timezoneUseDtos) {
+                                    let timeZone1 = data.timezoneUseDtos[0];
+                                    let timeZone2 = data.timezoneUseDtos[1];
 
-                                timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
+                                    timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
 
-                                timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
+                                    timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
 
-                            } else {
-                                self.wkTime1().clearData();
-                                self.wkTime2().clearData();
+                                } else {
+                                    self.wkTime1().clearData();
+                                    self.wkTime2().clearData();
+                                }
                             }
-
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
+                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
@@ -227,9 +228,9 @@ module nts.uk.at.view.kaf011.shr {
 
                     self.updateWorkingText();
                 });
-                self.wkTypes.subscribe((item) => {
-                    if (item.length) {
-                        self.wkTypeCD(item[0].workTypeCode);
+                self.wkTypes.subscribe((items) => {
+                    if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
+                        self.wkTypeCD(items[0].workTypeCode);
                     }
                 });
 
@@ -300,7 +301,7 @@ module nts.uk.at.view.kaf011.shr {
                 }
                 //半休時のみ利用する
                 if (wkTimeSelect == 2) {
-                     //午前と午後
+                    //午前と午後
                     if (workAtr == 1) {
                         if (afternoonType != 0 && morningType != 0) {
                             return false;

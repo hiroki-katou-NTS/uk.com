@@ -17,6 +17,8 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 
 @Stateless
 public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeReflectService{
@@ -32,6 +34,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private AttendanceTimeRepository attendanceTime;
 	@Inject
 	private WorkInformationRepository workRepository;
+	@Inject
+	private ScheWorkUpdateService scheWork;
 	@Override
 	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
 		try {
@@ -48,16 +52,18 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode()); 
 			workUpdate.updateWorkTimeType(reflectInfo, false);
-			//TODO can xac nhan lai xem co can phai lam khong
-			/*//予定勤種・就時反映後の予定勤種・就時を取得する
-			//勤種・就時反映後の予定勤種・就時を取得する
-			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
-			if(!optDailyData.isPresent()) {
-				return new ApplicationReflectOutput(EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
-						holidayWorkPara.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
-			}
-			//予定開始終了時刻の反映
-			*/
+					
+			//予定開始時刻の反映
+			//予定終了時刻の反映
+			TimeReflectPara timeData = new TimeReflectPara(holidayWorkPara.getEmployeeId(), 
+					holidayWorkPara.getBaseDate(), 
+					holidayWorkPara.getHolidayWorkPara().getStartTime(), 
+					holidayWorkPara.getHolidayWorkPara().getEndTime(), 
+					1, 
+					true, 
+					true);
+			scheWork.updateScheStartEndTime(timeData);
+			
 			//事前休出時間の反映
 			holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getMapWorkTimeFrame());
 			//事前所定外深夜時間の反映

@@ -15,13 +15,14 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 
 	private String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
 	
-	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID,"AND l.subHDAtr = 0");
+	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID,"AND l.subHDAtr =:subHDAtr");
 	
 	@Override
-	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid) {
+	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYSIDWITHSUBHDATR,KrcmtLeaveManaData.class)
 				.setParameter("cid", cid)
 				.setParameter("employeeId", sid)
+				.setParameter("subHDAtr", state)
 				.getList();
 		return listListMana.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}

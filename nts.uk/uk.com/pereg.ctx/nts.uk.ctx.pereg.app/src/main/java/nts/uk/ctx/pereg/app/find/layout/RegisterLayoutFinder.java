@@ -30,6 +30,8 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -74,6 +76,9 @@ public class RegisterLayoutFinder {
 	
 	@Inject
 	private PeregProcessor processor;
+	
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 	
 	private final String END_DATE_NAME = "終了日";
 
@@ -211,6 +216,16 @@ public class RegisterLayoutFinder {
 		item.setRequired(itemDef.getIsRequired() == 1);
 		item.setType(itemDef.getItemTypeState().getItemType());
 		item.setItemParentCode(itemDef.getItemParentCode());
+		
+		// Get contactCD
+		String contactCD = AppContexts.user().contractCode();
+		// Get Command
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemDef.getPerInfoCtgId(),contactCD);
+		
+		if (!perInfoCategory.isPresent()){
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
+				
 		if (itemDef.getItemTypeState().getItemType() != 1) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
@@ -224,9 +239,10 @@ public class RegisterLayoutFinder {
 				List<ComboBoxObject> comboValues;
 
 				selectionItemDto = (SelectionItemDto) item.getItem();
-
+				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
+				
 				comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						command.getHireDate(), item.isRequired());
+						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType(), isDataType6);
 
 				item.setLstComboBoxValue(comboValues);
 				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();
@@ -243,6 +259,7 @@ public class RegisterLayoutFinder {
 			item.setValue(setItem.getSaveData().getValue());
 		}
 		item.setCategoryCode(itemCls.getPersonInfoCategoryCD());
+		item.setResourceId(itemDef.getResourceId());
 		return item;
 
 	}

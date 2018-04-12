@@ -78,13 +78,14 @@ module cmm045.shr {
             checkAtr: boolean;
             version: number;
             checkTimecolor: number;
+            appIdSub: string;
+            appStatusNo: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string, appContent: string,
-                inputDate: string, appStatus: string, displayAppStatus: string,
-                checkAtr: boolean, version: number, checkTimecolor: number){
+                inputDate: string, appStatus: string, displayAppStatus: string, checkAtr: boolean,
+                version: number, checkTimecolor: number, appIdSub: string, appStatusNo: number){
                 this.appId = appId;
                 this.appType = appType;
-//                this.check = appType == 0 ? true : false;
                 this.check = false;
                 this.details = details;
                 this.applicant = applicant;
@@ -98,6 +99,8 @@ module cmm045.shr {
                 this.checkAtr = checkAtr;
                 this.version = version;
                 this.checkTimecolor = checkTimecolor;
+                this.appIdSub = appIdSub;
+                this.appStatusNo = appStatusNo;
             }
         }  
         
@@ -503,6 +506,25 @@ module cmm045.shr {
                 this.workTypeCD = workTypeCD;
                 this.startTime = startTime;
                 this.endTime = endTime;
+            }
+        }
+        export class AppCompltLeaveSync {
+            //0 - abs
+            //1 - rec
+            typeApp: number;
+            sync: boolean;
+            appMain: AppCompltLeaveFull;
+            appSub: AppCompltLeaveFull;
+            appDateSub: string;
+            appInputSub: string;
+            constructor(typeApp: number, sync: boolean, appMain: AppCompltLeaveFull,
+                appSub: AppCompltLeaveFull, appDateSub: string, appInputSub: string){
+                this.typeApp = typeApp;
+                this.sync = sync;
+                this.appMain = appMain;
+                this.appSub = appSub;
+                this.appDateSub = appDateSub;
+                this.appInputSub = appInputSub;
             }
         }
         export class HdAppSet{

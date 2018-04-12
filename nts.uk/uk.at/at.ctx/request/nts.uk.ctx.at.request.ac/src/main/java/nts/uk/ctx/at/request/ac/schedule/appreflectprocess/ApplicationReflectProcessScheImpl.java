@@ -36,14 +36,14 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 	}
 
 	@Override
-	public void forleaveReflect(ReflectScheDto reflectSche) {
+	public boolean forleaveReflect(ReflectScheDto reflectSche) {
 		CommonReflectSchePubParam leavePra = new CommonReflectSchePubParam(reflectSche.getEmployeeId(),
 				reflectSche.getDatePara(),
-				reflectSche.getForLeave().getWorkTypeCode().v(),
-				reflectSche.getForLeave().getWorkTimeCode().v(),
+				reflectSche.getForLeave().getWorkTypeCode().v(), //勤務種類=INPUT．勤務種類コード chi update workType
+				null,
 				null,
 				null);
-		appReflectSchePub.appForLeaveSche(leavePra);
+		return appReflectSchePub.appForLeaveSche(leavePra);
 	}
 
 	@Override

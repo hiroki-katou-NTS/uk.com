@@ -13,7 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
@@ -21,6 +24,8 @@ public class SettingItemDtoMapping {
 
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFac;
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
 		setTextForSelectionItem(result, employeeId, baseDate);
@@ -29,23 +34,35 @@ public class SettingItemDtoMapping {
 
 	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
 
-		List<SettingItemDto> SelectionItemLst = result.stream()
+		List<SettingItemDto> selectionItemLst = result.stream()
 				.filter(x -> x.getDataType().equals(DataTypeValue.SELECTION)).collect(Collectors.toList());
-
-		if (!CollectionUtil.isEmpty(SelectionItemLst)) {
-			SelectionItemLst.forEach(item -> {
-
-				List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-						item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true);
-
-				comboxList.forEach(cbItem -> {
-					if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
-
-						item.getSaveData().setValue(cbItem.getOptionText());
-					}
-				});
-			});
+		if (CollectionUtil.isEmpty(selectionItemLst)) {
+			return;
 		}
+
+		// Get company id
+		String companyId = AppContexts.user().companyId();
+
+		selectionItemLst.forEach(item -> {
+			// Get perInfoCategory
+			Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty
+					.getPerInfoCategoryByCtgCD(item.getCategoryCode(), companyId);
+			
+			if (!perInfoCategory.isPresent()) {
+				throw new RuntimeException("invalid PersonInfoCategory");
+			}
+
+			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
+					item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true,
+					perInfoCategory.get().getPersonEmployeeType(), true );
+
+			comboxList.forEach(cbItem -> {
+				if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
+
+					item.getSaveData().setValue(cbItem.getOptionText());
+				}
+			});
+		});
 
 	}
 

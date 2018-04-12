@@ -5,24 +5,23 @@
     margin-top: 15px;
 }
 
-.control-group td {
-	padding-top: 30px;
+.pattern-group td {
+	padding-top: 20px;
 	padding-left: 15px;
 }
-.control-group{
-	margin-top: 70px;
+.pattern-group{
+	margin-top: 50px;
 }
 .check_column{
 	text-align: center !important;
 }
 .periodTime{
-	padding-left: 15px !important;
+	padding-left: 20px !important;
 }
-
-/* .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker{ */
-/* 	width: 85px; */
-/* } */
 
 #fixed-table{
     overflow-y: scroll
+}
+.inputDate .periodTime{
+	align: "center";
 }

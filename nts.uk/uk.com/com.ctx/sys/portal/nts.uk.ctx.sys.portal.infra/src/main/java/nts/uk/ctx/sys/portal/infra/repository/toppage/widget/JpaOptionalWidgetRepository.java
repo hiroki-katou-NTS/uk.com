@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.infra.repository.toppage.widget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -29,7 +31,16 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 			+ "AND s.sptstWidgetDisplayPK.topPagePartID =:topPagePartID ";
 	private final String FIND_BY_CODE = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
 			+ "AND c.code =:code ";
+	private final String GET_SELECTED_WIDGET = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
+			+ "AND c.code =:code AND c.topPagePartType =:topPagePartType ";
 
+	private final String SELECT_BASE = "SELECT o, t, d FROM SptstOptionalWidget o "
+			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+			+ "INNER JOIN SptstWidgetDisplay d ON o.sptstOptionalWidgetPK.topPagePartID = d.sptstWidgetDisplayPK.topPagePartID ";
+	
+	private final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
+	private final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
+	
 	@Override
 	public List<OptionalWidget> findByCompanyId(String companyID) {
 		List<OptionalWidget> optionalWidgets = new ArrayList<OptionalWidget>();
@@ -150,5 +161,50 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 				.setParameter("companyID", companyId).setParameter("code", code).getSingle();
 		return optional.isPresent();
 	}
+	
+	@Override
+	public List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int topPagePartType) {
+		List<OptionalWidget> optionalWidgets = new ArrayList<OptionalWidget>();
+		
+		List<CcgmtTopPagePart> ccgmtTopPageParts = this.queryProxy()
+				.query(SELECT_ALL_TOPPAGEPART, CcgmtTopPagePart.class).setParameter("companyID", companyId).getList();
+		
+		ccgmtTopPageParts.stream().forEach(c -> {
+			List<WidgetDisplayItem> sptstOptionalWidgets = this.queryProxy()
+					.query(GET_SELECTED_WIDGET, SptstWidgetDisplay.class)
+					.setParameter("companyID", companyId)
+					.setParameter("code", topPagePartCode)
+					.setParameter("topPagePartType", topPagePartType)
+					.getList(s -> toDomainDisplayItem(s));
+			optionalWidgets.add(new OptionalWidget(c.ccgmtTopPagePartPK.companyID, c.ccgmtTopPagePartPK.topPagePartID,
+					new TopPagePartCode(c.code), new TopPagePartName(c.name),
+					TopPagePartType.valueOf(c.topPagePartType), Size.createFromJavaType(c.width, c.height),
+					sptstOptionalWidgets));
+		});
+		
+		return optionalWidgets;
+	}
+	
+	@Override
+	public List<OptionalWidget> findByCode(String companyId, List<String> listOptionalWidgetID) {
+		return this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", listOptionalWidgetID)
+				.getList(c -> joinObjectToDomain(c));
+	}
 
+	private OptionalWidget joinObjectToDomain(Object[] entity) {
+		SptstOptionalWidget OptionalWidget = (SptstOptionalWidget) entity[0];
+		CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
+		List<WidgetDisplayItem> wDisplayItems = widgetDisplayItems(OptionalWidget.sptstOptionalWidgetPK.topPagePartID);
+		return new OptionalWidget(OptionalWidget.sptstOptionalWidgetPK.companyID, OptionalWidget.sptstOptionalWidgetPK.topPagePartID, 
+				new TopPagePartCode(topPagePart.code), new TopPagePartName(topPagePart.name), TopPagePartType.valueOf(topPagePart.topPagePartType),
+				Size.createFromJavaType(topPagePart.width, topPagePart.height), wDisplayItems);
+	}
+	
+	private List<WidgetDisplayItem> widgetDisplayItems(String topPagePartId){
+		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS, SptstWidgetDisplay.class)
+				.setParameter("topPagePartID", topPagePartId)
+				.getList(c ->c.toDomain());
+	}
+	
 }

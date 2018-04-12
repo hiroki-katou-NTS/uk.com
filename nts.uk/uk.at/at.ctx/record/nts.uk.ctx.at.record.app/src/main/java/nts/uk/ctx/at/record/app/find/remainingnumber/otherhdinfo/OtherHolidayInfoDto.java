@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,11 +52,15 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 		OtherHolidayInfoDto dto = new OtherHolidayInfoDto();
 		if (pubHDRemain.isPresent()){
 			dto.pubHdremainNumber = pubHDRemain.get().getRemainNumber().v();
+			dto.setRecordId(pubHDRemain.get().getSID());
 		}
 		if (exLeavInfo.isPresent()){
 			dto.useAtr = exLeavInfo.get().getUseAtr().value;
 			dto.occurrenceUnit = exLeavInfo.get().getOccurrenceUnit().v();
 			dto.paymentMethod = exLeavInfo.get().getPaymentMethod().value;
+			if (StringUtils.isEmpty(dto.getRecordId())){
+				dto.setRecordId(exLeavInfo.get().getSID());
+			}
 		}
 		return dto;
 	}

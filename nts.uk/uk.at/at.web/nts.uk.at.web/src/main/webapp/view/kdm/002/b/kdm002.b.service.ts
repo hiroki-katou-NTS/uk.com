@@ -4,13 +4,13 @@ module nts.uk.at.view.kdm002.b {
     
     export module service {
         var paths = {
-            execution: ""
+            execution: "at/record/remainnumber/checkFunc/execution"
         }
         /**
          * call service execution 
          */
-        export function execution(): JQueryPromise<any> {
-            return ajax('com', paths.execution);
+        export function execution(command: any): JQueryPromise<any> {
+            return ajax('com', paths.execution, command);
         }
     }
 }

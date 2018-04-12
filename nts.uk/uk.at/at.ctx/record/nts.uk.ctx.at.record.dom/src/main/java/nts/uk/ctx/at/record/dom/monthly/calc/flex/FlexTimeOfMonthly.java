@@ -384,9 +384,10 @@ public class FlexTimeOfMonthly {
 		
 		// フレックス勤務の加算設定　取得
 		Optional<WorkFlexAdditionSet> flexWorkSetOpt = Optional.empty();
-		if (holidayAdditionOpt.isPresent()){
-			flexWorkSetOpt = Optional.of(holidayAdditionOpt.get().getFlexWork());
-		}
+		//*****（未）　ドメイン構成が変わったため、取得方法の変更が必要。2018.4.11 shuichi_ishida
+		//if (holidayAdditionOpt.isPresent()){
+		//	flexWorkSetOpt = Optional.of(holidayAdditionOpt.get().getFlexWork());
+		//}
 		
 		// フレックス対象時間と所定労働時間（代休控除後）を比較する
 		if (flexTargetTime.greaterThanOrEqualTo(compensatoryLeaveAfterDudection.v())){

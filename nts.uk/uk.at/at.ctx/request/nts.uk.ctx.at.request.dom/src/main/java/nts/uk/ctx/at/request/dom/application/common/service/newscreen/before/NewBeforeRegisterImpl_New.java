@@ -16,9 +16,11 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -61,6 +63,9 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
 	
+	@Inject
+	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
+	
 	public void processBeforeRegister(Application_New application){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
@@ -76,7 +81,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			
 			// 登録する期間のチェック
 			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
-			if(ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) > 31){
+			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
 				throw new BusinessException("Msg_277");
 			}
 			// 登録可能期間のチェック(１年以内)
@@ -176,7 +181,13 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			// ドメインモデル「申請締切設定」．締切基準をチェックする
 			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
 				// アルゴリズム「社員所属職場履歴を取得」を実行する
-				workplaceAdapter.findWkpBySid(employeeID, systemDate);
+				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
+				// アルゴリズム「締切日を取得する」を実行する
+				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
+						deadlineEndDate, 
+						appDeadline.getDeadline().v(), 
+						wkpHistImport.getWorkplaceId(), 
+						companyID);
 			} else {
 				deadline = deadlineEndDate.addDays(appDeadline.getDeadline().v());
 			}

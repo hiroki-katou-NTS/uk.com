@@ -574,14 +574,53 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		AppRootStateConfirmOutput appRootStateConfirmOutput = generateApprovalRootStateService.getApprovalRootState(
 				companyID, 
 				employeeID, 
-				EnumAdaptor.valueOf(confirmAtr, ConfirmationRootType.class), 
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				EnumAdaptor.valueOf(confirmAtr-1, ConfirmationRootType.class), 
+				appType == null ? null : EnumAdaptor.valueOf(appType, ApplicationType.class), 
 				date);
 		return new AppRootStateConfirmExport(
 				appRootStateConfirmOutput.getIsError(), 
 				appRootStateConfirmOutput.getRootStateID(), 
 				appRootStateConfirmOutput.getErrorMsg());
 	}
-
-	
+	@Override
+	// requestList155
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndListApprovalRecordDate(
+			List<GeneralDate> approvalRecordDates, List<String> employeeIDs, Integer rootType) {
+		List<ApproveRootStatusForEmpExport> result = new ArrayList<>();
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		
+		//承認ルート状況を取得する
+		result = this.getApproveRootStatusForEmpExport(approvalRootSates);
+		return result;
+	}
+	@Override
+	// requestList347
+	public void RegisterApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+			Integer rootType,String companyID) {
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		if(approvalRootSates != null){
+			for(ApprovalRootState approvalRootState : approvalRootSates){
+				 this.doApprove(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID(), false, 0, null, null);
+			}
+		}
+	}
+	@Override
+	// requestList356
+	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+			Integer rootType, String companyID) {
+		boolean result = true;
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		if(approvalRootSates != null){
+			for(ApprovalRootState approvalRootState : approvalRootSates){
+				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID());
+				if(!result){
+					return result;
+				}
+			}
+		}
+		return result;
+	}
 }

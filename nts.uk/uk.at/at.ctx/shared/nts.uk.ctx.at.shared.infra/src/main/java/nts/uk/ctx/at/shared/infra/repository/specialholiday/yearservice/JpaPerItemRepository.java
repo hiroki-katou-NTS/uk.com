@@ -31,6 +31,9 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	private final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
 	
 	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId AND c.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode";
+	
+	private final String SELECT_ALL_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId ORDER BY c.kshstYearServicePerPK.specialHolidayCode ASC";
+	
 	/**
 	 * change entity to domain
 	 * @param entity
@@ -165,5 +168,11 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	public void delete(String companyId, int specialHolidayCode, String yearServiceCode) {
 		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode);
 		this.commandProxy().remove(KshstYearServicePer.class, kshstYearServicePerPK);
+	}
+	@Override
+	public List<YearServicePer> getAllPer(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_PER, KshstYearServicePer.class)
+				.setParameter("companyId", companyId)
+				.getList(c->toDomainPer(c));
 	}
 }

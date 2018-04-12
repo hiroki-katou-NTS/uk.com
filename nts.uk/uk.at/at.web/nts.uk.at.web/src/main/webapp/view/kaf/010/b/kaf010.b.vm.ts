@@ -172,6 +172,7 @@ module nts.uk.at.view.kaf010.b {
                 var self = this;
                 self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
+                self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
@@ -205,7 +206,7 @@ module nts.uk.at.view.kaf010.b {
                 self.backSelected1(data.backAtr1);
                 self.backSelected2(data.backAtr2);
                 self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
-                self.backSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
+                self.backSelected1Value(data.backAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);

@@ -27,25 +27,24 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="extract" data-bind="click: open_Dialog" tabindex="1" >#{i18n.getText('KAL001_2')}</button>
-
+					<button id="extract" class="proceed" data-bind="click: open_Dialog, enable: $root.errors.isEmpty" tabindex="1" >#{i18n.getText('KAL001_2')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class ='fixed-flex-layout' >
 					<div id="left-content" class ="fixed-flex-layout-left">
 						<div id="ccgcomponent"></div>
-						<div id="component-employee-list"></div>
+						<div tabindex="2" id="component-employee-list"></div>
 					</div>
 					
 					<div id="right-content" class ='fixed-flex-layout-right' >
-						<table class="control-group">						
+						<table class="control-group pattern-group">						
 							<tbody>
 								<tr>
 									<td>
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL001_4')}</div>
 									</td>
 									<td>
-										<div  id="combo-box" data-bind="ntsComboBox: {
+										<div tabindex="3" id="combo-box" data-bind="ntsComboBox: {
 											options: alarmCombobox,
 											optionsValue: 'alarmCode',
 											visibleItemsCount: 10,
@@ -64,11 +63,17 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL001_5')}</div>
 									</td>
 									<td>
-										<table id="fixed-table">
+									</td>								
+								</tr>
+								<tr>
+									<td>
+									</td>
+									<td>
+										<table tabindex="4" id="fixed-table">
 											<colgroup>
 												<col width="50px"/>
 												<col width="120px"/>
-												<col width="300px"/>
+												<col width="280px"/>
 											</colgroup>
 											<thead>
 												<tr>
@@ -80,18 +85,18 @@
 											</thead>
 											<tbody>
 												<com:ko-foreach bind="periodByCategory">
-													<tr>
+													<tr data-bind="attr:{ categorynumber: category}">
 														<td  class ="check_column"  data-bind="click: setClick"><div data-bind="ntsCheckBox: {checked: checkBox}"></div></td>
 														<td data-bind ="text: categoryName "></td>
-														<td class ='periodTime'>
-															<div data-bind="ntsDateRangePicker:
-															 { required: true, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}"/>															
+														<td   class ='periodTime'>
+															<div class ='inputDate' data-bind="ntsDateRangePicker:
+															 { required: required, enable:true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: typeInput}"/>															
 														</td>
 													</tr>
 												</com:ko-foreach>
 											</tbody>
-										</table>
-									</td>								
+										</table>									
+									</td>
 								</tr>
 							</tbody>
 						</table>

@@ -98,7 +98,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                             appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0){                         
                         //事前事後区分 Enable ※A２
                         self.prePostEnable(appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);
-                        self.appWorkChange().application().prePostAtr(appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg);
+                        self.appWorkChange().application().prePostAtr(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg);
                         //「申請種類別設定．定型理由の表示」  ※A10
                         self.typicalReasonDisplayFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false );
                         //「申請種類別設定．申請理由の表示」  ※A11
@@ -168,7 +168,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             if (!appcommon.CommonProcess.checklenghtReason(appReason, "#inpReasonTextarea")) {
                 return;
             }
-            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
             if(appReasonError){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                 return;    

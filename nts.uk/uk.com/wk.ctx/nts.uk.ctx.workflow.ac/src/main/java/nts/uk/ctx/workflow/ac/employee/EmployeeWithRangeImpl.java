@@ -24,7 +24,7 @@ public class EmployeeWithRangeImpl implements EmployeeWithRangeAdapter {
 			String employeeCD) {
 		Optional<EmployeeWithRangeLoginImport> employeeWithRangeLoginImport = this.employeePublisher
 				.findByCompanyIDAndEmpCD(companyID, employeeCD).map(x -> {
-					return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getPersonID(), x.getEmployeeCD(),
+					return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getEmployeeCD(),
 							x.getEmployeeID());
 				});
 		if (!employeeWithRangeLoginImport.isPresent())
@@ -36,7 +36,7 @@ public class EmployeeWithRangeImpl implements EmployeeWithRangeAdapter {
 	public Optional<EmployeeWithRangeLoginImport> findByEmployeeByLoginRange(String companyID, String employeeCD) {
 		Optional<EmployeeWithRangeLoginImport> employeeWithRangeLoginImport = this.employeePublisher
 				.getByComIDAndEmpCD(companyID, employeeCD).map(x -> {
-					return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getPersonID(), x.getEmployeeCD(),
+					return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getEmployeeCD(),
 							x.getEmployeeID());
 				});
 		if (!employeeWithRangeLoginImport.isPresent())
