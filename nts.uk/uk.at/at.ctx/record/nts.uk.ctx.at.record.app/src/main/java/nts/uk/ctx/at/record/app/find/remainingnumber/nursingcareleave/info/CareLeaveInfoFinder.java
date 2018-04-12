@@ -54,10 +54,10 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto>{
 			NursingCareLeaveRemainingInfo childCareInfoDomain = childCareInfoDomainOpt.get();
 			NursingCareLeaveRemainingData careDataDomain = careDataDomainOpt.get();
 			NursingCareLeaveRemainingData childCareDataDomain = childCareDataDomainOpt.get();
-			return CareLeaveInfoDto.createDomain(query.getEmployeeId(), childCareInfoDomain.isUseClassification(), childCareInfoDomain.getUpperlimitSetting().value,
+			return CareLeaveInfoDto.createDomain(query.getEmployeeId(), childCareInfoDomain.isUseClassification() ? 1: 0, childCareInfoDomain.getUpperlimitSetting().value,
 					childCareInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForThisFiscalYear().get() : null, 
 					childCareInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForNextFiscalYear().get() : null,  
-					childCareDataDomain.getNumOfUsedDay(), careInfoDomain.isUseClassification(), careInfoDomain.getUpperlimitSetting().value, 
+					childCareDataDomain.getNumOfUsedDay(), careInfoDomain.isUseClassification()?1:0, careInfoDomain.getUpperlimitSetting().value, 
 					careInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? careInfoDomain.getMaxDayForThisFiscalYear().get() : null, 
 					careInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? careInfoDomain.getMaxDayForNextFiscalYear().get() : null, 
 							careDataDomain.getNumOfUsedDay());

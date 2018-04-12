@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -12,41 +14,41 @@ public class UpdateCareLeaveCommand {
 
 	// 子の看護休暇管理
 	@PeregItem("IS00375")
-	private boolean childCareUseArt;
+	private BigDecimal childCareUseArt;
 
 	@PeregItem("IS00376")
 	// 子の看護上限設定
-	private int childCareUpLimSet;
+	private BigDecimal childCareUpLimSet;
 
 	@PeregItem("IS00377")
 	// 本年度の子の看護上限日数
-	private Integer childCareThisFiscal;
+	private BigDecimal childCareThisFiscal;
 
 	@PeregItem("IS00378")
 	// 次年度の子の看護上限日数
-	private Integer childCareNextFiscal;
+	private BigDecimal childCareNextFiscal;
 
 	// 子の看護休暇管理
 	@PeregItem("IS00379")
-	private int childCareUsedDays;
+	private BigDecimal childCareUsedDays;
 
 	// 介護休暇管理
 	@PeregItem("IS00380")
-	private boolean careUseArt;
+	private BigDecimal careUseArt;
 
 	@PeregItem("IS00381")
 	// 介護上限設定
-	private int careUpLimSet;
+	private BigDecimal careUpLimSet;
 
 	@PeregItem("IS00382")
 	// 本年度の介護上限日数
-	private Integer careThisFiscal;
+	private BigDecimal careThisFiscal;
 
 	@PeregItem("IS00383")
 	// 次年度の介護上限日数
-	private Integer careNextFiscal;
+	private BigDecimal careNextFiscal;
 
 	// 介護使用日数
 	@PeregItem("IS00384")
-	private int careUsedDays;
+	private BigDecimal careUsedDays;
 }
