@@ -87,6 +87,13 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	}
 
 	/**
+	 * Sets the execution classification is manual.
+	 */
+	public void setExeAtrIsManual() {
+		this.exeAtr = ExecutionAtr.MANUAL;
+	}
+
+	/**
 	 * Update execution time end to now.
 	 */
 	public void updateExecutionTimeEndToNow() {

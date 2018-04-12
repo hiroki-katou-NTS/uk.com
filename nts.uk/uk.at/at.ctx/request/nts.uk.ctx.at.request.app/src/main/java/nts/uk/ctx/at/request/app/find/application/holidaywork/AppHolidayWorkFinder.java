@@ -401,6 +401,11 @@ public class AppHolidayWorkFinder {
 					});;
 		});
 		appHolidayWorkDto.setHolidayWorkInputDtos(holidayWorkInputDtos);
+		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value) {
+			appHolidayWorkDto.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+		}else{
+			appHolidayWorkDto.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
+		}
 		return appHolidayWorkDto;
 	}
 	

@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,22 +18,18 @@ public class ChangeAbsDateCommandHandler extends CommandHandler<SaveHolidayShipm
 	@Inject
 	private SaveHolidayShipmentCommandHandler saveHanler;
 	@Inject
-	private AbsenceLeaveAppRepository absRepo;
-	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHanler;
 	@Inject
 	private ApplicationRepository_New appRepo;
 
-	String companyID, appReason, employeeID, reason;
+	String companyID, appReason, employeeID;
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-	RecruitmentAppCommand recCmd;
 	AbsenceLeaveAppCommand absCmd;
 	SaveHolidayShipmentCommand command;
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
 		command = context.getCommand();
-		recCmd = command.getRecCmd();
 		absCmd = command.getAbsCmd();
 		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
 		errorCheckBeforeReg();
@@ -55,15 +50,14 @@ public class ChangeAbsDateCommandHandler extends CommandHandler<SaveHolidayShipm
 	}
 
 	private void updateAplication(Application_New app) {
-		app.setAppReason(new AppReason(reason));
+		app.setAppReason(new AppReason(appReason));
 
 	}
 
 	private void errorCheckBeforeReg() {
-		appReason = saveHanler.preconditionCheck(command, companyID, appType);
 		employeeID = AppContexts.user().employeeId();
 		// アルゴリズム「事前条件チェック」を実行する
-		reason = saveHanler.preconditionCheck(command, companyID, appType);
+		appReason = saveHanler.preconditionCheck(command, companyID, appType);
 		// アルゴリズム「同日申請存在チェック」を実行する
 		saveHanler.dateCheck(command);
 

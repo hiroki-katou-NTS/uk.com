@@ -27,20 +27,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		implements BusinessTypeEmpOfHistoryRepository, BusinessTypeOfEmpHisAdaptor {
-	private static final String FIND_ALL;
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
 	private static final String FIND_BY_EMPLOYEE_DESC;
 
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("SELECT k ");
-		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
-		stringBuilder.append("WHERE k.cID = :cId ");
-		stringBuilder.append("AND k.sId =:sId");
-		FIND_ALL = stringBuilder.toString();
-
-		stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");
 		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
 		stringBuilder.append("WHERE k.sId = :sId ");
@@ -57,13 +49,6 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 
 		stringBuilder.append(" DESC");
 		FIND_BY_EMPLOYEE_DESC = stringBuilder.toString();
-	}
-
-	@Override
-	public BusinessTypeOfEmployeeHistory findAll(String cId, String sId) {
-		List<KrcmtBusinessTypeOfHistory> entities = this.queryProxy().query(FIND_ALL, KrcmtBusinessTypeOfHistory.class)
-				.setParameter("cID", cId).setParameter("sId", sId).getList();
-		return toDomain(entities);
 	}
 
 	private static KrcmtBusinessTypeOfHistory toEntity(String companyId, String employeeId, String historyId,

@@ -1589,6 +1589,9 @@ public class ProgramsManager {
 	/** KAF011A */
 	public static final Program KAF011A = new Program(WebAppId.AT, ProgramIdConsts.KAF011A, null,
 			"/view/kaf/011/a/index.xhtml");
+	/** KAF011B */
+	public static final Program KAF011B = new Program(WebAppId.AT, ProgramIdConsts.KAF011B, null,
+			"/view/kaf/011/b/index.xhtml");
 	/** KAF011C */
 	public static final Program KAF011C = new Program(WebAppId.AT, ProgramIdConsts.KAF011C, "KAF011_62",
 			"/view/kaf/011/c/index.xhtml");
@@ -1609,6 +1612,13 @@ public class ProgramsManager {
 			"/view/cmm/001/d/index.xhtml");
 	/** CCG018 */
 
+	/** KAL001 */
+	public static final Program KAL001A = new Program(WebAppId.AT, ProgramIdConsts.KAL001A, "KAL001_1",
+			"/view/kal/001/a/index.xhtml");
+	public static final Program KAL001B = new Program(WebAppId.AT, ProgramIdConsts.KAL001B, "KAL001_1",
+			"/view/kal/001/b/index.xhtml");
+	public static final Program KAL001C = new Program(WebAppId.AT, ProgramIdConsts.KAL001C, null,
+			"/view/kal/001/c/index.xhtml");
 	/** KAL002 */
 	public static final Program KAL002A = new Program(WebAppId.AT, ProgramIdConsts.KAL002A, "KAL002_1",
 			"/view/kal/002/a/index.xhtml");
