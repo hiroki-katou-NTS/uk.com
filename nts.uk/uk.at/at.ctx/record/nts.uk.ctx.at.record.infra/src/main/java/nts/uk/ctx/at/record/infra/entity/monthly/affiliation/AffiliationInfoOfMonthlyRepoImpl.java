@@ -23,20 +23,13 @@ public class AffiliationInfoOfMonthlyRepoImpl implements AffiliationInfoOfMonthl
 	}
 
 	@Override
-	public List<AffiliationInfoOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
+	public List<AffiliationInfoOfMonthly> findBySidAndYearMonth(String employeeId, YearMonth yearMonth) {
 		// TODO Auto-generated method stub
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<AffiliationInfoOfMonthly> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
-			ClosureId closureId) {
-		// TODO Auto-generated method stub
-		return new ArrayList<>();
-	}
-
-	@Override
-	public void persistAndUpdate(AffiliationInfoOfMonthly AffiliationInfoOfMonthly) {
+	public void persistAndUpdate(AffiliationInfoOfMonthly attendanceTimeOfMonthly) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -48,7 +41,7 @@ public class AffiliationInfoOfMonthlyRepoImpl implements AffiliationInfoOfMonthl
 	}
 
 	@Override
-	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
+	public void removeBySidAndYearMonth(String employeeId, YearMonth yearMonth) {
 		// TODO Auto-generated method stub
 		
 	}

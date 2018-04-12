@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -26,7 +28,7 @@ public class AggregateAffiliationInfoDto {
 	/** 勤務種別コード: 勤務種別コード */
 	@AttendanceItemValue
 	@AttendanceItemLayout(jpPropertyName = "勤務種別コード", layout = "B")
-	private String workTypeCode;
+	private String businessTypeCode;
 
 	/** 職位ID: 職位ID */
 	@AttendanceItemValue
@@ -46,22 +48,20 @@ public class AggregateAffiliationInfoDto {
 	public static AggregateAffiliationInfoDto from(AggregateAffiliationInfo domain) {
 		AggregateAffiliationInfoDto dto = new AggregateAffiliationInfoDto();
 		if (domain != null) {
-			dto.setClassificationCode(
-					domain.getClassificationCode() == null ? null : domain.getClassificationCode().v());
-			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
-			dto.setJobTitle(domain.getJobTitle() == null ? null : domain.getJobTitle().v());
-			dto.setWorkPlaceCode(domain.getWorkPlaceCode() == null ? null : domain.getWorkPlaceCode().v());
-			dto.setWorkTypeCode(domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().v());
+			dto.setClassificationCode(domain.getClassCd() == null ? null : domain.getClassCd().v());
+			dto.setEmploymentCode(domain.getEmploymentCd() == null ? null : domain.getEmploymentCd().v());
+			dto.setJobTitle(domain.getJobTitleId() == null ? null : domain.getJobTitleId().v());
+			dto.setWorkPlaceCode(domain.getWorkplaceId() == null ? null : domain.getWorkplaceId().v());
+			dto.setBusinessTypeCode(domain.getBusinessTypeCd() == null ? null : domain.getBusinessTypeCd().v());
 		}
 		return dto;
 	}
 
 	public AggregateAffiliationInfo toDomain() {
-		return new AggregateAffiliationInfo(
-				classificationCode == null ? null : new ClassificationCode(classificationCode),
-				workTypeCode == null ? null : new WorkTypeCode(workTypeCode),
+		return AggregateAffiliationInfo.of(employmentCode == null ? null : new EmploymentCode(employmentCode),
+				workPlaceCode == null ? null : new WorkplaceId(workPlaceCode),
 				jobTitle == null ? null : new JobTitleId(jobTitle),
-				workPlaceCode == null ? null : new WorkplaceCode(workPlaceCode),
-				employmentCode == null ? null : new EmploymentCode(employmentCode));
+				classificationCode == null ? null : new ClassificationCode(classificationCode),
+				businessTypeCode == null ? null : new BusinessTypeCode(businessTypeCode));
 	}
 }

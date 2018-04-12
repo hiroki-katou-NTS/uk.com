@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AggregateAffiliationInfoDto;
@@ -46,10 +45,11 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	@Override
 	public AffiliationInfoOfMonthly toDomain() {
 		if (this.isHaveData()) {
-			return new AffiliationInfoOfMonthly(yearMonth, startMonthInfo == null ? null : startMonthInfo.toDomain(),
-					endMonthInfo == null ? null : endMonthInfo.toDomain(), employeeId,
-					ConvertHelper.getEnum(closureId, ClosureId.class),
-					closureDate == null ? null : closureDate.toDomain());
+			return AffiliationInfoOfMonthly.of(employeeId, yearMonth, 
+										ConvertHelper.getEnum(closureId, ClosureId.class), 
+										closureDate == null ? null : closureDate.toDomain(), 
+										startMonthInfo == null ? null : startMonthInfo.toDomain(), 
+										endMonthInfo == null ? null : endMonthInfo.toDomain());
 		}
 		return null;
 	}
@@ -65,8 +65,8 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
 			dto.setClosureId(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
 			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setEndMonthInfo(AggregateAffiliationInfoDto.from(domain.getEndMonthInfo()));
-			dto.setStartMonthInfo(AggregateAffiliationInfoDto.from(domain.getStartMonthInfo()));
+			dto.setEndMonthInfo(AggregateAffiliationInfoDto.from(domain.getLastInfo()));
+			dto.setStartMonthInfo(AggregateAffiliationInfoDto.from(domain.getFirstInfo()));
 			dto.setYearMonth(domain.getYearMonth());
 			dto.exsistData();
 		}

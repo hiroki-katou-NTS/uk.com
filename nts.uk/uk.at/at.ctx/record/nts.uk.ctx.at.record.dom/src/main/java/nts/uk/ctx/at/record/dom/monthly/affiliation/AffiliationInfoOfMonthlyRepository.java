@@ -7,7 +7,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
-/** リポジトリ：月別実績の所属情報  */
+/**
+ * リポジトリ：月別実績の所属情報
+ * @author shuichu_ishida
+ */
 public interface AffiliationInfoOfMonthlyRepository {
 
 	/**
@@ -16,34 +19,24 @@ public interface AffiliationInfoOfMonthlyRepository {
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
-	 * @return 該当する月別実績の所属情報 
+	 * @return 該当する月別実績の所属情報
 	 */
 	Optional<AffiliationInfoOfMonthly> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate);
 
 	/**
-	 * 検索　（年月）
+	 * 検索　（社員IDと年月）
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
-	 * @return 月別実績の所属情報 　（開始日順）
+	 * @return 該当する月別実績の所属情報
 	 */
-	List<AffiliationInfoOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
+	List<AffiliationInfoOfMonthly> findBySidAndYearMonth(String employeeId, YearMonth yearMonth);
 
 	/**
-	 * 検索　（年月と締めID）
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @return 月別実績の所属情報 　（開始日順）
-	 */
-	List<AffiliationInfoOfMonthly> findByYMAndClosureIdOrderByStartYmd(
-			String employeeId, YearMonth yearMonth, ClosureId closureId);
-	
-	/**
 	 * 登録および更新
-	 * @param AffiliationInfoOfMonthly 月別実績の所属情報 
+	 * @param attendanceTimeOfMonthly 月別実績の所属情報
 	 */
-	void persistAndUpdate(AffiliationInfoOfMonthly AffiliationInfoOfMonthly);
+	void persistAndUpdate(AffiliationInfoOfMonthly attendanceTimeOfMonthly);
 	
 	/**
 	 * 削除
@@ -55,9 +48,9 @@ public interface AffiliationInfoOfMonthlyRepository {
 	void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
 	/**
-	 * 削除　（年月）
+	 * 削除　（社員IDと年月）
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
 	 */
-	void removeByYearMonth(String employeeId, YearMonth yearMonth);
+	void removeBySidAndYearMonth(String employeeId, YearMonth yearMonth);
 }
