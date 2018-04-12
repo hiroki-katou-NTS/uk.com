@@ -51,7 +51,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             formatSelection.selectionCodeCharacter(iformat.selectionCodeCharacter);
                             formatSelection.selectionName(iformat.selectionName);
                             formatSelection.selectionExternalCode(iformat.selectionExternalCode);
-                            $("#selectionItemName").focus();
+                            //$("#selectionItemName").focus();
                         }
                     });
                 }
@@ -243,11 +243,13 @@ module nts.uk.com.view.cps016.a.viewmodel {
                                 });
 
                                 self.listItems.valueHasMutated();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                    $("#selectionItemName").focus();
-                                });
+                                //                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                //                                    $("#selectionItemName").focus();
+                                //                                });
                             });
-
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                //$("#selectionItemName").focus();
+                            });
                         }
                     }).fail(error => {
                         alertError({ messageId: "Msg_521" });
