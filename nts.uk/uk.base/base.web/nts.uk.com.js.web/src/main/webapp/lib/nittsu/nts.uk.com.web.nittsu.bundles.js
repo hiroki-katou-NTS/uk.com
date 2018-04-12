@@ -2391,7 +2391,7 @@ var nts;
                         return dateTime;
                 };
                 DateTimeFormatter.prototype.format = function (date) {
-                    return new Date(date).toLocaleDateString("ja-JP");
+                    return date; //new Date(date).toLocaleDateString("ja-JP");
                 };
                 return DateTimeFormatter;
             }());
@@ -4803,6 +4803,8 @@ var nts;
                 errors_1.hide = hide;
                 function add(error) {
                     errorsViewModel().addError(error);
+                    error.$control.data(nts.uk.ui.DATA_HAS_ERROR, true);
+                    (error.$control.data(nts.uk.ui.DATA_SET_ERROR_STYLE) || function () { error.$control.parent().addClass('error'); })();
                 }
                 errors_1.add = add;
                 function hasError() {
@@ -4816,14 +4818,26 @@ var nts;
                 errors_1.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
+                    $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                    ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                 }
                 errors_1.removeByElement = removeByElement;
                 function removeByCode($control, errorCode) {
                     errorsViewModel().removeErrorByCode($control, errorCode);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeByCode = removeByCode;
                 function removeCommonError($control) {
                     errorsViewModel().removeKibanError($control);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeCommonError = removeCommonError;
                 function getErrorByElement($element) {
@@ -20727,6 +20741,8 @@ var nts;
         (function (ui) {
             ui.DATA_SET_ERROR_STYLE = "set-error-style";
             ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+            ui.DATA_HAS_ERROR = 'hasError';
+            ui.DATA_GET_ERROR = 'getError';
             var bindErrorStyle;
             (function (bindErrorStyle) {
                 function setError($element, callback) {
@@ -20755,14 +20771,12 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsError;
                 (function (ntsError) {
-                    var DATA_HAS_ERROR = 'hasError';
-                    var DATA_GET_ERROR = 'getError';
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
-                        if (action === DATA_HAS_ERROR) {
+                        if (action === ui.DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
                         }
-                        else if (action === DATA_GET_ERROR) {
+                        else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
                         }
                         else {
@@ -20791,7 +20805,6 @@ var nts;
                         return ui.errors.getErrorByElement($control);
                     }
                     function setError($control, message, errorCode, businessError) {
-                        $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
                             location: $control.data('name') || "",
                             message: message,
@@ -20799,35 +20812,22 @@ var nts;
                             $control: $control,
                             businessError: businessError
                         });
-                        ($control.data(ui.DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
                         return $control;
                     }
                     function clearErrors($control) {
-                        $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
                         ui.errors.removeByCode($control, errorCode);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function clearKibanError($control) {
                         ui.errors.removeCommonError($control);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function hasError($control) {
-                        return $control.data(DATA_HAS_ERROR) === true;
+                        return $control.data(ui.DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
@@ -21570,6 +21570,7 @@ var nts;
                         var flatCols = validation.scanValidators($self, options.columns);
                         // Cell color
                         var cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
+                        $self.data(internal.CELL_FORMATTER, cellFormatter);
                         $self.addClass('compact-grid nts-grid');
                         if ($self.closest(".nts-grid-wrapper").length === 0) {
                             $self.wrap($("<div class='nts-grid-wrapper'/>"));
@@ -22944,6 +22945,7 @@ var nts;
                     (function (functions) {
                         functions.ERRORS = "errors";
                         functions.UPDATE_ROW = "updateRow";
+                        functions.SET_STATE = "setState";
                         functions.UPDATED_CELLS = "updatedCells";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
                         functions.ENABLE_ALL_CONTROLS = "enableNtsControls";
@@ -22962,6 +22964,9 @@ var nts;
                                 case functions.UPDATE_ROW:
                                     var autoCommit = $grid.data("igGrid") !== null && $grid.igGrid("option", "autoCommit") ? true : false;
                                     updateRow($grid, params[0], params[1], autoCommit);
+                                    break;
+                                case functions.SET_STATE:
+                                    setState($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.ENABLE_CONTROL:
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
@@ -23023,6 +23028,50 @@ var nts;
                                 if (updatedRow !== undefined)
                                     $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                             }
+                        }
+                        /**
+                         * Set state.
+                         */
+                        function setState($grid, rowId, key, states) {
+                            var cellFormatter = $grid.data(internal.CELL_FORMATTER);
+                            var cellStateFeatureDef = cellFormatter.cellStateFeatureDef;
+                            if (cellFormatter.rowStates) {
+                                var row = cellFormatter.rowStates[rowId];
+                                if (row) {
+                                    var sts = row[key];
+                                    if (sts) {
+                                        if (sts[0][cellStateFeatureDef]) {
+                                            sts[0][cellStateFeatureDef] = states;
+                                        }
+                                    }
+                                    else {
+                                        var cellState = {};
+                                        cellState[cellStateFeatureDef.rowId] = rowId;
+                                        cellState[cellStateFeatureDef.columnKey] = key;
+                                        cellState[cellStateFeatureDef.state] = states;
+                                        row[key] = [cellState];
+                                    }
+                                }
+                                else {
+                                    cellFormatter.rowStates[rowId] = {};
+                                    var cellState = {};
+                                    cellState[cellStateFeatureDef.rowId] = rowId;
+                                    cellState[cellStateFeatureDef.columnKey] = key;
+                                    cellState[cellStateFeatureDef.state] = states;
+                                    cellFormatter.rowStates[rowId][key] = [cellState];
+                                }
+                            }
+                            else {
+                                cellFormatter.rowStates = {};
+                                var cellState = {};
+                                cellState[cellStateFeatureDef.rowId] = rowId;
+                                cellState[cellStateFeatureDef.columnKey] = key;
+                                cellState[cellStateFeatureDef.state] = states;
+                                var colState = {};
+                                colState[key] = [cellState];
+                                cellFormatter.rowStates[rowId] = colState;
+                            }
+                            updating.renderCell($grid, rowId, key);
                         }
                         /**
                          * Disable controls
@@ -25350,7 +25399,7 @@ var nts;
                                             }
                                         }
                                         // Set cell states
-                                        if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                        if (!uk.util.isNullOrUndefined(self.rowStates) && !uk.util.isNullOrUndefined(rowIdName)
                                             && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(stateName)
                                             && !uk.util.isNullOrUndefined(self.rowStates[cell.id])) {
                                             var cellState = self.rowStates[cell.id][column.key];
@@ -25410,10 +25459,10 @@ var nts;
                                     }
                                 }
                                 // Set cell states
-                                if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                if (!uk.util.isNullOrUndefined(self.rowStates) && !uk.util.isNullOrUndefined(rowIdName)
                                     && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(stateName)
-                                    && !uk.util.isNullOrUndefined(this.rowStates[cell.id])) {
-                                    var cellState = this.rowStates[cell.id][cell.columnKey];
+                                    && !uk.util.isNullOrUndefined(self.rowStates[cell.id])) {
+                                    var cellState = self.rowStates[cell.id][cell.columnKey];
                                     if (uk.util.isNullOrUndefined(cellState) || cellState.length === 0)
                                         return;
                                     _.forEach(cellState[0][stateName], function (stt) {
@@ -26249,6 +26298,7 @@ var nts;
                         internal.UPDATED_CELLS = "ntsUpdatedCells";
                         internal.TARGET_EDITS = "ntsTargetEdits";
                         internal.OTHER_EDITS = "ntsOtherEdits";
+                        internal.CELL_FORMATTER = "ntsCellFormatter";
                         // Full columns options
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
