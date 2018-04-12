@@ -294,7 +294,8 @@ module nts.uk.at.view.kdm002.a {
                    if(new Date(self.date()) >= new Date(self.periodDate().endDate)){
                        nts.uk.ui.windows.setShared('KDM002Params', {
                             empployeeList: self.selectedEmployee(),
-                            periodDate: self.periodDate(),
+                            startDate: self.periodDate().startDate,
+                            endDate: self.periodDate().endDate,
                             date: self.date(),
                             maxday: self.maxDaysCumulationByEmp()    
                        });

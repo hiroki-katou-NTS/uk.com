@@ -10,7 +10,7 @@ module nts.uk.at.view.kdm002.b {
          * call service execution 
          */
         export function execution(command: any): JQueryPromise<any> {
-            return ajax('com', paths.execution, command);
+            return ajax('at', paths.execution, command);
         }
     }
 }
