@@ -538,6 +538,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.filterByJobTitle = self.showJobTitle;
                 // only consider show worktype if sytemType = employment
                 param.filterByWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT ? self.showWorktype : false;
+                param.filterByClosure = self.showClosure && self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL;
 
                 // filter status of employment
                 param.includeIncumbents = self.selectedIncumbent();
@@ -555,6 +556,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // only consider list worktype if sytemType = employment
                 self.queryParam.worktypeCodes = self.systemType ==
                     ConfigEnumSystemType.EMPLOYMENT && self.showWorktype ? self.selectedWorkTypeCode() : [];
+                self.queryParam.closureIds = self.showClosure ? [self.selectedClosure()] : [];
             }
 
             /**

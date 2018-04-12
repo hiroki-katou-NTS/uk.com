@@ -219,6 +219,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 jobTitleCodes: Array<string>;
                 filterByWorktype: boolean;
                 worktypeCodes: Array<string>;
+                filterByClosure: boolean;
+                closureIds: Array<number>;
 
                 periodStart: string;
                 periodEnd: string;
