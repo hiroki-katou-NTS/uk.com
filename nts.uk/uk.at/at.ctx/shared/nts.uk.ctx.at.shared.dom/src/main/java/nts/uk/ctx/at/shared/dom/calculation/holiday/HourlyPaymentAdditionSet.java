@@ -34,7 +34,7 @@ public class HourlyPaymentAdditionSet extends AggregateRoot{
 	public static HourlyPaymentAdditionSet createFromJavaType(String companyId, int calcPremiumVacation,
 			int addition1, int deformatExcValue, int incChildNursingCare, int deduct, int calculateIncludeIntervalExemptionTime1,
 			int calcWorkHourVacation, int addition2, int calculateIncludCareTime, int notDeductLateLeaveEarly,
-			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
+			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1) {
 		return new HourlyPaymentAdditionSet(companyId, calcPremiumVacation,
 				addition1, deformatExcValue,
 				incChildNursingCare, deduct, 
@@ -44,8 +44,7 @@ public class HourlyPaymentAdditionSet extends AggregateRoot{
 				calculateIncludCareTime,
 				notDeductLateLeaveEarly,
 				calculateIncludeIntervalExemptionTime2,
-				enableSetPerWorkHour1, enableSetPerWorkHour2
-				);
+				enableSetPerWorkHour1);
 	}
 
 	/**
@@ -71,8 +70,7 @@ public class HourlyPaymentAdditionSet extends AggregateRoot{
 			int incChildNursingCare, int deduct,  
 			int calculateIncludeIntervalExemptionTime1, int calcWorkHourVacation,
 			int addition2, int calculateIncludCareTime, int notDeductLateLeaveEarly,
-			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1,
-			int enableSetPerWorkHour2) {
+			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1) {
 		super();
 		this.companyId = companyId;
 		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(addition1, deformatExcValue, null);
