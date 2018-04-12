@@ -19,6 +19,16 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  */
 public interface ApprovalRootStatePub {
 	/**
+	 * RequestList356
+	 * 実績の承認を解除する
+	 * @param approverID
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	/**
 	 * RequestList347
 	 * 実績の承認を登録する
 	 * @param approverID
