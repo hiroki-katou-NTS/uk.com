@@ -73,8 +73,8 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
 		return c == null ? null
-				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()),
-						toTimeActualStamp(c.getLeave()));
+				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
+						toTimeActualStamp(c.getLeave()).isPresent() ? toTimeActualStamp(c.getLeave()).get() : null);
 	}
 
 	private Optional<TimeActualStamp> toTimeActualStamp(WithActualTimeStampDto c) {

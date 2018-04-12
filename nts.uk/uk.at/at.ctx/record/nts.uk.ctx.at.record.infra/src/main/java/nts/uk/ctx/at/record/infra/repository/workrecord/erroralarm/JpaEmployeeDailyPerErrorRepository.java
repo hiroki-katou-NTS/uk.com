@@ -63,7 +63,11 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
-		KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).forEach(f -> this.commandProxy().insert(f));
+		if (KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).size() > 1) {
+			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).get(0));
+		} else {
+			KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).forEach(f -> this.commandProxy().insert(f));
+		}
 		this.getEntityManager().flush();
 	}
 
