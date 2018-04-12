@@ -2,7 +2,8 @@ module nts.uk.at.view.kdl001.a {
     export module viewmodel {
         export class ScreenModel {
             columns: KnockoutObservableArray<NtsGridListColumn>;
-            multiSelectMode: KnockoutObservable<boolean>; 
+            multiSelectMode: KnockoutObservable<boolean>;
+            isSelection:  KnockoutObservable<boolean>;
             rootList: Array<WorkTimeSet>;
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
@@ -26,6 +27,7 @@ module nts.uk.at.view.kdl001.a {
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>'}
                 ]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
+                self.isSelection = nts.uk.ui.windows.getShared('kml001isSelection');
                  if(!self.multiSelectMode) {
                     self.gridHeight = 260;    
                  }else{
@@ -49,7 +51,31 @@ module nts.uk.at.view.kdl001.a {
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
                         self.rootList = data;
-                        self.selectAbleItemList(_.clone(self.rootList));
+                        if(!self.isSelection){
+                            self.selectAbleItemList(_.clone(self.rootList));
+                        }else{
+                            self.selectAbleItemList.push({
+                                code: "",
+                                name: "選択なし",
+                                workTime1: "",
+                                //workTime2: string;
+                                workAtr: "",
+                                remark: ""          
+                            });
+                            if (!nts.uk.util.isNullOrEmpty(data)) {
+                                for (let i = 0; i < data.length; i++) {
+                                    self.selectAbleItemList.push({
+                                        code: data[i].code,
+                                        name: data[i].name,
+                                        workTime1: data[i].workTime1,
+                                        //workTime2: string;
+                                        workAtr: data[i].workAtr,
+                                        remark: data[i].remark
+                                    });
+                                }
+                            }
+                            
+                        }
                         if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
                             if(nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
