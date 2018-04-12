@@ -161,7 +161,6 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// save command
 		this.saveBasicSchedule(commandSave);
-		;
 	}
 
 	/**

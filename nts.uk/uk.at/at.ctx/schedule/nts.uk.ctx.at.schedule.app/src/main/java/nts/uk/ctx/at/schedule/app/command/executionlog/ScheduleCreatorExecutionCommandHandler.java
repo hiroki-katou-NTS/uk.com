@@ -491,19 +491,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
 			WorkingConditionItem workingConditionItem, EmploymentStatusDto employmentStatus) {
-
-		// 入力パラメータ「再作成区分」を判断
-		// check parameter ReCreateAtr onlyUnconfirm
-		if (command.getContent().getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {// ［未確定データのみ］
-			// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断(kiểm tra thông tin 「予定確定区分」 của
-			// domain 「勤務予定基本情報」)
-			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {// 未確定
-				if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-						employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
-					this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
-				}
-			}
-		} else {
+		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
+		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
+		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
+		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
+				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
 					employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
