@@ -412,12 +412,13 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				}
 				
 			}
+			approvalRootSituation.setApprovalStatus(approvalStatus);
 			// output「ルート状況」をセットする
-			if(checkPhase(employeephase,phaseOfApprover,0) && approverRoot.getListApprovalPhaseState().get(employeephase) .getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+			if(checkPhase(approverRoot.getListApprovalPhaseState().get(employeephase).getPhaseOrder(),phaseOfApprover,0) && approverRoot.getListApprovalPhaseState().get(employeephase) .getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 				approvalRootSituation.setApprovalAtr(ApproverEmployeeState.PHASE_DURING);
-			}else if(checkPhase(employeephase,phaseOfApprover,0) && approverRoot.getListApprovalPhaseState().get(employeephase) .getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+			}else if(checkPhase(approverRoot.getListApprovalPhaseState().get(employeephase).getPhaseOrder(),phaseOfApprover,0) && approverRoot.getListApprovalPhaseState().get(employeephase) .getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				approvalRootSituation.setApprovalAtr(ApproverEmployeeState.COMPLETE);
-			}else if(checkPhase(employeephase,phaseOfApprover,1)){
+			}else if(checkPhase(approverRoot.getListApprovalPhaseState().get(employeephase).getPhaseOrder(),phaseOfApprover,1)){
 				approvalRootSituation.setApprovalAtr(ApproverEmployeeState.PHASE_LESS);
 			}else{
 				approvalRootSituation.setApprovalAtr(ApproverEmployeeState.PHASE_PASS);
