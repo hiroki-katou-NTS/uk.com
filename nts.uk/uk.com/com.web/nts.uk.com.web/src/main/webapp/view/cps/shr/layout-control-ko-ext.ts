@@ -1173,7 +1173,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_106'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMBERIC_BUTTON -->
