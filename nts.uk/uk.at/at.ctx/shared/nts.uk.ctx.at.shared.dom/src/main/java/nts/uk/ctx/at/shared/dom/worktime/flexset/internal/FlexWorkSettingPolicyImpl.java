@@ -88,7 +88,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		this.wtzCommonSetPolicy.validate(be, predTime, flexWork.getCommonSetting());
 
 		// validate list stamp timezone
-		if (DisplayMode.DETAIL.equals(displayMode)) {
+		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.flexStampReflectTimezonePolicy.validate(be, predTime, flexWork);
 		}
 	}

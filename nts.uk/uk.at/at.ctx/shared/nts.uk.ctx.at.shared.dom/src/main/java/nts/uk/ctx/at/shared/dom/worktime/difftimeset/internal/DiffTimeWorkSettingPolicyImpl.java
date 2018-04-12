@@ -98,7 +98,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		this.wtzCommonSetPolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
 
 		// validate list stamp timezone
-		if (DisplayMode.DETAIL.equals(displayMode)) {
+		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.diffTimeStampReflectTimezonePolicy.validate(be, pred, diffTimeWorkSetting);
 		}
 	}

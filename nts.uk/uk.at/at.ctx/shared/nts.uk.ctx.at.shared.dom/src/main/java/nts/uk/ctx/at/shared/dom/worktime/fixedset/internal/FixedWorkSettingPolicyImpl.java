@@ -92,7 +92,7 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 //		}
 		
 		// validate list stamp timezone
-		if (DisplayMode.DETAIL.equals(displayMode)) {
+		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.fixedStampReflectTimezonePolicy.validate(be, predetemineTimeSet, fixedWorkSetting);
 		}
 

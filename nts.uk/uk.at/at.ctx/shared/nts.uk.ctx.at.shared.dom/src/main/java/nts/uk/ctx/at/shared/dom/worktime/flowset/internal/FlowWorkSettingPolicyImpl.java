@@ -59,7 +59,7 @@ public class FlowWorkSettingPolicyImpl implements FlowWorkSettingPolicy {
 			FlowWorkSetting flowWorkSetting) {
 
 		// Msg_516
-		if (DisplayMode.DETAIL.equals(displayMode)) {
+		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.flowStampReflectTimezonePolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
 					flowWorkSetting.getStampReflectTimezone());
 		}
