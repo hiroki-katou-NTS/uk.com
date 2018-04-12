@@ -20,13 +20,14 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 
 	@Override
 	public boolean goBackDirectlyReflect(ReflectScheDto reflectSche) {
-		ApplicationGobackScheInforDto appInfo = new ApplicationGobackScheInforDto(EnumAdaptor.valueOf(reflectSche.getGoBackDirectly().getWorkChangeAtr().value, ChangeAtrAppGobackPub.class),
-				reflectSche.getGoBackDirectly().getWorkTypeCD().v(),
-				reflectSche.getGoBackDirectly().getSiftCD().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeStart1().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd1().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeStart2().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v());
+		ApplicationGobackScheInforDto appInfo = new ApplicationGobackScheInforDto(EnumAdaptor.valueOf(
+				reflectSche.getGoBackDirectly().getWorkChangeAtr().get().value, ChangeAtrAppGobackPub.class),
+				reflectSche.getGoBackDirectly().getWorkTypeCD().get().v(),
+				reflectSche.getGoBackDirectly().getSiftCD().get().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeStart1().get().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeEnd1().get().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeStart2().get().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeEnd2().get().v());
 		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
 				reflectSche.getDatePara(),
 				true,

@@ -43,7 +43,7 @@ public class KrqdtGoBackDirectly extends UkJpaEntity implements Serializable{
 	public String siftCD;
 	
 	@Column(name="WORK_CHANGE_ATR")
-	public int workChangeAtr;
+	public Integer workChangeAtr;
 	
 	@Column(name="WORK_TIME_START1")
 	public Integer workTimeStart1;
@@ -55,10 +55,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity implements Serializable{
 	public String workLocationCd1;
 	
 	@Column(name="GO_WORK_ATR1")
-	public int goWorkAtr1;
+	public Integer goWorkAtr1;
 
 	@Column(name="BACK_HOME_ATR1")
-	public int backHomeAtr1;
+	public Integer backHomeAtr1;
 	
 	@Column(name="WORK_TIME_START2")
 	public Integer workTimeStart2;
@@ -70,10 +70,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity implements Serializable{
 	public String workLocationCd2;
 	
 	@Column(name="GO_WORK_ATR2")
-	public int goWorkAtr2;
+	public Integer goWorkAtr2;
 
 	@Column(name="BACK_HOME_ATR2")
-	public int backHomeAtr2;
+	public Integer backHomeAtr2;
 	
 	@Override
 	protected Object getKey() {
