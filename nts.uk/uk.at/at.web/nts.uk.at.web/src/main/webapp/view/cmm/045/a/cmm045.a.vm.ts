@@ -450,7 +450,7 @@ module cmm045.a.viewmodel {
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDate(app.startDate), '',''), appContent010, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent010, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
             return a;
@@ -473,7 +473,7 @@ module cmm045.a.viewmodel {
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDate(app.startDate), '',''), appContent1111, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent1111, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
@@ -576,7 +576,7 @@ module cmm045.a.viewmodel {
             let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDate(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
@@ -609,7 +609,7 @@ module cmm045.a.viewmodel {
             let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDate(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
@@ -691,7 +691,7 @@ module cmm045.a.viewmodel {
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDate(app.startDate), '',''), appContent2222, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent2222, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
@@ -715,7 +715,7 @@ module cmm045.a.viewmodel {
             let appContent007 = getText('CMM045_250') + wkChange.workTypeName + wkChange.workTimeName + time1 + time2 + breakTime + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let dateRange = self.appDateColor(self.convertDate(app.startDate), '','－') + self.appDateColor(self.convertDate(app.endDate), '','');
+            let dateRange = self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, dateRange, appContent007, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
@@ -744,7 +744,7 @@ module cmm045.a.viewmodel {
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
-            let dateRange = app.endDate == null ? self.appDateColor(self.convertDate(app.applicationDate), '','') : self.appDateColor(self.convertDate(app.startDate), '','－') + self.appDateColor(self.convertDate(app.endDate), '','');
+            let dateRange = app.endDate == null ? self.appDateColor(self.convertDateMDW(app.applicationDate), '','') : self.appDateRangeColor(self.convertDateMDW(app.startDate), self.convertDateMDW(app.endDate));
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, dateRange, appContent006 + reason, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
@@ -818,7 +818,7 @@ module cmm045.a.viewmodel {
             }else{
                 content010 = self.convertA(complt.appMain, app.applicationDate, app.applicationReason);
             }
-            let appDate = self.appDateColor(self.convertDate(app.applicationDate), '','');
+            let appDate = self.appDateColor(self.convertDateMDW(app.applicationDate), '','');
             let inputDate = self.inputDateColor(self.convertDateTime(app.inputDate), '');
             
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
@@ -850,13 +850,13 @@ module cmm045.a.viewmodel {
             //振出 rec typeApp = 1
             //振休 abs typeApp = 0
             if(complt.typeApp == 0){
-                appDateAbs = self.appDateColor(self.convertDate(app.applicationDate), 'abs','');
-                appDateRec = self.appDateColor(self.convertDate(complt.appDateSub), 'rec','');
+                appDateAbs = self.appDateColor(self.convertDateMDW(app.applicationDate), 'abs','');
+                appDateRec = self.appDateColor(self.convertDateMDW(complt.appDateSub), 'rec','');
                 inputDateAbs = self.inputDateColor(self.convertDateTime(app.inputDate), 'abs');
                 inputDateRec = self.inputDateColor(self.convertDateTime(complt.appInputSub), 'rec');
             }else{
-                appDateRec = self.appDateColor(self.convertDate(app.applicationDate), 'rec','');
-                appDateAbs = self.appDateColor(self.convertDate(complt.appDateSub), 'abs','');
+                appDateRec = self.appDateColor(self.convertDateMDW(app.applicationDate), 'rec','');
+                appDateAbs = self.appDateColor(self.convertDateMDW(complt.appDateSub), 'abs','');
                 inputDateRec = self.inputDateColor(self.convertDateTime(app.inputDate), 'rec');
                 inputDateAbs = self.inputDateColor(self.convertDateTime(complt.appInputSub), 'abs');
             }
@@ -882,7 +882,8 @@ module cmm045.a.viewmodel {
         appDateColor(date: string, classApp: string, priod: string): string{
             let appDate = '<div class = "' + classApp + '" >' + date + priod + '</div>';;
             //color text appDate
-            let color = date.substring(11,12);
+            let a = date.split("(")[1];
+            let color = a.substring(0,1);
             if (color == '土') {//土
                 appDate = '<div class = "saturdayCell  ' + classApp + '" >' + date + priod +'</div>';
             }
@@ -890,6 +891,29 @@ module cmm045.a.viewmodel {
                 appDate = '<div class = "sundayCell  ' + classApp + '" >' + date + priod + '</div>';
             }
             return appDate;
+        }
+        //doi ung theo y amid-mizutani さん
+        appDateRangeColor(startDate: string, endDate: string): string{
+            let sDate = '<div class = "dateRange" >' + startDate + '</div>';;
+            let eDate =  '<div class = "dateRange" >' + endDate + '</div>';
+            //color text appDate
+            let a = startDate.split("(")[1];
+            let b = endDate.split("(")[1];
+            let color1 = a.substring(0,1);
+            if (color1 == '土') {//土
+                sDate = '<div class = "saturdayCell  dateRange" >' + startDate +  '</div>';
+            }
+            if (color1 == '日') {//日 
+                sDate = '<div class = "sundayCell  dateRange" >' + startDate + '</div>';
+            }
+            let color2 = b.substring(0,1);
+            if (color2 == '土') {//土
+                eDate = '<div class = "saturdayCell  dateRange" >' + endDate + '</div>';
+            }
+            if (color2 == '日') {//日 
+                eDate = '<div class = "sundayCell  dateRange" >' + endDate +  '</div>';
+            }
+            return sDate + '<div class = "dateRange" >' + '－' +  '</div>' +  eDate;
         }
         //※振出申請のみ同期なし・紐付けなし
         //申請/承認モード
@@ -1120,6 +1144,28 @@ module cmm045.a.viewmodel {
                     return date + '(土)';
                 default://Sun
                     return date + '(日)';
+            }
+        }
+        //MM/dd ver24
+        convertDateMDW(date: string) {
+            let a: number = moment(date, 'YYYY/MM/DD').isoWeekday();
+            let toDate = moment(date, 'YYYY/MM/DD').toDate();
+            let dateMDW = (toDate.getMonth()+1) + '/'+ toDate.getDate();
+            switch (a) {
+                case 1://Mon
+                    return dateMDW + '(月)';
+                case 2://Tue
+                    return dateMDW + '(火)';
+                case 3://Wed
+                    return dateMDW + '(水)';
+                case 4://Thu
+                    return dateMDW + '(木)';
+                case 5://Fri
+                    return dateMDW + '(金)';
+                case 6://Sat
+                    return dateMDW + '(土)';
+                default://Sun
+                    return dateMDW + '(日)';
             }
         }
         //yyyy/MM/dd hh:mm
