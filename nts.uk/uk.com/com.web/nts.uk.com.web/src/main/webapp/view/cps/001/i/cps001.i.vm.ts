@@ -267,6 +267,7 @@ module nts.uk.com.view.cps001.i.vm {
 
             if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
                 $('#idDateGrantInp').ntsError('set', { messageId: "Msg_1023" });
+                return;
             }
 
             let currentRow: ISpecialLeaveRemaining = _.find(ko.toJS(self.listData), function(item: any) { return item.specialid == self.currentValue(); });
@@ -292,27 +293,29 @@ module nts.uk.com.view.cps001.i.vm {
             service.saveData(command).done((_data: any) => {
                 if (command.specialid) {
                     self.loadData().done(() => {
-                        if (ids.length == self.listData().length) {
-                            self.currentValue(self.listData()[saveItemIndex].specialid);
-                        } else if ((self.listData().length > 0) && (ids.length != self.listData().length)) {
-                            self.currentValue(self.listData()[0].specialid);
-                        }
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if (ids.length == self.listData().length) {
+                                self.currentValue(self.listData()[saveItemIndex].specialid);
+                            } else if ((self.listData().length > 0) && (ids.length != self.listData().length)) {
+                                self.currentValue(self.listData()[0].specialid);
+                            }
+                            $("#idDateGrantInp").focus();
+                        });
                     });
 
                 } else {
                     self.loadData().done(() => {
-                        if (self.listData().length > 0) {
-                            let newItem = _.find(self.listData(), x => ids.indexOf(x.specialid) == -1);
-                            let saveItemIndex = _.findIndex(self.listData(), (item) => { return item.specialid == newItem.specialid; });
-                            self.currentValue(self.listData()[saveItemIndex].specialid);
-                        }
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if (self.listData().length > 0) {
+                                let newItem = _.find(self.listData(), x => ids.indexOf(x.specialid) == -1);
+                                let saveItemIndex = _.findIndex(self.listData(), (item) => { return item.specialid == newItem.specialid; });
+                                self.currentValue(self.listData()[saveItemIndex].specialid);
+                            }
+                            $("#idDateGrantInp").focus();
+                        });
                     });
                 }
-
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    clearError();
-                    $("#idDateGrantInp").focus();
-                });
+                clearError();
                 unblock();
 
             }).fail((error: any) => {
@@ -356,36 +359,27 @@ module nts.uk.com.view.cps001.i.vm {
                     if (currentRow != undefined) {
                         let itemListLength = self.listData().length;
                         service.remove(currentRow.specialid).done((_data: any) => {
-
-                            if (itemListLength === 1) {
-                                self.loadData().done(() => { });
-                            } else if (itemListLength - 1 === delItemIndex) {
-                                self.loadData().done(() => {
-                                    self.currentValue(self.listData()[delItemIndex - 1].specialid);
-
-                                });
-                            } else if (itemListLength - 1 > delItemIndex) {
-                                self.loadData().done(() => {
-                                    self.currentValue(self.listData()[delItemIndex].specialid);
-                                });
-                            }
-
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                clearError();
-                                $("#idDateGrantInp").focus();
+                                if (itemListLength === 1) {
+                                    self.loadData().done(() => { });
+                                } else if (itemListLength - 1 === delItemIndex) {
+                                    self.loadData().done(() => {
+                                        self.currentValue(self.listData()[delItemIndex - 1].specialid);
+                                    });
+                                } else if (itemListLength - 1 > delItemIndex) {
+                                    self.loadData().done(() => {
+                                        self.currentValue(self.listData()[delItemIndex].specialid);
+                                    });
+                                }
                             });
-                            unblock();
 
-                        }).fail((error: any) => {
+                        }).always(function() {
                             unblock();
                         });
-
                     }
-
-                }).ifCancel(() => {
+                }).then(() => {
+                    unblock();
                 });
-
-
         }
 
         closeDialog() {
@@ -491,7 +485,6 @@ module nts.uk.com.view.cps001.i.vm {
                                     self.timeReamH = ko.observable(!itemDef.display);
                                     self.nameTimeReam(itemDef.itemName);
                                     break;
-
                             }
 
 
