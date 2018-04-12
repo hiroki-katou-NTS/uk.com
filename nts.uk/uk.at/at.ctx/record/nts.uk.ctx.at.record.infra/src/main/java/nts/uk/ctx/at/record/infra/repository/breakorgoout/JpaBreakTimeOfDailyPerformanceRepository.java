@@ -199,7 +199,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+		this.getEntityManager().createQuery(REMOVE_BY_BREAKTYPE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).setParameter("breakType", breakType).executeUpdate();
 		this.getEntityManager().flush();
 	}
