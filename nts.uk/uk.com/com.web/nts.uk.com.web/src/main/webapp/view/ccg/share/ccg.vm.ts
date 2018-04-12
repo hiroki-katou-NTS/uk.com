@@ -285,6 +285,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.jobTitleCodes = [];
                 param.filterByWorktype = false;
                 param.worktypeCodes = [];
+                param.filterByClosure = false;
+                param.closureIds = [];
                 param.includeIncumbents = true;
                 param.includeWorkersOnLeave = true;
                 param.includeOccupancy = true;
