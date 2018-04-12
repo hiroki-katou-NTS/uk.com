@@ -66,13 +66,30 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 //		return new AttendanceTime(useTime);
 //	}
 	
-//	/**
-//	 * 代休使用時間の計算
-//	 * @return
-//	 */
-//	public AttendanceTime calcSubstituteHoliday(WorkType workType) {
-//		return VacationClass.vacationTimeOfcalcDaily(workType, VacationCategory.SubstituteHoliday);
-//	}
+	/**
+	 * 代休使用時間の計算
+	 * @return
+	 */
+	public AttendanceTime calcSubstituteHoliday(WorkType workType,
+			 									PredetermineTimeSetForCalc predetermineTimeSet,
+			 									Optional<WorkTimeCode> siftCode,
+			 									Optional<PersonalLaborCondition> personalCondition,
+			 									VacationAddTimeSet vacationAddTimeSet) {
+		if(workType.getDailyWork().getOneDay().isSubstituteHoliday()
+			|| workType.getDailyWork().getMorning().isSubstituteHoliday()
+			|| workType.getDailyWork().getAfternoon().isSubstituteHoliday())
+		{
+			return VacationClass.vacationTimeOfcalcDaily(workType, 
+													 VacationCategory.SubstituteHoliday,
+													 predetermineTimeSet,
+													 siftCode,
+													 personalCondition,
+													 vacationAddTimeSet);
+		}
+		else {
+			return new AttendanceTime(0);
+		}
+	}
 	
 	/**
 	 * フレックス時間を計算する
