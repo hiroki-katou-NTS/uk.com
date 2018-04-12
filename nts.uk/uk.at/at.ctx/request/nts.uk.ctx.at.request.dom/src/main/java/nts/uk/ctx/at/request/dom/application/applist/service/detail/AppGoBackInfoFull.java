@@ -10,7 +10,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務直行1
 	 */
-	private int goWorkAtr1;
+	private Integer goWorkAtr1;
 	/**
 	 * 勤務時間開始1
 	 */
@@ -18,7 +18,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務直帰1
 	 */
-	private int backHomeAtr1;
+	private Integer backHomeAtr1;
 	/**
 	 * 勤務時間終了1
 	 */
@@ -26,7 +26,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務直行2
 	 */
-	private int goWorkAtr2;
+	private Integer goWorkAtr2;
 	/**
 	 * 勤務時間開始2
 	 */
@@ -34,7 +34,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務直帰2
 	 */
-	private int backHomeAtr2;
+	private Integer backHomeAtr2;
 	/**
 	 * 勤務時間終了2
 	 */
