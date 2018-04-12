@@ -1175,6 +1175,9 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedValueB74.valueHasMutated();
                 self.selectedValueB715.valueHasMutated();    
                 self.checkedB615.valueHasMutated();
+                self.timeB219.valueHasMutated();
+                self.timeB221.valueHasMutated();
+                self.timeB223.valueHasMutated();
             }
             
             save(): void {
@@ -1195,7 +1198,7 @@ module nts.uk.at.view.kmk013.b {
                     obj.notReferringAch = self.selectedB29();
                     if (self.selectedB29() == 0) {
                         obj.referComHolidayTime = self.selectedB215();
-                        if (self.selectedB215() == 0) {
+                        if (self.selectedB215() == 0 && self.enableB215()) {
                             obj.oneDay = self.timeB219();
                             obj.morning = self.timeB221();
                             obj.afternoon = self.timeB223()
@@ -1260,6 +1263,7 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.incChildNursingCarePre = convertToInt(self.checkedB69());
                     obj.flexWork.notDeductLateleavePre = convertToInt(self.checkedB610());
                     obj.flexWork.exemptTaxTimePre = convertToInt(self.checkedB611());
+                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.checkedB68());
                     if (self.checkedB610() == true) {
                         obj.flexWork.enableSetPerWorkHour1 = convertToInt(self.checkedB6_21());    
                     } else {
@@ -1272,8 +1276,8 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.exemptTaxTimePre = self.oldData().flexWork.exemptTaxTimePre;
                     obj.flexWork.enableSetPerWorkHour1 = self.oldData().flexWork.enableSetPerWorkHour1;
                 }
-                if (self.enableB68() == true) {
-                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.enableB68());
+                if (self.enableB68()) {
+                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.checkedB68());
                 } else {
                     obj.flexWork.predeterminedOvertimePre = self.oldData().flexWork.predeterminedOvertimePre;
                 }
@@ -1298,7 +1302,7 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.minusAbsenceTimeWork = self.oldData().flexWork.minusAbsenceTimeWork;
                     obj.flexWork.enableSetPerWorkHour2 = self.oldData().enableSetPerWorkHour2;  
                 }
-                if (self.enableB616() == true) {
+                if (self.enableB616() == true && self.checkedB616()) {
                     obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());
                 } else {
                     obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;
