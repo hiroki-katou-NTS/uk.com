@@ -3,7 +3,7 @@ module nts.uk.at.view.kdl001.a {
         export class ScreenModel {
             columns: KnockoutObservableArray<NtsGridListColumn>;
             multiSelectMode: KnockoutObservable<boolean>;
-            isSelection:  KnockoutObservable<boolean>;
+            isSelection:  KnockoutObservable<boolean> = ko.observable(false);
             rootList: Array<WorkTimeSet>;
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
