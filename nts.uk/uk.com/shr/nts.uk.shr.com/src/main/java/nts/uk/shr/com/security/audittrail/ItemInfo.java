@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * 項目情報
@@ -20,38 +18,67 @@ public class ItemInfo {
 	
 	/** 修正前 */
 	@Getter
-	private final String rawValueBefore;
+	private final Value valueBefore;
 	
 	/** 修正後 */
 	@Getter
-	private final String rawValueAfter;
+	private final Value valueAfter;
 	
-	
-	public static ItemInfo of(String name, int valueBefore, int valueAfter) {
-		return new ItemInfo(name, String.valueOf(valueBefore), String.valueOf(valueAfter));
-	}
-	
-	public static ItemInfo of(String name, IntegerPrimitiveValue<?> valueBefore,  IntegerPrimitiveValue<?> valueAfter) {
-		return of(name, valueBefore.v(), valueAfter.v());
+	public static ItemInfo create(String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
+		return new ItemInfo(name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
 	}
 	
 	@RequiredArgsConstructor
+	@Getter
 	public static class Value {
 		
 		private final RawValue rawValue;
 		private final String textValue;
 	
+		static Value create(Object value, DataValueAttribute attr) {
+			
+			switch (attr) {
+			case COUNT:
+				return new Value(
+						RawValue.asInteger((Integer) value),
+						value.toString());
+				
+			default:
+				throw new RuntimeException("invalid attribute: " + attr);
+			}
+		}
 	}
 	
 	@RequiredArgsConstructor
 	@Getter
 	public static class RawValue {
 		
+		private final Type type;
 		private final String asString;
 		private final Integer asInt;
 		private final Double asDouble;
 		private final BigDecimal asDecimal;
 		private final GeneralDate asDate;
+		
+		public static RawValue asString(String value) {
+			return new RawValue(Type.STRING, value, null, null, null, null);
+		}
+		
+		public static RawValue asInteger(Integer value) {
+			return new RawValue(Type.INTEGER, null, value, null, null, null);
+		}
+		
+		public static RawValue asDouble(Double value) {
+			return new RawValue(Type.DOUBLE, null, null, value, null, null);
+		}
+		
+		public static RawValue asDecimal(BigDecimal value) {
+			return new RawValue(Type.DECIMAL, null, null, null, value, null);
+		}
+		
+		public static RawValue asDate(GeneralDate value) {
+			return new RawValue(Type.DATE, null, null, null, null, value);
+		}
 		
 		@RequiredArgsConstructor
 		public enum Type {

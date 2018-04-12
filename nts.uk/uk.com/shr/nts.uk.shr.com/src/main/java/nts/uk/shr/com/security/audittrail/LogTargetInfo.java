@@ -13,7 +13,7 @@ public class LogTargetInfo {
 	
 	/** 対象データ */
 	@Getter
-	private final TargetDataType targetData;
+	private final TargetDataType targetDataType;
 	
 	/** 対象データKEY情報 */
 	@Getter
@@ -38,7 +38,7 @@ public class LogTargetInfo {
 	/**
 	 * 備考はOptional
 	 * @param targetUser
-	 * @param targetData
+	 * @param targetDataType
 	 * @param targetDataKey
 	 * @param correctionAttr
 	 * @param correctedItem
@@ -46,18 +46,18 @@ public class LogTargetInfo {
 	 */
 	public LogTargetInfo(
 			UserInfo targetUser,
-			TargetDataType targetData,
+			TargetDataType targetDataType,
 			TargetDataKey targetDataKey,
 			CorrectionAttr correctionAttr,
 			ItemInfo correctedItem,
 			int showOrder) {
 		
-		this(targetUser, targetData, targetDataKey, correctionAttr, correctedItem, showOrder, "");
+		this(targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder, "");
 	}
 	
 	public LogTargetInfo(
 			UserInfo targetUser,
-			TargetDataType targetData,
+			TargetDataType targetDataType,
 			TargetDataKey targetDataKey,
 			CorrectionAttr correctionAttr,
 			ItemInfo correctedItem,
@@ -65,7 +65,7 @@ public class LogTargetInfo {
 			String remark) {
 		
 		this.targetUser = targetUser;
-		this.targetData = targetData;
+		this.targetDataType = targetDataType;
 		this.targetDataKey = targetDataKey;
 		this.correctionAttr = correctionAttr;
 		this.correctedItem = correctedItem;
