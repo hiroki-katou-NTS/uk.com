@@ -44,6 +44,7 @@ public class VacationClass {
 		BreakDownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition, vacationAddTimeSet);
 		switch(workType.getDailyWork().decisionMatchWorkType(vacationCategory.convertWorkTypeClassification())) {
 			case FULL_TIME:
+			case HOLIDAY:
 				return breakDownTimeDay.getOneDay();
 			case MORNING:
 				return breakDownTimeDay.getMorning();
