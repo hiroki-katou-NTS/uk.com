@@ -202,6 +202,9 @@
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 									</thead>
+									<!--[if IE]>
+  										 <tbody style="height: 505px" data-bind="foreach: currentCategory().itemList()">
+									<![endif]-->
 									<tbody data-bind="foreach: currentCategory().itemList()">
 										<td id="name" class='input-units-1'
 											data-bind="css:{ 
