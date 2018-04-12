@@ -1007,6 +1007,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
+        
         getWidthText(str: string): number {
             let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
             return width;
