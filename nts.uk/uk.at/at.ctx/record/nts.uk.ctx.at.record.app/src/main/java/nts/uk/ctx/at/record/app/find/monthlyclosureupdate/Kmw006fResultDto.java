@@ -11,7 +11,7 @@ import lombok.Value;
  */
 
 @Value
-public class Kmw006ResultDto {
+public class Kmw006fResultDto {
 
 	private List<MonthlyClosureErrorInforDto> listErrorInfor;
 

@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErro
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdErrInf;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdErrInfPk;
-import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdPerLog;
 
 /**
  * 

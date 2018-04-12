@@ -8,9 +8,9 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdatelog;
 
 public enum MonthlyClosureUpdateErrorAlarmAtr {
 
-	ALARM(0, "アラーム"),
+	ALARM(0, "Enum_MonthlyClosureUpdate_Alarm"),
 
-	ERROR(1, "エラー");
+	ERROR(1, "Enum_MonthlyClosureUpdate_Error");
 
 	public int value;
 

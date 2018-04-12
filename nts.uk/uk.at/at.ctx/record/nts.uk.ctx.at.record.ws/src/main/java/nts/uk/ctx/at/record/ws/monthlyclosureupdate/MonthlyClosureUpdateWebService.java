@@ -12,7 +12,8 @@ import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.CheckMonthlyClosure
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.ConfirmCompleteMonthlyUpdateCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.ExecuteMonthlyClosureCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.MonthlyClosureResponse;
-import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006ResultDto;
+import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006aResultDto;
+import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006fResultDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureUpdateFinder;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureUpdateLogDto;
 
@@ -64,8 +65,13 @@ public class MonthlyClosureUpdateWebService extends WebService {
 	
 	@POST
 	@Path("getResults/{monthlyClosureId}")
-	public Kmw006ResultDto getResults(@PathParam("monthlyClosureId") String id) {
+	public Kmw006fResultDto getResults(@PathParam("monthlyClosureId") String id) {
 		return monthlyClosureFinder.getClosureResult(id);
 	}
 
+	@POST
+	@Path("getInfors")
+	public Kmw006aResultDto getInfor() {
+		return monthlyClosureFinder.getClosureInfors();
+	}
 }

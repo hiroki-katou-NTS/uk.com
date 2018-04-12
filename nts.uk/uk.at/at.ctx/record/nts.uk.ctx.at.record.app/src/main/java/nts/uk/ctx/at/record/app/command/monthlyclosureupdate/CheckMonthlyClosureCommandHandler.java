@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.monthlyclosureupdate;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +56,7 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		int closureId = context.getCommand();
-		switch (checkExecutionStatus(closureId, companyId)) {
+		switch (checkExecutionStatus(companyId)) {
 		case 0:// not executable
 			throw new BusinessException("Msg_1104");
 		case 1:// executable
@@ -85,17 +84,15 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 			} else {
 				throw new BusinessException("Msg_1105");
 			}
-		case 2:// running
-			return null;
-		default:
+		default: // running => open dialog F
 			return null;
 		}
 
 	}
 
 	// 実行状況を確認する
-	private int checkExecutionStatus(int closureId, String companyId) {
-		List<MonthlyClosureUpdateLog> list = monthlyClosureRepo.getAll(companyId, closureId).stream()
+	private int checkExecutionStatus(String companyId) {
+		List<MonthlyClosureUpdateLog> list = monthlyClosureRepo.getAll(companyId).stream()
 				.filter(item -> item.getExecutionStatus() == MonthlyClosureExecutionStatus.RUNNING
 						|| item.getExecutionStatus() == MonthlyClosureExecutionStatus.COMPLETED_NOT_CONFIRMED)
 				.collect(Collectors.toList());
@@ -111,7 +108,6 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		}
 		// return not executable
 		return 0;
-
 	}
 
 	// 実行可能な締めかチェックする
@@ -135,7 +131,7 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		query.setBaseDate(closurePeriod.end());
 		query.setReferenceRange(EmployeeReferenceRange.ALL_EMPLOYEE.value);
 		query.setFilterByEmployment(false);
-		query.setEmploymentCodes(new ArrayList<>());
+		query.setEmploymentCodes(Collections.emptyList());
 		query.setFilterByDepartment(false);
 		query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(false);

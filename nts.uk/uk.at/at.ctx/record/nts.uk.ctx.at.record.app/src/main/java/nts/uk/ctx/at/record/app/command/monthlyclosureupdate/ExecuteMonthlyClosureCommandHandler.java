@@ -26,7 +26,7 @@ public class ExecuteMonthlyClosureCommandHandler extends AsyncCommandHandler<Mon
 	protected void handle(CommandHandlerContext<MonthlyClosureResponse> context) {
 		MonthlyClosureResponse params = context.getCommand();
 
-		monthlyUpdateService.monthlyUpdateMgr(params.getMonthlyClosureUpdateLogId(), params.getListEmployeeId(),
+		monthlyUpdateService.monthlyUpdateMgr(context.asAsync(), params.getMonthlyClosureUpdateLogId(), params.getListEmployeeId(),
 				params.getClosureId(), new YearMonth(params.getCurrentMonth()),
 				new ClosureDate(params.getClosureDay(), params.isLastDayOfMonth()),
 				new DatePeriod(params.getPeriodStart(), params.getPeriodEnd()));

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMclosureUpdLog;
@@ -20,10 +21,10 @@ import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMclosureUp
 public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implements MonthlyClosureUpdateLogRepository {
 
 	@Override
-	public List<MonthlyClosureUpdateLog> getAll(String companyId, int closureId) {
-		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId AND c.closureId = :closureId";
+	public List<MonthlyClosureUpdateLog> getAll(String companyId) {
+		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId";
 		return this.queryProxy().query(sql, KrcdtMclosureUpdLog.class).setParameter("companyId", companyId)
-				.setParameter("closureId", closureId).getList(c -> c.toDomain());
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -50,6 +51,28 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 			this.commandProxy().update(entity);
 		} else
 			throw new RuntimeException("Can not find MonthlyClosureUpdateLog with id=" + domain.getId());
+	}
+
+	@Override
+	public Optional<MonthlyClosureUpdateLog> getLogRunningOrNotConfirmByEmpId(String companyId, int closureId,
+			String employeeId) {
+		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId "
+				+ "AND c.closureId = :closureId AND c.executeEmployeeId = :executeEmployeeId "
+				+ "AND (c.executionStatus = :runningStatus OR c.executionStatus = :notConfirmStatus)";
+		int running = MonthlyClosureExecutionStatus.RUNNING.value;
+		int notConfirm = MonthlyClosureExecutionStatus.COMPLETED_NOT_CONFIRMED.value;
+		Optional<KrcdtMclosureUpdLog> opt = this.queryProxy().query(sql, KrcdtMclosureUpdLog.class)
+				.setParameter("companyId", companyId).setParameter("closureId", employeeId)
+				.setParameter("executeEmployeeId", employeeId).setParameter("runningStatus", running)
+				.setParameter("notConfirmStatus", notConfirm).getSingle();
+		return opt.isPresent() ? Optional.ofNullable(opt.get().toDomain()) : Optional.empty();
+	}
+
+	@Override
+	public List<MonthlyClosureUpdateLog> getAllByClosureId(String companyId, int closureId) {
+		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId AND c.closureId = :closureId";
+		return this.queryProxy().query(sql, KrcdtMclosureUpdLog.class).setParameter("companyId", companyId)
+				.setParameter("closureId", closureId).getList(c -> c.toDomain());
 	}
 
 }

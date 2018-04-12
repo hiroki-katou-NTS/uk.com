@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess.MonthlyCl
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.MonthlyClosureRemainNumProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -66,11 +69,15 @@ public class MonthlyUpdateMgr {
 	@Inject
 	private CalcPeriodForClosureProcess calcPeriod;
 
-	public void monthlyUpdateMgr(String monthlyClosureLogId, List<String> listEmpId, int closureId, YearMonth ym,
-			ClosureDate closureDate, DatePeriod period) {
+	public void monthlyUpdateMgr(AsyncCommandHandlerContext asyncContext, String monthlyClosureLogId,
+			List<String> listEmpId, int closureId, YearMonth ym, ClosureDate closureDate, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
+		TaskDataSetter dataSetter = asyncContext.getDataSetter();
+		int count = 0;
+		dataSetter.setData("processed", count);
 		for (String empId : listEmpId) {
 			processEmployee(monthlyClosureLogId, empId, closureId, ym, closureDate, period);
+			dataSetter.updateData("processed", ++count);
 		}
 		cancelLock.cancelActualLock(companyId, closureId);
 		ymUpdate.processYmUpdate(companyId, closureId);
@@ -81,27 +88,24 @@ public class MonthlyUpdateMgr {
 	private void processEmployee(String monthlyClosureLogId, String empId, int closureId, YearMonth ym,
 			ClosureDate closureDate, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
-		Optional<ClosurePeriod> optClosurePeriod = calcPeriod.algorithm(companyId, empId, closureId);
-		if (optClosurePeriod.isPresent()) {
-			ClosurePeriod closurePeriod = optClosurePeriod.get();
+		CalcPeriodForClosureProcValue calculatedResult = calcPeriod.algorithm(companyId, empId, closureId);
+		switch (calculatedResult.getState()) {
+		case EXIST:
+			ClosurePeriod closurePeriod = calculatedResult.getClosurePeriod().get();
 			MonthlyClosureUpdatePersonLog personLog = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
 					null, MonthlyClosurePersonExecutionStatus.INCOMPLETE);
 			executeProcess(monthlyClosureLogId, empId, closurePeriod);
 			logProcess.monthlyClosureUpdatePersonLogProcess(monthlyClosureLogId, empId, personLog);
-		} else {
-			// TODO: description not clear
-			// 「既に締め処理済み」が返ってきた場合 (When "already closed" has been returned)
-			MonthlyClosureUpdatePersonLog personLog = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
-					MonthlyClosurePersonExecutionResult.ALREADY_CLOSURE, MonthlyClosurePersonExecutionStatus.COMPLETE);
-			mClosurePerLogRepo.add(personLog);
-
-			// 「対象締め処理期間なし」が返ってきた場合 ("When there is no target closing processing
-			// period" returned)
+			break;
+		case NOT_EXIST:
 			mClosurePerLogRepo.delete(monthlyClosureLogId, empId);
-			// F：進捗確認ダイアログの表示を更新する(F: Update display of progress confirmation
-			// dialog)
+			break;
+		case PROCESSED:
+			MonthlyClosureUpdatePersonLog personLog2 = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
+					MonthlyClosurePersonExecutionResult.ALREADY_CLOSURE, MonthlyClosurePersonExecutionStatus.COMPLETE);
+			mClosurePerLogRepo.add(personLog2);
+			break;
 		}
-
 	}
 
 	// 各処理の実行

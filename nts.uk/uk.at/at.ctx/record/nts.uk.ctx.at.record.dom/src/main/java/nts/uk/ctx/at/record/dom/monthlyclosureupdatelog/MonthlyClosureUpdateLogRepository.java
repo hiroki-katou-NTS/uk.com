@@ -11,9 +11,13 @@ import java.util.Optional;
 
 public interface MonthlyClosureUpdateLogRepository {
 
-	public List<MonthlyClosureUpdateLog> getAll(String companyId, int closureId);
+	public List<MonthlyClosureUpdateLog> getAll(String companyId);
+	
+	public List<MonthlyClosureUpdateLog> getAllByClosureId(String companyId, int closureId);
 	
 	public Optional<MonthlyClosureUpdateLog> getLogById(String id);
+	
+	public Optional<MonthlyClosureUpdateLog> getLogRunningOrNotConfirmByEmpId(String companyId, int closureId, String employeeId);
 	
 	public void add(MonthlyClosureUpdateLog domain);
 	
