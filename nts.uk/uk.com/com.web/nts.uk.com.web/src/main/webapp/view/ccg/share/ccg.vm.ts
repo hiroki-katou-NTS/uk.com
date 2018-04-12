@@ -125,6 +125,9 @@ module nts.uk.com.view.ccg.share.ccg {
             // Acquired baseDate
             acquiredBaseDate: KnockoutObservable<string>;
 
+            employmentSubscriptions: Array<KnockoutSubscription> = [];
+            employeeSubscriptions: Array<KnockoutSubscription> = [];
+
             /**
              * Init screen model
              */
@@ -854,7 +857,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedCode: self.selectedCodeEmployee,
                     isDialog: true,
                     isShowNoSelectRow: false,
-                    maxRows: rows
+                    maxRows: rows,
+                    subscriptions: self.employeeSubscriptions
                 }
 
                 // Show KCP005
@@ -1447,7 +1451,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         isDialog: true,
                         isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
-                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined
+                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
+                        subscriptions: self.employmentSubscriptions
                     };
 
                     self.classifications = {
