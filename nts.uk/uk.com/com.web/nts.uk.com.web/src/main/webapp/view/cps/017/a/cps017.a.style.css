@@ -1,9 +1,10 @@
-#master-wrapper {
-	width: 1380px;
-}
+/* #master-wrapper { */
+/* 	width: 1405px; */
+/* } */
 
 body {
 	overflow: hidden;
+/* 	width: 1405px; */
 }
 
 #functions-area button.danger {
@@ -12,7 +13,7 @@ body {
 }
 
 #contents-area {
-	width: 1380px;
+	width: 1260px;
 	height: 800px;
 }
 
