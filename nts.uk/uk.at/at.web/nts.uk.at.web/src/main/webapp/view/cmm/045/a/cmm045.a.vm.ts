@@ -1278,6 +1278,11 @@ module cmm045.a.viewmodel {
                 let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), 
                     lstAppGroup, self.lstAppHdWork(), self.lstAppWorkChange(), self.lstAppAbsence(), self.lstAppCompltSync());
                 self.lstApp(lstData);
+                //check list app new exist selectedCode???
+                let check = self.findExist();
+                if(check === undefined){
+                    self.selectedCode(-1);
+                }
                 if (self.selectedCode() != -1) {
                     self.filterByAppType(self.selectedCode());
                 } else {
@@ -1303,6 +1308,12 @@ module cmm045.a.viewmodel {
                 block.clear();
             }).fail(() => {
                 block.clear();
+            });
+        }
+        findExist(): any{
+            let self = this;
+            return _.find(self.itemApplication(), function(item){
+                return item.appId == self.selectedCode();
             });
         }
         /**
