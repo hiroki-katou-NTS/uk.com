@@ -225,9 +225,8 @@ module cps001.h.vm {
                                     self.currentItem(self.items()[delItemIndex].id);
                                 });
                             }
-
-                            info({ messageId: "Msg_16" }).then(function() {
-                                clearError();
+                            clearError();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 $("#grantDate").focus();
                             });
 
@@ -280,14 +279,16 @@ module cps001.h.vm {
                                 } else {
                                     self.create();
                                 }
+
+                                alert({ messageId: "Msg_15" }).then(function() {
+                                    clearError();
+                                    $("#grantDate").focus();
+                                });
+                                unblock();
+
                             }).fail((_data) => {
                                 unblock();
                             });
-                            alert({ messageId: "Msg_15" }).then(function() {
-                                clearError();
-                                $("#grantDate").focus();
-                            });
-                            unblock();
 
                         }).fail((mes) => {
                             unblock();

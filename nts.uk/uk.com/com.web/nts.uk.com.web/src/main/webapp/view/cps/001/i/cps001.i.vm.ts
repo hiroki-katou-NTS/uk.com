@@ -133,7 +133,7 @@ module nts.uk.com.view.cps001.i.vm {
                 if (self.listData().length) {
                     // Set focus
                     let index = _.findIndex(self.listData(), (item) => { return item.specialid == self.currentValue(); });
-                    
+
                     if (index == -1) {
                         self.currentValue(self.listData()[0].specialid);
                     }
@@ -308,11 +308,13 @@ module nts.uk.com.view.cps001.i.vm {
                         }
                     });
                 }
-                alert({ messageId: "Msg_15" }).then(function() {
+
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     clearError();
                     $("#idDateGrantInp").focus();
                 });
                 unblock();
+
             }).fail((error: any) => {
                 unblock();
             });
@@ -368,12 +370,12 @@ module nts.uk.com.view.cps001.i.vm {
                                 });
                             }
 
-                            info({ messageId: "Msg_16" }).then(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 clearError();
                                 $("#idDateGrantInp").focus();
                             });
-
                             unblock();
+
                         }).fail((error: any) => {
                             unblock();
                         });
@@ -457,19 +459,15 @@ module nts.uk.com.view.cps001.i.vm {
                             switch (timeType) {
                                 case "grantDate":
                                     self.nameDateGrantInp(itemDef.itemName);
-                                    console.log(self.nameDateGrantInp());
                                     break;
                                 case "deadlineDate":
                                     self.nameDeadlineDateInp(itemDef.itemName);
-                                    console.log(self.nameDeadlineDateInp());
                                     break;
                                 case "dayNumberOfGrants":
                                     self.nameDayNumberOfGrant(itemDef.itemName);
-                                    console.log(self.nameDayNumberOfGrant());
                                     break;
                                 case "dayNumberOfUse":
                                     self.nameDayNumberOfUse(itemDef.itemName);
-                                    console.log(self.nameDayNumberOfUse());
                                     break;
                                 case "dayNumberOver":
                                     self.nameDayNumberOver(itemDef.itemName);
