@@ -78,8 +78,11 @@ module nts.uk.com.view.cps001.g.vm {
                 if (_self.listAnnualLeaveGrantRemainData().length) {
                      _self.createMode(false);
                     // Set focus
-                    _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
-                    // Set to update mode
+                    let index = _.findIndex(_self.listAnnualLeaveGrantRemainData(), (item) => { return item.annLeavID == _self.currentValue(); });
+
+                    if (index == -1) {
+                        _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
+                    }
                 } else {
                     _self.create();                    
                 }
@@ -95,7 +98,6 @@ module nts.uk.com.view.cps001.g.vm {
          */
         public startPage(annID? : string): JQueryPromise<any> {
             let _self = this; 
-            
             block();
             _self.getItemDef();
             _self.alllist.removeAll();
