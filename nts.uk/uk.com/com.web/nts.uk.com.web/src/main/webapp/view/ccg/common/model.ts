@@ -109,7 +109,9 @@ module nts.uk.com.view.ccg.model {
                     this.url = this.origin + ""; 
                 }
             }else if(this.type == ENUM_OPTIONAL_WIDGET) {
+                this.topPagePart = new OptionalWidget(placementPartDto);
                 this.name = placementPartDto.topPageName;
+                this.url = this.origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml";
             }
         }
         
@@ -133,7 +135,7 @@ module nts.uk.com.view.ccg.model {
                 placementPartDto.topPageCode = this.topPagePart.topPageCode(),
                 placementPartDto.topPageName = this.topPagePart.topPageName()
             } else if (this.isOptionalWidget()) {
-                placementPartDto.topPagePartID = this.topPagePart.topPagePartID(),
+                placementPartDto.topPagePartID = this.topPagePartID,
                 placementPartDto.topPageCode = this.topPagePart.topPageCode(),
                 placementPartDto.topPageName = this.topPagePart.topPageName()
             } else if (this.isDashBoard()) {
@@ -210,6 +212,17 @@ module nts.uk.com.view.ccg.model {
             this.width = ko.observable((dto && dto.width) ? dto.width : 4);
             this.height = ko.observable((dto && dto.height) ? dto.height : 4);
             this.type = ENUM_STANDART_WIDGET;
+        }
+    }
+    export class OptionalWidget extends TopPagePart {
+        constructor(dto?: PlacementPartDto) {
+            super();
+            this.topPagePartID = ko.observable((dto && dto.topPagePartID) ? dto.topPagePartID : "");
+            this.topPageCode = ko.observable((dto && dto.topPageCode) ? dto.topPageCode : "");
+            this.topPageName = ko.observable((dto && dto.topPageName) ? dto.topPageName : "");
+            this.width = ko.observable((dto && dto.width) ? dto.width : 4);
+            this.height = ko.observable((dto && dto.height) ? dto.height : 4);
+            this.type = ENUM_OPTIONAL_WIDGET;
         }
     }
     
