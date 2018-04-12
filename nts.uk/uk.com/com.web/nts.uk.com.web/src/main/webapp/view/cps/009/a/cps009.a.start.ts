@@ -6,22 +6,10 @@ module nts.uk.com.view.cps009.a {
 
         var screenModel = new viewmodel.ViewModel();
         __viewContext["viewModel"] = screenModel;
-
-
-        __viewContext.bind(__viewContext["viewModel"]);
         
+        __viewContext.bind(__viewContext["viewModel"]);
         $(document).ready(function() {
-            let features: Array<any> = [
-                {name: "Selection", multipleSelection: false, inherit: true},
-                {name: "Tooltips", 
-                 columnSettings: 
-                 [{columnKey: "settingCode", allowTooltips: true},
-                  {columnKey: "settingName", allowTooltips: true}],
-                 visibility: "overflow", showDelay: 200, hideDelay: 200
-               },
-               {name: "Resizing"}];
-
-            $("#category_grid").igGrid("option","features", features);
+            __viewContext["viewModel"].checkBrowse();
         });
 
         if (window.top != window.self) {
@@ -36,6 +24,8 @@ module nts.uk.com.view.cps009.a {
         });
     });
 }
+
+
 
 
 
