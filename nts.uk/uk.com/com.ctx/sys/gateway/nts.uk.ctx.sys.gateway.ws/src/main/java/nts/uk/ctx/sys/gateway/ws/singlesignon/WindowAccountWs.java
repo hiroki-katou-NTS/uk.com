@@ -56,7 +56,8 @@ public class WindowAccountWs extends WebService{
 	@POST
 	@Path("find/userInfo")
 	public List<UserDto> findListUserInfo(UserInfo object) {
-		return this.userFinder.findListUserInfo(object.getBaseDate(),object.getIsScreenC());
+		//TODO remove closureID
+		return this.userFinder.findListUserInfo(0, object.getSIds(), object.getIsScreenC());
 	}
 	
 	

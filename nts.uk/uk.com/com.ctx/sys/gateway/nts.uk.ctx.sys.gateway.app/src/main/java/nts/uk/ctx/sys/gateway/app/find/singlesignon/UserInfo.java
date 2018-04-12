@@ -4,9 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * Gets the base date.
@@ -22,10 +23,9 @@ import nts.arc.time.GeneralDate;
  */
 @Setter
 public class UserInfo {
-	
-	/** The base date. */
-	private GeneralDate baseDate;
-	
 	/** The is screen C. */
 	private Boolean isScreenC;
+
+	/** The s ids. */
+	private List<String> sIds;
 }
