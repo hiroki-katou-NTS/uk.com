@@ -495,15 +495,15 @@ module cmm045.shr {
         export class AppCompltLeaveFull {
             /**申請ID*/
             appID: string;
-            /**勤務種類*/
-            workTypeCD: string;
+            /**勤務種類Name*/
+            workTypeName: string;
             /**勤務時間1.開始時刻*/
             startTime: string;
             /**勤務時間1.終了時刻*/
             endTime: string;
-            constructor(appID: string, workTypeCD: string, startTime: string, endTime: string){
+            constructor(appID: string, workTypeName: string, startTime: string, endTime: string){
                 this.appID = appID;
-                this.workTypeCD = workTypeCD;
+                this.workTypeName = workTypeName;
                 this.startTime = startTime;
                 this.endTime = endTime;
             }

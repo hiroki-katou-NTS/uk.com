@@ -5,8 +5,14 @@ module kcp.share.list {
         name?: string;
         workplaceName?: string;
         isAlreadySetting?: boolean;
+        optionalColumn?: any;
     }
     
+    export interface OptionalColumnDataSource {
+        empId: string;
+        content: any;
+    }
+
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
@@ -132,6 +138,21 @@ module kcp.share.list {
          * Selected closure code. Available for employment list only.
          */
         selectedClosureId?: KnockoutObservable<any>;
+
+        /**
+         * Show optional column property. Default = false
+         */
+        showOptionalColumn?: boolean;
+
+        /**
+         * Optional column name.
+         */
+        optionalColumnName?: string;
+
+        /**
+         * Optional column datasource
+         */
+        optionalColumnDatasource?: KnockoutObservableArray<OptionalColumnDataSource>;
     }
     
     export class ClosureSelectionType {
@@ -169,6 +190,7 @@ module kcp.share.list {
         nameColumnSize: any;
         workplaceColumnSize: any;
         alreadySetColumnSize: any;
+        optionalColumnSize: any;
     }
     
     /**
@@ -214,6 +236,12 @@ module kcp.share.list {
         isDisplayFullClosureOption: boolean;
         closureList: KnockoutObservableArray<ClosureItem>;
         isShowNoSelectRow: boolean;
+        isShowAlreadySet: boolean;
+        isShowWorkPlaceName: boolean;
+        showOptionalColumn: boolean;
+        optionalColumnName: string;
+        optionalColumnDatasource: KnockoutObservableArray<OptionalColumnDataSource>;
+        hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -226,9 +254,9 @@ module kcp.share.list {
             this.isDisplayFullClosureOption = true;
             this.closureSelectionType = ClosureSelectionType.NO_SELECT;
             this.closureList = ko.observableArray([]);
-            var self = this;
-            
+            this.hasUpdatedOptionalContent = ko.observable(false);
         }
+
         /**
          * Init component.
          */
@@ -251,6 +279,11 @@ module kcp.share.list {
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
+            self.isShowAlreadySet = data.isShowAlreadySet;
+            self.isShowWorkPlaceName = data.isShowWorkPlaceName;
+            self.showOptionalColumn = data.showOptionalColumn ? data.showOptionalColumn : false;
+            self.optionalColumnName = data.optionalColumnName;
+            self.optionalColumnDatasource = data.optionalColumnDatasource;
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
@@ -266,9 +299,6 @@ module kcp.share.list {
                 }
             }
             self.initGridStyle(data);
-            if (data.maxWidth && data.maxWidth <= 350) {
-                data.maxWidth = 350;
-            }
             self.listType = data.listType;
             self.tabIndex = this.getTabIndexByListType(data);
             if (data.baseDate) {
@@ -276,27 +306,84 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            if (self.listType == ListType.JOB_TITLE) {
-                this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
-            }
-            
+
             // Setup list column.
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
-                        formatter: function(code) {
-                            return code;
-                        },});
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: self.gridStyle.nameColumnSize,
-                        template: "<td class='list-component-name-col'>${name}</td>",});
-            // With Employee list, add column company name.
-            if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
-                        template: "<td class='list-component-name-col'>${workplaceName}</td>"});
+            self.setupListColumns();
+
+            // When itemList change -> refesh data list.
+            self.itemList.subscribe(newList => {
+                if(self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
+                    self.addOptionalContentToItemList();
+                }
+                self.hasUpdatedOptionalContent(false);
+                self.createGlobalVarDataList(newList, $input);
+            });
+            
+            // With list type is employee list, use employee input.
+            if (self.listType == ListType.EMPLOYEE) {
+                self.initComponent(data, data.employeeInputList(), $input).done(function() {
+                    dfd.resolve();
+                });
+                data.employeeInputList.subscribe(dataList => {
+                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
+                    self.itemList(dataList);
+                });
+                return dfd.promise();
             }
             
-            // If show Already setting.
-            if (data.isShowAlreadySet) {
-                self.alreadySettingList = data.alreadySettingList;
-                // Add row already setting.
+            // Find data list.
+            this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
+                self.initComponent(data, dataList, $input).done(function() {
+                    dfd.resolve();
+                });
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Setup list columns
+         */
+        private setupListColumns(): void {
+            let self = this;
+
+            // id column
+            if (self.listType == ListType.JOB_TITLE) {
+                self.listComponentColumn.push({ headerText: '', hidden: true, prop: 'id' });
+            }
+
+            // code column
+            self.listComponentColumn.push({
+                headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
+                formatter: function(code) {
+                    return code;
+                }
+            });
+
+            // name column
+            self.listComponentColumn.push({
+                headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: self.gridStyle.nameColumnSize,
+                template: "<td class='list-component-name-col'>${name}</td>",
+            });
+
+            // workplace name column
+            if (self.listType == ListType.EMPLOYEE && self.isShowWorkPlaceName) {
+                self.listComponentColumn.push({
+                    headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
+                    template: "<td class='list-component-name-col'>${workplaceName}</td>"
+                });
+            }
+
+            // optional column
+            if (self.showOptionalColumn) {
+                self.addOptionalContentToItemList();
+                self.listComponentColumn.push({
+                    headerText: self.optionalColumnName, prop: 'optionalColumn', width: self.gridStyle.optionalColumnSize,
+                    template: "<td class='list-component-name-col'>${optionalColumn}</td>"
+                });
+            }
+
+            // Already setting column
+            if (self.isShowAlreadySet) {
                 self.listComponentColumn.push({
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
                     formatter: function(isAlreadySet: string) {
@@ -307,31 +394,21 @@ module kcp.share.list {
                     }
                 });
             }
-            
-            // With list type is employee list, use employee input.
-            if (self.listType == ListType.EMPLOYEE) {
-                self.initComponent(data, data.employeeInputList(), $input).done(function() {
-                    dfd.resolve();
-                });
-                data.employeeInputList.subscribe(dataList => {
-                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
-                    self.itemList(dataList);
-                })
-                return dfd.promise();
-            }
-            
-            // When itemList change -> refesh data list.
-            self.itemList.subscribe(newList => {
-                self.createGlobalVarDataList(newList, $input);
-            })
-            
-            // Find data list.
-            this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
-                self.initComponent(data, dataList, $input).done(function() {
-                    dfd.resolve();
-                });
+
+        }
+
+        /**
+         * Add optional content to item list
+         */
+        private addOptionalContentToItemList(): void {
+            let self = this;
+            let mappedList = _.map(self.itemList(), item => {
+                const found = _.find(self.optionalColumnDatasource(), vl => vl.empId == item.code);
+                item.optionalColumn = found ? found.content : '';
+                return item;
             });
-            return dfd.promise();
+            self.hasUpdatedOptionalContent(true);
+            self.itemList(mappedList);
         }
         
         /**
@@ -362,8 +439,15 @@ module kcp.share.list {
             var dfd = $.Deferred<void>();
             var self = this;
 
+            if (self.showOptionalColumn) {
+                self.optionalColumnDatasource.subscribe(vl => {
+                    self.addOptionalContentToItemList();
+                });
+            }
+
             // Map already setting attr to data list.
             if (data.isShowAlreadySet) {
+                self.alreadySettingList = data.alreadySettingList;
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
                 // subscribe when alreadySettingList update => reload component.
@@ -602,10 +686,11 @@ module kcp.share.list {
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
-            codeColumnSize = data.maxWidth ? '25%': codeColumnSize;
-            var nameColumnSize = data.maxWidth ? '35%' : 170;
-            var workplaceColumnSize = data.maxWidth ? '25%' : 150;
+            codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
+            var nameColumnSize = data.maxWidth ? '30%' : 170;
+            var workplaceColumnSize = data.maxWidth ? '20%' : 150;
             var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
+            var optionalColumnSize = data.maxWidth ? '20%' : 150;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
@@ -614,8 +699,12 @@ module kcp.share.list {
                 rowHeight: totalRowsHeight,
                 nameColumnSize: nameColumnSize,
                 workplaceColumnSize: workplaceColumnSize,
-                alreadySetColumnSize: alreadySetColumnSize
+                alreadySetColumnSize: alreadySetColumnSize,
+                optionalColumnSize: optionalColumnSize
             };
+            if (data.maxWidth && data.maxWidth <= 350) {
+                data.maxWidth = 350;
+            }
         }
         
         /**
