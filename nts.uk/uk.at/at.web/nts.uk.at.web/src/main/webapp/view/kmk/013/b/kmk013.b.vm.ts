@@ -1289,7 +1289,19 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.exemptTaxTimeWork = convertToInt(self.checkedB619());
                     obj.flexWork.minusAbsenceTimeWork = convertToInt(self.checkedB620());
                     if (self.checkedB615() == true) {
-                        obj.flexWork.additionWithinMonthlyStatutory = convertToInt(self.checkedB6_23());    
+                        if (self.enableB616) {
+                            obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());    
+                        } else {
+                            obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;        
+                        }
+                        if (self.enableB6_23) {
+                            obj.flexWork.additionWithinMonthlyStatutory = convertToInt(self.checkedB6_23());    
+                        } else {
+                            obj.flexWork.additionWithinMonthlyStatutory = self.oldData().flexWork.additionWithinMonthlyStatutory;
+                        }
+                    } else {
+                        obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;
+                        obj.flexWork.additionWithinMonthlyStatutory = self.oldData().flexWork.additionWithinMonthlyStatutory;
                     }
                     if (self.checkedB618() == true) {
                         obj.flexWork.enableSetPerWorkHour2 = convertToInt(self.checkedB6_22());    
@@ -1302,11 +1314,6 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.minusAbsenceTimeWork = self.oldData().flexWork.minusAbsenceTimeWork;
                     obj.flexWork.enableSetPerWorkHour2 = self.oldData().enableSetPerWorkHour2;  
                 }
-                if (self.enableB616() == true && self.checkedB616()) {
-                    obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());
-                } else {
-                    obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;
-                }
                 //irregularWork
                 obj.irregularWork = {};
                 obj.irregularWork.companyId = "";
@@ -1316,19 +1323,19 @@ module nts.uk.at.view.kmk013.b {
                     obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB712());
                     obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB713());
                     obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB714());
-                    if (self.checkedB713()) {
+                    if (self.checkedB713() && self.enableB7_23()) {
                         obj.irregularWork.enableSetPerWorkHour1 = convertToInt(self.checkedB7_23());
                     } else {
-                        obj.irregularWork.enableSetPerWorkHour1 = self.oldData().enableSetPerWorkHour1;    
+                        obj.irregularWork.enableSetPerWorkHour1 = self.oldData().irregularWork.enableSetPerWorkHour1;    
                     }
                 } else {
                     obj.irregularWork.additionTimePre = self.oldData().irregularWork.additionTimePre;
                     obj.irregularWork.incChildNursingCarePre = self.oldData().irregularWork.incChildNursingCarePre;
                     obj.irregularWork.notDeductLateleavePre = self.oldData().irregularWork.notDeductLateleavePre;
                     obj.irregularWork.exemptTaxTimePre = self.oldData().irregularWork.exemptTaxTimePre;
-                    obj.irregularWork.enableSetPerWorkHour1 = self.oldData().enableSetPerWorkHour1;
+                    obj.irregularWork.enableSetPerWorkHour1 = self.oldData().irregularWorkenableSetPerWorkHour1;
                 }
-                if (self.enableB79() == true) {
+                if (self.enableB79() == true && self.enableB7_24()) {
                     obj.irregularWork.deformatExcValue = convertToInt(self.selectedIdB79());
                 } else {
                     obj.irregularWork.deformatExcValue = self.oldData().irregularWork.deformatExcValue;
@@ -1381,10 +1388,10 @@ module nts.uk.at.view.kmk013.b {
                     } else {
                        obj.hourlyPaymentAddCommand.enableSetPerWorkHour1 = self.oldData().hourlyPaymentAdditionSet.enableSetPerWorkHour1; 
                     }
-                    if (self.checkedB8_7() == true) {
+                    if (self.checkedB8_7() == true && self.enableB8_9()) {
                         obj.hourlyPaymentAddCommand.deformatExcValue = self.selectedIdB8_9();
                     } else {
-                        obj.hourlyPaymentAddCommand.deformatExcValue = self.oldData().hourlyPaymentAdditionSet.calcPremiumVacation;
+                        obj.hourlyPaymentAddCommand.deformatExcValue = self.oldData().hourlyPaymentAdditionSet.deformatExcValue;
                     }
                 }
                 
