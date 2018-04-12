@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script></script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kwr008.a.style.css" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
+			<com:scriptfile path="kwr008.a.vm.js" />
+			<com:scriptfile path="kwr008.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button tabindex="1" class="proceed">#{i18n.getText('KWR008_3')}</button>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<!-- A2_1  CCG001-->
+				<div class = "ccg001searchkcp005">
+					<div id="ccgcomponent" tabindex="2"></div>
+				</div>
+				
+				<div class="fixed-flex-layout-left"
+					style="padding-top: 20px; padding-left: 20px">
+					<div class="employeeInfoSearch">
+						<div class="selectionEmployee" tabindex="3">
+							<div id="employeeSearch" tabindex="-1"></div>
+						</div>
+					</div>
+				</div>
+				<div class="fixed-flex-layout-right" style="padding-top: 20px; margin-left:100px;">
+					<div>
+						<div id="A3" class="valign-center control-group">
+							
+							<!-- A3_1 -->
+							<div class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_4')}</div>
+								
+							<!-- A3_2 -->
+							<div class="valign-center" tabindex="3" data-bind="ntsDatePicker: {
+							value: startDateString, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							fiscalMonthsMode: false, 
+							showJumpButtons: true 
+							}"></div>
+							
+							<!-- A3_3 -->
+							<label>~</label>
+							
+							<!-- A3_4 -->
+							<div tabindex="4" data-bind="ntsDatePicker: {
+							value: endDateString, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							fiscalMonthsMode: false, 
+							showJumpButtons: true 
+							}"></div>
+								
+						</div>
+						
+						<!-- A4 -->
+						<div class="valign-center control-group" style="margin-top:100px">
+							<div id="A4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_11')}</div>
+							<div tabindex="6" id="A4_2" data-bind="ntsComboBox: {
+								name: '#{i18n.getText('KWR008_12')}',
+								options: outputItem,
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: selectedOutputItem,
+								optionsText: 'name',
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>
+								
+								<button id="A4_3" tabindex="7" style="" class="small">#{i18n.getText('KWR008_13')}</button>
+						</div>
+						
+						<!-- A6 -->
+						<div class="valign-center control-group" style="margin-top: 100px">
+							<div id="A6_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_17')}</div>
+							<div tabindex="7" id="A4_2" data-bind="ntsComboBox: {
+								options: breakPage,
+								optionsValue: 'code',
+								visibleItemsCount: 2,
+								value: selectedBreakPage,
+								optionsText: 'name',
+								columns: [
+									{ prop: 'name', length: 2 }
+								]}"></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

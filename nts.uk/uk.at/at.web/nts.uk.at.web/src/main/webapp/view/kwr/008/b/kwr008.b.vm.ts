@@ -1,7 +1,6 @@
 module nts.uk.com.view.kwr008.b.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import model = kwr008.share.model;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
@@ -33,9 +32,7 @@ module nts.uk.com.view.kwr008.b.viewmodel {
         itemRadio: KnockoutObservableArray<any>;
         selectedItemRadio: KnockoutObservable<number>;
         
-        //B2_2
-        items: KnockoutObservableArray<model.ItemModel>;
-        columns: KnockoutObservableArray<model.ItemModel>;       
+            
         
         constructor() {
             var self = this;
