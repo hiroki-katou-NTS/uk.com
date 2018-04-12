@@ -1,18 +1,16 @@
 @CHARSET "UTF-8";
 
 .contents {
-	margin-left: 20px;
-	margin-top: 20px;
+	margin: 20px;
 	position: absolute;
 }
 
 .period_labels {
-	width: 300px;
+	margin-top: 10px;
 }
 
 .employee_labels {
 	margin-top: 20px;
-	width: 350px;
 }
 
 .workday_labels {
@@ -35,6 +33,6 @@
 }
 
 #checkOverWriteSetting {
-	width: 90%;
 	height: 30px;
+	display: block;
 }
