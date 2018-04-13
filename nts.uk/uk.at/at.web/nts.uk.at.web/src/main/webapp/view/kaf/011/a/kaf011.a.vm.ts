@@ -99,13 +99,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.recWk().wkTimeName('');
             self.recWk().wkTimeCD('');
             self.recWk().wkText('');
-
-            self.absWk().wkTime1(new common.WorkingHour());
-            self.absWk().wkTime2(new common.WorkingHour());
-            self.absWk().wkTimeName('');
-            self.absWk().wkTimeCD('');
-            self.absWk().wkText('');
-            self.reason('');
         }
 
         openCMM018() {
