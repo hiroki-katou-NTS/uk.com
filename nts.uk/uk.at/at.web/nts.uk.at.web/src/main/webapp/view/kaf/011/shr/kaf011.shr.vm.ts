@@ -367,7 +367,7 @@ module nts.uk.at.view.kaf011.shr {
                     WorkTimeCd = self.wkTimeCD();
 
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
+                    workTypeCodes: [selectedWorkTypeCode],
                     selectedWorkTypeCode: selectedWorkTypeCode,
                     workTimeCodes: [],
                     selectedWorkTimeCode: WorkTimeCd,
