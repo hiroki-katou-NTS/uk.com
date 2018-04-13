@@ -30,9 +30,9 @@ module cps008.c.viewmodel {
         coppyBtn() {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
-            let s = 'd';
 
-            $(".nts-input").trigger("validate");
+            $("#C_INP_CODE").trigger("validate");
+            $("#C_INP_NAME").trigger("validate");
             
             if (nts.uk.ui.errors.hasError()) {
                 return;
