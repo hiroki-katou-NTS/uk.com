@@ -126,7 +126,7 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 505px; 
+	max-height: 510px; 
 	overflow-y: scroll;
 	overflow-x: hidden; 
 	width: 634px;
@@ -135,7 +135,7 @@ input.ntsSearchBox {
 #search_his {
 	margin-top: 38px;
 	margin-bottom: 5px;
-}
+}	
 
 #history {
 	float: left;

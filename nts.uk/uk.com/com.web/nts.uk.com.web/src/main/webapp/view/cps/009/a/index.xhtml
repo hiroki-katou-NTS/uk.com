@@ -13,7 +13,6 @@
 					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingCode
 					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingName
 					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName
-<!-- 					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana -->
 					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
 					nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameKana
 					nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName
@@ -30,23 +29,8 @@
 					nts.uk.ctx.bs.employee.dom.employeeinfo.HiringType
 					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 					nts.uk.ctx.bs.employee.dom.employee.mgndata.ExternalCode
-
-					<!-- 	
-					nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddress1
-				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddressKana1
-				    nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddress2
-					nts.uk.ctx.bs.person.dom.person.currentdddress.PersonAddressKana2
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HomeSituationType
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.HouseRent
-					nts.uk.ctx.bs.employee.dom.employeeinfo.CompanyMobile				
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.Perfectures
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.CountryId
-					nts.uk.ctx.bs.person.dom.person.info.currentaddress.PhoneNumber -->
 			</com:ValidatorScript>
 			<com:stylefile path="cps009.a.style.css" />
-			<!--[if IE]>
-				<com:stylefile path="all_ie.css.css" />
-			<![endif]-->
 			<com:scriptfile path="cps009.a.service.js" />
 			<com:scriptfile path="layout-control-ko-ext.js" />
 			<com:scriptfile path="cps009.a.start.js" />
@@ -202,9 +186,6 @@
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 									</thead>
-									<!--[if IE]>
-  										 <tbody style="height: 505px" data-bind="foreach: currentCategory().itemList()">
-									<![endif]-->
 									<tbody data-bind="foreach: currentCategory().itemList()">
 										<td id="name" class='input-units-1'
 											data-bind="css:{ 
@@ -440,7 +421,9 @@
 																readonly: false },
 																attr: { NameID: itemName }" />
 													</com:ko-if>
-												</com:ko-if> <!--   list box  --> <com:ko-if bind="(dataType() === 6)">
+												</com:ko-if> 
+												<!--   list box  --> 
+												<com:ko-if bind="(dataType() === 6)">
 													<div id="combox1"
 														data-bind="ntsComboBox: {
 																options: selection,
@@ -454,8 +437,9 @@
 																	{ prop: 'optionText', length: 10 },
 																]}">
 													</div>
-												</com:ko-if> <!-- number   --> <com:ko-if bind="(dataType() === 2)">
-
+												</com:ko-if>
+												 <!-- number   --> 
+												 <com:ko-if bind="(dataType() === 2)">
 													<com:ko-if
 														bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
 														<com:ko-if bind="(isRequired() === 1)">
@@ -526,7 +510,9 @@
 															</div>
 														</com:ko-if>
 													</com:ko-if>
-												</com:ko-if> <com:ko-if bind="(dataType() === 7)">
+												</com:ko-if> 
+												
+												<com:ko-if bind="(dataType() === 7)">
 													<div
 														data-bind="ntsRadioBoxGroup: {
 															options: selection,

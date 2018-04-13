@@ -97,11 +97,15 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
 	
-	//sonnlb start
-
-	String findLastEml(String companyId, String startLetters);
+	/**
+	 * @param companyId
+	 * @param startLetters
+	 * @return
+	 * return Optional<Value> if can get data
+	 * Optional<empty> if it doesn't match startLetters
+	 */
+	Optional<String> findLastEml(String companyId, String startLetters);
 	
-	//sonnlb end
 
 	/**
 	 * Get List EmployeeDataMngInfo By List Sid
