@@ -807,6 +807,12 @@ module nts.uk.at.view.kmk003.a {
 
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
+                
+                // do interlock if simple mode
+                if (self.tabMode() === 1) {
+                    self.isInterlockDialogJ(true);
+                    self.updateStampValue();
+                }
 
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd())

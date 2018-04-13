@@ -118,8 +118,8 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 			return;
 		}
 		if (ScreenMode.SIMPLE.equals(screenMode)) {
-			this.startTime = oldDomain.getStartTime();
-			this.endTime = oldDomain.getEndTime();
+			//this.startTime = oldDomain.getStartTime();
+			//this.endTime = oldDomain.getEndTime();
 		}
 	}
 
@@ -131,8 +131,8 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
 		if (ScreenMode.SIMPLE.equals(screenMode)) {
-			this.startTime = new TimeWithDayAttr(0);
-			this.endTime = new TimeWithDayAttr(0);
+			//this.startTime = new TimeWithDayAttr(0);
+			//this.endTime = new TimeWithDayAttr(0);
 		}
 	}
 }
