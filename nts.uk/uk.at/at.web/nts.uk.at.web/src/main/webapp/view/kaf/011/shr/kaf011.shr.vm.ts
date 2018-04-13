@@ -362,7 +362,6 @@ module nts.uk.at.view.kaf011.shr {
 
             openKDL003() {
                 let self = this,
-                    workTypeCodes = self.wkTypes().map(function(x) { return x.workTypeCode; }),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
 
