@@ -715,7 +715,7 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 nts.uk.ui.block.invisible();
-                service.findListUserInfo(_self.employeeIds, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = data;
                         if (_.isEmpty(_self.listUserDto)) {
@@ -743,7 +743,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                service.findListUserInfo(_self.employeeIds, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
@@ -766,7 +766,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                service.findListUserInfo(_self.employeeIds, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
@@ -788,7 +788,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                service.findListUserInfo(_self.employeeIds, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
@@ -806,7 +806,7 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 nts.uk.ui.block.invisible();
-                service.findListUserInfo(_self.employeeIds, true)
+                service.findListUserInfo(_self.employeeIds(), true)
                     .done((data: UserDto[]) => {
                         _self.listUserDtoScreenAC = [];
                         _self.listUserDtoScreenAC = data;
@@ -833,8 +833,8 @@ module nts.uk.com.view.cmm021.a {
             private loadUserInfoAfterSaveAndDelOtherAcc(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-
-                service.findListUserInfo(_self.employeeIds, true)
+ 
+                service.findListUserInfo(_self.employeeIds(), true)
                     .done((data: UserDto[]) => {
                         _self.listUserDtoScreenAC = [];
                         _self.listUserDtoScreenAC = data;
@@ -856,7 +856,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                service.findListUserInfo(_self.employeeIds, true)
+                service.findListUserInfo(_self.employeeIds(), true)
                     .done((data: UserDto[]) => {
                         _self.listUserDtoScreenAC = [];
                         _self.listUserDtoScreenAC = data;
