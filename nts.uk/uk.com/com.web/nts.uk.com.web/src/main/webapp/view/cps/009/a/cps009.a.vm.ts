@@ -30,6 +30,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
         currentItemId: KnockoutObservable<string> = ko.observable('');
         errorList: KnockoutObservableArray<any> = ko.observableArray([]);
+        isFilter: KnockoutObservable<boolean> = ko.observable(false);
+        dataSourceFilter: Array<any> = [];
 
         constructor() {
 
@@ -77,14 +79,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
 
-                if (value) {
-
-                    self.getItemList(self.initSettingId(), value);
-
-
-                } else {
-                    return;
-                }
+                if (nts.uk.text.isNullOrEmpty(value)) { return; }
+                self.getItemList(self.initSettingId(), value);
 
             });
 
@@ -100,8 +96,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // get item list
         getItemList(settingId: string, ctgId: string) {
             let self = this,
-                i: number = 0;
-            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+                i: number = 0,
+                currentCtg: any,
+                dataSource: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+            if (self.isFilter()) {
+                currentCtg = self.findCtg(dataSource, ctgId);
+            } else {
+                currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+            }
+            if(currentCtg === undefined){ return;}
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
@@ -270,7 +273,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
-//                                self.currentCategory().itemList()[i].selectedCode("0");
+                                //                                self.currentCategory().itemList()[i].selectedCode("0");
                             }
                         });
                     }
@@ -429,6 +432,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentItemId("");
                     self.currentItemId(updateObj.perInfoCtgId);
                     self.ctgIdUpdate(true);
+                    if (self.isFilter()) {
+                        $("#item_grid").igGrid("option", "dataSource", self.dataSourceFilter);
+                    }
 
                 });
                 self.currentItemId(updateObj.perInfoCtgId);
@@ -532,6 +538,15 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+
+        checkBrowse() {
+            let Browser = navigator.userAgent;
+
+            if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
+                $("#sub-right>table>tbody").css("height", "495px");
+            }
         }
 
     }
@@ -718,10 +733,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // disable combox
         disableCombox: boolean;
-        
+
         // enable A23 xu li cho ctg CS00020
         enableControl: boolean;
-        
+
 
     }
 
@@ -796,7 +811,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         radioId: string;
         radioCode: string;
         radioLst: Array<any> = [];
-        
+
         // xử lý disable or enable cho A22 && A23
         disableCombox: KnockoutObservable<boolean> = ko.observable(true);
         enableControl: KnockoutObservable<boolean> = ko.observable(true);
@@ -856,7 +871,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.dataType = ko.observable(params.dataType || undefined);
             self.disableCombox(params.disableCombox == true ? false : true);
             self.enableControl(params.enableControl);
-            
+
 
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
@@ -1007,6 +1022,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
+
         getWidthText(str: string): number {
             let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
             return width;
@@ -1023,7 +1039,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     if ((i.itemCode == itemSelected[0].itemCode1) || (i.itemCode == itemSelected[0].itemCode2) || (i.itemCode == itemSelected[0].itemCode3) || (i.itemCode == itemSelected[0].itemCode4)) { return i; }
                 })
                 _.each(itemLst, function(x) {
-                    __viewContext["viewModel"].currentCategory().itemList()[ x.indexItem > 0 ? (x.indexItem  - 1) : 0 ].selectedRuleCode(value);
+                    __viewContext["viewModel"].currentCategory().itemList()[x.indexItem > 0 ? (x.indexItem - 1) : 0].selectedRuleCode(value);
                 });
             }
         }
