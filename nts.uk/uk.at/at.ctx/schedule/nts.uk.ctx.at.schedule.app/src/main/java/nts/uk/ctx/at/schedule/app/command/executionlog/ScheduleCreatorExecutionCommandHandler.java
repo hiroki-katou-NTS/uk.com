@@ -318,8 +318,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					toDate);
 			if (optionalBasicSchedule.isPresent()) {
 
-				command.setWorkingCode(optionalBasicSchedule.get().getWorkTypeCode());
-				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTimeCode());
+				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
+				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
 
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
 						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
@@ -619,12 +619,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				optionalClosure.get().getClosureMonth().getProcessingYm());
 		// Input「対象開始日」と、取得した「開始年月日」を比較
 		if (dateAfterCorrection.start().before(dateP.start())) {
-			dateAfterCorrection.newSpan(dateP.start(), dateAfterCorrection.end());
+			dateAfterCorrection.cutOffWithNewStart(dateP.start());
 		}
 		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
-		if (dateAfterCorrection.start().beforeOrEquals(dateP.end())) {
+		if (dateAfterCorrection.start().beforeOrEquals(dateAfterCorrection.end())) {
 			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
-			dateAfterCorrection.newSpan(dateP.start(), dateP.end());
+			dateAfterCorrection.cutOffWithNewEnd(dateAfterCorrection.end());
 			return true;
 		}
 
