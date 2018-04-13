@@ -25,8 +25,13 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	private UrlExecInfoRepository urlExcecInfoRepo;
 
 	@Override
+<<<<<<< HEAD
 	public UrlExecInfo obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
 //		String loginId = AppContexts.user().employeeId();
+=======
+	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
+		String loginId = AppContexts.user().employeeId();
+>>>>>>> e921d07720... update url return type
 		List <UrlExecInfo> list = urlExcecInfoRepo.getAllUrlExecInfo();
 		String loginId = "nts";
 		String uuID = UUID.randomUUID().toString();
@@ -35,7 +40,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	}
 
 	@Override
-	public UrlExecInfo registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
+	public String registerEmbeddedForApp(String appId, int appType, int prePostAtr, String loginId, String employeeId) {
 		EmbeddedUrlScreenID embeddedUrlScreenID = this.getEmbeddedUrlRequestScreenID(appType, prePostAtr);
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
@@ -43,7 +48,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	}
 
 	@Override
-	public UrlExecInfo embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod,
+	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod,
 			String employeeId, String loginId, List<UrlTaskIncre> taskIncidental) {
 		if (loginId.isEmpty() && employeeId.isEmpty()) {
 			return null;
@@ -55,7 +60,9 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 			GeneralDateTime issueDate = GeneralDateTime.now();
 			GeneralDateTime startDate = GeneralDateTime.now();
 			GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
-			return this.updateEmbeddedUrl(cid, contractCd, loginId, scd, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
+			UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCd, loginId, scd, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
+			// TODO
+			return (programId + " " + screenId);
 		}
 	}
 
