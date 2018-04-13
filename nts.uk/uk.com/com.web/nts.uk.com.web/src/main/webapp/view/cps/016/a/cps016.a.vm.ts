@@ -51,11 +51,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             formatSelection.selectionCodeCharacter(iformat.selectionCodeCharacter);
                             formatSelection.selectionName(iformat.selectionName);
                             formatSelection.selectionExternalCode(iformat.selectionExternalCode);
-                            //$("#selectionItemName").focus();
                         }
+                        $("#selectionItemName").focus();
                     });
                     //$("#selectionItemName").focus();
                 }
+                //$("#selectionItemName").focus();
                 self.checkCreate(false);
             });
             //$("#selectionItemName").focus();
@@ -81,10 +82,11 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     } else {
                         self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
+                    $("#selectionItemName").focus();
                 } else {//0件の場合: エラーメッセージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
-                    $("#selectionItemName").focus();
+                    //$("#selectionItemName").focus();
                 }
                 dfd.resolve();
             }).fail(error => {//0件の場合: エラーメッセージの表示(#Msg_455)
@@ -153,6 +155,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
                     }
+                    $("#selectionItemName").focus();
 
                     //「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
                     confirm({ messageId: "Msg_456" }).ifYes(() => {
@@ -164,16 +167,20 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
                         modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1260 }).onClosed(function(): any {
                         });
+
+                        self.listItems.valueHasMutated();
+                        $("#selectionItemName").focus();
                     }).ifNo(() => {
                         self.listItems.valueHasMutated();
+                        $("#selectionItemName").focus();
                         return;
                     })
-
+                    self.listItems.valueHasMutated();
+                    $("#selectionItemName").focus();
                 });
-                $("#selectionItemName").focus();
                 self.listItems.valueHasMutated();
                 self.perInfoSelectionItem().selectionItemId(selectId);
-
+                $("#selectionItemName").focus();
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
@@ -224,7 +231,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 command = ko.toJS(currentItem),
                 lastIndex = items.length - 1;
 
-
             if (items.length > 0) {
                 confirm({ messageId: "Msg_551" }).ifYes(() => {
                     service.checkExistedSelectionItemId(currentItem.selectionItemId()).done(data => {
@@ -245,17 +251,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
                                         self.registerDataSelectioItem();
                                     }
                                 });
-
                                 self.listItems.valueHasMutated();
-                                //                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                //                                    $("#selectionItemName").focus();
-                                //                                });
                             });
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                                //$("#selectionItemName").focus();
+                                self.listItems.valueHasMutated();
+                                $("#selectionItemName").focus();
                             });
-                            $("#selectionItemName").focus();
-                            self.listItems.valueHasMutated();
                         }
                     }).fail(error => {
                         alertError({ messageId: "Msg_521" });
