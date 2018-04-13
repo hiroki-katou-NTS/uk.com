@@ -145,9 +145,17 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 				break;
 			//遅刻
 			case LATE:
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+												integrationOfDaily.getAffiliationInfor().getYmd(),
+												fixedErrorAlarmCode.get(),
+												CheckExcessAtr.LATE);
 				break;
 			//早退
 			case LEAVE_EARLY:
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+												integrationOfDaily.getAffiliationInfor().getYmd(),
+												fixedErrorAlarmCode.get(),
+												CheckExcessAtr.LEAVE_EARLY);
 				break;
 			//それ以外ルート
 			default:
