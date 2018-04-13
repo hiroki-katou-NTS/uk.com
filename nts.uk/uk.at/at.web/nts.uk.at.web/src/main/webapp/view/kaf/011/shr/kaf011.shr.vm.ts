@@ -211,7 +211,6 @@ module nts.uk.at.view.kaf011.shr {
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
-                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
@@ -391,8 +390,6 @@ module nts.uk.at.view.kaf011.shr {
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
                             self.updateWorkingText();
                         }
-
-
                     }
                 });
 
