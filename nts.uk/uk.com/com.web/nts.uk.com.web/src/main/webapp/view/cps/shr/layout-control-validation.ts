@@ -866,6 +866,7 @@ module nts.layout {
                 buttons: Array<IRelateButton> = [{
                     ctgCode: 'CS00024',
                     btnCode: 'IS00276',
+                    lblCode: 'IS00277',
                     dialogId: 'g'
                 }, {
                         ctgCode: 'CS00024',
@@ -975,7 +976,9 @@ module nts.layout {
                 ],
 
                 validation = (btn: IRelateButton) => {
-                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
+                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode),
+                        label: IFindData = finder.find(btn.ctgCode, btn.lblCode);
+
                     if (button) {
                         $(button.id).on('click', (evt) => {
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
@@ -995,6 +998,9 @@ module nts.layout {
                                     case "g":
                                         fetch.get_annLeaNumber(sid).done(data => {
                                             button.data.value(data);
+                                            if (label) {
+                                                label.data.value('asdashdkjashk');
+                                            }
                                         });
                                         break;
                                     case "h":
@@ -1524,6 +1530,7 @@ module nts.layout {
         btnCode: string;
         dialogId: string;
         specialCd?: number;
+        lblCode?: string;
     }
 
     interface ITimeTable {
