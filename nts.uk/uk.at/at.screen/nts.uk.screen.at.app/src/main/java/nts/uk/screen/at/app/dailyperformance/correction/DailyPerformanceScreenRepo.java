@@ -170,7 +170,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
-	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
+	List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo);
 	
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
