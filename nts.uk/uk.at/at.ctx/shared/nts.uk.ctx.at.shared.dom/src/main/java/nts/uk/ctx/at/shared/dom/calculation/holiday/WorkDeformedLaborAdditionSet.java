@@ -55,13 +55,13 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot{
 																	int exemptTaxTime2, int minusAbsenceTime2, 
 																	int calcActualOperation2, int incChildNursingCare2,
 																	int notDeductLateleave2, int additionTime2, 
-																	int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
+																	int enableSetPerWorkHour1) {
 		return new WorkDeformedLaborAdditionSet(companyId, calcActualOperation1,
 				exemptTaxTime1, incChildNursingCare1, additionTime1, notDeductLateleave1,
 				deformatExcValue, exemptTaxTime2, minusAbsenceTime2,
 				calcActualOperation2, incChildNursingCare2,
 				notDeductLateleave2, additionTime2,
-				enableSetPerWorkHour1, enableSetPerWorkHour2);
+				enableSetPerWorkHour1);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot{
 			int exemptTaxTime1, int incChildNursingCare1, int additionTime1, int notDeductLateleave1,
 			int deformatExcValue, int exemptTaxTime2, int minusAbsenceTime2,
 			int calcActualOperation2, int incChildNursingCare2, int notDeductLateleave2,
-			int additionTime2, int enableSetPerWorkHour1, int enableSetPerWorkHour2) {
+			int additionTime2, int enableSetPerWorkHour1) {
 		super();
 		this.companyId = companyId;
 		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(additionTime1, deformatExcValue, null);

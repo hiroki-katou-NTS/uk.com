@@ -6,8 +6,6 @@ package nts.uk.ctx.sys.gateway.dom.adapter.employee;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
-
 /**
  * The Interface EmployeeInfoAdapter.
  */
@@ -20,5 +18,7 @@ public interface EmployeeInfoAdapter {
 	 * @param baseDate the base date
 	 * @return the employees at work by base date
 	 */
-	List<EmployeeInfoDtoImport> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
+//	List<EmployeeInfoDtoImport> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
+	
+	List<EmployeeInfoDtoImport> getEmployees(List<String> employeeIds);
 }

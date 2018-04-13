@@ -354,9 +354,14 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
-                    self.deadline(item);
-                });
+
+                if (data && !(nts.uk.ui.errors.hasError())) {
+                    service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
+                        self.deadline(item);
+                    });
+                }
+
+
             });
         }
     }

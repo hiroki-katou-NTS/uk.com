@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.calculation.setting.AddDeformLaborOTCommand;
 import nts.uk.ctx.at.shared.app.command.calculation.setting.AddDeformLaborOTCommandHandler;
+import nts.uk.ctx.at.shared.app.find.calculation.setting.DeformLaborOTDto;
 import nts.uk.ctx.at.shared.app.find.calculation.setting.DeformLaborOTFinder;
-import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOT;
 
 /**
  * @author yennh
@@ -27,7 +27,7 @@ public class DeformLaborOTWebService extends WebService {
 
 	@Path("find")
 	@POST
-	public List<DeformLaborOT> findByCid() {
+	public List<DeformLaborOTDto> findByCid() {
 		return finder.findAllDeformLaborOT();
 	}
 	
