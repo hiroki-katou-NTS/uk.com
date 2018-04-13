@@ -161,9 +161,10 @@ module nts.uk.ui.koExtentions {
                 if(nts.uk.util.isNullOrEmpty(parsedValue)){
                     return true;
                 }
+                var mmRs = new nts.uk.time.MomentResult();
                 var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
-                var minDate = moment((data.startDate !== undefined) ? ko.unwrap(data.startDate) : null);
-                var maxDate = moment((data.endDate !== undefined) ? ko.unwrap(data.endDate) : null);
+                var minDate = (data.startDate !== undefined) ? moment(ko.unwrap(data.startDate)) : mmRs.systemMin();
+                var maxDate = (data.endDate !== undefined) ? moment(ko.unwrap(data.endDate)) : mmRs.systemMax();
                 var momentCurrent = moment(parsedValue);
                 var error = false;
                 if(momentCurrent.isBefore(minDate, 'day')){
@@ -182,10 +183,7 @@ module nts.uk.ui.koExtentions {
                     } else if (isHasMonth && isHasYear) {
                         mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
                     } 
-                    var mmRs = new nts.uk.time.MomentResult();
-                    var maDate = maxDate.isValid() ? maxDate.format(fm) : mmRs.systemMax().format(fm);
-                    var miDate = minDate.isValid() ? minDate.format(fm) : mmRs.systemMin().format(fm);
-                    nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [ name, miDate, maDate ] }).then(function(){
+                    nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [ name, minDate.format(fm), maxDate.format(fm) ] }).then(function(){
                         if (hasDayofWeek) {
                             $label.text("");
                         }
