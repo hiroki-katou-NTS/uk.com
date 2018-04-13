@@ -82,7 +82,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.mode, params.correctionOfDaily, params.formatCodes, params.objectShare);
 	}
 	
 	@POST

@@ -68,6 +68,8 @@ public class DailyPerformanceCorrectionDto {
 	private List<DPErrorDto> dPErrorDto;
 	
 	private IdentityProcessUseSetDto identityProcessDto;
+	
+	private FlexShortage flexShortage;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
