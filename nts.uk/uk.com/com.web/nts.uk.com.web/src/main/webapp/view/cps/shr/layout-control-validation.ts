@@ -290,7 +290,7 @@ module nts.layout {
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00230', 'IS00231']
+                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
@@ -298,8 +298,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00027',
                         radioCode: 'IS00310',
-                        comboboxCode: 'IS00311',
-                        relateCode: ['IS00311', 'IS00312', 'IS00314', 'IS00315', 'IS00316']
+                        relateCode: ['IS00311', 'IS00312', 'IS00313', 'IS00314', 'IS00315']
                     }, {
                         ctgCode: 'CS00028',
                         radioCode: 'IS00317',
@@ -311,7 +310,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00030',
                         radioCode: 'IS00331',
-                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335', 'IS00326']
+                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335', 'IS00336']
                     }, {
                         ctgCode: 'CS00031',
                         radioCode: 'IS00338',
@@ -319,7 +318,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00032',
                         radioCode: 'IS00345',
-                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00340']
+                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00350']
                     }, {
                         ctgCode: 'CS00033',
                         radioCode: 'IS00352',
@@ -331,7 +330,17 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00035',
                         radioCode: 'IS00311',
-                        relateCode: ['IS00371', 'IS00372', 'IS00373', 'IS00374']
+                        relateCode: ['IS00371', 'IS00372', 'IS00374']
+                    }, {
+                        ctgCode: 'CS00036',
+                        rdctCode: 'CS00028',
+                        radioCode: 'IS00316',
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                    }, {
+                        ctgCode: 'CS00036',
+                        rdctCode: 'CS00028',
+                        radioCode: 'IS00321',
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
@@ -355,7 +364,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00054',
                         radioCode: 'IS00595',
-                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00560']
+                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00600']
                     }, {
                         ctgCode: 'CS00055',
                         radioCode: 'IS00602',
@@ -378,7 +387,7 @@ module nts.layout {
                         relateCode: []
                     }],
                 validation = (radio: IGrandRadio) => {
-                    let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
+                    let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
 
                     if (rd) {
@@ -1515,6 +1524,7 @@ module nts.layout {
 
     interface IGrandRadio {
         ctgCode: string;
+        rdctCode?: string;
         radioCode: string;
         relateCode: Array<string>
     }
