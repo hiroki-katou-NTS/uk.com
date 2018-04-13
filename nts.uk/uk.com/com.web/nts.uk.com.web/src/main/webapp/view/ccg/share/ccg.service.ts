@@ -180,6 +180,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Optional properties */
                 isInDialog?: boolean;
+                showOnStart?: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;

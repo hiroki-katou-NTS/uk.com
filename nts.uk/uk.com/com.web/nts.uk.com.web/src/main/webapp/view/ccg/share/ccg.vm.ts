@@ -486,6 +486,9 @@ module nts.uk.com.view.ccg.share.ccg {
                         _.defer(() => self.applyDataSearch().always(() => {
                             // Set acquired base date to status period end date
                             self.statusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT));
+                            if (data.showOnStart) {
+                                self.showComponent();
+                            }
                             dfd.resolve();
                         }));
                     });
