@@ -1703,32 +1703,31 @@ module nts.custombinding {
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
                                             id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        $(document).on('change', `${id1}, ${id2}`, (evt) => {
+                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
                                             setTimeout(() => {
                                                 let dom1 = $(id1),
                                                     dom2 = $(id2),
                                                     pv = ko.toJS(prev.value),
                                                     nv = ko.toJS(next.value),
-                                                    tpt = typeof pv == 'number',
-                                                    tnt = typeof nv == 'number';
+                                                    tpt = _.isNumber(pv),
+                                                    tnt = _.isNumber(nv);
 
-                                                if (!tpt && tnt && !dom1.parent().hasClass('error')) {
-                                                    !dom1.is(':disabled') && dom1.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (tpt && !tnt && !dom2.parent().hasClass('error')) {
-                                                    !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (!(tpt && tnt) || (tpt && tnt)) {
-                                                    rmError(dom1, "Msg_858");
-                                                    rmError(dom2, "Msg_858");
-
-                                                    if (!getError().length) {
-                                                        clearError();
+                                                if (!tpt && tnt) {
+                                                    if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                        dom1.ntsError('set', { messageId: "Msg_858" });
                                                     }
+                                                } else {
+                                                    rmError(dom1, "Msg_858");
                                                 }
-                                            }, 0);
+
+                                                if (tpt && !tnt) {
+                                                    if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                                    }
+                                                } else {
+                                                    rmError(dom2, "Msg_858");
+                                                }
+                                            }, 50);
                                         });
                                     };
 
@@ -2140,6 +2139,7 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                let startt = new Date().getTime();
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
@@ -2279,6 +2279,8 @@ module nts.custombinding {
                         };
                     }).value());
                 }
+                let endt = new Date().getTime();
+                console.log(endt - startt);
             });
             opts.sortable.data.valueHasMutated();
 
