@@ -10,22 +10,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Gets the base date.
- *
- * @return the base date
+ * The Class UserInfo.
  */
 @Getter
-
-/**
- * Sets the base date.
- *
- * @param baseDate the new base date
- */
 @Setter
 public class UserInfo {
 	/** The is screen C. */
 	private Boolean isScreenC;
 
-	/** The s ids. */
-	private List<String> sIds;
+	/** The employee ids. */
+	private List<String> employeeIds;
 }
