@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.dom.singlesignon;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -35,6 +36,19 @@ public class WindowsAccount extends AggregateRoot{
 		this.accountInfos = memento.getAccountInfos();
 	}
 
+	@Override
+	public void validate() {
+		super.validate();
+		// check duplicate account host name & user name
+		this.accountInfos.forEach(acc -> {
+			if (this.accountInfos.stream().anyMatch(dup -> dup.getHostName().equals(acc.getHostName())
+					&& dup.getUserName().equals(acc.getUserName()))) {
+				BundledBusinessException exceptions = BundledBusinessException.newInstance();
+				exceptions.addMessage("Msg_616");
+				exceptions.throwExceptions();
+			}
+		});
+	}
 	/**
 	 * Save to memento.
 	 *
