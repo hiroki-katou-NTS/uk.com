@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
@@ -172,6 +173,9 @@ public class ScheCreExeErrorLogHandler {
 		 */
 		@Override
 		public String getErrorContent() {
+			if (StringUtil.isNullOrEmpty(this.paramMsg, true)) {
+				return internationalization.localize(messageId).get();
+			}
 			return internationalization.localize(messageId, paramMsg).get();
 		}
 
