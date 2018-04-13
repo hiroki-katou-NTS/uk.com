@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.command.layout;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,8 +14,14 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pereg.app.find.person.category.PerCtgInfoDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
+import nts.uk.ctx.pereg.dom.copysetting.item.IsRequired;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
@@ -37,6 +44,12 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 	@Inject
 	PerInfoItemDefFinder itemDefFinder;
+
+	@Inject
+	PerInfoCtgFinder itemCtgFinder;
+
+	@Inject
+	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
@@ -76,7 +89,64 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 			}
 		}
 
-		// rmove all classification in this layout
+		List<String> allCatIds = command.getItemsClassification().stream().map(m -> m.getPersonInfoCategoryID())
+				.collect(Collectors.toList());
+
+		// EA修正履歴1018, EA修正履歴1019
+		// カテゴリ内の必須項目チェックを追加。
+		for (String categoryId : allCatIds) {
+			Optional<DateRangeItem> range = perInfoCtgRepositoty.getDateRangeItemByCategoryId(categoryId);
+			List<PerInfoItemDefDto> items = itemDefFinder.getAllPerInfoItemUsedByCtgIdForLayout(categoryId);
+
+			IsRequired rq = IsRequired.REQUIRED;
+			IsAbolition ab = IsAbolition.ABOLITION;
+
+			// remove all item not show in cps007
+			items = items.stream().filter(f -> {
+				if (categoryId.equals("COM1_00000000000000000000000_CS00001")) {
+					return !f.getId().equals("COM1_000000000000000_CS00001_IS00001");
+				}
+				if (categoryId.equals("COM1_00000000000000000000000_CS00002")) {
+					return !f.getId().equals("COM1_000000000000000_CS00002_IS00003");
+				}
+				if (categoryId.equals("COM1_00000000000000000000000_CS00003")) {
+					return !f.getId().equals("COM1_000000000000000_CS00003_IS00020");
+				}
+				return true;
+			}).collect(Collectors.toList());
+
+			items = items.stream().filter(f -> {
+				int _rq = f.getIsRequired(), _ab = f.getIsAbolition();
+
+				if (_ab == ab.value || _rq != rq.value || allSaveItemIds.contains(f.getId())) {
+					return false;
+				}
+				return true;
+			}).collect(Collectors.toList());
+
+			if (range.isPresent()) {
+				DateRangeItem _range = range.get();
+				String endId = _range.getEndDateItemId(), startId = _range.getStartDateItemId();
+
+				items = items.stream().filter(f -> {
+					String id = f.getId();
+					if (startId.equals(id) || endId.equals(id)) {
+						return false;
+					}
+					return true;
+				}).collect(Collectors.toList());
+			}
+
+			if (items.size() > 0) {
+				PerCtgInfoDto ctgDto = itemCtgFinder.getDetailCtgInfo(categoryId);
+				String alert = String.join(",", items.stream().map(m -> m.getItemName()).collect(Collectors.toList()));
+
+				throw new BusinessException(new I18NErrorMessage(
+						I18NText.main("Msg_1111").addRaw(ctgDto.getCategoryName()).addRaw(alert).build()));
+			}
+		}
+
+		// remove all classification in this layout
 		classfRepo.removeAllByLayoutId(update.getLayoutID());
 
 		// remove all itemdefinition relation with classification in this layout

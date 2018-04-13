@@ -209,6 +209,29 @@
     position: fixed;
     overflow-x: inherit;
 }
+
+#flex-table .ui-widget-header{
+	background-color: #CFF1A5;
+	border: 1px solid #CCC;
+	text-align: center;
+	height: 29px;
+}
+#flex-table .ui-widget-body{
+	border: 1px solid #CCC;
+	text-align: right;
+    height: 29px;
+}
+#flex-table {
+	border: 2px solid #CCC;
+	text-align: center;
+	padding: 0 2px;
+	margin-top: 10px;
+}
+#text-flex {
+	left: 400px;
+	position: relative;
+	top: -58px;
+	width: 131px;}
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

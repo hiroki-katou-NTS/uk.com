@@ -266,18 +266,14 @@ module nts.uk.ui.koExtentions {
                     
                     if (!result.isValid) {
                         let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
-                        if(nts.uk.util.isNullOrUndefined(oldError)){
+                        if(nts.uk.util.isNullOrEmpty(oldError)){
                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        } 
-                        //else {
-                        //    let inListError = _.find(oldError, function (o){ return o.errorCode !== result.errorCode; });
-                        //    if(nts.uk.util.isNullOrUndefined(inListError)){
-                        //        $input.ntsError('clearKibanError');
-                        //        setTimeout(function() {
-                        //            $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        //        }, 10);
-                        //    }
-                        //}
+                        } else {
+                            let inListError = _.find(oldError, function (o){ return o.errorCode === result.errorCode; });
+                            if(nts.uk.util.isNullOrUndefined(inListError)){
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                            }
+                        }
                     } else {
                         $input.ntsError('clearKibanError');
                     }

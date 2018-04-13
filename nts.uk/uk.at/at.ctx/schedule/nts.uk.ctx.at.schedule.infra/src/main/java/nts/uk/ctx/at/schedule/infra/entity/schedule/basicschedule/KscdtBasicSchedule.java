@@ -6,13 +6,16 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -45,6 +48,9 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 	/** The confirmed atr. */
 	@Column(name = "CONFIRMED_ATR")
 	public int confirmedAtr;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscdtBasicSchedule", orphanRemoval = true)
+	public KscdtScheMasterInfo kscdtScheMasterInfo;
 
 	@Override
 	protected Object getKey() {

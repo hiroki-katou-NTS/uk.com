@@ -80,7 +80,7 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 		if(entityOpt.isPresent()){
 			KrcmtChildCareHDInfo entity = entityOpt.get();
 			return Optional.of(NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(entity.getSId(), entity.getUseAtr(), 
-					entity.getUpperLimSetAtr(), Optional.of(entity.getMaxDayThisFiscalYear()), Optional.of(entity.getMaxDayNextFiscalYear())));
+					entity.getUpperLimSetAtr(), Optional.ofNullable(entity.getMaxDayThisFiscalYear()), Optional.ofNullable(entity.getMaxDayNextFiscalYear())));
 		}
 		return Optional.empty();
 	}
@@ -91,7 +91,7 @@ public class JpaNursCareLevRemainInfoRepo extends JpaRepository implements NursC
 		if(entityOpt.isPresent()){
 			KrcmtCareHDInfo entity = entityOpt.get();
 			return Optional.of(NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(entity.getSId(), entity.getUseAtr(), 
-					entity.getUpperLimSetAtr(), Optional.of(entity.getMaxDayThisFiscalYear()), Optional.of(entity.getMaxDayNextFiscalYear())));
+					entity.getUpperLimSetAtr(), Optional.ofNullable(entity.getMaxDayThisFiscalYear()), Optional.ofNullable(entity.getMaxDayNextFiscalYear())));
 		}
 		return Optional.empty();
 	}

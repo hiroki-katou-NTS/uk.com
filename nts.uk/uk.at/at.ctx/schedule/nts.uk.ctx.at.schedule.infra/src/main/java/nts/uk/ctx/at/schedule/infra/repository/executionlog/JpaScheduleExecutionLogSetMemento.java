@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
@@ -15,18 +16,19 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * The Class JpaScheduleExecutionLogGetMemento.
  */
-public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSetMemento{
-	
+public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSetMemento {
+
 	/** The entity. */
-	private KscdtScheExeLog entity; 
-	
+	private KscdtScheExeLog entity;
+
 	/**
 	 * Instantiates a new jpa schedule execution log get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaScheduleExecutionLogSetMemento(KscdtScheExeLog entity) {
-		if(entity.getKscdtScheExeLogPK() == null){
+		if (entity.getKscdtScheExeLogPK() == null) {
 			entity.setKscdtScheExeLogPK(new KscdtScheExeLogPK());
 		}
 		this.entity = entity;
@@ -35,7 +37,8 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	/**
 	 * Sets the company id.
 	 *
-	 * @param companyId the new company id
+	 * @param companyId
+	 *            the new company id
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
@@ -45,7 +48,8 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	/**
 	 * Sets the completion status.
 	 *
-	 * @param completionStatus the new completion status
+	 * @param completionStatus
+	 *            the new completion status
 	 */
 	@Override
 	public void setCompletionStatus(CompletionStatus completionStatus) {
@@ -55,13 +59,14 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	/**
 	 * Sets the execution id.
 	 *
-	 * @param executionId the new execution id
+	 * @param executionId
+	 *            the new execution id
 	 */
 	@Override
 	public void setExecutionId(String executionId) {
 		this.entity.getKscdtScheExeLogPK().setExeId(executionId);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -99,6 +104,11 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	public void setPeriod(DatePeriod period) {
 		this.entity.setStartYmd(period.start());
 		this.entity.setEndYmd(period.end());
+	}
+
+	@Override
+	public void setExeAtr(ExecutionAtr exeAtr) {
+		this.entity.setExeAtr(exeAtr.value);
 	}
 
 }

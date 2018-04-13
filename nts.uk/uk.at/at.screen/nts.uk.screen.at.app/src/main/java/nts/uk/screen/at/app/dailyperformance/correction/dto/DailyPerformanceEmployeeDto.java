@@ -5,6 +5,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author hungnm
@@ -12,6 +13,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DailyPerformanceEmployeeDto {
 	private String id;
 	private String code;
