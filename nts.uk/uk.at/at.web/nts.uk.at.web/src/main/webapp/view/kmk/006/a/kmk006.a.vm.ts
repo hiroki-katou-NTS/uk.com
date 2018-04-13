@@ -260,8 +260,16 @@ module nts.uk.at.view.kmk006.a {
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
                     if(!nts.uk.text.isNullOrEmpty(codeChanged)){
-                        
-                        self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
+                        if(!nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
+                            self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
+                            service.getWkpJobAutoCal(codeChanged, self.totalSelectedCode()).done((data) => {
+                                if (data) {
+                                    self.createModeScreenD(true);             
+                                } else {
+                                    self.createModeScreenD(false);    
+                                }
+                            });
+                        }
                         nts.uk.ui.block.invisible();
                         self.treeItemCode($('#tree-grid').getRowSelected()[0].workplaceCode);
                         let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
@@ -280,14 +288,7 @@ module nts.uk.at.view.kmk006.a {
                             self.itemWkpJobAutoCalModel.resetData();
                             self.reLoadListEnum(self.itemWkpJobAutoCalModel);                       
                         }
-                    }  
-                    service.getWkpJobAutoCal(codeChanged, self.totalSelectedCode()).done((data) => {
-                        if (data) {
-                            self.createModeScreenD(true);             
-                        } else {
-                            self.createModeScreenD(false);    
-                        }
-                    });
+                    }
                 });
 
                 //subscribe 
@@ -1093,11 +1094,10 @@ module nts.uk.at.view.kmk006.a {
                     .done(function() {
                         let code = $('#jobtitles').getDataList()[0].id;
                         self.totalSelectedCode(code);
-                        
-                        
+                                              
                         // load ready setting
                         self.loadWkpJobAlreadySettingList().done(function() {
-                            self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code).done(() => {nts.uk.ui.block.clear();});                          
+                            self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId(), code).done(() => {nts.uk.ui.block.clear();});                          
                         });
                     });   
 
