@@ -2,6 +2,8 @@ module nts.uk.at.view.kdl034.a {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
+    import getMessage = nts.uk.resource.getMessage;
     import ApplicationDto = nts.uk.at.view.kaf000.b.viewmodel.model.ApplicationDto;
     export module viewmodel {
         export class ScreenModel {
@@ -11,48 +13,48 @@ module nts.uk.at.view.kdl034.a {
             returnReason: KnockoutObservable<string> = ko.observable("");
             version: number = 0;
             applicationContent: ApplicationDto;
-            appID: string = "0b5dc40d-37a6-43cc-b6af-e8fdeece973e";
+            appID: string = "";
             constructor() {
                 var self = this;
+                let param = getShared("KDL034_PARAM");
+                self.appID = param.appID;
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
-                service.getAppInfoByAppID(self.appID).done(function(result) {
-                    if (result) {
-                        let applicant = result.applicant;
-                        let approvalFrame = result.approvalFrameDtoForRemand;
-                        let listApprover: Array<Approver> = [];
-                        self.version = result.version;
-                        self.errorFlag = result.errorFlag;
-                        applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, "");
-                        listApprover.push(applicant);
-                        approvalFrame.forEach(function(approvalState) {
-                            approvalState.listApprover.forEach(function(approver) {
-                                listApprover.push(new Approver(approver.approverID, approver.approverName, approver.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
+                if (!_.isEmpty(self.appID)){
+                    service.getAppInfoByAppID(self.appID).done(function(result) {
+                        if (result) {
+                            let applicant = result.applicant;
+                            let approvalFrame = result.approvalFrameDtoForRemand;
+                            let listApprover: Array<Approver> = [];
+                            self.version = result.version;
+                            self.errorFlag = result.errorFlag;
+                            applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, "");
+                            listApprover.push(applicant);
+                            approvalFrame.forEach(function(approvalState) {
+                                approvalState.listApprover.forEach(function(approver) {
+                                    listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
+                                });
                             });
-                        });
-                        self.listApprover(listApprover);
-                        self.selectedApproverId(applicant.pid);
-                    }
-                    dfd.resolve();
-                }).fail(function(res: any) {
-                    dfd.reject();
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("../test/index.xhtml");
+                            self.listApprover(listApprover);
+                            self.selectedApproverId(applicant.pid);
+                        }
+                        dfd.resolve();
+                    }).fail(function(res: any) {
+                        //dfd.reject();
+                    }).always(function(res: any){
+                        nts.uk.ui.block.clear();
                     });
-                }).always(function(res: any){
-                    nts.uk.ui.block.clear();
-                });
-                nts.uk.ui.windows.close();
+                }
                 return dfd.promise();
             }
 
             submitAndCloseDialog() {
                 var self = this;
                 dialog.confirm({ messageId: "Msg_384"}).ifYes(() => {
-                        //nts.uk.ui.block.invisible();
+                        nts.uk.ui.block.invisible();
                         let currentApprover = _.find(self.listApprover(), x => { return x.id === self.selectedApproverId() });
                         let command = {
                             appID: self.appID,
@@ -62,22 +64,63 @@ module nts.uk.at.view.kdl034.a {
                         }
                         nts.uk.at.view.kdl034.a.service.remand(command)
                             .done(function(result){
-                                dialog.info({ messageId: "Msg_392", messageParams: result });
-                                setShared("KDL034_PARAM", {"returnReason": self.returnReason});
+                                let successList: Array<string> = [];
+                                let failedList: Array<string> = [];
+                                if (result){
+                                        // メール送信時のエラーチェック
+                                    if (result.successList){
+                                        _.forEach(result.successList, x => {
+                                            successList.push(x);
+                                        });
+                                    }
+                                    if (result.errorList){
+                                        _.forEach(result.errorList, x => {
+                                            failedList.push(x);
+                                        });
+                                    }
+                                }
+                                setShared("KDL034_PARAM_RES", command);
+                                dialog.info({ messageId: "Msg_223"}).then(()=>{
+                                    self.handleSendMailResult(successList, failedList);
+                                });
                             }).fail(function(res){
                                 dialog.alertError (res.errorMessage);
                             }).always(function(){
                                 nts.uk.ui.block.clear();
-                                nts.uk.ui.windows.close();
                             });
-                }).ifNo(() => {
                     
+                }).ifNo(() => {
                 });
-                
+            }
+            handleSendMailResult(successList, failedList) {
+                let numOfSuccess = successList.length;
+                let numOfFailed = failedList.length
+                let sucessListAsStr = "";
+                if (numOfSuccess ==0 && numOfFailed == 0){
+                    nts.uk.ui.windows.close();
+                }
+                if (numOfSuccess !=0 && numOfFailed == 0){
+                    let msg = getMessage('Msg_392');
+                    dialog.info({message: msg.replace("{0}", successList.join('\n')), messageId: "Msg_392"}).then(()=>{
+                        nts.uk.ui.windows.close();
+                    });
+                } else if (numOfSuccess ==0 && numOfFailed != 0){
+                    dialog.alertError({message: getMessage('Msg_769')+"\n"+failedList.join('\n'), messageId: "Msg_769"}).then(()=>{
+                        nts.uk.ui.windows.close();
+                    });
+                } else {
+                    let msg = getMessage('Msg_392');
+                    dialog.info({message: msg.replace("{0}", successList.join('\n')), messageId: "Msg_392"}).then(()=>{
+                        dialog.alertError({message: getMessage('Msg_769')+"\n"+failedList.join('\n'), messageId: "Msg_769"}).then(()=>{
+                            nts.uk.ui.windows.close();
+                        });
+                    });
+                }
             }
             closeDialog() {
                 nts.uk.ui.windows.close();
             }
+            
         }
         export class Applicant {
             id: string;
@@ -100,7 +143,7 @@ module nts.uk.at.view.kdl034.a {
                 this.phaseOrder = phaseOrder;
                 this.approvalReson = approvalReason;
                 this.jobTitle = jobTitle;
-                if (_.isEmpty(phaseOrder)) {
+                if (_.isNull(phaseOrder)) {
                     this.dispApprover = "申請者：　" + jobTitle + "　" + name;
                 } else if (phaseOrder == 2) {
                     this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + name + "　" + representerName;

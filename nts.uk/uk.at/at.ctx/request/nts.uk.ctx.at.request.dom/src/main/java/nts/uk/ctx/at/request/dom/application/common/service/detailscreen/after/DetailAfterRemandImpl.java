@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
@@ -18,11 +20,14 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMailRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -56,39 +61,44 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 
 	@Inject
 	private ContentOfRemandMailRepository remandRepo;
-
+	
+	@Inject
+	private UrlEmbeddedRepository urlEmbeddedRepo;
+	
 	@Override
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
-				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		application.setReversionReason(new AppReason(returnReason));
 		applicationRepository.updateWithVersion(application);
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
+				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		MailSenderResult mailSenderResult = null;
+		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
+		UrlExecInfo urlInfo = null;
+		if (urlEmbedded.isPresent()){
+			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+			if (checkUrl == NotUseAtr.USE) {
+				urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appID, application.getAppType().value,
+						application.getPrePostAtr().value, application.getEmployeeID());
+			}
+		} 
 		if (order != null) {
 			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appID, application.getAppType().value,
-						application.getPrePostAtr().value, application.getEmployeeID());
 				mailSenderResult = this.getMailSenderResult(application, employeeList, urlInfo);
-			}else{
-				List<String> errorList = new ArrayList<>();
-				employeeList.forEach(x ->{
-					errorList.add(employeeAdapter.getEmployeeName(x));
-				});
-				return new MailSenderResult(null, errorList);
+			} else {
+				mailSenderResult = new MailSenderResult(null, null);
 			}
 		} else {
 			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
 			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appID, application.getAppType().value,
-						application.getPrePostAtr().value, application.getEmployeeID());
 				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()),
 						urlInfo);
-			}else{
-				return new MailSenderResult(null, Arrays.asList(employeeAdapter.getEmployeeName(application.getEmployeeID())));
+			} else{
+				mailSenderResult = new MailSenderResult(null, null);
 			}
 		}
 		return mailSenderResult;
@@ -97,33 +107,39 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	@Override
 	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList,
 			UrlExecInfo urlInfo) {
-		String mailTitle;
-		String mailBody;
+		String mailTitle = "";
+		String mailBody = "";
 		String cid = AppContexts.user().companyId();
 		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
 		if (!Objects.isNull(remandTemp)) {
 			mailTitle = remandTemp.getMailTitle();
 			mailBody = remandTemp.getMailBody();
-		} else {
-			mailTitle = remandTemp.getMailTitle();
-			mailBody = remandTemp.getMailBody();
 		}
+		String emp = employeeAdapter.empEmail(AppContexts.user().employeeId());
+		if (Strings.isEmpty(emp)){
+			emp = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+		}
+		if (!Objects.isNull(urlInfo)){
+			mailBody = "\n" + urlInfo.getProgramId() + urlInfo.getEmbeddedId() + "\n" + mailBody;
+		}
+		String appContent = "app content";
 		String mailContentToSend = I18NText.getText("Msg_1060",
 				employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
-				GeneralDate.today().toString(), EnumAdaptor.convertToValueName(application.getAppType()).toString(),
-				employeeAdapter.getEmployeeName(application.getEmployeeID()), application.getAppDate().toString(),
-				application.getAppReason().toString(), employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), employeeAdapter.empEmail(AppContexts.user().employeeId()));
-		mailContentToSend +=  "\n" + urlInfo.getScreenId() + "\n" + urlInfo.getEmbeddedId();
+				GeneralDate.today().toString(), application.getAppType().nameId,
+				employeeAdapter.getEmployeeName(application.getEmployeeID()), application.getAppDate().toLocalDate().toString(),
+				appContent, employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
+		
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		for(String employee: employeeList){
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			String employeeMail = employeeAdapter.empEmail(employee);
+			employeeMail = "hiep.ld@3si.vn";
 			if (Strings.isBlank(employeeMail)) {
-				errorList.add(employeeName);
+				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
 			} else {
-				mailsender.send("nts", employeeMail, new MailContents(mailTitle, mailContentToSend));
+				mailsender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents(mailTitle, mailContentToSend));
 				successList.add(employeeName);
 			}
 		}
