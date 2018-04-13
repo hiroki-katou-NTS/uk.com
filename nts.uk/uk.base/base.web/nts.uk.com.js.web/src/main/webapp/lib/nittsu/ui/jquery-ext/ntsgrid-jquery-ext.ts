@@ -705,7 +705,7 @@ module nts.uk.ui.jqueryExtentions {
                 let idx = setting.descriptor.keyIdxes[rId];
                 if (util.isNullOrUndefined(idx)) return;
                 let origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
-                grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
+                grid.dataSource.updateRow(rId, $.extend({}, gridUpdate._getLatestValues(rId), updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
                     notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                     let isControl = utils.isNtsControl($grid, key);
