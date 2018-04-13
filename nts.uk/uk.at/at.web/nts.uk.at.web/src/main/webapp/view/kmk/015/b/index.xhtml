@@ -24,10 +24,10 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="margin-bottom: 10px; margin-left: 10px; margin-top: 10px;">#{i18n.getText('KMK015_16')}</div>
+				<div tabindex="1" style="margin-bottom: 10px; margin-left: 10px; margin-top: 10px;">#{i18n.getText('KMK015_16')}</div>
 				<div style="margin-left: 10px; margin-top: 30px;">
 					<div data-bind="ntsFormLabel: {required: true}" style="padding-right: 40px;">#{i18n.getText('KMK015_17')}</div>
-					<div id="inp-period-startYMD" tabindex="3"
+					<div id="inp-period-startYMD"
 						data-bind="ntsDatePicker: {
 							name: '#[KMK015_19]',
 							dateFormat: 'YYYY/MM/DD',
@@ -35,7 +35,7 @@
 							required: true }">
 					</div>
 					<label>～</label>
-					<div id="inp-period-endYMD" tabindex="3"
+					<div id="inp-period-endYMD"
 						data-bind="ntsDatePicker: {
 							name: '#[KMK015_20]',
 							dateFormat: 'YYYY/MM/DD',
@@ -47,9 +47,9 @@
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="11"
+				<button class="x-large proceed" tabindex="2"
 					data-bind="click: submit">#{i18n.getText('KMK015_21')}</button>
-				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KMK015_22')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KMK015_22')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

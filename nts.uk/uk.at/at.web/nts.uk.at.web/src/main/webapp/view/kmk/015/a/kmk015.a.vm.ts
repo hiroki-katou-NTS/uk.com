@@ -263,7 +263,6 @@ module nts.uk.at.view.kmk015.a {
              */
             private addList(data: Array<any>): void {
                 let self = this;
-                //add item　なし
                 data.forEach(function(item) {
                     //push listHistory
                     self.listHistory.push({
