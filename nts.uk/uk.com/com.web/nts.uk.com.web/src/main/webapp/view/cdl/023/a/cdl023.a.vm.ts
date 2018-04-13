@@ -1,6 +1,8 @@
 module nts.uk.com.view.cdl023.a.viewmodel {
 
     export class ScreenModel {
+        
+        isFirtTime : KnockoutObservable<boolean>;
 
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
@@ -17,6 +19,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         
         constructor() {
             let self = this;
+            
+            self.isFirtTime = ko.observable(true);
             
             self.code = ko.observable(null);
             self.name = ko.observable(null);
@@ -46,7 +50,6 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             self.targetType = object.targetType;
             self.itemListSetting = object.itemListSetting;
             self.baseDate = object.baseDate;
-            
             self.roleType = object.roleType;
             
             dfd.resolve();
@@ -106,6 +109,9 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          */
         public openDialog() {
             let self = this;
+            
+            let listToDialog = self.isFirtTime() ? self.itemListSetting : self.lstSelected();
+            
             let screenUrl: string = null;
             
             // set parameters
@@ -195,7 +201,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     // set data share
                     shareData.roleType = self.roleType;
                     shareData.multiple = true;
-                    shareData.currentCode = self.itemListSetting;
+                    shareData.currentCode = listToDialog;
                     break;
                     
                 case TargetType.WORK_TYPE:
@@ -205,7 +211,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL009Cancel';
                     
                     // set data share
-                    shareData.codeList = self.itemListSetting;
+                    shareData.codeList = listToDialog;
                     break;
                 default:
                     nts.uk.ui.dialog.alert("Target type not found.");
@@ -236,6 +242,9 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                 } else {
                     self.lstSelected([selectedCode]);
                 }
+                
+                // update flag
+                self.isFirtTime(false);
             });
         }
     }
