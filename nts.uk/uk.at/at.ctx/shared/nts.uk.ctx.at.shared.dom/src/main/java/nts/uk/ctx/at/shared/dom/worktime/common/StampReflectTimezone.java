@@ -73,7 +73,7 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 * @return true, if is go work 1
 	 */
 	public boolean isGoWork1() {
-		return this.workNo.v() == 1 && GoLeavingWorkAtr.GO_WORK.equals(this.classification.value);
+		return this.workNo.v() == 1 && GoLeavingWorkAtr.GO_WORK.equals(this.classification);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 * @return true, if is go work 2
 	 */
 	public boolean isGoWork2() {
-		return this.workNo.v() == 2 && GoLeavingWorkAtr.GO_WORK.equals(this.classification.value);
+		return this.workNo.v() == 2 && GoLeavingWorkAtr.GO_WORK.equals(this.classification);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 * @return true, if is leave work 1
 	 */
 	public boolean isLeaveWork1() {
-		return this.workNo.v() == 1 && GoLeavingWorkAtr.LEAVING_WORK.equals(this.classification.value);
+		return this.workNo.v() == 1 && GoLeavingWorkAtr.LEAVING_WORK.equals(this.classification);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	 * @return true, if is leave work 2
 	 */
 	public boolean isLeaveWork2() {
-		return this.workNo.v() == 2 && GoLeavingWorkAtr.LEAVING_WORK.equals(classification.value);
+		return this.workNo.v() == 2 && GoLeavingWorkAtr.LEAVING_WORK.equals(this.classification);
 	}
 
 	/**
