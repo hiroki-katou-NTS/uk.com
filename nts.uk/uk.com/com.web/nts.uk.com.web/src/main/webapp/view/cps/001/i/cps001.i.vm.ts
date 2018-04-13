@@ -257,11 +257,16 @@ module nts.uk.com.view.cps001.i.vm {
                 grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
                 deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
                 ctgCode: IData = self.genSpecialCode(self.categoryCode());
+            
+            $("#idDateGrantInp").trigger("validate");
+            $("#idDeadline").trigger("validate");
+            $("#dayNumberOfGrants").trigger("validate");
+            $("#dayNumberOfUse").trigger("validate");
+            $("#dayNumberOver").trigger("validate");
+            $("#dayNumberOfReam").trigger("validate");
 
 
-            if (self.dateGrantInp() == null || self.deadlineDateInp() == null
-                || self.dayNumberOfGrants() == null || self.dayNumberOfUse() == null
-                || self.dayNumberOfReam() == null || self.dayNumberOver() == null || nts.uk.ui.errors.hasError()) {
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
