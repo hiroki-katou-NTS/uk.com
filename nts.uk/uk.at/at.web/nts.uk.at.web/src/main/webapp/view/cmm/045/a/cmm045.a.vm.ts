@@ -920,7 +920,7 @@ module cmm045.a.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertA(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
             let self = this;
-            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            let time = compltLeave.startTime + getText('CMM045_100') + compltLeave.endTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
             return getText('CMM045_262') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
@@ -929,7 +929,7 @@ module cmm045.a.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertB(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
             let self = this;
-            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            let time = compltLeave.startTime + getText('CMM045_100') + compltLeave.endTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
             return getText('CMM045_263') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
