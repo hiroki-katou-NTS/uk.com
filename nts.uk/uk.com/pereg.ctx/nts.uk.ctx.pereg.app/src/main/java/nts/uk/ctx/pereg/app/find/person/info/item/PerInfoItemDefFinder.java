@@ -39,6 +39,7 @@ import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemDataType;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemClassification;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
@@ -87,22 +88,21 @@ public class PerInfoItemDefFinder {
 					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
 
-
 		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, ukResouce);
-//				.stream().filter(c  -> (c.getValue() == 1 || c.getValue() == 2 || c.getValue() == 3 || c.getValue() == 4 || c.getValue() == 5 || c.getValue() == 6))
-//				.collect(Collectors.toList());
 		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class, ukResouce);
 		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
 				ukResouce);
 		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, ukResouce);
-		List<PerInfoSelectionItemDto> selectionItemLst = new ArrayList<>();
-
-		if (personEmployeeType == 1) {
-			selectionItemLst = this.selectionItemFinder.getAllSelectionItem(0);
-		} else if (personEmployeeType == 2) {
-			selectionItemLst = this.selectionItemFinder.getAllSelectionItem(1);
+		
+		SelectionItemClassification itemClassification;
+		if (personEmployeeType == PersonEmployeeType.PERSON.value) {
+			itemClassification = SelectionItemClassification.PersonalInformation;
+		} else {
+			itemClassification = SelectionItemClassification.EmployeeInformation;
 		}
 
+		List<PerInfoSelectionItemDto> selectionItemLst = this.selectionItemFinder
+				.getAllSelectionItem(itemClassification.value);
 		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
 				selectionItemLst, perInfoItemDefs);
 	};
@@ -153,11 +153,11 @@ public class PerInfoItemDefFinder {
 						List<Selection> selectionList = new ArrayList<>();
 						
 						if (personEmployeeType == PersonEmployeeType.PERSON.value) {
-							selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
-									baseDateConvert, 0);
+							selectionList = this.selectionRepo.getAllSelectionByCompanyId(zeroCompanyId, typeCode,
+									baseDateConvert);
 						} else {
-							selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, typeCode,
-									baseDateConvert, 1);
+							selectionList = this.selectionRepo.getAllSelectionByCompanyId(companyId, typeCode,
+									baseDateConvert);
 						}
 						selectionDtoList = selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection1(c))
 								.collect(Collectors.toList());
@@ -198,15 +198,8 @@ public class PerInfoItemDefFinder {
 						SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
 						if (selelection.getReferenceType().value == 2) {
 							String typeCode = ((CodeNameRefTypeDto) selelection).getTypeCode();
-							GeneralDate today = GeneralDate.today();
-							List<Selection> selectionList = new ArrayList<>();
-							if (personEmployeeType == PersonEmployeeType.PERSON.value) {
-								selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
-										today, 0);
-							} else {
-								selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, typeCode,
-										today, 1);
-							}
+							List<Selection> selectionList = this.selectionRepo.getAllSelectionByCompanyId(zeroCompanyId,
+									typeCode, GeneralDate.today());
 							selectionDtoList = selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection1(c))
 									.collect(Collectors.toList());
 						}
