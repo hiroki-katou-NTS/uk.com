@@ -53,6 +53,6 @@
   color: #999;
 }
 
-table#table-group2condition tbody tr td:nth-child(3n) {
+table#table-group2condition tbody tr td:nth-child(3n), table#table-group1condition tbody tr td:nth-child(3n) {
     text-align: center !important;
 }
