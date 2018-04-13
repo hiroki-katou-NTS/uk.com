@@ -1438,7 +1438,7 @@ module nts.layout {
                                     if (hvl && nnb) {
                                         if (!ctrl1.is(':disabled') && !ctrl1.ntsError('hasError')) {
                                             ctrl1.ntsError('set', {
-                                                messageId: "Msg_435",
+                                                messageId: "Msg_998",
                                                 messageParams: [
                                                     group[0].itemName,
                                                     group[1].itemName
