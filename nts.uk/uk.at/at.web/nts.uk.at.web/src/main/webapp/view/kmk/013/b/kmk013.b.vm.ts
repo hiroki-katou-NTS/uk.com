@@ -145,8 +145,12 @@ module nts.uk.at.view.kmk013.b {
             conditionDisplay15: KnockoutObservable<boolean>;
             conditionDisplay26: KnockoutObservable<boolean>;
             
+            isLoadAfterGetData: KnockoutObservable<boolean>;
+            
             constructor() {
                 var self = this;
+                
+                self.isLoadAfterGetData = ko.observable(true);
                 
                 self.conditionDisplay15 = ko.observable(true);
                 self.conditionDisplay26 = ko.observable(true);
@@ -745,7 +749,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.checkedB616.subscribe(newValue => {
                     if (newValue == false) {
-                        if (self.enableB68()) {
+                        if (!self.isLoadAfterGetData()) {
                             self.checkedB68(false);                            
                         }
                     }
@@ -926,6 +930,7 @@ module nts.uk.at.view.kmk013.b {
             }
             initData(): void {
                 let self = this;
+                self.isLoadAfterGetData(true);
                 $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
                     if (dataDomainSet != null) {
                         // condition 15
@@ -1165,6 +1170,7 @@ module nts.uk.at.view.kmk013.b {
                     self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
                     
                     self.notifyVarKnockoutchange();
+                    self.isLoadAfterGetData(false);
                 });    
             }
             
