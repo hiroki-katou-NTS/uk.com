@@ -4,13 +4,21 @@ module nts.uk.at.view.kdm002.b {
     
     export module service {
         var paths = {
-            execution: "at/record/remainnumber/checkFunc/execution"
+            execution: "at/record/remainnumber/checkFunc/execution",
+            exportDatatoCsv: "at/record/remainnumber/checkFunc//export"
         }
         /**
          * call service execution 
          */
         export function execution(command: any): JQueryPromise<any> {
             return ajax('at', paths.execution, command);
+        }
+        
+        /**
+         * download export file
+         */
+        export function exportDatatoCsv(data : any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportDatatoCsv, data);
         }
     }
 }

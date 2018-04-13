@@ -3,6 +3,8 @@ module nts.uk.at.view.kdm002.b {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog.alertError;
+    
     export module viewmodel {
 
         export class ScreenModel {
@@ -19,7 +21,7 @@ module nts.uk.at.view.kdm002.b {
             pmaxday:  KnockoutObservable<number>;   
             
             // table result
-            timeStart: KnockoutObservable<string> = ko.observable('2018/01/01 13:25:16');
+            timeStart: KnockoutObservable<string>;
             timeOver: KnockoutObservable<string> = ko.observable('00:00:00');
             status: KnockoutObservable<string> = ko.observable('処理中');
             result: KnockoutObservable<string> = ko.observable('0 / 25人');
@@ -34,10 +36,19 @@ module nts.uk.at.view.kdm002.b {
             // flag
             isStop: KnockoutObservable<boolean> = ko.observable(false);
             isComplete: KnockoutObservable<boolean> = ko.observable(false);
+            isError: KnockoutObservable<boolean> = ko.observable(false);
             
             taskId: KnockoutObservable<string> =  ko.observable('');
+            timeStartt: any;
+            timeNow: any;
             constructor() {
                 let self = this;
+                self.timeStartt = new Date();
+                let systemDate = Date.now();
+                let convertdLocalTime = new Date(systemDate);
+                let hourOffset = convertdLocalTime.getTimezoneOffset() / 60;
+                convertdLocalTime.setHours( convertdLocalTime.getHours() - hourOffset );
+                self.timeStart = ko.observable(moment.utc(convertdLocalTime).format("YYYY/MM/DD H:mm:ss"));
                 // get params from KDM002-A
                 let parrams = getShared('KDM002Params');
                 self.pempployeeList  = ko.observable(parrams.empployeeList);
@@ -111,9 +122,15 @@ module nts.uk.at.view.kdm002.b {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
                                 _.forEach(res.taskDatas, item => {
-                                    // 「非同期タスク情報」を取得する
-                                    let serverData = JSON.parse(item.valueAsString);
-                                    console.log(serverData);
+                                    if (item.key.substring(0, 10) == "ERROR_LIST") {
+                                        let error = JSON.parse(item.valueAsString);
+                                        let errorContent : IErrorLog = {
+                                            employeeCode : error.employeeCode,
+                                            employeeName : error.employeeName,
+                                            errorMessage : nts.uk.resource.getMessage(error.errorMessage)
+                                        }
+                                        self.imErrorLog.push(errorContent);
+                                    }
                                     // 処理カウント
                                     if (item.key == 'NUMBER_OF_SUCCESS') {
                                         self.result(item.valueAsNumber+" / " + self.total() + "人");
@@ -123,7 +140,7 @@ module nts.uk.at.view.kdm002.b {
                                 if (res.running) {
                                     // 経過時間＝現在時刻－開始時刻
                                     self.timeNow = new Date();
-                                    let over = (self.timeNow.getSeconds()+self.timeNow.getMinutes()*60+ self.timeNow.getHours()*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60);
+                                    let over = (self.timeNow.getSeconds()+self.timeNow.getMinutes()*60+ self.timeNow.getHours()*60) - (self.timeStartt.getSeconds()+self.timeStartt.getMinutes()*60+ self.timeStartt.getHours()*60);
                                     let time = new Date(null);
                                     time.setSeconds(over); // specify value for SECONDS here
                                     let result = time.toISOString().substr(11, 8);
@@ -133,8 +150,13 @@ module nts.uk.at.view.kdm002.b {
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
-                                if (res.succeeded) {
+                                if (self.imErrorLog().length == 0 ) {
                                     self.status('完了');  
+                                }
+                                else {
+                                    self.isError(true);
+                                    self.isComplete(true);
+                                    self.status('完了　（エラーあり）'); 
                                 }
                                 self.isStop(true);
                             }
@@ -165,7 +187,12 @@ module nts.uk.at.view.kdm002.b {
             //エラー出力ボタンをクリックする
             errorExport(){
                 let self = this;
-                
+                nts.uk.ui.block.invisible();
+                service.exportDatatoCsv(self.imErrorLog()).fail(function(res: any) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
         }
         
