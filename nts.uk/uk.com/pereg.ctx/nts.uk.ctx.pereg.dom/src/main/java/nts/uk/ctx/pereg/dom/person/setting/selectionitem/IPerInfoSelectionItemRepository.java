@@ -27,7 +27,7 @@ public interface IPerInfoSelectionItemRepository {
 	 * 
 	 * @return List<PerInfoSelectionItem>
 	 */
-	List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr);
+	List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr, String contractCode);
 
 	List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCode);
 

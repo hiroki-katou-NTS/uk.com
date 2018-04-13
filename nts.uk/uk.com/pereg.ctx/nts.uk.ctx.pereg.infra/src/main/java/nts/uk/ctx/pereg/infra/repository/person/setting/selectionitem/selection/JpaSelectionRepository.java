@@ -28,15 +28,6 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	private static final String SELECT_ALL_SELECTION_BY_SELECTIONID = SELECT_ALL
 			+ " WHERE si.selectionId = :selectionId";
 
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE = " SELECT se , item.selectionItemName FROM PpemtSelectionItem item"
-			+ " INNER JOIN PpemtHistorySelection his ON item.selectionItemPk.selectionItemId = his.selectionItemId"
-			+ " INNER JOIN PpemtSelection se ON his.histidPK.histId = se.histId"
-			+ " INNER JOIN PpemtSelItemOrder o ON his.histidPK.histId = o.histId AND se.selectionId.selectionId = o.selectionIdPK.selectionId"
-			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate"
-			+ " AND item.selectionItemPk.selectionItemId =:selectionItemId AND item.selectionItemClsAtr =:selectionItemClsAtr"
-			+ " AND his.companyId =:cid"
-			+ " ORDER BY o.dispOrder";
-	
 	// selection for company
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"
 			+ " INNER JOIN PpemtHistorySelection his "
@@ -139,16 +130,6 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		return queryProxy().query(SELECT_ALL_HISTORY_ID, String.class).setParameter("histId", histId).getList();
 
 	}
-
-	// Lanlt
-	@Override
-	public List<Selection> getAllSelectionByHistoryId(String cid, String selectionItemId, GeneralDate baseDate, int selectionItemClsAtr) {
-		return this.queryProxy().query(SEL_ALL_BY_SEL_ID_PERSON_TYPE, Object[].class)
-				.setParameter("cid", cid).setParameter("selectionItemClsAtr", selectionItemClsAtr)
-				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
-				.getList(c -> toDomain(c));
-	}
-	// Lanlt
 
 	@Override
 	public List<Selection> getAllSelectionBySelectionID(String selectionId) {

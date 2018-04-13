@@ -41,7 +41,6 @@ import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.Selectio
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionInitQuery;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionQuery;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Path("ctx/pereg/person/info/setting/selection")

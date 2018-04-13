@@ -96,9 +96,9 @@ public class SelectionFinder {
 		String selectionItemId = query.getSelectionItemId();
 		List<Selection> selectionList = new ArrayList<>();
 		if (query.isCps006() && query.getSelectionItemClsAtr() == PersonEmployeeType.EMPLOYEE.value) {
-			selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, selectionItemId, today, 1);
+			selectionList = this.selectionRepo.getAllSelectionByCompanyId(companyId, selectionItemId, today);
 		} else {
-			selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, selectionItemId, today, 0);
+			selectionList = this.selectionRepo.getAllSelectionByCompanyId(zeroCompanyId, selectionItemId, today);
 		}
 		return selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 	}
