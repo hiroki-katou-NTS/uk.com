@@ -621,7 +621,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                        } 
                     }
                 });
-                if(!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null){
+                if(!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0){
                     let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "INTEGER", "I_A_A_A_A1", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
                     let dataLiveTime = new InfoCellEdit("", "34", String(self.shareObject().initClock.liveTime), "INTEGER", "I_A_A_A_A2", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
                     dataChangeProcess.push(dataGout);
