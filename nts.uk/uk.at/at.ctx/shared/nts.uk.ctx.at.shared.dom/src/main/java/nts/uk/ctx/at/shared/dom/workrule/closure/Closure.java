@@ -6,10 +6,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -325,17 +322,21 @@ public class Closure extends AggregateRoot {
 	}
 	
 	public void udpateProcessingMonth () {
-		Map<Integer, ClosureHistory> yearMonthHistoryMap = this.closureHistories.stream()
-				.collect(Collectors.toMap(history -> history.getStartYearMonth().v(), Function.identity()));
+		// check ClosureHistory contain CurrentMonth
+		boolean containCurrentMonth = this.closureHistories.stream().anyMatch(history -> {
+			return this.intoClosureMonth(history, this.closureMonth.getProcessingYm());
+		});
+		// not contain
+		if(!containCurrentMonth) return;
 		
 		// get closureMonth in ClosureHistory
-		ClosureHistory currentClosureMonth = yearMonthHistoryMap.get(this.closureMonth.getProcessingYm().v());
-		
-		// not contain
-		if(currentClosureMonth == null) return;
+		ClosureHistory currentClosureMonth = this.closureHistories.stream()
+				.filter(history -> this.intoClosureMonth(history, this.closureMonth.getProcessingYm())).findFirst().get();
 		
 		// get previous closureMonth in ClosureHistory
-		ClosureHistory previousClosureMonth = yearMonthHistoryMap.get(this.closureMonth.getProcessingYm().v() - 1);
+		YearMonth previousYearMonth = YearMonth.of(this.closureMonth.getProcessingYm().v() - 1);
+		ClosureHistory previousClosureMonth = this.closureHistories.stream()
+				.filter(history -> this.intoClosureMonth(history, previousYearMonth)).findFirst().get();
 		
 		// if closureDate current <= previous closureDate
 		if(currentClosureMonth.getClosureDate().getClosureDay().v() <= previousClosureMonth.getClosureDate().getClosureDay().v()) return;
@@ -351,5 +352,11 @@ public class Closure extends AggregateRoot {
 			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingBefore));
 			break;
 		}
+	}
+	
+	private boolean intoClosureMonth(ClosureHistory closureHistory, YearMonth currentMonth) {
+		YearMonth startYearMonth = closureHistory.getStartYearMonth();
+		YearMonth endYearMonth = closureHistory.getEndYearMonth();
+		return startYearMonth.lessThan(currentMonth) && endYearMonth.greaterThan(currentMonth);
 	}
 }
