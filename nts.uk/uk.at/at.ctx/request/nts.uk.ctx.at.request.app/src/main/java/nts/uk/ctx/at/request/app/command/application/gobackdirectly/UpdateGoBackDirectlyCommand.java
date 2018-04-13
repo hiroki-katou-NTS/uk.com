@@ -31,23 +31,23 @@ public class UpdateGoBackDirectlyCommand {
 	/**
 	 * 勤務を変更する
 	 */
-	int workChangeAtr;
+	Integer workChangeAtr;
 	/**
 	 * 勤務直行1
 	 */
-	int goWorkAtr1;
+	Integer goWorkAtr1;
 	/**
 	 * 勤務直帰1
 	 */
-	int backHomeAtr1;
+	Integer backHomeAtr1;
 	/**
 	 * 勤務時間開始1
 	 */
-	int workTimeStart1;
+	Integer workTimeStart1;
 	/**
 	 * 勤務時間終了1
 	 */
-	int workTimeEnd1;
+	Integer workTimeEnd1;
 	/**
 	 * 勤務場所選択1
 	 */
@@ -55,19 +55,19 @@ public class UpdateGoBackDirectlyCommand {
 	/**
 	 * 勤務直行2
 	 */
-	int goWorkAtr2;
+	Integer goWorkAtr2;
 	/**
 	 * 勤務直帰2
 	 */
-	int backHomeAtr2;
+	Integer backHomeAtr2;
 	/**
 	 * 勤務時間開始2
 	 */
-	int workTimeStart2;
+	Integer workTimeStart2;
 	/**
 	 * 勤務時間終了2
 	 */
-	int workTimeEnd2;
+	Integer workTimeEnd2;
 	/**
 	 * 勤務場所選択２
 	 */
@@ -75,11 +75,11 @@ public class UpdateGoBackDirectlyCommand {
 	
 	String employeeID;
 	
-	int prePostAtr;
+	Integer prePostAtr;
 	
 	String appDate;
 	
-	int employeeRouteAtr;
+	Integer employeeRouteAtr;
 	
 	UpdateApplicationCommand appCommand;
 	
