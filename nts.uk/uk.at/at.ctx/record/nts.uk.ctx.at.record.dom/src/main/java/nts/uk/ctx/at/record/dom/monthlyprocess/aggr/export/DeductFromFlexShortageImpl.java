@@ -10,7 +10,9 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -40,7 +42,8 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 		val workConditionItemOpt =
 				this.repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, period.end());
 		if (!workConditionItemOpt.isPresent()){
-			returnValue.getErrorMessageIds().add("not exist WorkingConditionItem");
+			returnValue.getErrorInfos().add(new MonthlyAggregationErrorInfo(
+					"099", new ErrMessageContent("not exist WorkingConditionItem")));
 			return returnValue;
 		}
 		val workConditionItem = workConditionItemOpt.get();
@@ -57,9 +60,9 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 				flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays(), new AttendanceTimeMonth(0));
 		beforeDeduct.timeConversionOfDeductAnnualLeaveDays(companyId, employeeId, period,
 				workConditionItem, this.repositories);
-		if (beforeDeduct.getErrorMessageIds().size() > 0){
+		if (beforeDeduct.getErrorInfos().size() > 0){
 			// エラー発生時
-			returnValue.getErrorMessageIds().addAll(beforeDeduct.getErrorMessageIds());
+			returnValue.getErrorInfos().addAll(beforeDeduct.getErrorInfos());
 			return returnValue;
 		}
 		if (!beforeDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return returnValue;

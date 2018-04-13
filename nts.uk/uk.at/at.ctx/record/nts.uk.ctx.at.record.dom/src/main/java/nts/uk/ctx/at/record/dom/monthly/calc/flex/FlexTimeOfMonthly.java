@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +10,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
@@ -16,6 +19,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.DeductDaysAndTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
@@ -56,6 +60,8 @@ public class FlexTimeOfMonthly {
 	private AddedVacationUseTime addedVacationUseTime;
 	/** 控除の日数と時間 */
 	private DeductDaysAndTime deductDaysAndTime;
+	/** エラー情報リスト */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -70,6 +76,9 @@ public class FlexTimeOfMonthly {
 		this.flexShortDeductTime = new FlexShortDeductTime();
 		
 		this.addedVacationUseTime = new AddedVacationUseTime();
+		this.deductDaysAndTime = new DeductDaysAndTime(
+				new AttendanceDaysMonth(0.0), new AttendanceTimeMonth(0));
+		this.errorInfos = new ArrayList<>();
 	}
 
 	/**
@@ -765,7 +774,8 @@ public class FlexTimeOfMonthly {
 		// 年休控除日数を時間換算する
 		this.deductDaysAndTime.timeConversionOfDeductAnnualLeaveDays(
 				companyId, employeeId, period, workingConditionItem, repositories);
-		if (this.deductDaysAndTime.getErrorMessageIds().size() > 0){
+		if (this.deductDaysAndTime.getErrorInfos().size() > 0){
+			this.errorInfos.addAll(this.deductDaysAndTime.getErrorInfos());
 			return;
 		}
 		

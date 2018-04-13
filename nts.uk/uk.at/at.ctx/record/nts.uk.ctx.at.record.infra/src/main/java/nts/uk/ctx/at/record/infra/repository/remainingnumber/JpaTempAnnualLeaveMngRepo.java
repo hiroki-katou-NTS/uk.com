@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;

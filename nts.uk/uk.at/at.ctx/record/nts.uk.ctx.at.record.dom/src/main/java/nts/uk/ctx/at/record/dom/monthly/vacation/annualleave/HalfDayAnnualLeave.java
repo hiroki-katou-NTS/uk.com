@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 半日年休
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class HalfDayAnnualLeave {
 
 	/** 残日数 */
@@ -19,8 +21,8 @@ public class HalfDayAnnualLeave {
 	 */
 	public HalfDayAnnualLeave(){
 		
-		this.remainingDays = new HalfDayAnnLeaRemainingNum(0.0);
-		this.usedDays = new HalfDayAnnLeaUsedNum(0.0);
+		this.remainingDays = new HalfDayAnnLeaRemainingNum();
+		this.usedDays = new HalfDayAnnLeaUsedNum();
 	}
 	
 	/**
