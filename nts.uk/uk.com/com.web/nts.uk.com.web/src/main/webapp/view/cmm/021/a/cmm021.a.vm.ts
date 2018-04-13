@@ -1210,6 +1210,7 @@ module nts.uk.com.view.cmm021.a {
                     showJobTitle: true,
                     showWorktype: true,
                     isMutipleCheck: true,
+                    showOnStart: true,
 
                     /**
                     * Self-defined function: Return data from CCG001
