@@ -59,14 +59,13 @@ public class WorkFlexAdditionSet extends AggregateRoot{
 															int additionTime1, int notDeductLateleave1, int exemptTaxTime2,
 															int minusAbsenceTime2, int calcActualOperation2, int incChildNursingCare2, 
 															int notDeductLateleave2, int predeterminDeficiency2,int additionTime2, 
-															int enableSetPerWorkHour1, int enableSetPerWorkHour2,
+															int enableSetPerWorkHour1,
 															int additionWithinMonthlyStatutory) {
 		return new WorkFlexAdditionSet(companyId, calcActualOperation1,
 				exemptTaxTime1, incChildNursingCare1, predeterminedOvertime1 , additionTime1, notDeductLateleave1
 				, exemptTaxTime2, minusAbsenceTime2, calcActualOperation2,
 				incChildNursingCare2, notDeductLateleave2, predeterminDeficiency2, additionTime2,
-				enableSetPerWorkHour1, enableSetPerWorkHour2,
-				additionWithinMonthlyStatutory);
+				enableSetPerWorkHour1, additionWithinMonthlyStatutory);
 	}
 
 	/**
@@ -95,7 +94,7 @@ public class WorkFlexAdditionSet extends AggregateRoot{
 			int notDeductLateleave1, int exemptTaxTime2, int minusAbsenceTime2,
 			int calcActualOperation2, int incChildNursingCare2, int notDeductLateleave2,
 			int predeterminDeficiency2, int additionTime2, int enableSetPerWorkHour1,
-			int enableSetPerWorkHour2, int additionWithinMonthlyStatutory) {
+			int additionWithinMonthlyStatutory) {
 		super();
 		this.companyId = companyId;
 		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(additionTime1, null, predeterminedOvertime1);

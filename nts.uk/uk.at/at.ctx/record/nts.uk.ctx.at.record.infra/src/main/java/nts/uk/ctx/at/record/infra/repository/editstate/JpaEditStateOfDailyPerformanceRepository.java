@@ -127,4 +127,17 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		this.getEntityManager().flush();
 	}
 
+	@Override
+	public List<EditStateOfDailyPerformance> findByItems(String employeeId, GeneralDate ymd, List<Integer> ids) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDailyRecEditSet a ");
+		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :items ");
+		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+				.setParameter("employeeId", employeeId).setParameter("ymd", ymd).setParameter("items", ids)
+				.getList(c -> toDomain(c));
+	}
+
 }

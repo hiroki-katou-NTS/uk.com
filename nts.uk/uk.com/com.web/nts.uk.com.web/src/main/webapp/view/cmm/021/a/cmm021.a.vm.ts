@@ -12,8 +12,6 @@ module nts.uk.com.view.cmm021.a {
         import OtherSysAccFinderDto = service.model.OtherSysAccFinderDto;
 
         export class ScreenModel {
-            baseDate: Date;
-            inputDate: KnockoutObservable<Date>;
 
             listUserDto: UserDto[];
             listUserDtoScreenAC: UserDto[];
@@ -22,6 +20,7 @@ module nts.uk.com.view.cmm021.a {
             currentCode: KnockoutObservable<any>;
 
             listUserInfos: KnockoutObservableArray<ItemModel>;
+            employeeIds: KnockoutObservableArray<string>;
 
             useSet: KnockoutObservableArray<any>;
             selectUse: KnockoutObservable<number>;
@@ -93,17 +92,8 @@ module nts.uk.com.view.cmm021.a {
                 _self.listUserDtoScreenAC = [];
                 _self.checked = ko.observable(true);
                 _self.listUserInfos = ko.observableArray([]);
+                _self.employeeIds = ko.observableArray([]);
                 _self.currentCode = ko.observable();
-                _self.baseDate = moment(new Date()).toDate();
-                _self.inputDate = ko.observable(moment(new Date()).toDate());
-
-                _self.inputDate.subscribe((newValue) => {
-                    if (_self.validateInputDate(newValue) == false) {
-                        return false;
-                    } else {
-                        _self.baseDate = _self.inputDate();
-                    }
-                });
 
                 _self.useSet = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CMM021_11") },
@@ -341,16 +331,7 @@ module nts.uk.com.view.cmm021.a {
                         return '';
                     } }
                 ]);
-            }
 
-            // validate input date 
-            private validateInputDate(inputDate: Date) {
-                let _self = this;
-
-                if (!moment.isDate(inputDate)) {
-                    return false;
-                }
-                return true
             }
 
             /**
@@ -733,12 +714,8 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    dfd.reject();
-                    return dfd.promise();
-                }
                 nts.uk.ui.block.invisible();
-                service.findListUserInfo(_self.baseDate, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = data;
                         if (_.isEmpty(_self.listUserDto)) {
@@ -766,12 +743,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    dfd.reject();
-                    return dfd.promise();
-                }
-
-                service.findListUserInfo(_self.baseDate, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
@@ -794,12 +766,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    dfd.reject();
-                    return dfd.promise();
-                }
-
-                service.findListUserInfo(_self.baseDate, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
@@ -821,12 +788,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    dfd.reject();
-                    return dfd.promise();
-                }
-
-                service.findListUserInfo(_self.baseDate, false)
+                service.findListUserInfo(_self.employeeIds(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
@@ -843,63 +805,50 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    _self.loadUserDtoForScreenC();
-                    dfd.reject();
-                    return dfd.promise();
-                } else {
-                    nts.uk.ui.block.invisible();
-                    service.findListUserInfo(_self.baseDate, true)
-                        .done((data: UserDto[]) => {
-                            _self.listUserDtoScreenAC = [];
-                            _self.listUserDtoScreenAC = data;
-                            if (_.isEmpty(_self.listUserDtoScreenAC)) {
-                                _self.findUserDtoByEmployeeId("");
-                                _self.unLoadOtherAcc();
-                            } else {                                
-                                if (_self.selectedEmployeeId() == _self.listUserDtoScreenAC[0].employeeId) {
-                                    _self.selectedEmployeeId.valueHasMutated();
-                                } else {
-                                    _self.selectedEmployeeId(_self.listUserDtoScreenAC[0].employeeId);
-                                }
+                nts.uk.ui.block.invisible();
+                service.findListUserInfo(_self.employeeIds(), true)
+                    .done((data: UserDto[]) => {
+                        _self.listUserDtoScreenAC = [];
+                        _self.listUserDtoScreenAC = data;
+                        if (_.isEmpty(_self.listUserDtoScreenAC)) {
+                            _self.findUserDtoByEmployeeId("");
+                            _self.unLoadOtherAcc();
+                        } else {
+                            if (_self.selectedEmployeeId() == _self.listUserDtoScreenAC[0].employeeId) {
+                                _self.selectedEmployeeId.valueHasMutated();
+                            } else {
+                                _self.selectedEmployeeId(_self.listUserDtoScreenAC[0].employeeId);
                             }
+                        }
 
-                            _self.loadUserDtoForScreenC();
-                            dfd.resolve();
-                        })
-                        .fail((res: any) => {
-                            dfd.reject(res);
-                        }).always(() => nts.uk.ui.block.clear());
-                    return dfd.promise();
-                }
+                        _self.loadUserDtoForScreenC();
+                        dfd.resolve();
+                    })
+                    .fail((res: any) => {
+                        dfd.reject(res);
+                    }).always(() => nts.uk.ui.block.clear());
+                return dfd.promise();
             }
 
             private loadUserInfoAfterSaveAndDelOtherAcc(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    _self.loadUserDtoForScreenC();
-                    dfd.reject();
-                    return dfd.promise();
-                } else {
-
-                    service.findListUserInfo(_self.baseDate, true)
-                        .done((data: UserDto[]) => {
-                            _self.listUserDtoScreenAC = [];
-                            _self.listUserDtoScreenAC = data;
-                            if (_.isEmpty(_self.listUserDtoScreenAC)) {
-                                _self.findUserDtoByEmployeeId("");
-                                _self.unLoadOtherAcc();
-                            }
-                            _self.loadUserDtoForScreenC();
-                            dfd.resolve();
-                        })
-                        .fail((res: any) => {
-                            dfd.reject(res);
-                        });
-                    return dfd.promise();
-                }
+ 
+                service.findListUserInfo(_self.employeeIds(), true)
+                    .done((data: UserDto[]) => {
+                        _self.listUserDtoScreenAC = [];
+                        _self.listUserDtoScreenAC = data;
+                        if (_.isEmpty(_self.listUserDtoScreenAC)) {
+                            _self.findUserDtoByEmployeeId("");
+                            _self.unLoadOtherAcc();
+                        }
+                        _self.loadUserDtoForScreenC();
+                        dfd.resolve();
+                    })
+                    .fail((res: any) => {
+                        dfd.reject(res);
+                    });
+                return dfd.promise();
             }
 
 
@@ -907,23 +856,16 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                if (nts.uk.util.isNullOrEmpty(_self.baseDate)) {
-                    _self.loadUserDtoForScreenC();
-                    dfd.reject();
-                    return dfd.promise();
-                } else {
-
-                    service.findListUserInfo(_self.baseDate, true)
-                        .done((data: UserDto[]) => {
-                            _self.listUserDtoScreenAC = [];
-                            _self.listUserDtoScreenAC = data;
-                            dfd.resolve();
-                        })
-                        .fail((res: any) => {
-                            dfd.reject(res);
-                        });
-                    return dfd.promise();
-                }
+                service.findListUserInfo(_self.employeeIds(), true)
+                    .done((data: UserDto[]) => {
+                        _self.listUserDtoScreenAC = [];
+                        _self.listUserDtoScreenAC = data;
+                        dfd.resolve();
+                    })
+                    .fail((res: any) => {
+                        dfd.reject(res);
+                    });
+                return dfd.promise();
             }
 
 
@@ -1079,36 +1021,19 @@ module nts.uk.com.view.cmm021.a {
             private loadUserInfo() {
                 let _self = this;
 
-                if (nts.uk.util.isNullOrEmpty(_self.inputDate())) {
-                    return false;
-                }
-
-                if (!_self.validateInputDate(_self.inputDate())) {
-                    $('.nts-input').ntsError('clear');
-                    return false;
-                }
-
-                if ($('.base-date-editor').ntsError("hasError")) {
-                    return false;
-                }
-
                 if (_self.isScreenBSelected()) {
-                    _self.loadUserInfoScreenAB().done(() => {
-                        if (_self.selectUse() == 1) {
-                            _self.loadUserInfoScreenAB();
-                        } else if (_self.selectUse() == 0) {
-                            _self.loadUserUnsetting();
-                        }
-                    });
+                    if (_self.selectUse() == 1) {
+                        _self.loadUserInfoScreenAB();
+                    } else if (_self.selectUse() == 0) {
+                        _self.loadUserUnsetting();
+                    }
 
                 } else if (_self.isScreenCSelected()) {
-                    _self.loadUserInfoForOtherAcc().done(() => {
-                        if (_self.selectUse() == 1) {
-                            _self.loadUserInfoForOtherAcc();
-                        } else if (_self.selectUse() == 0) {
-                            _self.loadUserUnsettingScreenAC();
-                        }
-                    });
+                    if (_self.selectUse() == 1) {
+                        _self.loadUserInfoForOtherAcc();
+                    } else if (_self.selectUse() == 0) {
+                        _self.loadUserUnsettingScreenAC();
+                    }
                 }
             }
 
@@ -1232,7 +1157,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected(false);
                 _self.selectUse(1);
                 _self.listUserInfos([]);
-                _self.loadUserInfoScreenAB();
+                _.defer(() => _self.loadUserInfoScreenAB());
                 
             }
 
@@ -1243,8 +1168,66 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected(true);
                 _self.selectUse(1);
                 _self.listUserInfos([]);                
-                _self.loadUserInfoForOtherAcc();
+                _.defer(() => _self.loadUserInfoForOtherAcc());
                 
+            }
+
+            public startCcg001(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                const ccg001ComponentOption = {
+                    /** Common properties */
+                    systemType: 2, // employment
+                    showEmployeeSelection: false,
+                    showQuickSearchTab: true,
+                    showAdvancedSearchTab: true,
+                    showBaseDate: true,
+                    showClosure: false,
+                    showAllClosure: false,
+                    showPeriod: false,
+                    periodFormatYM: false,
+
+                    /** Required parameter */
+                    baseDate: moment().toISOString(),
+                    periodStartDate: moment().toISOString(),
+                    periodEndDate: moment().toISOString(),
+                    inService: true,
+                    leaveOfAbsence: true,
+                    closed: true,
+                    retirement: true,
+
+                    /** Quick search tab options */
+                    showAllReferableEmployee: true,
+                    showOnlyMe: true,
+                    showSameWorkplace: true,
+                    showSameWorkplaceAndChild: true,
+
+                    /** Advanced search properties */
+                    showEmployment: true,
+                    showWorkplace: true,
+                    showClassification: true,
+                    showJobTitle: true,
+                    showWorktype: true,
+                    isMutipleCheck: true,
+                    showOnStart: true,
+
+                    /**
+                    * Self-defined function: Return data from CCG001
+                    * @param: data: the data return from CCG001
+                    */
+                    returnDataFromCcg001: function(data) {
+                        const listEmployee: Array<EmployeeSearchDto> = data.listEmployee;
+                        const empIds = _.map(listEmployee, item => item.employeeId);
+                        self.employeeIds(empIds);
+                        _.defer(() => self.loadUserInfo());
+                    }
+                }
+
+                // Start component
+                $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption).done(() => dfd.resolve());
+
+                return dfd.promise();
             }
 
             private findOtherAccByUserId(userId: string): JQueryPromise<OtherSysAccFinderDto> {
@@ -1383,6 +1366,15 @@ module nts.uk.com.view.cmm021.a {
                 return dfd.promise();
             }
         }
+    }
+
+    export interface EmployeeSearchDto {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
     }
 
     class ItemModel {
