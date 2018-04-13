@@ -63,7 +63,8 @@ public class VacationClass {
 											 ,Optional<PersonalLaborCondition> personalCondition
 											 ,VacationAddTimeSet vacationAddTimeSet) {
 		if(siftCode.isPresent()) {
-			return predetermineTimeSet.getAdditionSet().getAddTime();
+			//return predetermineTimeSet.getAdditionSet().getAddTime();
+			return predetermineTimeSet.getAdditionSet().getPredTime();
 		}
 		else {
 			if(personalCondition.isPresent()) {
