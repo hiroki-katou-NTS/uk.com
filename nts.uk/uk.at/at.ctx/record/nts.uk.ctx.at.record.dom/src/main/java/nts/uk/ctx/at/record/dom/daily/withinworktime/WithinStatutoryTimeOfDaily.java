@@ -79,6 +79,7 @@ public class WithinStatutoryTimeOfDaily {
 	
 	/**
 	 * 全メンバの法定内時間(所定内時間)計算指示を出すクラス
+	 * @param workTimeCode 
 	 * @return
 	 */
 	public static WithinStatutoryTimeOfDaily calcStatutoryTime(CalculationRangeOfOneDay oneDay,	
@@ -102,14 +103,15 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   SettingOfFlexWork flexCalcMethod,
 			   												   TimeLimitUpperLimitSetting flexLimitSetting,
-			   												   WorkTimeDailyAtr workTimeDailyAtr) {
+			   												   WorkTimeDailyAtr workTimeDailyAtr, 
+			   												   Optional<WorkTimeCode> workTimeCode) {
 		//法定内時間の計算
 		AttendanceTime workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 //														　　lateTimeSheet,leaveEarlyTimeSheet,
 //														  lateTimeOfDaily,leaveEarlyTimeOfDaily,
 														  late,leaveEarly,workingSystem,addSettingOfIrregularWork,
 														  addSettingOfFlexWork,addSettingOfRegularWork,vacationAddTimeSet,holidayCalcMethodSet,
-														   calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr);
+														   calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr,workTimeCode);
 		//所定内深夜時間の計算
 		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(oneDay,autoCalcSet);
 
@@ -120,6 +122,7 @@ public class WithinStatutoryTimeOfDaily {
 	
 	/**
 	 * 日別実績の法定内時間の計算
+	 * @param workTimeCode 
 	 */
 	public static AttendanceTime calcWithinStatutoryTime(CalculationRangeOfOneDay oneDay,	Optional<PersonalLaborCondition> personalCondition,
 			   												   VacationClass vacationClass,
@@ -141,7 +144,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   SettingOfFlexWork flexCalcMethod,
 			   												   TimeLimitUpperLimitSetting flexLimitSetting,
-			   												   WorkTimeDailyAtr workTimeDailyAtr) {
+			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			if(workTimeDailyAtr.isFlex()) {
@@ -151,7 +154,7 @@ public class WithinStatutoryTimeOfDaily {
 						  vacationClass,
 						  oneDay.getTimeVacationAdditionRemainingTime().get(),
 						  StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
-						   Optional.empty(),
+						  workTimeCode,
 						   personalCondition,
 						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -173,7 +176,7 @@ public class WithinStatutoryTimeOfDaily {
 						  vacationClass,
 						  oneDay.getTimeVacationAdditionRemainingTime().get(),
 						  StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
-						   Optional.empty(),
+						  workTimeCode,
 						   personalCondition,
 						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退

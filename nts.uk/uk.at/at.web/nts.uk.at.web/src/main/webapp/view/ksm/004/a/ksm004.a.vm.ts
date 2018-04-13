@@ -543,7 +543,7 @@ module nts.uk.at.view.ksm004.a {
                         } else {
                             self.isUpdate(false);     
                         }
-                        self.calendarPanel.optionDates.valueHasMutated();
+                     //  self.calendarPanel.optionDates.valueHasMutated();
                         $("#yearMonthPicker1").datepicker("hide");
                         if(self.isShowDatepicker) $("#yearMonthPicker1").datepicker("show");
                         dfd.resolve();  
