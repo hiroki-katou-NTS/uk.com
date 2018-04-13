@@ -2,22 +2,23 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.find.singlesignon;
-
-import java.util.List;
+package nts.uk.ctx.at.request.app.command.setting.vacation.history.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
-/**
- * The Class UserInfo.
- */
 @Getter
 @Setter
-public class UserInfo {
-	/** The is screen C. */
-	private Boolean isScreenC;
-
-	/** The employee ids. */
-	private List<String> employeeIds;
+public class VacationHistoryDto {
+	
+	/** The history id. */
+	private String historyId;
+	
+	/** The start date. */
+	private GeneralDate startDate;
+	
+	/** The end date. */
+	private GeneralDate endDate;
+	
 }
