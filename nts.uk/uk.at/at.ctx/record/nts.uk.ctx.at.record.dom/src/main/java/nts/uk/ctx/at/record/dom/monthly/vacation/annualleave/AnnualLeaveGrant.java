@@ -14,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 @Setter
 public class AnnualLeaveGrant {
 
+	/** 付与区分 */
+	private boolean grantAtr;
 	/** 付与日数 */
 	private AnnualLeaveGrantDayNumber grantDays;
 	/** 付与労働日数 */
@@ -34,6 +36,7 @@ public class AnnualLeaveGrant {
 	 */
 	public AnnualLeaveGrant(){
 		
+		this.grantAtr = false;
 		this.grantDays = new AnnualLeaveGrantDayNumber(0.0);
 		this.grantWorkingDays = new YearlyDays(0.0);
 		this.grantPrescribedDays = new YearlyDays(0.0);
@@ -45,6 +48,7 @@ public class AnnualLeaveGrant {
 	
 	/**
 	 * ファクトリー
+	 * @param grantAtr 付与区分
 	 * @param grantDays 付与日数
 	 * @param grantWorkingDays 付与労働日数
 	 * @param grantPrescribedDays 付与所定日数
@@ -55,6 +59,7 @@ public class AnnualLeaveGrant {
 	 * @return 年休付与情報
 	 */
 	public static AnnualLeaveGrant of(
+			boolean grantAtr,
 			AnnualLeaveGrantDayNumber grantDays,
 			YearlyDays grantWorkingDays,
 			YearlyDays grantPrescribedDays,
@@ -64,6 +69,7 @@ public class AnnualLeaveGrant {
 			AttendanceRate attendanceRate){
 		
 		AnnualLeaveGrant domain = new AnnualLeaveGrant();
+		domain.grantAtr = grantAtr;
 		domain.grantDays = grantDays;
 		domain.grantWorkingDays = grantWorkingDays;
 		domain.grantPrescribedDays = grantPrescribedDays;

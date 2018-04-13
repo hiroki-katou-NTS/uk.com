@@ -9,9 +9,10 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -32,14 +33,14 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TempAnnualLeaveManagement>> tempAnnDataforOverWriteList,
 			Optional<List<TempReserveLeaveManagement>> tempRsvDataforOverWriteList,
-			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave) {
+			Optional<AnnualLeaveInfo> annualLeaveInfo, Optional<ReserveLeaveInfo> reserveLeaveInfo) {
 		
 		AggrResultOfAnnAndRsvLeave aggrResult = new AggrResultOfAnnAndRsvLeave();
 
 		// 期間中の年休残数を取得
 		val aggrResultOfAnnualOpt = this.getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId, aggrPeriod,
 				mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
-				tempAnnDataforOverWriteList, prevAnnualLeave);
+				tempAnnDataforOverWriteList, annualLeaveInfo);
 
 		// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
 		aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);
