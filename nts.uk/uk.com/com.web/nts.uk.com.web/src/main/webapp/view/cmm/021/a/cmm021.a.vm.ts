@@ -1022,22 +1022,18 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
 
                 if (_self.isScreenBSelected()) {
-                    _self.loadUserInfoScreenAB().done(() => {
-                        if (_self.selectUse() == 1) {
-                            _self.loadUserInfoScreenAB();
-                        } else if (_self.selectUse() == 0) {
-                            _self.loadUserUnsetting();
-                        }
-                    });
+                    if (_self.selectUse() == 1) {
+                        _self.loadUserInfoScreenAB();
+                    } else if (_self.selectUse() == 0) {
+                        _self.loadUserUnsetting();
+                    }
 
                 } else if (_self.isScreenCSelected()) {
-                    _self.loadUserInfoForOtherAcc().done(() => {
-                        if (_self.selectUse() == 1) {
-                            _self.loadUserInfoForOtherAcc();
-                        } else if (_self.selectUse() == 0) {
-                            _self.loadUserUnsettingScreenAC();
-                        }
-                    });
+                    if (_self.selectUse() == 1) {
+                        _self.loadUserInfoForOtherAcc();
+                    } else if (_self.selectUse() == 0) {
+                        _self.loadUserUnsettingScreenAC();
+                    }
                 }
             }
 
@@ -1161,7 +1157,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected(false);
                 _self.selectUse(1);
                 _self.listUserInfos([]);
-                _self.loadUserInfoScreenAB();
+                _.defer(() => _self.loadUserInfoScreenAB());
                 
             }
 
@@ -1172,7 +1168,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected(true);
                 _self.selectUse(1);
                 _self.listUserInfos([]);                
-                _self.loadUserInfoForOtherAcc();
+                _.defer(() => _self.loadUserInfoForOtherAcc());
                 
             }
 
@@ -1223,7 +1219,7 @@ module nts.uk.com.view.cmm021.a {
                         const listEmployee: Array<EmployeeSearchDto> = data.listEmployee;
                         const empIds = _.map(listEmployee, item => item.employeeId);
                         self.employeeIds(empIds);
-                        self.loadUserInfo();
+                        _.defer(() => self.loadUserInfo());
                     }
                 }
 
