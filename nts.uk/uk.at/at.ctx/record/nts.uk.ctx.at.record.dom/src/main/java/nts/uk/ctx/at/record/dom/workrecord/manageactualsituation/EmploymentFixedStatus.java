@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.managectualsituation;
+package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation;
 
 /**
  * 就業確定状態

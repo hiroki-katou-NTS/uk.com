@@ -6,11 +6,13 @@ package nts.uk.ctx.at.record.ac.workplace.affiliate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
@@ -63,11 +65,11 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		
 		return Optional.of(affWorkPlaceSidImport);
 	}
-
+	
 	@Override
-	public List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId,String employeeId, GeneralDate baseDate) {
-		return this.wkpPub.findWpkIdsBySid(companyId ,employeeId, baseDate);
+	public List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate){		
+		return wkpPub.findBySIdAndBaseDate(sids, baseDate).stream().map(item->{
+			return new AffAtWorkplaceImport(item.getEmployeeId(), item.getWorkplaceId(), item.getHistoryID(), item.getNormalWorkplaceID());
+		}).collect(Collectors.toList());		
 	}
-	
-	
 }

@@ -5,7 +5,7 @@ import lombok.Data;
  * 月別実績の修正
  */
 @Data
-public class CorrectionOfDailyPerformance {
+public class CorrectionOfMonthlyPerformance {
 	/**
 	 * カーソルの移動方向
 	 */

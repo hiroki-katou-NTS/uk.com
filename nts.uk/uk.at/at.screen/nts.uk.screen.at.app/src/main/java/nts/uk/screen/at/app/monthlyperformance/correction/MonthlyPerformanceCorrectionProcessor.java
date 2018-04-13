@@ -34,11 +34,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
@@ -46,6 +44,8 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPHeaderDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -81,7 +81,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject 
 	private MonthlyPerformanceCheck monthlyCheck;
 	@Inject
-	private DailyPerformanceScreenRepo repo;
+	private MonthlyPerformanceScreenRepo repo;
 	
 	private static final String STATE_DISABLE = "ntsgrid-disable";
 	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
@@ -89,15 +89,15 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 	private static final String STATE_ERROR ="ntsgrid-error";
 	private static final String STATE_ALARM ="ntsgrid-alarm";
-	/**
-	 * @return TODO
-	 */
-	public MonthlyPerformanceCorrectionDto initScreen(int initMode, List<DailyPerformanceEmployeeDto> lstEmployees,  List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily) {
+
+
+	public MonthlyPerformanceCorrectionDto initScreen(MonthlyPerformanceParam param) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		String rollId = AppContexts.user().roles().forAttendance();
 		AppContexts.user().roles();
 		MonthlyPerformanceCorrectionDto screenDto = new MonthlyPerformanceCorrectionDto();
+		screenDto.setParam(param);
 		//1. 起動に必要な情報の取得
 		// ドメインモデル「実績修正画面で利用するフォーマット」を取得する		
 		Optional<FormatPerformance> formatPerformance = formatPerformanceRepository.getFormatPerformanceById(companyId);
@@ -121,9 +121,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 			//エラーメッセージ（Msg_914）を表示する
 			throw new BusinessException("Msg_914");
 		}		
-		//3. アルゴリズム「ログイン社員の締めを取得する」を実行する(Lấy thông tin close của thằng login
+		//3. アルゴリズム「ログイン社員の締めを取得する」を実行する
 		//基準日：システム日付
 		Integer closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+		screenDto.setClosureId(closureId);
 		
 		//4.アルゴリズム「処理年月の取得」を実行する 
 		Optional<PresentClosingPeriodExport> presentClosingPeriodExport = shClosurePub.find(companyId, closureId);
@@ -147,20 +148,20 @@ public class MonthlyPerformanceCorrectionProcessor {
 		
 		//6. どのメニューから起動したのかをチェックする (Check xem khởi động từ menu nào)
 		//「月別実績の修正」からの場合
-		if (initMode == 0) {
-			//7. アルゴリズム「通常モードで起動する」を実行する
-			
+		if (param.getInitMenuMode() == 0) {
+			//7. アルゴリズム「通常モードで起動する」を実行する			
 			//アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
-			 screenDto.setLstEmployee(extractEmployeeList(lstEmployees, employeeId, dateRange));
-			List<DailyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(initMode, employeeId,
+			 screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(), employeeId, dateRange));
+			List<MonthlyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(param.getInitScreenMode(), employeeId,
 					screenDto.getLstEmployee());
 			List<String> employeeIds = lstEmployeeData.stream().map(e -> e.getId()).collect(Collectors.toList());
 			
 			//アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
-			DisplayItem dispItem = monthlyDisplay.getDisplayFormat(employeeIds, dateRange, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType(), screenDto);
+			//TODO Data null
+			//DisplayItem dispItem = monthlyDisplay.getDisplayFormat(employeeIds, dateRange, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType(), screenDto);
 			
 			//TODO アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
-			this.displayMonthlyResult(screenDto, dispItem);
+			//this.displayMonthlyResult(screenDto, dispItem);
 			
 			//画面項目の非活制御をする
 			//アルゴリズム「実績の時系列をチェックする」を実行する (Check actual time)
@@ -240,8 +241,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		//対象締め：締めID
 		return closureId;
 	}
-	private List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,
-			List<DailyPerformanceEmployeeDto> emps) {
+	private List<MonthlyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,
+			List<MonthlyPerformanceEmployeeDto> emps) {
 		if (initScreen == 0) {
 			return emps.stream().filter(x -> x.getId().equals(sId)).collect(Collectors.toList());
 		}
@@ -251,7 +252,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	/**
 	 * Get id of employee list.
 	 */
-	private List<DailyPerformanceEmployeeDto> extractEmployeeList(List<DailyPerformanceEmployeeDto> lstEmployee,
+	private List<MonthlyPerformanceEmployeeDto> extractEmployeeList(List<MonthlyPerformanceEmployeeDto> lstEmployee,
 			String sId, DateRange range) {
 		if (!lstEmployee.isEmpty()) {
 			return lstEmployee;
@@ -260,7 +261,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}
 	}
 	/** アルゴリズム「対象者を抽出する」を実行する */
-	private List<DailyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
+	private List<MonthlyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
 		// アルゴリズム「自職場を取得する」を実行する
 		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
 		// List<String> lstEmployment = this.repo.getListEmployment();
@@ -275,6 +276,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 	}
 	/**
 	 * 締め情報の表示
+	 * @param screenDto return result to DTO
+	 * @param companyId
+	 * @param closureId
+	 * @param processYM
 	 */
 	private void displayClosure(MonthlyPerformanceCorrectionDto screenDto, String companyId, Integer closureId, Integer processYM){
 		//アルゴリズム「締めの名称を取得する」を実行する

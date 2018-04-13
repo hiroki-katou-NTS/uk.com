@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 
 /**
  * TODO
@@ -24,7 +24,7 @@ public class MonthlyPerformanceCorrectionDto {
 	private Set<ItemValue> itemValues;
 	private MPControlDisplayItem lstControlDisplayItem;
 	private String employmentCode;
-	private List<DailyPerformanceEmployeeDto> lstEmployee;
+	private List<MonthlyPerformanceEmployeeDto> lstEmployee;
 	private List<MPDataDto> lstData;
 	private Map<String, String > data;
 	private List<MPCellStateDto> lstCellState;
@@ -60,6 +60,8 @@ public class MonthlyPerformanceCorrectionDto {
 	 * 画面項目「A4_2：対象締め日」
 	 */
 	private String closureName;
+	/** Hidden closureId*/
+	private Integer closureId;
 	/**
 	 * ・実績期間：List＜実績期間＞
 	 * 画面項目「A4_5：実績期間選択肢」
@@ -74,6 +76,11 @@ public class MonthlyPerformanceCorrectionDto {
 	 * 画面項目の非活制御をする
 	 */
 	private int actualTimeState;
+
+	/**
+	 * パラメータ
+	 */
+	private MonthlyPerformanceParam param;
 	
 	public MonthlyPerformanceCorrectionDto(){
 		super();

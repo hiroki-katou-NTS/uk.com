@@ -120,7 +120,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.monthlyParam({
                 yearMonth: self.yearMonth,
                 actualTime: null,
-                initMode: self.initMode(),
+                initMenuMode: 0,
+                initScreenMode: self.initMode(),
                 //抽出対象社員一覧
                 lstEmployees: [],
                 formatCodes: self.formatCodes(),

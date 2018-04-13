@@ -30,16 +30,8 @@ public interface AffWorkplaceAdapter {
 	 * @return
 	 */
 	Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate);
-	
-	
 	/**
-	 * 所属職場を含む上位階層の職場IDを取得
-	 * @param companyId
-	 * @param employeeId
-	 * @param baseDate
-	 * @return
+	 * 社員ID（List）と基準日から所属職場IDを取得
 	 */
-	List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId, String employeeId, GeneralDate baseDate);
-	
-	
+	List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
 }

@@ -17,13 +17,15 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.AcquireActualStatus;
-import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
-import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.EmploymentFixedStatus;
-import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationOutput;
-import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationStatus;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.AcquireActualStatus;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.ApprovalStatus;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.EmploymentFixedStatus;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.MonthlyActualSituationOutput;
+import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.MonthlyActualSituationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
@@ -35,22 +37,23 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPBusinessTypeControl;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyPerformanceDisplay {
-	/*権限別月次項目制御*/
+	/** 権限別月次項目制御 */
 	@Inject
 	MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
-	/*月次の勤怠項目の制御*/
+	/** 月次の勤怠項目の制御 */
 	@Inject
 	ControlOfMonthlyFinder controlOfMonthlyFinder;
 	@Inject
@@ -62,6 +65,8 @@ public class MonthlyPerformanceDisplay {
 	private EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
 	@Inject 
 	private MonthlyActualSituationStatus monthlyActualStatus;
+	@Inject
+	AffWorkplaceAdapter affWorkplaceAdapter;
 	//@Inject
 	//private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
 	/**
@@ -76,22 +81,25 @@ public class MonthlyPerformanceDisplay {
 	 * @param formatCodes: 使用するフォーマットコード：月別実績フォーマットコード
 	 * 表示する項目一覧
 	 */
-	public DisplayItem getDisplayFormat(List<String> lstEmployeeIds, DateRange dateRange, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
+	public DisplayItem getDisplayFormat(List<String> lstEmployeeIds, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
 		//会社ID：ログイン会社に一致する
 		String cId = AppContexts.user().companyId();
 		//ロールID：ログイン社員の就業ロールに一致する
 		String employmentRoleID = AppContexts.user().roles().forAttendance();
+		//パラメータ
+		MonthlyPerformanceParam param = screenDto.getParam();		
+		DateRange dateRange = new DateRange(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate());
 		DisplayItem dispItem;
 		//権限の場合 
 		if(unitType == SettingUnitType.AUTHORITY){
 			//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
-			dispItem = getDisplayItemAuthority(cId, formatCodes, correctionOfDaily);
+			dispItem = getDisplayItemAuthority(cId, param.getFormatCodes(), param.getCorrectionOfMonthly());
 		}
 		//勤務種別の場合
 		else{
 			//社員の勤務種別に対応する表示項目を取得する
 			//(Lấy các item hiển thị ứng với loại đi làm của employee)
-			dispItem = getDisplayItemBussiness(lstEmployeeIds, dateRange, formatCodes, correctionOfDaily);
+			dispItem = getDisplayItemBussiness(lstEmployeeIds, dateRange,  param.getFormatCodes(), param.getCorrectionOfMonthly());
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByRoleID(employmentRoleID);
@@ -124,7 +132,9 @@ public class MonthlyPerformanceDisplay {
 			//ControlOfMonthlyDto ctrOfMonthlyDto = controlOfMonthlyFinder.getControlOfAttendanceItem(1);
 			
 		}
-		DisplayItem lockItem = new DisplayItem();
+		//アルゴリズム「ロック状態をチェックする」を実行する
+		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(cId, lstEmployeeIds, screenDto.getProcessDate(), screenDto.getClosureId(), new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), param.getInitScreenMode());
+		param.setLstLockStatus(lstLockStatus);
 		
 		return dispItem;
 	}
@@ -134,10 +144,10 @@ public class MonthlyPerformanceDisplay {
 	 * (Lấy các item hiển thị ứng với quyền employee)
 	 * @param cId
 	 * @param formatCodes
-	 * @param correctionOfDaily
+	 * @param correctionOfMonthly
 	 * @return 表示する項目一覧
 	 */
-	private DisplayItem getDisplayItemAuthority(String cId, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily){		
+	private DisplayItem getDisplayItemAuthority(String cId, List<String> formatCodes, CorrectionOfMonthlyPerformance correctionOfMonthly){		
 		DisplayItem dispItem = new DisplayItem();
 		List<FormatMPCorrectionDto> lstFormat = new ArrayList<FormatMPCorrectionDto>();
 		List<MPSheetDto> lstSheet = new ArrayList<MPSheetDto>();
@@ -145,9 +155,9 @@ public class MonthlyPerformanceDisplay {
 		List<Integer> lstAtdItemUnique = new ArrayList<>();
 		if(null == formatCodes){
 			//ユーザー固有情報「月別実績のの修正」．前回の表示項目が取得できたかチェックする			
-			if(null !=  correctionOfDaily && !Strings.isEmpty(correctionOfDaily.getPreviousDisplayItem())){
+			if(null !=  correctionOfMonthly && !Strings.isEmpty(correctionOfMonthly.getPreviousDisplayItem())){
 				//取得したユーザー固有情報「月別実績の修正．前回の表示項目」をパラメータ「使用するフォーマットコード」にセットする
-				formatCodes = Arrays.asList(correctionOfDaily.getPreviousDisplayItem());
+				formatCodes = Arrays.asList(correctionOfMonthly.getPreviousDisplayItem());
 			}else{
 				//対応するドメインモデル「月次の初期表示フォーマット」を取得する
 				//TODO 月次の初期表示フォーマット
@@ -155,6 +165,8 @@ public class MonthlyPerformanceDisplay {
 				//if(initDisp.isPresent()){
 					//取得したドメインモデル「月次の初期表示フォーマット」をパラメータ「使用するフォーマットコード」にセットする
 				//	formatCodes = Arrays.asList(initDisp.get().getCode());
+				//TODO Dummy data
+				formatCodes = Arrays.asList("001");
 				//}else{
 					//アルゴリズム「表示項目の選択を起動する」を実行する
 					//ダイアログで選択していたフォーマットコードをパラメータ「使用するフォーマットコード」にセットする
@@ -182,7 +194,7 @@ public class MonthlyPerformanceDisplay {
 			List<String> lstEmployeeId,
 			DateRange dateRange, 
 			List<String> formatCodes, 
-			CorrectionOfDailyPerformance correctionOfDaily){
+			CorrectionOfMonthlyPerformance correctionOfDaily){
 		DisplayItem dispItem = new DisplayItem();
 		if (CollectionUtil.isEmpty(lstEmployeeId)) {
 			return dispItem;
@@ -225,25 +237,33 @@ public class MonthlyPerformanceDisplay {
 	 * 
 	 * ロック状態一覧：List＜月の実績のロック状態＞
 	 */
-	public List<MonthlyPerformaceLockStatus> checkLockStatus(String cid, List<String> empIds, Integer processDateYM, Integer closureId, DatePeriod closureTime, int intMode){
+	public List<MonthlyPerformaceLockStatus> checkLockStatus(String cid, List<String> empIds, Integer processDateYM, Integer closureId, DatePeriod closureTime, int intScreenMode){
 		List<MonthlyPerformaceLockStatus> monthlyLockStatusLst = new ArrayList<MonthlyPerformaceLockStatus>();
 		//ロック解除モード　の場合
-		if (intMode == 1) {
+		if (intScreenMode == 1) {
 			return monthlyLockStatusLst;
 		}
-		//TODO 社員ID（List）と基準日から所属職場IDを取得
-		//TODO follow Daily process.
-		List<AffCompanyHistImport> affCompany = employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(empIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+		//社員ID（List）と基準日から所属職場IDを取得
+		//基準日：パラメータ「締め期間」の終了日
+		List<AffAtWorkplaceImport> affWorkplaceLst = affWorkplaceAdapter.findBySIdAndBaseDate(empIds, closureTime.end());
+		if(CollectionUtil.isEmpty(affWorkplaceLst)){
+			return monthlyLockStatusLst; 
+		}
 		//「List＜所属職場履歴項目＞」の件数ループしてください 
 		MonthlyPerformaceLockStatus monthlyLockStatus = null;
-		for (AffCompanyHistImport affCompanyHistImport : affCompany) {
-			//TODO workplaceId, employeeId in parameter
+		for (AffAtWorkplaceImport affWorkplaceImport : affWorkplaceLst) {
 			//月の実績の状況を取得する
-			AcquireActualStatus param = new AcquireActualStatus(cid, affCompanyHistImport.getEmployeeId(), processDateYM, closureId, 
-					closureTime.end(), closureTime, "");
+			AcquireActualStatus param = new AcquireActualStatus(cid, 
+					affWorkplaceImport.getEmployeeId(), 
+					processDateYM, 
+					closureId, 
+					closureTime.end(), 
+					closureTime, 
+					affWorkplaceImport.getWorkplaceId());
 			MonthlyActualSituationOutput monthlymonthlyActualStatusOutput = monthlyActualStatus.getMonthlyActualSituationStatus(param);
 			//Output「月の実績の状況」を元に「ロック状態一覧」をセットする
 			monthlyLockStatus = new MonthlyPerformaceLockStatus(monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),
+					//TODO
 					LockStatus.LOCK, 
 					//職場の就業確定状態
 					monthlymonthlyActualStatusOutput.getEmploymentFixedStatus().equals(EmploymentFixedStatus.CONFIRM) ? LockStatus.LOCK : LockStatus.UNLOCK,
@@ -252,11 +272,20 @@ public class MonthlyPerformanceDisplay {
 					//月別実績のロック状態
 					monthlymonthlyActualStatusOutput.getMonthlyLockStatus(), 
 					//本人確認が完了している	
-					monthlymonthlyActualStatusOutput.getDailyActualSituation().isIdentityVerificationCompleted() ? LockStatus.LOCK : LockStatus.UNLOCK,
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isIdentificationCompleted() ? LockStatus.LOCK : LockStatus.UNLOCK,
 					//日の実績が存在する						
-					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist() ? LockStatus.LOCK : LockStatus.UNLOCK, 
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist() ? LockStatus.LOCK : LockStatus.UNLOCK,
+					//TODO
 					LockStatus.LOCK);
+			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
+		//過去実績の修正ロック
+		LockStatus pastLockStatus = editLockOfPastResult(processDateYM, closureId, new ActualTime(closureTime.start(), closureTime.end()));
+		//Output「ロック状態」を「ロック状態一覧.過去実績のロック」にセットする
+		monthlyLockStatusLst = monthlyLockStatusLst.stream().map(item -> {
+																			item.setPastPerformaceLock(pastLockStatus);
+																			return item;
+																		}).collect(Collectors.toList());
 		
 		return monthlyLockStatusLst;
 	}

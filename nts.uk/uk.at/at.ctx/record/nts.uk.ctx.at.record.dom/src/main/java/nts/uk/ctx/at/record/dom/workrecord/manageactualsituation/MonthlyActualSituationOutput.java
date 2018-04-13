@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.managectualsituation;
+package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation;
 
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;

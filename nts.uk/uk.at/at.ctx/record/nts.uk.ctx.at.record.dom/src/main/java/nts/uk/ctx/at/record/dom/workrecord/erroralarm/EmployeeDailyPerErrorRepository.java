@@ -12,6 +12,13 @@ public interface EmployeeDailyPerErrorRepository {
 	boolean checkExistErrorCode(String employeeID, GeneralDate processingDate, String errorCode);
 	
 	boolean checkExistErrorCodeByPeriod(String employeeID, DatePeriod datePeriod, String errorCode);
+	/**
+	 * 対象期間に日別実績のエラーが発生しているかチェックする
+	 * @return 対象日一覧の確認が済んでいる：boolean
+	 * エラーが0件である＝TRUEを返す
+	 * エラーが0件である＝FALSEを返す
+	 */
+	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
 	
 	List<EmployeeDailyPerError> find(String employeeID, GeneralDate processingDate);
 	
