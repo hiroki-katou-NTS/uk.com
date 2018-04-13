@@ -171,7 +171,7 @@ module nts.layout {
                 self.button();
                 self.combobox();
                 self.grand_radio();
-                self.relate_radio();
+                //self.relate_radio();
                 self.relate_button();
 
                 self.remain_day();
@@ -290,101 +290,110 @@ module nts.layout {
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    comboboxCode: 'IS00297'
+                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
-                        comboboxCode: 'IS00304'
+                        relateCode: ['IS00304', 'IS00305', 'IS00306', 'IS00307', 'IS00308']
                     }, {
                         ctgCode: 'CS00027',
                         radioCode: 'IS00310',
-                        comboboxCode: 'IS00311'
+                        relateCode: ['IS00311', 'IS00312', 'IS00313', 'IS00314', 'IS00315']
                     }, {
                         ctgCode: 'CS00028',
                         radioCode: 'IS00317',
-                        comboboxCode: 'IS00318'
+                        relateCode: ['IS00318', 'IS00319', 'IS00320', 'IS00321', 'IS00322']
                     }, {
                         ctgCode: 'CS00029',
                         radioCode: 'IS00324',
-                        comboboxCode: 'IS00325'
+                        relateCode: ['IS00325', 'IS00326', 'IS00327', 'IS00328', 'IS00329']
                     }, {
                         ctgCode: 'CS00030',
                         radioCode: 'IS00331',
-                        comboboxCode: 'IS00332'
+                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335', 'IS00336']
                     }, {
                         ctgCode: 'CS00031',
                         radioCode: 'IS00338',
-                        comboboxCode: 'IS00339'
+                        relateCode: ['IS00339', 'IS00340', 'IS00341', 'IS00342', 'IS00343']
                     }, {
                         ctgCode: 'CS00032',
                         radioCode: 'IS00345',
-                        comboboxCode: 'IS00346'
+                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00350']
                     }, {
                         ctgCode: 'CS00033',
                         radioCode: 'IS00352',
-                        comboboxCode: 'IS00353'
+                        relateCode: ['IS00353', 'IS00354', 'IS00355', 'IS00356', 'IS00357']
                     }, {
                         ctgCode: 'CS00034',
                         radioCode: 'IS00359',
-                        comboboxCode: 'IS00360'
+                        relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00035',
                         radioCode: 'IS00311',
-                        comboboxCode: 'IS00371'
+                        relateCode: ['IS00371', 'IS00372', 'IS00374']
+                    }, {
+                        ctgCode: 'CS00036',
+                        rdctCode: 'CS00028',
+                        radioCode: 'IS00316',
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                    }, {
+                        ctgCode: 'CS00036',
+                        rdctCode: 'CS00028',
+                        radioCode: 'IS00321',
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
-                        comboboxCode: 'IS00561'
+                        relateCode: ['IS00561', 'IS00562', 'IS00563', 'IS00564', 'IS00565']
                     }, {
                         ctgCode: 'CS00050',
                         radioCode: 'IS00567',
-                        comboboxCode: 'IS00568'
+                        relateCode: ['IS00568', 'IS00569', 'IS00570', 'IS00571', 'IS00572']
                     }, {
                         ctgCode: 'CS00051',
                         radioCode: 'IS00574',
-                        comboboxCode: 'IS00575'
+                        relateCode: ['IS00575', 'IS00576', 'IS00577', 'IS00578', 'IS00579']
                     }, {
                         ctgCode: 'CS00052',
                         radioCode: 'IS00581',
-                        comboboxCode: 'IS00582'
+                        relateCode: ['IS00582', 'IS00583', 'IS00584', 'IS00585', 'IS00586']
                     }, {
                         ctgCode: 'CS00053',
                         radioCode: 'IS00588',
-                        comboboxCode: 'IS00589'
+                        relateCode: ['IS00589', 'IS00590', 'IS00591', 'IS00592', 'IS00593']
                     }, {
                         ctgCode: 'CS00054',
                         radioCode: 'IS00595',
-                        comboboxCode: 'IS00596'
+                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00600']
                     }, {
                         ctgCode: 'CS00055',
                         radioCode: 'IS00602',
-                        comboboxCode: 'IS00603'
+                        relateCode: ['IS00603', 'IS00604', 'IS00605', 'IS00606', 'IS00607']
                     }, {
                         ctgCode: 'CS00056',
                         radioCode: 'IS00609',
-                        comboboxCode: 'IS00610'
+                        relateCode: ['IS00610', 'IS00611', 'IS00612', 'IS00613', 'IS00614']
                     }, {
                         ctgCode: 'CS00057',
                         radioCode: 'IS00616',
-                        comboboxCode: 'IS00617'
+                        relateCode: ['IS00617', 'IS00618', 'IS00619', 'IS00620', 'IS00621']
                     }, {
                         ctgCode: 'CS00058',
                         radioCode: 'IS00623',
-                        comboboxCode: 'IS00624'
+                        relateCode: ['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628']
                     }, {
                         ctgCode: '',
                         radioCode: '',
-                        comboboxCode: ''
+                        relateCode: []
                     }],
                 validation = (radio: IGrandRadio) => {
-                    let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
-                        cb: IFindData = finder.find(radio.ctgCode, radio.comboboxCode);
+                    let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
+                        ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
 
-                    if (rd && cb) {
+                    if (rd) {
                         rd.data.value.subscribe(v => {
-                            cb.data.editable(v == 1);
+                            _.each(ctrls, c => c.data.editable(v == 1));
                         });
-
                         rd.data.value.valueHasMutated();
                     }
                 };
@@ -866,6 +875,7 @@ module nts.layout {
                 buttons: Array<IRelateButton> = [{
                     ctgCode: 'CS00024',
                     btnCode: 'IS00276',
+                    lblCode: 'IS00277',
                     dialogId: 'g'
                 }, {
                         ctgCode: 'CS00024',
@@ -975,7 +985,9 @@ module nts.layout {
                 ],
 
                 validation = (btn: IRelateButton) => {
-                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
+                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode),
+                        label: IFindData = finder.find(btn.ctgCode, btn.lblCode);
+
                     if (button) {
                         $(button.id).on('click', (evt) => {
                             let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
@@ -995,6 +1007,9 @@ module nts.layout {
                                     case "g":
                                         fetch.get_annLeaNumber(sid).done(data => {
                                             button.data.value(data);
+                                            if (label) {
+                                                label.data.value('asdashdkjashk');
+                                            }
                                         });
                                         break;
                                     case "h":
@@ -1509,8 +1524,9 @@ module nts.layout {
 
     interface IGrandRadio {
         ctgCode: string;
+        rdctCode?: string;
         radioCode: string;
-        comboboxCode: string;
+        relateCode: Array<string>
     }
 
     interface IRelateRadio {
@@ -1524,6 +1540,7 @@ module nts.layout {
         btnCode: string;
         dialogId: string;
         specialCd?: number;
+        lblCode?: string;
     }
 
     interface ITimeTable {

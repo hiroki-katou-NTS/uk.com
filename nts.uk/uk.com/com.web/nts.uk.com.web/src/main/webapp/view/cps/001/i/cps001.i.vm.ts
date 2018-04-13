@@ -395,19 +395,19 @@ module nts.uk.com.view.cps001.i.vm {
 
             // detail of grant
             self.dayNumberOfGrants(result.numberDayGrant);
-            self.grantTime(result.timeGrant);
+            self.grantTime(result.timeGrant == 0 ? null : result.timeGrant);
 
             // detail of Use
             self.dayNumberOfUse(result.numberDayUse);
-            self.useTime(result.timeUse);
+            self.useTime(result.timeUse == 0 ? null : result.timeUse);
 
             // Exeeded detail
             self.dayNumberOver(result.numberDaysOver);
-            self.timeOver(result.timeOver);
+            self.timeOver(result.timeOver == 0 ? null : result.timeOver);
 
             // Reaming detail
             self.dayNumberOfReam(result.numberDayRemain);
-            self.timeReam(result.timeRemain);
+            self.timeReam(result.timeRemain == 0 ? null : result.timeRemain);
         }
 
         formatDate(value) {
