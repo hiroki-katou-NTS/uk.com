@@ -27,8 +27,11 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	@Override
 	public UrlExecInfo obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
 		String loginId = AppContexts.user().employeeId();
+<<<<<<< HEAD
+=======
+		List <UrlExecInfo> list = urlExcecInfoRepo.getAllUrlExecInfo();
+>>>>>>> 3c891a42f0... update url for send mail
 		String uuID = UUID.randomUUID().toString();
-		String a = "1";
 		return this.registerEmbeddedForApp(appId, appType, prePostAtr, loginId, employeeId);
 	}
 
