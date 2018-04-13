@@ -492,6 +492,8 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
+                //for dialog F mode simple
+                self.bindFDialogSimpleMode();
                 self.mainSettingModel.save()
                     .done(() => {
                         // recheck abolish condition of list worktime
@@ -697,6 +699,15 @@ module nts.uk.at.view.kmk003.a {
                 return dfd.promise();
             }
            
+            private bindFDialogSimpleMode(): void {
+                let self = this;
+                if (self.tabMode() == TabMode.SIMPLE) {
+                    //set main screen to dialog  
+                    self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
+                    self.mainSettingModel.predetemineTimeSetting.predTime.addTime.morning(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.morning());
+                    self.mainSettingModel.predetemineTimeSetting.predTime.addTime.afternoon(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.afternoon());
+                }
+            }
             //end view model
             
         }

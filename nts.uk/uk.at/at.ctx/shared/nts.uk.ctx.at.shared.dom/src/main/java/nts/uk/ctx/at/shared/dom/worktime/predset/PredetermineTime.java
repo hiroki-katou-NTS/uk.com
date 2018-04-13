@@ -73,7 +73,6 @@ public class PredetermineTime extends WorkTimeDomainObject {
 	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetermineTime oldDomain) {
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
-			this.addTime = oldDomain.getAddTime();
 		}
 	}
 
@@ -86,7 +85,6 @@ public class PredetermineTime extends WorkTimeDomainObject {
 	public void correctDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
-			this.addTime = BreakDownTimeDay.newInstance();
 		} 		
 	}
 
