@@ -627,7 +627,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         btnSettingBA2_2_click() {
             let self = this;
             let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
-            self.getListItemByAtr(currentAtdItemCondition.conditionAtr()).done((lstItem) => {
+            self.getListItemByAtr(self.workRecordExtractingCondition().checkItem()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (currentAtdItemCondition.conditionAtr() === 2) {
                     //Open dialog KDL021
@@ -653,7 +653,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     };
                     nts.uk.ui.windows.setShared("KDW007Params", param);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
-                        let output = nts.uk.ui.windows.getShared("KDW007CResults");
+                        let output = nts.uk.ui.windows.getShared("KDW007CResults");  
                         if (output) {
                             currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
                             currentAtdItemCondition.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
@@ -668,16 +668,16 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this;
             if (conditionAtr === 0) {
                 //With type 回数 - Times
-                return service.getAttendanceItemByAtr(2);
+                return service.getAttendanceItemByAtr(5);
             } else if (conditionAtr === 1) {
                 //With type 時間 - Time
-                return service.getAttendanceItemByAtr(5);
+                return service.getAttendanceItemByAtr(2);
             } else if (conditionAtr === 2) {
                 //With type 時刻 - TimeWithDay
-                return service.getAttendanceItemByAtr(6);
+                return service.getAttendanceItemByAtr(3);
             } else if (conditionAtr === 3) {
                 //With type 金額 - AmountMoney
-                return service.getAttendanceItemByAtr(3);
+                return service.getAttendanceItemByAtr(6);
             }
         }
         
