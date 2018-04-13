@@ -90,6 +90,7 @@ module nts.uk.at.view.kdm002.b {
             */
             public execution(): void {
                 var self = this;
+                 $('#BTN_STOP').focus();
                 let command: CheckFuncDto = new CheckFuncDto({
                     total: self.total(),
                     error: 0,
@@ -152,11 +153,13 @@ module nts.uk.at.view.kdm002.b {
                             if (res.succeeded || res.failed || res.cancelled) {
                                 if (self.imErrorLog().length == 0 ) {
                                     self.status('完了');  
+                                    $('#BTN_CLOSE').focus();
                                 }
                                 else {
                                     self.isError(true);
                                     self.isComplete(true);
                                     self.status('完了　（エラーあり）'); 
+                                    $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
                             }
@@ -175,7 +178,7 @@ module nts.uk.at.view.kdm002.b {
                     return;
                 }
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                ('#BTN_CLOSE').focus();
+                $('#BTN_CLOSE').focus();
             }
             
             //閉じるボタンをクリックする
@@ -188,7 +191,7 @@ module nts.uk.at.view.kdm002.b {
             errorExport(){
                 let self = this;
                 nts.uk.ui.block.invisible();
-                service.exportDatatoCsv(self.imErrorLog()).fail(function(res: any) {
+                service.exportDatatoCsv(ko.toJS(self.imErrorLog())).fail(function(res: any) {
                     alertError({ messageId: res.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();

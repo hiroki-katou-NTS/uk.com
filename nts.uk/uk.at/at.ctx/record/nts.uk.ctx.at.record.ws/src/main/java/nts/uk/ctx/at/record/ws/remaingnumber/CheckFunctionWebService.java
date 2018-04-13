@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.ws.remaingnumber;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,7 +35,7 @@ public class CheckFunctionWebService extends WebService{
 	
 	@POST
 	@Path("export")
-	public ExportServiceResult exportCsvError(OutputErrorInfoCommand command) {
+	public ExportServiceResult exportCsvError(List<OutputErrorInfoCommand> command) {
 		return this.exportService.start(command);
 	}
 }

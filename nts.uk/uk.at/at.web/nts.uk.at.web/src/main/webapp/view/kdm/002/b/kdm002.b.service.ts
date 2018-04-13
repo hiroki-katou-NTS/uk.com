@@ -5,7 +5,7 @@ module nts.uk.at.view.kdm002.b {
     export module service {
         var paths = {
             execution: "at/record/remainnumber/checkFunc/execution",
-            exportDatatoCsv: "at/record/remainnumber/checkFunc//export"
+            exportDatatoCsv: "at/record/remainnumber/checkFunc/export"
         }
         /**
          * call service execution 
@@ -17,7 +17,7 @@ module nts.uk.at.view.kdm002.b {
         /**
          * download export file
          */
-        export function exportDatatoCsv(data : any): JQueryPromise<any> {
+        export function exportDatatoCsv(data : viewmodel.IErrorLog[]): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportDatatoCsv, data);
         }
     }

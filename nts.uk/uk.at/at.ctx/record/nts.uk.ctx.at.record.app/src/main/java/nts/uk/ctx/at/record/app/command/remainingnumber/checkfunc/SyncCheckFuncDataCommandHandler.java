@@ -57,6 +57,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 						.add("employeeName",  outputErrorInfoCommand.get(i).getEmployeeName())
 						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
 				setter.setData(ERROR_LIST + i, value);
+				setter.updateData(NUMBER_OF_SUCCESS, outputErrorInfoCommand.size());
 			}
 		}
 		else {
