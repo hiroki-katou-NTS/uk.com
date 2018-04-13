@@ -9,8 +9,12 @@ module nts.uk.com.view.cps006.a {
 
 $(function() {
     $(document).on('click', '.search-btn', function(evt) {
+        let dataSoureFilter: Array<any> = $("#category_grid").igGrid("option", "dataSource");
+        if(dataSoureFilter.length > 0){
+            __viewContext["viewModel"].id(dataSoureFilter[0].id);
+        }
         __viewContext["viewModel"].isFiltered = true;
-        __viewContext["viewModel"].ctgLstFilter = $("#category_grid").igGrid("option", "dataSource");
+        __viewContext["viewModel"].ctgLstFilter = dataSoureFilter;
     });
 
     $(document).on('click', '.clear-btn', function(evt) {
@@ -41,9 +45,7 @@ $(function() {
         });
 
         $("#category_grid").igGrid("option", "dataSource", __viewContext["viewModel"].categoryList());
-//        if (__viewContext["viewModel"].categoryList().length > 0) {
-//            __viewContext["viewModel"].currentCategory().id(__viewContext["viewModel"].categoryList()[0].id);
-//        }
+
 
     });
 })

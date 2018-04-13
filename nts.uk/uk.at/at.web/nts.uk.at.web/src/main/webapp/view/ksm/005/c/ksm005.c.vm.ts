@@ -32,6 +32,7 @@ module nts.uk.at.view.ksm005.c {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
+            optionalColumnDatasource: KnockoutObservableArray<any>;
             
             // list hist
             histList: KnockoutObservableArray<any>;
@@ -63,6 +64,7 @@ module nts.uk.at.view.ksm005.c {
                 self.selectedHist = ko.observable(null)
                 self.isEnableListHist = ko.observable(false);
                 self.selectedHists = ko.observableArray([]);
+                self.optionalColumnDatasource = ko.observableArray([]);
                 
                 // list monthly pattern
                 self.monthlyPatternList = ko.observableArray([]);
@@ -80,16 +82,16 @@ module nts.uk.at.view.ksm005.c {
                 self.enableDelete = ko.observable(false);
                 self.enableSystemChange = ko.observable(false);
                 self.ccgcomponent = {
-                    
+                     
                     /** Common properties */
                     systemType: 1, // システム区分
-                    showEmployeeSelection: true, // 検索タイプ
-                    showQuickSearchTab: true, // クイック検索
+                    showEmployeeSelection: false, // 検索タイプ
+                    showQuickSearchTab: false, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
-                    showBaseDate: true, // 基準日利用
-                    showClosure: true, // 就業締め日利用
-                    showAllClosure: true, // 全締め表示
-                    showPeriod: true, // 対象期間利用
+                    showBaseDate: false, // 基準日利用
+                    showClosure: false, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
+                    showPeriod: false, // 対象期間利用
                     periodFormatYM: true, // 対象期間精度
 
                     /** Required parameter */
@@ -236,7 +238,7 @@ module nts.uk.at.view.ksm005.c {
                         self.alreadySettingList(data);
                     }
                     self.listComponentOption = {
-                        isShowAlreadySet: true,
+                        isShowAlreadySet: false,
                         isMultiSelect: false,
                         listType: ListType.EMPLOYEE,
                         employeeInputList: self.employeeList,
@@ -248,7 +250,10 @@ module nts.uk.at.view.ksm005.c {
                         isShowWorkPlaceName: true,
                         isShowSelectAllButton: false,
                         maxRows: 15,
-                        maxWidth: 450
+                        maxWidth: 450,
+                        showOptionalColumn: true,
+                        optionalColumnName: nts.uk.resource.getText('KSM005_18'),
+                        optionalColumnDatasource: self.optionalColumnDatasource
                     }; 
                     //$('#component-items-list').ntsListComponent(self.listComponentOption);                    
                 });
@@ -398,6 +403,7 @@ module nts.uk.at.view.ksm005.c {
             public findAllByEmployeeIds(employeeIds: string[]) : JQueryPromise<UnitAlreadySettingModel[]> {
                 var dfd = $.Deferred();
                 var dataRes: UnitAlreadySettingModel[] = [];
+                var dataSource: any = [];
                 var self = this;
                 var monthlyPatternCodes: string[] = [];
                 self.monthlyPatternList().forEach(e => monthlyPatternCodes.push(e.code));
@@ -405,9 +411,18 @@ module nts.uk.at.view.ksm005.c {
                     if(data != null){
                         data.forEach(function(item){
                             var setting: UnitAlreadySettingModel;
-                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true };
-                            dataRes.push(setting);
-                        })
+                            var setingContent : OptionalColumnDataSource;
+                            
+                            var monthlyPatternName : string;
+                            self.monthlyPatternList().length > 0 ? monthlyPatternName = self.monthlyPatternList().filter(ob => ob.code == item.monthlyPatternCode)[0].name : monthlyPatternName = "";
+                            
+                            setingContent = {empId: self.findEmployeeCodeById(item.employeeId) , content: monthlyPatternName};
+                            dataSource.push(setingContent);
+                            
+                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true }; 
+                            dataRes.push(setting);    
+                        });
+                        self.optionalColumnDatasource(dataSource);
                     }
                     
                     dfd.resolve(dataRes);
@@ -670,6 +685,11 @@ module nts.uk.at.view.ksm005.c {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    
+    export interface OptionalColumnDataSource {
+        empId: string;
+        content: any;
     }
     
     export class HistModel {

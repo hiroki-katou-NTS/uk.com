@@ -10,6 +10,8 @@ import nts.arc.time.GeneralDate;
  *
  */
 public interface ApprovalRootStateRepository {
+	
+	public Optional<ApprovalRootState> findByID(String rootStateID);
 	/**
 	 * @param startDate
 	 * @param endDate

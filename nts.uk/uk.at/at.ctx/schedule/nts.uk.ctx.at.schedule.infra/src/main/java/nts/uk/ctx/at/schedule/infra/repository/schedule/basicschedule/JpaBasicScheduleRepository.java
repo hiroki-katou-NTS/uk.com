@@ -750,7 +750,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param workScheduleTime
 	 */
 	private void updateScheduleTime(String employeeId, GeneralDate baseDate, Optional<WorkScheduleTime> workScheduleTime) {
-		if (!workScheduleTime.isPresent()) {
+		if (workScheduleTime == null || !workScheduleTime.isPresent()) {
 			return;
 		}
 		

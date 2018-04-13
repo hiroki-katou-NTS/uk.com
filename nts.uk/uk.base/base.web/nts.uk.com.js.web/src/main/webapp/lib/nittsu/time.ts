@@ -802,7 +802,7 @@ module nts.uk.time {
         }
 
         format(date: string) {
-            return new Date(date).toLocaleDateString("ja-JP");
+            return date;//new Date(date).toLocaleDateString("ja-JP");
         }
     }
 

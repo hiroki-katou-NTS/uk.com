@@ -6,6 +6,7 @@ module nts.uk.com.view.cps001.g.vm {
     import unblock = nts.uk.ui.block.clear;
     import clearError = nts.uk.ui.errors.clearAll;
     import error = nts.uk.ui.dialog.alertError;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
 
         // Store create/update mode
@@ -38,10 +39,14 @@ module nts.uk.com.view.cps001.g.vm {
         nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable('');
         nameTimeReam: KnockoutObservable<string> = ko.observable('');
         
-        init: boolean = true;
         itemDefs: any = [];
+        
+        sid: KnockoutObservable<string> = ko.observable(null);
+        
         constructor() {
-            let _self = this;
+            let _self = this,
+            data: any = getShared('CPS001GHI_VALUES');
+            _self.sid(data.sid);
 
             _self.createMode = ko.observable(null);
 
@@ -73,8 +78,11 @@ module nts.uk.com.view.cps001.g.vm {
                 if (_self.listAnnualLeaveGrantRemainData().length) {
                      _self.createMode(false);
                     // Set focus
-                    _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
-                    // Set to update mode
+                    let index = _.findIndex(_self.listAnnualLeaveGrantRemainData(), (item) => { return item.annLeavID == _self.currentValue(); });
+
+                    if (index == -1) {
+                        _self.currentValue(_self.listAnnualLeaveGrantRemainData()[0].annLeavID);
+                    }
                 } else {
                     _self.create();                    
                 }
@@ -89,19 +97,12 @@ module nts.uk.com.view.cps001.g.vm {
          * Run after page loaded
          */
         public startPage(annID? : string): JQueryPromise<any> {
-            let _self = this, 
-            sID = __viewContext.user.employeeId;
+            let _self = this; 
             block();
-            if(_self.init){
-                _self.getItemDef();
-                _self.init = false;
-             }
-             else {
-                _self.loadItemDef();   
-            }
+            _self.getItemDef();
             _self.alllist.removeAll();
             _self.listAnnualLeaveGrantRemainData.removeAll();
-            service.getAllList(sID).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
+            service.getAllList(_self.sid()).done((data: Array<IAnnualLeaveGrantRemainingData>) => {
                 if (data && data.length > 0) {
                     // Set to update mode
                     _self.createMode(false);
@@ -267,9 +268,9 @@ module nts.uk.com.view.cps001.g.vm {
             block();
             if (_self.createMode()) {
                 
-                service.add(command).done((id: string) => {
+                service.add(command).done((data: Array<string>) => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        _self.startPage();
+                        _self.startPage(data[0]);
                     });
                     unblock();
                 }).fail((res) => {
@@ -305,7 +306,6 @@ module nts.uk.com.view.cps001.g.vm {
          */
         public remove(): void {
             let _self = this,
-                sID = __viewContext.user.employeeId,
                 currentIndex = _.findIndex(_self.listAnnualLeaveGrantRemainData(), function(item: IAnnualLeaveGrantRemainingData) { 
                     return item.annLeavID == ko.toJS(_self.currentItem()).annLeavID;
                 }),
@@ -318,7 +318,7 @@ module nts.uk.com.view.cps001.g.vm {
                     block();
                     let command = {
                         annLeavID: ko.toJS(_self.currentItem()).annLeavID,
-                        employeeId: sID,
+                        employeeId: _self.sid(),
                         grantDate: ko.toJS(_self.currentItem()).grantDate
                     };
                     service.deleteLeav(command).done((message: string) => {
@@ -370,7 +370,8 @@ module nts.uk.com.view.cps001.g.vm {
         remainingDays: KnockoutObservable<number> = ko.observable(null);
         remainingMinutes: KnockoutObservable<number> = ko.observable(null);
         constructor(param?: IAnnualLeaveGrantRemainingData) {
-            let self = this;
+            let self = this,
+              data: any = getShared('CPS001GHI_VALUES');
             if (param) {
                 self.annLeavID(param.annLeavID || null);
                 self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
@@ -382,7 +383,7 @@ module nts.uk.com.view.cps001.g.vm {
                 self.usedMinutes(param.usedMinutes || null);
                 self.remainingDays(param.remainingDays || null);
                 self.remainingMinutes(param.remainingMinutes || null);
-                self.employeeId(__viewContext.user.employeeId);
+                self.employeeId(data.sid);
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {

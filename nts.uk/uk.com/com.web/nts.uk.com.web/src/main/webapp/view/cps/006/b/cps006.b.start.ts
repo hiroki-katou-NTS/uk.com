@@ -3,10 +3,21 @@ module nts.uk.com.view.cps006.b {
         __viewContext['screenModel'] = new viewmodel.ScreenModel();
         __viewContext['screenModel'].start().done(function() {
             __viewContext.bind(__viewContext['screenModel']);
-//            let helpButton = "<button id=\"A2_012\" data-bind=\"ntsHelpButton: {image: \'A2_012.png\', position: \'right top\', enable: true }\">?</button>";
-//            nts.uk.ui.ig.grid.header.getCell('A2_008', 'setting').append($(helpButton));
-//            ko.applyBindings(__viewContext['screenModel'], nts.uk.ui.ig.grid.header.getCell('A2_008', 'setting')[0]);
         });
 
     });
 }
+
+$(function() {
+    $(document).on('click', '.search-btn', function(evt) {
+        let dataSoureFilter: Array<any> = $("#B1_3").igGrid("option", "dataSource");
+        if(dataSoureFilter.length > 0){
+            __viewContext['screenModel'].currentSelectId(dataSoureFilter[0].id);
+        }
+    });
+
+    $(document).on('click', '.clear-btn', function(evt) {
+
+
+    });
+})

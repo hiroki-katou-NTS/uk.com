@@ -46,10 +46,8 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateData(param) {
                 if (param) {
-                    this.startTime(param.startTime || null);
-                    this.endTime(param.endTime || null);
-                    this.startType(param.startType != undefined ? param.startType : 1);
-                    this.endType(param.endType != undefined ? param.endType : 1);
+                    this.startTime(param.start || null);
+                    this.endTime(param.end || null);
                 }
             }
         }
@@ -213,20 +211,11 @@ module nts.uk.at.view.kaf011.shr {
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
-                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
                     });
 
-                });
-
-                self.wkTime1().startTime.subscribe((newValue) => {
-                    self.updateWorkingText();
-                });
-                self.wkTime1().endTime.subscribe((newValue) => {
-
-                    self.updateWorkingText();
                 });
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
@@ -373,12 +362,11 @@ module nts.uk.at.view.kaf011.shr {
 
             openKDL003() {
                 let self = this,
-                    workTypeCodes = self.wkTypes().map(function(x) { return x.workTypeCode; }),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
 
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
+                    workTypeCodes: [selectedWorkTypeCode],
                     selectedWorkTypeCode: selectedWorkTypeCode,
                     workTimeCodes: [],
                     selectedWorkTimeCode: WorkTimeCd,
@@ -401,8 +389,6 @@ module nts.uk.at.view.kaf011.shr {
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
                             self.updateWorkingText();
                         }
-
-
                     }
                 });
 

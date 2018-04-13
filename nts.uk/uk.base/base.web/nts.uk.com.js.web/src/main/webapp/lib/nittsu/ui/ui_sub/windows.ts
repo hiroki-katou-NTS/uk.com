@@ -24,6 +24,7 @@ module nts.uk.ui {
             $dialog: JQuery = null;
             $iframe: JQuery = null;
             onClosedHandler: () => void = $.noop;
+            onOpenedHandler: () => void = $.noop;
 
             constructor(id: string, isRoot: boolean, parent: ScreenWindow) {
                 this.id = id;
@@ -77,6 +78,7 @@ module nts.uk.ui {
             }
             setupAsDialog(path: string, options: any) {
 
+                var self = this;
                 options.close = () => {
                     this.dispose();
                 };
@@ -144,6 +146,10 @@ module nts.uk.ui {
                                     }
                                 }
                             });
+                            
+                            setTimeout(function(){
+                                self.onOpenedHandler();
+                            }, 100);
                         },
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
@@ -184,6 +190,12 @@ module nts.uk.ui {
                     //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                     callback();
                     container.localShared = {};
+                };
+            }
+            
+            onOpened(callback: () => void) {
+                this.onOpenedHandler = function() {
+                    callback();
                 };
             }
 

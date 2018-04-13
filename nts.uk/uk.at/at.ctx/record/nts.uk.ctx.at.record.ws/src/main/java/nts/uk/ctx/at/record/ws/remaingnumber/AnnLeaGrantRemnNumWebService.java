@@ -17,7 +17,8 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.DeleteLe
 import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.UpdateAnnLeaCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnLeaGrantRemnNumFinder;
-import nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum.AnnualLeaveNumberFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.remainnumber.AnnualLeaveNumberFinder;
+import nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.remainnumber.RemainNumberInfoDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
 
 @Path("at/record/remainnumber/annlea")
@@ -50,7 +51,7 @@ public class AnnLeaGrantRemnNumWebService extends WebService{
 	
 	@POST
 	@Path("getAnnLeaNumber/{empId}")
-	public String getAnnLeaNum(@PathParam("empId") String employeeId) {
+	public RemainNumberInfoDto getAnnLeaNum(@PathParam("empId") String employeeId) {
 		return annLeaNumberFinder.getAnnualLeaveNumber(employeeId);
 	}
 	
@@ -82,8 +83,9 @@ public class AnnLeaGrantRemnNumWebService extends WebService{
 	
 	@POST
 	@Path("add")
-	public void add(AnnLeaGrantRemnNumCommand command){
-		addHandler.handle(command);
+	public Object add(AnnLeaGrantRemnNumCommand command){
+		String newId = addHandler.handle(command).getAddedRecordId();
+		return new Object[] {newId};
 	}
 	
 	@POST

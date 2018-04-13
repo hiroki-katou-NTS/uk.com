@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
@@ -22,23 +23,24 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  */
 @Stateless
 public class ScheCreExeErrorLogHandler {
-	
+
 	/** The internationalization. */
 	@Inject
 	private I18NResourcesForUK internationalization;
-	
-	
+
 	/** The schedule error log repository. */
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
-	
-	
+
 	/**
 	 * Adds the error.
 	 *
-	 * @param command the command
-	 * @param employeeId the employee id
-	 * @param messageId the message id
+	 * @param command
+	 *            the command
+	 * @param employeeId
+	 *            the employee id
+	 * @param messageId
+	 *            the message id
 	 */
 	public void addError(ScheduleErrorLogGeterCommand command, String employeeId, String messageId) {
 		// check exist error
@@ -46,12 +48,31 @@ public class ScheCreExeErrorLogHandler {
 			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId));
 		}
 	}
-	
+
+	/**
+	 * Adds the error.
+	 *
+	 * @param command
+	 *            the command
+	 * @param employeeId
+	 *            the employee id
+	 * @param messageId
+	 *            the message id
+	 */
+	public void addError(ScheduleErrorLogGeterCommand command, String employeeId, String messageId, String paramMsg) {
+		// check exist error
+		if (!this.checkExistErrorByKey(command, employeeId)) {
+			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId, paramMsg));
+		}
+	}
+
 	/**
 	 * Check exist error.
 	 *
-	 * @param command the command
-	 * @param employeeId the employee id
+	 * @param command
+	 *            the command
+	 * @param employeeId
+	 *            the employee id
 	 * @return true, if successful
 	 */
 	public boolean checkExistError(ScheduleErrorLogGeterCommand command, String employeeId) {
@@ -64,11 +85,14 @@ public class ScheCreExeErrorLogHandler {
 		}
 		return true;
 	}
+
 	/**
 	 * Check exist error.
 	 *
-	 * @param command the command
-	 * @param employeeId the employee id
+	 * @param command
+	 *            the command
+	 * @param employeeId
+	 *            the employee id
 	 * @return true, if successful
 	 */
 	public boolean checkExistErrorByKey(ScheduleErrorLogGeterCommand command, String employeeId) {
@@ -77,42 +101,53 @@ public class ScheCreExeErrorLogHandler {
 
 		return optionalError.isPresent();
 	}
+
 	/**
 	 * To schedule error log.
 	 *
-	 * @param command the command
-	 * @param employeeId the employee id
-	 * @param messageId the message id
+	 * @param command
+	 *            the command
+	 * @param employeeId
+	 *            the employee id
+	 * @param messageId
+	 *            the message id
 	 * @return the schedule error log
 	 */
 	private ScheduleErrorLog toScheduleErrorLog(ScheduleErrorLogGeterCommand command, String employeeId,
 			String messageId) {
-		return new ScheduleErrorLog(new ScheduleErrorLogGetMementoImpl(command,employeeId,messageId)); 
+		return new ScheduleErrorLog(new ScheduleErrorLogGetMementoImpl(command, employeeId, messageId));
 	}
-	
-	
-	
+
+	private ScheduleErrorLog toScheduleErrorLog(ScheduleErrorLogGeterCommand command, String employeeId,
+			String messageId, String paramMsg) {
+		return new ScheduleErrorLog(new ScheduleErrorLogGetMementoImpl(command, employeeId, messageId, paramMsg));
+	}
+
 	/**
 	 * The Class ScheduleErrorLogGetMementoImpl.
 	 */
-	class ScheduleErrorLogGetMementoImpl implements ScheduleErrorLogGetMemento{
-		
+	class ScheduleErrorLogGetMementoImpl implements ScheduleErrorLogGetMemento {
+
 		/** The command. */
 		private ScheduleErrorLogGeterCommand command;
-		
+
 		/** The employee id. */
 		private String employeeId;
-		
+
 		/** The message id. */
 		private String messageId;
-		
+
+		private String paramMsg;
 
 		/**
 		 * Instantiates a new schedule error log get memento impl.
 		 *
-		 * @param command the command
-		 * @param employeeId the employee id
-		 * @param messageId the message id
+		 * @param command
+		 *            the command
+		 * @param employeeId
+		 *            the employee id
+		 * @param messageId
+		 *            the message id
 		 */
 		public ScheduleErrorLogGetMementoImpl(ScheduleErrorLogGeterCommand command, String employeeId,
 				String messageId) {
@@ -121,38 +156,65 @@ public class ScheCreExeErrorLogHandler {
 			this.messageId = messageId;
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#getErrorContent()
+		public ScheduleErrorLogGetMementoImpl(ScheduleErrorLogGeterCommand command, String employeeId, String messageId,
+				String paramMsg) {
+			this.command = command;
+			this.employeeId = employeeId;
+			this.messageId = messageId;
+			this.paramMsg = paramMsg;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#
+		 * getErrorContent()
 		 */
 		@Override
 		public String getErrorContent() {
-			return internationalization.localize(messageId).get();
+			if (StringUtil.isNullOrEmpty(this.paramMsg, true)) {
+				return internationalization.localize(messageId).get();
+			}
+			return internationalization.localize(messageId, paramMsg).get();
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#getExecutionId()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#
+		 * getExecutionId()
 		 */
 		@Override
 		public String getExecutionId() {
 			return command.getExecutionId();
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#getDate()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#
+		 * getDate()
 		 */
 		@Override
 		public GeneralDate getDate() {
 			return command.getToDate();
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#getEmployeeId()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento#
+		 * getEmployeeId()
 		 */
 		@Override
 		public String getEmployeeId() {
 			return employeeId;
 		}
-		
+
 	}
-	
+
 }
