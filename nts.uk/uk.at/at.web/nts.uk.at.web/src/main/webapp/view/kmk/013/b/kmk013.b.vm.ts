@@ -1339,7 +1339,7 @@ module nts.uk.at.view.kmk013.b {
                     obj.irregularWork.exemptTaxTimePre = self.oldData().irregularWork.exemptTaxTimePre;
                     obj.irregularWork.enableSetPerWorkHour1 = self.oldData().irregularWorkenableSetPerWorkHour1;
                 }
-                if (self.enableB79() == true && self.enableB7_24()) {
+                if (self.enableB79() == true && self.checkedB77()) {
                     obj.irregularWork.deformatExcValue = convertToInt(self.selectedIdB79());
                 } else {
                     obj.irregularWork.deformatExcValue = self.oldData().irregularWork.deformatExcValue;
