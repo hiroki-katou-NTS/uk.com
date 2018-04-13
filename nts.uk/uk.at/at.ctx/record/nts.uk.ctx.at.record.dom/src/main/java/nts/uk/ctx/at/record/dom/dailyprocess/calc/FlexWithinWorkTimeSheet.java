@@ -292,6 +292,12 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			   ) {
 		AttendanceTime withinTime = super.calcWorkTime(premiumAtr, calcActualTime, vacationClass, timevacationUseTimeOfDaily, statutoryDivision, workType, predetermineTimeSet, siftCode, personalCondition, late, leaveEarly, workingSystem, addSettingOfIrregularWork, addSettingOfFlexWork, addSettingOfRegularWork, vacationAddTimeSet, holidayCalcMethodSet);
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, holidayCalcMethodSet, autoCalcAtr, workType, flexCalcMethod, predetermineTimeSet, vacationClass, timevacationUseTimeOfDaily, statutoryDivision, siftCode, personalCondition, late, leaveEarly, workingSystem, addSettingOfIrregularWork, addSettingOfFlexWork, addSettingOfRegularWork, vacationAddTimeSet, flexLimitSetting);
-		return withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
+		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
+			return withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
+		}
+		else {
+			return withinTime;
+		}
+		
 	}
 }
