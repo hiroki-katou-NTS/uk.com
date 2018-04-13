@@ -28,7 +28,6 @@ import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowsAccountFinderDto;
  */
 @Path("ctx/sys/gateway/single/signon")
 @Produces("application/json")
-@Stateless
 public class WindowAccountWs extends WebService{
 	
 	/** The user finder. */
