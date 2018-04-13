@@ -56,7 +56,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          * 起動する
          */
         startPage(): JQueryPromise<any> {
-            var self = this;
+            let self = this;
             var dfd = $.Deferred();
 
             let params = getShared("KAF018F_PARAMS");
@@ -82,7 +82,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         getWkpName() {
-            var self = this;
+            let self = this;
             self.enablePre(self.selectedWplIndex != 0)
             self.enableNext(self.selectedWplIndex != (self.listWkp.length - 1))
 
@@ -92,20 +92,20 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         nextWkp() {
-            var self = this;
+            let self = this;
             self.selectedWplIndex++;
             self.getWkpName();
             self.updateExTable();
         }
 
         preWkp() {
-            var self = this;
+            let self = this;
             self.selectedWplIndex--;
             self.getWkpName();
         }
 
         setArrDate() {
-            var self = this;
+            let self = this;
             let currentDay = new Date(self.dtPrev().toString());
             while (currentDay <= self.dtAft()) {
                 self.arrDay.push(new Time(currentDay));
@@ -113,19 +113,70 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             }
         };
 
+        getEmpPerformance(): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            let obj = {
+                wkpId: self.selectedWplId(),
+                startDate: self.startDate,
+                endDate: self.endDate,
+                listEmpCd: self.listEmpCd
+            };
+            service.getEmpPerformance(obj).done(function(data: any) {
+                console.log(data);
+                let list = self.convertToEmpPerformance(data);
+                dfd.resolve(list);
+            });
+            return dfd.promise();
+        }
+
+        convertToEmpPerformance(data): Array<EmpPerformance> {
+            let self = this;
+            let index = 0;            
+            let listEmpPerformance = Array<EmpPerformance>();
+            _.each(data, function(item) {
+                let monthConfirm, personConfirm, bossConfirm, dailyReport = Array<number>();
+
+                if (item.monthConfirm) {
+                    monthConfirm = text("KAF018_92");
+                } else {
+                    monthConfirm = "";
+                }
+                
+                if (item.personConfirm) {
+                    personConfirm = text("KAF018_92");
+                } else {
+                    personConfirm = "";
+                }
+                
+                if (item.bossConfirm) {
+                    bossConfirm = text("KAF018_92");
+                } else {
+                    bossConfirm = "";
+                }
+                item.dailyPerformance = _.sortBy(item.dailyPerformance, [function(o) { return o.targetDate; }]);
+                _.each(item.dailyPerformance, function(daily) {
+                    dailyReport.push(daily.performance);
+                })
+                listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, dailyReport));
+                index++;
+            })
+            return listEmpPerformance;
+        }
+
         /**
          * Create exTable
          */
         initExTable(): void {
-            var self = this;
-            self.getSampleData().done(function(listData: any) {
+            let self = this;
+            //self.getSampleData().done(function(listData: any) {
+            self.getEmpPerformance().done(function(listData: any) {
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setColorForCellContentDetail(listData);
                 $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
                     let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
-
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "50px", bodyRowHeight: "17px", bodyHeight: "340px",
+                        headerHeight: "50px", bodyRowHeight: "18px", bodyHeight: "324px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: true,
                         bodyHeightMode: "fixed",
@@ -144,7 +195,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          * Update exTable
          */
         updateExTable() {
-            var self = this;
+            let self = this;
             self.getSampleData2().done(function(listData: any) {
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setColorForCellContentDetail(listData);
@@ -160,7 +211,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          * Get data
          */
         getSampleData(): JQueryPromise<any> {
-            var self = this, dfd = $.Deferred();
+            let self = this, dfd = $.Deferred();
             let listData = [];
             let currentDay = new Date(self.dtPrev().toString());
             let r1 = new Date(self.dtPrev().toString()), r2 = new Date(self.dtPrev().toString()), r3 = new Date(self.dtPrev().toString());
@@ -198,12 +249,12 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             dfd.resolve(listData);
             return dfd.promise();
         }
-        
+
         /**
          * Get data
          */
         getSampleData2(): JQueryPromise<any> {
-            var self = this, dfd = $.Deferred();
+            let self = this, dfd = $.Deferred();
             let listData = [];
             let currentDay = new Date(self.dtPrev().toString());
             let r1 = new Date(self.dtPrev().toString()), r2 = new Date(self.dtPrev().toString()), r3 = new Date(self.dtPrev().toString());
@@ -243,7 +294,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         setFormatData(detailHeaderDeco, detailContentDeco, listData) {
-            var self = this;
+            let self = this;
             let leftmostColumns = [];
             let leftmostHeader = {};
             let leftmostContent = {};
@@ -385,7 +436,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          * 
          */
         setColorForCellContentDetail(listData): JQueryPromise<any> {
-            var self = this, dfd = $.Deferred();
+            let self = this, dfd = $.Deferred();
             let detailContentDeco = [];
             for (let i = 0; i < listData.length; i++) {
                 let currentDay = new Date(self.dtPrev().toString());
@@ -433,6 +484,37 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             this.day = moment(ymd).format('D');
             this.weekDay = moment(ymd).format('dd');
             this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
+        }
+    }
+
+    class EmpPerformance {
+        index: String;
+        sId: String;
+        sName: String;
+        monthConfirm: String;
+        personConfirm: String;
+        bossConfirm: String;
+        dailyReport: Array<number>;
+
+        constructor(index: String, sId: String, sName: String, monthConfirm: String, personConfirm: String, bossConfirm: String, dailyReport: Array<number>) {
+            this.index = index;
+            this.sId = sId;
+            this.sName = sName;
+            this.monthConfirm = monthConfirm;
+            this.personConfirm = personConfirm;
+            this.bossConfirm = bossConfirm;
+            this.dailyReport = dailyReport;
+        }
+    }
+
+    class DailyPerformance {
+        targetDate: Date;
+        performance: number;
+        hasError: boolean;
+        constructor(targetDate: Date, performance: number, hasError: boolean) {
+            this.targetDate = targetDate;
+            this.performance = performance;
+            this.hasError = hasError;
         }
     }
 }
