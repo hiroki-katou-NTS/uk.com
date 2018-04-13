@@ -745,7 +745,9 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.checkedB616.subscribe(newValue => {
                     if (newValue == false) {
-                        self.checkedB68(false);
+                        if (self.enableB68()) {
+                            self.checkedB68(false);                            
+                        }
                     }
                 });
                 self.checkedB69.subscribe(newValue => {
@@ -1291,12 +1293,12 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.exemptTaxTimeWork = convertToInt(self.checkedB619());
                     obj.flexWork.minusAbsenceTimeWork = convertToInt(self.checkedB620());
                     if (self.checkedB615() == true) {
-                        if (self.enableB616) {
+                        if (self.enableB616()) {
                             obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());    
                         } else {
                             obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;        
                         }
-                        if (self.enableB6_23) {
+                        if (self.enableB6_23()) {
                             obj.flexWork.additionWithinMonthlyStatutory = convertToInt(self.checkedB6_23());    
                         } else {
                             obj.flexWork.additionWithinMonthlyStatutory = self.oldData().flexWork.additionWithinMonthlyStatutory;
