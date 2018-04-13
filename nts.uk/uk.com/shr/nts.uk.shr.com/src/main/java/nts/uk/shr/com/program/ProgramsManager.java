@@ -1752,6 +1752,14 @@ public class ProgramsManager {
 			"/view/cmf/002/v2/index.xhtml");
 
 	/**
+	 * CMM053
+	 */
+	public static final Program CMM053A = new Program(WebAppId.COM, ProgramIdConsts.CMM053A, "CMM053_1",
+			"/view/cmm/053/a/index.xhtml");
+	public static final Program CMM053B = new Program(WebAppId.COM, ProgramIdConsts.CMM053B, "CMM053_2",
+			"/view/cmm/053/b/index.xhtml");
+
+	/**
 	 * All programs map.
 	 */
 	private static final Map<WebAppId, List<Program>> PROGRAMS;
