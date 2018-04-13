@@ -105,13 +105,19 @@ public enum WorkTypeClassification {
 	}
 	
 	/**
+	 * 代休であるか判定する
+	 * @return　代休である
+	 */
+	public boolean isSubstituteHoliday() {
+		return SubstituteHoliday.equals(this);
+	}
+		/**
 	 * 休日であるか判定する
 	 * @return　休日である
 	 */
 	public boolean isHoliday() {
 		return Holiday.equals(this);
 	}
-	
 	/**
 	 * 振出であるか判定する
 	 * @return　振出である

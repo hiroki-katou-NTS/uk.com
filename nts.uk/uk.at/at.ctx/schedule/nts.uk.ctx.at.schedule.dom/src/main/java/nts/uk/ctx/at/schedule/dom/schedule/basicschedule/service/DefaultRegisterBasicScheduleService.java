@@ -101,9 +101,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
 							workTimeSetting.getWorktimeCode().v());
 				}
-			} catch (RuntimeException ex) {
-				BusinessException businessException = (BusinessException) ex.getCause();
-				addMessage(errList, businessException.getMessageId());
+			} catch (BusinessException ex) {
+				addMessage(errList, ex.getMessageId());
 				continue;
 			}
 
