@@ -577,7 +577,8 @@ module nts.uk.ui.validation {
             }
             
             var parsed = time.minutesBased.clock.dayattr.parseString(inputText);
-            if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+            if (!parsed.success || parsed.asMinutes !== Math.round(parsed.asMinutes) 
+                || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                 result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [ this.name, minValue.fullText, maxValue.fullText ]), "FND_E_CLOCK");
             } else {
                 result.success(parsed.asMinutes);

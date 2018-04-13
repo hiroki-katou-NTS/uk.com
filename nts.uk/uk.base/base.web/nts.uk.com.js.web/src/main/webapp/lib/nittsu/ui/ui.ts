@@ -160,7 +160,7 @@ module nts.uk.ui {
                 // Check if contents is overflow
                 if ($label.outerWidth() < $label[0].scrollWidth) {
                     let $view = $('<div />').addClass('limited-label-view')
-                        .text($label.text())
+                        .text($label.text() || $label.val())
                         .appendTo('body')
                         .position({
                             my: 'left top',
