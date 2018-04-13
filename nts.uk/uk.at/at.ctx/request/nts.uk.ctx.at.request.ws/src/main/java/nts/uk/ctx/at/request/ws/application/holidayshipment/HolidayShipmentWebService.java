@@ -127,8 +127,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_date_c")
 	public HolidayShipmentDto changeDateC(String appDate) {
-//		return this.cFinder.changeAppDate(appDate);
-		return null;
+		return this.cFinder.changeAppDate(appDate);
 	}
 
 	@POST
