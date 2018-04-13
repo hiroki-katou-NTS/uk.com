@@ -89,8 +89,8 @@ public class GoBackDirectlyDto {
 				domain.getWorkTimeStart1().map(x -> x.v()).orElse(null),
 				domain.getWorkTimeEnd1().map(x -> x.v()).orElse(null),
 				domain.getWorkLocationCD1().map(x -> x).orElse(null),
-				domain.getGoWorkAtr2().get().value, 
-				domain.getBackHomeAtr2().get().value,
+				domain.getGoWorkAtr2().map(x -> x.value).orElse(null),
+				domain.getBackHomeAtr2().map(x -> x.value).orElse(null),
 				domain.getWorkTimeStart2().map(x -> x.v()).orElse(null),
 				domain.getWorkTimeEnd2().map(x -> x.v()).orElse(null),
 				domain.getWorkLocationCD2().map(x -> x).orElse(null));

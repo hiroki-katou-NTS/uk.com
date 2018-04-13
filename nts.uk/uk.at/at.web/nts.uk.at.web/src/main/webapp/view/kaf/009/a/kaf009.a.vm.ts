@@ -35,9 +35,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         selectedBack: any = ko.observable(1);
         selectedGo: any = ko.observable(1);
         //Back Home 2
-        selectedBack2: any = ko.observable(1);
+        selectedBack2: any = ko.observable(null);
         //Go Work 2
-        selectedGo2: any = ko.observable(1);
+        selectedGo2: any = ko.observable(null);
         //TIME LINE 2
         timeStart2: KnockoutObservable<number> = ko.observable(null);
         timeEnd2: KnockoutObservable<number> = ko.observable(null);
