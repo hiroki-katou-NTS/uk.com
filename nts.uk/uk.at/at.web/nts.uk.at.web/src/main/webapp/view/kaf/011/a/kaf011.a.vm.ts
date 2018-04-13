@@ -110,9 +110,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         openCMM018() {
             let self = this;
-            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
-            nts.uk.sessionStorage.setItemAsJson(nts.uk.request.STORAGE_KEY_TRANSFER_DATA, { screen: 'Application', employeeId: self.employeeID() });
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
+            jump("com", "/view/cmm/018/a/index.xhtml", { screen: "Application", employeeId: self.employeeID() });
         }
 
         setDataFromStart(data: common.IHolidayShipment) {
