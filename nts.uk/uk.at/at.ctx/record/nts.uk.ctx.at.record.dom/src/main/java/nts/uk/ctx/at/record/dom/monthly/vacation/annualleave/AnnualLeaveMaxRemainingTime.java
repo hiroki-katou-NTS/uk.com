@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 
 /**
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class AnnualLeaveMaxRemainingTime {
 
 	/** 時間 */
