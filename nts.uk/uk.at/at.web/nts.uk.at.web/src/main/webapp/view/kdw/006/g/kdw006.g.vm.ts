@@ -91,7 +91,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
 
-        getWorkType(newValue:any): JQueryPromise<any> {
+        getWorkType(newValue: any): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             let array = [];
@@ -145,9 +145,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         saveData() {
             let self = this;
             nts.uk.ui.block.invisible();
-            _.forEach(self.groups1(), function(item){
-                item.name(null);    
-            })
+            //            _.forEach(self.groups1(), function(item) {
+            //                item.name(null);
+            //            })
             service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
                 if (self.groups1.length > 0 || self.groups2.length > 0) {
                     self.listSetting.push(self.selectedCode());
@@ -178,7 +178,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 self.listSetting(res);
                 let param = {
                     code: self.selectedCode(),
-                    name: employmentName,
+                    name: employmentName.name,
                     targetType: 1,// 雇用
                     itemListSetting: self.listSetting(),
                 };
@@ -187,12 +187,13 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     nts.uk.ui.block.invisible();
                     let isOveride: boolean = false;
                     let data = nts.uk.ui.windows.getShared("CDL023Output");
-                    for (let i = 0; i < data.length; i++) {
-                        _.find(self.listSetting(), data[i]);
-                        isOveride = true;
-                        break;
+                    if (data) {
+                        for (let i = 0; i < data.length; i++) {
+                            _.find(self.listSetting(), data[i]);
+                            isOveride = true;
+                            break;
+                        }
                     }
-
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         let command = {
                             targetEmploymentCodes: data,
@@ -212,10 +213,9 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                             nts.uk.ui.block.clear();
                         });
                     }
+                    nts.uk.ui.block.clear();
                 });
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });;
+            });
 
 
 

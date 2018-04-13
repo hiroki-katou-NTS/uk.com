@@ -91,7 +91,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 					KrcmtWorktypeChangeablePk pk = new KrcmtWorktypeChangeablePk(cid, empCode,
 							new BigDecimal(group.getNo()), workTypeCode);
 					KrcmtWorktypeChangeable entity = new KrcmtWorktypeChangeable(pk,
-							!group.getName().v().isEmpty() ? group.getName().v() : null);
+							group.getName() != null ? group.getName().v() : null);
 					this.commandProxy().insert(entity);
 				});
 			}
