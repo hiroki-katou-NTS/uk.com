@@ -113,15 +113,8 @@ module nts.uk.at.view.kmk015.a {
 
                     //get List History
                     service.getHistoryByWorkType(self.selectedCode()).done(data => {
-                        data.forEach(function(item) {
-                            self.listHistory.push({
-                                historyId: item.historyId,
-                                time: item.startDate + ' ~ ' + item.endDate,
-                                maxDay: item.maxDay,
-                                startItem: item.startDate,
-                                endItem: item.endDate
-                            });
-                        });
+                        //push listHistory
+                        self.addList(data);
                         
                         //set focus 
                         self.selectedCodeHistory(data[0].historyId);
@@ -130,14 +123,16 @@ module nts.uk.at.view.kmk015.a {
                 }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)})
                 .always(() => nts.uk.ui.block.clear()); // clear block ui.
 
-
-
                 return dfd.promise();
             }
 
             //open dialog B
             OpenDialogB() {
                 let self = this;
+                
+                let workTypeCodes = self.selectedCode();
+                nts.uk.ui.windows.setShared('parentCodes', {}, true);
+                
                 nts.uk.ui.windows.sub.modal('/view/kmk/015/b/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
@@ -192,33 +187,93 @@ module nts.uk.at.view.kmk015.a {
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
                 service.insertHistory(command).done(function(){
+                    //OK
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                     //clear list
                     self.listHistory.removeAll();
                     //get ListHistory
                     service.getHistoryByWorkType(self.selectedCode()).done(data => {
+                        //push listHistory
+                        self.addList(data);
+                        
+                        //focus new history
                         data.forEach(function(item) {
-                            //push listHistory
-                            self.listHistory.push({
-                                historyId: item.historyId,
-                                time: item.startDate + ' ~ ' + item.endDate,
-                                maxDay: item.maxDay,
-                                startItem: item.startDate,
-                                endItem: item.endDate
-                            });
-                            
-                            //focus new history
                             if (moment(moment(self.startTime()).format("YYYY/MM/DD")).isSame(moment(item.startDate))){
                                 self.selectedCodeHistory(item.historyId);
                             }
                         });
+                        dfd.resolve();
                     }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)});
-                    dfd.resolve();
                 }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)});
 
                 //clear blockUI
                 nts.uk.ui.block.clear();
 
                 return dfd.promise();
+            }
+            
+            /**
+             * Remove
+             */
+            public removeHistory(): void {
+                let self = this;
+                let isLastIndex = false;
+                //confirm Delete
+                nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
+                    //get index
+                    let index = _.findIndex(self.listHistory(), ['historyId', self.selectedCodeHistory()]);
+                    if (self.listHistory().length - 1 == index){
+                        isLastIndex = true;
+                    } 
+                    //add command
+                    var command: any = {};
+                    command.historyId = self.historyId();
+                    command.workTypeCode = self.selectedCode();
+                    
+                    //Remove history
+                    service.removeVacationHistory(command).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_16' });
+                        
+                        //clear list
+                        self.listHistory.removeAll();
+                        
+                        //Get listHistory
+                        service.getHistoryByWorkType(self.selectedCode()).done(data => {
+                            //push listHistory
+                            self.addList(data);
+                            
+                            //focus new history
+                            if (!nts.uk.util.isNullOrEmpty(self.listHistory())){
+                                //check lastIndex
+                                if (isLastIndex){
+                                    self.selectedCodeHistory(self.listHistory()[index - 1].historyId)
+                                } else {
+                                    self.selectedCodeHistory(self.listHistory()[index].historyId)
+                                }
+                            }
+                            }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)});
+                                
+                        }).fail((res: any) => {nts.uk.ui.dialog.bundledErrors(res);
+                    });
+                });
+            }
+            
+            /**
+             * Add listHistory
+             */
+            private addList(data: Array<any>): void {
+                let self = this;
+                //add item　なし
+                data.forEach(function(item) {
+                    //push listHistory
+                    self.listHistory.push({
+                        historyId: item.historyId,
+                        time: item.startDate + ' ~ ' + item.endDate,
+                        maxDay: item.maxDay,
+                        startItem: item.startDate,
+                        endItem: item.endDate
+                    });
+                });
             }
         }
     }

@@ -186,9 +186,8 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	 * @see nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository#removeWkpConfigHist(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void removeWkpConfigHist(String companyId, String historyId) {
-		// TODO Auto-generated method stub
-
+	public void removeVacationHistory(String companyId, String historyId, String workTypeCode){
+		this.commandProxy().remove(KrqmtVacationHistory.class, new KrqmtVacationHistoryPK(companyId, historyId, workTypeCode));
 	}
 
 	/**

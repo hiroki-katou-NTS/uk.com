@@ -28,12 +28,13 @@ public interface VacationHistoryRepository {
 	void update(PlanVacationHistory vacationHistory);
 
     /**
-     * Removes the wkp config hist.
+     * Removes the vacation history.
      *
      * @param companyId the company id
      * @param historyId the history id
+     * @param workTypeCode the work type code
      */
-    void removeWkpConfigHist(String companyId, String historyId);
+    void removeVacationHistory(String companyId, String historyId, String workTypeCode);
 
     /**
      * Find by work type code.

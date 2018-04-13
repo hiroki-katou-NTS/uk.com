@@ -11,10 +11,9 @@ import nts.uk.shr.com.history.GeneralHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * Gets the max day.
- *
- * @return the max day
+ * The Class PlanVacationHistory.
  */
+
 @Getter
 //計画休暇のルールの履歴
 public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory, DatePeriod, GeneralDate> {
@@ -84,6 +83,24 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 	public PlanVacationHistory(String companyId, String workTypeCode, OptionalMaxDay maxDay,
 			GeneralDate startDate, GeneralDate endDate){
 		super(IdentifierUtil.randomUniqueId(), new DatePeriod(startDate, endDate));
+		this.companyId = companyId;
+		this.maxDay = maxDay;
+		this.workTypeCode = workTypeCode;
+	}
+	
+	/**
+	 * Instantiates a new plan vacation history.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCode the work type code
+	 * @param maxDay the max day
+	 * @param historyId the history id
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 */
+	public PlanVacationHistory(String companyId, String workTypeCode, OptionalMaxDay maxDay, String historyId,
+			GeneralDate startDate, GeneralDate endDate){
+		super(historyId, new DatePeriod(startDate, endDate));
 		this.companyId = companyId;
 		this.maxDay = maxDay;
 		this.workTypeCode = workTypeCode;
