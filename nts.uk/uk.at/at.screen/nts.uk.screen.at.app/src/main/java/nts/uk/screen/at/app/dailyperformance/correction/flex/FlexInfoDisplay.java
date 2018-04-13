@@ -30,9 +30,6 @@ public class FlexInfoDisplay {
 		 val value190 = "10";
 		 val value191 = "10";
 		 //TODO 所定時間（1日の時間内訳）を取得する
-		 
-		 //TODO フレックス不足の相殺が実施できるかチェックする
-		 
 		 return new FlexShortage(value18, value21, value189, value190, value191, new BreakTimeDay(2d, 1d, 1d));
 		 
 	}
