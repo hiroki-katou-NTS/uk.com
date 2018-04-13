@@ -41,19 +41,27 @@ module nts.uk.at.view.kdw008.a {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
-           //is daily
-            isDaily :boolean; 
-           
-            constructor(dataShare:any) {
-                
+            //is daily
+            isDaily: boolean;
+            
+            //monthly
+            listMonthlyAttdItem : KnockoutObservableArray<any>;
+            valuesMonthly :  KnockoutObservableArray<any>;
+
+            constructor(dataShare: any) {
+
                 var self = this;
-                
+                //monthly
+                self.listMonthlyAttdItem = ko.observableArray([]);
+                self.valuesMonthly = ko.observableArray([]);
+
                 //isdaily
-                self.isDaily =  dataShare.ShareObject; 
-                    
+                self.isDaily = dataShare.ShareObject;
+                self.isDaily = true;
+
                 self.newMode = ko.observable(false);
                 self.isUpdate = ko.observable(true);
-                self.isRemove = ko.observable(true);    
+                self.isRemove = ko.observable(true);
                 self.showCode = ko.observable(false);
 
                 self.checked = ko.observable(false);
@@ -148,6 +156,31 @@ module nts.uk.at.view.kdw008.a {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                
+                let dfdGetBusinessType = self.getBusinessType();
+                let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
+                $.when(dfdGetBusinessType,dfdGetListMonthlyAttdItem).done(function(dfdGetBusinessTypeData,dfdGetListMonthlyAttdItemData){
+                    
+                    dfd.resolve();
+                });
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
+            getListMonthlyAttdItem(){
+                
+                let self = this;
+                let dfd = $.Deferred();
+                new service.Service().getListMonthlyAttdItem().done(function(data) {
+                    self.listMonthlyAttdItem(data);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            getBusinessType() {
+                let self = this;
+                let dfd = $.Deferred();
                 nts.uk.ui.block.grayout();
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
@@ -157,16 +190,13 @@ module nts.uk.at.view.kdw008.a {
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                        nts.uk.ui.block.clear();
-                        dfd.resolve();
                     } else {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_242" });
-                        nts.uk.ui.block.clear();
-                        dfd.resolve();
                         self.setNewMode();
                     }
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
                 });
-
                 return dfd.promise();
             }
 
@@ -336,8 +366,8 @@ module nts.uk.at.view.kdw008.a {
                     nts.uk.ui.block.invisible();
                     if (self.isUpdate() == true) {
                         new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
-                               self.reloadData(self.currentDailyFormatCode()); 
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                self.reloadData(self.currentDailyFormatCode());
                             });
                             $("#currentName").focus();
                         }).always(function() {
@@ -347,8 +377,8 @@ module nts.uk.at.view.kdw008.a {
                         });
                     } else {
                         new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
-                               self.reloadData(self.currentDailyFormatCode()); 
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                self.reloadData(self.currentDailyFormatCode());
                             });
                             $("#currentName").focus();
                         }).always(function() {
@@ -551,3 +581,4 @@ module nts.uk.at.view.kdw008.a {
 
     }
 }
+

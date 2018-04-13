@@ -8,7 +8,10 @@ module nts.uk.at.view.kdw008.a {
 
                 getListAuthorityDailyFormatCode: "at/function/dailyperformanceformat/getAuthorityDailyFormatCode",
                 getDailyPerformance: "at/function/dailyperformanceformat/getAuthorityDailyFormat/{0}/{1}",
-                removeAuthorityDailyFormat: "at/function/dailyperformanceformat/removeAuthorityFormat"
+                removeAuthorityDailyFormat: "at/function/dailyperformanceformat/removeAuthorityFormat",
+                
+                //monthly
+                getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall"
             }
 
             constructor() {
@@ -36,6 +39,11 @@ module nts.uk.at.view.kdw008.a {
 
             removeAuthorityDailyFormat(RemoveAuthorityCommand: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.removeAuthorityDailyFormat, RemoveAuthorityCommand);
+            };
+            
+            // monthly
+            getListMonthlyAttdItem(): JQueryPromise<any> {
+                return nts.uk.request.ajax("at",nts.uk.text.format(this.paths.getListMonthlyAttdItem));
             };
         }
     }

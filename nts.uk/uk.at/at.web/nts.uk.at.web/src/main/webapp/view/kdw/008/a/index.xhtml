@@ -129,10 +129,10 @@
 										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 456,
-											dataSource: monthlyDataSource,
+											dataSource: listMonthlyAttdItem,
 											primaryKey: 'attendanceItemId',
 											columns: columns3,
-											value: authorityFormatMonthlyValue,
+											value: valuesMonthly,
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemId'],
 											draggable: true,
@@ -145,7 +145,7 @@
 									</div>
 									<div id="up-down"
 										data-bind="ntsUpDown: {
-												targetSource: authorityFormatMonthlyValue,
+												targetSource: valuesMonthly,
 												primaryKey: 'attendanceItemId',
 												comId: '#swap-list',
 												type: 'swap',

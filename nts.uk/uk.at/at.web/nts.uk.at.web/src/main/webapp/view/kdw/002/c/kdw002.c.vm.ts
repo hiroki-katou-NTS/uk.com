@@ -91,7 +91,7 @@ module nts.uk.at.view.kdw002.c {
                                     tabIndex: -1,
                                     //virtualization: true,
                                     rowVirtualization: false,
-//                                    //virtualizationMode: "continuous",
+                                  virtualizationMode: "continuous",
 //                                    virtualizationMode: "fixed",
                                     columns: self.columns(),
                                     features: [
@@ -121,6 +121,8 @@ module nts.uk.at.view.kdw002.c {
                                     ],
                                     avgRowHeight: "26px"
                                 });
+                                 $("#grid").setupSearchScroll("igGrid", false);
+                                 $("#grid").ntsGridList("setupScrollWhenBinding"); 
                                 let lengthData = self.dailyServiceTypeControl().displayAndInput.length;
                                 for (let i = 0; i < lengthData; i++) {
                                     if (!self.dailyServiceTypeControl().displayAndInput[i].userCanUpdateAtr || !self.dailyServiceTypeControl().displayAndInput[i].toUse) {
