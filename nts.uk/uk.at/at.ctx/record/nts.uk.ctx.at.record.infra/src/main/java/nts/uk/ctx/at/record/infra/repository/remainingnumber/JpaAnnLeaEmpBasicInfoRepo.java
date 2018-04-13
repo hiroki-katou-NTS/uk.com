@@ -50,6 +50,8 @@ public class JpaAnnLeaEmpBasicInfoRepo extends JpaRepository implements AnnLeaEm
 			ent.grantTableCode = basicInfo.getGrantRule().getGrantTableCode().v();
 			ent.grantStandardDate = basicInfo.getGrantRule().getGrantStandardDate();
 			this.commandProxy().update(ent);
+		} else {
+			add(basicInfo);
 		}
 	}
 
