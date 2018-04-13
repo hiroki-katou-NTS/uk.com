@@ -87,7 +87,7 @@ module nts.uk.at.view.kdm002.a {
             constructor() {
                 var self = this;
                 // dump
-                self.date = ko.observable('20181231');
+                self.date = ko.observable(new Date().getFullYear() + "1231");
                 self.systemTypes = ko.observableArray([
                     { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                     { name: '就業', value: 2 } // EMPLOYMENT
@@ -106,8 +106,8 @@ module nts.uk.at.view.kdm002.a {
                     }
                 });
                 
-                self.startDateString = ko.observable("20180101");
-                self.endDateString = ko.observable("20181230");
+                self.startDateString = ko.observable(new Date().getFullYear() + "0101");
+                self.endDateString = ko.observable(new Date().getFullYear() + "1231");
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
