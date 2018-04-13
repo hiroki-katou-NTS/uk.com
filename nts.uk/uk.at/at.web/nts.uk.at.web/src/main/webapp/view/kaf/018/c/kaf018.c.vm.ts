@@ -19,7 +19,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
         listEmpCd: Array<string>;
-
+        selectedWplIdNext: KnockoutObservable<string>;
+        
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
 
@@ -32,7 +33,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
-
+    
+        listApprovalSttByEmp: KnockoutObservableArray<ApprovalSttByEmp> = ko.observableArray([]);
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -71,12 +73,24 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 self.listWorkplace = params.listWorkplace;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
+                //self.selectedWplIdNext
             }
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
             self.setArrDate();
             self.getWkpName();
             self.initExTable();
+            
+            let obj = {
+                //selectedWkpId: self.selectedWplId,
+                listWkpId: self.listWorkplace,
+                startDate: self.startDateFormat,
+                endDate: self.endDateFormat,
+                listEmpCode: self.listEmpCd
+            };
+            service.initApprovalSttByEmployee(obj).done(function(data: any) {
+                self.listApprovalSttByEmp = data;
+            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -344,6 +358,21 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         }
     }
 
+    class ApprovalSttByEmp {
+        selectedWkpId: string;
+        listWkpId: Array<any>;
+        startDate: Date;
+        endDate: Date;
+        listEmpCode: Array<string>;   
+        constructor(selectedWkpId: string, listWkpId: Array<any>, startDate: Date, endDate: Date, listEmpCode: Array<string>) {
+            this.selectedWkpId = selectedWkpId;
+            this.listWkpId = listWkpId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.listEmpCode = listEmpCode;
+        }
+    }
+    
     class Time {
         year: string;
         month: string;

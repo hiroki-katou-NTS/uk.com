@@ -16,10 +16,11 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusB
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnAppMailTransmisOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
 @Path("at/request/application/approvalstatus")
@@ -98,13 +99,13 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("exeSendUnconfirmedMail")
-	public void exeSendUnconfirmedMail(UnAppMailTransmisOutput unAppMailTransmis) {
+	public void exeSendUnconfirmedMail(UnAppMailTransmisDto unAppMailTransmis) {
 		
 	}
 	
 	@POST
 	@Path("initApprovalSttByEmployee")
-	public List<DailyStatus> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
 	}

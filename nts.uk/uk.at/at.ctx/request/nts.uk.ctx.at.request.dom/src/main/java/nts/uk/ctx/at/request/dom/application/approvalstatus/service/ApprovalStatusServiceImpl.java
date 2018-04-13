@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appli
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmbeddedUrlOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmploymentOutput;
@@ -46,6 +47,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
 public class ApprovalStatusServiceImpl implements ApprovalStatusService {
@@ -69,6 +71,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private RegisterEmbededURL registerEmbededURL;
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -351,6 +356,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// TODO waiting for Hiệp
 		String url1 = "123123123";
 		String url2 = "1231ád23123";
+		//EmbeddedUrlOutput ember = this.registerEmbededURL.obtainApplicationEmbeddedUrl(appId, appType, prePostAtr, employeeId);
 		return new EmbeddedUrlOutput(url1, url2);
 	}
 
@@ -561,9 +567,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<DailyStatus> getApprovalSttById(String selectedWkpId, List<String> listWkpId, GeneralDate startDate,
+	public List<DailyStatusOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId, GeneralDate startDate,
 			GeneralDate endDate, List<String> listEmpCode) {
-		List<DailyStatus> listDailyStatus = new ArrayList<>();
+		List<DailyStatusOutput> listDailyStatus = new ArrayList<>();
 		// アルゴリズム「承認状況取得社員」を実行する
 		List<ApprovalStatusEmployeeOutput> listAppSttEmp = this.getApprovalStatusEmployee(selectedWkpId, startDate,
 				endDate, listEmpCode);
@@ -575,17 +581,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// RequestList126
 			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
 			String empName = listEmpInfor.stream().findFirst().get().getPName();
-			String empId = listEmpInfor.stream().findFirst().get().getEmployeeId();
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
-			List<Application_New> listApp = new ArrayList<>();
-			listAppSttAcquisitionAppl.stream().forEach(item -> listApp.add(item.getApplication()));
+			List<Application_New> listApprovalContent = new ArrayList<>();
+			listAppSttAcquisitionAppl.stream().forEach(item -> listApprovalContent.add(item.getApplication()));
 			// アルゴリズム「承認状況日別状態作成」を実行する
-			DailyStatus dailyStatus = this.getApprovalSttByDate(appStt, listApp);
-			if (dailyStatus.getEmpId().equals(empId)) {
-				dailyStatus.setEmpName(empName);
-			}
-			listDailyStatus.add(dailyStatus);
+			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt, listApprovalContent);
+			listDailyStatus.add(new DailyStatusOutput(empName, dailyStatus));
 		}
 		return listDailyStatus;
 	}
@@ -593,35 +595,57 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況日別状態作成
 	 */
-	private DailyStatus getApprovalSttByDate(ApprovalStatusEmployeeOutput appStt, List<Application_New> listApp) {
-		DailyStatus dailyStatus = null;
-		for (Application_New app : listApp) {
+	private List<DailyStatus> getApprovalSttByDate(ApprovalStatusEmployeeOutput appStt, List<Application_New> listApprovalContent) {
+		List<DailyStatus> listDailyStatus = new ArrayList<>();
+		for (Application_New app : listApprovalContent) {
+			DailyStatus dailyStatus = new DailyStatus();
 			int value = app.getReflectionInformation().getStateReflectionReal().value;
+			Integer symbol = null;
+			/** 反映済 */
 			if (value == 2) {
-				dailyStatus.setStateSymbol(0);
-			} else if (value == 1) {
-				dailyStatus.setStateSymbol(1);
-			} else if (value == 6) {
-				dailyStatus.setStateSymbol(2);
-			} else if (value == 0 || value == 5) {
-				dailyStatus.setStateSymbol(3);
-			} else {
+				symbol = 0;
+			}
+			/** 反映待ち */
+			else if (value == 1) {
+				symbol = 1;
+			} 
+			/** 否認 */
+			else if (value == 6) {
+				symbol = 2;
+			} 
+			/** 0:未反映 */
+			/** 5: 差し戻し  */
+			else if (value == 0 || value == 5) {
+				symbol = 3;
+			} 
+			/** 取消待ち */
+			/** 取消済 */
+			else {
 				continue;
 			}
-
+			
 			GeneralDate dateTemp;
 			// 申請開始日が期間内に存在する
-			if (app.getStartDate().get().after(appStt.getStartDate())
-					&& app.getStartDate().get().before(appStt.getEndDate())) {
+			if (app.getStartDate().get().afterOrEquals(appStt.getStartDate())
+					&& app.getStartDate().get().beforeOrEquals(appStt.getEndDate())) {
 				// 対象日付を申請開始日とする
 				dateTemp = app.getStartDate().get();
 			} else {
 				// 対象日付を期間の開始日とする
 				dateTemp = appStt.getStartDate();
 			}
+			List<Integer> listSymbol = new ArrayList<>();
+			listSymbol.add(symbol);
+			dailyStatus = new DailyStatus(appStt.getSId(), dateTemp, listSymbol);
+			
 			// 日別状態(リスト)に社員ID＝社員ID、日付＝対象日付が存在する
-			// TODO
+			if(listDailyStatus.stream().filter(item -> item.getDate().compareTo(dateTemp) == 0).count() > 0) {
+				int tempSymbol = symbol;
+				if(dailyStatus.getStateSymbol().stream().filter(x -> x.equals(tempSymbol)).count() < 0 ) {
+					dailyStatus.getStateSymbol().add(symbol);
+				}
+			}
 		}
-		return dailyStatus;
+		return listDailyStatus;
 	}
 }

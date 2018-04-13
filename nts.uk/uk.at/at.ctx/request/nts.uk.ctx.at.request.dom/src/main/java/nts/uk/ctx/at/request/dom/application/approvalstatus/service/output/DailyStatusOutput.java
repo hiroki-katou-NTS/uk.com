@@ -4,18 +4,12 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Setter
 @Getter
-public class DailyStatus {
-	String empId;
-	GeneralDate date;
-	List<Integer> stateSymbol;
-	
-	
+@Setter
+public class DailyStatusOutput {
+	String empName;
+	List<DailyStatus> listDaily;
 }

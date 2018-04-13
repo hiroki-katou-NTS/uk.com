@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.RealityStatusAdapter;
@@ -212,9 +212,6 @@ public class ApprovalStatusFinder {
 		for (WorkplaceInfor wkp : listWorkPlaceInfor) {
 			listAppSttApp.add(new ApprovalSttAppOutput(wkp.getCode(), wkp.getName(), true, true, 0, 0, 0, 0, 0));
 		}
-/*		listAppSttApp.add(new ApprovalSttAppOutput("01", "経理課", true, false, 1, 12, 3, 4, 0));
-		listAppSttApp.add(new ApprovalSttAppOutput("02", "人事課", true, true, 3, 15, 6, 8, 0));
-		listAppSttApp.add(new ApprovalSttAppOutput("03", "管理部", true, false, 2, 22, 4, 6, 0));*/
 		return listAppSttApp;
 	}
 	
@@ -236,7 +233,7 @@ public class ApprovalStatusFinder {
 	/**
 	 * アルゴリズム「承認状況社員別起動」を実行する
 	 */
-	public List<DailyStatus> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
+	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
 		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
 				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}

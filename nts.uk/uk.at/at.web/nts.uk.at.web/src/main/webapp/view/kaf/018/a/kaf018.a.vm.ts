@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         closureName: KnockoutObservable<string>;
         listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
         isEnableDailyComfirm: KnockoutObservable<boolean> = ko.observable(true);
-        
+        isVisibleComfirm:  KnockoutObservable<boolean> = ko.observable(false);
         //Control component
         baseDate: KnockoutObservable<Date>;
         selectType: KnockoutObservable<number> = ko.observable(1);
@@ -28,12 +28,14 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         treeGrid: any;
         isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
         isBindingTreeGrid: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;
             self.items = ko.observableArray([
                 { code: 0, name: text('KAF018_12') },
-                { code: 1, name: text('KAF018_13') }
             ]);
+
+
             self.isDailyComfirm = ko.observable(false);
             self.startDate = ko.observable(new Date());
             self.endDate = ko.observable(new Date());
@@ -63,13 +65,33 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 systemType: 2
             };
             self.isBindingTreeGrid = ko.observable(true);
+                
             //character.save('NewWorkplaceListOption', kaf018WorkplaceListOption);
             //TODO
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                 self.reloadData();
                 $('#tree-grid').focusTreeGridComponent();
             });
-            
+
+            self.selectTarget.subscribe((value) => {
+                service.getApprovalStatusPerior(value, self.processYm).done((data: any) => {
+                    self.startDate(new Date(data.startDate));
+                    self.endDate(new Date(data.endDate));
+                    self.listEmployeeCode(data.listEmployeeCode);
+                    self.baseDate(new Date(data.endDate));
+                    self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
+                    $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
+                        self.reloadData();
+                        $('#tree-grid').focusTreeGridComponent();
+                    });
+                });
+            });
+        }
+
+        
+        startPage() {
+            var self = this;
+            var dfd = $.Deferred();
             service.findAllClosure().done((data: any) => {
                 self.targets(data.closuresDto);
                 let closures = _.find(self.targets(), x => { return x.closureId == data.selectedClosureId });
@@ -84,32 +106,19 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     self.reloadData();
                     $('#tree-grid').focusTreeGridComponent();
                 });
+             dfd.resolve();
             });
-            
-            self.selectTarget.subscribe((value) => {
-                service.getApprovalStatusPerior(value, self.processYm).done((data: any) => {
-                    self.startDate(new Date(data.startDate));
-                    self.endDate(new Date(data.endDate));
-                    self.listEmployeeCode(data.listEmployeeCode);
-                    self.baseDate(new Date(data.endDate));
-                    self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
-                    $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                        self.reloadData();
-                        $('#tree-grid').focusTreeGridComponent();
-                    });
-                });
-            });
-            
             //Confirm checkbox A4_2_1
-            service.getUseSetting().done(function(data: any){
-                if(data.monthlyConfirm || data.useBossConfirm || data.usePersonConfirm){
-                    self.isEnableDailyComfirm(true);
+            service.getUseSetting().done(function(data: any) {
+                if ((data.monthlyConfirm || data.useBossConfirm || data.usePersonConfirm)) {
+                    self.items().push({ code: 1, name: text('KAF018_13') });
+                    self.isVisibleComfirm(true);
                 }
-                self.isEnableDailyComfirm(false);
-            });
+                dfd.resolve();
+            });   
+            return dfd.promise();     
         }
-
-
+        
         reloadData() {
             var self = this;
             lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
