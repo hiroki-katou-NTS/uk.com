@@ -13,6 +13,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         itemListSetting: Array<string>;
         baseDate: Date;
         
+        roleType: number;
+        
         constructor() {
             let self = this;
             
@@ -44,6 +46,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             self.targetType = object.targetType;
             self.itemListSetting = object.itemListSetting;
             self.baseDate = object.baseDate;
+            
+            self.roleType = object.roleType;
             
             dfd.resolve();
             return dfd.promise();
@@ -182,6 +186,27 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     shareData.baseDate = self.baseDate;
                     shareData.selectedIds = self.lstSelected();
                     break;
+                case TargetType.ROLE:
+                    screenUrl = '/view/cdl/025/index.xhtml';
+                    keyInput = 'paramCdl025';
+                    keyOutput = 'dataCdl025';
+                    keyCancel = 'CDL009Cancel';
+                    
+                    // set data share
+                    shareData.roleType = self.roleType;
+                    shareData.multiple = true;
+                    shareData.currentCode = self.itemListSetting;
+                    break;
+                    
+                case TargetType.WORK_TYPE:
+                    screenUrl = '/view/cdl/024/index.xhtml';
+                    keyInput = 'CDL024';
+                    keyOutput = 'currentCodeList';
+                    keyCancel = 'CDL009Cancel';
+                    
+                    // set data share
+                    shareData.codeList = self.itemListSetting;
+                    break;
                 default:
                     nts.uk.ui.dialog.alert("Target type not found.");
                     return;
@@ -240,6 +265,13 @@ module nts.uk.com.view.cdl023.a.viewmodel {
         
         // 部門個人
         static DEPARTMENT_PERSONAL = 7;
+        
+        // ロール
+        static ROLE = 8;
+        
+        // 勤務種別
+        static WORK_TYPE = 9;
+        
     }
     
     /**
