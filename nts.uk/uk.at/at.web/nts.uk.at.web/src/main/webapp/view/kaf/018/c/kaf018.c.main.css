@@ -1,19 +1,19 @@
 .align-right {
-	text-align: right;
-	width: 200px;
+	text-align: left;
+	width: 670px;
 }
 
 #contents-area {
-	margin: 20px;
+	padding: 10px 0px 0px 20px;
 }
 
 .tbl-control {
-	width: 1000px;
-	margin-bottom: 10px;
+	width: auto;
+	margin-bottom: 5px;
 }
 
 .tbl-control td {
-	padding: 5px;
+	padding: 0px 5px;
 }
 
 .fixed-table th {

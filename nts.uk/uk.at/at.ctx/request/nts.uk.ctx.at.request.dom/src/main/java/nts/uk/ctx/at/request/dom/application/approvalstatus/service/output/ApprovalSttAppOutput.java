@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Value
+@Getter
+@AllArgsConstructor
 public class ApprovalSttAppOutput {
 	
 	private String workplaceId;

@@ -14,8 +14,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         closureId: KnockoutObservable<number> = ko.observable(0);
         closureName: KnockoutObservable<string> = ko.observable('');
         processingYm: KnockoutObservable<string> = ko.observable('');
-        startDate: KnockoutObservable<string> = ko.observable('');
-        endDate: KnockoutObservable<string> = ko.observable('');
+        startDate: Date;
+        endDate: Date;
         isDailyComfirm: KnockoutObservable<boolean> = ko.observable(false);
         listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
         listWorkplace: KnockoutObservableArray<model.WorkplaceInfor> =  ko.observableArray([]);
@@ -32,14 +32,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.closureId = params.closureId;
             self.closureName = params.closureName;
             self.processingYm = params.processingYm;
-            self.startDate = nts.uk.time.formatDate(new Date(params.startDate), 'yyyy/MM/dd');
-            self.endDate = nts.uk.time.formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+            self.startDate = params.startDate;
+            self.endDate = params.endDate;
             self.listEmployeeCode = params.listEmployeeCode;
-            self.isDailyComfirm = params.isConfirmData;
+            self.isDailyComfirm = params.isConfirmData ;
             self.listWorkplace = params.listWorkplace;
             let obj = {
-                startDate: nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd'),
-                endDate: nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd'),
+                startDate: self.startDate,
+                endDate: self.endDate,
                 isConfirmData: self.isDailyComfirm,
                 listWorkplace: self.listWorkplace,
                 listEmpCd: self.listEmployeeCode
@@ -48,6 +48,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 console.log(data);
                 _.forEach(data, function(item) {
                     self.tempData.push(new model.ConfirmationStatus(item.workplaceId, item.workplaceName , item.enabled, item.checked, item.numOfApp, item.approvedNumOfCase, item.numOfUnreflected, item.numOfUnapproval, item.numOfDenials));
+                
                 })
                 console.log(self.tempData);
                 dfd.resolve();
@@ -101,8 +102,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             return value ? value + "件" : "";
         }
         
-        private getTargetDate(){
+        private getTargetDate() : string{
             var self = this;
+//            var startDate: string = nts.uk.time.formatDate(self.startDate, 'yyyy/MM/dd');
+//            var endDate: string = nts.uk.time.formatDate(self.endDate, 'yyyy/MM/dd');
             return self.processingYm +"("+ self.startDate +"～"+ self.endDate+")";
         }
         
@@ -152,12 +155,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 
         export class WorkplaceInfor {
             // 職場ID
-            wkpId: string;
+            code: string;
             
-            wkpName: string;
-            constructor(wkpId: string, wkpName: string) {
-                this.wkpId = wkpId;
-                this.wkpName = wkpName;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
             }
         }
         export class ConfirmationStatus {
@@ -196,7 +199,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 this.numOfUnreflected =  numOfUnreflected ? numOfUnreflected : null;
                 this.numOfUnapproval = numOfUnapproval ? numOfUnapproval : null;
                 this.numOfDenials = numOfDenials ? numOfDenials : null;
-                if(this.numOfUnapproval <= 0) {
+                if(this.numOfUnapproval > 0) {
                     this.isEnabled = false;    
                 }else {
                     this.isEnabled = true;

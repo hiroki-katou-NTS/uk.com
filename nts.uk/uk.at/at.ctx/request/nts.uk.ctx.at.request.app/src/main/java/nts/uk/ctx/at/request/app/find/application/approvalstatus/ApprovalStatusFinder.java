@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,19 +9,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttCheckExist;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnAppMailTransmisOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.RealityStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.UseSetingImport;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
@@ -205,18 +200,21 @@ public class ApprovalStatusFinder {
 	 */
 	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData appStatus) {
 		List<ApprovalSttAppOutput> listAppSttApp = new ArrayList<>();
-		ApprovalSttAppOutput approvalSttApp = null;
-		/*GeneralDate startDate = GeneralDate.fromString(appStatus.getStartDate(), "yyyy/MM/dd");
-		GeneralDate endDate = GeneralDate.fromString(appStatus.getEndDate(), "yyyy/MM/dd");
+		/*startDate = appStatus.getStartDate();
+		endDate = appStatus.getEndDate();
 		for (WorkplaceInfor wkp : appStatus.getListWorkplaceInfor()) {
 			//String wkpName = this.
 			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService.getApprovalStatusEmployee(wkp.getWkpId(), startDate, endDate, appStatus.getListEmpCd());
 			 approvalSttApp = appSttService.getApprovalSttApp(wkp, listAppStatusEmp);
 			 listAppSttApp.add(approvalSttApp);
 		}*/
-		listAppSttApp.add(new ApprovalSttAppOutput("01", "経理課", true, false, 1, 12, 3, 4, 0));
+		List<WorkplaceInfor> listWorkPlaceInfor = appStatus.getListWorkplace();
+		for (WorkplaceInfor wkp : listWorkPlaceInfor) {
+			listAppSttApp.add(new ApprovalSttAppOutput(wkp.getCode(), wkp.getName(), true, true, 0, 0, 0, 0, 0));
+		}
+/*		listAppSttApp.add(new ApprovalSttAppOutput("01", "経理課", true, false, 1, 12, 3, 4, 0));
 		listAppSttApp.add(new ApprovalSttAppOutput("02", "人事課", true, true, 3, 15, 6, 8, 0));
-		listAppSttApp.add(new ApprovalSttAppOutput("03", "管理部", true, false, 2, 22, 4, 6, 0));
+		listAppSttApp.add(new ApprovalSttAppOutput("03", "管理部", true, false, 2, 22, 4, 6, 0));*/
 		return listAppSttApp;
 	}
 	
@@ -231,7 +229,15 @@ public class ApprovalStatusFinder {
 	/**
 	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
 	 */
-	public void exeSendUnconfirmedMail(UnAppMailTransmisOutput unAppMailTransmis) {
-		appSttService.exeSendUnconfirmedMail(unAppMailTransmis);
+	public void exeSendUnconfirmedMail(UnAppMailTransmisDto unAppMail) {
+		appSttService.exeSendUnconfirmedMail(unAppMail.getListWkpId(), unAppMail.getClosureStart(), unAppMail.getClosureEnd(), unAppMail.getListEmpCd());
+	}
+	
+	/**
+	 * アルゴリズム「承認状況社員別起動」を実行する
+	 */
+	public List<DailyStatus> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
+		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
+				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}
 }
