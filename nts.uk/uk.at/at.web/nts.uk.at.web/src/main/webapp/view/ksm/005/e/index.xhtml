@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 450, height: 550 };</script>
+				<script>var dialogSize = { width: 450, height: 570 };</script>
 				<com:stylefile path="ksm005.e.main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="ksm005.e.start.js" />
@@ -82,7 +82,7 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<div  id="checkOverWriteSetting" tabindex="7" data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_33')}</div>
+					<div id="checkOverWriteSetting" tabindex="7" data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_33')}</div>
 					<button tabindex="8" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_34')}</button>
 					<button tabindex="9" class="large" data-bind="click: cancelSaveMonthlyPatternSetting">#{i18n.getText('KSM005_26')}</button>
 				</div>
