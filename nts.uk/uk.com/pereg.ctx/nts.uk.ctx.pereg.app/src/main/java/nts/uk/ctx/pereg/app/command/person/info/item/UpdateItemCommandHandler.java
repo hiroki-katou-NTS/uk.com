@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -15,7 +14,6 @@ import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
@@ -121,15 +119,10 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		}
 		
 		if (itemCommand.getSingleItem().getDataType() == 6) {
-			String itemId = itemCommand.getSingleItem().getSelectionItemId();
-			GeneralDate today = GeneralDate.today();
-			List<Selection> selection = new ArrayList<>();
-			String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
-			if (itemCommand.getPersonEmployeeType() == PersonEmployeeType.PERSON.value) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 0);
-			} else if (itemCommand.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE.value) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, itemId, today, 1);
-			}
+			
+			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
+					AppContexts.user().zeroCompanyIdInContract(), itemCommand.getSingleItem().getSelectionItemId(),
+					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
 				throw new BusinessException("Msg_587");
 			}

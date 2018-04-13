@@ -52,7 +52,7 @@ public class PerInfoSelectionItemFinder {
 	// getAllSelection
 
 	public List<PerInfoSelectionItemDto> getAllSelectionItem(int selectionItemClsAtr) {
-		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr).stream()
-				.map(c -> PerInfoSelectionItemDto.fromDomain(c)).collect(Collectors.toList());
+		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr, AppContexts.user().contractCode())
+				.stream().map(c -> PerInfoSelectionItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
 }
