@@ -510,7 +510,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog scheduleExecutionLog, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		// パラメータ実施区分を判定 (phán đoán param 実施区分 )
-		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+		if (scheduleExecutionLog.getExeAtr() != ExecutionAtr.MANUAL) {
 			ScheduleCreateContent scheduleCreateContent = command.getContent();
 			// アルゴリズム「実行ログ作成処理」を実行する
 			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent);
