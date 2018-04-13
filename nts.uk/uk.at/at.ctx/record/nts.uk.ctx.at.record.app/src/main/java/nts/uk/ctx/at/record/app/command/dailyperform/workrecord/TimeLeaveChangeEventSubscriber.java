@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
+package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -6,24 +6,24 @@ import javax.inject.Inject;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeHandler;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoChangeEvent;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeaveChangeEvent;
 
-/**　<<Event>> 実績の就業時間帯が変更された　*/
+/**　<<Event>> 実績の出退勤が変更された　*/
 @Stateless
-public class WorkInfoChangeEventSubscriber implements DomainEventSubscriber<WorkInfoChangeEvent> {
+public class TimeLeaveChangeEventSubscriber implements DomainEventSubscriber<TimeLeaveChangeEvent> {
 
 	@Inject
 	private UpdateBreakTimeByTimeLeaveChangeHandler handler;
 
 	@Override
-	public Class<WorkInfoChangeEvent> subscribedToEventType() {
-		return WorkInfoChangeEvent.class;
+	public Class<TimeLeaveChangeEvent> subscribedToEventType() {
+		return TimeLeaveChangeEvent.class;
 	}
 
 	@Override
-	public void handle(WorkInfoChangeEvent domainEvent) {
+	public void handle(TimeLeaveChangeEvent domainEvent) {
 		handler.handle(UpdateBreakTimeByTimeLeaveChangeCommand.builder().employeeId(domainEvent.getEmployeeId())
-				.workingDate(domainEvent.getTargetDate()).newWorkTimeCode(domainEvent.getNewWorkTimeCode())
+				.workingDate(domainEvent.getTargetDate()).timeLeave(domainEvent.getTimeLeave())
 				.build());
 	}
 
