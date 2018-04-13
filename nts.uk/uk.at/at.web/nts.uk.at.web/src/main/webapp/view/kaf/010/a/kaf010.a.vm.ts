@@ -502,7 +502,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     };
                 }
                 if(!nts.uk.util.isNullOrEmpty(startTimeAdd)){
-                    if (endTime == null) {
+                    if (nts.uk.util.isNullOrEmpty(endTime)) {
                                 dialog.alertError({ messageId: "Msg_307" })
                                 $('input#restTimeEnd_' + attendanceId + '_' + frameNo).focus();
                                 return false;
