@@ -211,7 +211,6 @@ module nts.uk.at.view.kaf011.shr {
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
-                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
@@ -368,7 +367,7 @@ module nts.uk.at.view.kaf011.shr {
                     WorkTimeCd = self.wkTimeCD();
 
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
+                    workTypeCodes: [selectedWorkTypeCode],
                     selectedWorkTypeCode: selectedWorkTypeCode,
                     workTimeCodes: [],
                     selectedWorkTimeCode: WorkTimeCd,
@@ -391,8 +390,6 @@ module nts.uk.at.view.kaf011.shr {
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
                             self.updateWorkingText();
                         }
-
-
                     }
                 });
 
