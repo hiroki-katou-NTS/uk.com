@@ -6,7 +6,10 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -319,5 +322,34 @@ public class Closure extends AggregateRoot {
 
 		// 締め変更履歴．日付を返す
 		return Optional.of(closureHistory.getClosureDate());
+	}
+	
+	public void udpateProcessingMonth () {
+		Map<Integer, ClosureHistory> yearMonthHistoryMap = this.closureHistories.stream()
+				.collect(Collectors.toMap(history -> history.getStartYearMonth().v(), Function.identity()));
+		
+		// get closureMonth in ClosureHistory
+		ClosureHistory currentClosureMonth = yearMonthHistoryMap.get(this.closureMonth.getProcessingYm().v());
+		
+		// not contain
+		if(currentClosureMonth == null) return;
+		
+		// get previous closureMonth in ClosureHistory
+		ClosureHistory previousClosureMonth = yearMonthHistoryMap.get(this.closureMonth.getProcessingYm().v() - 1);
+		
+		// if closureDate current <= previous closureDate
+		if(currentClosureMonth.getClosureDate().getClosureDay().v() <= previousClosureMonth.getClosureDate().getClosureDay().v()) return;
+			
+		// check closureClassification
+		if(!this.getClosureMonth().getClosureClassification().isPresent()) return;
+		
+		switch (this.getClosureMonth().getClosureClassification().get()) {
+		case ClassificationClosingBefore:
+			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingAfter));
+			break;
+		case ClassificationClosingAfter:
+			this.getClosureMonth().setClosureClassification(Optional.of(ClosureClassification.ClassificationClosingBefore));
+			break;
+		}
 	}
 }
