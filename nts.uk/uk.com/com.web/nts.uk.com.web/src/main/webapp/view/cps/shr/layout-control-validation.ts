@@ -152,7 +152,7 @@ module nts.layout {
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
         get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param),
-        get_annLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getAnnLeaNumber/${sid}`),
+        get_annLeaNumber: (sid: string) => ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${sid}`),
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
         get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
@@ -1006,9 +1006,9 @@ module nts.layout {
                                 switch (btn.dialogId) {
                                     case "g":
                                         fetch.get_annLeaNumber(sid).done(data => {
-                                            button.data.value(data);
+                                            button.data.value(data.annualLeaveNumber);
                                             if (label) {
-                                                label.data.value('asdashdkjashk');
+                                                label.data.value(data.lastGrantDate);
                                             }
                                         });
                                         break;
