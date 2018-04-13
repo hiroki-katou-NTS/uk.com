@@ -615,7 +615,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                     self.listItems.valueHasMutated();
                     selItemList.selectionItemId.valueHasMutated();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_81" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_81" });
                 });
             }).ifNo(() => {
                 self.listItems.valueHasMutated();
