@@ -32,6 +32,8 @@ module cps008.c.viewmodel {
                 layout: ILayout = ko.toJS(self.layout);
             let s = 'd';
 
+            $(".nts-input").trigger("validate");
+            
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }

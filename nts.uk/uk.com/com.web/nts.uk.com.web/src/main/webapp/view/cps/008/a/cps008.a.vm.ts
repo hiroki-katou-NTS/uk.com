@@ -110,6 +110,8 @@ module cps008.a.viewmodel {
                 };
 
             // validate
+            $(".nts-input").trigger("validate");
+            
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
