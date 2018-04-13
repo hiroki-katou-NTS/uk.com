@@ -42,24 +42,12 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	private final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
 	private final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
 	
+	private final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID";
 			
 	@Override
 	public List<OptionalWidget> findByCompanyId(String companyID) {
-		List<OptionalWidget> optionalWidgets = new ArrayList<OptionalWidget>();
-		List<CcgmtTopPagePart> ccgmtTopPageParts = this.queryProxy()
-				.query(SELECT_ALL_TOPPAGEPART, CcgmtTopPagePart.class).setParameter("companyID", companyID).getList();
-		ccgmtTopPageParts.stream().forEach(c -> {
-			List<WidgetDisplayItem> sptstOptionalWidgets = this.queryProxy()
-					.query(SELECT_WIDGET_DISPLAY, SptstWidgetDisplay.class)
-					.setParameter("companyID", c.ccgmtTopPagePartPK.companyID)
-					.setParameter("topPagePartID", c.ccgmtTopPagePartPK.topPagePartID)
-					.getList(s -> toDomainDisplayItem(s));
-			optionalWidgets.add(new OptionalWidget(c.ccgmtTopPagePartPK.companyID, c.ccgmtTopPagePartPK.topPagePartID,
-					new TopPagePartCode(c.code), new TopPagePartName(c.name),
-					TopPagePartType.valueOf(c.topPagePartType), Size.createFromJavaType(c.width, c.height),
-					sptstOptionalWidgets));
-		});
-		return optionalWidgets;
+		return this.queryProxy().query(SELECT_BY_COMPANY, Object[].class).setParameter("companyID", companyID)
+			    .getList(c -> joinObjectToDomain(c));
 	}
 
 	@Override
