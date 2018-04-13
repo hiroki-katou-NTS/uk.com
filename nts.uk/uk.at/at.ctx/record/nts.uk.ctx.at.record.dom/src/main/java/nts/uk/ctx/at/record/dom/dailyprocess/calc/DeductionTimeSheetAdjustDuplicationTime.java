@@ -83,7 +83,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 */
 	private List<TimeSheetOfDeductionItem> replaceListItem(List<TimeSheetOfDeductionItem> nowList,List<TimeSheetOfDeductionItem> newItems,int number,int nextNumber ) {
 		nowList.remove(number);
-		nowList.remove(nextNumber);
+		nowList.remove(nextNumber-1);
 		nowList.addAll(newItems);
 		return nowList.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
 	}
