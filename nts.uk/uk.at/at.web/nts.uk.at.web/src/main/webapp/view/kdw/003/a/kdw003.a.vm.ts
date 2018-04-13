@@ -2199,6 +2199,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.windows.setShared('kml001multiSelectMode', false);
                         nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
                         nts.uk.ui.windows.setShared('kml001selectedCodeList', []);
+                        nts.uk.ui.windows.setShared('kml001isSelection', true);
                         nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
                             if (codes) {
