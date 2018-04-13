@@ -37,9 +37,9 @@ public class DailyPerformanceFunction extends AggregateRoot {
 	/**
 	 * 初期値
 	 */
-	private int initValue;
+	private boolean initValue;
 
-	public DailyPerformanceFunction(BigDecimal functionNo, String displayName, String description, int displayOrder, int initValue) {
+	public DailyPerformanceFunction(BigDecimal functionNo, String displayName, String description, int displayOrder, boolean initValue) {
 		this.functionNo = new DailyPerformanceFunctionNo(functionNo);
 		this.displayName = new FeatureNameOfDailyPerformance(displayName);
 		this.description = new FeatureDescriptionOfDailyPerformance(description);

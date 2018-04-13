@@ -52,15 +52,15 @@
 										<span class="no-name-group"
 											data-bind="text: no + ' ' + name()"></span>
 										<button id="default-value"
-											data-bind="attr: {tabindex: no == 1 ? 6 : 20}, click: defaultValue">#{i18n.getText('KDW006_54')}</button>
+											data-bind="attr: {tabindex: no == 1 ? 6 :0 || no == 2 ? 9:0 || no == 3 ? 12:0 || no == 4 ? 15:0}, click: defaultValue">#{i18n.getText('KDW006_54')}</button>
 									</div>
 									<div class="down-part">
 										<button id="choose-workType"
-											data-bind="attr: {tabindex:  no == 1 ? 7 : 20}, click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+											data-bind="attr: {tabindex:  no == 1 ? 7 : 0 || no == 2 ? 10 : 0 || no == 3 ? 13 : 0 || no == 4 ? 16 : 0}, click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
 										<span><input id="work-type-names"
 											data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
 										<button id="clear-workType"
-											data-bind="attr: {tabindex:  no == 1 ? 8 : 20}, click: clear">#{i18n.getText('KDW006_56')}</button>
+											data-bind="attr: {tabindex:  no == 1 ? 8 : 0 || no == 2 ? 11 : 0 || no == 3 ? 14 : 0 || no == 4 ? 17 : 0}, click: clear">#{i18n.getText('KDW006_56')}</button>
 									</div>
 									<span id="work-type-comment" data-bind="text: comment"></span>
 								</div>
@@ -69,15 +69,18 @@
 									<div class="up-part">
 										<span class="no-group" data-bind="text: no"></span> <input
 											class="name-group"
-											data-bind="attr: {tabindex:  no == 5 ? 9 : 21}, ntsTextEditor: { name: '#[KDW006_57]',constraint: 'ChangeableWorkTypeGroupName', value: name}" />
+											data-bind="attr: {tabindex:  no == 5 ? 18 : 0 || no == 6 ? 21 : 0 || no == 7 ? 24 : 0 || no == 5 ? 27 : 0 || no == 5 ? 30 : 0 || no == 5 ? 32 : 0}, 
+											ntsTextEditor: { name: '#[KDW006_57]',constraint: 'ChangeableWorkTypeGroupName', value: name}" />
 									</div>
 									<div class="down-part">
 										<button id="choose-workType"
-											data-bind="attr: {tabindex:  no == 5 ? 10 : 21}, click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+											data-bind="attr: {tabindex:  no == 5 ? 19 : 0 || no == 6 ? 22 : 0 || no == 7 ? 25 : 0 || no == 5 ? 28 : 0 || no == 5 ? 30 : 0 || no == 5 ? 33 : 0}, 
+											click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
 										<span><input id="work-type-names"
 											data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
 										<button id="clear-workType"
-											data-bind="attr: {tabindex:  no == 5 ? 11 : 21}, click: clear">#{i18n.getText('KDW006_56')}</button>
+											data-bind="attr: {tabindex:  no == 5 ? 20 : 0 || no == 6 ? 23 : 0 || no == 7 ? 26 : 0 || no == 5 ? 29 : 0 || no == 5 ? 31 : 0 || no == 5 ? 34 : 0}, 
+											click: clear">#{i18n.getText('KDW006_56')}</button>
 									</div>
 								</div>
 								<div style="margin-top: 30px"></div>

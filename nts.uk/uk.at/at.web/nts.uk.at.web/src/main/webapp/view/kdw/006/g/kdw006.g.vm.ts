@@ -122,7 +122,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 });
                 _.forEach(array, function(obj) {
                     if (obj.no == 1) {
-                        obj.name(nts.uk.resource.getText('KDW006_57'));
+                        obj.name(nts.uk.resource.getText('KDW006_76'));
                     }
                     if (obj.no == 2) {
                         obj.name(nts.uk.resource.getText('KDW006_72'));
@@ -145,9 +145,6 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         saveData() {
             let self = this;
             nts.uk.ui.block.invisible();
-            //            _.forEach(self.groups1(), function(item) {
-            //                item.name(null);
-            //            })
             service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
                 if (self.groups1.length > 0 || self.groups2.length > 0) {
                     self.listSetting.push(self.selectedCode());
@@ -217,10 +214,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 });
             });
 
-
-
         }
-
     }
 
     export class WorkTypeGroup {
