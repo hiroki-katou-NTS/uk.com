@@ -1138,15 +1138,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
-                container.css("top", "0px");
-                container.css("left", "0px");
+//                container.css("top", "0px");
+//                container.css("left", "0px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container
                 if (!container.is(e.target) && container.has(e.target).length === 0) {
                     container.css("visibility", "hidden");
-                    container.css("top", "-9999px");
-                    container.css("left", "-9999px");
+//                    container.css("top", "-9999px");
+//                    container.css("left", "-9999px");
                 }
             });
         }
@@ -2198,7 +2198,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.listCode(_.map(data, 'code'));
                         nts.uk.ui.windows.setShared('kml001multiSelectMode', false);
                         nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
-                        nts.uk.ui.windows.setShared('kml001selectedCodeList', []);
+                        nts.uk.ui.windows.setShared('kml001selectedCodeList', [self.selectedCode()]);
                         nts.uk.ui.windows.setShared('kml001isSelection', true);
                         nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
@@ -2206,17 +2206,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 codeName = _.find(data, (item: any) => {
                                     return item.code == codes[0];
                                 });
-                                var objectName = {};
-                                objectName["Name" + self.attendenceId] = codeName.name;
-                                var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = codeName.code;
+                                if (codeName != undefined) {
+                                    var objectName = {};
+                                    objectName["Name" + self.attendenceId] = codeName.name;
+                                    var objectCode = {};
+                                    objectCode["Code" + self.attendenceId] = codeName.code;
 
-                                $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                                ).done(() => {
-                                    nts.uk.ui.block.clear();
-                                    dfd.resolve();
-                                })
+                                    $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
+                                        $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
+                                    ).done(() => {
+                                        nts.uk.ui.block.clear();
+                                        dfd.resolve();
+                                    })
+                                }
                             }
                         });
                     });
