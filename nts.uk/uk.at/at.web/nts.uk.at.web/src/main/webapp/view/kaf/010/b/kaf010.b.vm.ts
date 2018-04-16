@@ -156,10 +156,17 @@ module nts.uk.at.view.kaf010.b {
                     if(res.messageId == 'Msg_426'){
                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
+                           nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
+                    }else if(res.messageId == 'Msg_423'){
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                            .then(function() {
+                                nts.uk.ui.block.clear();
+                                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            });
                     }else{ 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                             nts.uk.ui.block.clear();
                         });
                     }
@@ -934,17 +941,17 @@ module nts.uk.at.view.kaf010.b {
                         }
                     }
                 });
-                //休憩時間
-                for (let i = 0; i < self.breakTimes().length; i++) {
-                    self.breakTimes()[i].applicationTime.subscribe(value => {
-                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-                                //→エラーＭＳＧ
-                                self.calculateFlag(1);
-                            }
-                        }
-                    });
-                }
+//                //休憩時間
+//                for (let i = 0; i < self.breakTimes().length; i++) {
+//                    self.breakTimes()[i].applicationTime.subscribe(value => {
+//                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                                //→エラーＭＳＧ
+//                                self.calculateFlag(1);
+//                            }
+//                        }
+//                    });
+//                }
             }
         }
     }
