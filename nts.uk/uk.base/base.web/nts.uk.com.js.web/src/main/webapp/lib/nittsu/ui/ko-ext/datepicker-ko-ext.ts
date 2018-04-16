@@ -112,6 +112,9 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
+                    if(!validateMinMax(result.parsedValue)){
+                       return; 
+                    }
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -137,6 +140,9 @@ module nts.uk.ui.koExtentions {
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
+                    if(!validateMinMax(result.parsedValue)){
+                       return; 
+                    }
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -150,6 +156,43 @@ module nts.uk.ui.koExtentions {
 //                    }
                 }
             });
+            
+            var validateMinMax = function(parsedValue){
+                if(nts.uk.util.isNullOrEmpty(parsedValue)){
+                    return true;
+                }
+                var mmRs = new nts.uk.time.MomentResult();
+                var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
+                var minDate = (data.startDate !== undefined) ? moment(ko.unwrap(data.startDate), otFormat) : mmRs.systemMin();
+                var maxDate = (data.endDate !== undefined) ? moment(ko.unwrap(data.endDate), otFormat) : mmRs.systemMax();
+                var momentCurrent = moment(parsedValue, otFormat);
+                var error = false;
+                if(momentCurrent.isBefore(minDate, 'day')){
+                    error = true;
+                } else if(momentCurrent.isAfter(maxDate, 'day')){
+                    error = true;
+                }    
+                if(error){
+                    var isHasYear = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("Y") >= 0) || otFormat.indexOf("Y") >= 0;
+                    var isHasMonth = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("M") >= 0) || otFormat.indexOf("M") >= 0;
+                    var isHasDay = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("D") >= 0) || otFormat.indexOf("D") >= 0;
+                    var mesId = "FND_E_DATE_Y";
+                    var fm = "YYYY";
+                    if (isHasDay && isHasMonth && isHasYear) {
+                        mesId = "FND_E_DATE_YMD", fm = "YYYY/MM/DD";
+                    } else if (isHasMonth && isHasYear) {
+                        mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
+                    } 
+                    nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [ name, minDate.format(fm), maxDate.format(fm) ] }).then(function(){
+                        if (hasDayofWeek) {
+                            $label.text("");
+                        }
+                        value(null);
+                    });
+                    return false;
+                }
+                return true
+            };
 
 
             $input.on('validate', (function(e: Event) {
