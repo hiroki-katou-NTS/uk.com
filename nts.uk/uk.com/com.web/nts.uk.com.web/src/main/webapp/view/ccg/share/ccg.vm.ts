@@ -984,7 +984,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                self.reloadDataSearch();
+                self.setComponentOptions();
                 $.when(self.loadEmploymentPart(),
                     self.loadClassificationPart(),
                     self.loadJobTitlePart(),
@@ -1445,64 +1445,61 @@ module nts.uk.com.view.ccg.share.ccg {
             
 
             /**
-             * function reload page (init tab 2)
+             * Set component options (for advanced search tab)
              */
-            public reloadDataSearch(): void {
+            public setComponentOptions(): void {
                 var self = this;
-                if (self.showAdvancedSearchTab) {
-                    self.employments = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        isMultipleUse: true,
-                        selectType: SelectType.SELECT_ALL,
-                        listType: ListType.EMPLOYMENT,
-                        selectedCode: self.selectedCodeEmployment,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
-                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
-                        subscriptions: self.employmentSubscriptions
-                    };
+                self.employments = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    isMultipleUse: true,
+                    selectType: SelectType.SELECT_ALL,
+                    listType: ListType.EMPLOYMENT,
+                    selectedCode: self.selectedCodeEmployment,
+                    isDialog: true,
+                    isShowNoSelectRow: false,
+                    maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
+                    selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
+                    subscriptions: self.employmentSubscriptions
+                };
 
-                    self.classifications = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        isMultipleUse: true,
-                        listType: ListType.Classification,
-                        selectType: SelectType.SELECT_ALL,
-                        selectedCode: self.selectedCodeClassification,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
-                    }
+                self.classifications = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    isMultipleUse: true,
+                    listType: ListType.Classification,
+                    selectType: SelectType.SELECT_ALL,
+                    selectedCode: self.selectedCodeClassification,
+                    isDialog: true,
+                    isShowNoSelectRow: false,
+                    maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
+                }
 
-                    self.jobtitles = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        isMultipleUse: true,
-                        listType: ListType.JOB_TITLE,
-                        selectType: SelectType.SELECT_ALL,
-                        selectedCode: self.selectedCodeJobtitle,
-                        isDialog: true,
-                        baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
-                    }
+                self.jobtitles = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    isMultipleUse: true,
+                    listType: ListType.JOB_TITLE,
+                    selectType: SelectType.SELECT_ALL,
+                    selectedCode: self.selectedCodeJobtitle,
+                    isDialog: true,
+                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
+                    isShowNoSelectRow: false,
+                    maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
+                }
 
-                    self.workplaces = {
-                        isShowAlreadySet: false,
-                        systemType: self.systemType,
-                        isMultipleUse: true,
-                        isMultiSelect: true,
-                        treeType: TreeType.WORK_PLACE,
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        isShowSelectButton: true,
-                        selectedWorkplaceId: self.selectedCodeWorkplace,
-                        baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-                        maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
-                        isDialog: true
-                    }
-
+                self.workplaces = {
+                    isShowAlreadySet: false,
+                    systemType: self.systemType,
+                    isMultipleUse: true,
+                    isMultiSelect: true,
+                    treeType: TreeType.WORK_PLACE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    isShowSelectButton: true,
+                    selectedWorkplaceId: self.selectedCodeWorkplace,
+                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
+                    maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                    isDialog: true
                 }
             }
         }
