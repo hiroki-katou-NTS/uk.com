@@ -372,7 +372,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypes);
+            self.convertListHolidayType(data.holidayAppTypeName);
             self.holidayTypeCode(null);
             self.displayPrePostFlg(data.prePostFlg);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
@@ -516,9 +516,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         convertListHolidayType(data: any) {
             let self = this;
-            let nameHolidayType = { 0: "年次有休", 1: "代休", 2: "欠勤", 3: "特別休暇", 4: "積立年休", 5: "休日", 6: "時間消化", 7: "振休" };
             for (let i = 0; i < data.length; i++) {
-                self.holidayTypes.push(new common.HolidayType(data[i], nameHolidayType[data[i]]));
+                self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
             }
         }
         checkStartDate(): boolean {
