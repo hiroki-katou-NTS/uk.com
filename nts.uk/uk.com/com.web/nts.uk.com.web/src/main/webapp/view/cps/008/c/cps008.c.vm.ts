@@ -8,7 +8,7 @@ module cps008.c.viewmodel {
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
         overrideMode: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         constructor() {
             let self = this,
                 layout: Layout = self.layout(),
@@ -30,17 +30,15 @@ module cps008.c.viewmodel {
         coppyBtn() {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
-            let s = 'd';
 
-
-            if (layout.newCode == '' || layout.newName == '') {
-                if (layout.newCode == '') {
-                    $("#C_INP_CODE").focus();
-                } else {
-                    $("#C_INP_NAME").focus();
-                }
+            $("#C_INP_CODE").trigger("validate");
+            $("#C_INP_NAME").trigger("validate");
+            
+            if (nts.uk.ui.errors.hasError()) {
                 return;
-            } else if (layout.newCode == layout.code) {
+            }
+            
+            if (layout.newCode == layout.code) {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_355" });
                 return;
             } else if (layout.newCode && layout.newName) {

@@ -232,6 +232,14 @@ module nts.custombinding {
                         background-color: #fff;
                         border-left: 1px solid #aaa;
                     }
+
+                    .layout-control .item-control td div,
+                    .layout-control .item-controls td div {
+                        background-color: rgb(217, 217, 217);
+                        height: 31px;
+                        width: 100%;
+                        display: block;
+                    }
                 
                     .layout-control .item-control td,
                     .layout-control .item-control th,
@@ -1153,7 +1161,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
                             <label class="value-text readonly" data-bind="
-                                text: ko.computed(function() { return (value() || ''); }),
+                                text: value,
                                 attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1165,7 +1173,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.RELATE_CATEGORY -->
                             <div class="relate-button">
-                                <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <label class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1173,7 +1181,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_106'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMBERIC_BUTTON -->
@@ -1211,7 +1219,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
                             <div class="readonly-button">
-                                <label class="value-text" class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <label class="value-text" class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1695,32 +1703,31 @@ module nts.custombinding {
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
                                             id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        $(document).on('change', `${id1}, ${id2}`, (evt) => {
+                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
                                             setTimeout(() => {
                                                 let dom1 = $(id1),
                                                     dom2 = $(id2),
                                                     pv = ko.toJS(prev.value),
                                                     nv = ko.toJS(next.value),
-                                                    tpt = typeof pv == 'number',
-                                                    tnt = typeof nv == 'number';
+                                                    tpt = _.isNumber(pv),
+                                                    tnt = _.isNumber(nv);
 
-                                                if (!tpt && tnt && !dom1.parent().hasClass('error')) {
-                                                    !dom1.is(':disabled') && dom1.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (tpt && !tnt && !dom2.parent().hasClass('error')) {
-                                                    !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (!(tpt && tnt) || (tpt && tnt)) {
-                                                    rmError(dom1, "Msg_858");
-                                                    rmError(dom2, "Msg_858");
-
-                                                    if (!getError().length) {
-                                                        clearError();
+                                                if (!tpt && tnt) {
+                                                    if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                        dom1.ntsError('set', { messageId: "Msg_858" });
                                                     }
+                                                } else {
+                                                    rmError(dom1, "Msg_858");
                                                 }
-                                            }, 0);
+
+                                                if (tpt && !tnt) {
+                                                    if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                                    }
+                                                } else {
+                                                    rmError(dom2, "Msg_858");
+                                                }
+                                            }, 50);
                                         });
                                     };
 
@@ -1729,11 +1736,15 @@ module nts.custombinding {
                                         case ITEM_SINGLE_TYPE.DATE:
                                             first.startDate = ko.observable();
                                             first.endDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(second.value) ? -1 : 0, "days").toDate();
+                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
+                                                    //.add(ko.toJS(second.value) ? -1 : 0, "days")
+                                                    .toDate();
                                             });
 
                                             second.startDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(first.value) ? 1 : 0, "days").toDate();
+                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
+                                                    //.add(ko.toJS(first.value) ? 1 : 0, "days")
+                                                    .toDate();
                                             });
                                             second.endDate = ko.observable();
                                             break;
@@ -1826,7 +1837,7 @@ module nts.custombinding {
                     def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
-                    
+
                     def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
 
                     def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
@@ -1848,6 +1859,8 @@ module nts.custombinding {
                     def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
 
                     def.defValue = ko.toJS(def.value);
+
+                    def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
                     if (ko.toJS(access.editAble) == 2) {
                         def.value.subscribe(x => {
@@ -2126,6 +2139,7 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                let startt = new Date().getTime();
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
@@ -2265,6 +2279,8 @@ module nts.custombinding {
                         };
                     }).value());
                 }
+                let endt = new Date().getTime();
+                console.log(endt - startt);
             });
             opts.sortable.data.valueHasMutated();
 

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 
@@ -23,6 +24,7 @@ public class CurrentMonth extends DomainObject {
 	
 	/** The closure classification */
 	// 締め日変更区分
+	@Setter
 	private Optional<ClosureClassification> closureClassification;
 
 	/**

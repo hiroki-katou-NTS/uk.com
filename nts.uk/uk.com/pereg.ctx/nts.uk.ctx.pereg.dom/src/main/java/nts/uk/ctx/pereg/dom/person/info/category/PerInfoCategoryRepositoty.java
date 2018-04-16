@@ -54,7 +54,7 @@ public interface PerInfoCategoryRepositoty {
 	// vinhpx: end
 	
 	//laitv
-	DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId);
+	Optional<DateRangeItem> getDateRangeItemByCategoryId(String perInfoCtgId);
 	
 	/**
 	 * Get category by category code

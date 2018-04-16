@@ -46,7 +46,7 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, ERROR_CODE, LIST_TIME_ITEM_ID);
 		if(valueExtractAlarmWR.isPresent()) {
 		valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_6"));
-		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7",ERROR_CODE));
+		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7", workTypeCD));
 		valueExtractAlarmWR.get().setComment(Optional.ofNullable(comment));
 		return valueExtractAlarmWR;
 		}

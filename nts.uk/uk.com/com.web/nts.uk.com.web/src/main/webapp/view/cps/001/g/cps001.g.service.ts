@@ -32,7 +32,7 @@ module nts.uk.com.view.cps001.g {
             return ajax('at',servicePath.getDetails,id);
         }
         
-        export function add(command: any) {
+        export function add(command: any): JQueryPromise<any> {
             return ajax('at', servicePath.add, command);
         }
         export function update(command: any) {
