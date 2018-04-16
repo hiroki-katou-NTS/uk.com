@@ -79,7 +79,6 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	
 	@Override
 	public void validate() {
-		super.validate();
 		
 		// Validate overlap employmentTimezones
 		for (int i = 0; i < this.employmentTimezones.size(); i++) {
@@ -107,7 +106,8 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 		
 		// validate worktime vs OT time
 		//validate msg_845
-		 this.checkOverTimeAndEmTimeOverlap();
+		this.checkOverTimeAndEmTimeOverlap();
+		super.validate();
 	}
 	
 	/**
