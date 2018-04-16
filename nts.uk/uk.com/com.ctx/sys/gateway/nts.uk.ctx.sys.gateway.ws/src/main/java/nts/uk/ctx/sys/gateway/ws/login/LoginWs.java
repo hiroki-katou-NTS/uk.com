@@ -128,7 +128,7 @@ public class LoginWs extends WebService {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public JavaTypeResult<String> submitLoginForm1(@Context HttpServletRequest request,SubmitLoginFormOneCommand command) {
 		if (request.getParameter("signon") != null){
-			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
 		return new JavaTypeResult(this.submitForm1.handle(command));
