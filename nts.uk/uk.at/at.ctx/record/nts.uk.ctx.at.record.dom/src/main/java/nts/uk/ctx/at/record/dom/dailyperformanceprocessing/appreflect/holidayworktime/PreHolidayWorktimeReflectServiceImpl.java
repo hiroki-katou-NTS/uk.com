@@ -39,6 +39,11 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Override
 	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
 		try {
+			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
+			if(!optDailyData.isPresent()) {
+				return new ApplicationReflectOutput(EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
+						holidayWorkPara.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+			}
 			// 予定勤種・就時の反映
 			holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
 					holidayWorkPara.getBaseDate(), 
