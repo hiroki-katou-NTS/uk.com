@@ -1,0 +1,23 @@
+#combo-box {
+	margin-left: 50px;
+}
+
+.row {
+	margin: 10px 20px;
+}
+
+.confirm {
+	width: fit-content;
+	display: block;
+	margin: auto;
+}
+
+.proceed {
+	width: 100px;
+	height: 40px;
+	font-weight: 550px;
+}
+
+button {
+	margin: 10px;
+}
