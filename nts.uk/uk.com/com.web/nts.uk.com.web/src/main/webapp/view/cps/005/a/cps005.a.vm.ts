@@ -12,6 +12,7 @@ module nts.uk.com.view.cps005.a {
             currentData: KnockoutObservable<DataModel>;
             isUpdate: boolean = false;
             isEnableButtonProceedA: KnockoutObservable<boolean>;
+
             constructor() {
                 let self = this,
                     dataModel = new DataModel(null);
@@ -36,7 +37,7 @@ module nts.uk.com.view.cps005.a {
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
-                        alertError({ messageId: res.messageId }).then(function() {
+                    alertError({ messageId: res.messageId }).then(function() {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     });
                 });
@@ -79,10 +80,12 @@ module nts.uk.com.view.cps005.a {
 
             addUpdateData() {
                 let self = this;
-                block.invisible();
                 if (!self.currentData().currentCtgSelected().perInfoCtgName()) {
+                    $("#category-name-control").focus();
                     return;
                 }
+                block.invisible();
+
                 if (self.isUpdate) {
                     let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().updatePerInfoCtg(updateCategory).done(function() {
@@ -160,6 +163,9 @@ module nts.uk.com.view.cps005.a {
                         isAdd: ko.toJS(self.currentData().currentCtgSelected().addItemObjCls())
 
                     };
+                if (nts.uk.text.isNullOrEmpty(params.categoryId)) {
+                    return;
+                }
                 block.invisible();
 
                 setShared('CPS005_A', params);

@@ -40,6 +40,12 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
 	}
 	
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	public void timeLeaveChangeWithNo(int no) {
+		timeLeavingWorks.stream().filter(tl -> tl.getWorkNo().v() == no).findFirst().ifPresent(tl -> {
+			TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(tl).build().toBePublished();
+		});
+	}
 //	/**
 //	 * 計算可能な打刻であるか判定する
 //	 * @return　計算可能である

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
 /**
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class AnnualLeaveUsedDays {
 
 	/** 使用日数 */

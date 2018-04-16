@@ -170,9 +170,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstRegularWorkSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
 		kshstRegularWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().value;
 		kshstRegularWorkSet.additionTime2 = includeVacationSet.getAddition().value;
-		kshstRegularWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isDeduct() == true ? 1 : 0;
-		// spec describle enable 2 same enable 1
-		kshstRegularWorkSet.enableSetPerWorkHour2 = deductLeaveEarly.isDeduct() == true ? 1 : 0;
+		kshstRegularWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
 		kshstRegularWorkSet.kshstRegularWorkSetPK = kshstRegularWorkSetPK;
 		return kshstRegularWorkSet;
 	}
@@ -197,9 +195,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					irregularWorkSet.incChildNursingCare2, 
 					irregularWorkSet.notDeductLateleave2,
 					irregularWorkSet.additionTime2,
-					irregularWorkSet.enableSetPerWorkHour1,
-					irregularWorkSet.enableSetPerWorkHour2
-					);
+					irregularWorkSet.enableSetPerWorkHour1);
 			return irregularWork;
 		}
 		return null;
@@ -227,7 +223,6 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					flexWorkSet.predeterminDeficiency2, 
 					flexWorkSet.additionTime2,
 					flexWorkSet.enableSetPerWorkHour1,
-					flexWorkSet.enableSetPerWorkHour2,
 					flexWorkSet.additionWithinMonthlyStatutory);
 			return flexWork;
 		}
@@ -253,8 +248,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					regularWorkSet.incChildNursingCare2, 
 					regularWorkSet.notDeductLateleave2, 
 					regularWorkSet.additionTime2,
-					regularWorkSet.enableSetPerWorkHour1,
-					regularWorkSet.enableSetPerWorkHour2);
+					regularWorkSet.enableSetPerWorkHour1);
 			return regularWork;
 		}
 		return null;
@@ -280,8 +274,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					hourPayAaddSet.calculateIncludCareTime, 
 					hourPayAaddSet.notDeductLateLeaveEarly, 
 					hourPayAaddSet.calculateIncludeIntervalExemptionTime2, 
-					hourPayAaddSet.enableSetPerWorkHour1, 
-					hourPayAaddSet.enableSetPerWorkHour2);
+					hourPayAaddSet.enableSetPerWorkHour1);
 			return hourlyPaymentAdditionSet;
 		}
 		return null;
@@ -344,8 +337,6 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			kshstWorkDepLaborSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().value;
 			kshstWorkDepLaborSet.additionTime2 = includeVacationSet.getAddition().value;
 			kshstWorkDepLaborSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
-			// spec describle enable1 same enable 2
-			kshstWorkDepLaborSet.enableSetPerWorkHour2 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
 			
 			kshstWorkDepLaborSet.kshstWorkDepLaborSetPK = kshstWorkDepLaborSetPK;
 		return kshstWorkDepLaborSet;
@@ -388,7 +379,6 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHourPayAaddSet.notDeductLateLeaveEarly = advanceSetWork.getNotDeductLateLeaveEarly().value;
 		kshstHourPayAaddSet.calculateIncludeIntervalExemptionTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
 		kshstHourPayAaddSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
-		kshstHourPayAaddSet.enableSetPerWorkHour2 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
 		kshstHourPayAaddSet.kshstHourPayAaddSetPK = kshstHourPayAaddSetPK;
 		return kshstHourPayAaddSet;
 }
@@ -432,8 +422,6 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstFlexWorkSet.predeterminDeficiency2 = includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value;
 		kshstFlexWorkSet.additionTime2 = includeVacationSet.getAddition().value;
 		kshstFlexWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
-		// spec describle enable 1 same enable 2
-		kshstFlexWorkSet.enableSetPerWorkHour2 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
 		kshstFlexWorkSet.additionWithinMonthlyStatutory = includeVacationSet.getAdditionWithinMonthlyStatutory().get().value;
 		
 		kshstFlexWorkSet.kshstFlexWorkSetPK = kshstFlexWorkSetPK;
@@ -517,6 +505,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHolidayAddtimeSet.workClass1 = holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value;
 		kshstHolidayAddtimeSet.addingMethod2 = holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value;
 		kshstHolidayAddtimeSet.workClass2 = holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value;
+		
+		this.commandProxy().insert(kshstHolidayAddtimeSet);
 	}
 
 	/* (non-Javadoc)
