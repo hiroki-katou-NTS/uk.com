@@ -120,17 +120,12 @@ public class PerInfoInitValueSetItemFinder {
 						disablebackGroud.setState(toList("ntsgrid-disable"));
 						if (c.getIsRequired().value == IsRequired.REQUIRED.value) {
 							itemNamebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-						}
+						} 
 					} else {
 						if (c.getIsRequired().value == IsRequired.REQUIRED.value) {
 							itemNamebackGroud.setState(toList("requiredCell"));
 							disablebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-							disablebackGroud.setState(toList("notrequiredCell"));
-						}
+						} 
 					}
 					itemRequired.add(itemNamebackGroud);
 					itemRequired.add(disablebackGroud);
