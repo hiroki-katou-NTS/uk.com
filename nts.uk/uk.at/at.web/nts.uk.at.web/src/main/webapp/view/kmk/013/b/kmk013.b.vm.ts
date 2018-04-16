@@ -145,8 +145,12 @@ module nts.uk.at.view.kmk013.b {
             conditionDisplay15: KnockoutObservable<boolean>;
             conditionDisplay26: KnockoutObservable<boolean>;
             
+            isLoadAfterGetData: KnockoutObservable<boolean>;
+            
             constructor() {
                 var self = this;
+                
+                self.isLoadAfterGetData = ko.observable(true);
                 
                 self.conditionDisplay15 = ko.observable(true);
                 self.conditionDisplay26 = ko.observable(true);
@@ -563,12 +567,14 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedB215.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB217(false);
-                        nts.uk.ui.errors.clearAll();
+                        nts.uk.ui.errors.clearAll();                        
                     } else {
                         if(self.enableB215()==true){
                             self.enableB217(true);
                         }
-                        $('.input-time').ntsError('check');
+                        if (self.selectedB23() == 1 && self.selectedB29() == 1) {
+                            $('.input-time').ntsError('check');                            
+                        }
                     }
                 });
                 //B5
@@ -743,7 +749,9 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.checkedB616.subscribe(newValue => {
                     if (newValue == false) {
-                        self.checkedB68(false);
+                        if (!self.isLoadAfterGetData()) {
+                            self.checkedB68(false);                            
+                        }
                     }
                 });
                 self.checkedB69.subscribe(newValue => {
@@ -922,6 +930,7 @@ module nts.uk.at.view.kmk013.b {
             }
             initData(): void {
                 let self = this;
+                self.isLoadAfterGetData(true);
                 $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
                     if (dataDomainSet != null) {
                         // condition 15
@@ -1161,6 +1170,7 @@ module nts.uk.at.view.kmk013.b {
                     self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
                     
                     self.notifyVarKnockoutchange();
+                    self.isLoadAfterGetData(false);
                 });    
             }
             
@@ -1201,7 +1211,7 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedB215() == 0 && self.enableB215()) {
                             obj.oneDay = self.timeB219();
                             obj.morning = self.timeB221();
-                            obj.afternoon = self.timeB223()
+                            obj.afternoon = self.timeB223();
                         }
                     }
                 }
@@ -1289,12 +1299,12 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.exemptTaxTimeWork = convertToInt(self.checkedB619());
                     obj.flexWork.minusAbsenceTimeWork = convertToInt(self.checkedB620());
                     if (self.checkedB615() == true) {
-                        if (self.enableB616) {
+                        if (self.enableB616()) {
                             obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());    
                         } else {
                             obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;        
                         }
-                        if (self.enableB6_23) {
+                        if (self.enableB6_23()) {
                             obj.flexWork.additionWithinMonthlyStatutory = convertToInt(self.checkedB6_23());    
                         } else {
                             obj.flexWork.additionWithinMonthlyStatutory = self.oldData().flexWork.additionWithinMonthlyStatutory;
@@ -1335,7 +1345,7 @@ module nts.uk.at.view.kmk013.b {
                     obj.irregularWork.exemptTaxTimePre = self.oldData().irregularWork.exemptTaxTimePre;
                     obj.irregularWork.enableSetPerWorkHour1 = self.oldData().irregularWorkenableSetPerWorkHour1;
                 }
-                if (self.enableB79() == true && self.enableB7_24()) {
+                if (self.enableB79() == true && self.checkedB77()) {
                     obj.irregularWork.deformatExcValue = convertToInt(self.selectedIdB79());
                 } else {
                     obj.irregularWork.deformatExcValue = self.oldData().irregularWork.deformatExcValue;
