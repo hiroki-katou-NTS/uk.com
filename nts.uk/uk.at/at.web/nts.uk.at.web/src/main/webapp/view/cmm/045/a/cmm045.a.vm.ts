@@ -665,7 +665,7 @@ module cmm045.a.viewmodel {
 
             let appInfor = {
                 appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
-                appRes: lstFrameRes.length == 0 ? '' : appResContent
+                appRes: lstFrameRes == null || lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
         }
