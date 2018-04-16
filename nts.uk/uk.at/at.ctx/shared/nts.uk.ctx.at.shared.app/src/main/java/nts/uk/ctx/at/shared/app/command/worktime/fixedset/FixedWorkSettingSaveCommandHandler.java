@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -63,17 +61,17 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 			// Validate + common handler
 			this.validate(command, fixedWorkSetting);
 			this.fixedWorkSettingRepository.add(fixedWorkSetting);
-		} else {
-			Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opFixedWorkSetting.isPresent()) {
-				fixedWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opFixedWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, fixedWorkSetting);
-				this.fixedWorkSettingRepository.update(fixedWorkSetting);
-			}
+			return;
 		}
+
+		// update mode
+		FixedWorkSetting oldDomain = this.fixedWorkSettingRepository
+				.findByKey(companyId, command.getWorktimeSetting().worktimeCode).get();
+		fixedWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+		// Validate + common handler
+		this.validate(command, fixedWorkSetting);
+		this.fixedWorkSettingRepository.update(fixedWorkSetting);
 	}
 
 	/**

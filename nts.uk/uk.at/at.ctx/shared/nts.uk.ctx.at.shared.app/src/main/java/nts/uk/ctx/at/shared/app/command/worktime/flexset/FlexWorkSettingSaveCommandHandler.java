@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flexset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -63,17 +61,16 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 			// Validate + common handler
 			this.validate(command, flexWorkSetting);
 			this.flexWorkSettingRepository.add(flexWorkSetting);
-		} else {
-			Optional<FlexWorkSetting> opFlexWorkSetting = this.flexWorkSettingRepository.find(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opFlexWorkSetting.isPresent()) {
-				flexWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opFlexWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, flexWorkSetting);
-				this.flexWorkSettingRepository.update(flexWorkSetting);
-			}
 		}
+
+		// update mode
+		FlexWorkSetting oldDomain = this.flexWorkSettingRepository
+				.find(companyId, command.getWorktimeSetting().worktimeCode).get();
+		flexWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+		// Validate + common handler
+		this.validate(command, flexWorkSetting);
+		this.flexWorkSettingRepository.update(flexWorkSetting);
 	}
 
 	/**

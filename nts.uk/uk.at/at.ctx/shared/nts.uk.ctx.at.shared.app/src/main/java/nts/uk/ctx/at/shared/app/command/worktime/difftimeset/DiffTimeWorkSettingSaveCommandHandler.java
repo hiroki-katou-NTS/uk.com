@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -63,17 +61,17 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 			// Validate + common handler
 			this.validate(command, difftimeWorkSetting);
 			this.difftimeRepo.add(difftimeWorkSetting);
-		} else {
-			Optional<DiffTimeWorkSetting> opDiffTimeWorkSetting = this.difftimeRepo.find(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opDiffTimeWorkSetting.isPresent()) {
-				difftimeWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opDiffTimeWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, difftimeWorkSetting);
-				this.difftimeRepo.update(difftimeWorkSetting);
-			}
+			return;
 		}
+
+		// update mode
+		DiffTimeWorkSetting oldData = this.difftimeRepo.find(companyId, command.getWorktimeSetting().worktimeCode)
+				.get();
+		difftimeWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldData);
+		// Validate + common handler
+		this.validate(command, difftimeWorkSetting);
+		this.difftimeRepo.update(difftimeWorkSetting);
 	}
 
 	/**

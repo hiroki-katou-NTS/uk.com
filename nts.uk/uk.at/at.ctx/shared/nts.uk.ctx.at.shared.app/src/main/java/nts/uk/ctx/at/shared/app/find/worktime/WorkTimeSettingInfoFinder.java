@@ -125,7 +125,7 @@ public class WorkTimeSettingInfoFinder {
 
 			WorkTimeDivision workTimeDivision = workTimeSetting.getWorkTimeDivision();
 			// check mode of worktime
-			if (workTimeDivision.getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
+			if (workTimeDivision.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK) {
 				// workTimeSettingDto
 				// check WorkTimeMethodSet
 
@@ -176,7 +176,7 @@ public class WorkTimeSettingInfoFinder {
 		if (workTimeSettingOp.isPresent()) {
 			WorkTimeSetting workTimeSetting = workTimeSettingOp.get();
 			// check mode of worktime
-			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
+			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK) {
 				// check WorkTimeMethodSet
 				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
 				case FIXED_WORK:
@@ -184,6 +184,7 @@ public class WorkTimeSettingInfoFinder {
 							workTimeCode);
 
 					breakTimeDto = this.fixedFinder.getBreakTimeDtos(opFixedWorkSetting);
+					//TODO: @Tran Huyen Trang tu xu
 					// break;
 					// case DIFFTIME_WORK:
 					// Optional<DiffTimeWorkSetting> diffTimeWorkSetting =

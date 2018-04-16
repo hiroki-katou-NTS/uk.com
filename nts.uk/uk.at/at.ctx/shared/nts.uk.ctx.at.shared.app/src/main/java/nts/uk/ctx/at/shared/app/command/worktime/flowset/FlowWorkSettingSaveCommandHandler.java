@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flowset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -63,17 +61,15 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 			// Validate + common handler
 			this.validate(command, flowWorkSetting);
 			this.flowRepo.add(flowWorkSetting);
-		} else {
-			Optional<FlowWorkSetting> opFlowWorkSetting = this.flowRepo.find(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opFlowWorkSetting.isPresent()) {
-				flowWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opFlowWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, flowWorkSetting);
-				this.flowRepo.update(flowWorkSetting);
-			}
 		}
+
+		// update mode
+		FlowWorkSetting oldDomain = this.flowRepo.find(companyId, command.getWorktimeSetting().worktimeCode).get();
+		flowWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+		// Validate + common handler
+		this.validate(command, flowWorkSetting);
+		this.flowRepo.update(flowWorkSetting);
 	}
 
 	/**
@@ -110,7 +106,8 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		}
 
 		// Check policy
-		this.flowPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), command.toWorkTimeDisplayMode(), flowWorkSetting);
+		this.flowPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
+				command.toWorkTimeDisplayMode(), flowWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
