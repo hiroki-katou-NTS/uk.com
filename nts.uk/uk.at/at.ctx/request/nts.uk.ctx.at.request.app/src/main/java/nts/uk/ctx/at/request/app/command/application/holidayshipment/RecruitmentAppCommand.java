@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -16,7 +18,7 @@ public class RecruitmentAppCommand {
 	private String wkTimeCD;
 
 	public GeneralDate getAppDate() {
-		return appDate != null ? GeneralDate.fromString(appDate, "yyyy/MM/dd") : null;
+		return !StringUtils.isEmpty(appDate) ? GeneralDate.fromString(appDate, "yyyy/MM/dd") : null;
 	}
 
 }
