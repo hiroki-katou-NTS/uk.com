@@ -5,20 +5,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @author thanh.tq 
- * 出力する特別休暇
+ * @author thanh.tq 出力する特別休暇
  */
 @Getter
 @Setter
 @NoArgsConstructor
 public class SpecialHoliday {
+
 	/**
 	 * コード
 	 */
 	private String code;
-	
-	/**
-	 * 出力する
-	 */
-	private boolean ouput;
+
+	private String holidayCode;
+
+	private String companyID;
+
+	public SpecialHoliday(String code, String holidayCode, String companyID) {
+		super();
+		this.code = code;
+		this.holidayCode = holidayCode;
+		this.companyID = companyID;
+	}
+
 }

@@ -24,4 +24,11 @@ public class Overtime {
 	 */
 	private boolean overtimeOverUndigested;
 
+	public Overtime(boolean overtimeItem, boolean overtimeRemaining, boolean overtimeOverUndigested) {
+		super();
+		this.overtimeItem = overtimeItem;
+		this.overtimeRemaining = overtimeRemaining;
+		this.overtimeOverUndigested = overtimeOverUndigested;
+	}
+
 }

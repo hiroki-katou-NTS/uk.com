@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 
 /**
 * 休暇残数管理表の出力項目設定
@@ -101,5 +102,12 @@ public class HdRemainManageDto
     */
     private int nursingCareLeave;
     
-    
+//    public static HdRemainManageDto fromDomain(HolidaysRemainingManagement domain) {
+//    	return new HdRemainManageDto(
+//				domain.getCode() ,
+//				domain.getCompanyID(),
+//				domain.getName(),
+//				domain.getListItemsOutput() >0 ? true : false
+//				);
+//    }
 }

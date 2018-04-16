@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 /**
  * 出力する特別休暇: 主キー情報
  */
-@EqualsAndHashCode
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable

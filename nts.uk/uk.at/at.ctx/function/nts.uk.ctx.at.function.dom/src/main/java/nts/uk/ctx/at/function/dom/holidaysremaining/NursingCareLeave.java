@@ -16,4 +16,11 @@ public class NursingCareLeave {
 	 * 介護休暇の項目を出力する
 	 */
 	private boolean nursingLeave;
+
+	public NursingCareLeave(boolean nursingLeave) {
+		super();
+		this.nursingLeave = nursingLeave;
+	}
+	
+	
 }

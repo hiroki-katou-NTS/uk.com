@@ -16,4 +16,10 @@ public class YearlyReserved {
 	 */
 	private boolean yearlyReserved;
 
+	public YearlyReserved(boolean yearlyReserved) {
+		super();
+		this.yearlyReserved = yearlyReserved;
+	}
+	
+
 }

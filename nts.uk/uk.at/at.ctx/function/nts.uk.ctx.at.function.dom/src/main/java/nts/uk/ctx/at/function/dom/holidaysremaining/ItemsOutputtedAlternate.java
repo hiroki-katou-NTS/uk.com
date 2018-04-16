@@ -24,5 +24,15 @@ public class ItemsOutputtedAlternate {
 	 * 代休の項目を出力する
 	 */
 	private boolean outputItemSubstitute;
+	
+	public ItemsOutputtedAlternate(boolean remainingChargeSubstitute, boolean representSubstitute,
+			boolean outputItemSubstitute) {
+		super();
+		this.remainingChargeSubstitute = remainingChargeSubstitute;
+		this.representSubstitute = representSubstitute;
+		this.outputItemSubstitute = outputItemSubstitute;
+	}
+	
+	
 
 }

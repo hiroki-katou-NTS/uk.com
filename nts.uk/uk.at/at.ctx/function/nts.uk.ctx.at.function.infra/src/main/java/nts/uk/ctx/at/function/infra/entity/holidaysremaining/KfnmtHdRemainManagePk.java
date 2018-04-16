@@ -8,11 +8,13 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
  * 休暇残数管理表の出力項目設定: 主キー情報
  */
+@Getter
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,5 +35,7 @@ public class KfnmtHdRemainManagePk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CD")
 	public String cd;
+
+	
 
 }

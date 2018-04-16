@@ -14,6 +14,12 @@ public class ChildNursingLeave {
 	/**
 	 * childNursingLeave
 	 */
-	private boolean childNursingLeave;
+	private boolean ChildNursingLeave;
+
+	public ChildNursingLeave(boolean childNursingLeave) {
+		super();
+		ChildNursingLeave = childNursingLeave;
+	}
+	
 
 }
