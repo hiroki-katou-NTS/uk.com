@@ -754,7 +754,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         checkInputCare(data: any, rowItemSelect : any){
             var self = this;
-            if(CHECK_INPUT[data.itemId] != undefined &&(!self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]]) || data.value =="")){
+            if(CHECK_INPUT[data.itemId] != undefined 
+            && ((self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]]) && data.value =="")  
+             || (data.value !="" && !self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]])))){
                 data["itemId"] = data.columnKey.substring(1, data.columnKey.length);
                 data["group"] = Number(CHECK_INPUT[data.itemId]);
                 self.listCareInputError.push(data); 
