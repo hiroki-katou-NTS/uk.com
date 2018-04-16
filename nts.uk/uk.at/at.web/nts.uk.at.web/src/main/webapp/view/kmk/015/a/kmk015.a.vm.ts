@@ -130,8 +130,10 @@ module nts.uk.at.view.kmk015.a {
             OpenDialogB() {
                 let self = this;
                 
-                let workTypeCodes = self.selectedCode();
-                nts.uk.ui.windows.setShared('parentCodes', {}, true);
+                if (self.listHistory().length >= 20){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_976" });
+                    return;
+                }
                 
                 nts.uk.ui.windows.sub.modal('/view/kmk/015/b/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
@@ -145,9 +147,16 @@ module nts.uk.at.view.kmk015.a {
                 })
             }
             
+            
             //open dialog C
             OpenDialogC() {
                 let self = this;
+                
+                if (nts.uk.util.isNullOrEmpty(self.selectedCode())){
+                    nts.uk.ui.dialog.alertError({ messageId: "Please Choose History!" });
+                    return;
+                }
+                
                 let workTypeCodes = self.selectedCode();
                 nts.uk.ui.windows.setShared('parentCodes', {
                     workTypeCodes: workTypeCodes,
@@ -173,6 +182,11 @@ module nts.uk.at.view.kmk015.a {
             public submit() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                if (nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                    nts.uk.ui.dialog.alertError("Please Setup History!");
+                    return;
+                }
 
                 let historyId = "";
                 
