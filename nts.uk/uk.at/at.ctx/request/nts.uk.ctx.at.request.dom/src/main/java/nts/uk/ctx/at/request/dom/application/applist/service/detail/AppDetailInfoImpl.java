@@ -145,13 +145,13 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
 		GoBackDirectly appGoBack = appGoBackOp.get();
 		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
-				this.convertTime(appGoBack.getWorkTimeStart1().v()),
+				this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
 				appGoBack.getBackHomeAtr1().value, 
-				this.convertTime(appGoBack.getWorkTimeEnd1().v()),
-				appGoBack.getGoWorkAtr2().value,
-				this.convertTime(appGoBack.getWorkTimeStart2().v()),
-				appGoBack.getBackHomeAtr2().value,
-				this.convertTime(appGoBack.getWorkTimeEnd2().v()));
+				this.convertTime(appGoBack.getWorkTimeEnd1().map(x -> x.v()).orElse(null)),
+				appGoBack.getGoWorkAtr2().map(x -> x.value).orElse(null),
+				this.convertTime(appGoBack.getWorkTimeStart2().map(x -> x.v()).orElse(null)),
+				appGoBack.getBackHomeAtr2().map(x -> x.value).orElse(null),
+				this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)));
 	}
 	/**
 	 * get Application Holiday Work Info

@@ -35,9 +35,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         selectedBack: any = ko.observable(1);
         selectedGo: any = ko.observable(1);
         //Back Home 2
-        selectedBack2: any = ko.observable(1);
+        selectedBack2: any = ko.observable(null);
         //Go Work 2
-        selectedGo2: any = ko.observable(1);
+        selectedGo2: any = ko.observable(null);
         //TIME LINE 2
         timeStart2: KnockoutObservable<number> = ko.observable(null);
         timeEnd2: KnockoutObservable<number> = ko.observable(null);
@@ -150,7 +150,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     //申請制限設定.申請理由が必須
-                    self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
+                    self.requiredReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (
+                            (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)||
+                            (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
+                        )
+                    );
                     if (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
                         //登録時にメールを送信する Visible
                         self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
@@ -251,9 +257,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
-            //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
-            //直行直帰するチェック
-            $(".ntsControl , .nts-input").trigger("validate");
             if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(), "#inpReasonTextarea") || nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -426,12 +429,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
             goBackCommand.goWorkAtr1 = self.selectedGo();
             goBackCommand.backHomeAtr1 = self.selectedBack();
-            goBackCommand.workTimeStart1 = nts.uk.util.isNullOrEmpty(self.timeStart1()) ? -1 : self.timeStart1();
-            goBackCommand.workTimeEnd1 = nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? -1 : self.timeEnd1();
+            goBackCommand.workTimeStart1 = self.timeStart1();
+            goBackCommand.workTimeEnd1 = self.timeEnd1();
             goBackCommand.goWorkAtr2 = self.selectedGo2();
             goBackCommand.backHomeAtr2 = self.selectedBack2();
-            goBackCommand.workTimeStart2 = nts.uk.util.isNullOrEmpty(self.timeStart2()) ? -1 : self.timeStart2();
-            goBackCommand.workTimeEnd2 = nts.uk.util.isNullOrEmpty(self.timeEnd2()) ? -1 : self.timeEnd2();
+            goBackCommand.workTimeStart2 = self.timeStart2();
+            goBackCommand.workTimeEnd2 = self.timeEnd2();
             goBackCommand.workLocationCD1 = self.workLocationCD();
             goBackCommand.workLocationCD2 = self.workLocationCD2();
             let txtReasonTmp = self.selectedReason();

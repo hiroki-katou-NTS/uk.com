@@ -396,12 +396,12 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
                 goBackCommand.goWorkAtr1 = self.selectedGo();
                 goBackCommand.backHomeAtr1 = self.selectedBack();
-                goBackCommand.workTimeStart1 = nts.uk.util.isNullOrEmpty(self.timeStart1()) ? -1 : self.timeStart1();
-                goBackCommand.workTimeEnd1 = nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? -1 : self.timeEnd1();
+                goBackCommand.workTimeStart1 = self.timeStart1();
+                goBackCommand.workTimeEnd1 = self.timeEnd1();
                 goBackCommand.goWorkAtr2 = self.selectedGo2();
                 goBackCommand.backHomeAtr2 = self.selectedBack2();
-                goBackCommand.workTimeStart2 = nts.uk.util.isNullOrEmpty(self.timeStart2()) ? -1 : self.timeStart2();
-                goBackCommand.workTimeEnd2 = nts.uk.util.isNullOrEmpty(self.timeEnd2()) ? -1 : self.timeEnd2();
+                goBackCommand.workTimeStart2 = self.timeStart2();
+                goBackCommand.workTimeEnd2 = self.timeEnd2();
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
@@ -476,14 +476,14 @@ module nts.uk.at.view.kaf009.b {
                 let self = this;
                 if (!nts.uk.util.isNullOrEmpty(data)) {
                     //Line 1
-                    self.timeStart1(data.workTimeStart1 == -1 ? null : data.workTimeStart1);
-                    self.timeEnd1(data.workTimeEnd1 == -1 ? null : data.workTimeEnd1);
+                    self.timeStart1(data.workTimeStart1);
+                    self.timeEnd1(data.workTimeEnd1);
                     self.selectedGo(data.goWorkAtr1);
                     self.selectedBack(data.backHomeAtr1);
                     self.workLocationCD(data.workLocationCD1 == null ? '' : data.workLocationCD1);
                     //Line 2
-                    self.timeStart2(data.workTimeStart2 == -1 ? null : data.workTimeStart2);
-                    self.timeEnd2(data.workTimeEnd2 == -1 ? null : data.workTimeEnd2);
+                    self.timeStart2(data.workTimeStart2);
+                    self.timeEnd2(data.workTimeEnd2);
                     self.selectedGo2(data.goWorkAtr2);
                     self.selectedBack2(data.backHomeAtr2);
                     self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);
