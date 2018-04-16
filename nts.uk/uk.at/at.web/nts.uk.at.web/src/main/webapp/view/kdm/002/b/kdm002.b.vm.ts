@@ -69,7 +69,7 @@ module nts.uk.at.view.kdm002.b {
                 self.columns = ko.observableArray([
                     { headerText: '会社コード', key: 'employeeCode', width: 100 },
                     { headerText: '会社名', key: 'employeeName', width: 150 },
-                    { headerText: 'イラー内容', key: 'errorMessage', width: 300 }
+                    { headerText: 'エラー内容', key: 'errorMessage', width: 300 }
                 ]);
             }
             
