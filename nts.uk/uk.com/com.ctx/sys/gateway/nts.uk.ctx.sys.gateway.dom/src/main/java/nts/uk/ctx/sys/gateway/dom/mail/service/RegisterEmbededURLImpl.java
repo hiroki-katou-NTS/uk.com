@@ -2,11 +2,15 @@ package nts.uk.ctx.sys.gateway.dom.mail.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -25,17 +29,9 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	private UrlExecInfoRepository urlExcecInfoRepo;
 
 	@Override
-<<<<<<< HEAD
-	public UrlExecInfo obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
-//		String loginId = AppContexts.user().employeeId();
-=======
+
 	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
-		String loginId = AppContexts.user().employeeId();
->>>>>>> e921d07720... update url return type
-		List <UrlExecInfo> list = urlExcecInfoRepo.getAllUrlExecInfo();
-		String loginId = "nts";
-		String uuID = UUID.randomUUID().toString();
-		String a = "1";
+		String loginId = AppContexts.user().employeeCode();
 		return this.registerEmbeddedForApp(appId, appType, prePostAtr, loginId, employeeId);
 	}
 
@@ -55,20 +51,26 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		} else {
 			String cid = AppContexts.user().companyId();
 			// Request list 313
-			String scd = "nothinghere";
+			String sLoginId = "s-logincd";
+			String scd = "000001";
+			if (!Strings.isBlank(sLoginId)){
+				scd = sLoginId;
+			}
 			String contractCd = AppContexts.user().contractCode();
 			GeneralDateTime issueDate = GeneralDateTime.now();
 			GeneralDateTime startDate = GeneralDateTime.now();
 			GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
-			UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCd, loginId, scd, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
-			// TODO
-			return (programId + " " + screenId);
+			UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCd, loginId, scd, sLoginId, programId, screenId, issueDate, expiredDate, taskIncidental);
+			if (!Objects.isNull(urlInfo)){
+				return (programId + "" + screenId+"/"+ urlInfo.getEmbeddedId());
+			}
+			return null;
 		}
 	}
 
 	@Override
 	public EmbeddedUrlScreenID getEmbeddedUrlRequestScreenID(int appType, int prePostAtr) {
-		ApplicationType appTypeEnum = ApplicationType.values()[appType];
+		ApplicationType appTypeEnum = EnumAdaptor.valueOf(appType, ApplicationType.class);
 		switch (appTypeEnum) {
 			case STAMP_APPLICATION: {
 				return new EmbeddedUrlScreenID("KAF002", "C");
@@ -86,19 +88,24 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				return new EmbeddedUrlScreenID("KAF009", "B");
 			}
 			case EARLY_LEAVE_CANCEL_APPLICATION: {
-				return new EmbeddedUrlScreenID("KAF004", "E");
-			}
-			case COMPLEMENT_LEAVE_APPLICATION: {
-				PrePostInitialAtr prePostAtrEnum = PrePostInitialAtr.values()[prePostAtr];
+				PrePostInitialAtr prePostAtrEnum = EnumAdaptor.valueOf(prePostAtr, PrePostInitialAtr.class);
 				switch (prePostAtrEnum) {
 					case PRE: {
 						return new EmbeddedUrlScreenID("KAF004", "E");
 					}
+					case POST: {
+						return new EmbeddedUrlScreenID("KAF004", "F");
+					}
+					case NO_CHOISE: {
+						return new EmbeddedUrlScreenID("", "");
+					}
 				}
-				return new EmbeddedUrlScreenID("KAF004", "F");
 			}
 			case BREAK_TIME_APPLICATION: {
 				return new EmbeddedUrlScreenID("KAF010", "B");
+			}
+			case COMPLEMENT_LEAVE_APPLICATION: {
+				return new EmbeddedUrlScreenID("KAF011", "B");
 			}
 			case ANNUAL_HOLIDAY_APPLICATION: {
 				return new EmbeddedUrlScreenID("KAF012", "B");
@@ -110,7 +117,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				return new EmbeddedUrlScreenID("KAF008", "E");
 			}
 		}
-		return null;
+		return new EmbeddedUrlScreenID("", "");
 	}
 
 	@Override
@@ -118,7 +125,7 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		PeriodClassification periodClsEnum = PeriodClassification.values()[periodCls];
 		switch (periodClsEnum) {
 			case YEAR: {
-				// TO DO
+				// TODO
 			}
 			case MONTH: {
 				GeneralDateTime expiredDate = startDate.addMonths(numOfPeriod);
@@ -126,13 +133,13 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				return expiredDate;
 			}
 			case DAY: {
-				// TO DO
+				// TODO
 			}
 			case HOUR: {
-				// TO DO
+				// TODO
 			}
 			case MINUTE: {
-				// TO DO
+				// TODO
 			}
 		}
 		return null;
