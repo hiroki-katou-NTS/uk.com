@@ -92,7 +92,7 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 					be.addMessage("Msg_516", "#KMK003_272");
 				} else if (stampReflectTz.isLeaveWork1()) {
 					be.addMessage("Msg_516", "#KMK003_274");
-				} else if (stampReflectTz.isGoWork2()) {
+				} else if (stampReflectTz.isLeaveWork2()) {
 					be.addMessage("Msg_516", "#KMK003_275");
 				}
 			}
