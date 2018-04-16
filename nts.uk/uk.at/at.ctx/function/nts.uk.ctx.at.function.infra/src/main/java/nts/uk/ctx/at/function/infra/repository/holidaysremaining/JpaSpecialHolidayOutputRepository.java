@@ -6,33 +6,33 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHoliday;
+import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.SpecialHolidayRepository;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHoliday;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHolidayPk;
 
 @Stateless
-public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
+public class JpaSpecialHolidayOutputRepository extends JpaRepository implements SpecialHolidayRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnmtSpecialHoliday f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.specialHolidayPk.cid =:cid AND  f.specialHolidayPk.cd =:cd AND  f.specialHolidayPk.specialCd =:specialCd ";
 
 	@Override
-	public Optional<SpecialHoliday> get(String code, String holidayCode, String companyID) {
+	public Optional<SpecialHolidayOutput> get(String code, String holidayCode, String companyID) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtSpecialHoliday.class).setParameter("code", code)
 				.setParameter("holidayCode", holidayCode).setParameter("companyID", companyID)
 				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
-	public void insert(SpecialHoliday domain) {
+	public void insert(SpecialHolidayOutput domain) {
 		this.commandProxy().insert(KfnmtSpecialHoliday.toEntity(domain));
 
 	}
 
 	@Override
-	public void update(SpecialHoliday domain) {
+	public void update(SpecialHolidayOutput domain) {
 		KfnmtSpecialHoliday updateData = KfnmtSpecialHoliday.toEntity(domain);
 		KfnmtSpecialHoliday oldData = this.queryProxy()
 				.find(updateData.kfnmtSpecialHolidayPk, KfnmtSpecialHoliday.class).get();
@@ -47,7 +47,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	}
 
 	@Override
-	public List<SpecialHoliday> getProcessExecutionLogByCompanyId(String companyID) {
+	public List<SpecialHolidayOutput> getProcessExecutionLogByCompanyId(String companyID) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtSpecialHoliday.class)
 				.setParameter("companyId", companyID).getList(c -> c.toDomain());
 	}

@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 @Value
-public class SpecialHolidayCommand
+public class SpecialHolidayOutputCommand
 {
     
     /**

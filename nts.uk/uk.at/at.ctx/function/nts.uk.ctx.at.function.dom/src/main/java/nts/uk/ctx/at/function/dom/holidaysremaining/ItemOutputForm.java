@@ -41,7 +41,7 @@ public class ItemOutputForm extends DomainObject {
 	private YearlyReserved yearlyReserved;
 
 	// 特別休暇
-	private List<SpecialHoliday> specialHoliday;
+	private List<SpecialHolidayOutput> specialHoliday;
 
 	public ItemOutputForm(NursingCareLeave nursingcareLeave, ItemsOutputtedAlternate substituteHoliday,
 			ItemsPublicOutput holidays, ChildNursingLeave childNursingVacation, YearlyItemsOutput annualHoliday,

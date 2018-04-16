@@ -12,9 +12,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 public class RemoveHdRemainManageCommandHandler extends CommandHandler<HdRemainManageCommand>
 {
     
-    @Inject
-    private HolidaysRemainingManagement removeHolidaysRemainingManagement;
-    
     @Override
     protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
     }

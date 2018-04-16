@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ExecutionCode;
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHoliday;
+import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -34,13 +34,13 @@ public class KfnmtSpecialHoliday extends UkJpaEntity implements Serializable {
 		return kfnmtSpecialHolidayPk;
 	}
 
-	public static KfnmtSpecialHoliday toEntity(SpecialHoliday domain) {
+	public static KfnmtSpecialHoliday toEntity(SpecialHolidayOutput domain) {
 		return new KfnmtSpecialHoliday(
 				new KfnmtSpecialHolidayPk(domain.getCode(), domain.getCompanyID(), domain.getHolidayCode()));
 	}
 
-	public SpecialHoliday toDomain() {
-		return new SpecialHoliday(this.kfnmtSpecialHolidayPk.cid,
+	public SpecialHolidayOutput toDomain() {
+		return new SpecialHolidayOutput(this.kfnmtSpecialHolidayPk.cid,
 				this.kfnmtSpecialHolidayPk.cd,
 				this.kfnmtSpecialHolidayPk.specialCd);
 				

@@ -3,17 +3,17 @@ package nts.uk.ctx.at.function.dom.holidaysremaining.repository;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHoliday;
+import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
 
 public interface SpecialHolidayRepository {
 	
-	List<SpecialHoliday> getProcessExecutionLogByCompanyId(String companyID);
+	List<SpecialHolidayOutput> getProcessExecutionLogByCompanyId(String companyID);
 	
-	Optional<SpecialHoliday> get(String code, String holidayCode, String companyID);
+	Optional<SpecialHolidayOutput> get(String code, String holidayCode, String companyID);
 
-	void insert(SpecialHoliday domain);
+	void insert(SpecialHolidayOutput domain);
 
-	void update(SpecialHoliday domain);
+	void update(SpecialHolidayOutput domain);
 
 	void remove(String code, String holidayCode, String companyID);
 

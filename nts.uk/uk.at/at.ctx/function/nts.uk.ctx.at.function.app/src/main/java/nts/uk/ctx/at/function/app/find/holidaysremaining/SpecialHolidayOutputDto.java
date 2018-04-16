@@ -2,14 +2,14 @@ package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHoliday;
+import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
 
 /**
  * 出力する特別休暇
  */
 @AllArgsConstructor
 @Value
-public class SpecialHolidayDto {
+public class SpecialHolidayOutputDto {
 
 	/**
 	 * 会社ID
@@ -26,8 +26,8 @@ public class SpecialHolidayDto {
 	 */
 	private String specialCd;
 
-	public static SpecialHolidayDto fromDomain(SpecialHoliday domain) {
-		return new SpecialHolidayDto(domain.getCode(), domain.getCompanyID(), domain.getHolidayCode());
+	public static SpecialHolidayOutputDto fromDomain(SpecialHolidayOutput domain) {
+		return new SpecialHolidayOutputDto(domain.getCode(), domain.getCompanyID(), domain.getHolidayCode());
 	}
 
 }

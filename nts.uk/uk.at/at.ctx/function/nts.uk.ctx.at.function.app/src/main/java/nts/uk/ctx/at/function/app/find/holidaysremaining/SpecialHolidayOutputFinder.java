@@ -13,15 +13,15 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 出力する特別休暇
  */
-public class SpecialHolidayFinder {
+public class SpecialHolidayOutputFinder {
 
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 
-	public List<SpecialHolidayDto> findAll() {
+	public List<SpecialHolidayOutputDto> findAll() {
 		return this.specialHolidayRepository.getProcessExecutionLogByCompanyId(AppContexts.user().companyId()).stream()
 				.map(a -> {
-					SpecialHolidayDto dto = SpecialHolidayDto.fromDomain(a);
+					SpecialHolidayOutputDto dto = SpecialHolidayOutputDto.fromDomain(a);
 					return dto;
 				}).collect(Collectors.toList());
 	}

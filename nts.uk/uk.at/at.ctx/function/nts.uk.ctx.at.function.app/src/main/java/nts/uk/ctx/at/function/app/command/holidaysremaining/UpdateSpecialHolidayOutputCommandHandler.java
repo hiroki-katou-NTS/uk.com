@@ -6,17 +6,15 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHoliday;
+import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
 
 @Stateless
 @Transactional
-public class RemoveSpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayCommand>
+public class UpdateSpecialHolidayOutputCommandHandler extends CommandHandler<SpecialHolidayOutputCommand>
 {
     
-    @Inject
-    private SpecialHoliday removeSpecialHoliday;
-    
     @Override
-    protected void handle(CommandHandlerContext<SpecialHolidayCommand> context) {
+    protected void handle(CommandHandlerContext<SpecialHolidayOutputCommand> context) {
+    
     }
 }
