@@ -761,7 +761,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + getText('CMM045_248') + self.hdAppSet().specialVaca
+            let result = getText('CMM045_279') + getText('CMM045_248') + absence.workTimeName
             + absence.relationshipName + day;
             return result;
         }
@@ -770,7 +770,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
             let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
-            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [absence.workTimeName])  + time1 + time2;
             return result;
         }
         convertNameHoliday(holidayType: number): string{
