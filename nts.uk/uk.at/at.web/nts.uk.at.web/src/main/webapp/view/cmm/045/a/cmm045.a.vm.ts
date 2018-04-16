@@ -761,7 +761,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + getText('CMM045_248') + self.hdAppSet().specialVaca
+            let result = getText('CMM045_279') + getText('CMM045_248') + absence.workTimeName
             + absence.relationshipName + day;
             return result;
         }
@@ -770,7 +770,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
             let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
-            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [absence.workTimeName])  + time1 + time2;
             return result;
         }
         convertNameHoliday(holidayType: number): string{
@@ -929,7 +929,8 @@ module cmm045.a.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertB(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
             let self = this;
-            let time = compltLeave.startTime + getText('CMM045_100') + compltLeave.endTime;
+            let eTime = compltLeave.endTime == '' ? '' : getText('CMM045_100') + compltLeave.endTime;
+            let time = compltLeave.startTime + eTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
             return getText('CMM045_263') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
@@ -952,8 +953,8 @@ module cmm045.a.viewmodel {
             }else{
                 rec = compltSync.appMain;
                 abs = compltSync.appSub;
-                absContent = self.convertB(rec, compltSync.appDateSub, '');
-                recContent = self.convertA(abs, app.applicationDate, app.applicationReason);
+                absContent = self.convertB(abs, compltSync.appDateSub, '');
+                recContent = self.convertA(rec, app.applicationDate, app.applicationReason);
             }
             return  '<div class = "rec" >' + recContent + '</div>' + '<div class = "abs" >' + absContent + '</div>';
         }
