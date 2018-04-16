@@ -1,5 +1,15 @@
 module nts.uk.at.view.kaf018.share.model {
 
+    export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
     export class MailTemp {
         mailSubject: KnockoutObservable<string>;
         mailContent: KnockoutObservable<string>;

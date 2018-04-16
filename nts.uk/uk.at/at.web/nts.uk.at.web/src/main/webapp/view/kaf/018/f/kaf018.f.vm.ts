@@ -20,6 +20,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         startDate: Date;
         endDate: Date;
         listWkp: any;
+        isConfirmData: boolean
         selectedWplIndex: number;
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
@@ -71,6 +72,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.startDate = params.startDate;
                 self.endDate = params.endDate;
                 self.listWkp = params.listWkp;
+                self.isConfirmData = params.isConfirmData;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
             }
@@ -91,14 +93,29 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             return dfd.promise();
         }
 
+        backToE(): void {
+            let self = this;
+            let params = {
+                closureId: self.closureId,
+                processingYm: self.processingYm,
+                startDate: self.startDate,
+                endDate: self.endDate,
+                closureName: self.closureName,
+                listWorkplace: self.listWkp,
+                isConfirmData: self.isConfirmData,
+                listEmployeeCode: self.listEmpCd,
+            };
+            nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
+        }
+
         getWkpName() {
             let self = this;
             self.enablePre(self.selectedWplIndex != 0)
             self.enableNext(self.selectedWplIndex != (self.listWkp.length - 1))
 
             let wkp = self.listWkp[self.selectedWplIndex];
-            self.selectedWplId(wkp.wkpId);
-            self.selectedWplName(wkp.wkpName);
+            self.selectedWplId(wkp.code);
+            self.selectedWplName(wkp.name);
         }
 
         nextWkp() {
@@ -239,13 +256,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             ];
 
             if (self.useSetting.monthlyConfirm) {
-                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "50px" });
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "40px" });
             }
             if (self.useSetting.usePersonConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "50px" });
+                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "40px" });
             }
             if (self.useSetting.useBossConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "50px" });
+                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "40px" });
             }
 
             leftmostHeader = {
@@ -264,10 +281,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             while (currentDay <= self.dtAft()) {
                 let time = new shareModel.Time(currentDay);
                 detailHeaderColumns.push({
-                    key: "_" + time.yearMonthDay, width: "40px", headerText: self.getDay(time)
+                    key: "_" + time.yearMonthDay, width: "30px", headerText: self.getDay(time)
                 });
                 detailContentColumns.push({
-                    key: "__" + time.yearMonthDay, width: "40px"
+                    key: "__" + time.yearMonthDay, width: "30px"
                 });
                 currentDay.setDate(currentDay.getDate() + 1);
             }
@@ -278,7 +295,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     headerText: text("KAF018_64"),
                     group: detailHeaderColumns
                 }],
-                width: "900px",
+                width: "930px",
                 features: [
                     {
                         name: "HeaderRowHeight",
@@ -309,11 +326,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         getDay(time: shareModel.Time): string {
-            if (time.day == "1") {
+            /*if (time.day == "1") {
                 return time.month + '/' + time.day + "<br/>" + time.weekDay;
             } else {
                 return time.day + "<br/>" + time.weekDay;
-            }
+            }*/
+
+            return time.day + "<br/>" + time.weekDay;
         }
 
         /**
@@ -397,7 +416,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                             break;
                     }
                     detailContentDeco.push(new shareModel.CellColor(key, i.toString(), clazz));
-                    if (listData[i].dailyReport[j].hasError) {
+                    if (listData[i].dailyReport[j].hasError) { 
                         listData[i][key] = "ER";
                     }
                     else {
@@ -408,6 +427,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     j++;
                 }
             }
+            console.log(listData);
             dfd.resolve(detailContentDeco);
             return dfd.promise();
         }
