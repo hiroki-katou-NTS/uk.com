@@ -164,8 +164,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         }
 
         removeAbs() {
-            let self = this,
-                removeCmd = self.getHolidayShipmentCmd();
+            let self = __viewContext['viewModel'],
+                removeCmd = self.getHolidayCmd();
             confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 block.invisible();
                 service.removeAbs(removeCmd).done(function(data) {
@@ -180,8 +180,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         }
 
         cancelAbs() {
-            let self = this,
-                cancelCmd = self.getHolidayShipmentCmd();
+            let self = __viewContext['viewModel'],
+                cancelCmd = self.getHolidayCmd();
             confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 block.invisible();
                 service.cancelAbs(cancelCmd).done(function(data) {
@@ -196,7 +196,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         }
 
 
-        getHolidayShipmentCmd() {
+        getHolidayCmd() {
             let self = this,
                 shipmentCmd;
 
@@ -225,14 +225,13 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 if (data.wkTime1) {
                     control.wkTime1().startTime(data.wkTime1.startTime);
                     control.wkTime1().endTime(data.wkTime1.endTime);
-                    if (data.wkTime1.startType) {
-                        control.wkTime1().startType(data.wkTime1.startType);
-                        control.wkTime1().startTime(data.wkTime1.endType);
-                    }
+                    control.wkTime1().startType(data.wkTime1.startUseAtr);
+                    control.wkTime1().endType(data.wkTime1.endUseAtr);
                 }
                 if (comType) {
                     self.appComSelectedCode(comType);
                 }
+                control.updateWorkingText();
             }
         }
 

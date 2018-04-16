@@ -64,7 +64,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 		List<SubTargetDigestion> subTargetDigestions = this.queryProxy()
 				.query(FIND_SUB_TAG_DIG_BY_ABS_ID, KrqdtSubTargetDigestion.class)
 				.setParameter("appID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
-		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTimeCD(),
+		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTypeCD(),
 				EnumAdaptor.valueOf(entity.getChangeWorkHoursAtr(), NotUseAtr.class),
 				new WorkTimeCode(entity.getWorkTimeCD()), WorkTime1, WorkTime2, subTargetDigestions, subDigestions);
 	}
