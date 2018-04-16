@@ -75,10 +75,6 @@ module nts.uk.com.view.kaf001.a.viewmodel {
 
             self.applyKCP005ContentSearch([]);
             $('#kcp005component').ntsListComponent(self.kcp005ComponentOption);
-
-            self.selectedEmployeeCode.subscribe(value => {
-                console.log(self.selectedEmployeeCode());
-            });
         }
 
         /**
